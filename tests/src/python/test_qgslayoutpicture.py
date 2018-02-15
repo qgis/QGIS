@@ -104,8 +104,8 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         picture = QgsLayoutItemPicture(layout)
         layout.addLayoutItem(picture)
 
-        picture.setRotationMap(map.uuid())
-        self.assertEqual(picture.rotationMap(), map.uuid())
+        picture.setLinkedMap(map)
+        self.assertEqual(picture.linkedMap(), map)
 
         picture.setNorthMode(QgsLayoutItemPicture.GridNorth)
         map.setMapRotation(45)
@@ -129,8 +129,8 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         picture = QgsLayoutItemPicture(layout)
         layout.addLayoutItem(picture)
 
-        picture.setRotationMap(map.uuid())
-        self.assertEqual(picture.rotationMap(), map.uuid())
+        picture.setLinkedMap(map)
+        self.assertEqual(picture.linkedMap(), map)
 
         picture.setNorthMode(QgsLayoutItemPicture.TrueNorth)
         self.assertAlmostEqual(picture.pictureRotation(), 37.20, 1)

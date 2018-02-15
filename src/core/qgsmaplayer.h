@@ -99,6 +99,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     };
 
     /**
+     * Maplayer has a style and a metadata property
+     * \since QGIS 3.0
+     */
+    enum PropertyType
+    {
+      Style = 0,
+      Metadata,
+    };
+
+    /**
      * Constructor for QgsMapLayer
      * \param type layer type
      * \param name display name for the layer
@@ -125,6 +135,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
+
+    /**
+     * Returns the extension of a Property.
+     * \returns The extension
+     * \since QGIS 3.0
+     */
+    static QString extensionPropertyType( PropertyType type );
 
     //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
     QString id() const;
@@ -524,6 +541,96 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     static QString formatLayerName( const QString &name );
+
+    /**
+     * Retrieve the metadata URI for this layer
+     * (either as a .qmd file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \returns a QString with the metadata file name
+     * \since QGIS 3.0
+     */
+    virtual QString metadataUri() const;
+
+    /**
+     * Export the current metadata of this layer as named metadata in a QDomDocument
+     * \param doc the target QDomDocument
+     * \param errorMsg this QString will be initialized on error
+     * \since QGIS 3.0
+     */
+    void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
+
+    /**
+     * Save the current metadata of this layer as the default metadata
+     * (either as a .qmd file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param resultFlag a reference to a flag that will be set to false if
+     * we did not manage to save the default metadata.
+     * \returns a QString with any status messages
+     * \since QGIS 3.0
+     */
+    virtual QString saveDefaultMetadata( bool &resultFlag SIP_OUT );
+
+    /**
+     * Save the current metadata of this layer as a named metadata
+     * (either as a .qmd file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param uri the file name or other URI for the
+     * metadata file. First an attempt will be made to see if this
+     * is a file and save to that, if that fails the qgis.db metadata
+     * table will be used to create a metadata entry who's
+     * key matches the URI.
+     * \param resultFlag a reference to a flag that will be set to false if
+     * we did not manage to save the default metadata.
+     * \returns a QString with any status messages
+     * \since QGIS 3.0
+     */
+    QString saveNamedMetadata( const QString &uri, bool &resultFlag );
+
+    /**
+     * Retrieve a named metadata for this layer if one
+     * exists (either as a .qmd file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param uri - the file name or other URI for the
+     * metadata file. First an attempt will be made to see if this
+     * is a file and load that, if that fails the qgis.db metadata
+     * table will be consulted to see if there is a metadata who's
+     * key matches the URI.
+     * \param resultFlag a reference to a flag that will be set to false if
+     * we did not manage to load the default metadata.
+     * \returns a QString with any status messages
+     * \since QGIS 3.0
+     */
+    virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
+
+    /**
+     * Retrieve the default metadata for this layer if one
+     * exists (either as a .qmd file on disk or as a
+     * record in the users metadata table in their personal qgis.db)
+     * \param resultFlag a reference to a flag that will be set to false if
+     * we did not manage to load the default metadata.
+     * \returns a QString with any status messages
+     * \since QGIS 3.0
+     */
+    QString loadDefaultMetadata( bool &resultFlag );
+
+    /**
+     * Retrieve a named metadata for this layer from a sqlite database.
+     * \param db path to sqlite database
+     * \param uri uri for table
+     * \param qmd will be set to QMD xml metadata content from database
+     * \returns true if style was successfully loaded
+     * \since QGIS 3.0
+     */
+    bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
+
+    /**
+     * Import the metadata of this layer from a QDomDocument
+     * \param document source QDomDocument
+     * \param errorMessage this QString will be initialized on error
+     * \returns true on success
+     * \since QGIS 3.0
+     */
+    bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
 
     /**
      * Retrieve the style URI for this layer
@@ -1169,6 +1276,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   private:
 
+    virtual QString baseURI( PropertyType type ) const;
+    QString saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag );
+    QString loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag );
+    bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
+
     /**
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1192,17 +1304,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Tag for embedding additional information
     QString mTag;
 
+    //set some generous  defaults for scale based visibility
+
     //! Minimum scale denominator at which this layer should be displayed
-    double mMinScale;
+    double mMinScale = 0;
     //! Maximum scale denominator at which this layer should be displayed
-    double mMaxScale;
+    double mMaxScale = 100000000;
     //! A flag that tells us whether to use the above vars to restrict layer visibility
-    bool mScaleBasedVisibility;
+    bool mScaleBasedVisibility = false;
 
     //! Collection of undoable operations for this layer. *
-    QUndoStack mUndoStack;
+    QUndoStack *mUndoStack = nullptr;
 
-    QUndoStack mUndoStackStyles;
+    QUndoStack *mUndoStackStyles = nullptr;
 
     //! Layer's persistent storage of additional properties (may be used by plugins)
     QgsObjectCustomProperties mCustomProperties;
@@ -1214,7 +1328,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerStyleManager *mStyleManager = nullptr;
 
     //! Timer for triggering automatic refreshes of the layer
-    QTimer mRefreshTimer;
+    QTimer *mRefreshTimer = nullptr;
 
     QgsLayerMetadata mMetadata;
 

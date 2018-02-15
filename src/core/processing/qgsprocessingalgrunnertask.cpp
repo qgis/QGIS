@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-  : QgsTask( tr( "Running %1" ).arg( algorithm->name() ), QgsTask::CanCancel )
+  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), QgsTask::CanCancel )
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
@@ -54,7 +54,7 @@ bool QgsProcessingAlgRunnerTask::run()
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     mFeedback->reportError( e.what() );
     return false;
   }

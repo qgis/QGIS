@@ -148,22 +148,56 @@ QString QgsClipboard::generateClipboardText() const
 
 void QgsClipboard::setSystemClipboard()
 {
-  QString textCopy = generateClipboardText();
+  // avoid overwriting internal clipboard - note that on Windows, the call to QClipboard::setText
+  // below doesn't immediately trigger QClipboard::dataChanged, and accordingly the call to
+  // systemClipboardChanged() is delayed. So by setting mIgnoreNextSystemClipboardChange we indicate
+  // that just the next call to systemClipboardChanged() should be ignored
+  mIgnoreNextSystemClipboardChange = true;
 
   QClipboard *cb = QApplication::clipboard();
 
   // Copy text into the clipboard
+  QString textCopy = generateClipboardText();
+  QMimeData *m = new QMimeData();
+  m->setText( textCopy );
+
+  if ( mFeatureClipboard.count() < 1000 )
+  {
+    QgsSettings settings;
+    CopyFormat format = AttributesWithWKT;
+    if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
+    {
+      format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
+    }
+
+    QString htmlCopy;
+    switch ( format )
+    {
+      case AttributesOnly:
+      case AttributesWithWKT:
+        htmlCopy = textCopy;
+        htmlCopy.replace( '\n', QStringLiteral( "</td></tr><tr><td>" ) );
+        htmlCopy.replace( '\t', QStringLiteral( "</td><td>" ) );
+        htmlCopy = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>" ) + htmlCopy + QStringLiteral( "</td></tr></table></body></html>" );
+        break;
+      case GeoJSON:
+        break;
+    }
+    if ( !htmlCopy.isEmpty() )
+    {
+      m->setHtml( htmlCopy );
+    }
+  }
 
   // With qgis running under Linux, but with a Windows based X
   // server (Xwin32), ::Selection was necessary to get the data into
   // the Windows clipboard (which seems contrary to the Qt
   // docs). With a Linux X server, ::Clipboard was required.
   // The simple solution was to put the text into both clipboards.
-
 #ifdef Q_OS_LINUX
-  cb->setText( textCopy, QClipboard::Selection );
+  cb->setMimeData( m, QClipboard::Selection );
 #endif
-  cb->setText( textCopy, QClipboard::Clipboard );
+  cb->setMimeData( m, QClipboard::Clipboard );
 
   QgsDebugMsgLevel( QString( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
 }
@@ -323,8 +357,22 @@ QByteArray QgsClipboard::data( const QString &mimeType ) const
   return QApplication::clipboard()->mimeData()->data( mimeType );
 }
 
+QgsFields QgsClipboard::fields() const
+{
+  if ( !mUseSystemClipboard )
+    return mFeatureFields;
+  else
+    return retrieveFields();
+}
+
 void QgsClipboard::systemClipboardChanged()
 {
+  if ( mIgnoreNextSystemClipboardChange )
+  {
+    mIgnoreNextSystemClipboardChange = false;
+    return;
+  }
+
   mUseSystemClipboard = true;
   emit changed();
 }

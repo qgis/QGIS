@@ -6,6 +6,7 @@ QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, Q
   mRelationId( relationid )
 {
   setupUi( this );
+  coCardinality->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
 }
 
 void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )
@@ -13,15 +14,15 @@ void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityCo
   coCardinality->addItem( cardinalityComboItem, auserData );
 }
 
-void QgsAttributeRelationEdit::setCardinality( const QString &cardinality )
+void QgsAttributeRelationEdit::setCardinality( const QVariant &auserData )
 {
-  int idx = coCardinality->findText( cardinality );
+  int idx = coCardinality->findData( auserData );
 
   if ( idx != -1 )
     coCardinality->setCurrentIndex( idx );
 }
 
-QString QgsAttributeRelationEdit::cardinality()
+QVariant  QgsAttributeRelationEdit::cardinality()
 {
-  return coCardinality->currentText();
+  return coCardinality->currentData();
 }

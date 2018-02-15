@@ -35,7 +35,6 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
     QgsBufferAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

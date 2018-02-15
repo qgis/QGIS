@@ -8,7 +8,7 @@ QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
 SET(IMAGE_RCCS ../../images/images.qrc)
 QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
 SET_SOURCE_FILES_PROPERTIES(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
 
 ADD_EXECUTABLE(qgiscrashhandler WIN32
@@ -23,9 +23,10 @@ ADD_EXECUTABLE(qgiscrashhandler WIN32
     )
 
 TARGET_LINK_LIBRARIES(qgiscrashhandler
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
-  DbgHelp
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+  dbghelp
 )
 
 INSTALL(CODE "MESSAGE(\"Installing crashhandler ...\")")

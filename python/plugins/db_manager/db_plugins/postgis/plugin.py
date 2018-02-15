@@ -29,7 +29,7 @@ from .connector import PostGisDBConnector
 from qgis.PyQt.QtCore import Qt, QRegExp
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
@@ -152,7 +152,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO,
+                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -164,7 +164,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, PGTable) or item._relationType != 'm':
-                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), QgsMessageBar.INFO,
+                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -378,7 +378,7 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegExp("\((.+)\)$")
+        regex = QRegExp("\\((.+)\\)$")
         startpos = regex.indexIn(trimmedTypeStr)
         if startpos >= 0:
             self.modifier = regex.cap(1).strip()

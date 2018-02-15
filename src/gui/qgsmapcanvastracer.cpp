@@ -39,6 +39,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
   // when things change we just invalidate the graph - and set up new parameters again only when necessary
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasTracer::onCurrentLayerChanged );
@@ -89,14 +90,14 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
   if ( message.isEmpty() )
     return;
 
-  mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, QgsMessageBar::WARNING,
+  mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, Qgis::Warning,
                                         QgsSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
   mMessageBar->pushItem( mLastMessage );
 }
 
 void QgsMapCanvasTracer::configure()
 {
-  setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() );
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer *> layers;

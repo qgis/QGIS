@@ -17,6 +17,7 @@
 #define QGS3DMAPCANVAS_H
 
 #include <QWidget>
+#include <Qt3DRender/QRenderCapture>
 
 namespace Qt3DExtras
 {
@@ -54,12 +55,22 @@ class Qgs3DMapCanvas : public QWidget
     //! Sets camera position to look down at the given point (in map coordinates) in given distance from plane with zero elevation
     void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
 
+    //! Saves the current scene as an image
+    void saveAsImage( const QString fileName, const QString fileFormat );
+
+  signals:
+    //! Emitted when the 3D map canvas was successfully saved as image
+    void savedAsImage( const QString fileName );
+
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
 
   private:
     //! 3D window with all the 3D magic inside
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
+    //! Frame graph node for render capture
+    Qt3DRender::QRenderCapture *mCapture = nullptr;
+
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
     QWidget *mContainer = nullptr;
     //! Description of the 3D scene

@@ -108,8 +108,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
   updateAssistantSymbol();
 
-  // Live color updates are not undoable to child symbol layers
-  btnColor->setAcceptLiveUpdates( false );
   btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
@@ -603,15 +601,22 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   mOpacityWidget->setOpacity( mSymbol->opacity() );
 
+  // Remove all previous clip actions
+  const QList<QAction *> actionList( btnAdvanced->menu()->actions() );
+  for ( const auto &action : actionList )
+  {
+    if ( mClipFeaturesAction->text() == action->text() )
+    {
+      btnAdvanced->menu()->removeAction( action );
+    }
+  }
+
   if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {
     //add clip features option for line or fill symbols
     btnAdvanced->menu()->addAction( mClipFeaturesAction );
   }
-  else
-  {
-    btnAdvanced->menu()->removeAction( mClipFeaturesAction );
-  }
+
   btnAdvanced->setVisible( mAdvancedMenu || !btnAdvanced->menu()->isEmpty() );
 
   mClipFeaturesAction->blockSignals( true );

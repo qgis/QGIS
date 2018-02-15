@@ -138,7 +138,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
-      << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -519,7 +519,7 @@ int main( int argc, char *argv[] )
   QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
-  QString dxfPreset;
+  QString dxfMapTheme;
   QgsRectangle dxfExtent;
 
   // This behavior will set initial extent of map canvas, but only if
@@ -723,9 +723,9 @@ int main( int argc, char *argv[] )
       {
         dxfEncoding = args[++i];
       }
-      else if ( arg == QLatin1String( "--dxf-preset" ) )
+      else if ( arg == QLatin1String( "--dxf-map-theme" ) )
       {
-        dxfPreset = args[++i];
+        dxfMapTheme = args[++i];
       }
       else if ( arg == QLatin1String( "--" ) )
       {
@@ -995,16 +995,18 @@ int main( int argc, char *argv[] )
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
 
-  // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    // Using the customizationfile option always overrides the option and config path options.
     QgsCustomization::instance()->setEnabled( true );
   }
   else
   {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
   }
+
+  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
 
   // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
@@ -1355,15 +1357,15 @@ int main( int argc, char *argv[] )
     dxfExport.setExtent( dxfExtent );
 
     QStringList layerIds;
-    QList< QPair<QgsVectorLayer *, int > > layers;
-    if ( !dxfPreset.isEmpty() )
+    QList< QgsDxfExport::DxfLayer > layers;
+    if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }
@@ -1374,7 +1376,7 @@ int main( int argc, char *argv[] )
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }

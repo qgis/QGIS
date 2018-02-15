@@ -74,8 +74,9 @@ ADD_LIBRARY(virtuallayerprovider MODULE
 
 TARGET_LINK_LIBRARIES( virtuallayerprovider
   qgis_core
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
 )

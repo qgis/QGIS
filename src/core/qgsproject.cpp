@@ -99,7 +99,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
 
     }
 
@@ -905,21 +905,25 @@ bool QgsProject::readProjectFile( const QString &filename )
 
     if ( !projectCrs.isValid() )
     {
-      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
-      // whereas the srsid can vary (e.g. for custom projections)
       QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
-      if ( !projCrsString.isEmpty() )
+      long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+
+      // try the CRS
+      if ( currentCRS >= 0 )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      }
+
+      // if that didn't produce a match, try the proj.4 string
+      if ( !projCrsString.isEmpty() && ( !projectCrs.isValid() || projectCrs.toProj4() != projCrsString ) )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
       }
-      // last try using crs id - most fragile
+
+      // last just take the given id
       if ( !projectCrs.isValid() )
       {
-        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
-        {
-          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-        }
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       }
     }
   }
@@ -1042,7 +1046,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   mSnappingConfig.readProject( *doc );
-  emit snappingConfigChanged( mSnappingConfig );
 
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -1066,6 +1069,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
+  emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
@@ -2291,7 +2295,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   bool addToLegend,
   bool takeOwnership )
 {
-  QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
+  const QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
   if ( !myResultList.isEmpty() )
   {
     if ( addToLegend )
@@ -2410,12 +2414,13 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
-  for ( QgsMapLayer *l : mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( l->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayer::VectorLayer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();

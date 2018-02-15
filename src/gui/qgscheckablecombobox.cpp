@@ -176,7 +176,7 @@ void QgsCheckableComboBox::hidePopup()
   mSkipHide = false;
 }
 
-void QgsCheckableComboBox::showContextMenu( const QPoint &pos )
+void QgsCheckableComboBox::showContextMenu( QPoint pos )
 {
   Q_UNUSED( pos );
 

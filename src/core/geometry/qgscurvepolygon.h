@@ -38,8 +38,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon( const QgsCurvePolygon &p );
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
 
-    bool operator==( const QgsCurvePolygon &other ) const;
-    bool operator!=( const QgsCurvePolygon &other ) const;
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
 
     ~QgsCurvePolygon() override;
 
@@ -175,8 +175,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return nullptr;
     }
 #endif
-  protected:
+
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
 

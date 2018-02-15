@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     params = [u'where', u'cats']
     values = []
@@ -54,6 +54,6 @@ def processCommand(alg, parameters, context):
 
 
 def processOutputs(alg, parameters, context):
-    outputParameter = {'output': ['line', 1],
-                       'cut': ['line', 1]}
+    outputParameter = {'output': ['output', 'line', 1, True],
+                       'cut': ['cut', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

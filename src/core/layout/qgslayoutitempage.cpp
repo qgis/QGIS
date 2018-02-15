@@ -183,7 +183,7 @@ void QgsLayoutItemPage::redraw()
 
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  if ( !context.painter() || !mLayout || !mLayout->context().pagesVisible() )
+  if ( !context.painter() || !mLayout || !mLayout->renderContext().pagesVisible() )
   {
     return;
   }
@@ -196,7 +196,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   QPainter *painter = context.painter();
   painter->save();
 
-  if ( mLayout->context().isPreviewRender() )
+  if ( mLayout->renderContext().isPreviewRender() )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -228,7 +228,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  if ( !mLayout->context().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+  if ( !mLayout->renderContext().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
   {
     maxBleedPixels = std::floor( maxBleedPixels - 2 );
   }
@@ -276,10 +276,10 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   if ( !mLayout )
     return;
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
     return;
 
-  const QgsLayoutContext &context = mLayout->context();
+  const QgsLayoutRenderContext &context = mLayout->renderContext();
   const QgsLayoutGridSettings &grid = mLayout->gridSettings();
 
   if ( !context.gridVisible() || grid.resolution().length() <= 0 )
@@ -329,7 +329,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel
-        halfCrossLength = 1 / itemStyle->matrix.m11();
+        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
       }
       else
       {

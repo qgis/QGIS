@@ -33,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(unittest.TestCase):
+class TestQgsLayoutMapGrid(unittest.TestCase):
 
     def testGrid(self):
         layout = QgsLayout(QgsProject.instance())
@@ -124,6 +124,7 @@ class TestQgsComposerMap(unittest.TestCase):
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
         map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         map.updateBoundingRect()
 
         checker = QgsLayoutChecker('composermap_markergrid', layout)

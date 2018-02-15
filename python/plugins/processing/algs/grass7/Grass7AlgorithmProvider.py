@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingProvider,
                        QgsVectorFileWriter,
                        QgsMessageLog,
@@ -70,11 +71,13 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
         # Add a setting for using v.external instead of v.in.ogr
+        # But set it to False by default because some algorithms
+        # can't be used with external data (need a solid v.in.ogr).
         ProcessingConfig.addSetting(Setting(
             self.name(),
             Grass7Utils.GRASS_USE_VEXTERNAL,
             self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
-            True))
+            False))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -104,10 +107,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         algs.append(alg)
                     else:
-                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
                 except Exception as e:
                     QgsMessageLog.logMessage(
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), Qgis.Critical)
         return algs
 
     def loadAlgorithms(self):

@@ -53,12 +53,12 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
       if ( QgsLayerTree::isLayer( node ) )
       {
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-        return nodeLayer->isVisible();
+        return nodeLayer->isVisible() ? Qt::Checked : Qt::Unchecked;
       }
       else if ( QgsLayerTree::isGroup( node ) )
       {
         QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
-        return nodeGroup->isVisible();
+        return nodeGroup->isVisible() ? Qt::Checked : Qt::Unchecked;
       }
       else
       {

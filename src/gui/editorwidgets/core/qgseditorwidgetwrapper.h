@@ -230,7 +230,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param err the error represented as a string. Empty if none.
      * \param status
      */
-    void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, ConstraintResult status );
+    void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, QgsEditorWidgetWrapper::ConstraintResult status );
 
     /**
      * Emit this signal when the constraint result visibility changed.
@@ -257,64 +257,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setValue( const QVariant &value ) = 0;
 
     /**
-     * If you emit to this slot in your implementation, an appropriate change notification
-     * will be broadcasted. Helper for string type widgets.
-     *
-     * \param value The value
-     */
-    void valueChanged( const QString &value );
-
-    /**
-     * If you emit to this slot in your implementation, an appropriate change notification
-     * will be broadcasted. Helper for int type widgets.
-     *
-     * \param value The value
-     * \note Python name valueChangedInt
-     */
-#ifndef SIP_RUN
-    void valueChanged( int value );
-#else
-    void valueChanged( int value ) SIP_PYNAME( valueChangedInt );
-#endif
-
-    /**
-     * If you emit to this slot in your implementation, an appropriate change notification
-     * will be broadcasted. Helper for double type widgets.
-     *
-     * \param value The value
-     * \note Python name valueChangedDouble
-     */
-#ifndef SIP_RUN
-    void valueChanged( double value );
-#else
-    void valueChanged( double value ) SIP_PYNAME( valueChangedDouble );
-#endif
-
-    /**
-     * If you emit to this slot in your implementation, an appropriate change notification
-     * will be broadcasted. Helper for bool type widgets.
-     *
-     * \param value The value
-     * \note Python name valueChangedBool
-     */
-#ifndef SIP_RUN
-    void valueChanged( bool value );
-#else
-    void valueChanged( bool value ) SIP_PYNAME( valueChangedBool );
-#endif
-
-    /**
-     * If you emit to this slot in your implementation, an appropriate change notification
-     * will be broadcasted. Helper for longlong type widgets.
-     *
-     * \param value The value
-     */
-    void valueChanged( qlonglong value );
-
-    /**
      * Will call the value() method to determine the emitted value
      */
-    void valueChanged();
+    void emitValueChanged();
 
   protected:
 

@@ -43,7 +43,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
@@ -69,9 +69,9 @@
 #else
 #include <winsock.h>
 #include <windows.h>
-#include <Lmcons.h>
+#include <lmcons.h>
 #define SECURITY_WIN32
-#include <Security.h>
+#include <security.h>
 #pragma comment( lib, "Secur32.lib" )
 #endif
 
@@ -151,10 +151,10 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
+  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-  qRegisterMetaType<QgsLayoutContext::Flags>( "QgsLayoutContext::Flags" );
+  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -491,7 +491,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   return icon;
 }
 
-QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
+QCursor QgsApplication::getThemeCursor( Cursor cursor )
 {
   QgsApplication *app = instance();
   if ( app && app->mCursorCache.contains( cursor ) )
@@ -542,17 +542,17 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   Q_ASSERT( ! name.isEmpty( ) );
 
   QIcon icon = getThemeIcon( QStringLiteral( "cursors" ) + QDir::separator() + name );
-  QCursor _cursor;
+  QCursor cursorIcon;
   // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
-    _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
+    float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
+    cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
-    app->mCursorCache.insert( cursor, _cursor );
-  return _cursor;
+    app->mCursorCache.insert( cursor, cursorIcon );
+  return cursorIcon;
 }
 
 // TODO: add some caching mechanism ?
@@ -615,7 +615,7 @@ void QgsApplication::setUITheme( const QString &themeName )
     while ( !in.atEnd() )
     {
       QString line = in.readLine();
-      // This is is a variable
+      // This is a variable
       if ( line.startsWith( '@' ) )
       {
         int index = line.indexOf( ':' );
@@ -784,12 +784,12 @@ QStringList QgsApplication::svgPaths()
   return paths;
 }
 
-QStringList QgsApplication::composerTemplatePaths()
+QStringList QgsApplication::layoutTemplatePaths()
 {
-  //local directories to search when looking for an SVG with a given basename
+  //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
   QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ) ).toStringList();
+  QStringList pathList = settings.value( QStringLiteral( "Layout/searchPathsForTemplates" ), QVariant(), QgsSettings::Core ).toStringList();
 
   return pathList;
 }
@@ -1637,7 +1637,7 @@ QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
   return members()->mLayoutItemRegistry;
 }
 
-QgsGPSConnectionRegistry *QgsApplication::gpsConnectionRegistry()
+QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
 }
@@ -1693,7 +1693,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
-  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
+  mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
   mPageSizeRegistry = new QgsPageSizeRegistry();

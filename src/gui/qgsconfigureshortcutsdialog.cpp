@@ -34,6 +34,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   , mManager( manager )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
@@ -50,25 +51,6 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
            this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
-
-  restoreState();
-}
-
-QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
-{
-  saveState();
-}
-
-void QgsConfigureShortcutsDialog::saveState()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
-}
-
-void QgsConfigureShortcutsDialog::restoreState()
-{
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()
@@ -87,13 +69,13 @@ void QgsConfigureShortcutsDialog::populateActions()
     {
       actionText = action->text();
       actionText.remove( '&' ); // remove the accelerator
-      sequence = action->shortcut().toString();
+      sequence = action->shortcut().toString( QKeySequence::NativeText );
       icon = action->icon();
     }
     else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
     {
       actionText = shortcut->whatsThis();
-      sequence = shortcut->key().toString();
+      sequence = shortcut->key().toString( QKeySequence::NativeText );
       icon = shortcut->property( "Icon" ).value<QIcon>();
     }
     else
@@ -409,7 +391,7 @@ void QgsConfigureShortcutsDialog::updateShortcutText()
 {
   // update text of the button so that user can see what has typed already
   QKeySequence s( mModifiers + mKey );
-  btnChangeShortcut->setText( tr( "Input: " ) + s.toString() );
+  btnChangeShortcut->setText( tr( "Input: " ) + s.toString( QKeySequence::NativeText ) );
 }
 
 void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
@@ -467,10 +449,10 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
   }
 
   // update manager
-  mManager->setObjectKeySequence( object, s.toString() );
+  mManager->setObjectKeySequence( object, s.toString( QKeySequence::NativeText ) );
 
   // update gui
-  treeActions->currentItem()->setText( 1, s.toString() );
+  treeActions->currentItem()->setText( 1, s.toString( QKeySequence::NativeText ) );
 
   actionChanged( treeActions->currentItem(), nullptr );
 }

@@ -16,13 +16,12 @@
 %Include qgsrubberband.sip
 %Include qgssnapindicator.sip
 %Include qgstablewidgetitem.sip
-%Include qgsuserinputdockwidget.sip
+%Include qgsuserinputwidget.sip
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsabstractdatasourcewidget.sip
 %Include qgssourceselectprovider.sip
 %Include qgssourceselectproviderregistry.sip
-%Include qgsvscrollarea.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -46,7 +45,6 @@
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip
-%Include layout/qgslayoutviewrubberband.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology/qgssymbolwidgetcontext.sip
 %Include qgisinterface.sip
@@ -87,10 +85,6 @@
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorwidgets.sip
-%Include qgscomposerinterface.sip
-%Include qgscomposeritemcombobox.sip
-%Include qgscomposerruler.sip
-%Include qgscomposerview.sip
 %Include qgscompoundcolorwidget.sip
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
@@ -166,6 +160,8 @@
 %Include qgsnewgeopackagelayerdialog.sip
 %Include qgsopacitywidget.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsoptionsdialoghighlightwidget.sip
+%Include qgsoptionsdialoghighlightwidgetsimpl.sip
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
@@ -206,6 +202,7 @@
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsvariableeditorwidget.sip
+%Include qgsvscrollarea.sip
 %Include qgsfiledownloaderdialog.sip
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
@@ -299,6 +296,7 @@
 %Include layout/qgslayoutruler.sip
 %Include layout/qgslayoutunitscombobox.sip
 %Include layout/qgslayoutview.sip
+%Include layout/qgslayoutviewrubberband.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtooladdnodeitem.sip

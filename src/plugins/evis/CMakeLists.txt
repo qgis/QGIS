@@ -74,7 +74,7 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(evis
   qgis_core
   qgis_gui
-  ${QT_QTSQL_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
 )
 
 

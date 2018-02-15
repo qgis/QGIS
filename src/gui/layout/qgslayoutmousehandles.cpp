@@ -58,20 +58,20 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //don't draw selection handles in layout outputs
     return;
   }
 
-  if ( mLayout->context().boundingBoxesVisible() )
+  if ( mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw resize handles around bounds of entire selection
     double rectHandlerSize = rectHandlerBorderTolerance();
     drawHandles( painter, rectHandlerSize );
   }
 
-  if ( mIsResizing || mIsDragging || mLayout->context().boundingBoxesVisible() )
+  if ( mIsResizing || mIsDragging || mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw dotted boxes around selected items
     drawSelectedItemBounds( painter );
@@ -296,7 +296,7 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
   double firstItemRotation = ( *itemIter )->rotation();
 
   //iterate through remaining items, checking if they have same rotation
-  for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
+  for ( ++itemIter; itemIter != selectedItems.constEnd(); ++itemIter )
   {
     if ( !qgsDoubleNear( ( *itemIter )->rotation(), firstItemRotation ) )
     {
@@ -319,7 +319,7 @@ double QgsLayoutMouseHandles::rectHandlerBorderTolerance()
   //get view scale factor
   double viewScaleFactor = mView->transform().m11();
 
-  //size of handle boxes depends on zoom level in composer view
+  //size of handle boxes depends on zoom level in layout view
   double rectHandlerSize = 10.0 / viewScaleFactor;
 
   //make sure the boxes don't get too large
@@ -510,7 +510,7 @@ QgsLayoutMouseHandles::MouseAction QgsLayoutMouseHandles::mouseActionForPosition
     QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( item && item->isSelected() )
     {
-      //cursor is over a selected composer item
+      //cursor is over a selected layout item
       return QgsLayoutMouseHandles::MoveItem;
     }
   }

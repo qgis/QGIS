@@ -28,7 +28,7 @@ class QgsFeature;
 class QgsField;
 class QFile;
 class QDomDocument;
-class QgsGPSData;
+class QgsGpsData;
 
 class QgsGPXFeatureIterator;
 
@@ -72,7 +72,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     /* new functions */
 
-    void changeAttributeValues( QgsGPSObject &obj,
+    void changeAttributeValues( QgsGpsObject &obj,
                                 const QgsAttributeMap &attrs );
 
     bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = nullptr ) override;
@@ -95,7 +95,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
   private:
 
-    QgsGPSData *data = nullptr;
+    QgsGpsData *data = nullptr;
 
     //! Fields
     QgsFields attributeFields;

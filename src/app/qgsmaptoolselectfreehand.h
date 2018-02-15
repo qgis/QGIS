@@ -34,18 +34,18 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    //! Overridden mouse press event
-    void canvasPressEvent( QgsMapMouseEvent *e ) override;
-
     //! Overridden mouse release event
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+
+    //! catch escape when active to cancel selection
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
   private:
 
     //! used for storing all of the maps point for the freehand sketch
     QgsRubberBand *mRubberBand = nullptr;
 
-    bool mDragging;
+    bool mActive = false;
 
     QColor mFillColor;
     QColor mStrokeColor;

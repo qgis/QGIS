@@ -369,7 +369,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   // Check if output layers are editable
   QList<QgsVectorLayer *> nonEditableLayers;
-  for ( QgsVectorLayer *layer : processLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
     if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
@@ -387,7 +387,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       if ( ui.radioButtonOutputNew->isChecked() )
       {
-        for ( QgsVectorLayer *layer : processLayers )
+        for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
         {
           QString layerPath = layer->dataProvider()->dataSourceUri();
           delete layer;
@@ -412,7 +412,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QMap<QString, QgsFeaturePool *> featurePools;
-  for ( QgsVectorLayer *layer : processLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
     QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
@@ -446,7 +446,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QList<QgsMapLayer *> addLayers;
-    for ( QgsVectorLayer *layer : processLayers )
+    for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
     {
       addLayers.append( layer );
     }

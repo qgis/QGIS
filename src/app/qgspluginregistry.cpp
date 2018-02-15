@@ -253,6 +253,14 @@ bool QgsPluginRegistry::checkQgisVersion( const QString &minVersion, const QStri
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
   int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
+  if ( qgisMinor == 99 )
+  {
+    // we want the API version, so for x.99 bump it up to the next major release: e.g. 2.99 to 3.0.0
+    qgisMajor ++;
+    qgisMinor = 0;
+    qgisBugfix = 0;
+  };
+
   // build XxYyZz strings with trailing zeroes if needed
   QString minVer = QStringLiteral( "%1%2%3" ).arg( minVerMajor, 2, 10, QChar( '0' ) )
                    .arg( minVerMinor, 2, 10, QChar( '0' ) )
@@ -301,7 +309,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::Info );
 
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
@@ -359,7 +367,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::Info );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )

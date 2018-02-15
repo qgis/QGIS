@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscomposerinterface.h
+    qgslayoutdesignerinterface.h
      ---------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
@@ -24,6 +24,7 @@ class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
 class QgsMessageBar;
+class QgsMasterLayoutInterface;
 
 /**
  * \ingroup gui
@@ -50,11 +51,16 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     {}
 
     /**
-     * Returns the layout displayed in the designer.
+     * Returns the current layout displayed in the designer.
      * \see view()
      */
     virtual QgsLayout *layout() = 0;
 
+    /**
+     * Returns the master layout displayed in the designer.
+     * \see layout()
+     */
+    virtual QgsMasterLayoutInterface *masterLayout() = 0;
 
     /**
      * Returns the layout view utilized by the designer.

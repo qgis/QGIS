@@ -181,7 +181,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
 
     // features counters
     long sentFeatures = 0;
@@ -240,14 +240,14 @@ namespace QgsWfs
       QStringList propertyList = query.propertyList;
 
       //Using pending attributes and pending fields
-      QgsAttributeList attrIndexes = vlayer->pendingAllAttributesList();
+      QgsAttributeList attrIndexes = vlayer->attributeList();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
         withGeom = false;
         QStringList::const_iterator plstIt;
         QList<int> idxList;
-        QgsFields fields = vlayer->pendingFields();
+        QgsFields fields = vlayer->fields();
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
         {
@@ -294,11 +294,11 @@ namespace QgsWfs
         QStringList attributes = QStringList();
         Q_FOREACH ( int idx, attrIndexes )
         {
-          attributes.append( vlayer->pendingFields().field( idx ).name() );
+          attributes.append( vlayer->fields().field( idx ).name() );
         }
         featureRequest.setSubsetOfAttributes(
           accessControl->layerAttributes( vlayer, attributes ),
-          vlayer->pendingFields() );
+          vlayer->fields() );
       }
 
       if ( onlyOneLayer )
@@ -658,11 +658,38 @@ namespace QgsWfs
 
     if ( paramContainsBbox )
     {
-      // get bbox corners
-      QString bbox = mWfsParameters.bbox();
 
       // get bbox extent
       QgsRectangle extent = mWfsParameters.bboxAsRectangle();
+
+      // handle WFS 1.1.0 optional CRS
+      if ( mWfsParameters.bbox().split( ',' ).size() == 5 && ! mWfsParameters.srsName().isEmpty() )
+      {
+        QString crs( mWfsParameters.bbox().split( ',' )[4] );
+        if ( crs != mWfsParameters.srsName() )
+        {
+          QgsCoordinateReferenceSystem sourceCrs( crs );
+          QgsCoordinateReferenceSystem destinationCrs( mWfsParameters.srsName() );
+          if ( sourceCrs.isValid() && destinationCrs.isValid( ) )
+          {
+            QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
+            QgsCoordinateTransform transform;
+            transform.setSourceCrs( sourceCrs );
+            transform.setDestinationCrs( destinationCrs );
+            try
+            {
+              if ( extentGeom.transform( transform ) == 0 )
+              {
+                extent = QgsRectangle( extentGeom.boundingBox() );
+              }
+            }
+            catch ( QgsException &cse )
+            {
+              Q_UNUSED( cse );
+            }
+          }
+        }
+      }
 
       // set feature request filter rectangle
       QList<getFeatureQuery>::iterator qIt = request.queries.begin();

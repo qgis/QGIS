@@ -57,7 +57,7 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
     def createIndex(self):
         idx = self.getIndex()
         if idx.name == "":
-            QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter some name for the index"))
+            QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter a name for the index."))
             return
 
         # now create the index

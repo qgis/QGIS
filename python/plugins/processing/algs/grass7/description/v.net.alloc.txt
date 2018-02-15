@@ -5,9 +5,9 @@ QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|Fa
 QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 *QgsProcessingParameterString|center_cats|Category values|1-100000|False|False
-*QgsProcessingParameterEnum|arc_type|Arc type|line;boundary;line,boundary|False|2
+*QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|False
 *QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
 *QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
 *QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
 *QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-QgsProcessingParameterVectorDestination|output|Network_Alloc
+QgsProcessingParameterVectorDestination|output|Network Alloction

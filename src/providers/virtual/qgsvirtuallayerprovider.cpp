@@ -657,7 +657,7 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QStringLiteral( "virtual" ); }
     QString text() const override { return QObject::tr( "Virtual Layer" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }
     QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override

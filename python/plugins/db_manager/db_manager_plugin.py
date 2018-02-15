@@ -52,7 +52,7 @@ class DBManagerPlugin(object):
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
-        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
+        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update SQL Layer…"),
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)

@@ -24,8 +24,8 @@
 #include <cassert>
 #include <cstdlib>
 
-QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
-                                  std::map<QString, QgsGPSDevice *> &devices,
+QgsGpsPluginGui::QgsGpsPluginGui( const BabelMap &importers,
+                                  std::map<QString, QgsGpsDevice *> &devices,
                                   const std::vector<QgsVectorLayer *> &gpxMapLayers,
                                   QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -34,15 +34,15 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   , mDevices( devices )
 {
   setupUi( this );
-  connect( pbnIMPInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPInput_clicked );
-  connect( pbnIMPOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPOutput_clicked );
-  connect( pbnCONVInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVInput_clicked );
-  connect( pbnCONVOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVOutput_clicked );
-  connect( pbnDLOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnDLOutput_clicked );
-  connect( pbnRefresh, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnRefresh_clicked );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGPSPluginGui::buttonBox_accepted );
-  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGPSPluginGui::buttonBox_rejected );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGPSPluginGui::showHelp );
+  connect( pbnIMPInput, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnIMPInput_clicked );
+  connect( pbnIMPOutput, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnIMPOutput_clicked );
+  connect( pbnCONVInput, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnCONVInput_clicked );
+  connect( pbnCONVOutput, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnCONVOutput_clicked );
+  connect( pbnDLOutput, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnDLOutput_clicked );
+  connect( pbnRefresh, &QPushButton::clicked, this, &QgsGpsPluginGui::pbnRefresh_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGpsPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGpsPluginGui::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGpsPluginGui::showHelp );
 
   // restore size, position and active tab
   restoreState();
@@ -52,48 +52,48 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   populateIMPBabelFormats();
   populateCONVDialog();
 
-  connect( pbULEditDevices, &QAbstractButton::clicked, this, &QgsGPSPluginGui::openDeviceEditor );
-  connect( pbDLEditDevices, &QAbstractButton::clicked, this, &QgsGPSPluginGui::openDeviceEditor );
+  connect( pbULEditDevices, &QAbstractButton::clicked, this, &QgsGpsPluginGui::openDeviceEditor );
+  connect( pbDLEditDevices, &QAbstractButton::clicked, this, &QgsGpsPluginGui::openDeviceEditor );
 
   // make sure that the OK button is enabled only when it makes sense to
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
   connect( mFileWidget, &QgsFileWidget::fileChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leIMPInput, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leIMPOutput, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leIMPLayer, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leCONVInput, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leCONVOutput, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leCONVLayer, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leDLOutput, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leDLBasename, &QLineEdit::textChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( cmbULLayer, &QComboBox::editTextChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( tabWidget, &QTabWidget::currentChanged,
-           this, &QgsGPSPluginGui::enableRelevantControls );
+           this, &QgsGpsPluginGui::enableRelevantControls );
 
   // drag and drop filter
   mFileWidget->setFilter( tr( "GPX files (*.gpx)" ) );
 }
 
-QgsGPSPluginGui::~QgsGPSPluginGui()
+QgsGpsPluginGui::~QgsGpsPluginGui()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Plugin-GPS/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
 }
 
-void QgsGPSPluginGui::buttonBox_accepted()
+void QgsGpsPluginGui::buttonBox_accepted()
 {
   // what should we do?
   switch ( tabWidget->currentIndex() )
@@ -163,7 +163,7 @@ void QgsGPSPluginGui::buttonBox_accepted()
   // accept();
 }
 
-void QgsGPSPluginGui::pbnDLOutput_clicked()
+void QgsGpsPluginGui::pbnDLOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -183,7 +183,7 @@ void QgsGPSPluginGui::pbnDLOutput_clicked()
   }
 }
 
-void QgsGPSPluginGui::enableRelevantControls()
+void QgsGpsPluginGui::enableRelevantControls()
 {
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
@@ -250,12 +250,12 @@ void QgsGPSPluginGui::enableRelevantControls()
   }
 }
 
-void QgsGPSPluginGui::buttonBox_rejected()
+void QgsGpsPluginGui::buttonBox_rejected()
 {
   reject();
 }
 
-void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
+void QgsGpsPluginGui::on_pbnGPXSelectFile_clicked()
 {
   QgsLogger::debug( QStringLiteral( " GPS File Importer::pbnGPXSelectFile_clicked() " ) );
   QgsSettings settings;
@@ -272,7 +272,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
   }
 }
 
-void QgsGPSPluginGui::pbnIMPInput_clicked()
+void QgsGpsPluginGui::pbnIMPInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
@@ -313,7 +313,7 @@ void QgsGPSPluginGui::pbnIMPInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::pbnIMPOutput_clicked()
+void QgsGpsPluginGui::pbnIMPOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -333,14 +333,14 @@ void QgsGPSPluginGui::pbnIMPOutput_clicked()
   }
 }
 
-void QgsGPSPluginGui::pbnRefresh_clicked()
+void QgsGpsPluginGui::pbnRefresh_clicked()
 {
   populatePortComboBoxes();
 }
 
-void QgsGPSPluginGui::populatePortComboBoxes()
+void QgsGpsPluginGui::populatePortComboBoxes()
 {
-  QList< QPair<QString, QString> > devs = QgsGPSDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
+  QList< QPair<QString, QString> > devs = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
 
   cmbDLPort->clear();
   cmbULPort->clear();
@@ -361,7 +361,7 @@ void QgsGPSPluginGui::populatePortComboBoxes()
   cmbULPort->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
-void QgsGPSPluginGui::populateCONVDialog()
+void QgsGpsPluginGui::populateCONVDialog()
 {
   cmbCONVType->addItem( tr( "Waypoints from a route" ), QVariant( int( 0 ) ) );
   cmbCONVType->addItem( tr( "Waypoints from a track" ), QVariant( int( 3 ) ) );
@@ -369,13 +369,13 @@ void QgsGPSPluginGui::populateCONVDialog()
   cmbCONVType->addItem( tr( "Track from waypoints" ), QVariant( int( 2 ) ) );
 }
 
-void QgsGPSPluginGui::populateULLayerComboBox()
+void QgsGpsPluginGui::populateULLayerComboBox()
 {
   for ( std::vector<QgsVectorLayer *>::size_type i = 0; i < mGPXLayers.size(); ++i )
     cmbULLayer->addItem( mGPXLayers[i]->name() );
 }
 
-void QgsGPSPluginGui::populateIMPBabelFormats()
+void QgsGpsPluginGui::populateIMPBabelFormats()
 {
   mBabelFilter.clear();
   cmbULDevice->clear();
@@ -388,7 +388,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
     mBabelFilter.append( iter->first ).append( " (*.*);;" );
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
-  std::map<QString, QgsGPSDevice *>::const_iterator iter2;
+  std::map<QString, QgsGpsDevice *>::const_iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
   {
     cmbULDevice->addItem( iter2->first );
@@ -404,7 +404,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
     cmbDLDevice->setCurrentIndex( d );
 }
 
-void QgsGPSPluginGui::pbnCONVInput_clicked()
+void QgsGpsPluginGui::pbnCONVInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -420,7 +420,7 @@ void QgsGPSPluginGui::pbnCONVInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::pbnCONVOutput_clicked()
+void QgsGpsPluginGui::pbnCONVOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -440,26 +440,26 @@ void QgsGPSPluginGui::pbnCONVOutput_clicked()
   }
 }
 
-void QgsGPSPluginGui::openDeviceEditor()
+void QgsGpsPluginGui::openDeviceEditor()
 {
-  QgsGPSDeviceDialog *dlg = new QgsGPSDeviceDialog( mDevices );
+  QgsGpsDeviceDialog *dlg = new QgsGpsDeviceDialog( mDevices );
   dlg->show();
-  connect( dlg, &QgsGPSDeviceDialog::devicesChanged, this, &QgsGPSPluginGui::devicesUpdated );
+  connect( dlg, &QgsGpsDeviceDialog::devicesChanged, this, &QgsGpsPluginGui::devicesUpdated );
 }
 
-void QgsGPSPluginGui::devicesUpdated()
+void QgsGpsPluginGui::devicesUpdated()
 {
   populateIMPBabelFormats();
 }
 
-void QgsGPSPluginGui::restoreState()
+void QgsGpsPluginGui::restoreState()
 {
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Plugin-GPS/geometry" ) ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( QStringLiteral( "Plugin-GPS/lastTab" ), 4 ).toInt() );
 }
 
-void QgsGPSPluginGui::showHelp()
+void QgsGpsPluginGui::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) );
 }

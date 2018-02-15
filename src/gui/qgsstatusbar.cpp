@@ -17,7 +17,8 @@
 
 #include "qgsstatusbar.h"
 #include <QLayout>
-#include <QLabel>
+#include <QLineEdit>
+#include <QPalette>
 #include <QTimer>
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
@@ -28,8 +29,15 @@ QgsStatusBar::QgsStatusBar( QWidget *parent )
   mLayout->setContentsMargins( 2, 0, 2, 0 );
   mLayout->setSpacing( 6 );
 
-  mLabel = new QLabel( QString() );
-  mLayout->addWidget( mLabel, 1 );
+  mLineEdit = new QLineEdit( QString() );
+  mLineEdit->setDisabled( true );
+  mLineEdit->setFrame( false );
+  mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+  QPalette palette;
+  palette.setColor( QPalette::Disabled, QPalette::Text, QPalette::WindowText );
+  mLineEdit->setPalette( palette );
+  mLineEdit->setStyleSheet( QStringLiteral( "* { background-color: rgba(0, 0, 0, 0); }" ) );
+  mLayout->addWidget( mLineEdit, 10 );
   setLayout( mLayout );
 }
 
@@ -54,12 +62,13 @@ void QgsStatusBar::removeWidget( QWidget *widget )
 
 QString QgsStatusBar::currentMessage() const
 {
-  return mLabel->text();
+  return mLineEdit->text();
 }
 
 void QgsStatusBar::showMessage( const QString &text, int timeout )
 {
-  mLabel->setText( text );
+  mLineEdit->setText( text );
+  mLineEdit->setCursorPosition( 0 );
   if ( timeout > 0 )
   {
     if ( !mTempMessageTimer )
@@ -78,5 +87,5 @@ void QgsStatusBar::showMessage( const QString &text, int timeout )
 
 void QgsStatusBar::clearMessage()
 {
-  mLabel->setText( QString() );
+  mLineEdit->setText( QString() );
 }

@@ -40,7 +40,7 @@ class QgsPropertyOverrideButton;
 // So QgsLayoutItemWidget HAS a QgsLayoutConfigObject to handle these common tasks.
 // Specific item property widgets (e.g., QgsLayoutMapWidget) should inherit from QgsLayoutItemBaseWidget
 // (which is a QgsPanelWidget) and also HAS a QgsLayoutConfigObject, with protected methods
-// which are just proxied through to the QgsComposerConfigObject.
+// which are just proxied through to the QgsLayoutConfigObject.
 // phew!
 // long story short - don't change this without good reason. If you add a new item type, inherit
 // from QgsLayoutItemBaseWidget and trust that everything else has been done for you.
@@ -83,10 +83,8 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
      */
     QgsVectorLayer *coverageLayer() const;
 
-#if 0 //TODO
-    //! Returns the atlas for the composition
-    QgsAtlasComposition *atlasComposition() const;
-#endif
+    //! Returns the atlas for the layout, if available
+    QgsLayoutAtlas *layoutAtlas() const;
 
   private slots:
     //! Must be called when a data defined button changes
@@ -136,6 +134,14 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      */
     bool setItem( QgsLayoutItem *item );
 
+    /**
+     * Sets the \a string to use to describe the current report type (e.g.
+     * "atlas" or "report").
+     * Subclasses which display this text to users should override this
+     * and update their widget labels accordingly.
+     */
+    virtual void setReportTypeString( const QString &string );
+
   protected:
 
     /**
@@ -165,11 +171,8 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      */
     virtual bool setNewItem( QgsLayoutItem *item );
 
-
-#if 0 //TODO
-    //! Returns the atlas for the composition
-    QgsAtlasComposition *atlasComposition() const;
-#endif
+    //! Returns the atlas for the layout (if available)
+    QgsLayoutAtlas *layoutAtlas() const;
 
   private:
 
@@ -262,7 +265,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 
   private:
 
-    QgsLayoutItem *mItem = nullptr;
+    QPointer< QgsLayoutItem > mItem;
     QgsLayoutConfigObject *mConfigObject = nullptr;
 
     bool mFreezeXPosSpin = false;

@@ -165,7 +165,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     void updateSceneRect();
 
     //! Current bounding rectangle of shape
-    QRectF currentRectangle;
+    QRectF mCurrentRectangle;
 
   protected slots:
 

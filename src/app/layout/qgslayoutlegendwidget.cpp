@@ -35,6 +35,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutatlas.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -100,7 +101,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
-  setPanelTitle( tr( "Legend properties" ) );
+  setPanelTitle( tr( "Legend Properties" ) );
 
   mTitleFontButton->setMode( QgsFontButton::ModeQFont );
   mGroupFontButton->setMode( QgsFontButton::ModeQFont );
@@ -136,11 +137,12 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
 
-#if 0 //TODO
   // connect atlas state to the filter legend by atlas checkbox
-  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
-  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
-#endif
+  if ( layoutAtlas() )
+  {
+    connect( layoutAtlas(), &QgsLayoutAtlas::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
+  }
+  connect( &legend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
@@ -195,7 +197,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
   mWrapCharLineEdit->setText( mLegend->wrapString() );
 
-  QgsLayoutItemMap *map = mLegend->map();
+  QgsLayoutItemMap *map = mLegend->linkedMap();
   mMapComboBox->setItem( map );
   mFontColorButton->setColor( mLegend->fontColor() );
   mTitleFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Title ).font() );
@@ -524,7 +526,7 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( QStringLiteral( "Moved Legend Item Down" ) );
+  mLegend->beginCommand( tr( "Moved Legend Item Down" ) );
 
   if ( node )
   {
@@ -561,7 +563,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( QStringLiteral( "Move Legend Item Up" ) );
+  mLegend->beginCommand( tr( "Move Legend Item Up" ) );
 
   if ( node )
   {
@@ -583,7 +585,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
 
 void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state )
 {
-  mLegend->beginCommand( QStringLiteral( "Change Auto Update" ) );
+  mLegend->beginCommand( tr( "Change Auto Update" ) );
 
   mLegend->setAutoUpdateModel( state == Qt::Checked );
 
@@ -622,7 +624,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
   if ( map )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
-    mLegend->setMap( map );
+    mLegend->setLinkedMap( map );
     mLegend->updateFilterByMap();
     mLegend->endCommand();
   }
@@ -697,7 +699,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
     if ( !layers.empty() )
     {
-      mLegend->beginCommand( QStringLiteral( "Add Legend Item(s)" ) );
+      mLegend->beginCommand( tr( "Add Legend Item(s)" ) );
       for ( QgsMapLayer *layer : layers )
       {
         mLegend->model()->rootGroup()->addLayer( layer );
@@ -721,7 +723,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     return;
   }
 
-  mLegend->beginCommand( QStringLiteral( "Remove Legend Item" ) );
+  mLegend->beginCommand( tr( "Remove Legend Item" ) );
 
   QList<QPersistentModelIndex> indexes;
   Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
@@ -737,11 +739,11 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
       nodesWithRemoval[nodeLayer].append( _unfilteredLegendNodeIndex( legendNode ) );
     }
   }
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, nodesWithRemoval.keys() )
+  for ( auto it = nodesWithRemoval.constBegin(); it != nodesWithRemoval.constEnd(); ++it )
   {
-    QList<int> toDelete = nodesWithRemoval[nodeLayer];
+    QList<int> toDelete = it.value();
     std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
-    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( it.key() );
 
     Q_FOREACH ( int i, toDelete )
     {
@@ -749,8 +751,8 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
         order.removeAt( i );
     }
 
-    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
+    QgsMapLayerLegendUtils::setLegendNodeOrder( it.key(), order );
+    mItemTreeView->layerTreeModel()->refreshLayerLegend( it.key() );
   }
 
   // then remove layer tree nodes
@@ -900,14 +902,9 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
   Q_UNUSED( toggled );
   if ( mLegend )
   {
-#if 0 //TODO
     mLegend->setLegendFilterOutAtlas( toggled );
     // force update of legend when in preview mode
-    if ( mLegend->composition()->atlasMode() == QgsComposition::PreviewAtlas )
-    {
-      mLegend->composition()->atlasComposition().refreshFeature();
-    }
-#endif
+    mLegend->refresh();
   }
 }
 
@@ -923,6 +920,12 @@ void QgsLayoutLegendWidget::updateLegend()
     mLegend->updateFilterByMap();
     mLegend->endCommand();
   }
+}
+
+void QgsLayoutLegendWidget::setReportTypeString( const QString &string )
+{
+  mFilterLegendByAtlasCheckBox->setText( tr( "Only show items inside current %1 feature" ).arg( string ) );
+  mFilterLegendByAtlasCheckBox->setToolTip( tr( "Filter out legend elements that lie outside the current %1 feature." ).arg( string ) );
 }
 
 bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
@@ -1034,10 +1037,10 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
 
 void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
 {
-#if 0 //TODO
-  const QgsAtlasComposition &atlas = mLegend->composition()->atlasComposition();
-  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
-#endif
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
+  {
+    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->reportContext().layer() && mLegend->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry );
+  }
 }
 
 void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx )

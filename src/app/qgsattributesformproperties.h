@@ -159,7 +159,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       RelationConfig();
       RelationConfig( QgsVectorLayer *layer, const QString &relationId );
 
-      QString mCardinality;
+      QVariant mCardinality;
 
       operator QVariant();
     };
@@ -238,7 +238,12 @@ class DnDTree : public QTreeWidget
 
   public:
     explicit DnDTree( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data );
+
+    /**
+     * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
+     * Otherwise it is inserted at the specified \a index.
+     */
+    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1 );
     QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
 
     enum Type

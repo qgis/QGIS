@@ -55,7 +55,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Sets the \a position of the model component within the graphical modeler.
      * \see position()
      */
-    void setPosition( const QPointF &position );
+    void setPosition( QPointF position );
 
   protected:
 

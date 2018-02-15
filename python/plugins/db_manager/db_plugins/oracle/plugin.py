@@ -225,36 +225,36 @@ class ORDatabase(Database):
 
         if self.schemas():
             action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Create schema"), self)
+                "DBManagerPlugin", "&Create Schema…"), self)
             mainWindow.registerAction(action, QApplication.translate(
                 "DBManagerPlugin", "&Schema"), self.createSchemaActionSlot)
             action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Delete (empty) schema"), self)
+                "DBManagerPlugin", "&Delete (Empty) Schema…"), self)
             mainWindow.registerAction(action, QApplication.translate(
                 "DBManagerPlugin", "&Schema"), self.deleteSchemaActionSlot)
 
         action = QAction(QApplication.translate(
-            "DBManagerPlugin", "Delete selected item"), self)
+            "DBManagerPlugin", "Delete Selected Item"), self)
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
         action = QAction(QIcon(":/db_manager/actions/create_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Create table"), self)
+                             "DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.createTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/edit_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Edit table"), self)
+                             "DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.editTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/del_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Delete table/view"), self)
+                             "DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.deleteTableActionSlot)
         action = QAction(QApplication.translate(
-            "DBManagerPlugin", "&Empty table"), self)
+            "DBManagerPlugin", "&Empty Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.emptyTableActionSlot)
 

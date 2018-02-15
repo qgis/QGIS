@@ -53,7 +53,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
-  if ( mPath.toLower().endsWith( QLatin1String( ".shp" ) ) )
+  if ( mPath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
   {
     if ( OGRGetDriverCount() == 0 )
     {
@@ -139,6 +139,21 @@ QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometr
   {
     return QgsLayerItem::LayerType::Raster;
   }
+
+  // fallback - try parsing as a WKT type string
+  switch ( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( geometryType ) ) )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return QgsLayerItem::LayerType::Point;
+    case QgsWkbTypes::LineGeometry:
+      return QgsLayerItem::LayerType::Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return QgsLayerItem::LayerType::Polygon;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+
   return QgsLayerItem::LayerType::TableLayer;
 }
 

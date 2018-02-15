@@ -108,7 +108,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param component color component for widget
      * \see component
      */
-    virtual void setComponent( const ColorComponent component );
+    virtual void setComponent( const QgsColorWidget::ColorComponent component );
 
     /**
      * Alters the widget's color by setting the value for the widget's color component

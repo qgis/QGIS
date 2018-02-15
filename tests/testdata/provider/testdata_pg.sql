@@ -238,6 +238,17 @@ CREATE TABLE qgis_test.mls3d(
 INSERT INTO qgis_test.mls3d values (1, 'srid=4326;MultiLineString((0 0 0, 1 1 1),(2 2 2, 3 3 3))'::geometry);
 
 
+-- Test of 4D geometries (with Z and M values)
+
+CREATE TABLE qgis_test.pt4d(
+       id int,
+       geom Geometry(PointZM,4326)
+);
+
+INSERT INTO qgis_test.pt4d values (1, 'srid=4326;PointZM(1 2 3 4)'::geometry);
+
+
+
 -----------------------------------------
 -- Test tables with INHERITS
 --
@@ -499,3 +510,14 @@ CREATE UNIQUE INDEX constraints_uniq
   ON qgis_test.constraints
   USING btree
   (name COLLATE pg_catalog."default"); -- unique index
+
+CREATE TABLE qgis_test.check_constraints (
+  id integer PRIMARY KEY,
+  a integer,
+  b integer, CHECK (a > b)
+);
+INSERT INTO qgis_test.check_constraints VALUES (
+  1, -- id
+  4, -- a
+  3  -- b
+)

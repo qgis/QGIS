@@ -513,35 +513,16 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
 
   QgsWkbTypes::Type wkbType = geom.wkbType();
 
-  switch ( wkbType )
+  switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
     //line
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineGeometry:
     {
-      QgsPolylineXY line = geom.asPolyline();
-      QgsPolylineXY::const_iterator line_it = line.constBegin();
-      for ( ; line_it != line.constEnd(); ++line_it )
+      if ( !QgsWkbTypes::isMultiType( wkbType ) )
       {
-        if ( addTopologicalPoints( *line_it ) != 0 )
-        {
-          returnVal = 2;
-        }
-      }
-      break;
-    }
-
-    //multiline
-    case QgsWkbTypes::MultiLineString25D:
-    case QgsWkbTypes::MultiLineString:
-    {
-      QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
-      QgsPolylineXY currentPolyline;
-
-      for ( int i = 0; i < multiLine.size(); ++i )
-      {
-        QgsPolylineXY::const_iterator line_it = currentPolyline.constBegin();
-        for ( ; line_it != currentPolyline.constEnd(); ++line_it )
+        QgsPolylineXY line = geom.asPolyline();
+        QgsPolylineXY::const_iterator line_it = line.constBegin();
+        for ( ; line_it != line.constEnd(); ++line_it )
         {
           if ( addTopologicalPoints( *line_it ) != 0 )
           {
@@ -549,47 +530,15 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
           }
         }
       }
-      break;
-    }
-
-    //polygon
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::Polygon:
-    {
-      QgsPolygonXY polygon = geom.asPolygon();
-      QgsPolylineXY currentRing;
-
-      for ( int i = 0; i < polygon.size(); ++i )
+      else
       {
-        currentRing = polygon.at( i );
-        QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
-        for ( ; line_it != currentRing.constEnd(); ++line_it )
-        {
-          if ( addTopologicalPoints( *line_it ) != 0 )
-          {
-            returnVal = 2;
-          }
-        }
-      }
-      break;
-    }
+        QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+        QgsPolylineXY currentPolyline;
 
-    //multipolygon
-    case QgsWkbTypes::MultiPolygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    {
-      QgsMultiPolygonXY multiPolygon = geom.asMultiPolygon();
-      QgsPolygonXY currentPolygon;
-      QgsPolylineXY currentRing;
-
-      for ( int i = 0; i < multiPolygon.size(); ++i )
-      {
-        currentPolygon = multiPolygon.at( i );
-        for ( int j = 0; j < currentPolygon.size(); ++j )
+        for ( int i = 0; i < multiLine.size(); ++i )
         {
-          currentRing = currentPolygon.at( j );
-          QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
-          for ( ; line_it != currentRing.constEnd(); ++line_it )
+          QgsPolylineXY::const_iterator line_it = currentPolyline.constBegin();
+          for ( ; line_it != currentPolyline.constEnd(); ++line_it )
           {
             if ( addTopologicalPoints( *line_it ) != 0 )
             {
@@ -600,7 +549,56 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
       }
       break;
     }
-    default:
+
+    case QgsWkbTypes::PolygonGeometry:
+    {
+      if ( !QgsWkbTypes::isMultiType( wkbType ) )
+      {
+        QgsPolygonXY polygon = geom.asPolygon();
+        QgsPolylineXY currentRing;
+
+        for ( int i = 0; i < polygon.size(); ++i )
+        {
+          currentRing = polygon.at( i );
+          QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
+          for ( ; line_it != currentRing.constEnd(); ++line_it )
+          {
+            if ( addTopologicalPoints( *line_it ) != 0 )
+            {
+              returnVal = 2;
+            }
+          }
+        }
+      }
+      else
+      {
+        QgsMultiPolygonXY multiPolygon = geom.asMultiPolygon();
+        QgsPolygonXY currentPolygon;
+        QgsPolylineXY currentRing;
+
+        for ( int i = 0; i < multiPolygon.size(); ++i )
+        {
+          currentPolygon = multiPolygon.at( i );
+          for ( int j = 0; j < currentPolygon.size(); ++j )
+          {
+            currentRing = currentPolygon.at( j );
+            QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
+            for ( ; line_it != currentRing.constEnd(); ++line_it )
+            {
+              if ( addTopologicalPoints( *line_it ) != 0 )
+              {
+                returnVal = 2;
+              }
+            }
+          }
+        }
+      }
+      break;
+    }
+
+    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
       break;
   }
   return returnVal;

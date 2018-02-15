@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # creates a new release
 
 # Copyright (C) 2014 Jürgen E. Fischer <jef@norbit.de>
@@ -165,6 +165,11 @@ run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
 
 unless( $dopoint ) {
 	run( "scripts/update-news.pl $newmajor $newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
+
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' doc/msvc.t2t" ) if $doltr;
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' doc/msvc.t2t" ) unless $doltr;
+	run( "txt2tags --encoding=utf-8 -odoc/INSTALL.html -t html doc/INSTALL.t2t" );
+	run( "txt2tags --encoding=utf-8 -oINSTALL -t txt doc/INSTALL.t2t" );
 
 	run( "git commit -n -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 

@@ -38,8 +38,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name, self.i18n_name = self.trAction('Create new model')
-        self.group, self.i18n_group = self.trAction('Tools')
+        self.name = self.tr('Create new model')
+        self.group = self.tr('Tools')
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")

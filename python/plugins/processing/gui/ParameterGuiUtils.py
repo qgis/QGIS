@@ -47,7 +47,15 @@ def getFileFilter(param):
     :param param:
     :return:
     """
-    if param.type() == 'multilayer':
+    if param.type() == 'layer':
+        vectors = QgsProviderRegistry.instance().fileVectorFilters().split(';;')
+        vectors.pop(0)
+        rasters = QgsProviderRegistry.instance().fileRasterFilters().split(';;')
+        rasters.pop(0)
+        filters = set(vectors + rasters)
+        filters = sorted(filters)
+        return tr('All files (*.*)') + ';;' + ";;".join(filters)
+    elif param.type() == 'multilayer':
         if param.layerType() == QgsProcessing.TypeRaster:
             exts = QgsRasterFileWriter.supportedFormatExtensions()
         elif param.layerType() == QgsProcessing.TypeFile:
@@ -82,4 +90,7 @@ def getFileFilter(param):
     elif param.type() == 'fileDestination':
         return param.fileFilter() + ';;' + tr('All files (*.*)')
 
-    return ''
+    if param.defaultFileExtension():
+        return tr('Default extension') + ' (*.' + param.defaultFileExtension() + ')'
+    else:
+        return ''

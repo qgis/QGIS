@@ -66,7 +66,7 @@ static QgsFeatureId _newFeatureId( QgsVectorLayer *layer, QSet<QgsFeatureId> old
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the node tool
+ * This is a unit test for the vertex tool
  */
 class TestQgsMapToolAddFeature : public QObject
 {

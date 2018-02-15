@@ -84,7 +84,6 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       mValidator = nullptr;
   }
 
-  QgsSettings settings;
   mNullValue = QgsApplication::nullRepresentation();
 }
 
@@ -113,6 +112,12 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   // delegate to the child validator if any
   if ( mValidator )
   {
+    // force to use the '.' as a decimal point or in case we are using QDoubleValidator
+    // we can get a valid number with a comma depending on current locale
+    // ... but this will fail subsequently when converted from string to double and
+    // becomes a NULL!
+    if ( mField.type() == QVariant::Double )
+      s = s.replace( ',', '.' );
     QValidator::State result = mValidator->validate( s, i );
     return result;
   }

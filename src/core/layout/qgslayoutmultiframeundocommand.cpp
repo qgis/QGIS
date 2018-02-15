@@ -56,7 +56,7 @@ void QgsLayoutMultiFrameUndoCommand::saveState( QDomDocument &stateDoc ) const
   QgsLayoutMultiFrame *item = mLayout->multiFrameByUuid( mFrameUuid );
   Q_ASSERT_X( item, "QgsLayoutMultiFrameUndoCommand::saveState", "could not retrieve item for saving state" );
 
-  item->writeXml( documentElement, stateDoc, QgsReadWriteContext() );
+  item->writeXml( documentElement, stateDoc, QgsReadWriteContext(), true );
   stateDoc.appendChild( documentElement );
 }
 
@@ -70,7 +70,8 @@ void QgsLayoutMultiFrameUndoCommand::restoreState( QDomDocument &stateDoc )
     item = recreateItem( mItemType, mLayout );
   }
 
-  item->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+  item->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext(), true );
+  item->finalizeRestoreFromXml();
   mLayout->project()->setDirty( true );
 }
 

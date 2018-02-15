@@ -112,15 +112,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Metadata</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Style</string>
           </property>
           <property name="toolTip">
@@ -145,6 +136,21 @@
          </item>
          <item>
           <property name="text">
+           <string>Histogram</string>
+          </property>
+          <property name="toolTip">
+           <string>Histogram</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Rendering</string>
+          </property>
+          <property name="toolTip">
            <string>Rendering</string>
           </property>
           <property name="icon">
@@ -166,14 +172,11 @@
          </item>
          <item>
           <property name="text">
-           <string>Histogram</string>
-          </property>
-          <property name="toolTip">
-           <string>Histogram</string>
+           <string>Metadata</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
          <item>
@@ -272,8 +275,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>311</width>
-                <height>106</height>
+                <width>314</width>
+                <height>98</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -351,20 +354,6 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_Metadata">
-          <layout class="QVBoxLayout" name="verticalLayout_13">
-           <item>
-            <widget class="QFrame" name="metadataFrame">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mOptsPage_Style">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="leftMargin">
@@ -392,8 +381,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>562</width>
-                <height>578</height>
+                <width>533</width>
+                <height>497</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1023,8 +1012,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>371</width>
-                <height>550</height>
+                <width>361</width>
+                <height>445</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1343,6 +1332,65 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Histogram">
+          <layout class="QVBoxLayout" name="verticalLayout_15">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsScrollArea" name="scrollArea_6">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_6">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>84</width>
+                <height>36</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_16">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QGroupBox" name="mHistogramGrpBx">
+                 <property name="title">
+                  <string/>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_19">
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QStackedWidget" name="mHistogramStackedWidget"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
@@ -1476,8 +1524,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>642</width>
-                <height>206</height>
+                <width>608</width>
+                <height>205</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1619,61 +1667,16 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_Histogram">
-          <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
+         <widget class="QWidget" name="mOptsPage_Metadata">
+          <layout class="QVBoxLayout" name="verticalLayout_13">
            <item>
-            <widget class="QgsScrollArea" name="scrollArea_6">
+            <widget class="QFrame" name="metadataFrame">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_6">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>100</width>
-                <height>30</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_16">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QGroupBox" name="mHistogramGrpBx">
-                 <property name="title">
-                  <string/>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_19">
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QStackedWidget" name="mHistogramStackedWidget"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
             </widget>
            </item>
           </layout>
@@ -1721,8 +1724,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>630</width>
-                <height>788</height>
+                <width>641</width>
+                <height>726</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2166,6 +2169,12 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -2178,6 +2187,12 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -2186,12 +2201,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
@@ -2210,12 +2219,6 @@ p, li { white-space: pre-wrap; }
    <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
@@ -2223,26 +2226,13 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>teMetadataViewer</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>scrollArea_4</tabstop>
-  <tabstop>mLayerShortNameLineEdit</tabstop>
-  <tabstop>mLayerTitleLineEdit</tabstop>
-  <tabstop>mLayerAbstractTextEdit</tabstop>
-  <tabstop>mLayerKeywordListLineEdit</tabstop>
-  <tabstop>mLayerDataUrlLineEdit</tabstop>
-  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
-  <tabstop>mLayerAttributionLineEdit</tabstop>
-  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
-  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
-  <tabstop>mLayerLegendUrlLineEdit</tabstop>
-  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>leDisplayName</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
@@ -2276,11 +2266,30 @@ p, li { white-space: pre-wrap; }
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
+  <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
   <tabstop>cbxPyramidsFormat</tabstop>
   <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
+  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mWMSPrintLayerLineEdit</tabstop>
+  <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
+  <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

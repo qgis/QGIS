@@ -43,20 +43,31 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
     updateBoundingRect();
     update();
   } );
+}
 
-#if 0 //TODO
-  if ( mComposition )
-  {
-    //connect to atlas feature changes
-    //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
-  }
-#endif
+QgsLayoutItemShape *QgsLayoutItemShape::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemShape( layout );
 }
 
 int QgsLayoutItemShape::type() const
 {
   return QgsLayoutItemRegistry::LayoutShape;
+}
+
+QIcon QgsLayoutItemShape::icon() const
+{
+  switch ( mShape )
+  {
+    case Ellipse:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeEllipse.svg" ) );
+    case Rectangle:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeRectangle.svg" ) );
+    case Triangle:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeTriangle.svg" ) );
+  }
+
+  return QIcon();
 }
 
 QString QgsLayoutItemShape::displayName() const
@@ -99,8 +110,8 @@ void QgsLayoutItemShape::refreshSymbol()
 {
   if ( layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
-    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol.get(), rc );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol.get(), rc );
   }
 
   updateBoundingRect();

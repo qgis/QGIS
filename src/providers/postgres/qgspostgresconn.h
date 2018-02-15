@@ -27,6 +27,7 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
+#include "qgsconfig.h"
 
 extern "C"
 {
@@ -77,7 +78,6 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   unsigned int                  nSpCols;
   QString                       sql;
-  bool                          force2d;
   QString                       relKind;
   bool                          isView;
   QString                       tableComment;
@@ -108,7 +108,6 @@ struct QgsPostgresLayerProperty
     property.pkCols          = pkCols;
     property.nSpCols         = nSpCols;
     property.sql             = sql;
-    property.force2d         = force2d;
     property.relKind         = relKind;
     property.isView          = isView;
     property.tableComment    = tableComment;
@@ -134,7 +133,7 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
+    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
            .arg( schemaName,
                  tableName,
                  geometryColName,
@@ -142,8 +141,7 @@ struct QgsPostgresLayerProperty
                  sridString,
                  pkCols.join( QStringLiteral( "|" ) ),
                  sql )
-           .arg( nSpCols )
-           .arg( force2d ? "yes" : "no" );
+           .arg( nSpCols );
   }
 #endif
 };

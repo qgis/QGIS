@@ -21,7 +21,6 @@
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgslayertreemodel.h"
 #include "qgsdxfexport.h"
-#include "qgshelp.h"
 
 #include <QList>
 #include <QPair>
@@ -54,7 +53,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    QList< QPair<QgsVectorLayer *, int> > layers() const;
+    QList< QgsDxfExport::DxfLayer > layers() const;
 
     QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
     int attributeIndex( const QgsVectorLayer *vl ) const;
@@ -80,7 +79,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDxfExportDialog() override;
 
-    QList< QPair<QgsVectorLayer *, int> > layers() const;
+    QList< QgsDxfExport::DxfLayer > layers() const;
 
     double symbologyScale() const;
     QgsDxfExport::SymbologyExport symbologyMode() const;
@@ -99,7 +98,6 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void deSelectAll();
 
   private slots:
-    void mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
     void mVisibilityPresets_currentIndexChanged( int index );

@@ -77,6 +77,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QgsLayoutItemPage *page( int pageNumber );
 
     /**
+     * Returns a specific page (by \a pageNumber) from the collection.
+     * Internal page numbering starts at 0 - so a \a pageNumber of 0
+     * corresponds to the first page in the collection.
+     * A nullptr is returned if an invalid page number is specified.
+     * \see pages()
+     * \note Not available in Python bindings.
+     */
+    const QgsLayoutItemPage *page( int pageNumber ) const SIP_SKIP;
+
+    /**
      * Returns the page number for the specified \a page, or -1 if the page
      * is not contained in the collection.
      */

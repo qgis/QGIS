@@ -315,6 +315,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgStrokeWidth(3)
+        symbol.setSvgStrokeColor(QColor('black'))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         symbol.subSymbol().setWidth(10)
 

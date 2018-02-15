@@ -18,7 +18,8 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoututils.h"
 #include "qgsproject.h"
@@ -54,14 +55,12 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 
   //connect some signals
 
-#if 0 //TODO
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [ = ] { refreshPicture(); } );
+  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [ = ] { refreshPicture(); } );
 
   //connect to layout print resolution changing
-  connect( layout->context(), &QgsLayoutContext::printResolutionChanged, this, &QgsLayoutItemPicture::recalculateSize );
-#endif
+  connect( &layout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPicture::shapeChanged );
 }
@@ -69,6 +68,11 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 int QgsLayoutItemPicture::type() const
 {
   return QgsLayoutItemRegistry::LayoutPicture;
+}
+
+QIcon QgsLayoutItemPicture::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPicture.svg" ) );
 }
 
 QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
@@ -114,8 +118,8 @@ void QgsLayoutItemPicture::draw( QgsRenderContext &context, const QStyleOptionGr
     {
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
-      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->context().dpi() / 25.4,
-                         mLayout->convertFromLayoutUnits( rect().height(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->context().dpi() / 25.4 );
+      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4,
+                         mLayout->convertFromLayoutUnits( rect().height(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4 );
     }
 
     //zoom mode - calculate anchor point and rotation
@@ -243,8 +247,8 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
       if ( !( currentPictureSize.isEmpty() ) )
       {
         QgsLayoutSize sizeMM = mLayout->convertFromLayoutUnits( currentPictureSize, QgsUnitTypes::LayoutMillimeters );
-        newSize.setWidth( sizeMM.width() * 25.4 / mLayout->context().dpi() );
-        newSize.setHeight( sizeMM.height() * 25.4 / mLayout->context().dpi() );
+        newSize.setWidth( sizeMM.width() * 25.4 / mLayout->renderContext().dpi() );
+        newSize.setHeight( sizeMM.height() * 25.4 / mLayout->renderContext().dpi() );
       }
     }
 
@@ -273,12 +277,12 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
 
 QRect QgsLayoutItemPicture::clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels )
 {
-  int boundRectWidthPixels = boundRectWidthMM * mLayout->context().dpi() / 25.4;
-  int boundRectHeightPixels = boundRectHeightMM * mLayout->context().dpi() / 25.4;
+  int boundRectWidthPixels = boundRectWidthMM * mLayout->renderContext().dpi() / 25.4;
+  int boundRectHeightPixels = boundRectHeightMM * mLayout->renderContext().dpi() / 25.4;
 
   //update boundRectWidth/Height so that they exactly match pixel bounds
-  boundRectWidthMM = boundRectWidthPixels * 25.4 / mLayout->context().dpi();
-  boundRectHeightMM = boundRectHeightPixels * 25.4 / mLayout->context().dpi();
+  boundRectWidthMM = boundRectWidthPixels * 25.4 / mLayout->renderContext().dpi();
+  boundRectHeightMM = boundRectHeightPixels * 25.4 / mLayout->renderContext().dpi();
 
   //calculate part of image which fits in bounds
   int leftClip = 0;
@@ -432,6 +436,15 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   }
 }
 
+void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
+{
+  if ( map )
+  {
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+  }
+}
+
 void QgsLayoutItemPicture::updateMapRotation()
 {
   if ( !mRotationMap )
@@ -450,10 +463,11 @@ void QgsLayoutItemPicture::updateMapRotation()
     {
       QgsPointXY center = mRotationMap->extent().center();
       QgsCoordinateReferenceSystem crs = mRotationMap->crs();
+      QgsCoordinateTransformContext transformContext = mLayout->project()->transformContext();
 
       try
       {
-        double bearing = QgsBearingUtils::bearingTrueNorth( crs, center );
+        double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
         rotation += bearing;
       }
       catch ( QgsException &e )
@@ -601,30 +615,19 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
   emit pictureRotationChanged( mPictureRotation );
 }
 
-void QgsLayoutItemPicture::setRotationMap( const QString &mapUuid )
+void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
 {
-  if ( !mLayout )
-  {
-    return;
-  }
-
   if ( mRotationMap )
   {
-    disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnectMap( mRotationMap );
   }
 
-  if ( mapUuid.isEmpty() ) //disable rotation from map
+  if ( !map ) //disable rotation from map
   {
     mRotationMap = nullptr;
   }
   else
   {
-    QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mapUuid ) );
-    if ( !map )
-    {
-      return;
-    }
     mPictureRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
@@ -778,23 +781,16 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
+  disconnectMap( mRotationMap );
   mRotationMap = nullptr;
-  mRotationMapId = -1;
-  mRotationMapUuid.clear();
-
-  mRotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   mRotationMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+
   return true;
 }
 
-QString QgsLayoutItemPicture::rotationMap() const
+QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const
 {
-  return mRotationMap ? mRotationMap->uuid() : QString();
-}
-
-bool QgsLayoutItemPicture::useRotationMap() const
-{
-  return mRotationMap.data();
+  return mRotationMap;
 }
 
 void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode )
@@ -835,9 +831,6 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
 
 void QgsLayoutItemPicture::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  mRotationMapId restore
-#endif
   if ( !mLayout || mRotationMapUuid.isEmpty() )
   {
     mRotationMap = nullptr;
@@ -846,11 +839,9 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
   {
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnectMap( mRotationMap );
     }
-    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) );
-    if ( mRotationMap )
+    if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );

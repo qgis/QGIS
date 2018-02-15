@@ -56,7 +56,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   private slots:
     void btnEqual_clicked();
-    void on_btnOk_clicked();
+    void btnOk_clicked();
     void btnLessThan_clicked();
     void btnGreaterThan_clicked();
     void btnLike_clicked();

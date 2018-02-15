@@ -919,7 +919,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   transactionDoc.appendChild( transactionElem );
   //delete element
   QDomElement deleteElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Delete" ) );
-  deleteElem.setAttribute( QStringLiteral( "typeName" ), tname );
+  deleteElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
   QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "Filter" ) );
 
 
@@ -984,7 +984,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       continue;
     }
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
+    updateElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
     //Property
     QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
     QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
@@ -1040,6 +1040,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
   return valueStr;
 }
 
+
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   //find out typename from uri and strip namespace prefix
@@ -1065,7 +1066,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     }
 
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
+    updateElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
 
     QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
@@ -1158,17 +1159,20 @@ QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVar
   {
     return value.toString();
   }
-};
+}
 
-bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )
+bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute,
+    QgsFields &fields,
+    QgsWkbTypes::Type &geomType,
+    bool forceSingularTypeNames )
 {
   fields.clear();
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI.uri() );
   if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-       mShared->mURI.typeName() ) )
+       mShared->mURI.typeName(), forceSingularTypeNames ) )
   {
-    QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1: %2" ).
+    QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
                                arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
     return false;
   }
@@ -1180,7 +1184,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
   {
     QgsDebugMsg( response );
-    QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1: %2" ).
+    QgsMessageLog::logMessage( tr( "DescribeFeatureType XML parse failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
@@ -1189,11 +1193,19 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
                                   mShared->mURI.typeName(),
                                   geometryAttribute, fields, geomType, errorMsg ) )
   {
+    // If 2.0.0, let's assume it was a server that only accepted TYPENAME singular form
+    // and try with that ...
+    if ( ! forceSingularTypeNames && mShared->mWFSVersion.startsWith( '2' ) )
+    {
+      return QgsWFSProvider::describeFeatureType( geometryAttribute,
+             fields,
+             geomType,
+             true );
+    }
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
-
   return true;
 }
 
@@ -1241,6 +1253,20 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     }
     elementElement = elementElement.nextSiblingElement( QStringLiteral( "element" ) );
   }
+  // Try to get a complex type whose name contains the unprefixed typename
+  if ( elementTypeString.isEmpty() && complexTypeElement.isNull() )
+  {
+    const QDomNodeList complexElements = schemaElement.elementsByTagName( QStringLiteral( "complexType" ) );
+    for ( int i = 0; i < complexElements.size(); i++ )
+    {
+      if ( complexElements.at( i ).toElement().attribute( QStringLiteral( "name" ) ).contains( unprefixedTypename ) )
+      {
+        complexTypeElement = complexElements.at( i ).toElement();
+        break;
+      }
+    }
+  }
+  // Give up :(
   if ( elementTypeString.isEmpty() && complexTypeElement.isNull() )
   {
     // "http://demo.deegree.org/inspire-workspace/services/wfs?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=ad:Address"
@@ -1266,7 +1292,6 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       errorMsg = tr( "Cannot find element '%1'" ).arg( unprefixedTypename );
     }
-
     return false;
   }
 
@@ -1337,13 +1362,13 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     QRegExp gmlRefProperty( "gml:(.*)Property" );
 
     // gmgml: is Geomedia Web Server
-    if ( type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
+    if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = QgsWkbTypes::MultiPolygon;
     }
-    else if ( type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
+    else if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
@@ -1351,15 +1376,19 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
-    else if ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) )
+    else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+      // We have a choice parent element we cannot assume any valid information over the geometry type
+      if ( attributeElement.parentNode().nodeName() == QStringLiteral( "choice" ) && ! attributeElement.nextSibling().isNull() )
+        geomType = QgsWkbTypes::Unknown;
+      else
+        geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
-    else if ( ref.indexOf( gmlRefProperty ) == 0 )
+    else if ( ! foundGeometryAttribute &&  ref.indexOf( gmlRefProperty ) == 0 )
     {
       foundGeometryAttribute = true;
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
@@ -1441,7 +1470,8 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
     describeFeatureTypeURL = QUrl( QStringLiteral( "http://fake_qgis_http_endpoint" ) );
   describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
   describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  //TODO: proper support of 2.0.0, for now hardcoded
+  describeFeatureTypeURL.addQueryItem( QgsWFSUtils::typeNameParameterForVersion( WfsVersion ).toUpper(), mShared->mURI.typeName() );
 
   transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );

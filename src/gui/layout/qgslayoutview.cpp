@@ -17,6 +17,8 @@
 
 #include "qgslayoutview.h"
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutmultiframe.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewtooltemporarykeypan.h"
@@ -33,6 +35,8 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutreportsectionlabel.h"
+#include "qgsreadwritecontext.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -62,6 +66,11 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   viewport()->setGraphicsEffect( mPreviewEffect );
 
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
+}
+
+QgsLayoutView::~QgsLayoutView()
+{
+  emit willBeDeleted();
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -96,6 +105,9 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
   layout->addItem( mVerticalSnapLine );
+
+  delete mSectionLabel;
+  mSectionLabel = nullptr;
 
   if ( mHorizontalRuler )
   {
@@ -144,7 +156,6 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   tool->activate();
   mTool = tool;
   connect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
-
   emit toolSet( mTool );
 }
 
@@ -190,6 +201,9 @@ void QgsLayoutView::scaleSafe( double scale )
 
 void QgsLayoutView::setZoomLevel( double level )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
   {
     setTransform( QTransform::fromScale( level, level ) );
@@ -250,6 +264,9 @@ QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
 
 QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
 {
+  if ( !currentLayout() )
+    return QList< QgsLayoutItemPage *>();
+
   //get current visible part of scene
   QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
   QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
@@ -258,6 +275,9 @@ QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
 
 QList<int> QgsLayoutView::visiblePageNumbers() const
 {
+  if ( !currentLayout() )
+    return QList< int >();
+
   //get current visible part of scene
   QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
   QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
@@ -266,18 +286,27 @@ QList<int> QgsLayoutView::visiblePageNumbers() const
 
 void QgsLayoutView::alignSelectedItems( QgsLayoutAligner::Alignment alignment )
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::alignItems( currentLayout(), selectedItems, alignment );
 }
 
 void QgsLayoutView::distributeSelectedItems( QgsLayoutAligner::Distribution distribution )
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::distributeItems( currentLayout(), selectedItems, distribution );
 }
 
 void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
 }
@@ -289,11 +318,17 @@ void QgsLayoutView::copySelectedItems( QgsLayoutView::ClipboardOperation operati
 
 void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutView::ClipboardOperation operation )
 {
+  if ( !currentLayout() )
+    return;
+
   QgsReadWriteContext context;
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
   if ( operation == ClipboardCut )
     currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
+
+  QSet< QgsLayoutMultiFrame * > copiedMultiFrames;
+
   for ( QgsLayoutItem *item : items )
   {
     // copy every child from a group
@@ -303,6 +338,15 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
       for ( const QgsLayoutItem *groupedItem : groupedItems )
       {
         groupedItem->writeXml( documentElement, doc, context );
+      }
+    }
+    else if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item ) )
+    {
+      // copy multiframe too
+      if ( !copiedMultiFrames.contains( frame->multiFrame() ) )
+      {
+        frame->multiFrame()->writeXml( documentElement, doc, context );
+        copiedMultiFrames.insert( frame->multiFrame() );
       }
     }
     item->writeXml( documentElement, doc, context );
@@ -326,6 +370,24 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
     }
   }
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameNodes.count(); ++i )
+  {
+    QDomNode multiFrameNode = multiFrameNodes.at( i );
+    if ( multiFrameNode.isElement() )
+    {
+      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      for ( int j = 0; j < frameNodes.count(); ++j )
+      {
+        QDomNode itemNode = frameNodes.at( j );
+        if ( itemNode.isElement() )
+        {
+          itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+        }
+      }
+    }
+  }
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
@@ -335,6 +397,9 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
 
 QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode )
 {
+  if ( !currentLayout() )
+    return QList< QgsLayoutItem * >();
+
   QList< QgsLayoutItem * > pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
@@ -373,6 +438,9 @@ QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mod
 
 QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
 {
+  if ( !currentLayout() )
+    return QList<QgsLayoutItem *>();
+
   QList< QgsLayoutItem * > pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
@@ -446,8 +514,33 @@ QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
   return QPointF( deltaX, deltaY );
 }
 
+void QgsLayoutView::setPaintingEnabled( bool enabled )
+{
+  mPaintingEnabled = enabled;
+  if ( enabled )
+    update();
+}
+
+void QgsLayoutView::setSectionLabel( const QString &label )
+{
+  if ( !currentLayout() )
+    return;
+
+  if ( !mSectionLabel )
+  {
+    mSectionLabel = new QgsLayoutReportSectionLabel( currentLayout(), this );
+    currentLayout()->addItem( mSectionLabel );
+    mSectionLabel->setRect( 0, -200, 1000, 200 );
+    mSectionLabel->setZValue( -1 );
+  }
+  mSectionLabel->setLabel( label );
+}
+
 void QgsLayoutView::zoomFull()
 {
+  if ( !scene() )
+    return;
+
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
   viewChanged();
   emit zoomLevelChanged();
@@ -455,6 +548,9 @@ void QgsLayoutView::zoomFull()
 
 void QgsLayoutView::zoomWidth()
 {
+  if ( !scene() )
+    return;
+
   //get current visible part of scene
   QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
   QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
@@ -616,6 +712,9 @@ void QgsLayoutView::selectNextItemBelow()
 
 void QgsLayoutView::raiseSelectedItems()
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   bool itemsRaised = false;
   for ( QgsLayoutItem *item : selectedItems )
@@ -636,6 +735,9 @@ void QgsLayoutView::raiseSelectedItems()
 
 void QgsLayoutView::lowerSelectedItems()
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   bool itemsLowered = false;
   for ( QgsLayoutItem *item : selectedItems )
@@ -656,6 +758,9 @@ void QgsLayoutView::lowerSelectedItems()
 
 void QgsLayoutView::moveSelectedItemsToTop()
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   bool itemsRaised = false;
   for ( QgsLayoutItem *item : selectedItems )
@@ -676,6 +781,9 @@ void QgsLayoutView::moveSelectedItemsToTop()
 
 void QgsLayoutView::moveSelectedItemsToBottom()
 {
+  if ( !currentLayout() )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   bool itemsLowered = false;
   for ( QgsLayoutItem *item : selectedItems )
@@ -696,6 +804,9 @@ void QgsLayoutView::moveSelectedItemsToBottom()
 
 void QgsLayoutView::lockSelectedItems()
 {
+  if ( !currentLayout() )
+    return;
+
   currentLayout()->undoStack()->beginMacro( tr( "Lock Items" ) );
   const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectionList )
@@ -709,6 +820,9 @@ void QgsLayoutView::lockSelectedItems()
 
 void QgsLayoutView::unlockAllItems()
 {
+  if ( !currentLayout() )
+    return;
+
   //unlock all items in layout
   currentLayout()->undoStack()->beginMacro( tr( "Unlock Items" ) );
 
@@ -736,11 +850,17 @@ void QgsLayoutView::unlockAllItems()
 
 void QgsLayoutView::deleteSelectedItems()
 {
+  if ( !currentLayout() )
+    return;
+
   deleteItems( currentLayout()->selectedLayoutItems() );
 }
 
 void QgsLayoutView::deleteItems( const QList<QgsLayoutItem *> &items )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( items.empty() )
     return;
 
@@ -810,6 +930,9 @@ void QgsLayoutView::ungroupSelectedItems()
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mSnapMarker )
     mSnapMarker->setVisible( false );
 
@@ -846,6 +969,9 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -859,6 +985,9 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   mMouseCurrentXY = event->pos();
 
   QPointF cursorPos = mapToScene( mMouseCurrentXY );
@@ -899,6 +1028,9 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 
 void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -912,6 +1044,9 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsLayoutView::wheelEvent( QWheelEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mTool )
   {
     mTool->wheelEvent( event );
@@ -926,6 +1061,9 @@ void QgsLayoutView::wheelEvent( QWheelEvent *event )
 
 void QgsLayoutView::keyPressEvent( QKeyEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mTool )
   {
     mTool->keyPressEvent( event );
@@ -972,6 +1110,9 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
 {
+  if ( !currentLayout() )
+    return;
+
   if ( mTool )
   {
     mTool->keyReleaseEvent( event );

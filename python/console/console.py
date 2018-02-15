@@ -23,7 +23,7 @@ from builtins import range
 import os
 
 from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from qgis.PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
+from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
 from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
 from qgis.PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
@@ -32,7 +32,7 @@ from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import optionsDialog
 from qgis.core import QgsApplication, QgsSettings
-from qgis.gui import QgsFilterLineEdit, QgsHelp
+from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget
 from functools import partial
 
 import sys
@@ -46,14 +46,17 @@ def show_console():
     if _console is None:
         parent = iface.mainWindow() if iface else None
         _console = PythonConsole(parent)
+        if iface:
+            _console.visibilityChanged.connect(iface.actionShowPythonDialog().setChecked)
+
         _console.show()  # force show even if it was restored as hidden
         # set focus to the console so the user can start typing
         # defer the set focus event so it works also whether the console not visible yet
         QTimer.singleShot(0, _console.activate)
     else:
-        _console.setVisible(not _console.isVisible())
+        _console.setUserVisible(not _console.isUserVisible())
         # set focus to the console so the user can start typing
-        if _console.isVisible():
+        if _console.isUserVisible():
             _console.activate()
 
     return _console
@@ -70,10 +73,10 @@ def console_displayhook(obj):
     _console_output = obj
 
 
-class PythonConsole(QDockWidget):
+class PythonConsole(QgsDockWidget):
 
     def __init__(self, parent=None):
-        QDockWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
         # self.setAllowedAreas(Qt.BottomDockWidgetArea)
@@ -89,7 +92,7 @@ class PythonConsole(QDockWidget):
     def activate(self):
         self.activateWindow()
         self.raise_()
-        QDockWidget.setFocus(self)
+        QgsDockWidget.setFocus(self)
 
     def closeEvent(self, event):
         self.console.saveSettingsConsole()
@@ -326,7 +329,7 @@ class PythonConsoleWidget(QWidget):
         self.runButton = QAction(self)
         self.runButton.setCheckable(False)
         self.runButton.setEnabled(True)
-        self.runButton.setIcon(QgsApplication.getThemeIcon("console/iconRunConsole.png"))
+        self.runButton.setIcon(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"))
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip(runBt)

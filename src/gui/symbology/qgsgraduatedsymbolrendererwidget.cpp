@@ -55,15 +55,29 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 {
   if ( mRenderer )
   {
-    beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
-    mRenderer = nullptr;
-    endRemoveRows();
+    if ( mRenderer->ranges().size() )
+    {
+      beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
+      mRenderer = nullptr;
+      endRemoveRows();
+    }
+    else
+    {
+      mRenderer = nullptr;
+    }
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
-    mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->ranges().size() )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
+      mRenderer = renderer;
+      endInsertRows();
+    }
+    else
+    {
+      mRenderer = renderer;
+    }
   }
 }
 

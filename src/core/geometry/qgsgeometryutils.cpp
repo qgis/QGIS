@@ -76,7 +76,7 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   {
     currentDist = QgsGeometryUtils::sqrDistance2D( pt, vertex );
     // The <= is on purpose: for geometries with closing vertices, this ensures
-    // that the closing vertex is retuned. For the node tool, the rubberband
+    // that the closing vertex is returned. For the vertex tool, the rubberband
     // of the closing vertex is above the opening vertex, hence with the <=
     // situations where the covered opening vertex rubberband is selected are
     // avoided.
@@ -251,32 +251,116 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
   return true;
 }
 
-bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter, double tolerance )
+bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint, bool &isIntersection, const double tolerance, bool acceptImproperIntersection )
 {
+  isIntersection = false;
+
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
   QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
   double vl = v.length();
   double wl = w.length();
 
-  if ( qgsDoubleNear( vl, 0, 0.000000000001 ) || qgsDoubleNear( wl, 0, 0.000000000001 ) )
+  if ( qgsDoubleNear( vl, 0.0, tolerance ) || qgsDoubleNear( wl, 0.0, tolerance ) )
   {
     return false;
   }
   v = v / vl;
   w = w / wl;
 
-  if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, inter ) )
+  if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, intersectionPoint ) )
+  {
     return false;
+  }
 
-  double lambdav = QgsVector( inter.x() - p1.x(), inter.y() - p1.y() ) *  v;
+  isIntersection = true;
+  if ( acceptImproperIntersection )
+  {
+    if ( ( p1 == q1 ) || ( p1 == q2 ) )
+    {
+      intersectionPoint = p1;
+      return true;
+    }
+    else if ( ( p2 == q1 ) || ( p2 == q2 ) )
+    {
+      intersectionPoint = p2;
+      return true;
+    }
+
+    double x, y;
+    if (
+      // intersectionPoint = p1
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p1.x(), p1.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = p2
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p2.x(), p2.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = q1
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q1.x(), q1.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = q2
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q2.x(), q2.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance )
+    )
+    {
+      return true;
+    }
+  }
+
+  double lambdav = QgsVector( intersectionPoint.x() - p1.x(), intersectionPoint.y() - p1.y() ) *  v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
     return false;
 
-  double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
+  double lambdaw = QgsVector( intersectionPoint.x() - q1.x(), intersectionPoint.y() - q1.y() ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 
-QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
+bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const double radius,
+    const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+    QgsPointXY &intersection )
+{
+  // formula taken from http://mathworld.wolfram.com/Circle-LineIntersection.html
+
+  const double x1 = linePoint1.x() - center.x();
+  const double y1 = linePoint1.y() - center.y();
+  const double x2 = linePoint2.x() - center.x();
+  const double y2 = linePoint2.y() - center.y();
+  const double dx = x2 - x1;
+  const double dy = y2 - y1;
+
+  const double dr = std::sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
+  const double d = x1 * y2 - x2 * y1;
+
+  const double disc = std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 );
+
+  if ( disc < 0 )
+  {
+    //no intersection or tangent
+    return false;
+  }
+  else
+  {
+    // two solutions
+    const int sgnDy = dy < 0 ? -1 : 1;
+
+    const double ax = center.x() + ( d * dy + sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double ay = center.y() + ( -d * dx + std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const QgsPointXY p1( ax, ay );
+
+    const double bx = center.x() + ( d * dy - sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double by = center.y() + ( -d * dx - std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const QgsPointXY p2( bx, by );
+
+    // snap to nearest intersection
+
+    if ( intersection.sqrDist( p1 ) < intersection.sqrDist( p2 ) )
+    {
+      intersection.set( p1.x(), p1.y() );
+    }
+    else
+    {
+      intersection.set( p2.x(), p2.y() );
+    }
+    return true;
+  }
+}
+
+QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
 {
   QVector<SelfIntersection> intersections;
 
@@ -299,7 +383,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersectio
       QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
 
       QgsPoint inter;
-      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, tolerance ) ) continue;
+      bool intersection = false;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) ) continue;
 
       SelfIntersection s;
       s.segment1 = i;

@@ -52,6 +52,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isNumeric READ isNumeric )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
+    Q_PROPERTY( QVariant::Type type READ type WRITE setType )
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )

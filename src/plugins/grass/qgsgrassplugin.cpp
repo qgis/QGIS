@@ -281,7 +281,7 @@ void QgsGrassPlugin::onGisbaseChanged()
   {
     // TODO: save init error and get it here more reliably
     QString error = tr( "GRASS init error" );
-    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), QgsMessageBar::WARNING );
+    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), Qgis::Warning );
 
     mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );

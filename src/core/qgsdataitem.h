@@ -470,13 +470,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * Returns the string representation of the given \a layerType
      * \since QGIS 3
      */
-    static QString layerTypeAsString( const LayerType &layerType );
+    static QString layerTypeAsString( LayerType layerType );
 
     /**
      * Returns the icon name of the given \a layerType
      * \since QGIS 3
      */
-    static QString iconName( const LayerType &layerType );
+    static QString iconName( LayerType layerType );
 
   protected:
 

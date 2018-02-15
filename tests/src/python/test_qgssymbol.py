@@ -59,9 +59,9 @@ class TestQgsSymbol(unittest.TestCase):
 
     def setUp(self):
         #Create some simple symbols
-        self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff'})
+        self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': 'black'})
         self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
-        self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'})
+        self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'black'})
         self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 
     def tearDown(self):

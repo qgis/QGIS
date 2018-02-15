@@ -29,10 +29,12 @@ __revision__ = '$Format:%H$'
 import os
 import importlib
 from copy import deepcopy
-from qgis.core import (QgsProcessingUtils,
+from qgis.core import (Qgis,
+                       QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
@@ -98,6 +100,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def shortHelpString(self):
         return shortHelp.get(self.id(), None)
+
+    def flags(self):
+        # TODO - maybe it's safe to background thread this?
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def defineCharacteristicsFromFile(self):
         with open(self.description_file) as lines:
@@ -318,7 +324,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
-            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), Qgis.Info)
         SagaUtils.executeSaga(feedback)
 
         if crs is not None:

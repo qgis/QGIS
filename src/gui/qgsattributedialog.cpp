@@ -17,6 +17,7 @@
 
 #include "qgsattributedialog.h"
 
+#include "qgsgui.h"
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
 #include "qgsapplication.h"
@@ -40,18 +41,6 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
   if ( mOwnedFeature )
     delete mOwnedFeature;
-
-  saveGeometry();
-}
-
-void QgsAttributeDialog::saveGeometry()
-{
-  QgsSettings().setValue( mSettingsPath + "geometry", QDialog::saveGeometry() );
-}
-
-void QgsAttributeDialog::restoreGeometry()
-{
-  QDialog::restoreGeometry( QgsSettings().value( mSettingsPath + "geometry" ).toByteArray() );
 }
 
 void QgsAttributeDialog::setHighlight( QgsHighlight *h )
@@ -85,6 +74,7 @@ void QgsAttributeDialog::reject()
 
 void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons )
 {
+  QgsGui::enableAutoGeometryRestore( this );
   QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
@@ -114,7 +104,6 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
     delete menu;
   }
 
-  restoreGeometry();
   focusNextChild();
 }
 

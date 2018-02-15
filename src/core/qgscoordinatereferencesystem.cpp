@@ -1397,9 +1397,6 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
         //make sure the map units have been set
         setMapUnits();
-
-        //@TODO this srs needs to be validated!!!
-        d->mIsValid = true; //shamelessly hard coded for now
       }
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
@@ -1417,8 +1414,8 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
   }
   else
   {
-    // Return default CRS if none was found in the XML.
-    createFromId( GEOCRS_ID, InternalCrsId );
+    // Return empty CRS if none was found in the XML.
+    d = new QgsCoordinateReferenceSystemPrivate();
     result = false;
   }
   return result;
@@ -1965,7 +1962,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         ellps = ellipseRegExp.cap( 1 );
       }
 
-      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
+      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
       if ( name.isEmpty() )
         name = QObject::tr( "Imported from GDAL" );
 

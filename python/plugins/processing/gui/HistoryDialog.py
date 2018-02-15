@@ -113,7 +113,8 @@ class HistoryDialog(BASE, WIDGET):
             if item.isAlg:
                 script = 'import processing\n'
                 script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition\n'
-                script += item.entry.text.replace('processing.run(', 'processing.runAndLoadResults(')
+                script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
+                self.close()
                 exec(script)
 
     def changeText(self):

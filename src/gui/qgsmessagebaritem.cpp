@@ -24,7 +24,7 @@
 #include <QTextBrowser>
 #include <QDesktopServices>
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mText( text )
   , mLevel( level )
@@ -33,7 +33,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mTitle( title )
   , mText( text )
@@ -43,7 +43,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mTitle( title )
   , mText( text )
@@ -56,7 +56,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mLevel( level )
   , mDuration( duration )
@@ -93,14 +93,14 @@ void QgsMessageBarItem::writeContent()
     QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
-      case QgsMessageBar::CRITICAL:
+      case Qgis::Critical:
         msgIcon = QStringLiteral( "/mIconCritical.png" );
         break;
-      case QgsMessageBar::WARNING:
+      case Qgis::Warning:
         msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
-      case QgsMessageBar::SUCCESS:
-        msgIcon = QStringLiteral( "/mIconSuccess.png" );
+      case Qgis::Success:
+        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
         break;
       default:
         break;
@@ -108,6 +108,35 @@ void QgsMessageBarItem::writeContent()
     icon = QgsApplication::getThemeIcon( msgIcon );
   }
   mLblIcon->setPixmap( icon.pixmap( 24 ) );
+
+
+  // STYLESHEETS
+  QString contentStyleSheet;
+  if ( mLevel == Qgis::Success )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style> a, a:visited, a:hover { color:#268300; } </style>";
+  }
+  else if ( mLevel == Qgis::Critical )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                  "QLabel,QTextEdit { color: white; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#4e0001; }</style>";
+  }
+  else if ( mLevel == Qgis::Warning )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#945a00; }</style>";
+  }
+  else if ( mLevel == Qgis::Info )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                  "QLabel,QTextEdit { color: #2554a1; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>";
+  }
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
@@ -147,6 +176,7 @@ void QgsMessageBarItem::writeContent()
         t += QLatin1String( ": " );
       content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
+    content.prepend( contentStyleSheet );
     mTextBrowser->setText( content );
   }
 
@@ -159,29 +189,6 @@ void QgsMessageBarItem::writeContent()
       mLayout->addWidget( mWidget );
     }
   }
-
-  // STYLESHEET
-  if ( mLevel == QgsMessageBar::SUCCESS )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::CRITICAL )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-  }
-  else if ( mLevel == QgsMessageBar::WARNING )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::INFO )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-  }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
@@ -208,7 +215,7 @@ QString QgsMessageBarItem::title() const
   return mTitle;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
+QgsMessageBarItem *QgsMessageBarItem::setLevel( Qgis::MessageLevel level )
 {
   mLevel = level;
   writeContent();
@@ -216,7 +223,7 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
   return this;
 }
 
-QgsMessageBar::MessageLevel QgsMessageBarItem::level() const
+Qgis::MessageLevel QgsMessageBarItem::level() const
 {
   return mLevel;
 }

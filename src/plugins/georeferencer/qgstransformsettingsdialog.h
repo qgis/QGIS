@@ -42,9 +42,6 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void accept() override;
 
   private slots:
-    void tbnOutputRaster_clicked();
-    void tbnMapFile_clicked();
-    void tbnReportFile_clicked();
     void cmbTransformType_currentIndexChanged( const QString &text );
     void mWorldFileCheckBox_stateChanged( int state );
     QIcon getThemeIcon( const QString &name );

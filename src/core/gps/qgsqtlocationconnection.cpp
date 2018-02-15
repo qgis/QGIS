@@ -22,7 +22,8 @@
 #include <QTimer>
 #include <QMetaType>
 
-QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocalSocket() )
+QgsQtLocationConnection::QgsQtLocationConnection()
+  : QgsGpsConnection( new QLocalSocket() )
 {
   //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
   qRegisterMetaType< QList<QGeoSatelliteInfo> >( "QList<QGeoSatelliteInfo>" );

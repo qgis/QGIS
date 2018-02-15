@@ -113,12 +113,10 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
         if expression.hasParserError():
-            raise ProcessingException(expression.parserErrorString())
+            raise QgsProcessingException(expression.parserErrorString())
 
-        expressionContext = self.createExpressionContext(parameters, context)
-        if not expression.prepare(expressionContext):
-            raise ProcessingException(
-                self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
+        expressionContext = self.createExpressionContext(parameters, context, source)
+        expression.prepare(expressionContext)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
@@ -131,9 +129,16 @@ class RandomPointsPolygons(QgisAlgorithm):
         da.setEllipsoid(context.project().ellipsoid())
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
+        current_progress = 0
         for current, f in enumerate(source.getFeatures()):
             if feedback.isCanceled():
                 break
+
+            if not f.hasGeometry():
+                continue
+
+            current_progress = total * current
+            feedback.setProgress(current_progress)
 
             expressionContext.setFeature(f)
             value = expression.evaluate(expressionContext)
@@ -143,6 +148,9 @@ class RandomPointsPolygons(QgisAlgorithm):
                 continue
 
             fGeom = f.geometry()
+            engine = QgsGeometry.createGeometryEngine(fGeom.constGet())
+            engine.prepareGeometry()
+
             bbox = fGeom.boundingBox()
             if strategy == 0:
                 pointCount = int(value)
@@ -150,7 +158,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                 pointCount = int(round(value * da.measureArea(fGeom)))
 
             if pointCount == 0:
-                feedback.pushInfo("Skip feature {} as number of points for it is 0.")
+                feedback.pushInfo("Skip feature {} as number of points for it is 0.".format(f.id()))
                 continue
 
             index = QgsSpatialIndex()
@@ -159,7 +167,7 @@ class RandomPointsPolygons(QgisAlgorithm):
             nPoints = 0
             nIterations = 0
             maxIterations = pointCount * 200
-            total = 100.0 / pointCount if pointCount else 1
+            feature_total = total / pointCount if pointCount else 1
 
             random.seed()
 
@@ -172,7 +180,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
                 p = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPointXY(p)
-                if geom.within(fGeom) and \
+                if engine.contains(geom.constGet()) and \
                         vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
@@ -183,13 +191,13 @@ class RandomPointsPolygons(QgisAlgorithm):
                     index.insertFeature(f)
                     points[nPoints] = p
                     nPoints += 1
-                    feedback.setProgress(int(nPoints * total))
+                    feedback.setProgress(current_progress + int(nPoints * feature_total))
                 nIterations += 1
 
             if nPoints < pointCount:
                 feedback.pushInfo(self.tr('Could not generate requested number of random '
                                           'points. Maximum number of attempts exceeded.'))
 
-            feedback.setProgress(0)
+        feedback.setProgress(100)
 
         return {self.OUTPUT: dest_id}

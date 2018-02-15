@@ -32,6 +32,7 @@ from qgis.core import QgsSettings
 import sys
 import os
 import codecs
+import re
 try:
     import configparser
 except ImportError:
@@ -41,10 +42,10 @@ try:
 except ImportError:
     from imp import reload
 import qgis.utils
-from qgis.core import Qgis, QgsNetworkAccessManager, QgsApplication
+from qgis.core import QgsNetworkAccessManager, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
-from .version_compare import compareVersions, normalizeVersion, isCompatible
+from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
 
 """
@@ -212,12 +213,8 @@ class Repositories(QObject):
     # ----------------------------------------- #
     def urlParams(self):
         """ return GET parameters to be added to every request """
-        # v = str(Qgis.QGIS_VERSION_INT)
-        # TODO: make this proper again after 3.0 release, by uncommenting
-        # the line below and removing the other return line:
-        # return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
-        # TODO: Do the same for lines 469-472
-        return "?qgis=3.0"
+        # Strip down the point release segment from the version string
+        return "?qgis=%s" % re.sub('\.\d*$', '', pyQgisVersion())
 
     # ----------------------------------------- #
     def setRepositoryData(self, reposName, key, value):
@@ -341,7 +338,7 @@ class Repositories(QObject):
                     "QgsPluginInstaller",
                     "Update of network request with authentication "
                     "credentials FAILED for configuration '{0}'").format(authcfg)
-                iface.pluginManagerInterface().pushMessage(msg, QgsMessageBar.WARNING)
+                iface.pluginManagerInterface().pushMessage(msg, Qgis.Warning)
                 self.mRepositories[key]["QRequest"] = None
                 return
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)
@@ -466,10 +463,7 @@ class Repositories(QObject):
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
-                        # TODO: make this proper again after 3.0 release, by uncommenting the line below and removing the next line
-                        # TODO: Do the same for lines 215-220
-                        # if isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
-                        if isCompatible("3.0", qgisMinimumVersion, qgisMaximumVersion):
+                        if isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion):
                             # add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
@@ -618,7 +612,7 @@ class Plugins(QObject):
             if not qgisMaximumVersion:
                 qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
             # if compatible, add the plugin to the list
-            if not isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
+            if not isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion):
                 error = "incompatible"
                 errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
         elif not os.path.exists(metadataFile):

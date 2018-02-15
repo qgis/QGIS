@@ -123,9 +123,7 @@ class FieldsCalculator(QgisAlgorithm):
         if layer is not None:
             exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        if not expression.prepare(exp_context):
-            raise QgsProcessingException(
-                self.tr('Evaluation error: {0}').format(expression.parserErrorString()))
+        expression.prepare(exp_context)
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

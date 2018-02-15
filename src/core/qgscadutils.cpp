@@ -18,6 +18,7 @@
 
 #include "qgslogger.h"
 #include "qgssnappingutils.h"
+#include "qgsgeometryutils.h"
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
@@ -31,57 +32,6 @@ struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 /// @endcond
-
-
-// TODO: move to geometry utils (if not already there)
-static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QgsPointXY &edgePt0, const QgsPointXY &edgePt1, QgsPointXY &intersection )
-{
-  // formula taken from http://mathworld.wolfram.com/Circle-LineIntersection.html
-
-  const double x1 = edgePt0.x() - center.x();
-  const double y1 = edgePt0.y() - center.y();
-  const double x2 = edgePt1.x() - center.x();
-  const double y2 = edgePt1.y() - center.y();
-  const double dx = x2 - x1;
-  const double dy = y2 - y1;
-
-  const double dr = std::sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
-  const double d = x1 * y2 - x2 * y1;
-
-  const double disc = std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 );
-
-  if ( disc < 0 )
-  {
-    //no intersection or tangent
-    return false;
-  }
-  else
-  {
-    // two solutions
-    const int sgnDy = dy < 0 ? -1 : 1;
-
-    const double ax = center.x() + ( d * dy + sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
-    const double ay = center.y() + ( -d * dx + std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
-    const QgsPointXY p1( ax, ay );
-
-    const double bx = center.x() + ( d * dy - sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
-    const double by = center.y() + ( -d * dx - std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
-    const QgsPointXY p2( bx, by );
-
-    // snap to nearest intersection
-
-    if ( intersection.sqrDist( p1 ) < intersection.sqrDist( p2 ) )
-    {
-      intersection.set( p1.x(), p1.y() );
-    }
-    else
-    {
-      intersection.set( p2.x(), p2.y() );
-    }
-    return true;
-  }
-}
-
 
 
 QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx )
@@ -202,7 +152,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // 1. "hard" lock defined by the user
   // 2. "soft" lock from common angle (e.g. 45 degrees)
   bool angleLocked = false, angleRelative = false;
-  int angleValueDeg = 0;
+  double angleValueDeg = 0;
   if ( ctx.angleConstraint.locked )
   {
     angleLocked = true;
@@ -312,13 +262,13 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       {
         QgsPointXY verticalPt0( ctx.xConstraint.value, point.y() );
         QgsPointXY verticalPt1( ctx.xConstraint.value, point.y() + 1 );
-        res.valid &= lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
+        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, verticalPt0, verticalPt1, point );
       }
       if ( ctx.yConstraint.locked )
       {
         QgsPointXY horizontalPt0( point.x(), ctx.yConstraint.value );
         QgsPointXY horizontalPt1( point.x() + 1, ctx.yConstraint.value );
-        res.valid &= lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
+        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, horizontalPt0, horizontalPt1, point );
       }
     }
     else
@@ -340,7 +290,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       if ( edgeMatch.hasEdge() && !ctx.angleConstraint.locked )
       {
         // we will magnietize to the intersection of that segment and the lockedDistance !
-        res.valid &= lineCircleIntersection( previousPt, ctx.distanceConstraint.value, edgePt0, edgePt1, point );
+        res.valid &= QgsGeometryUtils::lineCircleIntersection( previousPt, ctx.distanceConstraint.value, edgePt0, edgePt1, point );
       }
     }
   }

@@ -287,6 +287,9 @@ double QgsMapCanvasAnnotationItem::scaledSymbolSize() const
 
 void QgsMapCanvasAnnotationItem::paint( QPainter *painter )
 {
+  if ( !mAnnotation || !mAnnotation->isVisible() )
+    return;
+
   QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
   rc.setFlag( QgsRenderContext::Antialiasing, true );
 

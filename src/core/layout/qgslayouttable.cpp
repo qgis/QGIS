@@ -54,7 +54,7 @@ QgsLayoutTable::QgsLayoutTable( QgsLayout *layout )
 {
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mHeaderFont.setFamily( defaultFontString );
@@ -289,7 +289,7 @@ void QgsLayoutTable::render( QgsRenderContext &context, const QRectF &, const in
     return;
   }
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //exporting composition, so force an attribute refresh
     //we do this in case vector layer has changed via an external source (e.g., another database user)

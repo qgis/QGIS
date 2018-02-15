@@ -31,7 +31,7 @@ QString QgsBufferAlgorithm::displayName() const
 
 QStringList QgsBufferAlgorithm::tags() const
 {
-  return QObject::tr( "buffer,grow" ).split( ',' );
+  return QObject::tr( "buffer,grow,fixed,variable,distance" ).split( ',' );
 }
 
 QString QgsBufferAlgorithm::group() const
@@ -136,7 +136,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       QgsGeometry outputGeometry = f.geometry().buffer( distance, segments, endCapStyle, joinStyle, miterLimit );
       if ( !outputGeometry )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
+        QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::Warning );
       }
       if ( dissolve )
         bufferedGeometriesForDissolve << outputGeometry;

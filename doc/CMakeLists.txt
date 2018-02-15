@@ -56,10 +56,10 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
-      ${CMAKE_SOURCE_DIR}/src/core/composer
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/expressions
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/geocms
@@ -84,6 +84,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/analysis

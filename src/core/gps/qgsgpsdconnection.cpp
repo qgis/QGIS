@@ -21,7 +21,7 @@
 #include <QTcpSocket>
 
 QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QString &device )
-  : QgsNMEAConnection( new QTcpSocket() )
+  : QgsNmeaConnection( new QTcpSocket() )
   , mDevice( device )
 {
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );

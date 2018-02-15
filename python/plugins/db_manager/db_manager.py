@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsSettings, QgsMapLayer
+from qgis.core import Qgis, QgsSettings, QgsMapLayer
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -146,7 +146,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     QgsMessageBar.INFO, self.iface.messageTimeout())
+                                     Qgis.Info, self.iface.messageTimeout())
             return
 
         outUri = db.uri()
@@ -162,7 +162,7 @@ class DBManager(QMainWindow):
     def exportActionSlot(self):
         table = self.tree.currentTable()
         if table is None:
-            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), QgsMessageBar.INFO,
+            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.Info,
                                      self.iface.messageTimeout())
             return
 
@@ -170,7 +170,7 @@ class DBManager(QMainWindow):
         if inLayer.type() != QgsMapLayer.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
-                QgsMessageBar.WARNING, self.iface.messageTimeout())
+                Qgis.Warning, self.iface.messageTimeout())
             return
 
         from .dlg_export_vector import DlgExportVector
@@ -184,7 +184,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     QgsMessageBar.INFO, self.iface.messageTimeout())
+                                     Qgis.Info, self.iface.messageTimeout())
             # force displaying of the message, it appears on the first tab (i.e. Info)
             self.tabs.setCurrentIndex(0)
             return
@@ -430,7 +430,7 @@ class DBManager(QMainWindow):
 
         self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
-        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL window"),
+        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
         self.menuDb.addSeparator()
         self.actionClose = self.menuDb.addAction(QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q"))
@@ -448,8 +448,8 @@ class DBManager(QMainWindow):
         sep.setVisible(False)
 
         self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
-                                                     self.tr("&Import layer/file"), self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to file"),
+                                                     self.tr("&Import Layer/File…"), self.importActionSlot)
+        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
         #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)

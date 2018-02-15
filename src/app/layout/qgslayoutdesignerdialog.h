@@ -19,6 +19,8 @@
 
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
+#include "qgslayoutexporter.h"
+#include "qgslayoutpagecollection.h"
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;
@@ -43,6 +45,9 @@ class QTreeView;
 class QgsLayoutItemsListView;
 class QgsLayoutPropertiesWidget;
 class QgsMessageBar;
+class QgsLayoutAtlas;
+class QgsFeature;
+class QgsMasterLayoutInterface;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -51,6 +56,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public:
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
+    QgsMasterLayoutInterface *masterLayout() override;
     QgsLayoutView *view() override;
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > items ) override;
@@ -93,6 +99,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutView *view();
 
     /**
+     * Sets the current master \a layout to edit in the designer.
+     * \see masterLayout()
+     */
+    void setMasterLayout( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Returns the current master layout associated with the designer.
+     * \see setMasterLayout()
+     */
+    QgsMasterLayoutInterface *masterLayout();
+
+    /**
      * Sets the current \a layout to edit in the designer.
      * \see currentLayout()
      */
@@ -120,6 +138,17 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Returns the designer's message bar.
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Sets the specified feature as the current atlas feature
+     */
+    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
+
+    /**
+     * Sets a section \a title, to use to update the dialog title to display
+     * the currently edited section.
+     */
+    void setSectionTitle( const QString &title );
 
   public slots:
 
@@ -257,6 +286,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private slots:
 
+    void setTitle( const QString &title );
+
     void itemTypeAdded( int id );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
@@ -282,15 +313,43 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showManager();
     void renameLayout();
     void deleteLayout();
+    void print();
     void exportToRaster();
     void exportToPdf();
     void exportToSvg();
+    void showAtlasSettings( bool checked );
+    void atlasPreviewTriggered( bool checked );
+    void atlasPageComboEditingFinished();
+    void atlasNext();
+    void atlasPrevious();
+    void atlasFirst();
+    void atlasLast();
+    void printAtlas();
+    void exportAtlasToRaster();
+    void exportAtlasToSvg();
+    void exportAtlasToPdf();
+
+    void exportReportToRaster();
+    void exportReportToSvg();
+    void exportReportToPdf();
+    void printReport();
+    void showReportSettings( bool checked );
+
+    void pageSetup();
+
+    //! Sets the printer page orientation when the page orientation changes
+    void pageOrientationChanged();
+
+    //! Populate layouts menu from main app's
+    void populateLayoutsMenu();
 
   private:
 
     static bool sInitializedRegistry;
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
+
+    QgsMasterLayoutInterface *mMasterLayout = nullptr;
 
     QgsLayout *mLayout = nullptr;
 
@@ -333,6 +392,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
     QgsDockWidget *mGuideDock = nullptr;
     QgsPanelWidgetStack *mGuideStack = nullptr;
+    QgsDockWidget *mAtlasDock = nullptr;
 
     QgsLayoutPropertiesWidget *mLayoutPropertiesWidget = nullptr;
 
@@ -341,6 +401,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QgsDockWidget *mItemsDock = nullptr;
     QgsLayoutItemsListView *mItemsTreeView = nullptr;
+
+    QgsDockWidget *mReportDock = nullptr;
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
@@ -362,6 +424,15 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     bool mBlockItemOptions = false;
 
+    QComboBox *mAtlasPageComboBox = nullptr;
+
+    //! Page & Printer Setup
+    std::unique_ptr< QPrinter > mPrinter;
+    bool mSetPageOrientation = false;
+
+    QString mTitle;
+    QString mSectionTitle;
+
     //! Save window state
     void saveWindowState();
 
@@ -372,6 +443,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void activateNewItemCreationTool( int id, bool nodeBasedItem );
 
     void createLayoutPropertiesWidget();
+    void createAtlasWidget();
+    void createReportWidget();
 
     void initializeRegistry();
 
@@ -390,6 +463,38 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showRasterizationWarning();
     void showForceVectorWarning();
+
+    bool showFileSizeWarning();
+    bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
+    bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText );
+
+    void toggleAtlasActions( bool enabled );
+
+    /**
+     * Toggles the state of the atlas preview and navigation controls
+     */
+    void toggleAtlasControls( bool atlasEnabled );
+
+    /**
+     * Repopulates the atlas page combo box with valid items.
+     */
+    void updateAtlasPageComboBox( int pageCount );
+
+
+    void atlasFeatureChanged( const QgsFeature &feature );
+
+    //! Load predefined scales from the project's properties
+    void loadAtlasPredefinedScalesFromProject();
+
+    QgsLayoutAtlas *atlas();
+
+    void toggleActions( bool layoutAvailable );
+
+    void setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation );
+    QPrinter *printer();
+    QString reportTypeString();
+    void updateActionNames( QgsMasterLayoutInterface::Type type );
+    void updateWindowTitle();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

@@ -49,6 +49,7 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
             widget = QLineEdit()
             if self.param.defaultValue():
                 widget.setText(self.param.defaultValue())
+            return widget
         else:
             return QgsRasterFormatSaveOptionsWidget()
 

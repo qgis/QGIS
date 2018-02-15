@@ -39,7 +39,7 @@ def createLayerWithOnePoint():
     f = QgsFeature()
     f.setAttributes(["test", 123])
     assert pr.addFeatures([f])
-    assert layer.pendingFeatureCount() == 1
+    assert layer.featureCount() == 1
     return layer
 
 

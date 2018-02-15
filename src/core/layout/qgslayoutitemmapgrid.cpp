@@ -162,7 +162,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 {
   //get default layout font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mGridAnnotationFont.setFamily( defaultFontString );
@@ -555,7 +555,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   p->save();
   p->setCompositionMode( mBlendMode );
-  p->setRenderHint( QPainter::Antialiasing );
+  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
 
   QRectF thisPaintRect = QRectF( 0, 0, mMap->rect().width(), mMap->rect().height() );
   p->setClipRect( thisPaintRect );
@@ -1458,10 +1458,10 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   switch ( coord )
   {
     case Longitude:
-      return QgsCoordinateFormatter::formatX( value, format, flags );
+      return QgsCoordinateFormatter::formatX( value, format, mGridAnnotationPrecision, flags );
 
     case Latitude:
-      return QgsCoordinateFormatter::formatY( value, format, flags );
+      return QgsCoordinateFormatter::formatY( value, format, mGridAnnotationPrecision, flags );
   }
 
   return QString(); // no warnings
@@ -1880,7 +1880,7 @@ QgsLayoutItemMapGrid::BorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPoin
     return QgsLayoutItemMapGrid::Left;
   }
 
-  double tolerance = std::max( mMap->hasFrame() ? mMap->pen().widthF() : 0.0, 1.0 );
+  double tolerance = std::max( mMap->frameEnabled() ? mMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
   if ( ( p.y() <= tolerance && p.x() <= tolerance ) // top left
@@ -2329,8 +2329,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
 
-    inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mMap->crs() );
+    inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );
   }
   catch ( QgsCsException &cse )
   {

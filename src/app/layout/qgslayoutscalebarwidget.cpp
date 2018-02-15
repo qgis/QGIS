@@ -48,7 +48,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
-  setPanelTitle( tr( "Scalebar properties" ) );
+  setPanelTitle( tr( "Scalebar Properties" ) );
 
   mFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -187,7 +187,7 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mFontButton->setCurrentFont( mScalebar->font() );
 
   //map combo box
-  mMapItemComboBox->setItem( mScalebar->map() );
+  mMapItemComboBox->setItem( mScalebar->linkedMap() );
 
   //style...
   QString style = mScalebar->style();
@@ -674,7 +674,7 @@ void QgsLayoutScaleBarWidget::mapChanged( QgsLayoutItem *item )
   //set it to scale bar
   mScalebar->beginCommand( tr( "Set Scalebar Map" ) );
   disconnectUpdateSignal();
-  mScalebar->setMap( map );
+  mScalebar->setLinkedMap( map );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();

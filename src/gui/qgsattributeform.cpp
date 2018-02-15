@@ -129,8 +129,8 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     if ( mUnsavedMultiEditChanges )
     {
       // prompt for save
-      int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
-                                          tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
+      int res = QMessageBox::question( this, tr( "Multiedit attributes" ),
+                                       tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
       if ( res == QMessageBox::Yes )
       {
         save();
@@ -330,6 +330,9 @@ bool QgsAttributeForm::saveEdits()
       {
         mLayer->beginEditCommand( mEditCommandMessage );
 
+        QgsAttributeMap newValues;
+        QgsAttributeMap oldValues;
+
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
@@ -346,9 +349,13 @@ bool QgsAttributeForm::saveEdits()
           QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
-          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst.at( i ), src.at( i ) );
+          newValues[i] = dst.at( i );
+          oldValues[i] = src.at( i );
+
           n++;
         }
+
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues );
 
         if ( success && n > 0 )
         {
@@ -448,14 +455,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
     mMessageBar->pushMessage( QString(),
                               tr( "%1 matching %2 selected" ).arg( count )
                               .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
-                              QgsMessageBar::INFO,
+                              Qgis::Info,
                               messageTimeout() );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              QgsMessageBar::WARNING,
+                              Qgis::Warning,
                               messageTimeout() );
   }
 }
@@ -550,12 +557,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), QgsMessageBar::SUCCESS, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), Qgis::Success, messageTimeout() );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), QgsMessageBar::WARNING, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), Qgis::Warning, messageTimeout() );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -567,6 +574,23 @@ bool QgsAttributeForm::save()
 {
   if ( mIsSaving )
     return true;
+
+  // only do the dirty checks when editing an existing feature - for new
+  // features we need to add them even if the attributes are unchanged from the initial
+  // default values
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case MultiEditMode:
+      if ( !mDirty )
+        return true;
+      break;
+
+    case AddFeatureMode:
+    case SearchMode:
+    case AggregateSearchMode:
+      break;
+  }
 
   mIsSaving = true;
 
@@ -594,16 +618,20 @@ bool QgsAttributeForm::save()
 
   mIsSaving = false;
   mUnsavedMultiEditChanges = false;
+  mDirty = false;
 
   return success;
 }
 
 void QgsAttributeForm::resetValues()
 {
+  mValuesInitialized = false;
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
     ww->setFeature( mFeature );
   }
+  mValuesInitialized = true;
+  mDirty = false;
 }
 
 void QgsAttributeForm::resetSearch()
@@ -658,6 +686,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   if ( oldValue == value && oldValue.isNull() == value.isNull() )
     return;
 
+  if ( mValuesInitialized )
+    mDirty = true;
+
   switch ( mMode )
   {
     case SingleEditMode:
@@ -681,7 +712,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
         connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
         clearMultiEditMessages();
 
-        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
+        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::Warning );
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
       }
@@ -1247,7 +1278,7 @@ void QgsAttributeForm::init()
       }
       else
       {
-        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ) ).arg( widgetSetup.type() ) );
+        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ), widgetSetup.type() ) );
       }
 
 

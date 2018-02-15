@@ -18,18 +18,20 @@
 
 #include "qgis_core.h"
 #include <QGraphicsScene>
-#include "qgslayoutcontext.h"
 #include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutexporter.h"
+#include "qgsmasterlayoutinterface.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
 class QgsLayoutMultiFrame;
 class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
+class QgsLayoutRenderContext;
+class QgsLayoutReportContext;
 
 /**
  * \ingroup core
@@ -47,7 +49,6 @@ class QgsLayoutUndoStack;
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {
     Q_OBJECT
-    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
 
   public:
 
@@ -83,6 +84,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     ~QgsLayout() override;
 
     /**
+     * Creates a clone of the layout. Ownership of the return layout
+     * is transferred to the caller.
+     */
+    QgsLayout *clone() const SIP_FACTORY;
+
+    /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
      * a new layout.
      */
@@ -108,18 +115,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutModel *itemsModel();
 
     /**
-     * Returns the layout's name.
-     * \see setName()
-     */
-    QString name() const { return mName; }
-
-    /**
-     * Sets the layout's name.
-     * \see name()
-     */
-    void setName( const QString &name );
-
-    /**
      * Returns a list of layout items of a specific type.
      * \note not available in Python bindings
      */
@@ -134,6 +129,33 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
         if ( item )
         {
           itemList.push_back( item );
+        }
+      }
+    }
+
+    /**
+     * Returns a list of layout objects (items and multiframes) of a specific type.
+     * \note not available in Python bindings
+     */
+    template<class T> void layoutObjects( QList<T *> &objectList ) const SIP_SKIP
+    {
+      objectList.clear();
+      const QList<QGraphicsItem *> itemList( items() );
+      const QList<QgsLayoutMultiFrame *> frameList( multiFrames() );
+      for ( const auto &obj :  itemList )
+      {
+        T *item = dynamic_cast<T *>( obj );
+        if ( item )
+        {
+          objectList.push_back( item );
+        }
+      }
+      for ( const auto &obj :  frameList )
+      {
+        T *item = dynamic_cast<T *>( obj );
+        if ( item )
+        {
+          objectList.push_back( item );
         }
       }
     }
@@ -225,19 +247,58 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      *
-     * If \a includeTemplateUuids is true, then item's QgsLayoutItem::templateUuid()
-     * will also be tested when trying to match the uuid.
+     * If \a includeTemplateUuids is true, then item's template UUID
+     * will also be tested when trying to match the uuid. This may differ from the item's UUID
+     * for items which have been added to an existing layout from a template. In this case
+     * the template UUID returns the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     * Note that template UUIDs are only available while a layout is being restored from XML.
      *
+     * \see itemByTemplateUuid()
      * \see multiFrameByUuid()
+     * \see itemById()
      */
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
-     * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
-     * if a matching multiframe could not be found.
+     * Returns the layout item with matching template \a uuid unique identifier, or a nullptr
+     * if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
+     * template UUIDs for a match.
+     *
+     * Template UUIDs are valid only for items which have been added to an existing layout from a template. In this case
+     * the template UUID is the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     *
+     * Note that template UUIDs are only available while a layout is being restored from XML.
+     *
+     * \see itemByUuid()
+     * \see multiFrameByUuid()
+     * \see itemById()
+     */
+    QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
+
+    /**
+     * Returns a layout item given its \a id.
+     * Since item IDs are not necessarely unique, this function returns the first matching
+     * item found.
      * \see itemByUuid()
      */
-    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+    QgsLayoutItem *itemById( const QString &id ) const;
+
+    /**
+     * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
+     * if a matching multiframe could not be found.
+     *
+     * If \a includeTemplateUuids is true, then the multiframe's QgsLayoutMultiFrame::templateUuid()
+     * will also be tested when trying to match the uuid. Template UUIDs are valid only for items
+     * which have been added to an existing layout from a template. In this case
+     * the template UUID is the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     * Note that template UUIDs are only available while a layout is being restored from XML.
+     *
+     * \see itemByUuid()
+     */
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
@@ -246,7 +307,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
     /**
-     * Returns the topmost composer item at a specified \a position which is below a specified \a item. Ignores paper items.
+     * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
      * If \a ignoreLocked is set to true any locked items will be ignored.
      */
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
@@ -315,16 +376,28 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
-     * Returns a reference to the layout's context, which stores information relating to the
-     * current context and rendering settings for the layout.
+     * Returns a reference to the layout's render context, which stores information relating to the
+     * current rendering settings for the layout.
      */
-    QgsLayoutContext &context() { return mContext; }
+    QgsLayoutRenderContext &renderContext();
 
     /**
-     * Returns a reference to the layout's context, which stores information relating to the
-     * current context and rendering settings for the layout.
+     * Returns a reference to the layout's render context, which stores information relating to the
+     * current rendering settings for the layout.
      */
-    SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
+    SIP_SKIP const QgsLayoutRenderContext &renderContext() const;
+
+    /**
+     * Returns a reference to the layout's report context, which stores information relating to the
+     * current reporting context for the layout.
+     */
+    QgsLayoutReportContext &reportContext();
+
+    /**
+     * Returns a reference to the layout's report context, which stores information relating to the
+     * current reporting context for the layout.
+     */
+    SIP_SKIP const QgsLayoutReportContext &reportContext() const;
 
     /**
      * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
@@ -349,6 +422,11 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * to grid appearance, spacing and offsets.
      */
     SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
+
+    /**
+     * Refreshes the layout when global layout related options change.
+     */
+    void reloadSettings();
 
     /**
      * Returns a reference to the layout's guide collection, which manages page snap guides.
@@ -514,13 +592,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the collection's state from a DOM element. \a layoutElement is the DOM node corresponding to the layout.
      * \see writeXml()
      */
-    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     /**
      * Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
@@ -613,23 +691,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void refreshed();
 
-    /**
-     * Emitted when the layout's name is changed.
-     * \see setName()
-     */
-    void nameChanged( const QString &name );
-
   private:
 
     QgsProject *mProject = nullptr;
     std::unique_ptr< QgsLayoutModel > mItemsModel;
 
-    QString mName;
-
     QgsObjectCustomProperties mCustomProperties;
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
-    QgsLayoutContext mContext;
+    QgsLayoutRenderContext *mRenderContext = nullptr;
+    QgsLayoutReportContext *mReportContext = nullptr;
     QgsLayoutSnapper mSnapper;
     QgsLayoutGridSettings mGridSettings;
 
@@ -639,7 +710,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
 
-    //! Item ID for composer map to use for the world file generation
+    //! Item ID for layout map to use for the world file generation
     QString mWorldFileMapId;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
@@ -669,6 +740,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
     friend class QgsLayoutMultiFrame;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUT_H

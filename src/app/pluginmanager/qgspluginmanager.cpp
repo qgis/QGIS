@@ -663,12 +663,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QString(
               "<style>"
               "  div#stars_bg {"
-              "    background-image: url('qrc:/images/themes/default/stars_empty.png');"
+              "    background-image: url('qrc:/images/themes/default/stars_empty.svg');"
+              "    background-size: 92px 16px;"
               "    width:92px;"
               "    height:16px;"
               "  }"
               "  div#stars {"
-              "    background-image: url('qrc:/images/themes/default/stars_full.png');"
+              "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
+              "    background-size: 92px 16px;"  /*scale to the full width*/
               "    width:%1px;"
               "    height:16px;"
               "  }"
@@ -1256,11 +1258,11 @@ void QgsPluginManager::sendVote( int pluginId, int vote )
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().sendVote('%1', '%2')" ).arg( pluginId ).arg( vote ), response );
   if ( response == QLatin1String( "True" ) )
   {
-    pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );
+    pushMessage( tr( "Vote sent successfully" ), Qgis::Info );
   }
   else
   {
-    pushMessage( tr( "Sending vote to the plugin repository failed." ), QgsMessageBar::WARNING );
+    pushMessage( tr( "Sending vote to the plugin repository failed." ), Qgis::Warning );
   }
 }
 
@@ -1603,12 +1605,12 @@ void QgsPluginManager::showEvent( QShowEvent *e )
     QTimer::singleShot( 0, this, SLOT( warnAboutMissingObjects() ) );
   }
 
-  QDialog::showEvent( e );
+  QgsOptionsDialogBase::showEvent( e );
 }
 
 
 
-void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsPluginManager::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
 {
   if ( duration == -1 )
   {

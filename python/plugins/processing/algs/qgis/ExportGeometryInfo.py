@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsCoordinateTransform,
+from qgis.core import (NULL,
+                       QgsCoordinateTransform,
                        QgsField,
                        QgsFields,
                        QgsWkbTypes,
@@ -147,6 +148,12 @@ class ExportGeometryInfo(QgisAlgorithm):
                     attrs.extend(self.polygon_attributes(inGeom))
                 else:
                     attrs.extend(self.line_attributes(inGeom))
+
+            # ensure consistent count of attributes - otherwise null
+            # geometry features will have incorrect attribute length
+            # and provider may reject them
+            if len(attrs) < len(fields):
+                attrs += [NULL] * (len(fields) - len(attrs))
 
             outFeat.setAttributes(attrs)
             sink.addFeature(outFeat, QgsFeatureSink.FastInsert)

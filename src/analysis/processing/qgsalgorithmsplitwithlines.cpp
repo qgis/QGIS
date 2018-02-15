@@ -202,7 +202,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
               // between geometry and splitLine, only the first one is considered.
               if ( result == QgsGeometry::Success ) // split occurred
               {
-                if ( inGeom.equals( before ) )
+                if ( inGeom.isGeosEqual( before ) )
                 {
                   // bug in splitGeometry: sometimes it returns 0 but
                   // the geometry is unchanged

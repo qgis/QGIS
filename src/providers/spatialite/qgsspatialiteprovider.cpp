@@ -602,6 +602,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
                   << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
                 );
+  // Update extent and feature count
+  if ( ! mSubsetString.isEmpty() )
+    setSubsetString( mSubsetString, true );
+
   mValid = true;
 }
 
@@ -5936,7 +5940,7 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QStringLiteral( "spatialite" ); }
     QString text() const override { return QObject::tr( "SpatiaLite" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

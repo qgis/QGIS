@@ -28,7 +28,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   Q_ASSERT( mLayout );
 
   setupUi( this );
-  setPanelTitle( tr( "Layout properties" ) );
+  setPanelTitle( tr( "Layout Properties" ) );
   blockSignals( true );
 
   updateSnappingElements();
@@ -70,7 +70,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mLeftMarginSpinBox->setValue( leftMargin );
   mMarginUnitsComboBox->linkToWidget( mLeftMarginSpinBox );
   mMarginUnitsComboBox->setUnit( marginUnit );
-  mMarginUnitsComboBox->setConverter( &mLayout->context().measurementConverter() );
+  mMarginUnitsComboBox->setConverter( &mLayout->renderContext().measurementConverter() );
 
   connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
@@ -82,15 +82,23 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
+  mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
 
   connect( mLayout, &QgsLayout::changed, this, &QgsLayoutPropertiesWidget::updateGui );
+
+  updateVariables();
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsLayoutPropertiesWidget::variablesChanged );
+  // listen out for variable edits
+  connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+
   updateGui();
 }
 
 void QgsLayoutPropertiesWidget::updateGui()
 {
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
-  whileBlocking( mResolutionSpinBox )->setValue( mLayout->context().dpi() );
+  whileBlocking( mResolutionSpinBox )->setValue( mLayout->renderContext().dpi() );
 
   bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   whileBlocking( mRasterizeCheckBox )->setChecked( rasterize );
@@ -199,7 +207,7 @@ void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
 void QgsLayoutPropertiesWidget::dpiChanged( int value )
 {
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Default DPI" ), QgsLayout::UndoLayoutDpi );
-  mLayout->context().setDpi( value );
+  mLayout->renderContext().setDpi( value );
   mLayout->undoStack()->endCommand();
 }
 
@@ -226,6 +234,21 @@ void QgsLayoutPropertiesWidget::rasterizeToggled()
 void QgsLayoutPropertiesWidget::forceVectorToggled()
 {
   mLayout->setCustomProperty( QStringLiteral( "forceVector" ), mForceVectorCheckBox->isChecked() );
+}
+
+void QgsLayoutPropertiesWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setLayoutVariables( mLayout, mVariableEditor->variablesInActiveScope() );
+}
+
+void QgsLayoutPropertiesWidget::updateVariables()
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::layoutScope( mLayout );
+  mVariableEditor->setContext( &context );
+  mVariableEditor->setEditableScopeIndex( 2 );
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

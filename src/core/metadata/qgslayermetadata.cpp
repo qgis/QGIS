@@ -440,7 +440,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
     QList< QgsLayerMetadata::Address > addresses;
-    QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "address" ) );
+    QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
       QDomElement addressElement = addressList.at( j ).toElement();
@@ -663,7 +663,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
 
     for ( const QgsLayerMetadata::Address &oneAddress : contact.addresses )
     {
-      QDomElement addressElement = document.createElement( QStringLiteral( "address" ) );
+      QDomElement addressElement = document.createElement( QStringLiteral( "contactAddress" ) );
       QDomElement typeElement = document.createElement( QStringLiteral( "type" ) );
       QDomElement addressDetailedElement = document.createElement( QStringLiteral( "address" ) );
       QDomElement cityElement = document.createElement( QStringLiteral( "city" ) );

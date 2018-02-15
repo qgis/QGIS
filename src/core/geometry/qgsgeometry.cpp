@@ -223,17 +223,20 @@ QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly 
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
-  QgsPolylineXY ring;
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-
-  QgsPolygonXY polygon;
-  polygon.append( ring );
-
-  return fromPolygonXY( polygon );
+  std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString >(
+      QVector< double >() << rect.xMinimum()
+      << rect.xMaximum()
+      << rect.xMaximum()
+      << rect.xMinimum()
+      << rect.xMinimum(),
+      QVector< double >() << rect.yMinimum()
+      << rect.yMinimum()
+      << rect.yMaximum()
+      << rect.yMaximum()
+      << rect.yMinimum() );
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  polygon->setExteriorRing( ext.release() );
+  return QgsGeometry( std::move( polygon ) );
 }
 
 QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
@@ -1147,9 +1150,12 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
     return false;
   }
 
-  QgsGeos geos( d->geometry.get() );
-  mLastError.clear();
-  return geos.isEqual( geometry.d->geometry.get(), &mLastError );
+  // fast check - are they shared copies of the same underlying geometry?
+  if ( d == geometry.d )
+    return true;
+
+  // slower check - actually test the geometries
+  return *d->geometry.get() == *geometry.d->geometry.get();
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const
@@ -1255,8 +1261,16 @@ bool QgsGeometry::convertToMultiType()
     return false;
   }
 
-  multiGeom->addGeometry( d->geometry->clone() );
-  reset( std::move( geom ) );
+  //try to avoid cloning existing geometry whenever we can
+
+  //want to see a magic trick?... gather round kiddies...
+  detach(); // maybe a clone, hopefully not if we're the only ref to the private data
+  // now we cheat a bit and steal the private geometry and add it direct to the multigeom
+  // we can do this because we're the only ref to this geometry, guaranteed by the detach call above
+  multiGeom->addGeometry( d->geometry.release() );
+  // and replace it with the multi geometry.
+  // TADA! a clone free conversion in some cases
+  d->geometry = std::move( geom );
   return true;
 }
 

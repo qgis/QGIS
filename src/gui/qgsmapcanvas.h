@@ -802,6 +802,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void destinationCrsChanged();
 
     /**
+     * Emitted when the canvas transform context is changed.
+     * \since QGIS 3.0
+     */
+    void transformContextChanged();
+
+    /**
      * Emitted when the current layer is changed
      * \since QGIS 2.8
      */
@@ -821,7 +827,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void themeChanged( const QString &theme );
 
     //! emit a message (usually to be displayed in a message bar)
-    void messageEmitted( const QString &title, const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
 
   protected:
 

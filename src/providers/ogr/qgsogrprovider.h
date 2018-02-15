@@ -210,6 +210,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Commits a transaction
     bool commitTransaction();
 
+    //! Does the real job of settings the subset string and adds an argument to disable update capabilities
+    bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true );
+
     void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
 
     QgsFields mAttributeFields;
@@ -355,7 +358,7 @@ class QgsOgrProviderUtils
     static QMap< QString, int > sMapCountOpenedDS;
 
     //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
+    static QHash< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
 
     //! Map a dataset name to its last modified data
     static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;

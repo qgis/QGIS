@@ -34,7 +34,7 @@ class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
-class QgsGPSConnectionRegistry;
+class QgsGpsConnectionRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsMessageLog;
@@ -278,8 +278,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the paths to composer template directories
-    static QStringList composerTemplatePaths();
+    /**
+     * Returns the paths to layout template directories.
+     * \since QGIS 3.0
+     */
+    static QStringList layoutTemplatePaths();
 
     //! Returns the system environment variables passed to application.
     static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
@@ -332,7 +335,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Cursors are automatically scaled to look like a 16px cursor on 96dpi
      * screens.
      */
-    static QCursor getThemeCursor( const Cursor &cursor );
+    static QCursor getThemeCursor( Cursor cursor );
 
     /**
      * Helper to get a theme icon as a pixmap. It will fall back to the
@@ -592,7 +595,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
-    static QgsGPSConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
@@ -782,7 +785,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
-      QgsGPSConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;

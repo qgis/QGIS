@@ -39,6 +39,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateLegend();
 
     QgsLayoutItemLegend *legend() { return mLegend; }
+    void setReportTypeString( const QString &string ) override;
 
   protected:
 

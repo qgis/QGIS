@@ -122,7 +122,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Sets the list of predefined \a scales to show in the combobox. List elements
      * are expected to be valid scale strings, such as "1:1000000".
      */
-    void updateScales( const QStringList &scales = QStringList() ) { return mScaleComboBox->updateScales( scales ); }
+    void updateScales( const QStringList &scales = QStringList() ) { mScaleComboBox->updateScales( scales ); }
 
     /**
      * Assigns the current scale from the map canvas, if set.

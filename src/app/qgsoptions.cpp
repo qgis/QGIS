@@ -40,7 +40,6 @@
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
-#include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
@@ -278,7 +277,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveSVGPath, &QAbstractButton::clicked, this, &QgsOptions::removeSVGPath );
 
   //local directories to search when looking for a composer templates
-  const QStringList composerTemplatePathList = QgsApplication::composerTemplatePaths();
+  const QStringList composerTemplatePathList = QgsApplication::layoutTemplatePaths();
   for ( const QString &path : composerTemplatePathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
@@ -521,7 +520,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mKeepBaseUnitCheckBox->setChecked( false );
   }
 
-  cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ).toString() ) );
+  cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
   spinFontSize->blockSignals( true );
@@ -564,7 +563,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
-  mLiveColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/live_color_dialogs" ), false ).toBool() );
 
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
@@ -746,7 +744,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );
   connect( pbnAddScale, &QAbstractButton::clicked, this, &QgsOptions::addScale );
   connect( pbnRemoveScale, &QAbstractButton::clicked, this, &QgsOptions::removeScale );
-  connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
+  connect( pbnExportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
   connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::importScales );
   connect( pbnDefaultScaleValues, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultScaleValues );
 
@@ -769,30 +767,29 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //
-  // Composer settings
+  // Layout settings
   //
 
-  //default composer font
+  //default layout font
   mComposerFontComboBox->blockSignals( true );
 
-  QString composerFontFamily = mSettings->value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QString layoutFontFamily = mSettings->value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
 
-  QFont *tempComposerFont = new QFont( composerFontFamily );
+  QFont tempLayoutFont( layoutFontFamily );
   // is exact family match returned from system?
-  if ( tempComposerFont->family() == composerFontFamily )
+  if ( tempLayoutFont.family() == layoutFontFamily )
   {
-    mComposerFontComboBox->setCurrentFont( *tempComposerFont );
+    mComposerFontComboBox->setCurrentFont( tempLayoutFont );
   }
-  delete tempComposerFont;
 
   mComposerFontComboBox->blockSignals( false );
 
-  //default composer grid color
+  //default layout grid color
   int gridRed, gridGreen, gridBlue, gridAlpha;
-  gridRed = mSettings->value( QStringLiteral( "/Composer/gridRed" ), 190 ).toInt();
-  gridGreen = mSettings->value( QStringLiteral( "/Composer/gridGreen" ), 190 ).toInt();
-  gridBlue = mSettings->value( QStringLiteral( "/Composer/gridBlue" ), 190 ).toInt();
-  gridAlpha = mSettings->value( QStringLiteral( "/Composer/gridAlpha" ), 100 ).toInt();
+  gridRed = mSettings->value( QStringLiteral( "LayoutDesigner/gridRed" ), 190, QgsSettings::Gui ).toInt();
+  gridGreen = mSettings->value( QStringLiteral( "LayoutDesigner/gridGreen" ), 190, QgsSettings::Gui ).toInt();
+  gridBlue = mSettings->value( QStringLiteral( "LayoutDesigner/gridBlue" ), 190, QgsSettings::Gui ).toInt();
+  gridAlpha = mSettings->value( QStringLiteral( "LayoutDesigner/gridAlpha" ), 100, QgsSettings::Gui ).toInt();
   QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
   mGridColorButton->setColor( gridColor );
   mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
@@ -800,9 +797,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mGridColorButton->setContext( QStringLiteral( "gui" ) );
   mGridColorButton->setDefaultColor( QColor( 190, 190, 190, 100 ) );
 
-  //default composer grid style
+  //default layout grid style
   QString gridStyleString;
-  gridStyleString = mSettings->value( QStringLiteral( "/Composer/gridStyle" ), "Dots" ).toString();
+  gridStyleString = mSettings->value( QStringLiteral( "LayoutDesigner/gridStyle" ), "Dots", QgsSettings::Gui ).toString();
   mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
   mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
   mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
@@ -821,10 +818,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //grid and guide defaults
-  mGridResolutionSpinBox->setValue( mSettings->value( QStringLiteral( "/Composer/defaultSnapGridResolution" ), 10.0 ).toDouble() );
-  mSnapToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/Composer/defaultSnapTolerancePixels" ), 5 ).toInt() );
-  mOffsetXSpinBox->setValue( mSettings->value( QStringLiteral( "/Composer/defaultSnapGridOffsetX" ), 0 ).toDouble() );
-  mOffsetYSpinBox->setValue( mSettings->value( QStringLiteral( "/Composer/defaultSnapGridOffsetY" ), 0 ).toDouble() );
+  mGridResolutionSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapGridResolution" ), 10.0, QgsSettings::Gui ).toDouble() );
+  mSnapToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), 5, QgsSettings::Gui ).toInt() );
+  mOffsetXSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetX" ), 0, QgsSettings::Gui ).toDouble() );
+  mOffsetYSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetY" ), 0, QgsSettings::Gui ).toDouble() );
 
   //
   // Locale settings
@@ -875,9 +872,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() ) );
-  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
+  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt();
+  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS ).toInt();
   if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
@@ -940,7 +937,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
   mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), 1 );
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
-  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
 
@@ -1144,7 +1141,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "composer/searchPathsForTemplates" ), pathsList );
+  mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
 
   pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
@@ -1297,12 +1294,11 @@ void QgsOptions::saveOptions()
 
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
-  mSettings->setValue( QStringLiteral( "/IconSize" ), cmbIconSize->currentText() );
+  mSettings->setValue( QStringLiteral( "/qgis/iconSize" ), cmbIconSize->currentText() );
 
   mSettings->setValue( QStringLiteral( "/qgis/messageTimeout" ), mMessageTimeoutSpnBx->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/native_color_dialogs" ), mNativeColorDialogsChkBx->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/live_color_dialogs" ), mLiveColorDialogsChkBx->isChecked() );
 
   // rasters settings
   mSettings->setValue( QStringLiteral( "/Raster/defaultRedBand" ), spnRed->value() );
@@ -1460,38 +1456,38 @@ void QgsOptions::saveOptions()
   }
 
   //
-  // Composer settings
+  // Layout settings
   //
 
   //default font
-  QString composerFont = mComposerFontComboBox->currentFont().family();
-  mSettings->setValue( QStringLiteral( "/Composer/defaultFont" ), composerFont );
+  QString layoutFont = mComposerFontComboBox->currentFont().family();
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/defaultFont" ), layoutFont, QgsSettings::Gui );
 
   //grid color
-  mSettings->setValue( QStringLiteral( "/Composer/gridRed" ), mGridColorButton->color().red() );
-  mSettings->setValue( QStringLiteral( "/Composer/gridGreen" ), mGridColorButton->color().green() );
-  mSettings->setValue( QStringLiteral( "/Composer/gridBlue" ), mGridColorButton->color().blue() );
-  mSettings->setValue( QStringLiteral( "/Composer/gridAlpha" ), mGridColorButton->color().alpha() );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/gridRed" ), mGridColorButton->color().red(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/gridGreen" ), mGridColorButton->color().green(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/gridBlue" ), mGridColorButton->color().blue(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/gridAlpha" ), mGridColorButton->color().alpha(), QgsSettings::Gui );
 
   //grid style
   if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
   {
-    mSettings->setValue( QStringLiteral( "/Composer/gridStyle" ), "Solid" );
+    mSettings->setValue( QStringLiteral( "LayoutDesigner/gridStyle" ), "Solid", QgsSettings::Gui );
   }
   else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
   {
-    mSettings->setValue( QStringLiteral( "/Composer/gridStyle" ), "Dots" );
+    mSettings->setValue( QStringLiteral( "LayoutDesigner/gridStyle" ), "Dots", QgsSettings::Gui );
   }
   else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
   {
-    mSettings->setValue( QStringLiteral( "/Composer/gridStyle" ), "Crosses" );
+    mSettings->setValue( QStringLiteral( "LayoutDesigner/gridStyle" ), "Crosses", QgsSettings::Gui );
   }
 
   //grid and guide defaults
-  mSettings->setValue( QStringLiteral( "/Composer/defaultSnapGridResolution" ), mGridResolutionSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/Composer/defaultSnapTolerancePixels" ), mSnapToleranceSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/Composer/defaultSnapGridOffsetX" ), mOffsetXSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/Composer/defaultSnapGridOffsetY" ), mOffsetYSpinBox->value() );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/defaultSnapGridResolution" ), mGridResolutionSpinBox->value(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), mSnapToleranceSpinBox->value(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetX" ), mOffsetXSpinBox->value(), QgsSettings::Gui );
+  mSettings->setValue( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetY" ), mOffsetYSpinBox->value(), QgsSettings::Gui );
 
   //
   // Locale settings

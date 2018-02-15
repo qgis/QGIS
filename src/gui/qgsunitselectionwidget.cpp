@@ -171,7 +171,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   }
   if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
+    mUnitCombo->addItem( tr( "Meters at Scale" ), QgsUnitTypes::RenderMetersInMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
@@ -226,7 +226,7 @@ void QgsUnitSelectionWidget::showDialog()
   if ( panel && panel->dockMode() )
   {
     QgsMapUnitScaleWidget *widget = new QgsMapUnitScaleWidget( panel );
-    widget->setPanelTitle( tr( "Adjust scaling range" ) );
+    widget->setPanelTitle( tr( "Adjust Scaling Range" ) );
     widget->setMapCanvas( mCanvas );
     widget->setMapUnitScale( mMapUnitScale );
     connect( widget, &QgsMapUnitScaleWidget::mapUnitScaleChanged, this, &QgsUnitSelectionWidget::widgetChanged );

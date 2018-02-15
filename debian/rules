@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful bionic"))
 	DISTRIBUTION := sid
 endif
 
@@ -102,7 +102,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"artful bionic sid"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
@@ -220,7 +220,10 @@ override_dh_auto_configure:
 	dh_auto_configure -- $(CMAKE_OPTS)
 
 override_dh_auto_build-arch:
-	ninja -C $(QGIS_BUILDDIR)
+	ninja -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
+			cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log || \
+			ninja -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit || \
+			false
 
 override_dh_auto_build-indep:
 	ninja -C $(QGIS_BUILDDIR) apidoc
@@ -229,14 +232,18 @@ override_dh_auto_test: test-stamp
 
 test-stamp:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	# Code to run the package test suite - and ignore the outcome for now
+	# Code to run the package test suite
+	rm -f $(QGIS_BUILDDIR)/.error
 	mkdir -p debian/tmp/locale/
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
-	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
+	LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
 	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)
+		$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)/.error
+	$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit
+	# but ignore the outcome for now
+	# ! [ -f $(QGIS_BUILDDIR)/.error ]
 else
 	@echo Skipping tests.
 endif
@@ -266,6 +273,9 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_wcstest
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1

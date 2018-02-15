@@ -233,7 +233,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * Returns the type for an areal unit.
     */
-    Q_INVOKABLE static DistanceUnitType unitType( AreaUnit unit );
+    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Encodes an areal unit to a string.
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns encoded string
      * \see decodeAreaUnit()
     */
-    Q_INVOKABLE static QString encodeUnit( AreaUnit unit );
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Decodes an areal unit from a string.
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to convert to string
      * \see stringToAreaUnit()
      */
-    Q_INVOKABLE static QString toString( AreaUnit unit );
+    Q_INVOKABLE static QString toString( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Returns a translated abbreviation representing an areal unit.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static QString toAbbreviatedString( AreaUnit unit );
+    Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::AreaUnit unit );
 
     /**
      * Converts a translated string to an areal unit.
@@ -282,14 +282,14 @@ class CORE_EXPORT QgsUnitTypes
      * \param toUnit area unit to convert to
      * \returns multiplication factor to convert between units
      */
-    Q_INVOKABLE static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
+    Q_INVOKABLE static double fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsUnitTypes::AreaUnit toUnit );
 
     /**
      * Converts a distance unit to its corresponding area unit, e.g., meters to square meters
      * \param distanceUnit distance unit to convert
      * \returns matching areal unit
      */
-    Q_INVOKABLE static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+    Q_INVOKABLE static QgsUnitTypes::AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns encoded string
      * \see decodeAngleUnit()
     */
-    Q_INVOKABLE static QString encodeUnit( AngleUnit unit );
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::AngleUnit unit );
 
     /**
      * Decodes an angular unit from a string.
@@ -308,13 +308,13 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
     */
-    Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::AngleUnit decodeAngleUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing an angular unit.
      * \param unit unit to convert to string
      */
-    Q_INVOKABLE static QString toString( AngleUnit unit );
+    Q_INVOKABLE static QString toString( QgsUnitTypes::AngleUnit unit );
 
     /**
      * Returns the conversion factor between the specified angular units.
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param toUnit angle unit to convert to
      * \returns multiplication factor to convert between units
      */
-    Q_INVOKABLE static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
+    Q_INVOKABLE static double fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, QgsUnitTypes::AngleUnit toUnit );
 
     /**
      * Returns an angle formatted as a friendly string.
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit of angle
      * \returns formatted angle string
      */
-    Q_INVOKABLE static QString formatAngle( double angle, int decimals, AngleUnit unit );
+    Q_INVOKABLE static QString formatAngle( double angle, int decimals, QgsUnitTypes::AngleUnit unit );
 
 
     /**
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns encoded string
      * \see decodeRenderUnit()
      */
-    Q_INVOKABLE static QString encodeUnit( RenderUnit unit );
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::RenderUnit unit );
 
     /**
      * Decodes a render unit from a string.
@@ -399,13 +399,13 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
      */
-    Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing a render \a unit.
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static QString toString( RenderUnit unit );
+    Q_INVOKABLE static QString toString( QgsUnitTypes::RenderUnit unit );
 
 
     // LAYOUT UNITS
@@ -417,7 +417,7 @@ class CORE_EXPORT QgsUnitTypes
      * \see decodeLayoutUnit()
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static QString encodeUnit( LayoutUnit unit );
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::LayoutUnit unit );
 
     /**
      * Decodes a layout unit from a string.
@@ -427,28 +427,28 @@ class CORE_EXPORT QgsUnitTypes
      * \see encodeUnit()
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = nullptr );
+    Q_INVOKABLE static QgsUnitTypes::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the type for a unit of measurement.
      *
      * \since QGIS 3.0
     */
-    Q_INVOKABLE static LayoutUnitType unitType( const LayoutUnit units );
+    Q_INVOKABLE static QgsUnitTypes::LayoutUnitType unitType( const QgsUnitTypes::LayoutUnit units );
 
     /**
      * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static QString toAbbreviatedString( LayoutUnit unit );
+    Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::LayoutUnit unit );
 
     /**
      * Returns a translated string representing a layout \a unit.
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static QString toString( LayoutUnit unit );
+    Q_INVOKABLE static QString toString( QgsUnitTypes::LayoutUnit unit );
 
 };
 

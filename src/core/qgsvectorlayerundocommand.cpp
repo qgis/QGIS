@@ -118,9 +118,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   }
   else
   {
-    bool changedAlready = mBuffer->mChangedGeometries.contains( mFid );
-    QgsGeometry geom;
-    mOldGeom = changedAlready ? geom : QgsGeometry();
+    mOldGeom = mBuffer->mChangedGeometries.value( mFid, QgsGeometry() );
   }
 }
 
@@ -313,8 +311,8 @@ void QgsVectorLayerUndoCommandAddAttribute::undo()
 void QgsVectorLayerUndoCommandAddAttribute::redo()
 {
   mBuffer->mAddedAttributes.append( mField );
-  mBuffer->updateLayerFields();
   mBuffer->handleAttributeAdded( mFieldIndex );
+  mBuffer->updateLayerFields();
 
   emit mBuffer->attributeAdded( mFieldIndex );
 }

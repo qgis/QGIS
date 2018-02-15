@@ -51,19 +51,32 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
-#include "qgssettings.h" // TODO: get rid of it [MD]
 #include "qgsstringutils.h"
+
+QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
+{
+  switch ( type )
+  {
+    case Metadata:
+      return QStringLiteral( ".qmd" );
+
+    case Style:
+      return QStringLiteral( ".qml" );
+  }
+  return QString();
+}
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
+  , mLayerName( lyrname )
   , mLayerType( type )
+  , mUndoStack( new QUndoStack( this ) )
+  , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
+  , mRefreshTimer( new QTimer( this ) )
 {
-  // Set the display name = internal name
-  mLayerName = lyrname;
-
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
@@ -79,13 +92,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // there for the compiler, so the pattern is actually \W
   mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
 
-  //set some generous  defaults for scale based visibility
-  mMinScale = 0;
-  mMaxScale = 100000000;
-  mScaleBasedVisibility = false;
-
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
+  connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -574,8 +582,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
 
-  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer.interval() ) );
-  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer.isActive() ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer->isActive() ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
@@ -901,36 +909,36 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
 
 bool QgsMapLayer::hasAutoRefreshEnabled() const
 {
-  return mRefreshTimer.isActive();
+  return mRefreshTimer->isActive();
 }
 
 int QgsMapLayer::autoRefreshInterval() const
 {
-  return mRefreshTimer.interval();
+  return mRefreshTimer->interval();
 }
 
 void QgsMapLayer::setAutoRefreshInterval( int interval )
 {
   if ( interval <= 0 )
   {
-    mRefreshTimer.stop();
-    mRefreshTimer.setInterval( 0 );
+    mRefreshTimer->stop();
+    mRefreshTimer->setInterval( 0 );
   }
   else
   {
-    mRefreshTimer.setInterval( interval );
+    mRefreshTimer->setInterval( interval );
   }
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
 {
   if ( !enabled )
-    mRefreshTimer.stop();
-  else if ( mRefreshTimer.interval() > 0 )
-    mRefreshTimer.start();
+    mRefreshTimer->stop();
+  else if ( mRefreshTimer->interval() > 0 )
+    mRefreshTimer->start();
 
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 const QgsLayerMetadata &QgsMapLayer::metadata() const
@@ -1009,7 +1017,7 @@ QString QgsMapLayer::formatLayerName( const QString &name )
   return layerName;
 }
 
-QString QgsMapLayer::styleURI() const
+QString QgsMapLayer::baseURI( PropertyType type ) const
 {
   QString myURI = publicSource();
 
@@ -1051,7 +1059,7 @@ QString QgsMapLayer::styleURI() const
       myURI.chop( 4 );
     myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
-    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + QgsMapLayer::extensionPropertyType( type );
   }
   else
   {
@@ -1061,12 +1069,42 @@ QString QgsMapLayer::styleURI() const
   return key;
 }
 
+QString QgsMapLayer::metadataUri() const
+{
+  return baseURI( PropertyType::Metadata );
+}
+
+QString QgsMapLayer::saveDefaultMetadata( bool &resultFlag )
+{
+  return saveNamedMetadata( metadataUri(), resultFlag );
+}
+
+QString QgsMapLayer::loadDefaultMetadata( bool &resultFlag )
+{
+  return loadNamedMetadata( metadataUri(), resultFlag );
+}
+
+QString QgsMapLayer::styleURI() const
+{
+  return baseURI( PropertyType::Style );
+}
+
 QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 {
   return loadNamedStyle( styleURI(), resultFlag );
 }
 
+bool QgsMapLayer::loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd )
+{
+  return loadNamedPropertyFromDatabase( db, uri, qmd, PropertyType::Metadata );
+}
+
 bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
+{
+  return loadNamedPropertyFromDatabase( db, uri, qml, PropertyType::Style );
+}
+
+bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type )
 {
   QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
@@ -1078,7 +1116,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
   int myResult;
 
-  QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
+  QgsDebugMsgLevel( QString( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -1089,7 +1127,18 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
     return false;
   }
 
-  QString mySql = QStringLiteral( "select qml from tbl_styles where style=?" );
+  QString mySql;
+  switch ( type )
+  {
+    case Metadata:
+      mySql = QStringLiteral( "select qmd from tbl_metadata where metadata=?" );
+      break;
+
+    case Style:
+      mySql = QStringLiteral( "select qml from tbl_styles where style=?" );
+      break;
+  }
+
   statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
@@ -1098,7 +1147,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
     if ( sqlite3_bind_text( statement.get(), 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
          sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+      xml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
       resultFlag = true;
     }
   }
@@ -1108,8 +1157,14 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
 {
+  return loadNamedProperty( uri, PropertyType::Style, resultFlag );
+}
+
+QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+{
   QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
+  QgsDebugMsg( "loadNamedProperty" );
   resultFlag = false;
 
   QDomDocument myDocument( QStringLiteral( "qgis" ) );
@@ -1121,6 +1176,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
+    QgsDebugMsg( QString( "file found %1" ).arg( uri ) );
     // read file
     resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
     if ( !resultFlag )
@@ -1132,20 +1188,47 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
     QFileInfo project( QgsProject::instance()->fileName() );
     QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
-    QString qml;
-    if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
-         ( project.exists() && loadNamedStyleFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
-         loadNamedStyleFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
+    QString xml;
+    switch ( type )
     {
-      resultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
-      if ( !resultFlag )
+      case QgsMapLayer::Style:
       {
-        myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
+        if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, xml ) ||
+             ( project.exists() && loadNamedStyleFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, xml ) ) ||
+             loadNamedStyleFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, xml ) )
+        {
+          resultFlag = myDocument.setContent( xml, &myErrorMessage, &line, &column );
+          if ( !resultFlag )
+          {
+            myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
+          }
+        }
+        else
+        {
+          myErrorMessage = tr( "Style not found in database" );
+          resultFlag = false;
+        }
+        break;
       }
-    }
-    else
-    {
-      myErrorMessage = tr( "Style not found in database" );
+      case QgsMapLayer::Metadata:
+      {
+        if ( loadNamedMetadataFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, xml ) ||
+             ( project.exists() && loadNamedMetadataFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, xml ) ) ||
+             loadNamedMetadataFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, xml ) )
+        {
+          resultFlag = myDocument.setContent( xml, &myErrorMessage, &line, &column );
+          if ( !resultFlag )
+          {
+            myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
+          }
+        }
+        else
+        {
+          myErrorMessage = tr( "Metadata not found in database" );
+          resultFlag = false;
+        }
+        break;
+      }
     }
   }
 
@@ -1154,13 +1237,33 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
     return myErrorMessage;
   }
 
-  resultFlag = importNamedStyle( myDocument, myErrorMessage );
-  if ( !resultFlag )
-    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
-
+  switch ( type )
+  {
+    case QgsMapLayer::Style:
+      resultFlag = importNamedStyle( myDocument, myErrorMessage );
+      if ( !resultFlag )
+        myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
+      break;
+    case QgsMapLayer::Metadata:
+      resultFlag = importNamedMetadata( myDocument, myErrorMessage );
+      if ( !resultFlag )
+        myErrorMessage = tr( "Loading metadata file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
+      break;
+  }
   return myErrorMessage;
 }
 
+bool QgsMapLayer::importNamedMetadata( QDomDocument &document, QString &errorMessage )
+{
+  QDomElement myRoot = document.firstChildElement( QStringLiteral( "qgis" ) );
+  if ( myRoot.isNull() )
+  {
+    errorMessage = tr( "Root <qgis> element could not be found" );
+    return false;
+  }
+
+  return mMetadata.readMetadataXml( myRoot );
+}
 
 bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage )
 {
@@ -1210,6 +1313,25 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
 }
 
+void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
+{
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument myDocument( documentType );
+
+  QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myDocument.appendChild( myRootNode );
+
+  if ( !mMetadata.writeMetadataXml( myRootNode, myDocument ) )
+  {
+    errorMsg = QObject::tr( "Could not save metadata" );
+    return;
+  }
+
+  doc = myDocument;
+}
+
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
 {
   QDomImplementation DomImplementation;
@@ -1222,7 +1344,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
 
   myRootNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
   myRootNode.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
-  myRootNode.setAttribute( QStringLiteral( "mincale" ), QString::number( minimumScale() ) );
+  myRootNode.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
   {
@@ -1256,13 +1378,19 @@ QString QgsMapLayer::saveDefaultStyle( bool &resultFlag )
   return saveNamedStyle( styleURI(), resultFlag );
 }
 
-QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::saveNamedMetadata( const QString &uri, bool &resultFlag )
 {
-  QString myErrorMessage;
-  QDomDocument myDocument;
-  exportNamedStyle( myDocument, myErrorMessage );
+  return saveNamedProperty( uri, QgsMapLayer::Metadata, resultFlag );
+}
 
-  // check if the uri is a file or ends with .qml,
+QString QgsMapLayer::loadNamedMetadata( const QString &uri, bool &resultFlag )
+{
+  return loadNamedProperty( uri, QgsMapLayer::Metadata, resultFlag );
+}
+
+QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+{
+  // check if the uri is a file or ends with .qml/.qmd,
   // which indicates that it should become one
   // everything else goes to the database
   QString filename;
@@ -1290,8 +1418,21 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     filename = uri;
   }
 
+  QString myErrorMessage;
+  QDomDocument myDocument;
+  switch ( type )
+  {
+    case Metadata:
+      exportNamedMetadata( myDocument, myErrorMessage );
+      break;
+
+    case Style:
+      exportNamedStyle( myDocument, myErrorMessage );
+      break;
+  }
+
   QFileInfo myFileInfo( filename );
-  if ( myFileInfo.exists() || filename.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+  if ( myFileInfo.exists() || filename.endsWith( QgsMapLayer::extensionPropertyType( type ), Qt::CaseInsensitive ) )
   {
     QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
@@ -1299,8 +1440,8 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 
-    // now construct the file name for our .qml style file
-    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+    // now construct the file name for our .qml or .qmd file
+    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + QgsMapLayer::extensionPropertyType( type );
 
     QFile myFile( myFileName );
     if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
@@ -1310,12 +1451,27 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
       myDocument.save( myFileStream, 2 );
       myFile.close();
       resultFlag = true;
-      return tr( "Created default style file as %1" ).arg( myFileName );
+      switch ( type )
+      {
+        case Metadata:
+          return tr( "Created default metadata file as %1" ).arg( myFileName );
+
+        case Style:
+          return tr( "Created default style file as %1" ).arg( myFileName );
+      }
+
     }
     else
     {
       resultFlag = false;
-      return tr( "ERROR: Failed to created default style file as %1. Check file permissions and retry." ).arg( myFileName );
+      switch ( type )
+      {
+        case Metadata:
+          return tr( "ERROR: Failed to created default metadata file as %1. Check file permissions and retry." ).arg( myFileName );
+
+        case Style:
+          return tr( "ERROR: Failed to created default style file as %1. Check file permissions and retry." ).arg( myFileName );
+      }
     }
   }
   else
@@ -1335,18 +1491,45 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QByteArray param0 = uri.toUtf8();
     QByteArray param1 = qml.toUtf8();
 
-    QString mySql = QStringLiteral( "create table if not exists tbl_styles(style varchar primary key,qml varchar)" );
+    QString mySql;
+    switch ( type )
+    {
+      case Metadata:
+        mySql = QStringLiteral( "create table if not exists tbl_metadata(metadata varchar primary key,qmd varchar)" );
+        break;
+
+      case Style:
+        mySql = QStringLiteral( "create table if not exists tbl_styles(style varchar primary key,qml varchar)" );
+        break;
+    }
+
     statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_step( statement.get() ) != SQLITE_DONE )
       {
         resultFlag = false;
-        return tr( "The style table could not be created." );
+        switch ( type )
+        {
+          case Metadata:
+            return tr( "The metadata table could not be created." );
+
+          case Style:
+            return tr( "The style table could not be created." );
+        }
       }
     }
 
-    mySql = QStringLiteral( "insert into tbl_styles(style,qml) values (?,?)" );
+    switch ( type )
+    {
+      case Metadata:
+        mySql = QStringLiteral( "insert into tbl_metadata(metadata,qmd) values (?,?)" );
+        break;
+
+      case Style:
+        mySql = QStringLiteral( "insert into tbl_styles(style,qml) values (?,?)" );
+        break;
+    }
     statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
@@ -1355,15 +1538,33 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
            sqlite3_step( statement.get() ) == SQLITE_DONE )
       {
         resultFlag = true;
-        myErrorMessage = tr( "The style %1 was saved to database" ).arg( uri );
+        switch ( type )
+        {
+          case Metadata:
+            myErrorMessage = tr( "The metadata %1 was saved to database" ).arg( uri );
+            break;
+
+          case Style:
+            myErrorMessage = tr( "The style %1 was saved to database" ).arg( uri );
+            break;
+        }
       }
     }
 
     if ( !resultFlag )
     {
-      QString mySql = QStringLiteral( "update tbl_styles set qml=? where style=?" );
-      statement = database.prepare( mySql, myResult );
+      QString mySql;
+      switch ( type )
+      {
+        case Metadata:
+          mySql = QStringLiteral( "update tbl_metadata set qmd=? where metadata=?" );
+          break;
 
+        case Style:
+          mySql = QStringLiteral( "update tbl_styles set qml=? where style=?" );
+          break;
+      }
+      statement = database.prepare( mySql, myResult );
       if ( myResult == SQLITE_OK )
       {
         if ( sqlite3_bind_text( statement.get(), 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
@@ -1371,23 +1572,55 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
              sqlite3_step( statement.get() ) == SQLITE_DONE )
         {
           resultFlag = true;
-          myErrorMessage = tr( "The style %1 was updated in the database." ).arg( uri );
+          switch ( type )
+          {
+            case Metadata:
+              myErrorMessage = tr( "The metadata %1 was updated in the database." ).arg( uri );
+              break;
+
+            case Style:
+              myErrorMessage = tr( "The style %1 was updated in the database." ).arg( uri );
+              break;
+          }
         }
         else
         {
           resultFlag = false;
-          myErrorMessage = tr( "The style %1 could not be updated in the database." ).arg( uri );
+          switch ( type )
+          {
+            case Metadata:
+              myErrorMessage = tr( "The metadata %1 could not be updated in the database." ).arg( uri );
+              break;
+
+            case Style:
+              myErrorMessage = tr( "The style %1 could not be updated in the database." ).arg( uri );
+              break;
+          }
         }
       }
       else
       {
         resultFlag = false;
-        myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( uri );
+        switch ( type )
+        {
+          case Metadata:
+            myErrorMessage = tr( "The metadata %1 could not be inserted into database." ).arg( uri );
+            break;
+
+          case Style:
+            myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( uri );
+            break;
+        }
       }
     }
   }
 
   return myErrorMessage;
+}
+
+QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
+{
+  return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag );
 }
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
@@ -1587,7 +1820,6 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   }
 }
 
-
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
 {
   QgsAbstract3DRenderer *r3D = nullptr;
@@ -1604,17 +1836,15 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   setRenderer3D( r3D );
 }
 
-
 QUndoStack *QgsMapLayer::undoStack()
 {
-  return &mUndoStack;
+  return mUndoStack;
 }
 
 QUndoStack *QgsMapLayer::undoStackStyles()
 {
-  return &mUndoStackStyles;
+  return mUndoStackStyles;
 }
-
 
 QStringList QgsMapLayer::customPropertyKeys() const
 {
@@ -1672,7 +1902,10 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
   mLegend = legend;
 
   if ( mLegend )
+  {
+    mLegend->setParent( this );
     connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
+  }
 
   emit legendChanged();
 }

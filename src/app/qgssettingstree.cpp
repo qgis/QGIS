@@ -58,7 +58,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   // header()->setResizeMode( 2, QHeaderView::Stretch );
   header()->resizeSection( 0, 250 );
   header()->resizeSection( 1, 100 );
-  header()->resizeSection( 2, 100 );
+  header()->resizeSection( 2, 250 );
 
   settings = nullptr;
   refreshTimer.setInterval( 2000 );
@@ -69,6 +69,8 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   groupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirOpenIcon ),
                        QIcon::Normal, QIcon::On );
   keyIcon.addPixmap( style()->standardPixmap( QStyle::SP_FileIcon ) );
+
+  setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   connect( &refreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
 }

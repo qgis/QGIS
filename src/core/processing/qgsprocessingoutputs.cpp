@@ -65,13 +65,18 @@ QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QSt
 
 QgsProcessingOutputMapLayer::QgsProcessingOutputMapLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
-{
-
-}
-
-
+{}
 
 QString QgsProcessingOutputMapLayer::type() const
+{
+  return typeName();
+}
+
+QgsProcessingOutputMultipleLayers::QgsProcessingOutputMultipleLayers( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
+QString QgsProcessingOutputMultipleLayers::type() const
 {
   return typeName();
 }

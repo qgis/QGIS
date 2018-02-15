@@ -517,18 +517,6 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
          mSource->mSpatialColType == SctPcPatch )
       geom += QLatin1String( "::geometry" );
 
-    if ( mSource->mForce2d )
-    {
-      geom = QStringLiteral( "%1(%2)" )
-             // Force_2D before 2.0
-             .arg( mConn->majorVersion() < 2 ? "force_2d"
-                   // ST_Force2D since 2.1.0
-                   : mConn->majorVersion() > 2 || mConn->minorVersion() > 0 ? "st_force2d"
-                   // ST_Force_2D in 2.0.x
-                   : "st_force_2d",
-                   geom );
-    }
-
     QgsWkbTypes::Type usedGeomType = mSource->mRequestedGeomType != QgsWkbTypes::Unknown
                                      ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
 
@@ -842,7 +830,6 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mSpatialColType( p->mSpatialColType )
   , mRequestedSrid( p->mRequestedSrid )
   , mDetectedSrid( p->mDetectedSrid )
-  , mForce2d( p->mForce2d )
   , mRequestedGeomType( p->mRequestedGeomType )
   , mDetectedGeomType( p->mDetectedGeomType )
   , mPrimaryKeyType( p->mPrimaryKeyType )

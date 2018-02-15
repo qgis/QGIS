@@ -55,7 +55,7 @@
 #include <QDebug>
 
 #include <gdalwarper.h>
-#include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
 
@@ -68,7 +68,7 @@ static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
 // To avoid potential races when destroying related instances ("main" and clones)
 static QMutex gGdaProviderMutex( QMutex::Recursive );
 
-QMap< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
+QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
 int QgsGdalProvider::mgDatasetCacheSize = 0;
 

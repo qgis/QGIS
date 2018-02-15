@@ -49,22 +49,27 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Save all fields in a QgsLayerMetadata object.
      */
-    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void saveMetadata( QgsLayerMetadata &layerMetadata );
 
     /**
      * Check if values in the wizard are correct.
      */
-    bool checkMetadata() const;
+    bool checkMetadata();
 
     /**
      * If the CRS is updated.
      */
-    void crsChanged() const;
+    void crsChanged();
 
     /**
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
+
+    /**
+     * Sets the layer's \a metadata store.
+     */
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -93,31 +98,39 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
-  private:
-    void updatePanel() const;
-    void fillSourceFromLayer() const;
+    /**
+     * Sets a map \a canvas associated with the widget.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  private slots:
+    void removeSelectedCategories();
+    void updatePanel();
+    void fillSourceFromLayer();
     void fillCrsFromLayer();
     void fillCrsFromProvider();
-    void addDefaultCategory() const;
+    void addDefaultCategories();
     void addNewCategory();
-    void removeSelectedCategory() const;
-    void addVocabulary() const;
-    void removeSelectedVocabulary() const;
+    void addVocabulary();
+    void removeSelectedVocabulary();
     void addLicence();
-    void removeSelectedLicence() const;
+    void removeSelectedLicence();
     void addRight();
-    void removeSelectedRight() const;
-    void addConstraint() const;
-    void removeSelectedConstraint() const;
-    void addAddress() const;
-    void removeSelectedAddress() const;
-    void addLink() const;
-    void removeSelectedLink() const;
+    void removeSelectedRight();
+    void addConstraint();
+    void removeSelectedConstraint();
+    void addAddress();
+    void removeSelectedAddress();
+    void addLink();
+    void removeSelectedLink();
     void addHistory();
-    void removeSelectedHistory() const;
-    void fillComboBox() const;
+    void removeSelectedHistory();
+
+  private:
+
+    void fillComboBox();
     void setPropertiesFromLayer();
-    void syncFromCategoriesTabToKeywordsTab() const;
+    void syncFromCategoriesTabToKeywordsTab();
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsCoordinateReferenceSystem mCrs;

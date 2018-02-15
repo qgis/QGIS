@@ -232,13 +232,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget ) override;
 
-    QList<QgsComposerInterface *> openComposers() override;
-    QgsComposerInterface *openComposer( QgsComposition *composition ) override;
-    void closeComposer( QgsComposition *composition ) override;
-
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
-    QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
+    QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) override;
 
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
@@ -390,8 +386,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionSaveProjectAs() override;
     QAction *actionSaveMapAsImage() override;
     QAction *actionProjectProperties() override;
-    QAction *actionPrintComposer() override;
-    QAction *actionShowComposerManager() override;
+    QAction *actionCreatePrintLayout() override;
+    QAction *actionShowLayoutManager() override;
     QAction *actionExit() override;
 
     //! Edit menu actions
@@ -408,7 +404,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionSimplifyFeature() override;
     QAction *actionDeleteRing() override;
     QAction *actionDeletePart() override;
-    QAction *actionNodeTool() override;
+    QAction *actionVertexTool() override;
 
     //! View menu actions
     QAction *actionPan() override;
@@ -449,6 +445,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionPasteLayerStyle() override;
     QAction *actionOpenTable() override;
     QAction *actionOpenFieldCalculator() override;
+    QAction *actionOpenStatisticalSummary() override;
     QAction *actionToggleEditing() override;
     QAction *actionSaveActiveLayerEdits() override;
     QAction *actionAllEdits() override;

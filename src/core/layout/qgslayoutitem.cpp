@@ -71,10 +71,10 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   mEffect.reset( new QgsLayoutEffect() );
   if ( mLayout )
   {
-    mEffect->setEnabled( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
-    connect( &mLayout->context(), &QgsLayoutContext::flagsChanged, this, [ = ]( QgsLayoutContext::Flags flags )
+    mEffect->setEnabled( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    connect( &mLayout->renderContext(), &QgsLayoutRenderContext::flagsChanged, this, [ = ]( QgsLayoutRenderContext::Flags flags )
     {
-      mEffect->setEnabled( flags & QgsLayoutContext::FlagUseAdvancedEffects );
+      mEffect->setEnabled( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     } );
   }
   setGraphicsEffect( mEffect.get() );
@@ -243,10 +243,10 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     return;
   }
 
-  bool previewRender = !mLayout || mLayout->context().isPreviewRender();
-  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->context().dpi();
+  bool previewRender = !mLayout || mLayout->renderContext().isPreviewRender();
+  double destinationDpi = previewRender ? QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ) * 25.4 : mLayout->renderContext().dpi();
   bool useImageCache = false;
-  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) );
+  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
 
   if ( useImageCache || forceRasterOutput )
   {
@@ -255,8 +255,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     if ( previewRender )
     {
-      widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
-      heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+      widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+      heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
     }
     else
     {
@@ -287,7 +287,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     if ( previewRender && !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
     {
       // can reuse last cached image
-      QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
       painter->save();
       preparePainter( painter );
       double cacheScale = destinationDpi / mItemCacheDpi;
@@ -306,7 +306,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       QPainter p( &image );
 
       preparePainter( &p );
-      QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p, destinationDpi );
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, &p, destinationDpi );
+      context.setExpressionContext( createExpressionContext() );
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
@@ -486,7 +487,7 @@ int QgsLayoutItem::page() const
 
 QPointF QgsLayoutItem::pagePos() const
 {
-  QPointF p = pos();
+  QPointF p = positionAtReferencePoint( mReferencePoint );
 
   if ( !mLayout )
     return p;
@@ -527,7 +528,7 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
-  if ( !mLayout || mLayout->context().isPreviewRender() )
+  if ( !mLayout || mLayout->renderContext().isPreviewRender() )
   {
     //preview mode so OK to draw item
     return true;
@@ -636,9 +637,9 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
   setId( element.attribute( QStringLiteral( "id" ) ) );
   mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
-  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
 
   mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
   if ( !mParentGroupUuid.isEmpty() )
@@ -699,10 +700,6 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
     bool alphaOk = false;
     int penRed, penGreen, penBlue, penAlpha;
 
-#if 0 // TODO, old style
-    double penWidth;
-    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
-#endif
     penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
     penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
     penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
@@ -871,7 +868,7 @@ bool QgsLayoutItem::requiresRasterization() const
 
 double QgsLayoutItem::estimatedFrameBleed() const
 {
-  if ( !hasFrame() )
+  if ( !frameEnabled() )
   {
     return 0;
   }
@@ -987,7 +984,7 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   double evaluatedHeight = size.height();
   if ( QgsApplication::pageSizeRegistry()->decodePageSize( pageSize, matchedSize ) )
   {
-    QgsLayoutSize convertedSize = mLayout->context().measurementConverter().convert( matchedSize.size, size.units() );
+    QgsLayoutSize convertedSize = mLayout->renderContext().measurementConverter().convert( matchedSize.size, size.units() );
     evaluatedWidth = convertedSize.width();
     evaluatedHeight = convertedSize.height();
   }
@@ -1089,6 +1086,13 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
   QPointF itemTransformOrigin = mapFromScene( transformOrigin );
 
   refreshItemRotation( &itemTransformOrigin );
+}
+
+QgsExpressionContext QgsLayoutItem::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
+  return context;
 }
 
 
@@ -1264,12 +1268,12 @@ bool QgsLayoutItem::shouldDrawAntialiased() const
   {
     return true;
   }
-  return mLayout->context().testFlag( QgsLayoutContext::FlagAntialiasing ) && !mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
+  return mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagAntialiasing ) && !mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
 }
 
 bool QgsLayoutItem::shouldDrawDebugRect() const
 {
-  return mLayout && mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
+  return mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
 }
 
 QSizeF QgsLayoutItem::applyMinimumSize( const QSizeF &targetSize )

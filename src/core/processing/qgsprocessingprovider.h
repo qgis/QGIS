@@ -66,8 +66,17 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * should be a unique, short, character only string, eg "qgis" or "gdal". This
      * string should not be localised.
      * \see name()
+     * \see helpId()
      */
     virtual QString id() const = 0;
+
+    /**
+     * Returns the provider help id string, used for creating QgsHelp urls for algorithms
+     * belong to this provider. By default, this returns the provider's id(). This string
+     * should not be localised.
+     * \see id()
+     */
+    virtual QString helpId() const;
 
     /**
      * Returns the provider name, which is used to describe the provider within the GUI.
@@ -146,10 +155,18 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     /**
      * Returns true if the provider supports non-file based outputs (such as memory layers
-     * or direct database outputs).
+     * or direct database outputs). If a provider returns false for this method than it
+     * indicates that none of the outputs from any of the provider's algorithms have
+     * support for non-file based outputs. Returning true indicates that the algorithm's
+     * parameters will each individually declare their non-file based support.
+     *
+     * The default behavior for providers is to support non-file based outputs, and most
+     * providers which rely solely on QGIS API (and which do not depend on third-party scripts
+     * or external dependencies) will automatically support this.
+     *
      * \see supportedOutputVectorLayerExtensions()
      */
-    virtual bool supportsNonFileBasedOutput() const { return false; }
+    virtual bool supportsNonFileBasedOutput() const;
 
     /**
      * Loads the provider. This will be called when the plugin is being loaded, and any general

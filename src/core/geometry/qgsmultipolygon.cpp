@@ -158,7 +158,7 @@ bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
 
-  return QgsGeometryCollection::addGeometry( g );
+  return QgsGeometryCollection::addGeometry( g ); // clazy:exclude=skipped-base-method
 }
 
 bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )

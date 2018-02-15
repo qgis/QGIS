@@ -72,6 +72,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
+      FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -205,7 +206,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * alphanumeric characters only and no spaces or other formatting characters.
      * \see group()
      */
-    virtual QString groupId() const { return QString(); };
+    virtual QString groupId() const { return QString(); }
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
@@ -246,7 +247,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Returns a matching parameter by \a name. Matching is done in a case-insensitive
-     * manner.
+     * manner, but exact case matches will be preferred.
      * \see parameterDefinitions()
      */
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;

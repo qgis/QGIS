@@ -22,14 +22,13 @@
 #include "qgslayoutmodel.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapsettings.h"
-#include "qgscomposermap.h"
+#include "qgslayoutitemmap.h"
 #include "qgssettings.h"
 
 #include "qgswebview.h"
@@ -49,9 +48,9 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mDistanceArea.reset( new QgsDistanceArea() );
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
-  //get default composer font from settings
+  //get default layout font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -66,15 +65,6 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   //a label added while atlas preview is enabled needs to have the expression context set,
   //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
   refreshExpressionContext();
-
-  if ( mLayout )
-  {
-#if 0 //TODO
-    //connect to atlas feature changes
-    //to update the expression context
-    connect( &mLayout->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemLabel::refreshExpressionContext );
-#endif
-  }
 
   mWebPage.reset( new QgsWebPage( this ) );
   mWebPage->setIdentifier( tr( "Layout label item" ) );
@@ -102,6 +92,11 @@ int QgsLayoutItemLabel::type() const
   return QgsLayoutItemRegistry::LayoutLabel;
 }
 
+QIcon QgsLayoutItemLabel::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLabel.svg" ) );
+}
+
 void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   QPainter *painter = context.painter();
@@ -110,7 +105,7 @@ void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGrap
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.scaleFactor(), context.scaleFactor() );
 
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
   double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
   QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
@@ -200,7 +195,7 @@ double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
   }
 
   //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->context().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 72
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 72
 }
 
 void QgsLayoutItemLabel::setText( const QString &text )
@@ -239,14 +234,7 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   if ( !mLayout )
     return;
 
-  QgsVectorLayer *layer = nullptr;
-#if 0 //TODO
-  if ( mComposition->atlasComposition().enabled() )
-  {
-    layer = mComposition->atlasComposition().coverageLayer();
-  }
-#endif
-
+  QgsVectorLayer *layer = mLayout->reportContext().layer();
   //setup distance area conversion
   if ( layer )
   {
@@ -254,12 +242,10 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   }
   else
   {
-#if 0 //TODO
     //set to composition's reference map's crs
-    QgsLayoutItemMap *referenceMap = mComposition->referenceMap();
+    QgsLayoutItemMap *referenceMap = mLayout->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs() );
-#endif
+      mDistanceArea->setSourceCrs( referenceMap->crs(), mLayout->project()->transformContext() );
   }
   mDistanceArea->setEllipsoid( mLayout->project()->ellipsoid() );
   contentChanged();
@@ -345,7 +331,7 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
   double textWidth = QgsLayoutUtils::textWidthMM( mFont, currentText() );
   double fontHeight = QgsLayoutUtils::fontHeightMM( mFont );
 
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
   double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
   double height = fontHeight + 2 * mMarginY + 2 * penWidth;
@@ -358,26 +344,26 @@ QFont QgsLayoutItemLabel::font() const
   return mFont;
 }
 
-bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &composerLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
+bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  composerLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
 
-  composerLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
-  composerLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
-  composerLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
-  composerLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
-  composerLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
-  composerLabelElem.appendChild( labelFontElem );
+  layoutLabelElem.appendChild( labelFontElem );
 
   //font color
   QDomElement fontColorElem = doc.createElement( QStringLiteral( "FontColor" ) );
   fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
   fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
   fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
-  composerLabelElem.appendChild( fontColorElem );
+  layoutLabelElem.appendChild( fontColorElem );
 
   return true;
 }
@@ -469,7 +455,7 @@ QString QgsLayoutItemLabel::displayName() const
 QRectF QgsLayoutItemLabel::boundingRect() const
 {
   QRectF rectangle = rect();
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
 
   if ( mMarginX < 0 )
@@ -498,7 +484,8 @@ void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement &stroke
 
 void QgsLayoutItemLabel::refresh()
 {
-  contentChanged();
+  QgsLayoutItem::refresh();
+  refreshExpressionContext();
 }
 
 void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const

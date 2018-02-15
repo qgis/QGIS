@@ -307,7 +307,7 @@ remove argument
     void FallBackToPublic();
 
   private:
-    void ShowThisPrivateOne() ;
+    void ShowThisPrivateOne();
 };
 
 class ClassWithPrivateInheritanceOnly /Abstract/

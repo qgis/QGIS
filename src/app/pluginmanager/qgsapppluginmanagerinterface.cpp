@@ -73,7 +73,7 @@ void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QStr
   mPluginManager->addToRepositoryList( repository );
 }
 
-void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsAppPluginManagerInterface::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
 {
   mPluginManager->pushMessage( text, level, duration );
 }

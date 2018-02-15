@@ -25,6 +25,7 @@
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsspinbox.h"
+#include "qgsgeometryutils.h"
 #include <memory>
 #include <QMouseEvent>
 
@@ -61,12 +62,14 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     }
     if ( mPoints.size() == 4 )
     {
-      QgsPointXY ptInter = intersect( QgsPointXY( mPoints.at( 0 ) ), QgsPointXY( mPoints.at( 1 ) ),
-                                      QgsPointXY( mPoints.at( 2 ) ), QgsPointXY( mPoints.at( 3 ) ) );
-      if ( ptInter == QgsPointXY() )
+      bool isIntersect = false;
+      QgsPoint ptInter;
+      QgsGeometryUtils::segmentIntersection( mPoints.at( 0 ), mPoints.at( 1 ),
+                                             mPoints.at( 2 ), mPoints.at( 3 ), ptInter, isIntersect );
+      if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
-            QgsMessageBar::CRITICAL, QgisApp::instance()->messageTimeout() );
+            Qgis::Critical, QgisApp::instance()->messageTimeout() );
         deactivate();
       }
       else
@@ -144,64 +147,6 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsPointXY QgsMapToolCircle2TangentsPoint::intersect( QgsPointXY seg1_pt1, QgsPointXY seg1_pt2, QgsPointXY seg2_pt1, QgsPointXY seg2_pt2 )
-{
-  /*
-   * Public domain function by Darel Rex Finley, 2006
-   * http://alienryderflex.com/intersect/
-   */
-  QgsPointXY ptInter;
-
-  double Ax = seg1_pt1.x();
-  double Ay = seg1_pt1.y();
-  double Bx = seg1_pt2.x();
-  double By = seg1_pt2.y();
-
-  double Cx = seg2_pt1.x();
-  double Cy = seg2_pt1.y();
-  double Dx = seg2_pt2.x();
-  double Dy = seg2_pt2.y();
-
-  if ( ( ( Ax == Bx ) && ( Ay == By ) ) || ( ( Cx == Dx ) && ( Cy == Dy ) ) )
-    return ptInter;
-
-  // (1) Translate the system so that point A is on the origin.
-  Bx -= Ax;
-  By -= Ay;
-  Cx -= Ax;
-  Cy -= Ay;
-  Dx -= Ax;
-  Dy -= Ay;
-
-  // Discover the length of segment A-B
-  double distAB = sqrt( Bx * Bx + By * By );
-
-  // (2) Rotate the system so that point B is on the positive X axis.
-  double theCos = Bx / distAB;
-  double theSin = By / distAB;
-  double newX = Cx * theCos + Cy * theSin;
-  Cy = Cy * theCos - Cx * theSin;
-  Cx = newX;
-  newX = Dx * theCos + Dy * theSin;
-  Dy = Dy * theCos - Dx * theSin;
-  Dx = newX;
-
-  // Fail if the lines are parallel.
-  if ( Cy == Dy )
-    return ptInter;
-
-  // (3) Discover the position of the intersection point along line A-B.
-  double ABpos = Dx + ( Cx - Dx ) * Dy / ( Dy - Cy );
-
-  // (4) Apply the discovered position to line A-B
-  // in the original coordinate system.
-  ptInter.setX( Ax + ABpos * theCos );
-  ptInter.setY( Ay + ABpos * theSin );
-
-  // Success
-  return ptInter;
-}
-
 void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
 {
 
@@ -226,20 +171,20 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
     QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
 
-    QgsPointXY p1 = intersect( line1m.asPolyline().at( 0 ), line1m.asPolyline().at( 1 ),
-                               line2m.asPolyline().at( 0 ), line2m.asPolyline().at( 1 ) );
-    QgsPointXY p2 = intersect( line1m.asPolyline().at( 0 ), line1m.asPolyline().at( 1 ),
-                               line2p.asPolyline().at( 0 ), line2p.asPolyline().at( 1 ) );
-    QgsPointXY p3 = intersect( line1p.asPolyline().at( 0 ), line1p.asPolyline().at( 1 ),
-                               line2m.asPolyline().at( 0 ), line2m.asPolyline().at( 1 ) );
-    QgsPointXY p4 = intersect( line1p.asPolyline().at( 0 ), line1p.asPolyline().at( 1 ),
-                               line2p.asPolyline().at( 0 ), line2p.asPolyline().at( 1 ) );
-
-    mCenters.append( p1 );
-    mCenters.append( p2 );
-    mCenters.append( p3 );
-    mCenters.append( p4 );
-
+    bool isIntersect = false;
+    QgsPoint inter;
+    QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
+                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
+    mCenters.append( QgsPointXY( inter ) );
+    QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
+                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
+    mCenters.append( QgsPointXY( inter ) );
+    QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
+                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
+    mCenters.append( QgsPointXY( inter ) );
+    QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
+                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
+    mCenters.append( QgsPointXY( inter ) );
   }
 }
 

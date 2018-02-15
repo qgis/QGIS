@@ -62,7 +62,7 @@ ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS} ${DB2_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (db2provider
   qgis_core
-  ${QT_QTSQL_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
 )
 
 IF (WITH_GUI)

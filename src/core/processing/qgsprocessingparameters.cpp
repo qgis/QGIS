@@ -466,6 +466,8 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   if ( !definition )
     return QgsCoordinateReferenceSystem();
 
+  QVariant val = parameters.value( definition->name() );
+
   QString crsText = parameterAsString( definition, parameters, context );
   if ( crsText.isEmpty() )
     crsText = definition->defaultValue().toString();
@@ -478,7 +480,9 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
     return context.project()->crs();
 
   // maybe a map layer reference
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+    return layer->crs();
+  else if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
     return layer->crs();
 
   // else CRS from string
@@ -517,13 +521,16 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     return rr;
   }
 
+  // maybe parameter is a direct layer value?
+  QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) );
+
   QString rectText;
   if ( val.canConvert<QgsProperty>() )
     rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else
     rectText = val.toString();
 
-  if ( rectText.isEmpty() )
+  if ( rectText.isEmpty() && !layer )
     return QgsRectangle();
 
   QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?),\\s*(.*?),\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
@@ -559,7 +566,10 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   }
 
   // try as layer extent
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( rectText, context ) )
+  if ( !layer )
+    layer = QgsProcessingUtils::mapLayerFromString( rectText, context );
+
+  if ( layer )
   {
     QgsRectangle rect = layer->extent();
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
@@ -650,7 +660,13 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
   }
 
   // try as layer extent
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( rectText, context ) )
+
+  // maybe parameter is a direct layer value?
+  QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) );
+  if ( !layer )
+    layer = QgsProcessingUtils::mapLayerFromString( rectText, context );
+
+  if ( layer )
   {
     QgsRectangle rect = layer->extent();
     QgsGeometry g = QgsGeometry::fromRect( rect );
@@ -698,10 +714,10 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
   }
 
   // try as layer crs
-  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( valueAsString, context ) )
-  {
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
     return layer->crs();
-  }
+  else if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( valueAsString, context ) )
+    return layer->crs();
 
   if ( context.project() )
     return context.project()->crs();
@@ -1308,6 +1324,10 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
     return true;
   }
 
+  // direct map layer value
+  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+    return true;
+
   if ( input.type() != QVariant::String || input.toString().isEmpty() )
     return mFlags & FlagOptional;
 
@@ -1423,6 +1443,10 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
     QgsReferencedRectangle r = input.value<QgsReferencedRectangle>();
     return !r.isNull();
   }
+
+  // direct map layer value
+  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+    return true;
 
   if ( input.type() != QVariant::String || input.toString().isEmpty() )
     return mFlags & FlagOptional;
@@ -2040,7 +2064,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterNumber::dataType() cons
   return mDataType;
 }
 
-void QgsProcessingParameterNumber::setDataType( const Type &dataType )
+void QgsProcessingParameterNumber::setDataType( Type dataType )
 {
   mDataType = dataType;
 }
@@ -2143,7 +2167,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
   return mDataType;
 }
 
-void QgsProcessingParameterRange::setDataType( const QgsProcessingParameterNumber::Type &dataType )
+void QgsProcessingParameterRange::setDataType( QgsProcessingParameterNumber::Type dataType )
 {
   mDataType = dataType;
 }
@@ -2763,7 +2787,7 @@ QgsProcessingParameterField::DataType QgsProcessingParameterField::dataType() co
   return mDataType;
 }
 
-void QgsProcessingParameterField::setDataType( const DataType &dataType )
+void QgsProcessingParameterField::setDataType( DataType dataType )
 {
   mDataType = dataType;
 }
@@ -3185,7 +3209,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
 {
-  if ( supportsNonFileBasedOutputs() )
+  if ( supportsNonFileBasedOutput() )
     return QStringLiteral( "memory:%1" ).arg( description() );
   else
     return QgsProcessingDestinationParameter::generateTemporaryDestination();

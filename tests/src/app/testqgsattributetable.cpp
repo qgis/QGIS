@@ -252,7 +252,7 @@ void TestQgsAttributeTable::testRegression15974()
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;
   geom = QgsGeometry().fromWkt( QStringLiteral( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" ) );
-  Q_ASSERT( geom.isGeosValid() );
+  QVERIFY( geom.isGeosValid() );
   f1.setGeometry( geom );
   QgsFeature f2( shpLayer->dataProvider()->fields(), 2 );
   f2.setGeometry( geom );

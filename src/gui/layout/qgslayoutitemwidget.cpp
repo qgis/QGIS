@@ -18,6 +18,8 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslayoutundostack.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 //
 // QgsLayoutConfigObject
@@ -27,11 +29,15 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
   : QObject( parent )
   , mLayoutObject( layoutObject )
 {
-#if 0 //TODO
-  connect( atlasComposition(), &QgsAtlasComposition::coverageLayerChanged,
-           this, [ = ] { updateDataDefinedButtons(); } );
-  connect( atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerConfigObject::updateDataDefinedButtons );
-#endif
+  if ( mLayoutObject->layout() )
+  {
+    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
+             this, [ = ] { updateDataDefinedButtons(); } );
+  }
+  if ( layoutAtlas() )
+  {
+    connect( layoutAtlas(), &QgsLayoutAtlas::toggled, this, &QgsLayoutConfigObject::updateDataDefinedButtons );
+  }
 }
 
 void QgsLayoutConfigObject::updateDataDefinedProperty()
@@ -62,12 +68,11 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
 
 void QgsLayoutConfigObject::updateDataDefinedButtons()
 {
-#if 0 //TODO
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const QList< QgsPropertyOverrideButton * > buttons = findChildren< QgsPropertyOverrideButton * >();
+  for ( QgsPropertyOverrideButton *button : buttons )
   {
-    button->setVectorLayer( atlasCoverageLayer() );
+    button->setVectorLayer( coverageLayer() );
   }
-#endif
 }
 
 void QgsLayoutConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty key )
@@ -91,24 +96,22 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
 }
 
-#if 0 // TODO
-QgsAtlasComposition *QgsLayoutConfigObject::atlasComposition() const
+QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
 {
   if ( !mLayoutObject )
   {
     return nullptr;
   }
 
-  QgsComposition *composition = mComposerObject->composition();
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayoutObject->layout() );
 
-  if ( !composition )
+  if ( !printLayout )
   {
     return nullptr;
   }
 
-  return &composition->atlasComposition();
+  return printLayout->atlas();
 }
-#endif
 
 QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
 {
@@ -119,7 +122,7 @@ QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
   if ( !layout )
     return nullptr;
 
-  return layout->context().layer();
+  return layout->reportContext().layer();
 }
 
 
@@ -151,6 +154,10 @@ bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
   return false;
 }
 
+void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
+{
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
@@ -171,13 +178,10 @@ bool QgsLayoutItemBaseWidget::setNewItem( QgsLayoutItem * )
   return false;
 }
 
-#if 0 //TODO
-QgsAtlasComposition *QgsLayoutItemBaseWidget::atlasComposition() const
+QgsLayoutAtlas *QgsLayoutItemBaseWidget::layoutAtlas() const
 {
-  return mConfigObject->atlasComposition();
+  return mConfigObject->layoutAtlas();
 }
-#endif
-
 
 //
 
@@ -186,6 +190,9 @@ QgsAtlasComposition *QgsLayoutItemBaseWidget::atlasComposition() const
 
 void QgsLayoutItemPropertiesWidget::updateVariables()
 {
+  if ( !mItem )
+    return;
+
   QgsExpressionContext context = mItem->createExpressionContext();
   mVariableEditor->setContext( &context );
   int editableIndex = context.indexOfScope( tr( "Layout Item" ) );
@@ -201,15 +208,15 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
-  mStrokeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
+  mStrokeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
   mPosUnitsComboBox->linkToWidget( mYPosSpin );
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
   mSizeUnitsComboBox->linkToWidget( mHeightSpin );
 
-  mPosUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
-  mSizeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
+  mPosUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
 
   mPosLockAspectRatio->setWidthSpinBox( mXPosSpin );
   mPosLockAspectRatio->setHeightSpinBox( mYPosSpin );
@@ -259,10 +266,6 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
   initializeDataDefinedButtons();
 
-#if 0 //TODO
-  connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-#endif
-
   setItem( item );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
@@ -295,8 +298,11 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
     disconnect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
   }
   mItem = item;
-  connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-  connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  if ( mItem )
+  {
+    connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
+    connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  }
 
   setValuesForGuiElements();
 }
@@ -329,6 +335,9 @@ void QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged( const Q
 
 void QgsLayoutItemPropertiesWidget::changeItemPosition()
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
 
   QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
@@ -339,6 +348,9 @@ void QgsLayoutItemPropertiesWidget::changeItemPosition()
 
 void QgsLayoutItemPropertiesWidget::changeItemReference( QgsLayoutItem::ReferencePoint point )
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item Reference" ) );
   mItem->setReferencePoint( point );
   mItem->layout()->undoStack()->endCommand();
@@ -346,6 +358,9 @@ void QgsLayoutItemPropertiesWidget::changeItemReference( QgsLayoutItem::Referenc
 
 void QgsLayoutItemPropertiesWidget::changeItemSize()
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Resize Item" ), QgsLayoutItem::UndoIncrementalResize );
 
   QgsLayoutSize size( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
@@ -356,9 +371,10 @@ void QgsLayoutItemPropertiesWidget::changeItemSize()
 
 void QgsLayoutItemPropertiesWidget::variablesChanged()
 {
-#if 0 //TODO
-  QgsExpressionContextUtils::setComposerItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
-#endif
+  if ( !mItem )
+    return;
+
+  QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
 }
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const
@@ -606,7 +622,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth().length() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
-  mFrameGroupBox->setChecked( mItem->hasFrame() );
+  mFrameGroupBox->setChecked( mItem->frameEnabled() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mOpacityWidget->setOpacity( mItem->itemOpacity() );

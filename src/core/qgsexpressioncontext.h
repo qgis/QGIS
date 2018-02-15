@@ -40,6 +40,8 @@ class QgsProject;
 class QgsSymbol;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
+class QgsLayoutAtlas;
+class QgsLayoutItem;
 
 /**
  * \ingroup core
@@ -864,34 +866,6 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 
     /**
-     * Creates a new scope which contains variables and functions relating to a QgsComposition.
-     * For instance, number of pages and page sizes.
-     * \param composition source composition
-     */
-    static QgsExpressionContextScope *compositionScope( const QgsComposition *composition ) SIP_FACTORY;
-
-    /**
-     * Sets a composition context variable. This variable will be contained within scopes retrieved via
-     * compositionScope().
-     * \param composition target composition
-     * \param name variable name
-     * \param value variable value
-     * \see setCompositionVariables()
-     * \see compositionScope()
-     */
-    static void setCompositionVariable( QgsComposition *composition, const QString &name, const QVariant &value );
-
-    /**
-     * Sets all composition context variables. Existing composition variables will be removed and replaced
-     * with the variables specified.
-     * \param composition target composition
-     * \param variables new set of layer variables
-     * \see setCompositionVariable()
-     * \see compositionScope()
-     */
-    static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
-
-    /**
      * Creates a new scope which contains variables and functions relating to a QgsLayout \a layout.
      * For instance, number of pages and page sizes.
      * \since QGIS 3.0
@@ -922,39 +896,39 @@ class CORE_EXPORT QgsExpressionContextUtils
     static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 
     /**
-     * Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
      * For instance, current page name and number.
      * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
+    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
 
     /**
-     * Creates a new scope which contains variables and functions relating to a QgsComposerItem.
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
      * For instance, item size and position.
-     * \param composerItem source composer item
+     * \since QGIS 3.0
+     * \see setLayoutItemVariable()
+     * \see setLayoutItemVariables()
      */
-    static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) SIP_FACTORY;
+    static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
 
     /**
-     * Sets a composer item context variable. This variable will be contained within scopes retrieved via
-     * composerItemScope().
-     * \param composerItem target composer item
-     * \param name variable name
-     * \param value variable value
-     * \see setComposerItemVariables()
-     * \see composerItemScope()
+     * Sets a layout \a item context variable, with the given \a name and \a value.
+     * This variable will be contained within scopes retrieved via
+     * layoutItemScope().
+     * \see setLayoutItemVariables()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
      */
-    static void setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value );
+    static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
 
     /**
-     * Sets all composition context variables. Existing compositoin variables will be removed and replaced
-     * with the variables specified.
-     * \param composerItem target composer item
-     * \param variables new set of layer variables
-     * \see setComposerItemVariable()
-     * \see composerItemScope()
+     * Sets all layout item context variables for an \a item. Existing variables will be removed and replaced
+     * with the \a variables specified.
+     * \see setLayoutItemVariable()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
      */
-    static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields

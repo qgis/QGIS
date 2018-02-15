@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -67,8 +67,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>798</width>
-            <height>668</height>
+            <width>800</width>
+            <height>670</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -318,7 +318,7 @@
             <item>
              <widget class="QLabel" name="label_23">
               <property name="text">
-               <string>Available categories</string>
+               <string>ISO categories</string>
               </property>
              </widget>
             </item>
@@ -329,6 +329,9 @@
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
               </property>
              </widget>
             </item>
@@ -350,20 +353,6 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btnNewCategory">
-              <property name="toolTip">
-               <string>Create a new category</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="btnAddDefaultCategory">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -372,7 +361,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Add category to selection</string>
+               <string>Add selected ISO categories to metadata</string>
               </property>
               <property name="text">
                <string/>
@@ -381,11 +370,19 @@
                <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionArrowRight.svg</normaloff>:/images/themes/default/mActionArrowRight.svg</iconset>
               </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>18</height>
-               </size>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnNewCategory">
+              <property name="toolTip">
+               <string>Add a new custom category to the metadata</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
             </item>
@@ -398,14 +395,14 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Remove category from selection</string>
+               <string>Remove selected categories from metadata</string>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionArrowLeft.svg</normaloff>:/images/themes/default/mActionArrowLeft.svg</iconset>
+                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
              </widget>
             </item>
@@ -441,6 +438,9 @@
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
              </widget>
             </item>
            </layout>
@@ -461,6 +461,9 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keywords are optional, and provide a way to provide additional descriptive information about the dataset. Edits made in the categories tab will update the category entry below. For the concept, we suggest to use a standard based vocabulary such as &lt;a href=&quot;https://www.eionet.europa.eu/gemet/en/inspire-themes/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GEMET.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="openExternalLinks">
           <bool>true</bool>
          </property>
         </widget>
@@ -571,8 +574,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>798</width>
-            <height>668</height>
+            <width>800</width>
+            <height>670</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -977,8 +980,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>754</width>
-              <height>608</height>
+              <width>778</width>
+              <height>628</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -1169,7 +1172,7 @@
                  <string>Administrative Area</string>
                 </property>
                 <property name="toolTip">
-                 <string>Administrative area (state, provice/territory, etc.)</string>
+                 <string>Administrative area (state, province/territory, etc.)</string>
                 </property>
                </column>
                <column>
@@ -1411,7 +1414,91 @@
    <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>lineEditParentId</tabstop>
+  <tabstop>lineEditIdentifier</tabstop>
+  <tabstop>btnAutoSource</tabstop>
+  <tabstop>lineEditTitle</tabstop>
+  <tabstop>comboType</tabstop>
+  <tabstop>comboLanguage</tabstop>
+  <tabstop>textEditAbstract</tabstop>
+  <tabstop>comboEncoding</tabstop>
+  <tabstop>btnAutoEncoding</tabstop>
+  <tabstop>listDefaultCategories</tabstop>
+  <tabstop>btnAddDefaultCategory</tabstop>
+  <tabstop>btnNewCategory</tabstop>
+  <tabstop>btnRemoveCategory</tabstop>
+  <tabstop>listCategories</tabstop>
+  <tabstop>btnAddVocabulary</tabstop>
+  <tabstop>btnRemoveVocabulary</tabstop>
+  <tabstop>tabKeywords</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>lineEditFees</tabstop>
+  <tabstop>btnAddLicence</tabstop>
+  <tabstop>btnRemoveLicence</tabstop>
+  <tabstop>tabLicenses</tabstop>
+  <tabstop>btnAddRight</tabstop>
+  <tabstop>btnRemoveRight</tabstop>
+  <tabstop>listRights</tabstop>
+  <tabstop>btnAddConstraint</tabstop>
+  <tabstop>btnRemoveConstraint</tabstop>
+  <tabstop>tabConstraints</tabstop>
+  <tabstop>btnSetCrsFromLayer</tabstop>
+  <tabstop>btnSetCrsFromProvider</tabstop>
+  <tabstop>spinBoxZMaximum</tabstop>
+  <tabstop>spinBoxZMinimum</tabstop>
+  <tabstop>dateTimeFrom</tabstop>
+  <tabstop>dateTimeTo</tabstop>
+  <tabstop>panelDetails</tabstop>
+  <tabstop>lineEditContactPosition</tabstop>
+  <tabstop>lineEditContactName</tabstop>
+  <tabstop>lineEditContactOrganization</tabstop>
+  <tabstop>lineEditContactVoice</tabstop>
+  <tabstop>lineEditContactFax</tabstop>
+  <tabstop>comboContactRole</tabstop>
+  <tabstop>lineEditContactEmail</tabstop>
+  <tabstop>tabAddresses</tabstop>
+  <tabstop>btnAddAddress</tabstop>
+  <tabstop>btnRemoveAddress</tabstop>
+  <tabstop>btnAddLink</tabstop>
+  <tabstop>btnRemoveLink</tabstop>
+  <tabstop>tabLinks</tabstop>
+  <tabstop>btnAddHistory</tabstop>
+  <tabstop>btnRemoveHistory</tabstop>
+  <tabstop>listHistory</tabstop>
+  <tabstop>resultsCheckMetadata</tabstop>
+ </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

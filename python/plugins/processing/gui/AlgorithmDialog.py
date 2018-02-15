@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
 from qgis.PyQt.QtGui import QColor, QPalette
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
@@ -53,7 +54,7 @@ from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import executeIterating
+from processing.gui.AlgorithmExecutor import executeIterating, execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.tools import dataobjects
@@ -63,6 +64,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def __init__(self, alg):
         super().__init__()
+        self.feedback_dialog = None
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
@@ -79,6 +81,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg = BatchAlgorithmDialog(self.algorithm())
         dlg.show()
         dlg.exec_()
+
+    def setParameters(self, parameters):
+        self.mainWidget().setParameters(parameters)
 
     def getParameterValues(self):
         parameters = {}
@@ -193,12 +198,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.clearProgress()
             self.setProgressText(self.tr('Processing algorithm...'))
-            # Make sure the Log tab is visible before executing the algorithm
-            try:
-                self.showLog()
-                self.repaint()
-            except:
-                pass
 
             self.setInfo(
                 self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.algorithm().displayName()), escapeHtml=False)
@@ -212,6 +211,13 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             start_time = time.time()
 
             if self.iterateParam:
+                # Make sure the Log tab is visible before executing the algorithm
+                try:
+                    self.showLog()
+                    self.repaint()
+                except:
+                    pass
+
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 if executeIterating(self.algorithm(), parameters, self.iterateParam, context, feedback):
                     feedback.pushInfo(
@@ -237,12 +243,27 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                             self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
                     feedback.pushInfo('')
 
+                    if self.feedback_dialog is not None:
+                        self.feedback_dialog.close()
+                        self.feedback_dialog.deleteLater()
+                        self.feedback_dialog = None
+
                     self.cancelButton().setEnabled(False)
+
                     self.finish(ok, results, context, feedback)
 
-                task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
-                task.executed.connect(on_complete)
-                QgsApplication.taskManager().addTask(task)
+                if not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
+                    # Make sure the Log tab is visible before executing the algorithm
+                    self.showLog()
+
+                    task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
+                    task.executed.connect(on_complete)
+                    self.setCurrentTask(task)
+                else:
+                    self.feedback_dialog = self.createProgressDialog()
+                    self.feedback_dialog.show()
+                    ok, results = execute(self.algorithm(), parameters, context, feedback)
+                    on_complete(ok, results)
 
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
@@ -255,7 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 pass
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
-                                          level=QgsMessageBar.WARNING, duration=5)
+                                          level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
@@ -265,7 +286,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
                 if isinstance(out, QgsProcessingOutputHtml) and out.name() in result and result[out.name()]:
-                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(),
+                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(), timestamp=time.localtime(),
                                           result=result[out.name()])
 
             if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen):
@@ -273,6 +294,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 return
 
         self.setExecuted(True)
+        self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
 
         if not keepOpen:

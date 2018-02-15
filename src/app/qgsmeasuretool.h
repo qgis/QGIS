@@ -24,7 +24,7 @@ class QgsDistanceArea;
 class QgsMapCanvas;
 class QgsMeasureDialog;
 class QgsRubberBand;
-
+class QgsSnapIndicator;
 
 
 class APP_EXPORT QgsMeasureTool : public QgsMapTool
@@ -102,9 +102,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! Destination CoordinateReferenceSystem used by the MapCanvas
     QgsCoordinateReferenceSystem mDestinationCrs;
 
-    //! Returns the snapped (map) coordinate
-    //\param p (pixel) coordinate
-    QgsPointXY snapPoint( QPoint p );
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     //! Removes the last vertex from mRubberBand
     void undo();

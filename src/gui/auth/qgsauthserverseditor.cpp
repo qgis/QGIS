@@ -298,13 +298,13 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config id missing" ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config host:port missing" ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
 
@@ -330,7 +330,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   {
     messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication database for host:port, id %1:" )
                                .arg( hostport, digest ),
-                               QgsMessageBar::CRITICAL );
+                               Qgis::Critical );
     return;
   }
 
@@ -354,13 +354,13 @@ void QgsAuthServersEditor::btnEditServer_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config id missing." ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config host:port missing." ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
 
@@ -398,7 +398,7 @@ void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 void QgsAuthServersEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = ( int )level;
-  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
 void QgsAuthServersEditor::showEvent( QShowEvent *e )

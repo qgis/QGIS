@@ -41,8 +41,14 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     QgsCurve() = default;
 
-    virtual bool operator==( const QgsCurve &other ) const = 0;
-    virtual bool operator!=( const QgsCurve &other ) const = 0;
+    /**
+     * Checks whether this curve exactly equals another curve.
+     * \since QGIS 3.0
+     */
+    virtual bool equals( const QgsCurve &other ) const = 0;
+
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
 
     QgsCurve *clone() const override = 0 SIP_FACTORY;
 

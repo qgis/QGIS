@@ -24,6 +24,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutpagecollection.h"
 #include <QObject>
@@ -42,6 +43,7 @@ class TestQgsLayoutPage : public QObject
     void pageSize();
     void decodePageOrientation();
     void grid();
+    void defaultPaper();
     void transparentPaper(); //test totally transparent paper style
     void borderedPaper(); //test page with border
     void markerLinePaper(); //test page with marker line borde
@@ -170,6 +172,19 @@ void TestQgsLayoutPage::grid()
 
 }
 
+void TestQgsLayoutPage::defaultPaper()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_default" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
 void TestQgsLayoutPage::transparentPaper()
 {
   QgsProject p;
@@ -220,6 +235,7 @@ void TestQgsLayoutPage::markerLinePaper()
   l.pageCollection()->addPage( page.release() );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  static_cast< QgsSimpleMarkerSymbolLayer * >( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   std::unique_ptr< QgsFillSymbol > markerLineSymbol = qgis::make_unique< QgsFillSymbol >();
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
@@ -244,7 +260,7 @@ void TestQgsLayoutPage::hiddenPages()
   simpleFill->setStrokeColor( Qt::transparent );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  l.context().setPagesVisible( false );
+  l.renderContext().setPagesVisible( false );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpaper_hidden" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );

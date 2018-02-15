@@ -37,3 +37,4 @@ PyQgsLocator
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
+

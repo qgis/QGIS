@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 import tempfile
 import shutil
 import glob
@@ -209,7 +210,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.selectByIds(ids)
         self.assertEqual(vl.selectedFeatureIds(), ids)
-        self.assertEqual(vl.pendingFeatureCount(), 5)
+        self.assertEqual(vl.featureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))
         self.assertTrue(vl.commitChanges())
@@ -611,6 +612,65 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
+
+    def testSubSetStringEditable_bug17795(self):
+        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('"Name" = \'Arterial\'')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = TEST_DATA_DIR + '/' + 'points.shp'
+        subSetString = '"Class" = \'Biplane\''
+        subSet = '|layerid=0|subset=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'ogr')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
 
 if __name__ == '__main__':

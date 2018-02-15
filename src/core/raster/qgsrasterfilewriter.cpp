@@ -996,7 +996,7 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
     if ( drv )
     {
       char **driverMetadata = GDALGetMetadata( drv, nullptr );
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
       {
         QString drvName = GDALGetDriverShortName( drv );
         QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
@@ -1018,7 +1018,7 @@ QStringList QgsRasterFileWriter::extensionsForFormat( const QString &format )
   if ( drv )
   {
     char **driverMetadata = GDALGetMetadata( drv, nullptr );
-    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
     {
       return QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
     }

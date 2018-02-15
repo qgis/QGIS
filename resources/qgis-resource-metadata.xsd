@@ -257,7 +257,7 @@
 					<xs:documentation>Position/title of contact.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="address" type="rm:addressType" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="contactAddress" type="rm:addressType" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Address associated with a given contact.</xs:documentation>
 				</xs:annotation>
@@ -303,7 +303,7 @@
 			</xs:element>
 			<xs:element name="administrativearea" type="xs:string" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>Administrative area (state, provice/territory, etc.).</xs:documentation>
+					<xs:documentation>Administrative area (state, province/territory, etc.).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="postalcode" type="xs:string" minOccurs="0">

@@ -25,7 +25,7 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name, const Flags &flags )
+QgsTask::QgsTask( const QString &name, Flags flags )
   : mFlags( flags )
   , mDescription( name )
 {
@@ -605,6 +605,12 @@ int QgsTaskManager::countActiveTasks() const
   QMutexLocker ml( mTaskMutex );
   QSet< QgsTask * > tasks = mActiveTasks;
   return tasks.intersect( mParentTasks ).count();
+}
+
+void QgsTaskManager::triggerTask( QgsTask *task )
+{
+  if ( task )
+    emit taskTriggered( task );
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )

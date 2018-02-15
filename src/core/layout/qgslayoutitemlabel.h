@@ -57,6 +57,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     static QgsLayoutItemLabel *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
+    QIcon icon() const override;
     //Overridden to contain part of label's text
     QString displayName() const override;
 
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * \see currentText()
      * \see setText()
      */
-    QString text() { return mText; }
+    QString text() const { return mText; }
 
     /**
      * Sets the label's preset \a text.

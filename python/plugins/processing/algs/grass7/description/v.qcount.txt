@@ -2,6 +2,6 @@ v.qcount
 Indices for quadrat counts of vector point lists.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Vector points layer|0|None|False
-QgsProcessingParameterNumber|nquadrats|Number of quadrats|QgsProcessingParameterNumber.Double|4|False|None|0
-QgsProcessingParameterNumber|radius|Quadrat radius|QgsProcessingParameterNumber.Double|10|False|None|0.0
+QgsProcessingParameterNumber|nquadrats|Number of quadrats|QgsProcessingParameterNumber.Integer|4|False|0|None
+QgsProcessingParameterNumber|radius|Quadrat radius|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
 QgsProcessingParameterVectorDestination|output|Quadrats

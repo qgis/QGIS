@@ -25,6 +25,7 @@ class QgsMapLayer;
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QDomElement;
 
@@ -96,8 +97,12 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    //! Construct a style manager associated with a map layer (must not be null)
-    QgsMapLayerStyleManager( QgsMapLayer *layer );
+
+    /**
+     * Construct a style manager associated with a map layer (must not be null).
+     * The style manager will be parented to \a layer.
+     */
+    QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
 
     //! Get pointer to the associated map layer
     QgsMapLayer *layer() const { return mLayer; }
@@ -164,6 +169,13 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     bool setOverrideStyle( const QString &styleDef );
     //! Restore the original store after a call to setOverrideStyle()
     bool restoreOverrideStyle();
+
+    /**
+     * Returns true if this is the default style
+     *
+     * \since QGIS 3.0
+     */
+    bool isDefault( const QString &styleName ) const;
 
   signals:
     //! Emitted when a new style has been added

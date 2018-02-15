@@ -685,9 +685,9 @@ namespace QgsWms
     return value( ParameterName::DPI ).toString();
   }
 
-  int QgsWmsParameters::dpiAsInt() const
+  double QgsWmsParameters::dpiAsDouble() const
   {
-    return toInt( ParameterName::DPI );
+    return toDouble( ParameterName::DPI );
   }
 
   QString QgsWmsParameters::version() const
@@ -1987,7 +1987,7 @@ namespace QgsWms
 
   void QgsWmsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::Info );
   }
 
   void QgsWmsParameters::raiseError( ParameterName paramName ) const

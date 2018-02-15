@@ -533,13 +533,13 @@ void TestQgsExpressionContext::takeScopes()
   auto scopes = context.takeScopes();
 
   QCOMPARE( scopes.length(), 2 );
-  Q_ASSERT( scopes.at( 0 )->hasVariable( "test_global" ) );
-  Q_ASSERT( scopes.at( 1 )->hasVariable( "test_project" ) );
+  QVERIFY( scopes.at( 0 )->hasVariable( "test_global" ) );
+  QVERIFY( scopes.at( 1 )->hasVariable( "test_project" ) );
 
   qDeleteAll( scopes );
 
-  Q_ASSERT( !context.variable( "test_global" ).isValid() );
-  Q_ASSERT( !context.variable( "test_project" ).isValid() );
+  QVERIFY( !context.variable( "test_global" ).isValid() );
+  QVERIFY( !context.variable( "test_project" ).isValid() );
 }
 
 void TestQgsExpressionContext::globalScope()

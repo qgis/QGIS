@@ -16,7 +16,7 @@
 
 #include "qgsticksscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgscomposerutils.h"
+#include "qgslayoututils.h"
 #include <QPainter>
 
 QString QgsTicksScaleBarRenderer::name() const
@@ -40,7 +40,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
 
   QPainter *painter = context.painter();
 
-  double barTopPosition = context.convertToPainterUnits( QgsComposerUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  double barTopPosition = context.convertToPainterUnits( QgsLayoutUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   double middlePosition = barTopPosition + context.convertToPainterUnits( settings.height() / 2.0, QgsUnitTypes::RenderMillimeters );
   double bottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 

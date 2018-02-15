@@ -3,9 +3,9 @@ Rectifies a vector by computing a coordinate transformation for each object in t
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Name of input vector map|-1|None|False
 QgsProcessingParameterString|inline_points|Inline control points|None|True|True
-QgsProcessingParameterFile|points|Name of input file with control points|0|txt|None|True
-QgsProcessingParameterNumber|order|Rectification polynomial order|QgsProcessingParameterNumber.Double|1|False|1|3
-QgsProcessingParameterString|separator|Field separator for RMS report|None|False|True
+QgsProcessingParameterFile|points|Name of input file with control points|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterNumber|order|Rectification polynomial order|QgsProcessingParameterNumber.Integer|1|True|1|3
+QgsProcessingParameterString|separator|Field separator for RMS report|pipe|False|True
 *QgsProcessingParameterBoolean|-3|Perform 3D transformation|False
 *QgsProcessingParameterBoolean|-o|Perform orthogonal 3D transformation|False
 *QgsProcessingParameterBoolean|-b|Do not build topology|False

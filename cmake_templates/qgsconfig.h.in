@@ -62,5 +62,7 @@
 
 #cmakedefine USE_THREAD_LOCAL
 
+#cmakedefine QGISDEBUG
+
 #endif
 

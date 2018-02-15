@@ -155,29 +155,6 @@ SIP_IF_FEATURE( TESTS )
 
 /**
  * \ingroup core
- * \class QgsCompositionChecker
- * Renders a composition to an image and compares with an expected output
- */
-class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
-{
-  public:
-    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
-
-    void setSize( QSize size ) { mSize = size; }
-
-    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
-
-  private:
-    QgsCompositionChecker(); //forbidden
-
-    QString mTestName;
-    QgsComposition *mComposition = nullptr;
-    QSize mSize;
-    int mDotsPerMeter;
-};
-
-/**
- * \ingroup core
  * \class QgsLayoutChecker
  * Renders a layout to an image and compares with an expected output
  * \since QGIS 3.0
@@ -202,12 +179,15 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
      * The maximum number of allowable pixels differing from the reference image is
      * specified via the \a pixelDiff argument.
      *
+     * A reference image can be created by setting \a createReferenceImage to true
+     * in this case the test will always return true.
+     *
      * The page number is specified via \a page, where 0 corresponds to the first
      * page in the layout.
      *
      * Returns false if the rendered layout differs from the expected reference image.
      */
-    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 
   private:
     QgsLayoutChecker() = delete;

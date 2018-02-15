@@ -230,6 +230,11 @@ QString QgsSelectByLocationAlgorithm::name() const
   return QStringLiteral( "selectbylocation" );
 }
 
+QgsProcessingAlgorithm::Flags QgsSelectByLocationAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+}
+
 QString QgsSelectByLocationAlgorithm::displayName() const
 {
   return QObject::tr( "Select by location" );

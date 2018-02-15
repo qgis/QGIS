@@ -179,7 +179,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
      */
-    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Converts an \a input parameter value for use in source iterating mode, where one individual sink

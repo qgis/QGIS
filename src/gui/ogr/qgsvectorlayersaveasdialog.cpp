@@ -73,6 +73,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged );
   connect( mSymbologyExportComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
@@ -83,9 +85,6 @@ void QgsVectorLayerSaveAsDialog::setup()
   connect( mAttributeTable, &QTableWidget::itemChanged, this, &QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
-
   const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
   for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
@@ -93,6 +92,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     mFormatComboBox->addItem( driver.longName, driver.driverName );
   }
 
+  QgsSettings settings;
   QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "GPKG" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
@@ -153,8 +153,7 @@ void QgsVectorLayerSaveAsDialog::setup()
       QFileInfo fileInfo( filePath );
       leLayername->setText( fileInfo.baseName() );
     }
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled(
-      !filePath.isEmpty() && QFileInfo( filePath ).absoluteDir().exists() );
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
 }
 
@@ -237,8 +236,6 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ), saveGeometry() );
 }
 
 void QgsVectorLayerSaveAsDialog::accept()

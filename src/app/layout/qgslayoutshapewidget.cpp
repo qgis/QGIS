@@ -30,7 +30,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   setupUi( this );
   connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
   connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
-  setPanelTitle( tr( "Shape properties" ) );
+  setPanelTitle( tr( "Shape Properties" ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, shape );
@@ -48,7 +48,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
 
   mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
   mRadiusUnitsComboBox->linkToWidget( mCornerRadiusSpinBox );
-  mRadiusUnitsComboBox->setConverter( &mShape->layout()->context().measurementConverter() );
+  mRadiusUnitsComboBox->setConverter( &mShape->layout()->renderContext().measurementConverter() );
 
   setGuiElementValues();
 
@@ -60,9 +60,11 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutShapeWidget::symbolChanged );
   connect( mRadiusUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutShapeWidget::radiusUnitsChanged );
 
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+  mShapeStyleButton->setLayer( coverageLayer() );
+  if ( mShape->layout() )
+  {
+    connect( &mShape->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mShapeStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )

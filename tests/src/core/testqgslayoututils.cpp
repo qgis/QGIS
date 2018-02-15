@@ -22,6 +22,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgsfontutils.h"
 #include "qgsrenderchecker.h"
+#include <QStyleOptionGraphicsItem>
 
 class TestQgsLayoutUtils: public QObject
 {
@@ -52,6 +53,7 @@ class TestQgsLayoutUtils: public QObject
     void drawTextRect(); //test drawing text in a rect
     void largestRotatedRect(); //test largest rotated rect helper function
     void decodePaperOrientation();
+    void scaleFactorFromItemStyle();
 
   private:
 
@@ -262,19 +264,19 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( nullptr );
+  l.renderContext().setFlags( nullptr );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -334,19 +336,19 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( 0 );
+  l.renderContext().setFlags( 0 );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -625,6 +627,15 @@ void TestQgsLayoutUtils::decodePaperOrientation()
   orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( " LANDSCAPE  " ), ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
+}
+
+void TestQgsLayoutUtils::scaleFactorFromItemStyle()
+{
+  QStyleOptionGraphicsItem style;
+  style.matrix = QMatrix( 2, 0, 0, 0, 0, 0 );
+  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
+  style.matrix = QMatrix( 0, 2, 0, 0, 0, 0 );
+  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
 }
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )

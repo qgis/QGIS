@@ -51,7 +51,8 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBand)
 from qgis.PyQt.QtCore import (Qt,
-                              QByteArray)
+                              QByteArray,
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QLabel,
@@ -66,11 +67,11 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_NUMBER = 'Number'
     PARAMETER_RASTER = 'Raster Layer'
     PARAMETER_TABLE = 'Vector Layer'
-    PARAMETER_VECTOR = 'Feature Source'
+    PARAMETER_VECTOR = 'Vector Features'
     PARAMETER_STRING = 'String'
     PARAMETER_EXPRESSION = 'Expression'
     PARAMETER_BOOLEAN = 'Boolean'
-    PARAMETER_TABLE_FIELD = 'Layer Field'
+    PARAMETER_TABLE_FIELD = 'Vector Field'
     PARAMETER_EXTENT = 'Extent'
     PARAMETER_FILE = 'File'
     PARAMETER_POINT = 'Point'
@@ -441,3 +442,24 @@ class ModelerParameterDefinitionDialog(QDialog):
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
 
         QDialog.reject(self)
+
+    @staticmethod
+    def inputTooltip(input_type):
+        tooltips = {
+            ModelerParameterDefinitionDialog.PARAMETER_NUMBER: QCoreApplication.translate('Processing', 'A numeric parameter, including float or integer values.'),
+            ModelerParameterDefinitionDialog.PARAMETER_RASTER: QCoreApplication.translate('Processing', 'A raster layer parameter.'),
+            ModelerParameterDefinitionDialog.PARAMETER_TABLE: QCoreApplication.translate('Processing', 'A vector layer parameter, e.g. for algorithms which change layer styles, edit layers in place, or other operations which affect an entire layer.'),
+            ModelerParameterDefinitionDialog.PARAMETER_VECTOR: QCoreApplication.translate('Processing', 'A vector feature parameter, e.g. for algorithms which operate on the features within a layer.'),
+            ModelerParameterDefinitionDialog.PARAMETER_STRING: QCoreApplication.translate('Processing', 'A freeform string parameter.'),
+            ModelerParameterDefinitionDialog.PARAMETER_EXPRESSION: QCoreApplication.translate('Processing', 'A QGIS expression parameter, which presents an expression builder widget to users.'),
+            ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN: QCoreApplication.translate('Processing', 'A boolean parameter, for true/false values.'),
+            ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD: QCoreApplication.translate('Processing', 'A vector field parameter, for selecting an existing field from a vector source.'),
+            ModelerParameterDefinitionDialog.PARAMETER_EXTENT: QCoreApplication.translate('Processing', 'A map extent parameter.'),
+            ModelerParameterDefinitionDialog.PARAMETER_FILE: QCoreApplication.translate('Processing', 'A file parameter, for use with non-map layer file sources.'),
+            ModelerParameterDefinitionDialog.PARAMETER_POINT: QCoreApplication.translate('Processing', 'A geographic point parameter.'),
+            ModelerParameterDefinitionDialog.PARAMETER_CRS: QCoreApplication.translate('Processing', 'A coordinate reference system (CRS) input parameter.'),
+            ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE: QCoreApplication.translate('Processing', 'An input allowing selection of multiple sources, including multiple map layers or file sources.'),
+            ModelerParameterDefinitionDialog.PARAMETER_BAND: QCoreApplication.translate('Processing', 'A raster band parameter, for selecting an existing band from a raster source.'),
+            ModelerParameterDefinitionDialog.PARAMETER_MAP_LAYER: QCoreApplication.translate('Processing', 'A generic map layer parameter, which accepts either vector or raster layers.')
+        }
+        return tooltips[input_type]

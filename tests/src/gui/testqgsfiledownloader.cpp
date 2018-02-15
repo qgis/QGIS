@@ -133,7 +133,7 @@ void TestQgsFileDownloader::init()
   mCompleted = false;
   mExited = false;
   mTempFile = new QTemporaryFile();
-  Q_ASSERT( mTempFile->open() );
+  QVERIFY( mTempFile->open() );
   mTempFile->close();
 }
 
@@ -250,7 +250,7 @@ void TestQgsFileDownloader::testLacksWritePermissionsError()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QVERIFY( ! QFileInfo( fileName ).exists( ) );
+  QVERIFY( ! QFileInfo::exists( fileName ) );
 }
 
 

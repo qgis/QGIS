@@ -49,7 +49,16 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      */
     explicit QgsLayoutItemShape( QgsLayout *layout );
 
+    /**
+     * Returns a new shape item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsLayoutItemShape *create( QgsLayout *layout ) SIP_FACTORY;
+
+
     int type() const override;
+    QIcon icon() const override;
 
     //Overridden to return shape type
     QString displayName() const override;

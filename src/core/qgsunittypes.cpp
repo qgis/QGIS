@@ -1761,7 +1761,7 @@ QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
       return QObject::tr( "millimeters", "render" );
 
     case RenderMetersInMapUnits:
-      return QObject::tr( "meters (at map scale)", "render" );
+      return QObject::tr( "meters at scale", "render" );
 
     case RenderMapUnits:
       return QObject::tr( "map units", "render" );
@@ -1875,7 +1875,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
     case LayoutMeters:
       return QObject::tr( "m" );
     case LayoutInches:
-      return QObject::tr( "in" );
+      return QObject::tr( "in", "unit inch" );
     case LayoutFeet:
       return QObject::tr( "ft" );
     case LayoutPoints:

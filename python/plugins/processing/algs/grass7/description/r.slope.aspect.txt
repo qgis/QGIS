@@ -5,8 +5,8 @@ QgsProcessingParameterRasterLayer|elevation|Elevation|None|False
 QgsProcessingParameterEnum|format|Format for reporting the slope|degrees;percent|False|0|True
 QgsProcessingParameterEnum|precision|Type of output aspect and slope layer|FCELL;CELL;DCELL|False|0|True
 QgsProcessingParameterBoolean|-a|Do not align the current region to the elevation layer|True
-QgsProcessingParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|QgsProcessingParameterNumber.Double|1.0|False|None|None
-QgsProcessingParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterRasterDestination|slope|Slope|None|True
 QgsProcessingParameterRasterDestination|aspect|Aspect|None|True
 QgsProcessingParameterRasterDestination|pcurvature|Profile curvature|None|True

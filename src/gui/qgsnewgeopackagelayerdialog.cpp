@@ -30,6 +30,7 @@
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsogrutils.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -47,6 +48,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mRemoveAttributeButton_clicked );
   connect( mFieldTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewGeoPackageLayerDialog::mFieldTypeBox_currentIndexChanged );
@@ -57,9 +60,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsNewGeoPackageLayerDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsNewGeoPackageLayerDialog::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -84,6 +84,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
   mGeometryColumnEdit->setEnabled( false );
+  mGeometryColumnEdit->setText( "geometry" );
+  mFeatureIdColumnEdit->setText( "fid" );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
@@ -106,6 +108,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 
   mCheckBoxCreateSpatialIndex->setChecked( true );
 
+  QgsSettings settings;
   mDatabase->setStorageMode( QgsFileWidget::SaveFile );
   mDatabase->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
   mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File..." ) );
@@ -127,8 +130,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 
 QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )

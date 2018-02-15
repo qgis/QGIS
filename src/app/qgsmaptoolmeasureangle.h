@@ -23,6 +23,7 @@
 
 class QgsDisplayAngle;
 class QgsRubberBand;
+class QgsSnapIndicator;
 
 //! Map tool to measure angle between two segments
 class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
@@ -54,11 +55,11 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 
     //! Creates a new rubber band and deletes the old one
     void createRubberBand();
-    //! Snaps point to background layers
-    QgsPointXY snapPoint( QPoint p );
 
     //! Tool for measuring
     QgsDistanceArea mDa;
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
   public slots:
     //! Recalculate angle if projection state changed

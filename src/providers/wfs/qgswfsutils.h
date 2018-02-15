@@ -45,6 +45,9 @@ class QgsWFSUtils
     //! Return a unique identifier made from feature content
     static QString getMD5( const QgsFeature &f );
 
+    //! Return the correct form of typeName(s) according to the specified \a WfsVersion
+    static QString typeNameParameterForVersion( const QString &WfsVersion );
+
   protected:
     friend class QgsWFSUtilsKeepAlive;
     static QSharedMemory *createAndAttachSHM();
@@ -62,6 +65,7 @@ class QgsWFSUtils
 
     //! Remove (recursively) a directory.
     static bool removeDir( const QString &dirName );
+
 };
 
 //! For internal use of QgsWFSUtils

@@ -17,7 +17,6 @@
 
 	<flag key="o" answer="off"/>
 
-	<option key="method" />
 	<option key="output" />
 	<option key="maxcols" advanced="yes"/>
 	<option key="maxrows" advanced="yes"/>

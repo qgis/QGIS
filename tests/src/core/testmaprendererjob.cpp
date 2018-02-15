@@ -50,7 +50,7 @@ class TestQgsMapRendererJob : public QObject
 static QString _loadLayer( QString path )
 {
   QgsMapLayer *layer = new QgsVectorLayer( path, "testlayer", "ogr" );
-  Q_ASSERT( layer->isValid() );
+  QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayer( layer );
   return layer->id();
 }

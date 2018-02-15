@@ -114,6 +114,16 @@ namespace pal
       bool isIntersect( double *bbox );
 
       /**
+       * Returns true if the label position intersects a \a geometry.
+       */
+      bool intersects( const GEOSPreparedGeometry *geometry );
+
+      /**
+       * Returns true if the label position is within a \a geometry.
+       */
+      bool within( const GEOSPreparedGeometry *geometry );
+
+      /**
        * \brief Is the labelposition inside the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
@@ -147,7 +157,7 @@ namespace pal
       int polygonIntersectionCost( PointSet *polygon ) const;
 
       /**
-       * Returns true if if any intersection between polygon and position exists.
+       * Returns true if any intersection between polygon and position exists.
       */
       bool intersectsWithPolygon( PointSet *polygon ) const;
 

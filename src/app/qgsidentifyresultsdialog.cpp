@@ -326,7 +326,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormAction->setDisabled( true );
 
   QgsSettings mySettings;
-  mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
+  mDock = new QgsDockWidget( tr( "Identify Results Panel" ), QgisApp::instance() );
   mDock->setObjectName( QStringLiteral( "IdentifyResultsDock" ) );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
@@ -335,7 +335,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   else
     QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
 
-  int size = mySettings.value( QStringLiteral( "IconSize" ), 16 ).toInt();
+  int size = mySettings.value( QStringLiteral( "/qgis/iconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -452,8 +452,6 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-  lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
   {

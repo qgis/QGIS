@@ -153,14 +153,14 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   {
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+                      Qgis::Info );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
     bar->pushMessage( tr( "Connection failed - consult message log for details." ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
   }
 }
 

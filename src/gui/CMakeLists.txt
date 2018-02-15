@@ -166,6 +166,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutitemwidget.cpp
   layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
+  layout/qgslayoutreportsectionlabel.cpp
   layout/qgslayoutruler.cpp
   layout/qgslayoutunitscombobox.cpp
   layout/qgslayoutview.cpp
@@ -224,9 +225,6 @@ SET(QGIS_GUI_SRCS
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
-  qgscomposeritemcombobox.cpp
-  qgscomposerruler.cpp
-  qgscomposerview.cpp
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
@@ -316,6 +314,8 @@ SET(QGIS_GUI_SRCS
   qgsnewgeopackagelayerdialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
+  qgsoptionsdialoghighlightwidget.cpp
+  qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
   qgspanelwidget.cpp
@@ -358,7 +358,7 @@ SET(QGIS_GUI_SRCS
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
-  qgsuserinputdockwidget.cpp
+  qgsuserinputwidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
@@ -399,10 +399,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
-  qgscomposerinterface.h
-  qgscomposeritemcombobox.h
-  qgscomposerruler.h
-  qgscomposerview.h
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
@@ -485,6 +481,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewgeopackagelayerdialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
+  qgsoptionsdialoghighlightwidget.h
+  qgsoptionsdialoghighlightwidgetsimpl.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
@@ -525,8 +523,9 @@ SET(QGIS_GUI_MOC_HDRS
   qgstextpreview.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
-  qgsuserinputdockwidget.h
+  qgsuserinputwidget.h
   qgsvariableeditorwidget.h
+  qgsvscrollarea.h
   qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
@@ -689,6 +688,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutruler.h
   layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
+  layout/qgslayoutviewrubberband.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
   layout/qgslayoutviewtooladdnodeitem.h
@@ -739,7 +739,7 @@ SET(QGIS_GUI_HDRS
   qgssnapindicator.h
   qgssqlcomposerdialog.h
   qgstablewidgetitem.h
-  qgsuserinputdockwidget.h
+  qgsuserinputwidget.h
   qgsbrowserdockwidget.h
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
@@ -748,7 +748,6 @@ SET(QGIS_GUI_HDRS
   qgswidgetstatehelper_p.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
-  qgsvscrollarea.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
@@ -801,8 +800,8 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
 
+  layout/qgslayoutreportsectionlabel.h
   layout/qgslayoutviewmouseevent.h
-  layout/qgslayoutviewrubberband.h
 
   raster/qgsrasterrendererwidget.h
 
@@ -870,7 +869,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -970,10 +968,14 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   qgis_native
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5UiTools_LIBRARIES}
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

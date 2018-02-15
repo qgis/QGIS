@@ -31,7 +31,8 @@ import json
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from qgis.core import (QgsMessageLog,
+from qgis.core import (Qgis,
+                       QgsMessageLog,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
@@ -64,7 +65,7 @@ class HelpEditionDialog(BASE, WIDGET):
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
                     except Exception:
-                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), QgsMessageLog.WARNING)
+                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), Qgis.Warning)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:

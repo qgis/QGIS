@@ -36,8 +36,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
   public:
     QgsCircularString();
 
-    bool operator==( const QgsCurve &other ) const override;
-    bool operator!=( const QgsCurve &other ) const override;
+    bool equals( const QgsCurve &other ) const override;
 
     QString geometryType() const override;
     int dimension() const override;
@@ -114,8 +113,10 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     }
 #endif
 
-  protected:
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     QgsRectangle calculateBoundingBox() const override;
 
   private:

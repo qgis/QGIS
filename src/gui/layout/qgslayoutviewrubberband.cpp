@@ -169,6 +169,8 @@ void QgsLayoutViewRectangularRubberBand::update( QPointF position, Qt::KeyboardM
   QTransform t;
   t.translate( newRect.x(), newRect.y() );
   mRubberBandItem->setTransform( t );
+
+  emit sizeChanged( tr( "width: %1 %3 height: %2 %3" ).arg( newRect.width() ).arg( newRect.height() ).arg( QgsUnitTypes::toAbbreviatedString( layout()->units() ) ) );
 }
 
 QRectF QgsLayoutViewRectangularRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
@@ -234,6 +236,8 @@ void QgsLayoutViewEllipticalRubberBand::update( QPointF position, Qt::KeyboardMo
   QTransform t;
   t.translate( newRect.x(), newRect.y() );
   mRubberBandItem->setTransform( t );
+
+  emit sizeChanged( tr( "width: %1 %3 height: %2 %3" ).arg( newRect.width() ).arg( newRect.height() ).arg( QgsUnitTypes::toAbbreviatedString( layout()->units() ) ) );
 }
 
 QRectF QgsLayoutViewEllipticalRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
@@ -309,6 +313,8 @@ void QgsLayoutViewTriangleRubberBand::update( QPointF position, Qt::KeyboardModi
   QTransform t;
   t.translate( newRect.x(), newRect.y() );
   mRubberBandItem->setTransform( t );
+
+  emit sizeChanged( tr( "width: %1 %3 height: %2 %3" ).arg( newRect.width() ).arg( newRect.height() ).arg( QgsUnitTypes::toAbbreviatedString( layout()->units() ) ) );
 }
 
 QRectF QgsLayoutViewTriangleRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )

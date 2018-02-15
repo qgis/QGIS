@@ -326,7 +326,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Sets the \a flags associated with the parameter.
      * \see flags()
      */
-    void setFlags( const Flags &flags ) { mFlags = flags; }
+    void setFlags( Flags flags ) { mFlags = flags; }
 
     /**
      * Checks whether the specified \a input value is acceptable for the
@@ -1216,7 +1216,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Sets the acceptable data \a type for the parameter.
      * \see dataType()
      */
-    void setDataType( const Type &type );
+    void setDataType( Type type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1270,7 +1270,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Sets the acceptable data \a type for the range.
      * \see dataType()
      */
-    void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+    void setDataType( QgsProcessingParameterNumber::Type dataType );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1622,7 +1622,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Sets the acceptable data \a type for the field.
      * \see dataType()
      */
-    void setDataType( const DataType &type );
+    void setDataType( DataType type );
 
     /**
      * Returns whether multiple field selections are permitted.
@@ -1720,16 +1720,16 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     /**
      * Returns true if the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see setSupportsNonFileBasedOutputs()
+     * \see setSupportsNonFileBasedOutput()
      */
-    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+    bool supportsNonFileBasedOutput() const { return mSupportsNonFileBasedOutputs; }
 
     /**
      * Sets whether the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see supportsNonFileBasedOutputs()
+     * \see supportsNonFileBasedOutput()
      */
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutput; }
 
     /**
      * Returns the default file extension for destination file paths

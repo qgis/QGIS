@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, Q
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from qgis.utils import OverrideCursor
 import sys
@@ -282,7 +282,7 @@ class Editor(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
         iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
@@ -1265,7 +1265,7 @@ class EditorTabWidget(QTabWidget):
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
     def widgetMessageBar(self, iface, text, level, timed=True):
-        messageLevel = [QgsMessageBar.INFO, QgsMessageBar.WARNING, QgsMessageBar.CRITICAL]
+        messageLevel = [Qgis.Info, Qgis.Warning, Qgis.Critical]
         if timed:
             timeout = iface.messageTimeout()
         else:

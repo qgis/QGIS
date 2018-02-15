@@ -34,7 +34,7 @@
 #include "coordinatecapturegui.h"
 
 //
-// Qt4 Related Includes
+// Qt Related Includes
 //
 
 #include <QAction>

@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 
   private slots:
     void canvasMapSettingsChanged();
+    void canvasTransformContextChanged();
     void canvasCurrentLayerChanged();
 
   private:

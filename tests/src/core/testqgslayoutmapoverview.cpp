@@ -108,22 +108,18 @@ void TestQgsLayoutMapOverview::overviewMap()
   l.addLayoutItem( overviewMap );
   map->setExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMap->overview()->setFrameMap( map );
+  overviewMap->overview()->setLinkedMap( map );
 
-  QCOMPARE( overviewMap->overview()->frameMap(), map );
-  QCOMPARE( overviewMap->overview()->frameMapUuid(), map->uuid() );
-  overviewMap->overview()->setFrameMap( nullptr );
-  QVERIFY( !overviewMap->overview()->frameMap() );
-  QVERIFY( overviewMap->overview()->frameMapUuid().isEmpty() );
-  overviewMap->overview()->setFrameMapUuid( map->uuid() );
-  QCOMPARE( overviewMap->overview()->frameMap(), map );
-  QCOMPARE( overviewMap->overview()->frameMapUuid(), map->uuid() );
-  overviewMap->overview()->setFrameMapUuid( QString() );
-  QVERIFY( !overviewMap->overview()->frameMap() );
-  QVERIFY( overviewMap->overview()->frameMapUuid().isEmpty() );
+  QCOMPARE( overviewMap->overview()->linkedMap(), map );
+  overviewMap->overview()->setLinkedMap( nullptr );
+  QVERIFY( !overviewMap->overview()->linkedMap() );
+  overviewMap->overview()->setLinkedMap( map );
+  QCOMPARE( overviewMap->overview()->linkedMap(), map );
+  overviewMap->overview()->setLinkedMap( nullptr );
+  QVERIFY( !overviewMap->overview()->linkedMap() );
 
   //render
-  overviewMap->overview()->setFrameMap( map );
+  overviewMap->overview()->setLinkedMap( map );
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
@@ -149,7 +145,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated()
   map->setExtent( QgsRectangle( 96, -144, 160, -112 ) ); //zoom in
   map->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMap->overview()->setFrameMap( map );
+  overviewMap->overview()->setLinkedMap( map );
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_rotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
@@ -175,7 +171,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated2()
   map->setExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMap->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMap->overview()->setFrameMap( map );
+  overviewMap->overview()->setLinkedMap( map );
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_rotated2" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
@@ -200,7 +196,7 @@ void TestQgsLayoutMapOverview::overviewMapBlending()
   l.addLayoutItem( overviewMapBlend );
   map->setExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMapBlend->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMapBlend->overview()->setFrameMap( map );
+  overviewMapBlend->overview()->setLinkedMap( map );
   overviewMapBlend->overview()->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_blending" ), &l );
@@ -227,7 +223,7 @@ void TestQgsLayoutMapOverview::overviewMapInvert()
   l.addLayoutItem( overviewMapInvert );
   map->setExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMapInvert->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMapInvert->overview()->setFrameMap( map );
+  overviewMapInvert->overview()->setLinkedMap( map );
   overviewMapInvert->overview()->setInverted( true );
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_invert" ), &l );
@@ -254,7 +250,7 @@ void TestQgsLayoutMapOverview::overviewMapCenter()
   l.addLayoutItem( overviewMapCenter );
   map->setExtent( QgsRectangle( 192, -288, 320, -224 ) );
   overviewMapCenter->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
-  overviewMapCenter->overview()->setFrameMap( map );
+  overviewMapCenter->overview()->setLinkedMap( map );
   overviewMapCenter->overview()->setCentered( true );
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_center" ), &l );
@@ -285,7 +281,7 @@ void TestQgsLayoutMapOverview::overviewReprojected()
 
   map->setExtent( QgsRectangle( 93, -64.245, 120.6, -45 ) );
   overviewMap->setExtent( QgsRectangle( 4712502, -7620278, 10872777, -2531356 ) );
-  overviewMap->overview()->setFrameMap( map );
+  overviewMap->overview()->setLinkedMap( map );
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_reprojected" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );

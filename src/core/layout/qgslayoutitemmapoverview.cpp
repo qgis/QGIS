@@ -46,7 +46,7 @@ void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 
 void QgsLayoutItemMapOverview::draw( QPainter *painter )
 {
-  if ( !mEnabled || mFrameMapId.isEmpty() || !mMap || !mMap->layout() )
+  if ( !mEnabled || !mFrameMap || !mMap || !mMap->layout() )
   {
     return;
   }
@@ -55,7 +55,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
     return;
   }
 
-  const QgsLayoutItemMap *overviewFrameMap = frameMap();
+  const QgsLayoutItemMap *overviewFrameMap = linkedMap();
   if ( !overviewFrameMap )
   {
     return;
@@ -155,7 +155,7 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
   //overview map frame
   QDomElement overviewFrameElem = doc.createElement( QStringLiteral( "ComposerMapOverview" ) );
 
-  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMapId );
+  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMap ? mFrameMap ->uuid() : QString() );
   overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
@@ -178,9 +178,9 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
 
   bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
-#if 0 //TODO
-  setFrameMapUuid( itemElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) ).toInt() );
-#endif
+  mFrameMapUuid = itemElem.attribute( QStringLiteral( "frameMap" ) );
+  setLinkedMap( nullptr );
+
   mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
@@ -193,43 +193,42 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
   return ok;
 }
 
+void QgsLayoutItemMapOverview::finalizeRestoreFromXml()
+{
+  if ( !mFrameMapUuid.isEmpty() )
+  {
+    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mFrameMapUuid, true ) ) );
+  }
+}
+
 bool QgsLayoutItemMapOverview::usesAdvancedEffects() const
 {
   return mBlendMode != QPainter::CompositionMode_SourceOver;
 }
 
-void QgsLayoutItemMapOverview::setFrameMapUuid( const QString &mapId )
+void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
 {
-  if ( mFrameMapId == mapId )
+  if ( mFrameMap == map )
   {
     //no change
     return;
   }
 
   //disconnect old map
-  if ( QgsLayoutItemMap *map = frameMap() )
+  if ( mFrameMap )
   {
-    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
-    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    disconnect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    disconnect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
-  mFrameMapId = mapId;
+  mFrameMap = map;
   //connect to new map signals
   connectSignals();
   mMap->update();
 }
 
-void QgsLayoutItemMapOverview::setFrameMap( QgsLayoutItemMap *map )
+QgsLayoutItemMap *QgsLayoutItemMapOverview::linkedMap()
 {
-  setFrameMapUuid( map ? map->uuid() : QString() );
-}
-
-QgsLayoutItemMap *QgsLayoutItemMapOverview::frameMap()
-{
-  if ( !mFrameMapId.isEmpty() && mMap && mMap->layout() )
-  {
-    return dynamic_cast< QgsLayoutItemMap * >( mMap->layout()->itemByUuid( mFrameMapId ) );
-  }
-  return nullptr;
+  return mFrameMap;
 }
 
 void QgsLayoutItemMapOverview::connectSignals()
@@ -239,10 +238,10 @@ void QgsLayoutItemMapOverview::connectSignals()
     return;
   }
 
-  if ( QgsLayoutItemMap *map = frameMap() )
+  if ( mFrameMap )
   {
-    connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
-    connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    connect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    connect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
 }
 
@@ -285,18 +284,10 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
   }
 
   //if using overview centering, update the map's extent
-  if ( mMap->layout() && mCentered && !mFrameMapId.isEmpty() )
+  if ( mMap->layout() && mCentered && mFrameMap )
   {
     QgsRectangle extent = mMap->extent();
-
-    QgsLayoutItemMap *overviewFrameMap = frameMap();
-    if ( !overviewFrameMap )
-    {
-      //redraw map so that overview gets updated
-      mMap->update();
-      return;
-    }
-    QgsRectangle otherExtent = overviewFrameMap->extent();
+    QgsRectangle otherExtent = mFrameMap->extent();
 
     QgsPointXY center = otherExtent.center();
     QgsRectangle movedExtent( center.x() - extent.width() / 2,

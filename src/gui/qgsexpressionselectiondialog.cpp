@@ -165,7 +165,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
     {
       mMessageBar->pushMessage( QString(),
                                 tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
-                                QgsMessageBar::INFO,
+                                Qgis::Info,
                                 timeout );
     }
   }
@@ -173,7 +173,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              QgsMessageBar::INFO,
+                              Qgis::Info,
                               timeout );
   }
   saveRecent();

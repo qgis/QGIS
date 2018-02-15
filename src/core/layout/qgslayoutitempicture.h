@@ -71,6 +71,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     QgsLayoutItemPicture( QgsLayout *layout );
 
     int type() const override;
+    QIcon icon() const override;
 
     /**
      * Returns a new picture item for the specified \a layout.
@@ -106,30 +107,24 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double pictureRotation() const { return mPictureRotation; }
 
     /**
-     * Sets the map object for rotation (by \a uuid). A empty string disables the map
-     * rotation.  If this is set then the picture will be rotated by the same
+     * Sets the \a map object for rotation.
+     *
+     * If this is set then the picture will be rotated by the same
      * amount as the specified map object. This is useful especially for
      * syncing north arrows with a map item.
+     *
      * \see setPictureRotation()
-     * \see rotationMap()
+     * \see linkedMap()
      */
-    void setRotationMap( const QString &uuid );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
-     * Returns the uuid of the rotation map. An empty string means map rotation is
+     * Returns the linked rotation map, if set. An nullptr means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
-     * \see setRotationMap()
-     * \see useRotationMap()
+     * \see setLinkedMap()
      */
-    QString rotationMap() const;
-
-    /**
-     * True if the picture rotation is matched to a map item.
-     * \see rotationMap()
-     * \see setRotationMap()
-     */
-    bool useRotationMap() const;
+    QgsLayoutItemMap *linkedMap() const;
 
     /**
      * Returns the mode used to align the picture to a map's North.
@@ -250,7 +245,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param mode ResizeMode to use for image file
      * \see resizeMode
      */
-    void setResizeMode( ResizeMode mode );
+    void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
      * Recalculates the source image (if using an expression for picture's source)
@@ -302,7 +297,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    int mRotationMapId = -1;
     //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
@@ -346,11 +340,16 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     void loadLocalPicture( const QString &path );
 
+    void disconnectMap( QgsLayoutItemMap *map );
+
   private slots:
 
     void updateMapRotation();
 
     void shapeChanged();
+
+    friend class QgsCompositionConverter;
+    friend class TestQgsCompositionConverter;
 
 };
 

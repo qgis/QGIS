@@ -44,7 +44,6 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QgsPostgresGeometryColumnType mSpatialColType;
     QString mRequestedSrid;
     QString mDetectedSrid;
-    bool mForce2d;
     QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
     QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
     QgsPostgresPrimaryKeyType mPrimaryKeyType;

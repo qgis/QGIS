@@ -55,12 +55,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * Construct point locator for a \a layer.
      *
-     *  If a valid QgsCoordinateReferenceSystem is passed for \a destinationCrs then the locator will
-     *  do the searches on data reprojected to the given CRS.
+     * If a valid QgsCoordinateReferenceSystem is passed for \a destinationCrs then the locator will
+     * do the searches on data reprojected to the given CRS. For accurate reprojection it is important
+     * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
+     * from the current QgsProject::transformContext().
      *
-     *  If \a extent is not null, the locator will index only a subset of the layer which falls within that extent.
+     * If \a extent is not null, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                               const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator() override;
