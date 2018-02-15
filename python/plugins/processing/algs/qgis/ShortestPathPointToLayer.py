@@ -214,7 +214,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading end points...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Loading end points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = endPoints.getFeatures(request)
@@ -237,10 +237,10 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest paths...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Calculating shortest paths…'))
         graph = builder.graph()
 
         idxStart = graph.findVertex(snappedPoints[0])

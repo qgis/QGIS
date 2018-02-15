@@ -448,8 +448,10 @@ class DBManager(QMainWindow):
         sep.setVisible(False)
 
         self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
-                                                     self.tr("&Import Layer/File…"), self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to File…"),
+                                                     QApplication.translate("DBManager", "&Import Layer/File…"),
+                                                     self.importActionSlot)
+        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"),
+                                                     QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
         #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)

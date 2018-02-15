@@ -122,7 +122,7 @@ class ConfigDialog(BASE, WIDGET):
 
         if showSearch:
             if hasattr(self.searchBox, 'setPlaceholderText'):
-                self.searchBox.setPlaceholderText(self.tr('Search...'))
+                self.searchBox.setPlaceholderText(QApplication.translate('ConfigDialog', 'Search…'))
             self.searchBox.textChanged.connect(self.textChanged)
         else:
             self.searchBox.hide()

@@ -118,18 +118,18 @@ class DestinationSelectionPanel(BASE, WIDGET):
             popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
-                self.tr('Save to file...'), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to file…'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.parameter.supportsNonFileBasedOutput():
                 actionSaveToGpkg = QAction(
-                    self.tr('Save to GeoPackage...'), self.btnSelect)
+                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to GeoPackage…'), self.btnSelect)
                 actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
                 popupMenu.addAction(actionSaveToGpkg)
                 actionSaveToPostGIS = QAction(
-                    self.tr('Save to PostGIS table...'), self.btnSelect)
+                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS table…'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
                 settings = QgsSettings()
                 settings.beginGroup('/PostgreSQL/connections/')
@@ -139,7 +139,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 popupMenu.addAction(actionSaveToPostGIS)
 
             actionSetEncoding = QAction(
-                self.tr('Change file encoding ({})...').format(self.encoding), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Change file encoding ({})…').format(self.encoding), self.btnSelect)
             actionSetEncoding.triggered.connect(self.selectEncoding)
             popupMenu.addAction(actionSetEncoding)
 

@@ -200,10 +200,10 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, [startPoint], feedback)
 
-        feedback.pushInfo(self.tr('Calculating service area...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromPoint', 'Calculating service area…'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
 
@@ -221,7 +221,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
             upperBoundary.append(graph.vertex(graph.edge(tree[i]).toVertex()).point())
             lowerBoundary.append(graph.vertex(graph.edge(tree[i]).fromVertex()).point())
 
-        feedback.pushInfo(self.tr('Writing results...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromPoint', 'Writing results…'))
 
         fields = QgsFields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))

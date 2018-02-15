@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
@@ -211,7 +211,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading start points...'))
+        feedback.pushInfo(Q('Loading start points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
@@ -234,10 +234,10 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating service areas...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Calculating service areas…'))
         graph = builder.graph()
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,

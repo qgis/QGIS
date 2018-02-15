@@ -20,7 +20,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 from builtins import range
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, QFileInfo, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
 from .console_compile_apis import PrepareAPIDialog
@@ -119,7 +119,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                 not self.lineEdit.text():
             QMessageBox.information(
                 self, self.tr("Warning!"),
-                self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
+                QCoreApplication.translate('optionsDialog', 'The APIs file was not compiled, click on "Compile APIs…"')
+            )
             return
         self.saveSettings()
         self.listPath = []

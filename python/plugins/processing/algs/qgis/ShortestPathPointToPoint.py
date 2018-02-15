@@ -212,10 +212,10 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, [startPoint, endPoint], feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest path...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Calculating shortest path…'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
@@ -234,7 +234,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
 
         route.reverse()
 
-        feedback.pushInfo(self.tr('Writing results...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Writing results…'))
         geom = QgsGeometry.fromPolylineXY(route)
         feat = QgsFeature()
         feat.setFields(fields)
