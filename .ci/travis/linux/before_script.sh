@@ -18,17 +18,24 @@ set -e
 pushd .docker
 
 echo "travis_fold:start:docker"
+
 docker --version
-docker-compose --version
-docker-compose -f $DOCKER_COMPOSE config
-#docker pull ubuntu:16.04
+
+if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ false ]]; then
+  docker-compose --version
+  docker-compose -f $DOCKER_COMPOSE config
+fi
+
 docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
+
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
   docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
 else
   docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 fi
+
 echo "travis_fold:end:docker"
+
 # image should be pushed even if QGIS build fails
 # but push is achieved only on branches (not for PRs)
 if [[ $DOCKER_DEPS_PUSH =~ true ]]; then
