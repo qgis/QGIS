@@ -70,12 +70,13 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
+  , mLayerName( lyrname )
   , mLayerType( type )
+  , mUndoStack( new QUndoStack( this ) )
+  , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
+  , mRefreshTimer( new QTimer( this ) )
 {
-  // Set the display name = internal name
-  mLayerName = lyrname;
-
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
@@ -91,13 +92,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // there for the compiler, so the pattern is actually \W
   mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
 
-  //set some generous  defaults for scale based visibility
-  mMinScale = 0;
-  mMaxScale = 100000000;
-  mScaleBasedVisibility = false;
-
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
+  connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -586,8 +582,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
 
-  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer.interval() ) );
-  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer.isActive() ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer->isActive() ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
@@ -913,36 +909,36 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
 
 bool QgsMapLayer::hasAutoRefreshEnabled() const
 {
-  return mRefreshTimer.isActive();
+  return mRefreshTimer->isActive();
 }
 
 int QgsMapLayer::autoRefreshInterval() const
 {
-  return mRefreshTimer.interval();
+  return mRefreshTimer->interval();
 }
 
 void QgsMapLayer::setAutoRefreshInterval( int interval )
 {
   if ( interval <= 0 )
   {
-    mRefreshTimer.stop();
-    mRefreshTimer.setInterval( 0 );
+    mRefreshTimer->stop();
+    mRefreshTimer->setInterval( 0 );
   }
   else
   {
-    mRefreshTimer.setInterval( interval );
+    mRefreshTimer->setInterval( interval );
   }
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
 {
   if ( !enabled )
-    mRefreshTimer.stop();
-  else if ( mRefreshTimer.interval() > 0 )
-    mRefreshTimer.start();
+    mRefreshTimer->stop();
+  else if ( mRefreshTimer->interval() > 0 )
+    mRefreshTimer->start();
 
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 const QgsLayerMetadata &QgsMapLayer::metadata() const
@@ -1824,7 +1820,6 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   }
 }
 
-
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
 {
   QgsAbstract3DRenderer *r3D = nullptr;
@@ -1841,17 +1836,15 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   setRenderer3D( r3D );
 }
 
-
 QUndoStack *QgsMapLayer::undoStack()
 {
-  return &mUndoStack;
+  return mUndoStack;
 }
 
 QUndoStack *QgsMapLayer::undoStackStyles()
 {
-  return &mUndoStackStyles;
+  return mUndoStackStyles;
 }
-
 
 QStringList QgsMapLayer::customPropertyKeys() const
 {

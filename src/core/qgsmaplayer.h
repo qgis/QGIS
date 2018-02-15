@@ -1304,17 +1304,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Tag for embedding additional information
     QString mTag;
 
+    //set some generous  defaults for scale based visibility
+
     //! Minimum scale denominator at which this layer should be displayed
-    double mMinScale;
+    double mMinScale = 0;
     //! Maximum scale denominator at which this layer should be displayed
-    double mMaxScale;
+    double mMaxScale = 100000000;
     //! A flag that tells us whether to use the above vars to restrict layer visibility
-    bool mScaleBasedVisibility;
+    bool mScaleBasedVisibility = false;
 
     //! Collection of undoable operations for this layer. *
-    QUndoStack mUndoStack;
+    QUndoStack *mUndoStack = nullptr;
 
-    QUndoStack mUndoStackStyles;
+    QUndoStack *mUndoStackStyles = nullptr;
 
     //! Layer's persistent storage of additional properties (may be used by plugins)
     QgsObjectCustomProperties mCustomProperties;
@@ -1326,7 +1328,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerStyleManager *mStyleManager = nullptr;
 
     //! Timer for triggering automatic refreshes of the layer
-    QTimer mRefreshTimer;
+    QTimer *mRefreshTimer = nullptr;
 
     QgsLayerMetadata mMetadata;
 
