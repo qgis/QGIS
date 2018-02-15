@@ -40,11 +40,11 @@ from qgis.gui import QgsGui, QgsErrorDialog
 from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsError,
-                       QgisAlgorithm,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm)
 from qgis.utils import iface, OverrideCursor
 
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
 
