@@ -9,8 +9,11 @@ matrix:
         - TRAVIS_CONFIG=linux
         - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - DOCKER_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
+        - DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
         - DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
+        # on cron job, QGIS image is built and push without testing
+        - DOCKER_QGIS_IMAGE_PUSH=$( [[ $TRAVIS_EVENT_TYPE =~ cron ]] && echo "true" || echo "true" ) # TODO: else false
+        - QGIS_LAST_BUILD_SUCCESS=true # TODO use API to know if last build succeed https://developer.travis-ci.com/resource/builds   
         - CCACHE_DIR=${HOME}/.ccache
       dist: trusty
       sudo: false

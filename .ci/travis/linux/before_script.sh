@@ -26,12 +26,12 @@ docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
   docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
 else
-  docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
+  docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 fi
 echo "travis_fold:end:docker"
 # image should be pushed even if QGIS build fails
 # but push is achieved only on branches (not for PRs)
-if [[ $DOCKER_PUSH =~ true ]]; then
+if [[ $DOCKER_DEPS_PUSH =~ true ]]; then
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   #docker tag "qgis/qgis3-build-deps:${DOCKER_TAG}" "qgis/qgis3-build-deps:latest"
   docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
