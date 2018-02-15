@@ -96,6 +96,16 @@ QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeat
           << 2 * width + 2 * height;
     f.setAttributes( attrs );
   }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant();
+    f.setAttributes( attrs );
+  }
   return f;
 }
 
