@@ -356,12 +356,12 @@ QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, QString &
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=objectid%3Dobjectid&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "objectid=objectid" ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "%1=%1" ).arg( objectIdFieldName ) );
   queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
