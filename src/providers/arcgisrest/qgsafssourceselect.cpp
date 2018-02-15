@@ -67,6 +67,11 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
       continue;
     }
+    if ( !layerData.value( QStringLiteral( "capabilities" ) ).toString().contains( QStringLiteral( "query" ), Qt::CaseInsensitive ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Layer %1 does not support query capabilities" ).arg( layerInfoMap[QStringLiteral( "id" )].toString() ) );
+      continue;
+    }
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
     bool ok = false;
