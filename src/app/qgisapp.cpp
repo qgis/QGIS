@@ -1258,6 +1258,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   setupDuplicateFeaturesAction();
 
+  QList<QAction *> actions = mPanelMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mPanelMenu->insertActions( nullptr, actions );
+
   // update windows
   qApp->processEvents();
 
