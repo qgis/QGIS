@@ -64,8 +64,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
     /* Read only for the moment
     void updateExtents() override{}
     */
-    QString name() const override { return mLayerName; }
-    QString description() const override { return mLayerDescription; }
+    QString name() const override;
+    QString description() const override;
+    QString dataComment() const override;
     void reloadData() override;
 
   private:

@@ -34,6 +34,9 @@
 #include <QNetworkReply>
 
 
+static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
+static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
+
 QgsAfsProvider::QgsAfsProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
   , mValid( false )
@@ -204,6 +207,21 @@ QgsRectangle QgsAfsProvider::extent() const
   return mSharedData->extent();
 }
 
+QString QgsAfsProvider::name() const
+{
+  return TEXT_PROVIDER_KEY;
+}
+
+QString QgsAfsProvider::description() const
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
+
+QString QgsAfsProvider::dataComment() const
+{
+  return mLayerDescription;
+}
+
 void QgsAfsProvider::reloadData()
 {
   mSharedData->clearCache();
@@ -217,7 +235,7 @@ class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override { return QStringLiteral( "arcgisfeatureserver" ); }
+    QString providerKey() const override { return TEXT_PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
