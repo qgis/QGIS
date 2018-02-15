@@ -149,7 +149,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
       mTableWidget->setItem( row, column, item );
       column++;
     }
-    connect( mListWidget, &QListWidget::itemChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
+    connect( mTableWidget, &QTableWidget::itemChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
   else if ( mLineEdit )
   {
