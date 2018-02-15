@@ -194,14 +194,6 @@ bool QgsServer::init()
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
-#if !defined(Q_OS_WIN)
-  // Set the QGIS_PREFIX_PATH environnemnt instead of calling directly
-  // setPrefixPath: this will allow running server from build directory
-  // and get the paths accordingly
-  setenv( "QGIS_PREFIX_PATH", CMAKE_INSTALL_PREFIX, 1 );
-#endif
-
-  //Default prefix path may be altered by environment variable
   QgsApplication::init();
 
 #if defined(SERVER_SKIP_ECW)
