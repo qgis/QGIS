@@ -327,7 +327,7 @@ bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFil
 
   QString file = getTempFileName( tempFileName );
   QFile dxfFile( file );
-  if ( !d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) == 0 )
+  if ( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ) != 0 )
   {
     return false;
   }
