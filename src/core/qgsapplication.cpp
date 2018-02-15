@@ -594,7 +594,8 @@ QString QgsApplication::resolvePkgPath()
 #endif
   QFile f;
   // "/../../.." is for Mac bundled app in build directory
-  Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+  const QStringList pathPrefixes = QStringList() << "" << "/.." << "/bin" << "/../../..";
+  for ( const QString &path : pathPrefixes )
   {
     f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
     QgsDebugMsg( f.fileName() );

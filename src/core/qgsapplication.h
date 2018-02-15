@@ -184,6 +184,10 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setThemeName( const QString &themeName );
 
+    /**
+     * Calculate the application pkg path
+     * \return the resolved pkg path
+     */
     static QString resolvePkgPath( );
 
     /**

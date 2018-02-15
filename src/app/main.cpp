@@ -812,7 +812,6 @@ int main( int argc, char *argv[] )
   if ( globalsettingsfile.isEmpty() )
   {
     QString default_globalsettingsfile = QgsApplication::resolvePkgPath() + "/resources/qgis_global_settings.ini";
-    QgsDebugMsg( "GLOABL SETTINGS FILE:" + default_globalsettingsfile );
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;
@@ -853,8 +852,6 @@ int main( int argc, char *argv[] )
   }
   delete globalSettings;
 
-  QgsDebugMsg( "CONFIG LOCAL STORAGE:" + configLocalStorageLocation );
-
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
   QgsUserProfile *profile = manager.getProfile( profileName, true );
@@ -867,10 +864,10 @@ int main( int argc, char *argv[] )
   // Should be cleaned up in future to make this cleaner.
   QgsSettings settings;
 
-  QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
+  QgsDebugMsgLevel( QStringLiteral( "User profile details:" ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
 
   myApp.init( profileFolder );
 
