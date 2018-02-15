@@ -239,10 +239,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
       QScreen *screen = findScreenAt( e->globalPos() );
       if ( screen )
       {
-        QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), e->globalPos().x(), e->globalPos().y(), 1, 1 );
-        QImage snappedImage = snappedPixmap.toImage();
-        QColor hoverColor = snappedImage.pixel( 0, 0 );
-        setButtonBackground( hoverColor );
+        setButtonBackground( sampleColor( e->globalPos() ) );
       }
     }
     e->accept();
@@ -286,26 +283,22 @@ void QgsColorButton::mouseReleaseEvent( QMouseEvent *e )
   QToolButton::mouseReleaseEvent( e );
 }
 
-void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
+void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
 {
   //release mouse and keyboard, and reset cursor
   releaseMouse();
   releaseKeyboard();
-  unsetCursor();
+  QgsApplication::restoreOverrideCursor();
   setMouseTracking( false );
   mPickingColor = false;
 
-  if ( !sampleColor )
+  if ( !samplingColor )
   {
     //not sampling color, nothing more to do
     return;
   }
 
-  //grab snapshot of pixel under mouse cursor
-  QPixmap snappedPixmap = QApplication::desktop()->screen()->grab( QRect( eventPos.x(), eventPos.y(), 1, 1 ) );
-  QImage snappedImage = snappedPixmap.toImage();
-  //extract color from pixel and set color
-  setColor( snappedImage.pixel( 0, 0 ) );
+  setColor( sampleColor( eventPos ) );
   addRecentColor( mColor );
 }
 
@@ -354,6 +347,19 @@ void QgsColorButton::dropEvent( QDropEvent *e )
     setColor( mimeColor );
     addRecentColor( mimeColor );
   }
+}
+
+QColor QgsColorButton::sampleColor( QPoint point ) const
+{
+
+  QScreen *screen = findScreenAt( point );
+  if ( ! screen )
+  {
+    return QColor();
+  }
+  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  QImage snappedImage = snappedPixmap.toImage();
+  return snappedImage.pixel( 0, 0 );
 }
 
 QScreen *QgsColorButton::findScreenAt( QPoint pos )
@@ -680,7 +686,7 @@ void QgsColorButton::pasteColor()
 void QgsColorButton::activatePicker()
 {
   //activate picker color
-  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
+  QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;
