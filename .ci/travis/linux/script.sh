@@ -23,7 +23,7 @@ if [[ $DOCKER_QGIS_IMAGE_PUSH =~ true ]]; then
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd ${DIR}
   echo "${bold}Building QGIS Docker image...${endbold}"
-  docker build -v /root/QGIS:/root/QGIS --cache-from "qgis/qgis:${DOCKER_TAG}" -t "qgis/qgis:${DOCKER_TAG}" -f qgis.dockerfile .
+  docker build --build-arg CACHE_DIR=/root/.ccache --cache-from "qgis/qgis:${DOCKER_TAG}" -t "qgis/qgis:${DOCKER_TAG}" -f qgis.dockerfile .
   if [[ $DOCKER_QGIS_IMAGE_PUSH =~ true ]]; then
     echo "${bold}Pushing image to docker hub...${endbold}"
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
