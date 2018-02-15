@@ -685,6 +685,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
+    //! Get map of bookmarks
+    QMap<QString, QModelIndex> getBookmarkIndexMap();
+    //! Zoom to a bookmark
+    void zoomToBookmarkIndex( const QModelIndex & );
+
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr );

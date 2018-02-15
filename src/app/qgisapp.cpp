@@ -2946,6 +2946,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
   mLocatorWidget->locator()->registerFilter( new QgsActiveLayerFeaturesLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsExpressionCalculatorLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
 }
 
 void QgisApp::setIconSizes( int size )
@@ -12341,6 +12342,16 @@ void QgisApp::newBookmark()
 void QgisApp::showBookmarks( bool show )
 {
   mBookMarksDockWidget->setUserVisible( show );
+}
+
+QMap<QString, QModelIndex> QgisApp::getBookmarkIndexMap()
+{
+  return mBookMarksDockWidget->getIndexMap();
+}
+
+void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
+{
+  mBookMarksDockWidget->zoomToBookmarkIndex( index );
 }
 
 // Slot that gets called when the project file was saved with an older

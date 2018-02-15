@@ -236,7 +236,11 @@ void QgsBookmarks::zoomToBookmark()
   QModelIndex index = lstBookmarks->currentIndex();
   if ( !index.isValid() )
     return;
+  zoomToBookmarkIndex( index );
+}
 
+void  QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
+{
   double xmin = index.sibling( index.row(), 3 ).data().toDouble();
   double ymin = index.sibling( index.row(), 4 ).data().toDouble();
   double xmax = index.sibling( index.row(), 5 ).data().toDouble();
@@ -254,7 +258,7 @@ void QgsBookmarks::zoomToBookmark()
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "Zoom to Bookmark" ), tr( "Reprojected extent is empty." ) );
+      QMessageBox::warning( this, tr( "Empty Extent" ), tr( "Reprojected extent is empty." ) );
       return;
     }
   }
@@ -338,6 +342,30 @@ void QgsBookmarks::importFromXml()
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
   mProxyModel->_resetModel();
+}
+
+QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
+{
+  QMap<QString, QModelIndex> map;
+  int rowCount = mMergedModel->rowCount();
+
+  for ( int i = 0; i < rowCount; ++i )
+  {
+    QModelIndex idx = mMergedModel->index( i, 1 ); //Name col
+    if ( idx.isValid() )
+    {
+      QString name = idx.data( Qt::DisplayRole ).toString();
+      QString project = idx.sibling( idx.row(), 2 ).data().toString();
+      if ( !project.isEmpty() )
+      {
+        name = name + " (" + project + ")";
+      }
+      map.insert( name, idx ); //Duplicate name/project pairs are overwritten by subsequent bookmarks
+    }
+  }
+
+  return map;
+
 }
 
 void QgsBookmarks::exportToXml()
