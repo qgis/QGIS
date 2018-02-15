@@ -2,10 +2,10 @@
 # CACHE_TAG is provided by Docker cloud
 # see https://docs.docker.com/docker-cloud/builds/advanced/
 # using ARG in FROM requires min v17.05.0-ce
-ARG CACHE_TAG=latest
-ARG CCACHE_DIR
+ARG DOCKER_TAG=latest
+ARG CACHE_DIR
 
-FROM  qgis/qgis3-build-deps:${CACHE_TAG}
+FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
 MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
 
 ENV CC=/usr/lib/ccache/clang
@@ -13,9 +13,9 @@ ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 
-COPY .. /usr/src/QGIS
+COPY . /usr/src/QGIS
 
-COPY $CACHE_DIR /root/.ccache
+COPY ${CACHE_DIR} /root/.ccache
 ENV CCACHE_DIR=/root/.ccache
 RUN ccache -M 1G
 
