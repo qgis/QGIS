@@ -440,6 +440,33 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
             self.assertEqual(l.dataProvider().featureCount(), 7)
 
+    def testAddFeatureMissingAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with missing attributes pads out these
+        # attributes with NULL values to the correct length
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result, 'Provider returned False to addFeatures with missing attributes. Providers should accept these features but add NULL attributes to the end of the existing attributes to the required field length.')
+        f1.setId(added[0].id())
+        f2.setId(added[1].id())
+
+        # check result - feature attributes MUST be padded out to required number of fields
+        f1.setAttributes([6, -220, NULL, 'String', NULL])
+        f2.setAttributes([7, 330, NULL, NULL, NULL])
+        self.testGetFeatures(l.dataProvider(), [f1, f2])
+
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):
             return
