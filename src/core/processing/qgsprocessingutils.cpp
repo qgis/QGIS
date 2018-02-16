@@ -295,7 +295,6 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 {
   QString normalized = source;
   normalized.replace( '\\', '/' );
-  normalized.replace( '"', QLatin1String( "'" ) );
   return normalized.trimmed();
 }
 
