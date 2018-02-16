@@ -881,36 +881,53 @@ void TestQgsProcessing::mapLayerFromString()
 
   // no project set yet
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QVERIFY( !c.getMapLayer( QString() ) );
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QStringLiteral( "v1" ), c ) );
+  QVERIFY( !c.getMapLayer( QStringLiteral( "v1" ) ) );
 
   c.setProject( &p );
 
   // layers from current project
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QVERIFY( !c.getMapLayer( QString() ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c ), r1 );
+  QCOMPARE( c.getMapLayer( raster1 ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster2, c ), r2 );
+  QCOMPARE( c.getMapLayer( raster2 ), r2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "R1", c ), r1 );
+  QCOMPARE( c.getMapLayer( "R1" ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "ar2", c ), r2 );
+  QCOMPARE( c.getMapLayer( "ar2" ), r2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c ), v1 );
+  QCOMPARE( c.getMapLayer( "V4" ), v1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v1", c ), v2 );
+  QCOMPARE( c.getMapLayer( "v1" ), v2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( r1->id(), c ), r1 );
+  QCOMPARE( c.getMapLayer( r1->id() ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v1->id(), c ), v1 );
+  QCOMPARE( c.getMapLayer( v1->id() ), v1 );
 
   // check that layers in context temporary store are used
   QgsVectorLayer *v5 = new QgsVectorLayer( "Polygon", "V5", "memory" );
   QgsVectorLayer *v6 = new QgsVectorLayer( "Point", "v6", "memory" );
   c.temporaryLayerStore()->addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
+  QCOMPARE( c.getMapLayer( "V5" ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
+  QCOMPARE( c.getMapLayer( "v6" ), v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
+  QCOMPARE( c.getMapLayer( v5->id() ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v6->id(), c ), v6 );
+  QCOMPARE( c.getMapLayer( v6->id() ), v6 );
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
+  QVERIFY( !c.getMapLayer( "aaaa" ) );
 
   // if specified, check that layers can be loaded
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
   QString newRaster = testDataDir + "requires_warped_vrt.tif";
   // don't allow loading
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( newRaster, c, false ) );
+  QVERIFY( !c.getMapLayer( newRaster ) );
   // allow loading
   QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
   QVERIFY( loadedLayer->isValid() );
@@ -920,6 +937,7 @@ void TestQgsProcessing::mapLayerFromString()
 
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
+  QCOMPARE( c.getMapLayer( newRaster ), loadedLayer );
 }
 
 void TestQgsProcessing::algorithm()
