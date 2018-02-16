@@ -143,19 +143,19 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 angle = feat[rotation]
                 if not w or not h or not angle:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping…').format(feat.id())))
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
-                phi=angle * math.pi / 180
+                xOffset = w / 2.0
+                yOffset = h / 2.0
+                phi = angle * math.pi / 180
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
-                polygon=[[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
@@ -171,22 +171,22 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 if not feat.hasGeometry():
                     continue
 
-                w=feat[width]
-                h=feat[height]
+                w = feat[width]
+                h = feat[height]
                 if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping…').format(feat.id()))
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
+                xOffset = w / 2.0
+                yOffset = h / 2.0
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
-                polygon=[[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
@@ -195,10 +195,10 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 feedback.setProgress(int(current * total))
 
     def diamonds(self, sink, source, width, height, rotation, feedback):
-        features=source.getFeatures()
-        ft=QgsFeature()
+        features = source.getFeatures()
+        ft = QgsFeature()
 
-        total=100.0 / source.featureCount() if source.featureCount() else 0
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         if rotation >= 0:
             for current, feat in enumerate(features):
                 if feedback.isCanceled():
@@ -207,24 +207,24 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 if not feat.hasGeometry():
                     continue
 
-                w=feat[width]
-                h=feat[height]
-                angle=feat[rotation]
+                w = feat[width]
+                h = feat[height]
+                angle = feat[rotation]
                 if not w or not h or not angle:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping…').format(feat.id()))
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
-                phi=angle * math.pi / 180
+                xOffset = w / 2.0
+                yOffset = h / 2.0
+                phi = angle * math.pi / 180
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
-                polygon=[[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
@@ -239,22 +239,22 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 if not feat.hasGeometry():
                     continue
 
-                w=feat[width]
-                h=feat[height]
+                w = feat[width]
+                h = feat[height]
                 if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping…').format(feat.id()))
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
+                xOffset = w / 2.0
+                yOffset = h / 2.0
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
-                polygon=[[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
@@ -262,10 +262,10 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 feedback.setProgress(int(current * total))
 
     def ovals(self, sink, source, width, height, rotation, segments, feedback):
-        features=source.getFeatures()
-        ft=QgsFeature()
+        features = source.getFeatures()
+        ft = QgsFeature()
 
-        total=100.0 / source.featureCount() if source.featureCount() else 0
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         if rotation >= 0:
             for current, feat in enumerate(features):
                 if feedback.isCanceled():
@@ -274,26 +274,26 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 if not feat.hasGeometry():
                     continue
 
-                w=feat[width]
-                h=feat[height]
-                angle=feat[rotation]
+                w = feat[width]
+                h = feat[height]
+                angle = feat[rotation]
                 if not w or not h or not angle:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping…').format(feat.id()))
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
-                phi=angle * math.pi / 180
+                xOffset = w / 2.0
+                yOffset = h / 2.0
+                phi = angle * math.pi / 180
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[]
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = []
                 for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
-                polygon=[[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
@@ -308,24 +308,24 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 if not feat.hasGeometry():
                     continue
 
-                w=feat[width]
-                h=feat[height]
+                w = feat[width]
+                h = feat[height]
                 if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping…').format(feat.id()))
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
-                xOffset=w / 2.0
-                yOffset=h / 2.0
+                xOffset = w / 2.0
+                yOffset = h / 2.0
 
-                point=feat.geometry().asPoint()
-                x=point.x()
-                y=point.y()
-                points=[]
+                point = feat.geometry().asPoint()
+                x = point.x()
+                y = point.y()
+                points = []
                 for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
-                polygon=[[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
