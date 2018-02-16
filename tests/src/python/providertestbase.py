@@ -463,8 +463,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setId(added[1].id())
 
         # check result - feature attributes MUST be padded out to required number of fields
-        f1.setAttributes([6, -220, NULL, 'String', NULL])
-        f2.setAttributes([7, 330, NULL, NULL, NULL])
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
     def testAddFeaturesUpdateExtent(self):

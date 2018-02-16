@@ -346,11 +346,24 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
   // whether or not to update the layer extent on the fly as we add features
   bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
 
+  int fieldCount = mFields.count();
+
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
+    if ( it->attributes().count() < fieldCount )
+    {
+      // ensure features have the correct number of attributes by padding
+      // them with null attributes for missing values
+      QgsAttributes attributes = it->attributes();
+      for ( int i = it->attributes().count(); i < mFields.count(); ++i )
+      {
+        attributes.append( QVariant( mFields.at( i ).type() ) );
+      }
+      it->setAttributes( attributes );
+    }
 
     mFeatures.insert( mNextFeatureId, *it );
 
