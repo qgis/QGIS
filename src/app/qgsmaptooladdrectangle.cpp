@@ -89,7 +89,7 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
     return ext.release();
   }
 
-  QgsPoint x0( mRectangle.xMinimum(), mRectangle.yMinimum(), mRectangle.zMinimum() );
+  QgsPoint x0( mRectangle.xMinimum(), mRectangle.yMinimum() );
 
   QgsPoint x1, x2, x3;
   if ( isOriented )
@@ -101,9 +101,9 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
   }
   else
   {
-    x1 = QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum(), mRectangle.zMinimum() );
-    x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum(), mRectangle.zMinimum() );
-    x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum(), mRectangle.zMinimum() );
+    x1 = QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum() );
+    x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() );
+    x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() );
   }
 
   ext->addVertex( x0 );
@@ -111,6 +111,25 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
   ext->addVertex( x2 );
   ext->addVertex( x3 );
   ext->addVertex( x0 );
+
+  // keep z value from the first snapped point
+  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  {
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) )
+    {
+      if ( point.z() != defaultZValue() )
+      {
+        ext->dropZValue();
+        ext->addZValue( point.z() );
+        break;
+      }
+      else
+      {
+        ext->dropZValue();
+        ext->addZValue( defaultZValue() );
+      }
+    }
+  }
 
   return ext.release();
 }

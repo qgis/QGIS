@@ -102,14 +102,28 @@ convenient method to clean members
 
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
-    QgsPoint fromPointXY( const QgsPointXY &point ) const;
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 %Docstring
 Creates a QgsPoint with ZM support if necessary (according to the
-WkbType of the current layer) from a :py:class:`QgsPointXY`.
+WkbType of the current layer). If the point is snapped, then the Z
+value is took from the snapped point.
 
-:param point: A QgsPointXY to convert
+:param e: A mouse event
 
-:return: a point if ZM support if necessary
+:return: a point with ZM support if necessary
+
+
+.. versionadded:: 3.0
+%End
+
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+%Docstring
+Creates a QgsPoint with ZM support if necessary (according to the
+WkbType of the current layer).
+
+:param point: A point in 2D
+
+:return: a point with ZM support if necessary
 
 
 .. versionadded:: 3.0

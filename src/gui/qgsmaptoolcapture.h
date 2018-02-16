@@ -149,15 +149,28 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Creates a QgsPoint with ZM support if necessary (according to the
-     * WkbType of the current layer) from a QgsPointXY.
+     * WkbType of the current layer). If the point is snapped, then the Z
+     * value is took from the snapped point.
      *
-     * \param point A QgsPointXY to convert
+     * \param e A mouse event
      *
-     * \returns a point if ZM support if necessary
+     * \returns a point with ZM support if necessary
      *
      * \since QGIS 3.0
      */
-    QgsPoint fromPointXY( const QgsPointXY &point ) const;
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer).
+     *
+     * \param point A point in 2D
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)

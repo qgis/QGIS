@@ -768,7 +768,7 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
     mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
-QgsPoint QgsMapToolCapture::fromPointXY( const QgsPointXY &point ) const
+QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
 {
   QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
 
@@ -780,7 +780,7 @@ QgsPoint QgsMapToolCapture::fromPointXY( const QgsPointXY &point ) const
   }
 
   // convert to the corresponding type for a full ZM support
-  QgsWkbTypes::Type type = vlayer->wkbType();
+  const QgsWkbTypes::Type type = vlayer->wkbType();
   if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type ) )
   {
     newPoint.convertTo( QgsWkbTypes::PointZ );
@@ -794,22 +794,36 @@ QgsPoint QgsMapToolCapture::fromPointXY( const QgsPointXY &point ) const
     newPoint.convertTo( QgsWkbTypes::PointZM );
   }
 
-  // set default value for Z if necessary
+  // set z value if necessary
   if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
+  {
     newPoint.setZ( defaultZValue() );
+  }
 
   return newPoint;
 }
 
-#ifdef Q_OS_WIN
-bool QgsMapToolCapture::eventFilter( QObject *obj, QEvent *event )
+QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
 {
-  if ( event->type() != QEvent::ContextMenu )
-    return false;
+  QgsPoint newPoint = mapPoint( e.mapPoint() );
 
-  if ( --mSkipNextContextMenuEvent == 0 )
-    obj->removeEventFilter( this );
+  // set z value from snapped point if necessary
+  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
+  {
+    // if snapped, z dimension is taken from the corresponding snapped
+    // point.
+    if ( e.isSnapped() )
+    {
+      const QgsPointLocator::Match match = e.mapPointMatch();
+      const QgsWkbTypes::Type snappedType = match.layer()->wkbType();
 
-  return mSkipNextContextMenuEvent >= 0;
+      if ( QgsWkbTypes::hasZ( snappedType ) )
+      {
+        const QgsFeature ft = match.layer()->getFeature( match.featureId() );
+        newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );
+      }
+    }
+  }
+
+  return newPoint;
 }
-#endif
