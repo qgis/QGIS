@@ -741,7 +741,7 @@
   <action name="mActionExit">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileExit.png</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileExit.svg</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
    </property>
    <property name="text">
     <string>Exit QGIS</string>

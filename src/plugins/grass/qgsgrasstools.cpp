@@ -57,7 +57,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   connect( mDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mDebugButton_clicked );
   connect( mCloseDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mCloseDebugButton_clicked );
   connect( mViewModeButton, &QToolButton::clicked, this, &QgsGrassTools::mViewModeButton_clicked );
-  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
+  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.svg" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, &QAbstractButton::clicked, this, &QgsGrassTools::closeMapset );
 
