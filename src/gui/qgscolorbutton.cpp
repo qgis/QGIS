@@ -231,17 +231,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
   if ( mPickingColor )
   {
-    //currently in color picker mode
-    if ( e->buttons() & Qt::LeftButton )
-    {
-      //if left button depressed, sample color under cursor and temporarily update button color
-      //to give feedback to user
-      QScreen *screen = findScreenAt( e->globalPos() );
-      if ( screen )
-      {
-        setButtonBackground( sampleColor( e->globalPos() ) );
-      }
-    }
+    setButtonBackground( sampleColor( e->globalPos() ) );
     e->accept();
     return;
   }
@@ -294,7 +284,8 @@ void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
 
   if ( !samplingColor )
   {
-    //not sampling color, nothing more to do
+    //not sampling color, restore old color
+    setButtonBackground( mCurrentColor );
     return;
   }
 
@@ -686,6 +677,8 @@ void QgsColorButton::pasteColor()
 void QgsColorButton::activatePicker()
 {
   //activate picker color
+  // Store current color
+  mCurrentColor = mColor;
   QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();

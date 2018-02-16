@@ -411,6 +411,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
 
     QColor mDefaultColor;
+
+    //! Store current color when start picking
+    QColor mCurrentColor;
+
     QString mContext;
     bool mAllowOpacity = false;
     bool mColorSet = false;
