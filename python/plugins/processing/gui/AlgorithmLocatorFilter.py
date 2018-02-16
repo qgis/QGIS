@@ -40,6 +40,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
     def __init__(self, parent=None):
         super(AlgorithmLocatorFilter, self).__init__(parent)
 
+    def clone(self):
+        return AlgorithmLocatorFilter()
+
     def name(self):
         return 'processing_alg'
 
@@ -52,10 +55,13 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
     def prefix(self):
         return 'a'
 
+    def flags(self):
+        return QgsLocatorFilter.FlagFast
+
     def fetchResults(self, string, context, feedback):
+        # collect results in main thread, since this method is inexpensive and
+        # accessing the processing registry is not thread safe
         for a in QgsApplication.processingRegistry().algorithms():
-            if feedback.isCanceled():
-                return
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
 
@@ -81,7 +87,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.setMessage(message)
                 dlg.exec_()
                 return
-            dlg = alg.createCustomParametersWidget()
+            dlg = alg.createCustomParametersWidget(None)
             if not dlg:
                 dlg = AlgorithmDialog(alg)
             canvas = iface.mapCanvas()

@@ -34,6 +34,9 @@ class test_filter(QgsLocatorFilter):
         super().__init__(parent)
         self.prefix = prefix
 
+    def clone(self):
+        return test_filter(self.prefix)
+
     def name(self):
         return 'test'
 
@@ -42,9 +45,9 @@ class test_filter(QgsLocatorFilter):
 
     def fetchResults(self, string, context, feedback):
         for i in range(3):
-            #if feedback.isCanceled():
-            #    return
-            sleep(0.00001)
+            if feedback.isCanceled():
+                return
+            sleep(0.001)
             result = QgsLocatorResult()
             result.displayString = self.prefix + str(i)
             self.resultFetched.emit(result)
@@ -97,6 +100,7 @@ class TestQgsLocator(unittest.TestCase):
         # one filter
         l = QgsLocator()
         filter_a = test_filter('a')
+
         l.registerFilter(filter_a)
 
         l.foundResult.connect(got_hit)
