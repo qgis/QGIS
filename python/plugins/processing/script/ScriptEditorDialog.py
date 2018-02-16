@@ -44,6 +44,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingFeatureBasedAlgorithm)
 from qgis.utils import iface, OverrideCursor
 
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
 
@@ -212,7 +213,8 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         alg = None
         for k, v in d.items():
-            if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+            if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm, QgisAlgorithm)) and \
+                    v.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm", "QgisAlgorithm"):
                 alg = v()
                 break
 
