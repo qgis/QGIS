@@ -440,13 +440,14 @@ void QgsSnappingUtils::toggleEnabled()
   emit configChanged( mSnappingConfig );
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter, double tolerance )
 {
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();
 
   QgsPointXY pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
-  double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
+  if ( tolerance == 0.0 )
+    tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
 
   QgsPointLocator *loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
   if ( !loc )
