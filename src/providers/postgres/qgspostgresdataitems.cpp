@@ -108,7 +108,7 @@ QList<QAction *> QgsPGConnectionItem::actions( QWidget *parent )
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsPGConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -120,7 +120,7 @@ QList<QAction *> QgsPGConnectionItem::actions( QWidget *parent )
   separator2->setSeparator( true );
   lst.append( separator2 );
 
-  QAction *actionCreateSchema = new QAction( tr( "Create Schema..." ), parent );
+  QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), parent );
   connect( actionCreateSchema, &QAction::triggered, this, &QgsPGConnectionItem::createSchema );
   lst.append( actionCreateSchema );
 
@@ -309,7 +309,7 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
 
   QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
 
-  QAction *actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), parent );
+  QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), parent );
   connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
   lst.append( actionRenameLayer );
 
@@ -541,7 +541,7 @@ QList<QAction *> QgsPGSchemaItem::actions( QWidget *parent )
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionRename = new QAction( tr( "Rename Schema..." ), parent );
+  QAction *actionRename = new QAction( tr( "Rename Schema…" ), parent );
   connect( actionRename, &QAction::triggered, this, &QgsPGSchemaItem::renameSchema );
   lst.append( actionRename );
 
@@ -729,7 +729,7 @@ QList<QAction *> QgsPGRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsPGRootItem::newConnection );
   lst.append( actionNew );
 

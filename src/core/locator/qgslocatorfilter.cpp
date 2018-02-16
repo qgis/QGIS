@@ -18,11 +18,18 @@
 
 #include "qgslocatorfilter.h"
 #include "qgsstringutils.h"
+#include "qgsfeedback.h"
+#include <QThread>
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
 {
 
+}
+
+QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
+{
+  return nullptr;
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )

@@ -346,7 +346,7 @@ class Editor(QsciScintilla):
                                             self.objectListEditor)
         menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Options..."),
+                       QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)

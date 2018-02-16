@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import Qgis, QgsProject, QgsMessageLog
@@ -125,8 +125,8 @@ class DBTree(QTreeView):
         menu = QMenu(self)
 
         if isinstance(item, (Table, Schema)):
-            menu.addAction(self.tr("Rename…"), self.rename)
-            menu.addAction(self.tr("Delete…"), self.delete)
+            menu.addAction(QCoreApplication.translate("DBTree", "Rename…"), self.rename)
+            menu.addAction(QCoreApplication.translate("DBTree", "Delete…"), self.delete)
 
             if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
@@ -138,7 +138,7 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Remove"), self.delete)
 
         elif not index.parent().isValid() and item.typeName() in ("spatialite", "gpkg"):
-            menu.addAction(self.tr("New Connection…"), self.newConnection)
+            menu.addAction(QCoreApplication.translate("DBTree", "New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())

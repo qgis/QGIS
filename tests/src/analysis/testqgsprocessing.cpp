@@ -682,7 +682,7 @@ void TestQgsProcessing::compatibleLayers()
 void TestQgsProcessing::normalizeLayerSource()
 {
   QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers\\test.shp" ), QString( "data/layers/test.shp" ) );
-  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers 'new'/test.shp" ) );
+  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers \"new\"/test.shp" ) );
 }
 
 void TestQgsProcessing::context()

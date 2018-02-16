@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
@@ -58,7 +58,7 @@ class HistoryDialog(BASE, WIDGET):
         self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
-        self.saveButton = QPushButton(self.tr('Save As...'))
+        self.saveButton = QPushButton(QCoreApplication.translate('HistoryDialog', 'Save As…'))
         self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
 

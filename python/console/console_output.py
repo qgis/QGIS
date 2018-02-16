@@ -236,7 +236,7 @@ class ShellOutputScintilla(QsciScintilla):
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Options..."),
+                       QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)

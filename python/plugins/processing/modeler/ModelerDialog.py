@@ -246,7 +246,7 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.setDropIndicatorShown(True)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
         if hasattr(self.textName, 'setPlaceholderText'):
             self.textName.setPlaceholderText(self.tr('Enter model name here'))
         if hasattr(self.textGroup, 'setPlaceholderText'):
@@ -497,11 +497,10 @@ class ModelerDialog(BASE, WIDGET):
                     QMessageBox.warning(self, self.tr('I/O error'),
                                         self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
                 else:
-                    QMessageBox.warning(self, self.tr("Can't save model"),
-                                        self.tr("This model can't be saved in its "
-                                                "original location (probably you do not "
-                                                "have permission to do it). Please, use "
-                                                "the 'Save as...' option."))
+                    QMessageBox.warning(self, self.tr("Can't save model"), QCoreApplication.translate('QgsPluginInstallerInstallingDialog', (
+                        "This model can't be saved in its original location (probably you do not "
+                        "have permission to do it). Please, use the 'Save as…' option."))
+                    )
                 return
             self.update_model.emit()
             self.bar.pushMessage("", "Model was correctly saved", level=Qgis.Success, duration=5)
@@ -784,7 +783,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def formatAlgorithmTooltip(self, alg):
         return '<p><b>{}</b></p><p>{}</p>'.format(
             alg.displayName(),
-            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
+            QCoreApplication.translate('TreeAlgorithmItem', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
         )
 
 
