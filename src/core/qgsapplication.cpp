@@ -989,7 +989,7 @@ QgsApplication::endian_t QgsApplication::endian()
 
 void QgsApplication::initQgis()
 {
-  if ( !ABISYM( mInitialized ) )
+  if ( !ABISYM( mInitialized ) && QgsApplication::instance() )
   {
     init( ABISYM( mProfilePath ) );
   }
