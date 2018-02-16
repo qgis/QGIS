@@ -211,7 +211,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(Q('Loading start points…'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Loading start points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
