@@ -373,8 +373,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
       continue;
     }
 
-    if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
-         QgsWkbTypes::geometryType( mWkbType ) )
+    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )
+    {
+      it->clearGeometry();
+    }
+    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
+              QgsWkbTypes::geometryType( mWkbType ) )
     {
       pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
                  QgsWkbTypes::displayString( mWkbType ) ) );
