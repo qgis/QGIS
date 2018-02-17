@@ -1093,7 +1093,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const 
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )
   : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
-  mIconName = QStringLiteral( "/mIconDelete.png" );
+  mIconName = QStringLiteral( "/mIconDelete.svg" );
 
   setState( Populated ); // no more children
 }
@@ -1628,4 +1628,3 @@ void QgsFavoriteItem::rename( const QString &name )
 
 
 ///@endcond
-
