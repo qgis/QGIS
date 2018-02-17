@@ -1328,7 +1328,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
   {
     // don't try to set field from attribute map if it's not present in layer
     if ( ogrAttId >= fdef.GetFieldCount() )
-      continue;
+      return false;
 
     //if(!s.isEmpty())
     // continue;

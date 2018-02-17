@@ -2148,6 +2148,12 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       QgsAttributes attrs = features->attributes();
 
+      if ( attrs.count() > mAttributeFields.count() )
+      {
+        returnvalue = false;
+        continue;
+      }
+
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
