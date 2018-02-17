@@ -1330,7 +1330,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     if ( ogrAttId >= fdef.GetFieldCount() )
     {
       pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fdef.GetFieldCount() ).arg( f.attributes().count() ) );
-      return false;
+      continue;
     }
 
     //if(!s.isEmpty())

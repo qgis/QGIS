@@ -369,8 +369,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     {
       // too many attributes
       pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fieldCount ).arg( it->attributes().count() ) );
-      result = false;
-      continue;
+      QgsAttributes attributes = it->attributes();
+      attributes.resize( mFields.count() );
+      it->setAttributes( attributes );
     }
 
     if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )

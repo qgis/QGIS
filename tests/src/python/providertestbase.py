@@ -477,7 +477,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             return
 
-        # test that adding features with too many attributes rejects the feature
+        # test that adding features with too many attributes drops these attributes
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
         f1.setAttributes([6, -220, NULL, 'String', '15'])
@@ -485,11 +485,12 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
-        self.assertFalse(result, 'Provider returned True to addFeatures with extra attributes. Providers should reject these features.')
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
 
-        # make sure feature was not added
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
-        self.assertFalse(added)
+        # make sure feature was added correctyl
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, 'getEditableLayer', None):
