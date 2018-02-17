@@ -2148,13 +2148,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       QgsAttributes attrs = features->attributes();
 
-      if ( attrs.count() > mAttributeFields.count() )
-      {
-        pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( mAttributeFields.count() ).arg( attrs.count() ) );
-        returnvalue = false;
-        continue;
-      }
-
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
