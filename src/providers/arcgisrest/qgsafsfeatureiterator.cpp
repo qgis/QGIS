@@ -62,6 +62,8 @@ QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
 
 bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 {
+  f.setValid( false );
+
   if ( mClosed )
     return false;
 
@@ -82,6 +84,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   {
     bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
     geometryToDestinationCrs( f, mTransform );
+    f.setValid( result );
     return result;
   }
   else
@@ -96,6 +99,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       if ( !success )
         continue;
       geometryToDestinationCrs( f, mTransform );
+      f.setValid( true );
       return true;
     }
   }
