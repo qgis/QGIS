@@ -49,6 +49,10 @@ void TestQgsSettings::enumSettingValue()
   // enum method returns default value if current setting is incorrect
   QgsUnitTypes::LayoutUnit v2 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v2, QgsUnitTypes::LayoutMeters );
+
+  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
+  QgsUnitTypes::LayoutUnit v3 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
 }
 
 
