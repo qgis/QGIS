@@ -324,6 +324,13 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
     lst.append( actionTruncateLayer );
   }
 
+  if ( mLayerProperty.isMaterializedView )
+  {
+    QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View" ), parent );
+    connect( actionRefreshMaterializedView, &QAction::triggered, this, &QgsPGLayerItem::refreshMaterializedView );
+    lst.append( actionRefreshMaterializedView );
+  }
+
   return lst;
 }
 
@@ -439,6 +446,45 @@ void QgsPGLayerItem::truncateTable()
 
   conn->unref();
   QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
+}
+
+void QgsPGLayerItem::refreshMaterializedView()
+{
+  if ( QMessageBox::question( nullptr, QObject::tr( "Refresh Materialized View" ),
+                              QObject::tr( "Are you sure you want to refresh the materialized view %1.%2?\n\nThis will update all data within the table." ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  QgsDataSourceUri dsUri( mUri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( nullptr, tr( "Refresh View" ), tr( "Unable to refresh the view." ) );
+    return;
+  }
+
+  QString schemaName = mLayerProperty.schemaName;
+  QString tableName = mLayerProperty.tableName;
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
+  }
+  QString tableRef = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
+
+  QString sql = QStringLiteral( "REFRESH MATERIALIZED VIEW CONCURRENTLY %1" ).arg( tableRef );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QMessageBox::warning( nullptr, tr( "Refresh View" ), tr( "Unable to refresh view %1\n%2" ).arg( mName,
+                          result.PQresultErrorMessage() ) );
+    conn->unref();
+    return;
+  }
+
+  conn->unref();
+  QMessageBox::information( nullptr, tr( "Refresh View" ), tr( "Materialized view refreshed successfully." ) );
 }
 #endif
 
@@ -659,8 +705,21 @@ void QgsPGSchemaItem::renameSchema()
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
+  QString tip;
+  if ( layerProperty.isView && ! layerProperty.isMaterializedView )
+  {
+    tip = tr( "View" );
+  }
+  else if ( layerProperty.isView && layerProperty.isMaterializedView )
+  {
+    tip = tr( "Materialized view" );
+  }
+  else
+  {
+    tip = tr( "Table" );
+  }
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
+  tip += tr( "\n%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
   if ( !layerProperty.tableComment.isEmpty() )
   {
     tip = layerProperty.tableComment + '\n' + tip;
