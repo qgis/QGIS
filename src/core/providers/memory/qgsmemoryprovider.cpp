@@ -349,7 +349,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 
   int fieldCount = mFields.count();
 
-  // TODO: sanity checks of fields and geometries
+  // TODO: sanity checks of fields
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
     it->setId( mNextFeatureId );
@@ -368,6 +368,16 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     else if ( it->attributes().count() > fieldCount )
     {
       // too many attributes
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fieldCount ).arg( it->attributes().count() ) );
+      result = false;
+      continue;
+    }
+
+    if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
+         QgsWkbTypes::geometryType( mWkbType ) )
+    {
+      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
+                 QgsWkbTypes::displayString( mWkbType ) ) );
       result = false;
       continue;
     }

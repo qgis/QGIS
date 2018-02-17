@@ -2150,6 +2150,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( attrs.count() > mAttributeFields.count() )
       {
+        pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( mAttributeFields.count() ).arg( attrs.count() ) );
         returnvalue = false;
         continue;
       }
