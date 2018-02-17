@@ -309,16 +309,16 @@ void QgsColorRampButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *newColorRampAction = new QAction( tr( "Create new color ramp..." ), this );
+  QAction *newColorRampAction = new QAction( tr( "Create new color ramp…" ), this );
   connect( newColorRampAction, &QAction::triggered, this, &QgsColorRampButton::createColorRamp );
   mMenu->addAction( newColorRampAction );
 
-  QAction *editColorRampAction = new QAction( tr( "Edit color ramp..." ), this );
+  QAction *editColorRampAction = new QAction( tr( "Edit color ramp…" ), this );
   editColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( editColorRampAction, &QAction::triggered, this, &QgsColorRampButton::showColorRampDialog );
   mMenu->addAction( editColorRampAction );
 
-  QAction *saveColorRampAction = new QAction( tr( "Save color ramp..." ), this );
+  QAction *saveColorRampAction = new QAction( tr( "Save color ramp…" ), this );
   saveColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( saveColorRampAction, &QAction::triggered, this, &QgsColorRampButton::saveColorRamp );
   mMenu->addAction( saveColorRampAction );

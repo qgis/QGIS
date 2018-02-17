@@ -470,7 +470,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     }
     catch ( ... )
     {
-      QgsMessageLog::logMessage( "Triangulation failed. Skipping polygon...", "3D" );
+      QgsMessageLog::logMessage( QObject::tr( "Triangulation failed. Skipping polygon…" ), QObject::tr( "3D" ) );
     }
 
     for ( int i = 0; i < polylinesToDelete.count(); ++i )

@@ -177,7 +177,7 @@ QList<QAction *> QgsWfsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -240,7 +240,7 @@ QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
   lst.append( actionNew );
 

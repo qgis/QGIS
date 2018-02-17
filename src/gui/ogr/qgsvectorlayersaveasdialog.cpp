@@ -140,7 +140,7 @@ void QgsVectorLayerSaveAsDialog::setup()
   mExtentGroupBox->setCollapsed( true );
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
-  mFilename->setDialogTitle( tr( "Select layer as..." ) );
+  mFilename->setDialogTitle( tr( "Save Layer as…" ) );
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )

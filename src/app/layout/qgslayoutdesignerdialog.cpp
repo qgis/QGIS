@@ -2218,7 +2218,7 @@ void QgsLayoutDesignerDialog::printAtlas()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2387,7 +2387,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2538,7 +2538,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2744,7 +2744,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2868,7 +2868,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -2983,7 +2983,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -3117,7 +3117,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -3213,7 +3213,7 @@ void QgsLayoutDesignerDialog::printReport()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Printing Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {

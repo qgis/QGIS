@@ -272,7 +272,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
-  setText( 0, tr( "Loading..." ) );
+  setText( 0, tr( "Loading…" ) );
   connect( mWebView->page(), &QWebPage::loadFinished, this, &QgsIdentifyResultsWebViewItem::loadFinished );
 }
 
@@ -1071,7 +1071,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Layer properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );

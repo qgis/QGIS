@@ -1018,7 +1018,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
-  QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString(), Qgis::Info );
+  QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString(), Qgis::Info );
 
   // set QGIS specific srs validation
   connect( this, &QgisApp::customCrsValidation,
@@ -2293,7 +2293,7 @@ void QgisApp::createMenus()
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
-  QAction *actionPrefs = new QAction( tr( "Preferences..." ), this );
+  QAction *actionPrefs = new QAction( tr( "Preferences…" ), this );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
@@ -5331,7 +5331,7 @@ void QgisApp::showRasterCalculator()
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), d.rasterEntries() );
 
-    QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
+    QProgressDialog p( tr( "Calculating…" ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     p.setMaximum( 100.0 );
     QgsFeedback feedback;
@@ -7199,7 +7199,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
 
   QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
-  QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
+  QProgressDialog progress( tr( "Merging features…" ), tr( "Abort" ), 0, featureList.size(), this );
   progress.setWindowModality( Qt::WindowModal );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

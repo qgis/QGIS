@@ -428,8 +428,8 @@ void QgsGpsInformationWidget::connectGps()
     port = QStringLiteral( "internalGPS" );
   }
 
-  mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
-  showStatusBarMessage( tr( "Connecting to GPS device..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
+  showStatusBarMessage( tr( "Connecting to GPS device…" ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
   connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsGpsInformationWidget::connected );
@@ -501,7 +501,7 @@ void QgsGpsInformationWidget::disconnectGps()
     delete mpMapMarker;
     mpMapMarker = nullptr;
   }
-  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "&Connect" ) );
   showStatusBarMessage( tr( "Disconnected from GPS device." ) );

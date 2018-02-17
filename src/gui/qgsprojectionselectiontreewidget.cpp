@@ -439,7 +439,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
   if ( rc )
   {
     QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
-                               "Because of this the projection selector will not work..." ).arg( databaseFileName ),
+                               "Because of this the projection selector will not work…" ).arg( databaseFileName ),
                                Qgis::Critical );
     return QString();
   }
@@ -1116,6 +1116,6 @@ void QgsProjectionSelectionTreeWidget::showDBMissingWarning( const QString &file
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),
                          tr( "Error reading database file from: \n %1\n"
-                             "Because of this the projection selector will not work..." )
+                             "Because of this the projection selector will not work…" )
                          .arg( fileName ) );
 }

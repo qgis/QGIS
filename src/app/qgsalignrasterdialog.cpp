@@ -408,7 +408,7 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
 
   editOutput = new QLineEdit( this );
-  btnBrowse = new QPushButton( tr( "Browse..." ), this );
+  btnBrowse = new QPushButton( tr( "Browse…" ), this );
   connect( btnBrowse, &QAbstractButton::clicked, this, &QgsAlignRasterLayerConfigDialog::browseOutputFilename );
 
   QHBoxLayout *layoutOutput = new QHBoxLayout();

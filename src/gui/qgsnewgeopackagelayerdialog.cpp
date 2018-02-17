@@ -111,7 +111,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   QgsSettings settings;
   mDatabase->setStorageMode( QgsFileWidget::SaveFile );
   mDatabase->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
-  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File..." ) );
+  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File…" ) );
   mDatabase->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   mDatabase->setConfirmOverwrite( false );
   connect( mDatabase, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
