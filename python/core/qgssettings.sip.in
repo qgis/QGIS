@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSettings : QObject
 {
 %Docstring
@@ -219,6 +220,7 @@ An optional Section argument can be used to get a value from a specific Section.
 
     sipIsErr = !sipRes;
 %End
+
 
     bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
