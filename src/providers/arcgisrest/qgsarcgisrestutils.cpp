@@ -415,9 +415,10 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitle, QString &errorText )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle, QString &errorText )
 {
   QEventLoop loop;
+  QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
   QNetworkReply *reply = nullptr;
@@ -475,6 +476,52 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
     return QVariantMap();
   }
   return doc.object().toVariantMap();
+}
+
+QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )
+{
+  QUrl modifiedUrl( url );
+  if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  {
+    // Just for testing with local files instead of http:// resources
+    QString modifiedUrlString = modifiedUrl.toString();
+    // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
+    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
+    modifiedUrlString.replace( QStringLiteral( "fake_qgis_http_endpoint/" ), QStringLiteral( "fake_qgis_http_endpoint_" ) );
+    QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
+    modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
+    QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
+    if ( modifiedUrlString.size() > 256 )
+    {
+      args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
+    }
+    else
+    {
+      args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
+    }
+#ifdef Q_OS_WIN
+    // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
+    // so we must restore it
+    if ( modifiedUrlString[1] == '/' )
+    {
+      modifiedUrlString = modifiedUrlString[0] + ":/" + modifiedUrlString.mid( 2 );
+    }
+#endif
+    modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+    QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
+    modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
+  }
+
+  return modifiedUrl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

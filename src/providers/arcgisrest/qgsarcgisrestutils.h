@@ -42,6 +42,8 @@ class QgsArcGisRestUtils
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
     static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText );
     static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText );
+
+    static QUrl parseUrl( const QUrl &url );
 };
 
 class QgsArcGisAsyncQuery : public QObject
