@@ -367,8 +367,15 @@ double QgsMapToolOffsetCurve::calculateOffset( QgsPointXY mapPoint )
     int beforeVertex;
     int leftOf = 0;
 
-    offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-    offset = leftOf < 0 ? offset : -offset;
+    offset = std::sqrt( mManipulatedGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+    if ( QgsWkbTypes::geometryType( mManipulatedGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
+    {
+      offset = leftOf < 0 ? offset : -offset;
+    }
+    else
+    {
+      offset = mManipulatedGeometry.contains( &layerCoords ) ? -offset : offset;
+    }
   }
   return offset;
 }
@@ -573,7 +580,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   }
   else
   {
-    offsetGeom = mManipulatedGeometry.buffer( -offset, quadSegments, capStyle, joinStyle, miterLimit );
+    offsetGeom = mManipulatedGeometry.buffer( offset, quadSegments, capStyle, joinStyle, miterLimit );
   }
 
   if ( !offsetGeom )
