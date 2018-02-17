@@ -453,7 +453,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
       if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
-        QMessageBox::warning( this, tr( "Unknown diagram type." ),
+        QMessageBox::warning( this, tr( "Diagram Properties" ),
                               tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( mDiagramType ), QMessageBox::Ok );
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }

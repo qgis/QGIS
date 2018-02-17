@@ -241,7 +241,7 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
   }
   else
   {
-    // XXX query failed -- warn the user some how
+    // XXX query failed -- warn the user somehow
     QMessageBox::warning( nullptr, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( database.errorMessage() ) );
     status = false;
   }
@@ -289,8 +289,8 @@ bool QgsNewSpatialiteLayerDialog::createDb()
   {
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
-    msgBox.setWindowTitle( tr( "The File Already Exists." ) );
-    msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
+    msgBox.setWindowTitle( tr( "New SpatiaLite Layer" ) );
+    msgBox.setText( tr( "The file already exists. Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
     QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
     QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
     msgBox.setStandardButtons( QMessageBox::Cancel );
@@ -480,7 +480,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   else
   {
     QgsDebugMsg( leLayerName->text() + " is an invalid layer - not loaded" );
-    QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( leLayerName->text() ) );
+    QMessageBox::critical( this, tr( "SpatiaLite Database" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( leLayerName->text() ) );
     delete layer;
   }
 
