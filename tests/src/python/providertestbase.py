@@ -467,6 +467,30 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
+    def testAddFeatureExtraAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with too many attributes rejects the feature
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f2 = QgsFeature()
+        f1.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertFalse(result, 'Provider returned True to addFeatures with extra attributes. Providers should reject these features.')
+
+        # make sure feature was not added
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
+        self.assertFalse(added)
+
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):
             return
