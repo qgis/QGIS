@@ -305,7 +305,7 @@ void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::Keyboar
   if ( !mModifiedGeometry.isGeosValid() )
   {
     emit messageEmitted( tr( "Generated geometry is not valid." ), Qgis::Critical );
-    // no cancel, allow to continue editing.
+    // no cancel, continue editing.
     return;
   }
 
