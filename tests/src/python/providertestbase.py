@@ -515,8 +515,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(result, 'Provider returned True to addFeatures with incorrect geometry type. Providers should reject these features.')
 
         # make sure feature was not added
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 8]
-        self.assertTrue(added)
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
+        self.assertFalse(added)
 
         # yet providers MUST always accept null geometries
         f3 = QgsFeature()
