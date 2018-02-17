@@ -230,7 +230,9 @@ void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
 
 void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
 {
+  beginRemoveRows( index, index.row(), index.row() );
   mRecentProjects.removeAt( index.row() );
+  endRemoveRows();
 }
 
 void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
