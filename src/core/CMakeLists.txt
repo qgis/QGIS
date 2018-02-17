@@ -669,6 +669,7 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
+  geometry/qgsgeometry.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -1090,7 +1091,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometryeditutils.h
   geometry/qgsgeometryengine.h
   geometry/qgsgeometryfactory.h
-  geometry/qgsgeometry.h
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
