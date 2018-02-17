@@ -115,7 +115,6 @@
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip
 %Include qgstextrenderer.sip
-%Include qgstolerance.sip
 %Include qgstracer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorlayercache.sip
@@ -342,6 +341,7 @@
 %Include qgsrunprocess.sip
 %Include qgssnappingconfig.sip
 %Include qgstaskmanager.sip
+%Include qgstolerance.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip

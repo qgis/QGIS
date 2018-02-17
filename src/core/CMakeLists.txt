@@ -622,6 +622,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgssnappingconfig.h
   qgssnappingutils.h
   qgstaskmanager.h
+  qgstolerance.h
   qgstracer.h
   qgstrackedvectorlayertools.h
   qgstransaction.h
@@ -907,7 +908,6 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
-  qgstolerance.h
   qgstracer.h
 
   qgsvectordataprovider.h
