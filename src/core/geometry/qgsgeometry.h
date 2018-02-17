@@ -110,6 +110,7 @@ struct QgsGeometryPrivate;
 
 class CORE_EXPORT QgsGeometry
 {
+    Q_GADGET
   public:
 
     /**
@@ -848,6 +849,7 @@ class CORE_EXPORT QgsGeometry
       SideLeft = 0, //!< Buffer to left of line
       SideRight, //!< Buffer to right of line
     };
+    Q_ENUM( BufferSide );
 
     //! End cap styles for buffers
     enum EndCapStyle
@@ -856,6 +858,7 @@ class CORE_EXPORT QgsGeometry
       CapFlat, //!< Flat cap (in line with start/end of line)
       CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
     };
+    Q_ENUM( EndCapStyle );
 
     //! Join styles for buffers
     enum JoinStyle
@@ -864,6 +867,7 @@ class CORE_EXPORT QgsGeometry
       JoinStyleMiter, //!< Use mitered joins
       JoinStyleBevel, //!< Use beveled joins
     };
+    Q_ENUM( JoinStyle );
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
