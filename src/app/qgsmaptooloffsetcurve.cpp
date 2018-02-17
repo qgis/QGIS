@@ -300,7 +300,13 @@ void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::Keyboar
       }
       mModifiedGeometry = QgsGeometry::fromPolygonXY( newPoly );
     }
+  }
 
+  if ( !mModifiedGeometry.isGeosValid() )
+  {
+    emit messageEmitted( tr( "Generated geometry is not valid." ), Qgis::Critical );
+    // no cancel, allow to continue editing.
+    return;
   }
 
   mLayer->beginEditCommand( tr( "Offset curve" ) );
