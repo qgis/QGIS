@@ -224,12 +224,12 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 
     if ( !templateFile.exists() )
     {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Template file “%1” not found." ).arg( templateFile.fileName() ) );
+      QMessageBox::warning( this, tr( "Create Layout" ), tr( "Template file “%1” not found." ).arg( templateFile.fileName() ) );
       return;
     }
     if ( !templateFile.open( QIODevice::ReadOnly ) )
     {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Could not read template file “%1”." ).arg( templateFile.fileName() ) );
+      QMessageBox::warning( this, tr( "Create Layout" ), tr( "Could not read template file “%1”." ).arg( templateFile.fileName() ) );
       return;
     }
 
@@ -260,7 +260,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
     if ( !loadedOK )
     {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
+      QMessageBox::warning( this, tr( "Create Layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
       layout.reset();
     }
   }
@@ -323,7 +323,7 @@ void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
   QDir localDir;
   if ( !localDir.mkpath( localDirPath ) )
   {
-    QMessageBox::warning( this, tr( "Open directory" ), tr( "Could not open or create local directory “%1”." ).arg( localDirPath ) );
+    QMessageBox::warning( this, tr( "Open Directory" ), tr( "Could not open or create local directory “%1”." ).arg( localDirPath ) );
   }
   else
   {
@@ -370,13 +370,13 @@ void QgsLayoutManagerDialog::removeClicked()
   QString message;
   if ( layoutItems.count() == 1 )
   {
-    title = tr( "Remove layout" );
+    title = tr( "Remove Layout" );
     message = tr( "Do you really want to remove the print layout “%1”?" ).arg(
                 mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
   }
   else
   {
-    title = tr( "Remove layouts" );
+    title = tr( "Remove Layouts" );
     message = tr( "Do you really want to remove all selected print layouts?" );
   }
 
@@ -446,7 +446,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
 
   if ( !newDialog )
   {
-    QMessageBox::warning( this, tr( "Duplicate layout" ),
+    QMessageBox::warning( this, tr( "Duplicate Layout" ),
                           tr( "Layout duplication failed." ) );
   }
   else
@@ -569,7 +569,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
   if ( layoutNames.contains( value.toString() ) )
   {
     //name exists!
-    QMessageBox::warning( nullptr, tr( "Rename layout" ), tr( "There is already a layout named “%1”." ).arg( value.toString() ) );
+    QMessageBox::warning( nullptr, tr( "Rename Layout" ), tr( "There is already a layout named “%1”." ).arg( value.toString() ) );
     return false;
   }
 

@@ -4745,7 +4745,7 @@ void QgisApp::addDatabaseLayer()
   QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "postgres" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add PostgreSQL Layer" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
     return;
   }
   connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -4838,7 +4838,7 @@ void QgisApp::addSpatiaLiteLayer()
   QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "SpatiaLite" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add SpatiaLite Layer" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
     return;
   }
   connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -4853,7 +4853,7 @@ void QgisApp::addDelimitedTextLayer()
   QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "delimitedtext" ), this ) );
   if ( !dts )
   {
-    QMessageBox::warning( this, tr( "Delimited Text" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add Delimited Text Layer" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
     return;
   }
   connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
@@ -4868,7 +4868,7 @@ void QgisApp::addVirtualLayer()
   QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "virtual" ), this ) );
   if ( !dts )
   {
-    QMessageBox::warning( this, tr( "Virtual layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add Virtual Layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
     return;
   }
   connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
@@ -4909,7 +4909,7 @@ void QgisApp::addMssqlLayer()
   QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "mssql" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add MSSQL Layer" ), tr( "Cannot get MSSQL select dialog from provider." ) );
     return;
   }
   connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -4925,7 +4925,7 @@ void QgisApp::addDb2Layer()
   QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "DB2" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "DB2" ), tr( "Cannot get DB2 select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add DB2 Layer" ), tr( "Cannot get DB2 select dialog from provider." ) );
     return;
   }
   connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -4941,7 +4941,7 @@ void QgisApp::addOracleLayer()
   QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( "oracle", this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Add Oracle Layer" ), tr( "Cannot get Oracle select dialog from provider." ) );
     return;
   }
   connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -4967,7 +4967,7 @@ void QgisApp::fileExit()
     }
 
     // active tasks
-    if ( QMessageBox::question( this, tr( "Active tasks" ),
+    if ( QMessageBox::question( this, tr( "Active Tasks" ),
                                 tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
     {
@@ -5401,7 +5401,7 @@ void QgisApp::fileOpen()
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
     QString fullPath = QFileDialog::getOpenFileName( this,
-                       tr( "Choose a QGIS project file to open" ),
+                       tr( "Choose a QGIS Project File to Open" ),
                        lastUsedDir,
                        tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS)" );
     if ( fullPath.isNull() )
@@ -5622,8 +5622,8 @@ bool QgisApp::fileSave()
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
     {
       if ( QMessageBox::warning( this,
-                                 tr( "Project file was changed" ),
-                                 tr( "The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?\n"
+                                 tr( "Open a Project" ),
+                                 tr( "The loaded project file on disk was meanwhile changed. Do you want to overwrite the changes?\n"
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
                                  .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
@@ -5678,7 +5678,7 @@ void QgisApp::fileSaveAs()
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
-                 tr( "Choose a file name to save the QGIS project file as" ),
+                 tr( "Choose a File Name to Save the QGIS Project File as" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
                  qgsExt + ";;" + zipExt, &filter );
   if ( path.isEmpty() )
@@ -6857,8 +6857,8 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
   {
     if ( error != QgsRasterFileWriter::WriteCanceled )
     {
-      QMessageBox::warning( this, tr( "Error" ),
-                            tr( "Cannot write raster error code: %1" ).arg( error ),
+      QMessageBox::warning( this, tr( "Save Raster" ),
+                            tr( "Cannot write raster. Error code: %1" ).arg( error ),
                             QMessageBox::Ok );
     }
   } );
@@ -7135,7 +7135,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool promptCo
     return;
   }
   //display a warning
-  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfSelectedFeatures ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete Features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfSelectedFeatures ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -7274,7 +7274,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   while ( !titleValid )
   {
     newTitle = QInputDialog::getText( parent,
-                                      tr( "Create %1 title" ).arg( typeString ),
+                                      tr( "Create %1 Title" ).arg( typeString ),
                                       titleMsg,
                                       QLineEdit::Normal,
                                       newTitle,
@@ -8588,7 +8588,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       buttons |= QMessageBox::Cancel;
 
     switch ( QMessageBox::question( nullptr,
-                                    tr( "Stop editing" ),
+                                    tr( "Stop Editing" ),
                                     tr( "Do you want to save the changes to layer %1?" ).arg( vlayer->name() ),
                                     buttons ) )
     {
@@ -8898,7 +8898,7 @@ void QgisApp::layerSubsetString()
 
   if ( joins )
   {
-    if ( QMessageBox::question( nullptr, tr( "Filter on joined fields" ),
+    if ( QMessageBox::question( nullptr, tr( "Filter on Joined Fields" ),
                                 tr( "You are about to set a subset filter on a layer that has joined fields. "
                                     "Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. "
                                     "Would you like to create a virtual layer out of this layer first?" ),
@@ -9069,7 +9069,7 @@ void QgisApp::removeLayer()
 
   if ( !activeTaskDescriptions.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Active tasks" ),
+    QMessageBox::warning( this, tr( "Active Tasks" ),
                           tr( "The following tasks are currently running which depend on this layer:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.join( QStringLiteral( "\n" ) ) ) );
     return;
   }
@@ -10402,7 +10402,7 @@ bool QgisApp::saveDirty()
     // old code: mProjectIsDirtyFlag = true;
 
     // prompt user to save
-    answer = QMessageBox::question( this, tr( "Save Project?" ),
+    answer = QMessageBox::question( this, tr( "Save Project" ),
                                     tr( "Do you want to save the current project? %1" )
                                     .arg( whyDirty ),
                                     QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
