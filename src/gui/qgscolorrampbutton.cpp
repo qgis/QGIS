@@ -400,7 +400,7 @@ void QgsColorRampButton::saveColorRamp()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save color ramp" ),
+    int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
                                     tr( "Color ramp with name '%1' already exists. Overwrite?" )
                                     .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );

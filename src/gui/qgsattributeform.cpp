@@ -129,7 +129,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     if ( mUnsavedMultiEditChanges )
     {
       // prompt for save
-      int res = QMessageBox::question( this, tr( "Multiedit attributes" ),
+      int res = QMessageBox::question( this, tr( "Multiedit Attributes" ),
                                        tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
       if ( res == QMessageBox::Yes )
       {
@@ -530,8 +530,8 @@ bool QgsAttributeForm::saveMultiEdits()
 
 #if 0
   // prompt for save
-  int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
-                                      tr( "Edits will be applied to all selected features" ), QMessageBox::Ok | QMessageBox::Cancel );
+  int res = QMessageBox::information( this, tr( "Multiedit Attributes" ),
+                                      tr( "Edits will be applied to all selected features." ), QMessageBox::Ok | QMessageBox::Cancel );
   if ( res != QMessageBox::Ok )
   {
     resetMultiEdit();
@@ -557,12 +557,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), Qgis::Success, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::Success, messageTimeout() );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), Qgis::Warning, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::Warning, messageTimeout() );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -1535,7 +1535,7 @@ void QgsAttributeForm::initPython()
       {
         // If we get here, it means that the function doesn't accept three arguments
         QMessageBox msgBox;
-        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the  <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
         msgBox.exec();
 #if 0
         QString expr = QString( "%1(%2)" )

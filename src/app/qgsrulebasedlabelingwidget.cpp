@@ -644,7 +644,7 @@ void QgsLabelingRulePropsWidget::testFilter()
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Error" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
@@ -652,7 +652,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
   if ( !filter.prepare( &context ) )
   {
-    QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ), filter.evalErrorString() );
     return;
   }
 
@@ -675,7 +675,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
   QApplication::restoreOverrideCursor();
 
-  QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
+  QMessageBox::information( this, tr( "Test Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
 

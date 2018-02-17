@@ -487,7 +487,7 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
   if ( !mFeatureList->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( expression ) ) )
   {
     QMessageBox::warning( this,
-                          tr( "Could not set preview column" ),
+                          tr( "Column Preview" ),
                           tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
                           .arg( previewAction->text(), mFeatureList->parserErrorString() )
                         );

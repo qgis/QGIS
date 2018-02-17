@@ -237,7 +237,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
   QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -246,7 +246,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   if ( !f.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::information( nullptr,
-                              tr( "Error" ),
+                              tr( "Load Value Map from File" ),
                               tr( "Could not open file %1\nError was: %2" ).arg( fileName, f.errorString() ),
                               QMessageBox::Cancel );
     return;
