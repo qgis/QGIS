@@ -2158,7 +2158,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
-        QVariant value = attrs.at( attrIdx );
+        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QVariant( QVariant::Int );
 
         QString v;
         if ( value.isNull() )
