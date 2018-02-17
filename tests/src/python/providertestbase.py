@@ -488,7 +488,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(result,
                         'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
 
-        # make sure feature was added correctyl
+        # make sure feature was added correctly
         added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
         self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
 
@@ -506,15 +506,28 @@ class ProviderTestCase(FeatureSourceTestCase):
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
         f1.setGeometry(QgsGeometry.fromWkt('LineString (-72.345 71.987, -80 80)'))
+        f1.setAttributes([7])
         f2 = QgsFeature()
         f2.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+        f2.setAttributes([8])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
         self.assertFalse(result, 'Provider returned True to addFeatures with incorrect geometry type. Providers should reject these features.')
 
         # make sure feature was not added
-        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
-        self.assertFalse(added)
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 8]
+        self.assertTrue(added)
+
+        # yet providers MUST always accept null geometries
+        f3 = QgsFeature()
+        f3.setAttributes([9])
+        result, added = l.dataProvider().addFeatures([f3])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with null geometry. Providers should always accept these features.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 9][0]
+        self.assertFalse(added.hasGeometry())
 
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):
