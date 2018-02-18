@@ -75,9 +75,9 @@ class FeatureSourceTestCase(object):
         while it.nextFeature(f):
             # expect feature to be valid
             self.assertTrue(f.isValid())
-            # split off the first 5 attributes only - some source test datasets will include
-            # additional attributes which we ignore
-            attrs = f.attributes()[0:5]
+            # some source test datasets will include additional attributes which we ignore,
+            # so cherry pick desired attributes
+            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char']]
             # force the num_char attribute to be text - some sources (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
