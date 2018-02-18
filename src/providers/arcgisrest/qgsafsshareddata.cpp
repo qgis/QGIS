@@ -90,7 +90,9 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
       QgsAttributes attributes( mFields.size() );
       foreach ( int idx, fetchAttribIdx )
       {
-        attributes[idx] = attributesData[mFields.at( idx ).name()];
+        QVariant attribute = attributesData[mFields.at( idx ).name()];
+        mFields.at( idx ).convertCompatible( attribute );
+        attributes[idx] = attribute;
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
         {
           featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
