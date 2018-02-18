@@ -62,6 +62,9 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     return false;
   }
 
+  // don't lock while doing the fetch
+  locker.unlock();
+
   // Query
   QString errorTitle, errorMessage;
   const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
@@ -75,6 +78,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     return false;
   }
 
+  // but re-lock while updating cache
+  locker.relock();
   const QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
   if ( featuresData.isEmpty() )
   {
