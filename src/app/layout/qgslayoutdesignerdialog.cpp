@@ -63,6 +63,8 @@
 #include "qgsreportorganizerwidget.h"
 #include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
+#include "ui_defaults.h"
+
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -3387,15 +3389,18 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   // restore the toolbar and dock widgets positions using Qt settings API
   QgsSettings settings;
 
-  //TODO - defaults
-  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) */ ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultLayerDesignerUIstate ), sizeof defaultLayerDesignerUIstate ), QgsSettings::App ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI state failed" );
   }
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) */ ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QgsSettings::App ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI geometry failed" );
+    // default to 80% of screen size, at 10% from top left corner
+    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
+    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    move( pos.width(), pos.height() );
   }
 }
 
