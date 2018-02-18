@@ -122,9 +122,9 @@ elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
 
 	echo Pulling new translations...
-	shift
 	if [ "$#" -gt 0 ]; then
-		o="-l $@"
+		o=$*
+		o="-l ${o// /,}"
 	else
 		o="-a"
 	fi
