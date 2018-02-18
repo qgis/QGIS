@@ -185,6 +185,13 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   {
     _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
   }
+  if ( bestMatch.type() != QgsPointLocator::Vertex && bestMatch.type() != QgsPointLocator::Edge && ( type & QgsPointLocator::Area ) )
+  {
+    // if edges were detected, set tolerance to 0 to only do pointInPolygon (and avoid redo nearestEdge)
+    if ( type & QgsPointLocator::Edge )
+      tolerance = 0;
+    _replaceIfBetter( bestMatch, loc->nearestArea( pointMap, tolerance, filter ), tolerance );
+  }
 }
 
 
