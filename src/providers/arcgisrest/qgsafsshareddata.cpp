@@ -52,9 +52,15 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
   {
-    objectIds.append( mObjectIds[i] );
+    if ( i >= 0 && i < mObjectIds.count() )
+      objectIds.append( mObjectIds[i] );
   }
 
+  if ( objectIds.empty() )
+  {
+    QgsDebugMsg( "No valid features IDs to fetch" );
+    return false;
+  }
 
   // Query
   QString errorTitle, errorMessage;
