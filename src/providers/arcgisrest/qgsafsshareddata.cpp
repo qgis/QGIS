@@ -23,7 +23,7 @@ void QgsAfsSharedData::clearCache()
   mCache.clear();
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect )
 {
   QMutexLocker locker( &mMutex );
 

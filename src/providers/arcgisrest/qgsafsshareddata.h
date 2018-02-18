@@ -36,7 +36,7 @@ class QgsAfsSharedData : public QObject
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
     void clearCache();
 
-    bool getFeature( QgsFeatureId id, QgsFeature &f, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
+    bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle() );
 
   private:
     friend class QgsAfsProvider;
