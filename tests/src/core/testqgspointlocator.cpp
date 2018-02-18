@@ -130,6 +130,30 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( pt2, QgsPointXY( 1, 1 ) );
     }
 
+    void testNearestArea()
+    {
+      QgsPointLocator loc( mVL );
+      QgsPointXY pt1( 1.1, 0.5 );
+      QgsPointLocator::Match m1 = loc.nearestArea( pt1, 0 );
+      QVERIFY( !m1.isValid() );
+
+      QgsPointXY pt2( 0.9, 0.9 );
+      QgsPointLocator::Match m2 = loc.nearestArea( pt2, 0 );
+      QVERIFY( m2.isValid() );
+      QVERIFY( m2.hasArea() );
+      QCOMPARE( m2.layer(), mVL );
+      QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m2.point(), QgsPointXY( 0.9, 0.9 ) );
+
+      QgsPointXY pt3( 1.1, 1.1 );
+      QgsPointLocator::Match m3 = loc.nearestArea( pt3, 999 );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m3.hasArea() );
+      QCOMPARE( m3.layer(), mVL );
+      QCOMPARE( m3.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m3.point(), QgsPointXY( 1.0, 1 - 0 ) );
+    }
+
     void testPointInPolygon()
     {
       QgsPointLocator loc( mVL );
