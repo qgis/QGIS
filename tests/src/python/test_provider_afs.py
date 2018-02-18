@@ -441,6 +441,20 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         #shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
 
+    def testGetFeaturesSubsetAttributes2(self):
+        """ Override and skip this test for AFS provider, as it's actually more efficient for the AFS provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature), and the nature of the caching
+        used by the AFS provider.
+        """
+        pass
+
+    def testGetFeaturesNoGeometry(self):
+        """ Override and skip this test for AFS provider, as it's actually more efficient for the AFS provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature), and the nature of the caching
+        used by the AFS provider.
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
