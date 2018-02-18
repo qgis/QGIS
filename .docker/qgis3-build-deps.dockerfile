@@ -45,6 +45,7 @@ RUN  apt-get update \
     libqt5webkit5-dev \
     libqt5xml5 \
     libqt5xmlpatterns5-dev \
+    libqt5serialport5-dev \
     libqwt-qt5-dev \
     libspatialindex-dev \
     libspatialite-dev \

@@ -190,10 +190,6 @@ find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {
 # Readme file for QGIS server configuration and Lighttpd example
 install -pm0644 %{SOURCE4} .
 
-# Delete bundled libs
-# Using external QEXTSERIALPORT causes segfaults
-# rm -rf src/core/gps/qextserialport/
-
 gzip ChangeLog
 
 
@@ -214,10 +210,6 @@ gzip ChangeLog
       -D WITH_SERVER:BOOL=TRUE \
       -D WITH_3D:BOOL=TRUE \
       .
-
-      # Using external QEXTSERIALPORT causes segfaults
-      # -D WITH_INTERNAL_QEXTSERIALPORT:BOOL=FALSE \
-      # -D QEXTSERIALPORT_INCLUDE_DIR:STRING=%{_includedir}/QtExtSerialPort \
 
 make %{?_smp_mflags}
 

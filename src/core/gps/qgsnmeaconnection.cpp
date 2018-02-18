@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsnmeaconnection.h"
-#include "qextserialport.h"
 #include "qgslogger.h"
 
 #include <QIODevice>
