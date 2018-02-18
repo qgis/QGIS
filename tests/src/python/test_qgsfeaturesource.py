@@ -75,7 +75,7 @@ class TestQgsFeatureSource(unittest.TestCase):
         layer = createLayerWithFivePoints()
         self.assertFalse(layer.dataProvider().minimumValue(-1))
         self.assertFalse(layer.dataProvider().minimumValue(100))
-        self.assertEqual(layer.dataProvider().minimumValue(1), 'test')
+        self.assertEqual(layer.dataProvider().minimumValue(layer.dataProvider().fields().lookupField('cnt')), 'test')
         self.assertEqual(layer.dataProvider().minimumValue(2), 1)
 
     def testMaxValues(self):
