@@ -429,7 +429,7 @@ void QgsGpsInformationWidget::connectGps()
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
-  showStatusBarMessage( tr( "Connecting to GPS device…" ) );
+  showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
   connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsGpsInformationWidget::connected );
