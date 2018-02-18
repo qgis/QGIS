@@ -70,7 +70,6 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
     return false;
 
-  bool fetchGeometries = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0;
   QgsAttributeList fetchAttribures;
   if ( ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) != 0 )
     fetchAttribures = mRequest.subsetOfAttributes();
@@ -82,7 +81,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
+    bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, fetchAttribures );
     geometryToDestinationCrs( f, mTransform );
     f.setValid( result );
     return result;
@@ -94,7 +93,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       filterRect = filterRect.intersect( &mFilterRect );
     while ( mFeatureIterator < mSource->sharedData()->featureCount() )
     {
-      bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, fetchGeometries, fetchAttribures, filterRect );
+      bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, fetchAttribures, filterRect );
       ++mFeatureIterator;
       if ( !success )
         continue;

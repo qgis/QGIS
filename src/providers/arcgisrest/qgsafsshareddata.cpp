@@ -23,7 +23,7 @@ void QgsAfsSharedData::clearCache()
   mCache.clear();
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
   QMutexLocker locker( &mMutex );
 
@@ -44,7 +44,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     fetchAttribNames.append( mFields.at( idx ).name() );
     fetchAttribIdx.append( idx );
   }
-  fetchGeometry = true;
 
   // Fetch 100 features at the time
   int startId = ( id / 100 ) * 100;
@@ -60,7 +59,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   // Query
   QString errorTitle, errorMessage;
   const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
-                                  mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), fetchGeometry,
+                                  mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                                   fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
                                   filterRect, errorTitle, errorMessage );
   if ( queryData.isEmpty() )
@@ -105,14 +104,12 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     feature.setId( featureId );
 
     // Set geometry
-    if ( fetchGeometry )
-    {
-      const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-                                      QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
-      // Above might return 0, which is OK since in theory empty geometries are allowed
-      feature.setGeometry( QgsGeometry( geometry ) );
-    }
+    const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
+    std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
+    // Above might return 0, which is OK since in theory empty geometries are allowed
+    if ( geometry )
+      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
