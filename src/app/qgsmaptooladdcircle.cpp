@@ -68,7 +68,21 @@ void QgsMapToolAddCircle::deactivate()
   }
 
   mParentTool->clearCurve();
-  mParentTool->addCurve( mCircle.toCircularString() );
+
+  // keep z value from the first snapped point
+  std::unique_ptr<QgsCircularString> lineString( mCircle.toCircularString() );
+  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  {
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
+         point.z() != defaultZValue() )
+    {
+      lineString->dropZValue();
+      lineString->addZValue( point.z() );
+      break;
+    }
+  }
+
+  mParentTool->addCurve( lineString.release() );
   clean();
 
   QgsMapToolCapture::deactivate();

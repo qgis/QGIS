@@ -90,7 +90,9 @@ class CORE_EXPORT QgsGeometryUtils
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
 
     /**
-     * \brief Compute the intersection between two lines
+     * Computes the intersection between two lines. Z dimension is
+     * supported and is retrieved from the first 3D point amongst \a p1 and
+     * \a p2.
      * \param p1 Point on the first line
      * \param v1 Direction vector of the first line
      * \param p2 Point on the second line
@@ -225,7 +227,11 @@ class CORE_EXPORT QgsGeometryUtils
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
-    //! Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
+    /**
+     * Calculates midpoint on circle passing through p1 and p2, closest to
+     * given coordinate. Z dimension is supported and is retrieved from the
+     * first 3D point amongst \a p1 and \a p2.
+     */
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
@@ -409,6 +415,18 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns true if the point is updated, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP

@@ -47,7 +47,9 @@ Constructs an ellipse by defining all the members.
     static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
 %Docstring
 Constructs an ellipse by foci (``pt1`` and ``pt2``) and a point ``pt3``.
-The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+The center point can have m value which is the result from the midpoint
+operation between ``pt1`` and ``pt2``. Z dimension is also supported and
+is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance with the third point ``pt3``.
 The azimuth is the angle between ``pt1`` and ``pt2``.
 
@@ -59,7 +61,9 @@ The azimuth is the angle between ``pt1`` and ``pt2``.
     static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
 Constructs an ellipse by an extent (aka bounding box / :py:class:`QgsRectangle`).
-The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+The center point can have m value which is the result from the midpoint
+operation between ``pt1`` and ``pt2``. Z dimension is also supported and
+is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
 The azimuth always takes the default value.
 
@@ -70,7 +74,9 @@ The azimuth always takes the default value.
     static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
 %Docstring
 Constructs an ellipse by a center point and a another point.
-The center point keeps z and m values from ``ptc``.
+The center point keeps m value from ``ptc``. Z dimension is also
+supported and is retrieved from the first 3D point amongst ``ptc`` and
+``pt1``.
 Axes are calculated from the 2D distance between ``ptc`` and ``pt1``.
 The azimuth always takes the default value.
 
@@ -81,7 +87,9 @@ The azimuth always takes the default value.
     static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
 Constructs an ellipse by a central point and two other points.
-The center point keeps z and m values from ``ptc``.
+The center point keeps m value from ``ptc``. Z dimension is also
+supported and is retrieved from the first 3D point amongst ``ptc``,
+``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance between ``ptc`` and ``pt1`` and ``pt2``.
 The azimuth is the angle between ``ptc`` and ``pt1``.
 
