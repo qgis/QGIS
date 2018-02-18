@@ -396,7 +396,7 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
   }
   queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? "true" : "false" );
   queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? "true" : "false" );
-  if ( !filterRect.isEmpty() )
+  if ( !filterRect.isNull() )
   {
     queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                            .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
@@ -483,7 +483,7 @@ QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )
     QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
-    if ( modifiedUrlString.size() > 256 )
+    if ( modifiedUrlString.size() > 150 )
     {
       args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
     }

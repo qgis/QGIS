@@ -21,6 +21,7 @@
 
 class QgsSpatialIndex;
 
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsAfsFeatureSource : public QgsAbstractFeatureSource
 {
@@ -49,6 +50,11 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
 
   private:
     QgsFeatureId mFeatureIterator = 0;
+
+    bool mUsingFeatureIdList = false;
+    QgsFeatureIds mFeatureIdList;
+    QgsFeatureIds mRemainingFeatureIds;
+
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 };

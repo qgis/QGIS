@@ -43,7 +43,7 @@ def sanitize(endpoint, x):
         x = x[len('/query'):]
         endpoint = endpoint + '_query'
 
-    if len(endpoint + x) > 256:
+    if len(endpoint + x) > 150:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
         # print('Before: ' + endpoint + x)
         # print('After:  ' + ret)
@@ -130,8 +130,97 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
 
-        '"f=json&objectIds=5,3,1,2,4&inSR=&outSR=&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects"'
-        '"f=json&objectIds=5,3,1,2,4&inSR=&outSR=&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects"'
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false'),
+                  'wb') as f:
+            f.write("""
+        {
+         "displayFieldName": "name",
+         "fieldAliases": {
+          "name": "name"
+         },
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+        {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
+        {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
+        {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null,
+            "name2":"NuLl",
+            "num_char":"5"    
+           },
+           "geometry": {
+            "x": -71.123,
+            "y": 78.23
+           }
+          },
+          {
+           "attributes": {
+            "OBJECTID": 3,
+            "pk": 3,
+            "cnt": 300,
+            "name": "Pear",
+            "name2":"PEaR",
+            "num_char":"3"   
+           },
+           "geometry": null
+          },
+          {
+           "attributes": {
+            "OBJECTID": 1,
+            "pk": 1,
+            "cnt": 100,
+            "name": "Orange",
+            "name2":"oranGe",
+            "num_char":"1"    
+           },
+           "geometry": {
+            "x": -70.332,
+            "y": 66.33
+           }
+          },
+          {
+           "attributes": {
+            "OBJECTID": 2,
+            "pk": 2,
+            "cnt": 200,
+            "name": "Apple",
+            "name2":"Apple",
+            "num_char":"2"    
+           },
+           "geometry": {
+            "x": -68.2,
+            "y": 70.8
+           }
+          },
+          {
+           "attributes": {
+            "OBJECTID": 4,
+            "pk": 4,
+            "cnt": 400,
+            "name": "Honey",
+            "name2":"Honey",
+            "num_char":"4"    
+           },
+           "geometry": {
+            "x": -65.32,
+            "y": 78.3
+           }
+          }
+         ]
+        }""".encode('UTF-8'))
 
         with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
