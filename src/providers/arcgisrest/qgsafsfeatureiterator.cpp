@@ -46,6 +46,11 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );
+    if ( !mRequest.filterRect().isNull() && mFilterRect.isNull() )
+    {
+      close();
+      return;
+    }
   }
   catch ( QgsCsException & )
   {
