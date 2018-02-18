@@ -659,8 +659,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
-  mUndoDock = new QgsDockWidget( tr( "Command History" ), this );
-  mUndoDock->setObjectName( QStringLiteral( "CommandDock" ) );
+  mUndoDock = new QgsDockWidget( tr( "Undo History" ), this );
+  mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
   mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
