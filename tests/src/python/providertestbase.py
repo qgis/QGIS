@@ -331,7 +331,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
     def testUnique(self):
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))), set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()

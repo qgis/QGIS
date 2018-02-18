@@ -96,6 +96,11 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       foreach ( int idx, fetchAttribIdx )
       {
         QVariant attribute = attributesData[mFields.at( idx ).name()];
+        if ( attribute.isNull() )
+        {
+          // ensure that null values are mapped correctly for PyQGIS
+          attribute = QVariant( QVariant::Int );
+        }
         mFields.at( idx ).convertCompatible( attribute );
         attributes[idx] = attribute;
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
