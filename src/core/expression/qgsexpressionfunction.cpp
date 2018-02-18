@@ -3391,7 +3391,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   }
   catch ( QgsCsException &cse )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Transform error caught in transform() function: %1" ).arg( cse.what() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught in transform() function: %1" ).arg( cse.what() ) );
     return QVariant();
   }
   return QVariant();

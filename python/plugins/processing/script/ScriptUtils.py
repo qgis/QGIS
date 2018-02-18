@@ -72,8 +72,8 @@ def loadAlgorithm(moduleName, filePath):
                 scriptsRegistry[x] = filePath
                 return obj()
     except ImportError as e:
-        QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
-                                 "Processing",
+        QgsMessageLog.logMessage(QCoreApplication.translate("ScriptUtils", "Could not import script algorithm '{}' from '{}'\n{}").format(moduleName, filePath, str(e)),
+                                 QCoreApplication.translate("ScriptUtils", "Processing"),
                                  Qgis.Critical)
 
 
