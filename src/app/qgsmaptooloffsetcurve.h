@@ -88,8 +88,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsGeometry mModifiedGeometry;
     //! ID of manipulated feature
     QgsFeatureId mModifiedFeature = -1;
-    bool mMultiPartGeometry = false;
-    int mModifiedPart = 0;
+    int mModifiedPart = -1;
+    int mModifiedRing = -1;
 
     //! Internal flag to distinguish move from click
     bool mGeometryModified = false;
@@ -105,7 +105,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void createUserInputWidget();
     void deleteUserInputWidget();
 
-    void prepareGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature );
+    void prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature );
 
     void deleteRubberBandAndGeometry();
 

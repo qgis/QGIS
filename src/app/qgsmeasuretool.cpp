@@ -85,7 +85,7 @@ void QgsMeasureTool::activate()
        ( mCanvas->extent().height() > 360 ||
          mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( nullptr, tr( "Incorrect measure results" ),
+    QMessageBox::warning( nullptr, tr( "Incorrect Measure Results" ),
                           tr( "<p>This map is defined with a geographic coordinate system "
                               "(latitude/longitude) "
                               "but the map extents suggests that it is actually a projected "
@@ -152,7 +152,7 @@ void QgsMeasureTool::updateSettings()
       }
       catch ( QgsCsException &cse )
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
+        QgsMessageLog::logMessage( tr( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
       }
     }
 

@@ -423,7 +423,7 @@ void QgsPalettedRendererWidget::classify()
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::collectedClasses, this, &QgsPalettedRendererWidget::gatheredClasses );
     connect( mGatherer, &QgsPalettedRendererClassGatherer::finished, this, &QgsPalettedRendererWidget::gathererThreadFinished );
-    mClassifyButton->setText( tr( "Calculating..." ) );
+    mClassifyButton->setText( tr( "Calculating…" ) );
     mClassifyButton->setEnabled( false );
     mGatherer->start();
   }

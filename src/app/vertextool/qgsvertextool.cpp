@@ -984,7 +984,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
   QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
   connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
-  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, [ = ]( QgsFeatureId id ) { if ( mSelectedFeature.get()->featureId() == id ) cleanupVertexEditor(); } );
+  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 
 void QgsVertexTool::cleanupVertexEditor()
@@ -2160,4 +2160,12 @@ void QgsVertexTool::stopRangeVertexSelection()
 {
   mSelectionMethod = SelectionNormal;
   setHighlightedVertices( QList<Vertex>() );
+}
+
+void QgsVertexTool::cleanEditor( QgsFeatureId id )
+{
+  if ( mSelectedFeature.get() && mSelectedFeature.get()->featureId() == id )
+  {
+    cleanupVertexEditor();
+  };
 }

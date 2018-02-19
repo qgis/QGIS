@@ -241,8 +241,9 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
 		$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)/.error
-	$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit
-	# but ignore the outcome for now
+	# ignore submission errors
+	-$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit
+	# ignore the test outcome for now
 	# ! [ -f $(QGIS_BUILDDIR)/.error ]
 else
 	@echo Skipping tests.

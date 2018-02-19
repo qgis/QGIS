@@ -148,7 +148,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
-  bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
+  bar->pushMessage( tr( "Testing connection" ), tr( "……" ) );
   // Gross but needed to show the last message.
   qApp->processEvents();
 

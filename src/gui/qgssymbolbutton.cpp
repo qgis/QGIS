@@ -307,7 +307,7 @@ void QgsSymbolButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
-  QAction *configureAction = new QAction( tr( "Configure symbol..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure symbol…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsSymbolButton::showSettingsDialog );
 

@@ -574,7 +574,13 @@ QgsPoint QgsTriangle::inscribedCenter() const
                l.at( 1 ) * vertexAt( 0 ).y() +
                l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
-  return QgsPoint( x, y );
+  QgsPoint center( x, y );
+
+  QgsPointSequence points;
+  points << vertexAt( 0 ) << vertexAt( 1 ) << vertexAt( 2 );
+  QgsGeometryUtils::setZValueFromPoints( points, center );
+
+  return center;
 }
 
 double QgsTriangle::inscribedRadius() const
@@ -590,6 +596,3 @@ QgsCircle QgsTriangle::inscribedCircle() const
     return QgsCircle();
   return QgsCircle( inscribedCenter(), inscribedRadius() );
 }
-
-
-

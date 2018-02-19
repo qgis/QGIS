@@ -27,6 +27,7 @@
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
+#include "qgsfileutils.h"
 
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
@@ -226,14 +227,17 @@ void QgsGeometryCheckerResultTab::exportErrors()
     initialdir = dir.absolutePath();
   }
 
-  QString file = QFileDialog::getSaveFileName( this, tr( "Select Output File" ), initialdir, tr( "GeoPackage (*.gpkg);;" ) );
+  QString selectedFilter;
+  QString file = QFileDialog::getSaveFileName( this, tr( "Select Output File" ), initialdir, QgsVectorFileWriter::fileFilterString(), &selectedFilter );
   if ( file.isEmpty() )
   {
     return;
   }
+
+  file = QgsFileUtils::addExtensionFromFilter( file, selectedFilter );
   if ( !exportErrorsDo( file ) )
   {
-    QMessageBox::critical( this, tr( "Error" ), tr( "Failed to export errors to shapefile." ) );
+    QMessageBox::critical( this, tr( "Export Errors" ), tr( "Failed to export errors to %1." ).arg( QDir::toNativeSeparators( file ) ) );
   }
 }
 
@@ -243,6 +247,10 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;10;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
+
+  QFileInfo fi( file );
+  QString ext = fi.suffix();
+  QString driver = QgsVectorFileWriter::driverForExtension( ext );
 
   QLibrary ogrLib( QgsProviderRegistry::instance()->library( QStringLiteral( "ogr" ) ) );
   if ( !ogrLib.load() )
@@ -255,7 +263,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, QStringLiteral( "ESRI Shapefile" ), "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
+  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
   {
     return false;
   }

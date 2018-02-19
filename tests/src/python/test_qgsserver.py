@@ -400,7 +400,6 @@ class TestQgsServer(QgsServerTestBase):
         item_found = False
         for item in str(r).split("\\n"):
             if "OnlineResource" in item:
-                print("OnlineResource: ", item)
                 self.assertEqual("\"my_wcs_advertised_url" in item, True)
                 item_found = True
         self.assertTrue(item_found)

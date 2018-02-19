@@ -122,9 +122,9 @@ elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
 
 	echo Pulling new translations...
-	shift
 	if [ "$#" -gt 0 ]; then
-		o="-l $@"
+		o=$*
+		o="-l ${o// /,}"
 	else
 		o="-a"
 	fi
@@ -163,6 +163,8 @@ perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
+
+echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
 
 echo Updating translations
 $LUPDATE -locations absolute -verbose qgis_ts.pro

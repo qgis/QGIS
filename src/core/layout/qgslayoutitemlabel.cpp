@@ -441,7 +441,7 @@ QString QgsLayoutItemLabel::displayName() const
       }
       if ( text.length() > 25 )
       {
-        return QString( tr( "%1..." ) ).arg( text.left( 25 ).simplified() );
+        return QString( tr( "%1…" ) ).arg( text.left( 25 ).simplified() );
       }
       else
       {

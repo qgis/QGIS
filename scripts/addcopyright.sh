@@ -217,6 +217,21 @@ for i in $FILES; do
 		authoremail="nyall dot dawson at gmail dot com"
 		;;
 
+	"David")
+		authorname="David Signer"
+		authoremail="david at opengis dot ch"
+		;;
+
+	"Etienne Trimaille")
+		authorname="Etienne Trimaille"
+		authoremail="etienne dot trimaille at gmail dot com"
+		;;
+
+	"David Marteau")
+		authorname="David Marteau"
+		authoremail="david at innophi dot com"
+		;;
+
 	*)
 		echo "Author $author not found."
 		exit 1

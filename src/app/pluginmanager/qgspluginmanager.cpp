@@ -1049,20 +1049,20 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
       if ( repository.value( QStringLiteral( "state" ) ) == QLatin1String( "2" ) )
       {
         a->setText( 0, tr( "connected" ) );
-        a->setIcon( 0, QIcon( ":/images/themes/default/repositoryConnected.png" ) );
+        a->setIcon( 0, QIcon( ":/images/themes/default/repositoryConnected.svg" ) );
         a->setToolTip( 0, tr( "The repository is connected" ) );
       }
       else
       {
         a->setText( 0, tr( "unavailable" ) );
-        a->setIcon( 0, QIcon( ":/images/themes/default/repositoryUnavailable.png" ) );
+        a->setIcon( 0, QIcon( ":/images/themes/default/repositoryUnavailable.svg" ) );
         a->setToolTip( 0, tr( "The repository is enabled, but unavailable" ) );
       }
     }
     else
     {
       a->setText( 0, tr( "disabled" ) );
-      a->setIcon( 0, QIcon( ":/images/themes/default/repositoryDisabled.png" ) );
+      a->setIcon( 0, QIcon( ":/images/themes/default/repositoryDisabled.svg" ) );
       if ( repository.value( QStringLiteral( "valid" ) ) == QLatin1String( "true" ) )
       {
         a->setToolTip( 0, tr( "The repository is disabled" ) );

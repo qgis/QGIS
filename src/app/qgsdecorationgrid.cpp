@@ -805,18 +805,18 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   QgsMapLayer *layer = QgisApp::instance()->mapCanvas()->currentLayer();
   if ( ! layer )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "No active layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "No active layer" ) );
     return false;
   }
   if ( layer->type() != QgsMapLayer::RasterLayer )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Please select a raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Please select a raster layer." ) );
     return false;
   }
   QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Invalid raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Invalid raster layer" ) );
     return false;
   }
   QgsCoordinateReferenceSystem layerCRS = layer->crs();
@@ -826,7 +826,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   // TODO calculate transformed values if necessary
   if ( layerCRS != mapCRS )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Layer CRS must be equal to project CRS" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Layer CRS must be equal to project CRS." ) );
     return false;
   }
 

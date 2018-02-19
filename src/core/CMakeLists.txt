@@ -101,6 +101,7 @@ SET(QGIS_CORE_SRCS
 
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
+  processing/qgsprocessingcontext.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
@@ -621,6 +622,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgssnappingconfig.h
   qgssnappingutils.h
   qgstaskmanager.h
+  qgstolerance.h
   qgstracer.h
   qgstrackedvectorlayertools.h
   qgstransaction.h
@@ -668,6 +670,7 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
+  geometry/qgsgeometry.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -905,7 +908,6 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
-  qgstolerance.h
   qgstracer.h
 
   qgsvectordataprovider.h
@@ -1089,7 +1091,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometryeditutils.h
   geometry/qgsgeometryengine.h
   geometry/qgsgeometryfactory.h
-  geometry/qgsgeometry.h
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h

@@ -336,6 +336,48 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 
 };
 
+#ifndef SIP_RUN
+
+/**
+ * \class QgsProcessingFeatureSink
+ * \ingroup core
+ * QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
+ * \since QGIS 3.0
+ * \note Not available in Python bindings.
+ */
+class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
+{
+  public:
+
+
+    /**
+     * Constructor for QgsProcessingFeatureSink, accepting an original feature sink \a originalSink
+     * and processing \a context. Any added features are added to the \a originalSink, with feature
+     * writing errors being reports to \a context.
+     *
+     * The \a context must exist for the lifetime of this object.
+     *
+     * The \a sinkName is used to identify the destination sink when reporting errors.
+     *
+     * Ownership of \a originalSink is dictated by \a ownsOriginalSource. If \a ownsOriginalSink is false,
+     * ownership is not transferred, and callers must ensure that \a originalSink exists for the lifetime of this object.
+     * If \a ownsOriginalSink is true, then this object will take ownership of \a originalSink.
+     */
+    QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
+    ~QgsProcessingFeatureSink();
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr ) override;
+
+  private:
+
+    QgsProcessingContext &mContext;
+    QString mSinkName;
+    bool mOwnsSink = false;
+
+};
+#endif
+
 #endif // QGSPROCESSINGUTILS_H
 
 

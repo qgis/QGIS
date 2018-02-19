@@ -31,11 +31,11 @@ QgsMapToolRectangleCenter::QgsMapToolRectangleCenter( QgsMapToolCapture *parentT
 
 void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
@@ -45,6 +45,8 @@ void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    mPoints.append( point );
+
     deactivate();
     if ( mParentTool )
     {
@@ -55,7 +57,7 @@ void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( mTempRubberBand )
   {
@@ -65,19 +67,19 @@ void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
-          double xOffset = fabs( mapPoint.x() - mPoints.at( 0 ).x() );
-          double yOffset = fabs( mapPoint.y() - mPoints.at( 0 ).y() );
+          double xOffset = fabs( point.x() - mPoints.at( 0 ).x() );
+          double yOffset = fabs( point.y() - mPoints.at( 0 ).y() );
 
-          mRectangle = QgsRectangle( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset ) );
+          mRectangle = QgsBox3d( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset, mPoints.at( 0 ).z() ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset, mPoints.at( 0 ).z() ) );
 
           mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
         }
         else
         {
-          double dist = mPoints.at( 0 ).distance( mapPoint );
-          double angle = mPoints.at( 0 ).azimuth( mapPoint );
+          double dist = mPoints.at( 0 ).distance( point );
+          double angle = mPoints.at( 0 ).azimuth( point );
 
-          mRectangle = QgsRectangle( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
+          mRectangle = QgsBox3d( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
           mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
         }
       }

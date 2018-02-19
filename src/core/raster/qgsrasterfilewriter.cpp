@@ -746,28 +746,28 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
     QString title, message;
     if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
     {
-      title = QObject::tr( "Building pyramids failed - write access denied" );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
     }
     else if ( res == QLatin1String( "ERROR_WRITE_FORMAT" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "The file was not writable. Some formats do not "
                              "support pyramid overviews. Consult the GDAL documentation if in doubt." );
     }
     else if ( res == QLatin1String( "FAILED_NOT_SUPPORTED" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." );
     }
     else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     QMessageBox::warning( nullptr, title, message );

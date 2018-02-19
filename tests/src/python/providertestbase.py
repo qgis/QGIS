@@ -440,6 +440,95 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
             self.assertEqual(l.dataProvider().featureCount(), 7)
 
+    def testAddFeatureMissingAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with missing attributes pads out these
+        # attributes with NULL values to the correct length
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result, 'Provider returned False to addFeatures with missing attributes. Providers should accept these features but add NULL attributes to the end of the existing attributes to the required field length.')
+        f1.setId(added[0].id())
+        f2.setId(added[1].id())
+
+        # check result - feature attributes MUST be padded out to required number of fields
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
+        self.testGetFeatures(l.dataProvider(), [f1, f2])
+
+    def testAddFeatureExtraAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with too many attributes drops these attributes
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
+
+    def testAddFeatureWrongGeomType(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with incorrect geometry type rejects the feature
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setGeometry(QgsGeometry.fromWkt('LineString (-72.345 71.987, -80 80)'))
+        f1.setAttributes([7])
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+        f2.setAttributes([8])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertFalse(result, 'Provider returned True to addFeatures with incorrect geometry type. Providers should reject these features.')
+
+        # make sure feature was not added
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
+        self.assertFalse(added)
+
+        # yet providers MUST always accept null geometries
+        f3 = QgsFeature()
+        f3.setAttributes([9])
+        result, added = l.dataProvider().addFeatures([f3])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with null geometry. Providers should always accept these features.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 9][0]
+        self.assertFalse(added.hasGeometry())
+
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):
             return

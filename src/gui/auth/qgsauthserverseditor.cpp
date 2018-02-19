@@ -316,9 +316,9 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove SSL Custom Config" ),
+         this, tr( "Remove SSL Custom Configuration" ),
          tr( "Are you sure you want to remove the selected "
-             "SSL custom config from the database?\n\n"
+             "SSL custom configuration from the database?\n\n"
              "Operation can NOT be undone!" ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel ) == QMessageBox::Cancel )

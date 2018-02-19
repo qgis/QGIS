@@ -185,6 +185,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setThemeName( const QString &themeName );
 
     /**
+     * Calculate the application pkg path
+     * \return the resolved pkg path
+     */
+    static QString resolvePkgPath( );
+
+    /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
@@ -732,6 +738,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QObject *ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 
+    static QString ABISYM( mProfilePath );
     static QString ABISYM( mUIThemeName );
     static QString ABISYM( mPrefixPath );
     static QString ABISYM( mPluginPath );
@@ -743,6 +750,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QMap<QString, QString> ABISYM( mSystemEnvVars );
 
     static QString ABISYM( mConfigPath );
+
+    static bool ABISYM( mInitialized );
 
     //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );

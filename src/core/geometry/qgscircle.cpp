@@ -40,6 +40,8 @@ QgsCircle QgsCircle::from2Points( const QgsPoint &pt1, const QgsPoint &pt2 )
   double azimuth = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
   double radius = pt1.distance( pt2 ) / 2.0;
 
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, center );
+
   return QgsCircle( center, radius, azimuth );
 }
 
@@ -138,6 +140,9 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   double aSlope = yDelta_a / xDelta_a;
   double bSlope = yDelta_b / xDelta_b;
 
+  // set z coordinate for center
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2 << p3, center );
+
   if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
     center.setX( 0.5 * ( p2.x() + p3.x() ) );
@@ -176,7 +181,11 @@ QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter
 QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
 {
   double azimuth = QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
-  return QgsCircle( center, center.distance( pt1 ), azimuth );
+
+  QgsPoint centerPt( center );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1, centerPt );
+
+  return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
 
 QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon )
@@ -192,6 +201,21 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
   QgsGeometryUtils::segmentIntersection( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, p3, isIntersect, epsilon );
   if ( !isIntersect )
     return QgsCircle();
+
+  if ( p1.is3D() )
+  {
+    p1.convertTo( QgsWkbTypes::dropZ( p1.wkbType() ) );
+  }
+
+  if ( p2.is3D() )
+  {
+    p2.convertTo( QgsWkbTypes::dropZ( p2.wkbType() ) );
+  }
+
+  if ( p3.is3D() )
+  {
+    p3.convertTo( QgsWkbTypes::dropZ( p3.wkbType() ) );
+  }
 
   return QgsTriangle( p1, p2, p3 ).inscribedCircle();
 }
@@ -221,7 +245,10 @@ QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
     return QgsCircle();
   }
 
-  return QgsCircle( QgsGeometryUtils::midpoint( pt1, pt2 ), delta_x / 2.0, 0 );
+  QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, center );
+
+  return QgsCircle( center, delta_x / 2.0, 0 );
 }
 
 double QgsCircle::area() const
@@ -249,10 +276,10 @@ void QgsCircle::setSemiMinorAxis( const double semiMinorAxis )
 QVector<QgsPoint> QgsCircle::northQuadrant() const
 {
   QVector<QgsPoint> quad;
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis ) );
-  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y() ) );
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis ) );
-  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis, mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis, mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
 
   return quad;
 }

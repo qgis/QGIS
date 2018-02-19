@@ -7031,6 +7031,11 @@ void TestQgsGeometry::circle()
   QVERIFY( circ_tgt.isEmpty() );
   circ_tgt = QgsCircle().from3Tangents( QgsPoint( 5, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
   QVERIFY( circ_tgt.isEmpty() );
+
+  // check that Z dimension is ignored in case of using tangents
+  QgsCircle circ_tgt_z = QgsCircle().from3Tangents( QgsPoint( 0, 0, 333 ), QgsPoint( 0, 1, 1 ), QgsPoint( 2, 0, 2 ), QgsPoint( 3, 0, 3 ), QgsPoint( 5, 0, 4 ), QgsPoint( 0, 5, 5 ) );
+  QCOMPARE( circ_tgt_z.center().is3D(), false );
+
   // minimalCircleFrom3points
   QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
   QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );

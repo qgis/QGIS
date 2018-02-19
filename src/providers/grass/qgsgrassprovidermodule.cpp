@@ -995,7 +995,7 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
   if ( !mValid )
   {
     setState( Populated );
-    setIconName( QStringLiteral( "/mIconDelete.png" ) );
+    setIconName( QStringLiteral( "/mIconDelete.svg" ) );
   }
 #ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, mValid, this );
@@ -1219,7 +1219,7 @@ QIcon QgsGrassImportItem::icon()
 {
   if ( mImport && mImport->isCanceled() )
   {
-    setIconName( QStringLiteral( "/mIconDelete.png" ) );
+    setIconName( QStringLiteral( "/mIconDelete.svg" ) );
     return QgsDataItem::icon();
   }
   else

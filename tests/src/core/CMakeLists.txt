@@ -165,6 +165,7 @@ SET(TESTS
  testqgsrectangle.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
  testqgssnappingutils.cpp

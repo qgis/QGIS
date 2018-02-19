@@ -69,17 +69,17 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   f.setBold( true );
   mActionActive->setFont( f );
 
-  mActionDescription = new QAction( tr( "Description..." ), this );
+  mActionDescription = new QAction( tr( "Description…" ), this );
 
   mActionCreateAuxiliaryField = new QAction( tr( "Store data in the project" ), this );
   mActionCreateAuxiliaryField->setCheckable( true );
 
-  mActionExpDialog = new QAction( tr( "Edit..." ), this );
+  mActionExpDialog = new QAction( tr( "Edit…" ), this );
   mActionExpression = nullptr;
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
-  mActionAssistant = new QAction( tr( "Assistant..." ), this );
+  mActionAssistant = new QAction( tr( "Assistant…" ), this );
   QFont assistantFont = mActionAssistant->font();
   assistantFont.setBold( true );
   mActionAssistant->setFont( assistantFont );

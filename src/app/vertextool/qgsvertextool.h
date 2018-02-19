@@ -97,6 +97,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void startRangeVertexSelection();
 
+    void cleanEditor( QgsFeatureId id );
+
   private:
 
     void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint );
