@@ -80,7 +80,7 @@ The Qgis class provides global constants for use throughout the application.
 
     static const double DEFAULT_SNAP_TOLERANCE;
 
-    static const int DEFAULT_SNAP_UNITS;
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 

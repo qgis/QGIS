@@ -58,6 +58,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       TopDownAll,
       LayerSelection
     };
+    Q_ENUM( IdentifyMode )
 
     enum Type
     {
