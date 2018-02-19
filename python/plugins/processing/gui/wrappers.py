@@ -974,6 +974,8 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 filters |= QgsMapLayerProxyModel.LineLayer
             if QgsProcessing.TypeVectorPolygon in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PolygonLayer
+            if not filters:
+                filters = QgsMapLayerProxyModel.VectorLayer
 
             try:
                 if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
@@ -1282,6 +1284,9 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 filters |= QgsMapLayerProxyModel.LineLayer
             if QgsProcessing.TypeVectorPolygon in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PolygonLayer
+            if not filters:
+                filters = QgsMapLayerProxyModel.VectorLayer
+
             if filters:
                 self.combo.setFilters(filters)
 
