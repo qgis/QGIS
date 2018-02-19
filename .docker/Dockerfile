@@ -95,7 +95,7 @@ RUN  apt-get update \
   
 RUN echo "deb  http://deb.debian.org/debian experimental main" >> /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get -t experimental install -y libproj-dev
+RUN apt-get -t experimental install -y --allow-unauthenticated libproj-dev
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
