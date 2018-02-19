@@ -43,43 +43,41 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Constructor for the wizard.
-     * \note
-     * For use with a source \layer. This constructor automatically sets the widget's metadata() if the \a layer pointer is valid.
-     *  calls setMetadata, using mMetadata
-     * \param layer to set the main QgsLayerMetadata with mLayer->metadata() when not nullptr
-     * \see setMetadata
+     *
+     * If \a layer is set, then this constructor automatically sets the widget's metadata() to match
+     * the layer's metadata..
+
+     * \see setMetadata()
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
-     * Sets the \a metadata to display in the widget
-     * \note
-     * Called from constructor and initializes child widget on first use
-     * Can be called from outside to change the QgsLayerMetadata object.
+     * Sets the \a metadata to display in the widget.
+     *
+     * This method can be called after constructing a QgsMetadataWidget in order
+     * to set the displayed metadata to custom, non-layer based metadata.
+     *
      * \see metadata()
      */
-    void setMetadata( const QgsLayerMetadata &layerMetadata );
+    void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
-     * Retrieves a QgsLayerMetadata object representing the current state of the widget.
-     * \note
-     *  saveMetdata is called before returning QgsLayerMetadata
-     * \see saveMetadata
+     * Returns a QgsLayerMetadata object representing the current state of the widget.
+     * \see saveMetadata()
      */
     QgsLayerMetadata metadata();
 
     /**
      * Save all fields in a QgsLayerMetadata object.
-     * \see getMetadata
-     * \see acceptMetadata
-     * \see checkMetadata
+     * \see metadata()
+     * \see acceptMetadata()
+     * \see checkMetadata()
      */
     void saveMetadata( QgsLayerMetadata &layerMetadata );
 
     /**
      * Check if values in the wizard are correct.
-     * \see updatePanel
-     * \see saveMetadata
+     * \see saveMetadata()
      */
     bool checkMetadata();
 
@@ -92,11 +90,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
-
-    /**
-     * Sets the layer's \a metadata store.
-     */
-    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.

@@ -26,30 +26,26 @@ class QgsMetadataWidget : QWidget
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for the wizard.
-\note
-For use with a source \layer. This constructor automatically sets the widget's metadata() if the ``layer`` pointer is valid.
-calls setMetadata, using mMetadata
 
-:param layer: to set the main QgsLayerMetadata with mLayer->metadata() when not None
+If ``layer`` is set, then this constructor automatically sets the widget's metadata() to match
+the layer's metadata..
 
 .. seealso:: :py:func:`setMetadata`
 %End
 
-    void setMetadata( const QgsLayerMetadata &layerMetadata );
+    void setMetadata( const QgsLayerMetadata &metadata );
 %Docstring
-Sets the ``metadata`` to display in the widget
-\note
-Called from constructor and initializes child widget on first use
-Can be called from outside to change the QgsLayerMetadata object.
+Sets the ``metadata`` to display in the widget.
+
+This method can be called after constructing a QgsMetadataWidget in order
+to set the displayed metadata to custom, non-layer based metadata.
 
 .. seealso:: :py:func:`metadata`
 %End
 
     QgsLayerMetadata metadata();
 %Docstring
-Retrieves a QgsLayerMetadata object representing the current state of the widget.
-\note
-saveMetdata is called before returning :py:class:`QgsLayerMetadata`
+Returns a QgsLayerMetadata object representing the current state of the widget.
 
 .. seealso:: :py:func:`saveMetadata`
 %End
@@ -58,7 +54,7 @@ saveMetdata is called before returning :py:class:`QgsLayerMetadata`
 %Docstring
 Save all fields in a QgsLayerMetadata object.
 
-.. seealso:: :py:func:`getMetadata`
+.. seealso:: :py:func:`metadata`
 
 .. seealso:: :py:func:`acceptMetadata`
 
@@ -68,8 +64,6 @@ Save all fields in a QgsLayerMetadata object.
     bool checkMetadata();
 %Docstring
 Check if values in the wizard are correct.
-
-.. seealso:: :py:func:`updatePanel`
 
 .. seealso:: :py:func:`saveMetadata`
 %End
@@ -82,11 +76,6 @@ If the CRS is updated.
     void acceptMetadata();
 %Docstring
 Saves the metadata to the layer.
-%End
-
-    virtual void setMetadata( const QgsLayerMetadata &metadata );
-%Docstring
-Sets the layer's ``metadata`` store.
 %End
 
     static QMap<QString, QString> parseLanguages();

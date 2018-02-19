@@ -625,8 +625,11 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
     return;
   }
 
-  setMetadata( mDataProvider->layerMetadata() );
-  QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+  }
 
   if ( provider == QLatin1String( "gdal" ) )
   {

@@ -1526,8 +1526,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     return false;
   }
 
-  setMetadata( mDataProvider->layerMetadata() );
-  QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+  if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+  }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
   connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, [ = ] { updateExtents(); } );

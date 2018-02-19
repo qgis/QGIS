@@ -48,6 +48,8 @@ of feature and attribute information from a spatial datasource.
       ChangeFeatures,
       RenameAttributes,
       FastTruncate,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
     };
 
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;

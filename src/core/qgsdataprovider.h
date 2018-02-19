@@ -494,22 +494,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 
     /**
-     * Retrieve collected Metadata from the Provider source
-     * \brief A structured metadata store for a map layer.
-     * \note
-     * \see setLayerMetadata
-    * \since QGIS 3.0
+     * Returns layer metadata collected from the provider's source.
+     *
+     * Individual data providers must implement this method if they support collecting metadata.
+     *
+     * \see writeLayerMetadata()
+     * \since QGIS 3.0
     */
-    virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); };
+    virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); }
 
     /**
-     * Set collected Metadata from the Provider source
-     * \brief A structured metadata store for a map layer.
-     * \note
-     * \see layerMetadata
-    * \since QGIS 3.0
+     * Writes layer \a metadata to the underlying provider source. Support depends
+     * on individual provider capabilities.
+     *
+     * Returns true if metadata was successfully written to the data provider.
+     * \see layerMetadata()
+     * \since QGIS 3.0
     */
-    virtual bool setLayerMetadata( const QgsLayerMetadata &layerMetadata ) { Q_UNUSED( layerMetadata ); return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
 
   signals:
 

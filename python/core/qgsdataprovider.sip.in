@@ -364,19 +364,21 @@ The default implementation does nothing.
 
     virtual QgsLayerMetadata layerMetadata() const;
 %Docstring
-Retrieve collected Metadata from the Provider source
- A structured metadata store for a map layer.
-\note
+Returns layer metadata collected from the provider's source.
 
-.. seealso:: :py:func:`setLayerMetadata`
+Individual data providers must implement this method if they support collecting metadata.
+
+.. seealso:: :py:func:`writeLayerMetadata`
 
 .. versionadded:: 3.0
 %End
-    virtual bool setLayerMetadata( const QgsLayerMetadata &layerMetadata );
+
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata );
 %Docstring
-Set collected Metadata from the Provider source
- A structured metadata store for a map layer.
-\note
+Writes layer ``metadata`` to the underlying provider source. Support depends
+on individual provider capabilities.
+
+Returns true if metadata was successfully written to the data provider.
 
 .. seealso:: :py:func:`layerMetadata`
 

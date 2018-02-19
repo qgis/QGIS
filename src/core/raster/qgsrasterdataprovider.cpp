@@ -216,6 +216,11 @@ QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
 {
 }
 
+QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
+{
+  return QgsRasterDataProvider::NoProviderCapabilities;
+}
+
 //
 //Random Static convenience function
 //

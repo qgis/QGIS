@@ -117,3 +117,10 @@ bool QgsBox3d::contains( const QgsPoint &p ) const
   else
     return true;
 }
+
+bool QgsBox3d::operator==( const QgsBox3d &other ) const
+{
+  return mBounds2d == other.mBounds2d &&
+         qgsDoubleNear( mZmin, other.mZmin ) &&
+         qgsDoubleNear( mZmax, other.mZmax );
+}
