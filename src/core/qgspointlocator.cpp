@@ -204,7 +204,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry *g = mLocator->mGeoms.value( id );
       if ( g->intersects( mGeomPt ) )
-        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, QgsPointXY() );
+        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
     }
   private:
     QgsPointLocator *mLocator = nullptr;
@@ -908,7 +908,11 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
     return Match();
 
   // use edges for adding tolerance
-  return nearestEdge( point, tolerance, filter );
+  Match m = nearestEdge( point, tolerance, filter );
+  if ( m.isValid() )
+    return Match( Area, m.layer(), m.featureId(), m.distance(), m.point() );
+  else
+    return Match();
 }
 
 

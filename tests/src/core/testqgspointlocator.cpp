@@ -144,6 +144,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m2.layer(), mVL );
       QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m2.point(), QgsPointXY( 0.9, 0.9 ) );
+      QCOMPARE( m2.distance(), 0 );
 
       QgsPointXY pt3( 1.1, 1.1 );
       QgsPointLocator::Match m3 = loc.nearestArea( pt3, 999 );
@@ -151,7 +152,8 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m3.hasArea() );
       QCOMPARE( m3.layer(), mVL );
       QCOMPARE( m3.featureId(), ( QgsFeatureId )1 );
-      QCOMPARE( m3.point(), QgsPointXY( 1.0, 1 - 0 ) );
+      QCOMPARE( m3.point(), QgsPointXY( 1.0, 1.0 ) );
+      QCOMPARE( m3.distance(), .1 * std::sqrt( 2 ) );
     }
 
     void testPointInPolygon()
