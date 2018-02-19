@@ -793,6 +793,11 @@ QMenu *QgsLayoutDesignerDialog::createPopupMenu()
     menu->addAction( panelstitle );
     Q_FOREACH ( QAction *a, panels )
     {
+      if ( ( a == mAtlasDock->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportDock->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
       menu->addAction( a );
     }
     menu->addSeparator();
@@ -805,6 +810,11 @@ QMenu *QgsLayoutDesignerDialog::createPopupMenu()
     std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
     Q_FOREACH ( QAction *a, toolbars )
     {
+      if ( ( a == mAtlasToolbar->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportToolbar->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
       menu->addAction( a );
     }
   }
@@ -851,6 +861,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuAtlas;
     mMenuAtlas = nullptr;
     mAtlasToolbar->hide();
+    mToolbarMenu->removeAction( mAtlasToolbar->toggleViewAction() );
   }
 
   if ( dynamic_cast< QgsReport * >( layout ) )
@@ -867,6 +878,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuReport;
     mMenuReport = nullptr;
     mReportToolbar->hide();
+    mToolbarMenu->removeAction( mReportToolbar->toggleViewAction() );
   }
 
   updateActionNames( mMasterLayout->layoutType() );
