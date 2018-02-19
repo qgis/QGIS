@@ -509,7 +509,7 @@ QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
-void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
 {
 }
 

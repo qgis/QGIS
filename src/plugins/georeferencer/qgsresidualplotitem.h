@@ -42,7 +42,7 @@ class QgsResidualPlotItem: public QgsLayoutItem
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
   private:
     //gcp list
     QgsGCPList mGCPList;
