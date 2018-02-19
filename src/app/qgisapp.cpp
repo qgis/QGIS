@@ -325,6 +325,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 //
 #include <ogr_api.h>
 #include <gdal_version.h>
+#ifdef PROJ_HAS_INFO
+#include <proj.h>
+#endif
 #include <proj_api.h>
 
 //
@@ -4112,22 +4115,21 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr><tr>" );
 
-#if PJ_VERSION >= 500
-    versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
-    versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + proj_info() + "</td>";
-#else
-    versionString += "<td colspan=2>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
-#endif
-
-    versionString += QLatin1String( "</tr><tr>" );
-
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
     versionString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
 
     versionString += QLatin1String( "</tr><tr>" );
 
+#if PJ_VERSION >= 500
+    PJ_INFO info = proj_info();
+    versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+    versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + info.version + "</td>";
+#else
+    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td colspan=3>" + QString::number( PJ_VERSION ) + "</td>";
+#endif
+
 #ifdef QGISDEBUG
-    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
     versionString += QLatin1String( "</tr></table></div></body></html>" );
