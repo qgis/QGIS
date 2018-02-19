@@ -6,7 +6,7 @@ ARG DOCKER_TAG=latest
 ARG CACHE_DIR
 
 FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
-MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
+MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++

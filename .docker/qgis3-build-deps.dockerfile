@@ -1,5 +1,5 @@
 FROM      ubuntu:18.04
-MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
+MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
 
