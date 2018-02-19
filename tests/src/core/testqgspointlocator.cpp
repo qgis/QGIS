@@ -144,7 +144,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m2.layer(), mVL );
       QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m2.point(), QgsPointXY( 0.9, 0.9 ) );
-      QCOMPARE( m2.distance(), 0 );
+      QCOMPARE( m2.distance(), 0.0 );
 
       QgsPointXY pt3( 1.1, 1.1 );
       QgsPointLocator::Match m3 = loc.nearestArea( pt3, 999 );
