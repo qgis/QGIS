@@ -131,6 +131,12 @@ void QgsAppLayoutDesignerInterface::close()
 }
 
 
+static bool cmpByText_( QAction *a, QAction *b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+}
+
+
 QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
@@ -729,6 +735,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mLayoutsMenu->setObjectName( QStringLiteral( "mLayoutsMenu" ) );
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgsLayoutDesignerDialog::populateLayoutsMenu );
 
+  QList<QAction *> actions = mPanelsMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mPanelsMenu->insertActions( nullptr, actions );
+
+  actions = mToolbarMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mToolbarMenu->insertActions( nullptr, actions );
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -738,11 +752,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
 {
   return mInterface;
-}
-
-static bool cmpByText_( QAction *a, QAction *b )
-{
-  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
 
 QMenu *QgsLayoutDesignerDialog::createPopupMenu()
