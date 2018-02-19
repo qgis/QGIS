@@ -185,6 +185,13 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   {
     _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
   }
+  if ( bestMatch.type() != QgsPointLocator::Vertex && bestMatch.type() != QgsPointLocator::Edge && ( type & QgsPointLocator::Area ) )
+  {
+    // if edges were detected, set tolerance to 0 to only do pointInPolygon (and avoid redo nearestEdge)
+    if ( type & QgsPointLocator::Edge )
+      tolerance = 0;
+    _replaceIfBetter( bestMatch, loc->nearestArea( pointMap, tolerance, filter ), tolerance );
+  }
 }
 
 
@@ -440,14 +447,13 @@ void QgsSnappingUtils::toggleEnabled()
   emit configChanged( mSnappingConfig );
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter, double tolerance )
+QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter )
 {
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();
 
   QgsPointXY pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
-  if ( tolerance == 0.0 )
-    tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
+  double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
 
   QgsPointLocator *loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
   if ( !loc )

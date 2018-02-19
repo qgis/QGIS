@@ -222,8 +222,8 @@ Returns whether user stylesheets are enabled for the HTML content.
 
     virtual QSizeF totalSize() const;
 
-     virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                 const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex );
+
 
     virtual double findNearbyPageBreak( double yPos );
 

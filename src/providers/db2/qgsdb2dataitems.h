@@ -41,6 +41,8 @@ class QgsDb2RootItem : public QgsDataCollectionItem
      */
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 6; }
+
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
 

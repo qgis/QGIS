@@ -413,6 +413,10 @@ Constructor for QgsSymbolRenderContext
 
 
     QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
 
     void setOriginalValueVariable( const QVariant &value );
 %Docstring

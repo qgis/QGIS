@@ -102,6 +102,8 @@ if [ -d "$2" ]; then
 elif [ "$action" != "pull" ]; then
 	echo Build directory not found
 	exit 1
+else
+	shift
 fi
 
 trap cleanup EXIT

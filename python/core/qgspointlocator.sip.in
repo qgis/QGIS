@@ -173,6 +173,16 @@ Find nearest edge to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
 %End
 
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find nearest area to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This will first perform a pointInPolygon and return first result.
+If no match is found and tolerance is not 0, it will return nearestEdge.
+
+.. versionadded:: 3.0
+%End
+
     MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Find edges within a specified recangle
