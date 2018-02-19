@@ -90,6 +90,18 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();
+
+        bool hasZ = QgsWkbTypes::hasZ( mLayer->wkbType() );
+        bool hasM = QgsWkbTypes::hasZ( mLayer->wkbType() );
+        if ( hasZ || hasM )
+        {
+          emit messageEmitted( QString( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
+                               .arg( mLayer->name() )
+                               .arg( hasZ ? "Z" : "" )
+                               .arg( hasZ && hasM ? "/" : "" )
+                               .arg( hasM ? "M" : "" )
+                               , Qgis::Warning );
+        }
       }
     }
 
