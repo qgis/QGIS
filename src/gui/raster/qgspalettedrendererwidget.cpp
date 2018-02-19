@@ -48,9 +48,9 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
   QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
-  QAction *loadFromFile = mAdvancedMenu->addAction( trUtf8( "Load color map from file…" ) );
+  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load color map from file…" ) );
   connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
-  QAction *exportToFile = mAdvancedMenu->addAction( trUtf8( "Export color map to file…" ) );
+  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export color map to file…" ) );
   connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
 
 

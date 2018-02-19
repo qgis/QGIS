@@ -357,7 +357,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
 void QgsMapCanvasDockWidget::mapCrsChanged()
 {
-  mActionSetCrs->setText( trUtf8( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
+  mActionSetCrs->setText( tr( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
                           mMapCanvas->mapSettings().destinationCrs().authid() :
                           tr( "No projection" ) ) );
 }
@@ -496,7 +496,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   mRotationWidget->setRange( -180.0, 180.0 );
   mRotationWidget->setWrapping( true );
   mRotationWidget->setSingleStep( 5.0 );
-  mRotationWidget->setSuffix( trUtf8( " °" ) );
+  mRotationWidget->setSuffix( tr( " °" ) );
   mRotationWidget->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
 
   label = new QLabel( tr( "Rotation" ) );
@@ -528,7 +528,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( mSyncScaleCheckBox, 4, 0, 1, 2 );
 
   mScaleFactorWidget = new QgsDoubleSpinBox();
-  mScaleFactorWidget->setSuffix( trUtf8( "×" ) );
+  mScaleFactorWidget->setSuffix( tr( "×" ) );
   mScaleFactorWidget->setDecimals( 2 );
   mScaleFactorWidget->setRange( 0.01, 100000 );
   mScaleFactorWidget->setWrapping( false );

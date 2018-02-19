@@ -2852,7 +2852,7 @@ void QgisApp::createStatusBar()
   mRotationEdit->setWrapping( true );
   mRotationEdit->setSingleStep( 5.0 );
   mRotationEdit->setFont( myFont );
-  mRotationEdit->setSuffix( trUtf8( " °" ) );
+  mRotationEdit->setSuffix( tr( " °" ) );
   mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
                                    "in degrees. It also allows editing to set "
                                    "the rotation" ) );
@@ -10468,7 +10468,7 @@ bool QgisApp::checkTasksDependOnProject()
     {
       Q_FOREACH ( QgsTask *task, tasks )
       {
-        activeTaskDescriptions.insert( trUtf8( " • %1" ).arg( task->description() ) );
+        activeTaskDescriptions.insert( tr( " • %1" ).arg( task->description() ) );
       }
     }
   }
