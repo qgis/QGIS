@@ -34,7 +34,6 @@ class QgsFeature;
 class GUI_EXPORT QgsMapLayerAction : public QAction
 {
     Q_OBJECT
-    Q_FLAGS( Availability )
 
   public:
     enum Target
@@ -45,6 +44,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
       AllActions = Layer | SingleFeature | MultipleFeatures
     };
     Q_DECLARE_FLAGS( Targets, Target )
+    Q_FLAG( Targets )
 
     /**
      * Creates a map layer action which can run on any layer
