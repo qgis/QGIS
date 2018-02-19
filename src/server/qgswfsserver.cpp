@@ -1872,7 +1872,25 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
       fid = fidElem.attribute( "fid" );
       if ( fid.contains( "." ) )
         fid = fid.section( ".", 1, 1 );
-      fids.insert( fid.toLongLong( &conversionSuccess ) );
+      if ( provider->pkAttributeIndexes().size() == 1 )
+      {
+        //assume ID is the primary key, as it is more stable than the feature ID
+        QgsFeature feature;
+        const QgsFields& fields = provider->fields();
+        QString fieldName = fields[provider->pkAttributeIndexes().at( 0 )].name();
+        QgsExpression pkExpression( fieldName + " = " + fid );
+        QgsExpressionContext exprContext = QgsExpressionContextUtils::createFeatureBasedContext( feature, fields );
+        QgsFeatureRequest fReq( pkExpression, exprContext );
+        QgsFeatureIterator fIt = provider->getFeatures( fReq );
+        if ( fIt.nextFeature( feature ) )
+        {
+          fids.insert( feature.id() );
+        }
+      }
+      else //assume it is the feture id
+      {
+        fids.insert( fid.toLongLong( &conversionSuccess ) );
+      }
     }
   }
   else

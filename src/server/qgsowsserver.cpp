@@ -72,16 +72,10 @@ QString QgsOWSServer::featureGmlId( const QgsFeature* f, const QgsAttributeList&
     return QString();
   }
 
-  if ( pkAttributes.isEmpty() )
+  if ( pkAttributes.size() != 1 )
   {
     return QString::number( f->id() );
   }
 
-  QString pkId;
-  QgsAttributeList::const_iterator it = pkAttributes.constBegin();
-  for ( ; it != pkAttributes.constEnd(); ++it )
-  {
-    pkId.append( f->attribute( *it ).toString() );
-  }
-  return pkId;
+  return f->attribute( pkAttributes.at( 0 ) ).toString();
 }
