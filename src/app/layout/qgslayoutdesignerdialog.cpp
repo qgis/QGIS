@@ -79,6 +79,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPageSetupDialog>
+#include <QWidgetAction>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -630,7 +631,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
 
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
-  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
+  mGeneralDock = new QgsDockWidget( tr( "Layout Panel" ), this );
   mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
   mGeneralDock->setMinimumWidth( minDockWidth );
   mGeneralPropertiesStack = new QgsPanelWidgetStack();
@@ -641,14 +642,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGeneralDock->setUserVisible( true );
   } );
 
-  mItemDock = new QgsDockWidget( tr( "Item Properties" ), this );
+  mItemDock = new QgsDockWidget( tr( "Item Properties Panel" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
   mItemPropertiesStack = new QgsPanelWidgetStack();
   mItemDock->setWidget( mItemPropertiesStack );
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
-  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
+  mGuideDock = new QgsDockWidget( tr( "Guides Panel" ), this );
   mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
   mGuideDock->setMinimumWidth( minDockWidth );
   mGuideStack = new QgsPanelWidgetStack();
@@ -659,13 +660,13 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
-  mUndoDock = new QgsDockWidget( tr( "Undo History" ), this );
+  mUndoDock = new QgsDockWidget( tr( "Undo History Panel" ), this );
   mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
   mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
 
-  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
+  mItemsDock = new QgsDockWidget( tr( "Items Panel" ), this );
   mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
@@ -673,11 +674,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
-  mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
+  mAtlasDock = new QgsDockWidget( tr( "Atlas Panel" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
   connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
 
-  mReportDock = new QgsDockWidget( tr( "Report Organizer" ), this );
+  mReportDock = new QgsDockWidget( tr( "Report Organizer Panel" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
   connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
 
@@ -737,6 +738,66 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
 {
   return mInterface;
+}
+
+static bool cmpByText_( QAction *a, QAction *b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+}
+
+QMenu *QgsLayoutDesignerDialog::createPopupMenu()
+{
+  QMenu *menu = QMainWindow::createPopupMenu();
+  QList< QAction * > al = menu->actions();
+  QList< QAction * > panels, toolbars;
+
+  if ( !al.isEmpty() )
+  {
+    bool found = false;
+    for ( int i = 0; i < al.size(); ++i )
+    {
+      if ( al[ i ]->isSeparator() )
+      {
+        found = true;
+        continue;
+      }
+
+      if ( !found )
+      {
+        panels.append( al[ i ] );
+      }
+      else
+      {
+        toolbars.append( al[ i ] );
+      }
+    }
+
+    std::sort( panels.begin(), panels.end(), cmpByText_ );
+    QWidgetAction *panelstitle = new QWidgetAction( menu );
+    QLabel *plabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
+    plabel->setMargin( 3 );
+    plabel->setAlignment( Qt::AlignHCenter );
+    panelstitle->setDefaultWidget( plabel );
+    menu->addAction( panelstitle );
+    Q_FOREACH ( QAction *a, panels )
+    {
+      menu->addAction( a );
+    }
+    menu->addSeparator();
+    QWidgetAction *toolbarstitle = new QWidgetAction( menu );
+    QLabel *tlabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) );
+    tlabel->setMargin( 3 );
+    tlabel->setAlignment( Qt::AlignHCenter );
+    toolbarstitle->setDefaultWidget( tlabel );
+    menu->addAction( toolbarstitle );
+    std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    Q_FOREACH ( QAction *a, toolbars )
+    {
+      menu->addAction( a );
+    }
+  }
+
+  return menu;
 }
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
