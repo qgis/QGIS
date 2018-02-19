@@ -119,7 +119,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! end of iterating: free the resources / lock
     bool close() override;
 
-    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override SIP_SKIP;
 
     /**
      * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    QgsInterruptionChecker *mInterruptionChecker = nullptr;
+    QgsFeedback *mInterruptionChecker = nullptr;
 
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;

@@ -402,7 +402,7 @@ bool QgsVectorLayerFeatureIterator::close()
   return true;
 }
 
-void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mProviderIterator.setInterruptionChecker( interruptionChecker );
   mInterruptionChecker = interruptionChecker;
