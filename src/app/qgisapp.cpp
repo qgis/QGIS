@@ -5947,20 +5947,20 @@ void QgisApp::openFile( const QString &fileName )
 {
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
-  if ( fi.completeSuffix() == QLatin1String( "qgs" ) || fi.completeSuffix() == QLatin1String( "qgz" ) )
+  if ( fi.suffix() == QLatin1String( "qgs" ) || fi.suffix() == QLatin1String( "qgz" ) )
   {
     QgsDebugMsg( "Opening project " + fileName );
     openProject( fileName );
   }
-  else if ( fi.completeSuffix() == QLatin1String( "qlr" ) )
+  else if ( fi.suffix() == QLatin1String( "qlr" ) )
   {
     openLayerDefinition( fileName );
   }
-  else if ( fi.completeSuffix() == QLatin1String( "qpt" ) )
+  else if ( fi.suffix() == QLatin1String( "qpt" ) )
   {
     openTemplate( fileName );
   }
-  else if ( fi.completeSuffix() == QLatin1String( "py" ) )
+  else if ( fi.suffix() == QLatin1String( "py" ) )
   {
     runScript( fileName );
   }
