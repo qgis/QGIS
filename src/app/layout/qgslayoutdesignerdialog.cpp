@@ -628,6 +628,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mActionsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mAtlasToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mReportToolbar->toggleViewAction() );
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
