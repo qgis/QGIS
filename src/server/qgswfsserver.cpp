@@ -1984,11 +1984,9 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "fid", mTypeName + "." + QString::number( feat->id() ) );
   featureElement.appendChild( typeNameElement );
 
-  if ( mWithGeom && mGeometryName != "NONE" )
+  const QgsGeometry* geom = feat->constGeometry();
+  if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
-    //add geometry column (as gml)
-    const QgsGeometry* geom = feat->constGeometry();
-
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
@@ -2068,11 +2066,9 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "gml:id", mTypeName + "." + QString::number( feat->id() ) );
   featureElement.appendChild( typeNameElement );
 
-  if ( mWithGeom && mGeometryName != "NONE" )
+  const QgsGeometry* geom = feat->constGeometry();
+  if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
-    //add geometry column (as gml)
-    const QgsGeometry* geom = feat->constGeometry();
-
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
