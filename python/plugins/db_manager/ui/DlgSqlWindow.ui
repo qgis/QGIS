@@ -322,11 +322,14 @@ unique values</string>
         <layout class="QHBoxLayout">
          <item>
           <widget class="QPushButton" name="btnExecute">
+           <property name="toolTip">
+            <string>Execute query (Ctrl+R)</string>
+           </property>
            <property name="text">
-            <string>&amp;Execute (F5)</string>
+            <string>Execute</string>
            </property>
            <property name="shortcut">
-            <string>F5</string>
+            <string>Ctrl+R</string>
            </property>
           </widget>
          </item>
