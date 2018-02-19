@@ -36,7 +36,7 @@ class QgsArcGisRestUtils
 
     static QVariantMap getServiceInfo( const QString &baseurl, QString &errorTitle, QString &errorText );
     static QVariantMap getLayerInfo( const QString &layerurl, QString &errorTitle, QString &errorText );
-    static QVariantMap getObjectIds( const QString &layerurl, QString &errorTitle, QString &errorText );
+    static QVariantMap getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText );
     static QVariantMap getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );

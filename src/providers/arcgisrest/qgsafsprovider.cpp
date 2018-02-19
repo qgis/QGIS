@@ -94,25 +94,34 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     Q_NOWARN_DEPRECATED_POP
   }
 
+  QString objectIdFieldName;
+
   // Read fields
   foreach ( const QVariant &fieldData, layerData["fields"].toList() )
   {
     const QVariantMap fieldDataMap = fieldData.toMap();
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
-    QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldDataMap[QStringLiteral( "type" )].toString() );
-    if ( fieldName == QLatin1String( "geometry" ) || fieldDataMap[QStringLiteral( "type" )].toString() == QLatin1String( "esriFieldTypeGeometry" ) )
+    const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
+    QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldTypeString );
+    if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
     {
       // skip geometry field
       continue;
     }
+    if ( fieldTypeString == QLatin1String( "esriFieldTypeOID" ) )
+    {
+      objectIdFieldName = fieldName;
+    }
     if ( type == QVariant::Invalid )
     {
-      QgsDebugMsg( QString( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldDataMap[QStringLiteral( "type" )].toString() ) );
+      QgsDebugMsg( QString( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
     mSharedData->mFields.append( field );
   }
+  if ( objectIdFieldName.isEmpty() )
+    objectIdFieldName = QStringLiteral( "objectid" );
 
   // Determine geometry type
   bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
@@ -128,7 +137,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), objectIdFieldName, errorTitle, errorMessage );
   if ( objectIdData.isEmpty() )
   {
     appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );
@@ -139,7 +148,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     appendError( QgsErrorMessage( tr( "Failed to determine objectIdFieldName and/or objectIds" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  QString objectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
+  objectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
   for ( int idx = 0, nIdx = mSharedData->mFields.count(); idx < nIdx; ++idx )
   {
     if ( mSharedData->mFields.at( idx ).name() == objectIdFieldName )
