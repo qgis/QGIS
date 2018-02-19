@@ -512,6 +512,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   int rownum = 1;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  exp.prepare( &context );
 
   QgsField fld = layer->fields().at( fieldindex );
 
