@@ -4112,12 +4112,19 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+#if PJ_VERSION >= 500
+    versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+    versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + proj_info() + "</td>";
+#else
+    versionString += "<td colspan=2>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+#endif
 
     versionString += QLatin1String( "</tr><tr>" );
 
+    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
     versionString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
+
+    versionString += QLatin1String( "</tr><tr>" );
 
 #ifdef QGISDEBUG
     versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
