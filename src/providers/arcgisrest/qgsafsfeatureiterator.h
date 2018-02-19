@@ -51,9 +51,8 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
   private:
     QgsFeatureId mFeatureIterator = 0;
 
-    bool mUsingFeatureIdList = false;
-    QgsFeatureIds mFeatureIdList;
-    QgsFeatureIds mRemainingFeatureIds;
+    QList< QgsFeatureId > mFeatureIdList;
+    QList< QgsFeatureId > mRemainingFeatureIds;
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;

@@ -37,6 +37,7 @@ class QgsAfsSharedData : public QObject
     void clearCache();
 
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle() );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent );
 
   private:
     friend class QgsAfsProvider;

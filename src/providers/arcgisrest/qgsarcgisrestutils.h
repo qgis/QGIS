@@ -18,6 +18,7 @@
 #include <QStringList>
 #include <QVariant>
 #include "geometry/qgswkbtypes.h"
+#include "qgsfeature.h"
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
@@ -40,6 +41,7 @@ class QgsArcGisRestUtils
     static QVariantMap getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
     static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText );
     static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText );
 

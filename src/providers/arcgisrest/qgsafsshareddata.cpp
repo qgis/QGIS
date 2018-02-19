@@ -140,3 +140,22 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
   return false;
 }
+
+QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent )
+{
+  QString errorTitle;
+  QString errorText;
+
+
+  const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
+                                        extent, errorTitle, errorText );
+
+  QgsFeatureIds ids;
+  for ( quint32 id : featuresInRect )
+  {
+    int featureId = mObjectIds.indexOf( id );
+    if ( featureId >= 0 )
+      ids.insert( featureId );
+  }
+  return ids;
+}

@@ -312,6 +312,39 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
  ]
 }""".encode('UTF-8'))
 
+        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          2,
+          4
+         ]
+        }
+        """.encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          2,
+          4
+         ]
+        }
+        """.encode('UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          2,
+          4
+         ]
+        }
+        """.encode('UTF-8'))
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""

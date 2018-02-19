@@ -18,6 +18,7 @@
 #include "qgsmessagelog.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsexception.h"
+#include "qgsarcgisrestutils.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
@@ -59,17 +60,39 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
     return;
   }
 
+  QgsFeatureIds requestIds;
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
   {
-    mUsingFeatureIdList = true;
-    mFeatureIdList = mRequest.filterFids();
-    mRemainingFeatureIds = mFeatureIdList;
+    requestIds = mRequest.filterFids();
   }
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    mFeatureIdList.insert( mRequest.filterFid() );
-    mRemainingFeatureIds = mFeatureIdList;
+    requestIds.insert( mRequest.filterFid() );
   }
+
+  if ( !mFilterRect.isNull() )
+  {
+    QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect );
+    if ( !requestIds.isEmpty() )
+    {
+      requestIds.intersect( featuresInRect );
+    }
+    else
+    {
+      requestIds = featuresInRect;
+    }
+    if ( requestIds.empty() )
+    {
+      close();
+      return;
+    }
+  }
+
+  mFeatureIdList = requestIds.toList();
+  std::sort( mFeatureIdList.begin(), mFeatureIdList.end() );
+  mRemainingFeatureIds = mFeatureIdList;
+  if ( !mRemainingFeatureIds.empty() )
+    mFeatureIterator = mRemainingFeatureIds.at( 0 );
 }
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
@@ -87,6 +110,9 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
     return false;
 
+  if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
+    return false;
+
   switch ( mRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFid:
@@ -97,7 +123,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f );
       geometryToDestinationCrs( f, mTransform );
       f.setValid( result );
-      mRemainingFeatureIds.remove( f.id() );
+      mRemainingFeatureIds.removeAll( f.id() );
       return result;
     }
 
@@ -105,25 +131,24 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     case QgsFeatureRequest::FilterExpression:
     case QgsFeatureRequest::FilterNone:
     {
-      QgsRectangle filterRect;
-      if ( !mRequest.filterRect().isNull() )
-      {
-        filterRect = mSource->sharedData()->extent();
-        filterRect = filterRect.intersect( &mFilterRect );
-      }
       while ( mFeatureIterator < mSource->sharedData()->featureCount() )
       {
-        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, filterRect );
-        ++mFeatureIterator;
+        if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
+          return false;
+
+        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f );
+        if ( !mFeatureIdList.empty() )
+        {
+          mRemainingFeatureIds.removeAll( mFeatureIterator );
+          if ( !mRemainingFeatureIds.empty() )
+            mFeatureIterator = mRemainingFeatureIds.at( 0 );
+        }
+        else
+        {
+          ++mFeatureIterator;
+        }
         if ( !success )
           continue;
-        if ( mUsingFeatureIdList )
-        {
-          if ( !mRemainingFeatureIds.contains( f.id() ) )
-            continue;
-          else
-            mRemainingFeatureIds.remove( f.id() );
-        }
         geometryToDestinationCrs( f, mTransform );
         f.setValid( true );
         return true;
@@ -140,6 +165,8 @@ bool QgsAfsFeatureIterator::rewind()
     return false;
   mFeatureIterator = 0;
   mRemainingFeatureIds = mFeatureIdList;
+  if ( !mRemainingFeatureIds.empty() )
+    mFeatureIterator = mRemainingFeatureIds.at( 0 );
   return true;
 }
 
