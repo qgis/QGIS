@@ -41,6 +41,8 @@ class QgsOracleRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 5; }
+
     virtual QWidget *paramWidget() override;
 
     QList<QAction *> actions( QWidget *parent ) override;
