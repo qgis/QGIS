@@ -45,6 +45,8 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
     bool rewind() override;
     bool close() override;
 
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
+
   protected:
     bool fetchFeature( QgsFeature &f ) override;
 
@@ -56,6 +58,9 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+
+    QgsFeedback *mInterruptionChecker = nullptr;
+    bool mDeferredFeaturesInFilterRectCheck = false;
 };
 
 #endif // QGSAFSFEATUREITERATOR_H

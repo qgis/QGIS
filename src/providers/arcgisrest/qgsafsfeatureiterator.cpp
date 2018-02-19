@@ -19,6 +19,7 @@
 #include "geometry/qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsfeedback.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
@@ -72,20 +73,11 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
 
   if ( !mFilterRect.isNull() )
   {
-    QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect );
-    if ( !requestIds.isEmpty() )
-    {
-      requestIds.intersect( featuresInRect );
-    }
-    else
-    {
-      requestIds = featuresInRect;
-    }
-    if ( requestIds.empty() )
-    {
-      close();
-      return;
-    }
+    // defer request to find features in filter rect until first feature is requested
+    // this allows time for a interruption checker to be installed on the iterator
+    // and avoids performing this expensive check in the main thread when just
+    // preparing iterators
+    mDeferredFeaturesInFilterRectCheck = true;
   }
 
   mFeatureIdList = requestIds.toList();
@@ -107,8 +99,37 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mClosed )
     return false;
 
+  if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+    return false;
+
   if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
     return false;
+
+  if ( mDeferredFeaturesInFilterRectCheck )
+  {
+    QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
+    if ( !mFeatureIdList.isEmpty() )
+    {
+      QgsFeatureIds requestIds = mFeatureIdList.toSet();
+      requestIds.intersect( featuresInRect );
+      mFeatureIdList = requestIds.toList();
+    }
+    else
+    {
+      mFeatureIdList = featuresInRect.toList();
+    }
+    if ( mFeatureIdList.empty() )
+    {
+      return false;
+    }
+
+    std::sort( mFeatureIdList.begin(), mFeatureIdList.end() );
+    mRemainingFeatureIds = mFeatureIdList;
+    if ( !mRemainingFeatureIds.empty() )
+      mFeatureIterator = mRemainingFeatureIds.at( 0 );
+
+    mDeferredFeaturesInFilterRectCheck = false;
+  }
 
   if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
     return false;
@@ -133,10 +154,13 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     {
       while ( mFeatureIterator < mSource->sharedData()->featureCount() )
       {
+        if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+          return false;
+
         if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
           return false;
 
-        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f );
+        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
         if ( !mFeatureIdList.empty() )
         {
           mRemainingFeatureIds.removeAll( mFeatureIterator );
@@ -177,4 +201,9 @@ bool QgsAfsFeatureIterator::close()
   iteratorClosed();
   mClosed = true;
   return true;
+}
+
+void QgsAfsFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
+{
+  mInterruptionChecker = interruptionChecker;
 }

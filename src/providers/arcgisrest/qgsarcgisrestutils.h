@@ -26,6 +26,7 @@ class QgsFields;
 class QgsRectangle;
 class QgsAbstractGeometry;
 class QgsCoordinateReferenceSystem;
+class QgsFeedback;
 
 class QgsArcGisRestUtils
 {
@@ -40,10 +41,10 @@ class QgsArcGisRestUtils
     static QVariantMap getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText );
     static QVariantMap getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
-    static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText );
-    static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText );
+                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
 
     static QUrl parseUrl( const QUrl &url );
 };

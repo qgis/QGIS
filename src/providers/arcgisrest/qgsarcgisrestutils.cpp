@@ -27,6 +27,7 @@
 #include "geometry/qgsmulticurve.h"
 #include "geometry/qgspolygon.h"
 #include "geometry/qgspoint.h"
+#include "qgsfeedback.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>
@@ -370,7 +371,7 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
     bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle &filterRect,
-    QString &errorTitle, QString &errorText )
+    QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
   QStringList ids;
   foreach ( int id, objectIds )
@@ -404,10 +405,10 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
     queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
-  return queryServiceJSON( queryUrl, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, errorTitle, errorText, feedback );
 }
 
-QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText )
+QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
@@ -418,7 +419,7 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
                          .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
   queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
   queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
-  const QVariantMap objectIdData = queryServiceJSON( queryUrl, errorTitle, errorText );
+  const QVariantMap objectIdData = queryServiceJSON( queryUrl, errorTitle, errorText, feedback );
 
   if ( objectIdData.isEmpty() )
   {
@@ -433,7 +434,7 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
   return ids;
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle, QString &errorText )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
   QEventLoop loop;
   QUrl url = parseUrl( u );
@@ -447,10 +448,17 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle,
   {
     reply = nam->get( request );
     QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
+    if ( feedback )
+    {
+      QObject::connect( feedback, &QgsFeedback::canceled, reply, &QNetworkReply::abort );
+    }
 
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
     reply->deleteLater();
+
+    if ( feedback && feedback->isCanceled() )
+      return QByteArray();
 
     // Handle network errors
     if ( reply->error() != QNetworkReply::NoError )
@@ -475,9 +483,9 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle,
   return result;
 }
 
-QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
-  QByteArray reply = queryService( url, errorTitle, errorText );
+  QByteArray reply = queryService( url, errorTitle, errorText, feedback );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();

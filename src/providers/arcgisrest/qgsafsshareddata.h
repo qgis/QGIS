@@ -22,6 +22,8 @@
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
 
+class QgsFeedback;
+
 /**
  * \brief This class holds data, shared between QgsAfsProvider and QgsAfsFeatureIterator
  **/
@@ -36,8 +38,8 @@ class QgsAfsSharedData : public QObject
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
     void clearCache();
 
-    bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle() );
-    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent );
+    bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
   private:
     friend class QgsAfsProvider;

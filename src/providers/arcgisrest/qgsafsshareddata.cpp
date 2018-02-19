@@ -23,7 +23,7 @@ void QgsAfsSharedData::clearCache()
   mCache.clear();
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
 {
   QMutexLocker locker( &mMutex );
 
@@ -70,7 +70,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
                                   mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                                   fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                                  filterRect, errorTitle, errorMessage );
+                                  filterRect, errorTitle, errorMessage, feedback );
+
   if ( queryData.isEmpty() )
   {
 //    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
@@ -141,7 +142,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   return false;
 }
 
-QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent )
+QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
 {
   QString errorTitle;
   QString errorText;
@@ -149,7 +150,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
   const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
                                         mObjectIdFieldName,
-                                        extent, errorTitle, errorText );
+                                        extent, errorTitle, errorText, feedback );
 
   QgsFeatureIds ids;
   for ( quint32 id : featuresInRect )
