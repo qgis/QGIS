@@ -138,13 +138,13 @@ void QgsLayoutItemLegend::refresh()
   onAtlasFeature();
 }
 
-void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
@@ -621,7 +621,7 @@ QString QgsLayoutItemLegend::displayName() const
   }
   if ( text.length() > 25 )
   {
-    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+    return tr( "%1…" ).arg( text.left( 25 ) );
   }
   else
   {

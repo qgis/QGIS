@@ -325,11 +325,11 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
 
   QString baseName = QFileInfo( fullPathName ).baseName();
 
-  // first check to see if its already loaded
+  // first check to see if it's already loaded
   if ( isLoaded( baseName ) )
   {
     // plugin is loaded
-    // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
+    // QMessageBox::warning(this, "Loading Plugins", description + " is already loaded");
     return;
   }
 
@@ -399,7 +399,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
         else
         {
           // something went wrong
-          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
+          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Loading Plugins" ),
                                 QObject::tr( "There was an error loading a plugin. "
                                              "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
                                 .arg( myError ) );

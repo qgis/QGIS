@@ -42,7 +42,9 @@ Constructs a circle by defining all the members.
     static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
 Constructs a circle by 2 points on the circle.
-The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+The center point can have m value which is the result from the midpoint
+operation between ``pt1`` and ``pt2``. Z dimension is also supported and
+is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
 The radius is calculated from the 2D distance between ``pt1`` and ``pt2``.
 The azimuth is the angle between ``pt1`` and ``pt2``.
 
@@ -53,7 +55,9 @@ The azimuth is the angle between ``pt1`` and ``pt2``.
     static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
 %Docstring
 Constructs a circle by 3 points on the circle.
-Z and m values are dropped for the center point.
+M value is dropped for the center point.
+Z dimension is supported and is retrieved from the first 3D point
+amongst ``pt1``, ``pt2`` and ``pt3``.
 The azimuth always takes the default value.
 If the points are colinear an empty circle is returned.
 
@@ -106,7 +110,9 @@ The azimuth always takes the default value.
     static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
 Constructs a circle by an extent (aka bounding box / :py:class:`QgsRectangle`).
-The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
+The center point can have m value which is the result from the midpoint
+operation between ``pt1`` and ``pt2``. Z dimension is also supported and
+is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
 The azimuth always takes the default value.
 

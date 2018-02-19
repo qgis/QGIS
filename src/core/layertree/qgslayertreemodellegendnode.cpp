@@ -669,7 +669,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
   painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
-  //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
+  //painter.drawText(0,2*(margin+fontHeight),tr("retrying in 5 seconds…"));
   painter.end();
 
   return image;

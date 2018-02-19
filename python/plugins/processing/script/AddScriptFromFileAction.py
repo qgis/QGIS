@@ -59,7 +59,7 @@ class AddScriptFromFileAction(ToolboxAction):
                     shutil.copy(f, ScriptUtils.scriptsFolders()[0])
                     valid += 1
                 except OSError as e:
-                    QgsMessageLog.logMessage("Could not copy script '{}'\n{}".format(s, str(e)),
+                    QgsMessageLog.logMessage(self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
                                              "Processing",
                                              Qgis.Warning)
 

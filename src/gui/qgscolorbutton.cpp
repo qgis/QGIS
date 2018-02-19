@@ -520,7 +520,7 @@ void QgsColorButton::prepareMenu()
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, &QAction::triggered, this, &QgsColorButton::activatePicker );
 
-  QAction *chooseColorAction = new QAction( tr( "Choose color..." ), this );
+  QAction *chooseColorAction = new QAction( tr( "Choose color…" ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, &QAction::triggered, this, &QgsColorButton::showColorDialog );
 }

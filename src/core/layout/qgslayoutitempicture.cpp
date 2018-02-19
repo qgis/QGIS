@@ -80,12 +80,12 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
   return new QgsLayoutItemPicture( layout );
 }
 
-void QgsLayoutItemPicture::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   //picture resizing
   if ( mMode != FormatUnknown )

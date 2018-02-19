@@ -479,7 +479,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Add the default parameters commands
         self.commands.append(command)
 
-        QgsMessageLog.logMessage('processInputs end. Commands: {}'.format(self.commands), 'Grass7', Qgis.Info)
+        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
     def processCommand(self, parameters, context, delOutputs=False):
         """
@@ -611,7 +611,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        QgsMessageLog.logMessage('processCommands end. Commands: {}'.format(self.commands), 'Grass7', Qgis.Info)
+        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
     def vectorOutputType(self, parameters, context):
         """Determine vector output types for outputs"""

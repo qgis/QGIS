@@ -582,7 +582,7 @@ void QgsFontButton::prepareMenu()
   }
   mMenu->addMenu( recentFontMenu );
 
-  QAction *configureAction = new QAction( tr( "Configure format..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure format…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsFontButton::showSettingsDialog );
 

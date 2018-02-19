@@ -161,7 +161,7 @@ void QgsGpsPlugin::createGPX()
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
-                                  tr( "Save new GPX file as..." ),
+                                  tr( "Save new GPX file as…" ),
                                   dir,
                                   tr( "GPS eXchange file" ) + " (*.gpx)" );
   if ( !fileName.isEmpty() )
@@ -271,7 +271,7 @@ void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -350,7 +350,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -441,7 +441,7 @@ void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Downloading data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Downloading data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -531,7 +531,7 @@ void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Uploading data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Uploading data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {

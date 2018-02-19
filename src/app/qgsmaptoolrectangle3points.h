@@ -18,8 +18,9 @@
 #define QGSMAPTOOLRECTANGLE3POINTS_H
 
 #include "qgsmaptooladdrectangle.h"
+#include "qgis_app.h"
 
-class QgsMapToolRectangle3Points: public QgsMapToolAddRectangle
+class APP_EXPORT QgsMapToolRectangle3Points: public QgsMapToolAddRectangle
 {
     Q_OBJECT
 

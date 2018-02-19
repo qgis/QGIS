@@ -3391,7 +3391,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   }
   catch ( QgsCsException &cse )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Transform error caught in transform() function: %1" ).arg( cse.what() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught in transform() function: %1" ).arg( cse.what() ) );
     return QVariant();
   }
   return QVariant();
@@ -4333,7 +4333,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << currentFeatureFunc;
 
     QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction( QStringLiteral( "uuid" ), 0, fcnUuid, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$uuid" ) );
-    uuidFunc->setIsStatic( true );
+    uuidFunc->setIsStatic( false );
     sFunctions << uuidFunc;
 
     sFunctions

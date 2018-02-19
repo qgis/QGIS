@@ -23,7 +23,10 @@ __copyright__ = '(C) 2013, Juergen E. Fischer'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+import sys
+import struct
+
+from PyQt5.QtCore import QCoreApplication, QSettings
 
 
 def chunks(l, n):
@@ -35,40 +38,44 @@ QCoreApplication.setOrganizationName("QGIS")
 QCoreApplication.setOrganizationDomain("qgis.org")
 QCoreApplication.setApplicationName("QGIS3")
 
-s = QSettings()
+if len(sys.argv) == 1:
+    print "Usage: python ./scripts/mkuidefaults.py \"location_to_ini\""
+    sys.exit(1)
+
+s = QSettings(sys.argv[1], QSettings.IniFormat)
 
 ba = bytes(s.value("/UI/geometry"))
+print
 
 f = open("src/app/ui_defaults.h", "w")
 
 f.write("#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n\nstatic const unsigned char defaultUIgeometry[] =\n{\n")
 
 for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+    f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
 f.write("};\n\nstatic const unsigned char defaultUIstate[] =\n{\n")
 
 ba = bytes(s.value("/UI/state"))
 
 for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+    f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
 try:
-    ba = bytes(s.value("/Composer/geometry"))
-
-    f.write("};\n\nstatic const unsigned char defaultComposerUIgeometry[] =\n{\n")
+    ba = bytes(s.value("/app/LayoutDesigner/geometry"))
+    f.write("};\n\nstatic const unsigned char defaultLayerDesignerUIgeometry[] =\n{\n")
 
     for chunk in chunks(ba, 16):
-        f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+        f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 except TypeError as ex:
     pass
 
 try:
-    ba = bytes(s.value("/ComposerUI/state"))
-    f.write("};\n\nstatic const unsigned char defaultComposerUIstate[] =\n{\n")
+    ba = bytes(s.value("/app/LayoutDesigner/state"))
+    f.write("};\n\nstatic const unsigned char defaultLayerDesignerUIstate[] =\n{\n")
 
     for chunk in chunks(ba, 16):
-        f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+        f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 except TypeError as ex:
     pass
 

@@ -69,7 +69,7 @@ void QgsSaveStyleToDbDialog::accept()
 {
   if ( getName().isEmpty() )
   {
-    QMessageBox::information( this, tr( "Save style in database" ), tr( "A name is mandatory" ) );
+    QMessageBox::information( this, tr( "Save Style in Database" ), tr( "A name is mandatory." ) );
     return;
   }
   QDialog::accept();
@@ -80,7 +80,7 @@ void QgsSaveStyleToDbDialog::mFilePickButton_clicked()
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI file" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI File" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );
   if ( myFileName.isNull() )
   {
     return;
@@ -98,7 +98,7 @@ void QgsSaveStyleToDbDialog::mFilePickButton_clicked()
 
     if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( QLatin1String( "ui" ) ) )
     {
-      QMessageBox::warning( this, tr( "Wrong file" ),
+      QMessageBox::warning( this, tr( "Attach UI File" ),
                             tr( "The selected file does not appear to be a valid Qt Designer UI file." ) );
       return;
     }

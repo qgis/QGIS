@@ -101,7 +101,7 @@ Returns the corner radius for rounded rectangle corners.
 
   protected:
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void draw( QgsLayoutItemRenderContext &context );
 
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

@@ -125,7 +125,7 @@ Constructor for QgsLayoutNodesItem, attached to the specified ``layout``.
 Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached to the specified ``layout``.
 %End
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void draw( QgsLayoutItemRenderContext &context );
 
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -145,7 +145,7 @@ Method called in addNode.
 Method called in removeNode.
 %End
 
-    virtual void _draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
+    virtual void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
 %Docstring
 Method called in paint.
 %End

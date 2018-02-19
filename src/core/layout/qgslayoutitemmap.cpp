@@ -40,18 +40,6 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 
   assignFreeId();
 
-  if ( layout )
-  {
-    if ( QgsProject *project = layout->project() )
-    {
-      //get the color for map canvas background and set map background color accordingly
-      int bgRedInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-      int bgGreenInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-      int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-      setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
-    }
-  }
-
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
     shapeChanged();
@@ -509,7 +497,7 @@ QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
-void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
 {
 }
 

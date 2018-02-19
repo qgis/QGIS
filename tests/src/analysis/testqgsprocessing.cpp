@@ -1626,7 +1626,7 @@ void TestQgsProcessing::parameters()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:28356" ) );
   sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
-  QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( sink.get() );
+  QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( dynamic_cast< QgsProcessingFeatureSink * >( sink.get() )->destinationSink() );
   QVERIFY( writer );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );

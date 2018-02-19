@@ -102,7 +102,7 @@ void QgsConfigureShortcutsDialog::populateActions()
 
 void QgsConfigureShortcutsDialog::saveShortcuts()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save shortcuts" ), QDir::homePath(),
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(),
                      tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
@@ -117,7 +117,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QMessageBox::warning( this, tr( "Saving shortcuts" ),
+    QMessageBox::warning( this, tr( "Saving Shortcuts" ),
                           tr( "Cannot write file %1:\n%2." )
                           .arg( fileName,
                                 file.errorString() ) );
@@ -155,7 +155,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
 
 void QgsConfigureShortcutsDialog::loadShortcuts()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load shortcuts" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Shortcuts" ), QDir::homePath(),
                      tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
@@ -166,7 +166,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    QMessageBox::warning( this, tr( "Loading shortcuts" ),
+    QMessageBox::warning( this, tr( "Loading Shortcuts" ),
                           tr( "Cannot read file %1:\n%2." )
                           .arg( fileName,
                                 file.errorString() ) );
@@ -180,7 +180,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    QMessageBox::information( this, tr( "Loading shortcuts" ),
+    QMessageBox::information( this, tr( "Loading Shortcuts" ),
                               tr( "Parse error at line %1, column %2:\n%3" )
                               .arg( errorLine )
                               .arg( errorColumn )
@@ -191,7 +191,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsshortcuts" ) )
   {
-    QMessageBox::information( this, tr( "Loading shortcuts" ),
+    QMessageBox::information( this, tr( "Loading Shortcuts" ),
                               tr( "The file is not an shortcuts exchange file." ) );
     return;
   }
@@ -211,7 +211,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
   {
-    QMessageBox::information( this, tr( "Loading shortcuts" ),
+    QMessageBox::information( this, tr( "Loading Shortcuts" ),
                               tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
     return;
   }
@@ -434,7 +434,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
       otherText = otherShortcut->whatsThis();
     }
 
-    int res = QMessageBox::question( this, tr( "Shortcut conflict" ),
+    int res = QMessageBox::question( this, tr( "Change Shortcut" ),
                                      tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherText ),
                                      QMessageBox::Yes | QMessageBox::No );
 

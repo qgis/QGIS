@@ -103,7 +103,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
       buttons |= QMessageBox::Cancel;
 
     switch ( QMessageBox::question( nullptr,
-                                    tr( "Stop editing" ),
+                                    tr( "Stop Editing" ),
                                     tr( "Do you want to save the changes to layer %1?" ).arg( layer->name() ),
                                     buttons ) )
     {

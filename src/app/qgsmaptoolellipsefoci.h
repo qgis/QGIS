@@ -18,8 +18,9 @@
 #define QGSMAPTOOLELLIPSEFOCI_H
 
 #include "qgsmaptooladdellipse.h"
+#include "qgis_app.h"
 
-class QgsMapToolEllipseFoci: public QgsMapToolAddEllipse
+class APP_EXPORT QgsMapToolEllipseFoci: public QgsMapToolAddEllipse
 {
     Q_OBJECT
 

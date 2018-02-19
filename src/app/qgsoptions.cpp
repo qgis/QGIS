@@ -1017,7 +1017,7 @@ void QgsOptions::cbxProjectDefaultNew_toggled( bool checked )
     QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
     if ( ! QFile::exists( fileName ) )
     {
-      QMessageBox::information( nullptr, tr( "Save default project" ), tr( "You must set a default project" ) );
+      QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "You must set a default project" ) );
       cbxProjectDefaultNew->setChecked( false );
     }
   }
@@ -1028,11 +1028,11 @@ void QgsOptions::setCurrentProjectDefault()
   QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
   if ( QgsProject::instance()->write( fileName ) )
   {
-    QMessageBox::information( nullptr, tr( "Save default project" ), tr( "Current project saved as default" ) );
+    QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "Current project saved as default" ) );
   }
   else
   {
-    QMessageBox::critical( nullptr, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+    QMessageBox::critical( nullptr, tr( "Save Default Project" ), tr( "Error saving current project as default" ) );
   }
 }
 
@@ -1920,13 +1920,13 @@ void QgsOptions::browseCacheDirectory()
 void QgsOptions::clearCache()
 {
   QgsNetworkAccessManager::instance()->cache()->clear();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Content cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Content cache has been cleared." ) );
 }
 
 void QgsOptions::clearAccessCache()
 {
   QgsNetworkAccessManager::instance()->clearAccessCache();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Connection authentication cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Connection authentication cache has been cleared." ) );
 }
 
 void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
@@ -2260,7 +2260,7 @@ void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
   }
   else
   {
-    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    QMessageBox::warning( this, tr( "Set Scale" ), tr( "The text you entered is not a valid scale." ) );
     changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
   }
 

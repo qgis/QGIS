@@ -182,7 +182,7 @@ QList<QAction *> QgsOracleConnectionItem::actions( QWidget *parent )
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -463,7 +463,7 @@ QList<QAction *> QgsOracleRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 

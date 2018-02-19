@@ -159,7 +159,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::DbtmPkCol )
@@ -173,7 +173,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select..." ) : cols.join( QStringLiteral( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QStringLiteral( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -185,7 +185,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
     if ( index.column() == QgsPgTableModel::DbtmSrid && value.isEmpty() )
     {
-      value = tr( "Enter..." );
+      value = tr( "Enter…" );
     }
 
     model->setData( index, value );

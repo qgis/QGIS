@@ -822,11 +822,11 @@ int main( int argc, char *argv[] )
   {
     if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
   }
 

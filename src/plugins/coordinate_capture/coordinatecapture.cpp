@@ -1,11 +1,9 @@
 /***************************************************************************
-  coordinatecapture.cpp
-//   Capture mouse coordinates in different CRS
-  -------------------
-         begin                : [PluginDate]
-         copyright            : [(C) Your Name and Date]
-         email                : [Your Email]
-
+    coordinatecapture.cpp
+    ---------------------
+    begin                : August 2008
+    copyright            : (C) 2008 by Tim Sutton
+    email                : tim at linfiniti dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -2,7 +2,7 @@
 qgsmapcanvas.cpp  -  description
 ------------------ -
 begin                : Sun Jun 30 2002
-copyright            : ( C ) 2002 by Gary E.Sherman
+copyright            : (C) 2002 by Gary E.Sherman
 email                : sherman at mrcc.com
 ***************************************************************************/
 

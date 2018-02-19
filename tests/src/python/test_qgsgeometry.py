@@ -468,7 +468,7 @@ class TestQgsGeometry(unittest.TestCase):
                 myFeatures.append(myNewFeature)
 
         myNewMemoryLayer = QgsVectorLayer(
-            ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
+            ('Polygon?crs=epsg:4326&field=name:string(20)&index=yes'),
             'clip-out',
             'memory')
         myNewProvider = myNewMemoryLayer.dataProvider()

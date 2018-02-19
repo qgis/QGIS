@@ -115,7 +115,6 @@
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip
 %Include qgstextrenderer.sip
-%Include qgstolerance.sip
 %Include qgstracer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorlayercache.sip
@@ -269,7 +268,6 @@
 %Include geometry/qgsellipse.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
-%Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometryutils.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
@@ -343,6 +341,7 @@
 %Include qgsrunprocess.sip
 %Include qgssnappingconfig.sip
 %Include qgstaskmanager.sip
+%Include qgstolerance.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
@@ -372,6 +371,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
 %Include geometry/qgspoint.sip
+%Include geometry/qgsgeometry.sip
 %Include geocms/geonode/qgsgeonoderequest.sip
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsdetector.sip

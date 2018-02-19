@@ -34,6 +34,7 @@ class QRectF;
 class QPainter;
 class QStyleOptionGraphicsItem;
 class QgsRenderContext;
+class QgsLayoutItemRenderContext;
 
 /**
  * \ingroup core
@@ -175,10 +176,8 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param context destination render painter
      * \param renderExtent visible extent of content to render into the painter.
      * \param frameIndex frame number for content
-     * \param itemStyle item style options for graphics item rendering
      */
-    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                         const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+    virtual void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex ) = 0;
 
     /**
      * Adds a \a frame to the multiframe.

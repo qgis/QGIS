@@ -309,16 +309,16 @@ void QgsColorRampButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *newColorRampAction = new QAction( tr( "Create new color ramp..." ), this );
+  QAction *newColorRampAction = new QAction( tr( "Create new color ramp…" ), this );
   connect( newColorRampAction, &QAction::triggered, this, &QgsColorRampButton::createColorRamp );
   mMenu->addAction( newColorRampAction );
 
-  QAction *editColorRampAction = new QAction( tr( "Edit color ramp..." ), this );
+  QAction *editColorRampAction = new QAction( tr( "Edit color ramp…" ), this );
   editColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( editColorRampAction, &QAction::triggered, this, &QgsColorRampButton::showColorRampDialog );
   mMenu->addAction( editColorRampAction );
 
-  QAction *saveColorRampAction = new QAction( tr( "Save color ramp..." ), this );
+  QAction *saveColorRampAction = new QAction( tr( "Save color ramp…" ), this );
   saveColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( saveColorRampAction, &QAction::triggered, this, &QgsColorRampButton::saveColorRamp );
   mMenu->addAction( saveColorRampAction );
@@ -400,7 +400,7 @@ void QgsColorRampButton::saveColorRamp()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save color ramp" ),
+    int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
                                     tr( "Color ramp with name '%1' already exists. Overwrite?" )
                                     .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );

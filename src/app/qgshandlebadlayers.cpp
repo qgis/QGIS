@@ -266,7 +266,7 @@ void QgsHandleBadLayers::browseClicked()
 
     QStringList selectedFiles;
     QString enc;
-    QString title = tr( "Select file to replace '%1'" ).arg( fn );
+    QString title = tr( "Select File to Replace '%1'" ).arg( fn );
 
     QgsGuiUtils::openFilesRememberingFilter( memoryQualifier, fileFilter, selectedFiles, enc, title );
     if ( selectedFiles.size() != 1 )
@@ -279,7 +279,7 @@ void QgsHandleBadLayers::browseClicked()
   }
   else if ( mRows.size() > 1 )
   {
-    QString title = tr( "Select new directory of selected files" );
+    QString title = tr( "Select New Directory of Selected Files" );
 
     QgsSettings settings;
     QString lastDir = settings.value( QStringLiteral( "UI/missingDirectory" ), QDir::homePath() ).toString();

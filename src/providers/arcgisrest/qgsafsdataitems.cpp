@@ -52,7 +52,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAfsRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -124,7 +124,7 @@ QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsAfsConnectionItem::editConnection );
   lst.append( actionEdit );
 

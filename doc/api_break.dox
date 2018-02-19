@@ -287,6 +287,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - HalfEdge.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
+- QgsInterruptionChecker. Use QgsFeedback instead.
 - QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
 - QgsGeometryCache. It got redundant after removal of old snapping classes (QgsSnapper + friends).
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
@@ -1030,6 +1031,13 @@ None will need to be modified, as the method will return an empty geometry if th
 - setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.
 - fields() no longer returns a pointer, but instead a QgsFields value.
 - The duplicate method setFeatureId() was removed. Use setId() instead.
+
+
+QgsFeatureIterator        {#qgis_api_break_3_0_QgsFeatureIterator}
+------------------
+
+- setInterruptionChecker now accepts a QgsFeedback object instead of a QgsInterruptionChecker.
+
 
 QgsFeatureListViewDelegate        {#qgis_api_break_3_0_QgsFeatureListViewDelegate}
 --------------------------

@@ -265,7 +265,7 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, int timeout, QWidget *parent )
 {
   if ( QMessageBox::warning( parent,
-                             QObject::tr( "Delete confirmation" ),
+                             QObject::tr( "Delete Password" ),
                              QObject::tr( "Do you really want to delete the master password from your %1?" )
                              .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ),
                              QMessageBox::Ok | QMessageBox::Cancel,

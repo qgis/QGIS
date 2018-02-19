@@ -75,7 +75,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -87,14 +87,14 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
-      sridItem->setText( tr( "Enter..." ) );
+      sridItem->setText( tr( "Enter…" ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
     QStandardItem *pkItem = new QStandardItem( "" );
     if ( layerProperty.isView )
     {
-      pkItem->setText( tr( "Select..." ) );
+      pkItem->setText( tr( "Select…" ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else

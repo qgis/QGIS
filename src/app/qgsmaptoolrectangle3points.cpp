@@ -31,12 +31,12 @@ QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *paren
 
 void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.size() < 2 )
-      mPoints.append( mapPoint );
+      mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
@@ -56,7 +56,7 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( mTempRubberBand )
   {
@@ -66,30 +66,30 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         std::unique_ptr<QgsLineString> line( new QgsLineString() );
         line->addVertex( mPoints.at( 0 ) );
-        line->addVertex( mapPoint );
+        line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );
-        setAzimuth( mPoints.at( 0 ).azimuth( mapPoint ) );
-        setDistance1( mPoints.at( 0 ).distance( mapPoint ) );
+        setAzimuth( mPoints.at( 0 ).azimuth( point ) );
+        setDistance1( mPoints.at( 0 ).distance( point ) );
       }
       break;
       case 2:
       {
-
-        setDistance2( mPoints.at( 1 ).distance( mapPoint ) );
-        int side = QgsGeometryUtils::leftOfLine( mapPoint.x(), mapPoint.y(),
+        setDistance2( mPoints.at( 1 ).distance( point ) );
+        int side = QgsGeometryUtils::leftOfLine( point.x(), point.y(),
                    mPoints.at( 0 ).x(), mPoints.at( 0 ).y(),
                    mPoints.at( 1 ).x(), mPoints.at( 1 ).y() );
 
         setSide( side < 0 ? -1 : 1 );
 
-        double xMin = mPoints.at( 0 ).x();
-        double xMax = mPoints.at( 0 ).x() + distance2( );
+        const double xMin = mPoints.at( 0 ).x();
+        const double xMax = mPoints.at( 0 ).x() + distance2( );
 
-        double yMin = mPoints.at( 0 ).y();
-        double yMax = mPoints.at( 0 ).y() + distance1();
+        const double yMin = mPoints.at( 0 ).y();
+        const double yMax = mPoints.at( 0 ).y() + distance1();
 
-        mRectangle = QgsRectangle( xMin, yMin,
-                                   xMax, yMax );
+        const double z = mPoints.at( 0 ).z();
+
+        mRectangle = QgsBox3d( xMin, yMin, z, xMax, yMax, z );
 
 
         mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon( true ) );

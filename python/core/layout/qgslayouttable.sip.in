@@ -515,8 +515,8 @@ Returns the current contents of the table. Excludes header cells.
 
     virtual QSizeF totalSize() const;
 
-     virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                 const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex );
+
 
   public slots:
 

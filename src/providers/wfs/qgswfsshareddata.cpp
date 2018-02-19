@@ -1043,7 +1043,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       msg += " " + tr( "Zoom in to fetch all data." );
     else
       msg += " " + tr( "You may want to check the 'Only request features overlapping the view extent' option to be able to zoom in to fetch all data." );
-    QgsMessageLog::logMessage( msg, QStringLiteral( "WFS" ) );
+    QgsMessageLog::logMessage( msg, tr( "WFS" ) );
   }
 }
 

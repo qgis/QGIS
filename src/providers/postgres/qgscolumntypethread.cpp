@@ -54,7 +54,7 @@ void QgsGeomColumnTypeThread::run()
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
 
-  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
+  emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsPostgresLayerProperty> layerProperties;
   if ( !mConn->supportedLayers( layerProperties,
                                 QgsPostgresConn::geometryColumnsOnly( mName ),
@@ -76,7 +76,7 @@ void QgsGeomColumnTypeThread::run()
     if ( !mStopped )
     {
       emit progress( i++, n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
                             .arg( layerProperty.schemaName,
                                   layerProperty.tableName,
                                   layerProperty.geometryColName ) );
