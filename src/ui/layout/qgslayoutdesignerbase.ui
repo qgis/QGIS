@@ -539,7 +539,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
+     <normaloff>:/images/themes/default/vector_grid.svg</normaloff>:/images/themes/default/vector_grid.svg</iconset>
    </property>
    <property name="text">
     <string>Show &amp;Grid</string>

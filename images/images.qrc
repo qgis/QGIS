@@ -395,7 +395,7 @@
         <file>themes/default/mIconExpressionFilter.svg</file>
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
-        <file>themes/default/mIconFavourites.png</file>
+        <file>themes/default/mIconFavourites.svg</file>
         <file>themes/default/mIconFieldDate.svg</file>
         <file>themes/default/mIconFieldDateTime.svg</file>
         <file>themes/default/mIconFieldFloat.svg</file>
@@ -409,10 +409,10 @@
         <file>themes/default/mIconLabelQuadrantOffset.svg</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
-        <file>themes/default/mIconListView.png</file>
+        <file>themes/default/mIconListView.svg</file>
         <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
-        <file>themes/default/mIconNoPyramid.png</file>
+        <file>themes/default/mIconNoPyramid.svg</file>
         <file>themes/default/mIconOracle.svg</file>
         <file>themes/default/mIconOws.svg</file>
         <file>themes/default/mIconPointLayer.svg</file>
@@ -421,7 +421,7 @@
         <file>themes/default/mIconProjectionDisabled.svg</file>
         <file>themes/default/mIconProjectionEnabled.svg</file>
         <file>themes/default/mIconProperties.svg</file>
-        <file>themes/default/mIconPyramid.png</file>
+        <file>themes/default/mIconPyramid.svg</file>
         <file>themes/default/mIconRaster.svg</file>
         <file>themes/default/mIconRasterGroup.svg</file>
         <file>themes/default/mIconRasterLink.svg</file>
@@ -432,9 +432,9 @@
         <file>themes/default/mIconSelectRemove.svg</file>
         <file>themes/default/mIconSpatialite.svg</file>
         <file>themes/default/mIconTableLayer.svg</file>
-        <file>themes/default/mIconTimerContinue.png</file>
-        <file>themes/default/mIconTimerPause.png</file>
-        <file>themes/default/mIconTreeView.png</file>
+        <file>themes/default/mIconTimerContinue.svg</file>
+        <file>themes/default/mIconTimerPause.svg</file>
+        <file>themes/default/mIconTreeView.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
@@ -554,7 +554,7 @@
         <file>themes/default/mIconPaintEffects.svg</file>
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
-        <file>themes/default/vector_grid.png</file>
+        <file>themes/default/vector_grid.svg</file>
         <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
         <file>themes/default/multieditMixedValues.svg</file>

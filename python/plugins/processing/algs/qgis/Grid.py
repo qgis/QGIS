@@ -63,7 +63,7 @@ class Grid(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.svg'))
 
     def tags(self):
         return self.tr('grid,lines,polygons,vector,create,fishnet,diamond,hexagon').split(',')
