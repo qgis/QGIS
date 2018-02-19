@@ -79,7 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
+         <widget class="QgsFileWidget" name="mFileWidget"/>
         </item>
        </layout>
       </item>
@@ -180,8 +180,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>704</width>
-        <height>694</height>
+        <width>714</width>
+        <height>514</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -202,7 +202,7 @@
          <property name="title">
           <string>File format</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
@@ -384,6 +384,9 @@
                        <property name="alignment">
                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                        </property>
+                       <property name="buddy">
+                        <cstring>txtDelimiterOther</cstring>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -507,6 +510,9 @@
                      <property name="alignment">
                       <set>Qt::AlignJustify|Qt::AlignVCenter</set>
                      </property>
+                     <property name="buddy">
+                      <cstring>txtQuoteChars</cstring>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -560,6 +566,9 @@
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="buddy">
+                      <cstring>txtEscapeChars</cstring>
                      </property>
                     </widget>
                    </item>
@@ -684,7 +693,7 @@
          <property name="title">
           <string>Record and fields options</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
@@ -703,6 +712,9 @@
               </property>
               <property name="text">
                <string>Number of header lines to discard</string>
+              </property>
+              <property name="buddy">
+               <cstring>rowCounter</cstring>
               </property>
              </widget>
             </item>
@@ -826,7 +838,7 @@
          <property name="title">
           <string>Geometry definition</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
@@ -1004,6 +1016,9 @@
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
+                  <property name="buddy">
+                   <cstring>cmbXField</cstring>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="0">
@@ -1019,6 +1034,9 @@
                   </property>
                   <property name="text">
                    <string>&lt;p align=&quot;left&quot;&gt;Y field&lt;/p&gt;</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cmbYField</cstring>
                   </property>
                  </widget>
                 </item>
@@ -1127,6 +1145,19 @@
             <widget class="QWidget" name="swpGeomNone"/>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabelCrs">
+            <property name="text">
+             <string>Geometry CRS</string>
+            </property>
+            <property name="buddy">
+             <cstring>crsGeometry</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsProjectionSelectionWidget" name="crsGeometry"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1141,7 +1172,7 @@
          <property name="title">
           <string>Layer settings</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1289,14 +1320,50 @@
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>fileFormatGroupBox</tabstop>
+  <tabstop>delimiterCSV</tabstop>
+  <tabstop>delimiterRegexp</tabstop>
+  <tabstop>delimiterChars</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
+  <tabstop>recordOptionsGroupBox</tabstop>
+  <tabstop>rowCounter</tabstop>
+  <tabstop>cbxUseHeader</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
+  <tabstop>cbxTrimFields</tabstop>
+  <tabstop>cbxSkipEmptyFields</tabstop>
+  <tabstop>geometryDefinitionGroupBox</tabstop>
+  <tabstop>geomTypeXY</tabstop>
+  <tabstop>geomTypeWKT</tabstop>
   <tabstop>geomTypeNone</tabstop>
+  <tabstop>cmbXField</tabstop>
+  <tabstop>cmbYField</tabstop>
+  <tabstop>cbxXyDms</tabstop>
+  <tabstop>crsGeometry</tabstop>
+  <tabstop>layeSettingsGroupBox</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
+  <tabstop>cbxWatchFile</tabstop>
+  <tabstop>tblSample</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
+  <tabstop>txtDelimiterRegexp</tabstop>
  </tabstops>
  <resources/>
  <connections>
