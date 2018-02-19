@@ -4333,7 +4333,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << currentFeatureFunc;
 
     QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction( QStringLiteral( "uuid" ), 0, fcnUuid, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$uuid" ) );
-    uuidFunc->setIsStatic( true );
+    uuidFunc->setIsStatic( false );
     sFunctions << uuidFunc;
 
     sFunctions
