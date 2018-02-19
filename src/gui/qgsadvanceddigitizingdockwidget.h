@@ -42,7 +42,6 @@ class QgsPointXY;
 class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
-    Q_FLAGS( CadCapacities )
 
   public:
 
@@ -58,6 +57,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
+    Q_FLAG( CadCapacities )
 
     /**
      * Additional constraints which can be enabled
