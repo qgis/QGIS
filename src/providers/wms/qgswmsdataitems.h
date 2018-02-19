@@ -33,6 +33,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
@@ -97,6 +98,8 @@ class QgsWMSRootItem : public QgsDataCollectionItem
     QgsWMSRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+    QVariant sortKey() const override { return 7; }
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;

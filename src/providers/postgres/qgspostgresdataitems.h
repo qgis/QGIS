@@ -36,6 +36,8 @@ class QgsPGRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 3; }
+
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
 

@@ -136,6 +136,9 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 1; }
+
+
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
     QList<QAction *> actions( QWidget *parent ) override;
