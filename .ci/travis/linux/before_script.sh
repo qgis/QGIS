@@ -18,6 +18,8 @@ set -e
 pushd .docker
 
 echo "travis_fold:start:travis environment"
+echo "TRAVIS_BRANCH $TRAVIS_BRANCH"
+echo "TRAVIS_EVENT_TYPE $TRAVIS_EVENT_TYPE"
 echo "DOCKER_TAG $DOCKER_TAG"
 echo "DOCKER_DEPS_PUSH $DOCKER_DEPS_PUSH"
 echo "DOCKER_DEPS_IMAGE_REBUILD $DOCKER_DEPS_IMAGE_REBUILD"
