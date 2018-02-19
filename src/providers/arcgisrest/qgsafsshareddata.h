@@ -46,6 +46,7 @@ class QgsAfsSharedData : public QObject
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
+    QString mObjectIdFieldName;
     QList<quint32> mObjectIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
     QgsCoordinateReferenceSystem mSourceCRS;

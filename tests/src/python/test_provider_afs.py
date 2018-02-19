@@ -111,7 +111,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
 "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=objectid=objectid_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
             f.write("""
 {
  "objectIdFieldName": "OBJECTID",
@@ -312,7 +312,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
  ]
 }""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -323,7 +323,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -334,7 +334,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=objectid=objectid&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -365,6 +365,47 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         used by the AFS provider.
         """
         pass
+
+    def testObjectIdDifferentName(self):
+        """ Test that object id fields not named OBJECTID work correctly """
+
+        endpoint = self.basetestpath + '/oid_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID1=OBJECTID1_returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5,
+          3,
+          1,
+          2,
+          4
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        assert vl.isValid()
 
 
 if __name__ == '__main__':

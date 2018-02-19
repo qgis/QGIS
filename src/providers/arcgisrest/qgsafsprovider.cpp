@@ -151,10 +151,10 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     appendError( QgsErrorMessage( tr( "Failed to determine objectIdFieldName and/or objectIds" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  objectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
+  mSharedData->mObjectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
   for ( int idx = 0, nIdx = mSharedData->mFields.count(); idx < nIdx; ++idx )
   {
-    if ( mSharedData->mFields.at( idx ).name() == objectIdFieldName )
+    if ( mSharedData->mFields.at( idx ).name() == mSharedData->mObjectIdFieldName )
     {
       mObjectIdFieldIdx = idx;
 
