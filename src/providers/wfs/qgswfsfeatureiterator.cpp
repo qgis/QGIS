@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgsfeedback.h"
 
 #include <QDir>
 #include <QProgressDialog>
@@ -965,7 +966,7 @@ void QgsWFSFeatureIterator::endOfDownload( bool )
     mLoop->quit();
 }
 
-void QgsWFSFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+void QgsWFSFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mInterruptionChecker = interruptionChecker;
 }
@@ -1018,7 +1019,7 @@ void QgsWFSFeatureIterator::checkInterruption()
 {
   //QgsDebugMsg("QgsWFSFeatureIterator::checkInterruption()");
 
-  if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+  if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
   {
     mDownloadFinished = true;
     if ( mLoop )
@@ -1037,7 +1038,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
   QgsFeature cachedFeature;
   while ( mCacheIterator.nextFeature( cachedFeature ) )
   {
-    if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+    if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
     //QgsDebugMsg(QString("QgsWFSSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
@@ -1134,7 +1135,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     {
       while ( !mReaderStream->atEnd() )
       {
-        if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+        if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
 
         QgsFeature feat;
@@ -1186,7 +1187,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 
     if ( mDownloadFinished )
       return false;
-    if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+    if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
     //QgsDebugMsg("fetchFeature before loop");

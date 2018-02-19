@@ -637,6 +637,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayerexporter.h
   qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h
+  qgsvectorlayerrenderer.h
   qgsvectorlayertools.h
   qgsmapthemecollection.h
   qgswebpage.h
@@ -920,7 +921,6 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerlabeling.h
-  qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
