@@ -120,7 +120,8 @@ class QgsWFSServer: public QgsOWSServer
     QgsFeatureIds getFeatureIdsFromFilter( const QDomElement& filter, QgsVectorLayer* layer );
 
     //methods to write GeoJSON
-    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/;
+    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+                                  const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
 
     //methods to write GML2
     QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,

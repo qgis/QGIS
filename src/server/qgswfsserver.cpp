@@ -1377,7 +1377,7 @@ void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& for
       fcString += "  ";
     else
       fcString += " ,";
-    fcString += createFeatureGeoJSON( feat, prec, crs, attrIndexes, excludedAttributes );
+    fcString += createFeatureGeoJSON( feat, prec, crs, attrIndexes, excludedAttributes, pkAttributes );
     fcString += "\n";
 
     result = fcString.toUtf8();
@@ -1926,9 +1926,10 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
   return fids;
 }
 
-QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
+QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+    const QgsAttributeList& pkAttributes ) /*const*/
 {
-  QString id = QString( "%1.%2" ).arg( mTypeName, FID_TO_STRING( feat->id() ) );
+  QString id = QString( "%1.%2" ).arg( mTypeName, featureGmlId( feat, pkAttributes ) );
 
   QgsJSONExporter exporter;
   exporter.setSourceCrs( crs );
