@@ -17,6 +17,13 @@ set -e
 
 pushd .docker
 
+echo "travis_fold:start:travis environment"
+echo "DOCKER_TAG $DOCKER_TAG"
+echo "DOCKER_DEPS_PUSH $DOCKER_DEPS_PUSH"
+echo "DOCKER_DEPS_IMAGE_REBUILD $DOCKER_DEPS_IMAGE_REBUILD"
+echo "DOCKER_QGIS_IMAGE_BUILD_PUSH $DOCKER_QGIS_IMAGE_BUILD_PUSH"
+echo "QGIS_LAST_BUILD_SUCCESS $QGIS_LAST_BUILD_SUCCESS"
+echo "travis_fold:end:travis environment"
 echo "travis_fold:start:docker"
 
 docker --version
@@ -39,6 +46,7 @@ echo "travis_fold:end:docker"
 # image should be pushed even if QGIS build fails
 # but push is achieved only on branches (not for PRs)
 if [[ $DOCKER_DEPS_PUSH =~ true ]]; then
+  echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}"
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   #docker tag "qgis/qgis3-build-deps:${DOCKER_TAG}" "qgis/qgis3-build-deps:latest"
   docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
