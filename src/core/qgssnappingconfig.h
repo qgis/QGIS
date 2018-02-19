@@ -16,6 +16,8 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
+#include <QHash>
+
 #include "qgis_core.h"
 #include "qgstolerance.h"
 
@@ -46,6 +48,7 @@ class CORE_EXPORT QgsSnappingConfig
       AllLayers = 2, //!< On all vector layers
       AdvancedConfiguration = 3, //!< On a per layer configuration basis
     };
+    Q_ENUM( SnappingMode );
 
     /**
      * SnappingType defines on what object the snapping is performed
@@ -56,6 +59,7 @@ class CORE_EXPORT QgsSnappingConfig
       VertexAndSegment = 2, //!< Both on vertices and segments
       Segment = 3, //!< On segments only
     };
+    Q_ENUM( SnappingType );
 
     /**
      * \ingroup core

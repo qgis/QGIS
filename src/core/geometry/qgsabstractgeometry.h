@@ -52,6 +52,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+    Q_GADGET
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -101,6 +102,7 @@ class CORE_EXPORT QgsAbstractGeometry
        * curve and closest point on its approximation. */
       MaximumDifference
     };
+    Q_ENUM( SegmentationToleranceType )
 
     /**
      * Constructor for QgsAbstractGeometry.
