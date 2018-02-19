@@ -15,6 +15,7 @@ RUN  apt-get update \
     ca-certificates \
     ccache \
     clang \
+    cmake \
     curl \
     dh-python \
     flex \
@@ -96,10 +97,7 @@ RUN  apt-get update \
     future \
     termcolor \
   && apt-get autoremove -y python3-pip python2.7 \
-  && apt-get clean \
-  && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz \
-  && tar --strip-components=1 -zx -f cmake-3.10.2-Linux-x86_64.tar.gz -C /usr/local \
-  && rm cmake-3.10.2-Linux-x86_64.tar.gz
+  && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
