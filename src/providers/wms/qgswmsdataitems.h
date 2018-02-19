@@ -137,6 +137,8 @@ class QgsXyzTileRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 8; }
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
 #endif

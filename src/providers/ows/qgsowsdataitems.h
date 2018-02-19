@@ -48,7 +48,7 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 10; }
+    QVariant sortKey() const override { return 11; }
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
