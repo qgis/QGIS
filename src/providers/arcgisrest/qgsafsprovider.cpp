@@ -200,6 +200,11 @@ QgsFields QgsAfsProvider::fields() const
   return mSharedData->mFields;
 }
 
+QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
+{
+  return QgsVectorDataProvider::SelectAtId;
+}
+
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
 {
   mSharedData->mDataSource = QgsDataSourceUri( uri );
