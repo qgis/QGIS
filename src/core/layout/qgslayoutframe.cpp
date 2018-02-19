@@ -157,14 +157,14 @@ void QgsLayoutFrame::cleanup()
   QgsLayoutItem::cleanup();
 }
 
-void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
+void QgsLayoutFrame::draw( QgsLayoutItemRenderContext &context )
 {
   if ( mMultiFrame )
   {
     //calculate index of frame
     int frameIndex = mMultiFrame->frameIndex( this );
     Q_ASSERT_X( frameIndex >= 0, "QgsLayoutFrame::draw", "Invalid frame index for frame" );
-    mMultiFrame->render( context, mSection, frameIndex, itemStyle );
+    mMultiFrame->render( context, mSection, frameIndex );
   }
 }
 

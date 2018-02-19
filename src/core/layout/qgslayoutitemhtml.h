@@ -204,8 +204,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     QString displayName() const override;
     QSizeF totalSize() const override;
-    void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                 const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex ) override;
 
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;

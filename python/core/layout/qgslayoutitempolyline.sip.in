@@ -215,7 +215,7 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 
     virtual bool _removeNode( const int nodeIndex );
 
-    virtual void _draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
     virtual void _readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context );
 

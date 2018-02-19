@@ -70,18 +70,18 @@ void QgsLayoutNodesItem::init()
   connect( this, &QgsLayoutNodesItem::sizePositionChanged, this, &QgsLayoutNodesItem::updateBoundingRect );
 }
 
-void QgsLayoutNodesItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *style )
+void QgsLayoutNodesItem::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  context.setForceVectorOutput( true );
+  context.renderContext().setForceVectorOutput( true );
   rescaleToFitBoundingBox();
   _draw( context );
 
   if ( mDrawNodes && layout()->renderContext().isPreviewRender() )
-    drawNodes( context, style );
+    drawNodes( context );
 }
 
 double QgsLayoutNodesItem::computeDistance( QPointF pt1,
@@ -161,11 +161,11 @@ bool QgsLayoutNodesItem::addNode( QPointF pt,
   return rc;
 }
 
-void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle ) const
+void QgsLayoutNodesItem::drawNodes( QgsLayoutItemRenderContext &context ) const
 {
-  context.painter()->setRenderHint( QPainter::Antialiasing, false );
+  context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
 
-  double rectSize = 9.0 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+  double rectSize = 9.0 / context.viewScaleFactor();
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
@@ -176,18 +176,18 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
   symbol->setSize( rectSize );
   symbol->setAngle( 45 );
 
-  symbol->startRender( context );
+  symbol->startRender( context.renderContext() );
   for ( QPointF pt : mPolygon )
-    symbol->renderPoint( pt * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ), nullptr, context );
-  symbol->stopRender( context );
+    symbol->renderPoint( pt * context.viewScaleFactor(), nullptr, context.renderContext() );
+  symbol->stopRender( context.renderContext() );
 
   if ( mSelectedNode >= 0 && mSelectedNode < mPolygon.size() )
-    drawSelectedNode( context, itemStyle );
+    drawSelectedNode( context );
 }
 
-void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle ) const
+void QgsLayoutNodesItem::drawSelectedNode( QgsLayoutItemRenderContext &context ) const
 {
-  double rectSize = 9.0 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+  double rectSize = 9.0 / context.viewScaleFactor();
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
@@ -199,9 +199,9 @@ void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QSty
   symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   symbol->setSize( rectSize );
 
-  symbol->startRender( context );
-  symbol->renderPoint( mPolygon.at( mSelectedNode ) * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ), nullptr, context );
-  symbol->stopRender( context );
+  symbol->startRender( context.renderContext() );
+  symbol->renderPoint( mPolygon.at( mSelectedNode ) * context.viewScaleFactor(), nullptr, context.renderContext() );
+  symbol->stopRender( context.renderContext() );
 }
 
 int QgsLayoutNodesItem::nodeAtPosition( QPointF node,

@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;

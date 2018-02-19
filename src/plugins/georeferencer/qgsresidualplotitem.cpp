@@ -150,7 +150,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   }
 }
 
-void QgsResidualPlotItem::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
 {
 
 }

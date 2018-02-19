@@ -447,7 +447,15 @@ class CORE_EXPORT QgsSymbolRenderContext
     //! QgsSymbolRenderContext cannot be copied.
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) = delete;
 
+    /**
+     * Returns a reference to the context's render context.
+     */
     QgsRenderContext &renderContext() { return mRenderContext; }
+
+    /**
+     * Returns a reference to the context's render context.
+     * \note Not available in Python bindings.
+     */
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
     /**

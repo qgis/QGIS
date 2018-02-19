@@ -54,9 +54,9 @@ class TestItem : public QgsLayoutItem
     bool forceResize = false;
 
   protected:
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
+    void draw( QgsLayoutItemRenderContext &context ) override
     {
-      QPainter *painter = context.painter();
+      QPainter *painter = context.renderContext().painter();
       painter->save();
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->setPen( Qt::NoPen );

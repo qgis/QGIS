@@ -67,12 +67,12 @@ QgsLayoutSize QgsLayoutItemScaleBar::minimumSize() const
   return QgsLayoutSize( mStyle->calculateBoxSize( mSettings, createScaleContext() ), QgsUnitTypes::LayoutMillimeters );
 }
 
-void QgsLayoutItemScaleBar::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
 {
   if ( !mStyle )
     return;
 
-  mStyle->draw( context, mSettings, createScaleContext() );
+  mStyle->draw( context.renderContext(), mSettings, createScaleContext() );
 }
 
 void QgsLayoutItemScaleBar::setNumberOfSegments( int nSegments )

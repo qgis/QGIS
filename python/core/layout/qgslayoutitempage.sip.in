@@ -105,7 +105,7 @@ page orientation.
 
   protected:
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+    virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual void drawFrame( QgsRenderContext &context );
 
