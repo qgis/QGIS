@@ -203,6 +203,12 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   // add the layer to the map
   emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
+
+  // clear the file and layer name show something has happened, ready for another file
+
+  mFileWidget->setFilePath( QString() );
+  txtLayerName->setText( QString() );
+
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
