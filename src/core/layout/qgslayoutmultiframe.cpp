@@ -563,4 +563,3 @@ bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const 
 
   return true;
 }
-

@@ -24,6 +24,7 @@
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
 #include "qgserror.h"
 
 typedef int dataCapabilities_t(); // SIP_SKIP
@@ -491,6 +492,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \note not available in Python bindings
      */
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
+
+    /**
+     * Retrieve collected Metadata from the Provider source
+     * \brief A structured metadata store for a map layer.
+     * \note
+     * \see setLayerMetadata
+    * \since QGIS 3.0
+    */
+    virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); };
+
+    /**
+     * Set collected Metadata from the Provider source
+     * \brief A structured metadata store for a map layer.
+     * \note
+     * \see layerMetadata
+    * \since QGIS 3.0
+    */
+    virtual bool setLayerMetadata( const QgsLayerMetadata &layerMetadata ) { Q_UNUSED( layerMetadata ); return false; }
 
   signals:
 

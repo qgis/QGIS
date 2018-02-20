@@ -43,16 +43,34 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Constructor for the wizard.
+     * \note
+     * For use with a source \layer. This constructor automatically sets the widget's metadata() if the \a layer pointer is valid.
+     *  calls setMetadata
+     * \param layer to set the main QgsLayerMetadata with mLayer->metadata() when not nullptr
+     * \see setMetadata
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
+     * Retrieves a QgsLayerMetadata object representing the current state of the widget.
+     * \note
+     *  saveMetdata is called before returning QgsLayerMetadata
+     * \see saveMetadata
+     */
+    QgsLayerMetadata metadata();
+
+    /**
      * Save all fields in a QgsLayerMetadata object.
+     * \see getMetadata
+     * \see acceptMetadata
+     * \see checkMetadata
      */
     void saveMetadata( QgsLayerMetadata &layerMetadata );
 
     /**
      * Check if values in the wizard are correct.
+     * \see updatePanel
+     * \see saveMetadata
      */
     bool checkMetadata();
 
