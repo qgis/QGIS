@@ -50,6 +50,8 @@ using QgsNativeMetadataValidator.
       QgsCoordinateReferenceSystem extentCrs;
 
       QgsBox3d bounds;
+
+      bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
     };
 
     struct Extent
@@ -87,6 +89,8 @@ Sets the temporal ``extents`` of the resource.
 .. seealso:: :py:func:`temporalExtents`
 %End
 
+        bool operator==( const QgsLayerMetadata::Extent &other ) const;
+
 
     };
 
@@ -101,6 +105,9 @@ Constructor for Constraint.
       QString type;
 
       QString constraint;
+
+      bool operator==( const QgsLayerMetadata::Constraint &other ) const;
+
     };
 
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
@@ -125,6 +132,8 @@ Constructor for Address.
       QString postalCode;
 
       QString country;
+
+      bool operator==( const QgsLayerMetadata::Address &other ) const;
     };
 
     struct Contact
@@ -150,6 +159,8 @@ Constructor for Contact.
       QString email;
 
       QString role;
+
+      bool operator==( const QgsLayerMetadata::Contact &other ) const;
     };
 
     typedef QList< QgsLayerMetadata::Contact > ContactList;
@@ -176,6 +187,8 @@ Constructor for Link.
       QString mimeType;
 
       QString size;
+
+      bool operator==( const QgsLayerMetadata::Link &other ) const;
     };
 
     typedef QList< QgsLayerMetadata::Link > LinkList;
@@ -617,6 +630,8 @@ Stores state in Dom node
 
 :return: true if successful
 %End
+
+    bool operator==( const QgsLayerMetadata &metadataOther ) const;
 
 };
 

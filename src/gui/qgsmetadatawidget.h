@@ -43,16 +43,41 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Constructor for the wizard.
+     *
+     * If \a layer is set, then this constructor automatically sets the widget's metadata() to match
+     * the layer's metadata..
+
+     * \see setMetadata()
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
+     * Sets the \a metadata to display in the widget.
+     *
+     * This method can be called after constructing a QgsMetadataWidget in order
+     * to set the displayed metadata to custom, non-layer based metadata.
+     *
+     * \see metadata()
+     */
+    void setMetadata( const QgsLayerMetadata &metadata );
+
+    /**
+     * Returns a QgsLayerMetadata object representing the current state of the widget.
+     * \see saveMetadata()
+     */
+    QgsLayerMetadata metadata();
+
+    /**
      * Save all fields in a QgsLayerMetadata object.
+     * \see metadata()
+     * \see acceptMetadata()
+     * \see checkMetadata()
      */
     void saveMetadata( QgsLayerMetadata &layerMetadata );
 
     /**
      * Check if values in the wizard are correct.
+     * \see saveMetadata()
      */
     bool checkMetadata();
 
@@ -65,11 +90,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
-
-    /**
-     * Sets the layer's \a metadata store.
-     */
-    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.

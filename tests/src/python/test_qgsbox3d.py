@@ -173,6 +173,17 @@ class TestQgsBox3d(unittest.TestCase):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0)
         self.assertTrue(box.is2d())
 
+    def testEquality(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box2 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box1, box2)
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 14.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 11.0, 41.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 12.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 17.0, 11.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 16.0, 7.0, 11.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(52.0, 6.0, 7.0, 11.0, 13.0, 15.0))
+
 
 if __name__ == '__main__':
     unittest.main()

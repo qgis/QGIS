@@ -86,6 +86,161 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3111))
         self.assertEqual(m.crs().authid(), 'EPSG:3111')
 
+    def testEquality(self):
+        # spatial extent
+        extent = QgsLayerMetadata.SpatialExtent()
+        extent.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
+        extent.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        extent2 = QgsLayerMetadata.SpatialExtent()
+        extent2.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
+        extent2.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(extent, extent2)
+        extent2.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3113)
+        self.assertNotEqual(extent, extent2)
+        extent2.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
+        extent2.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 16.0)
+        self.assertNotEqual(extent, extent2)
+
+        # extent
+        extent = QgsLayerMetadata.Extent()
+        extent1 = QgsLayerMetadata.SpatialExtent()
+        extent1.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
+        extent1.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        extent2 = QgsLayerMetadata.SpatialExtent()
+        extent2.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3113)
+        extent2.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 16.0)
+        extent.setSpatialExtents([extent1, extent2])
+        dates = [
+            QgsDateTimeRange(
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)),
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47))),
+            QgsDateTimeRange(
+                QDateTime(QDate(2010, 12, 17), QTime(9, 30, 47)),
+                QDateTime(QDate(2020, 12, 17), QTime(9, 30, 47)))
+        ]
+        extent.setTemporalExtents(dates)
+        extent_copy = QgsLayerMetadata.Extent(extent)
+        self.assertEqual(extent, extent_copy)
+        extent_copy.setTemporalExtents([
+            QgsDateTimeRange(
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)),
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47))),
+            QgsDateTimeRange(
+                QDateTime(QDate(2010, 12, 17), QTime(9, 30, 48)),
+                QDateTime(QDate(2020, 12, 17), QTime(9, 30, 49)))
+        ])
+        self.assertNotEqual(extent, extent_copy)
+        extent_copy = QgsLayerMetadata.Extent(extent)
+        extent3 = QgsLayerMetadata.SpatialExtent()
+        extent3.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(3113)
+        extent3.bounds = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 19.0)
+        extent_copy.setSpatialExtents([extent1, extent3])
+        self.assertNotEqual(extent, extent_copy)
+
+        constraint = QgsLayerMetadata.Constraint('c', 'type1')
+        self.assertEqual(constraint, QgsLayerMetadata.Constraint('c', 'type1'))
+        self.assertNotEqual(constraint, QgsLayerMetadata.Constraint('c2', 'type1'))
+        self.assertNotEqual(constraint, QgsLayerMetadata.Constraint('c', 'type2'))
+
+        a = QgsLayerMetadata.Address()
+        a.type = 'postal'
+        a.address = '13 north rd'
+        a.city = 'huxleys haven'
+        a.administrativeArea = 'land of the queens'
+        a.postalCode = '4123'
+        a.country = 'straya!'
+        a2 = QgsLayerMetadata.Address(a)
+        self.assertEqual(a, a2)
+        a2.type = 'postal2'
+        self.assertNotEqual(a, a2)
+        a2 = QgsLayerMetadata.Address(a)
+        a2.address = 'address2'
+        self.assertNotEqual(a, a2)
+        a2 = QgsLayerMetadata.Address(a)
+        a2.city = 'city'
+        self.assertNotEqual(a, a2)
+        a2 = QgsLayerMetadata.Address(a)
+        a2.administrativeArea = 'area2'
+        self.assertNotEqual(a, a2)
+        a2 = QgsLayerMetadata.Address(a)
+        a2.postalCode = 'postal2'
+        self.assertNotEqual(a, a2)
+        a2 = QgsLayerMetadata.Address(a)
+        a2.country = 'country2'
+        self.assertNotEqual(a, a2)
+
+        c = QgsLayerMetadata.Contact()
+        c.name = 'name'
+        c.organization = 'org'
+        c.position = 'pos'
+        c.voice = '1500 515 555'
+        c.fax = 'fax'
+        c.email = 'email'
+        c.role = 'role'
+        a = QgsLayerMetadata.Address()
+        a.type = 'postal'
+        a2 = QgsLayerMetadata.Address()
+        a2.type = 'street'
+        c.addresses = [a, a2]
+        c2 = QgsLayerMetadata.Contact(c)
+        self.assertEqual(c, c2)
+        c2.name = 'name2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.organization = 'org2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.position = 'pos2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.voice = 'voice2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.fax = 'fax2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.email = 'email2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.role = 'role2'
+        self.assertNotEqual(c, c2)
+        c2 = QgsLayerMetadata.Contact(c)
+        c2.addresses = [a2]
+        self.assertNotEqual(c, c2)
+
+        # link
+        l = QgsLayerMetadata.Link()
+        l.name = 'name'
+        l.type = 'type'
+        l.description = 'desc'
+        l.url = 'url'
+        l.format = 'format'
+        l.mimeType = 'mime'
+        l.size = '112'
+        l2 = QgsLayerMetadata.Link(l)
+        self.assertEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.name = 'name2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.type = 'type2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.description = 'desc2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.url = 'url2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.format = 'format2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.mimeType = 'mime2'
+        self.assertNotEqual(l, l2)
+        l2 = QgsLayerMetadata.Link(l)
+        l2.size = '113'
+        self.assertNotEqual(l, l2)
+
     def testExtent(self):
         e = QgsLayerMetadata.Extent()
         se = QgsLayerMetadata.SpatialExtent()

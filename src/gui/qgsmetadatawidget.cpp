@@ -35,7 +35,10 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
     mLayer( layer )
 {
   setupUi( this );
-  mMetadata = layer->metadata();
+  if ( mLayer )
+  {
+    mMetadata = mLayer->metadata();
+  }
   tabWidget->setCurrentIndex( 0 );
 
   // Disable the encoding
@@ -107,12 +110,34 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategories );
 
   fillComboBox();
+  if ( !mLayer )
+  {
+    btnAutoSource->setEnabled( false );
+    btnAutoEncoding->setEnabled( false );
+    btnSetCrsFromLayer->setEnabled( false );
+  }
+  setMetadata( mMetadata );
+}
+
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
+{
+  mMetadata = layerMetadata;
   setPropertiesFromLayer();
+}
+
+QgsLayerMetadata QgsMetadataWidget::metadata()
+{
+  QgsLayerMetadata md;
+  saveMetadata( md );
+  return md;
 }
 
 void QgsMetadataWidget::fillSourceFromLayer()
 {
-  lineEditIdentifier->setText( mLayer->publicSource() );
+  if ( mLayer )
+  {
+    lineEditIdentifier->setText( mLayer->publicSource() );
+  }
 }
 
 void QgsMetadataWidget::addVocabulary()
@@ -202,7 +227,7 @@ void QgsMetadataWidget::removeSelectedConstraint()
 
 void QgsMetadataWidget::crsChanged()
 {
-  if ( mCrs.isValid() )
+  if ( ( mCrs.isValid() ) && ( mLayer ) )
   {
     lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
     spatialExtentSelector->setEnabled( true );
@@ -815,15 +840,11 @@ void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
 void QgsMetadataWidget::acceptMetadata()
 {
   saveMetadata( mMetadata );
-
-  // Save layer metadata properties
-  mLayer->setMetadata( mMetadata );
-}
-
-void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
-{
-  mMetadata = metadata;
-  setPropertiesFromLayer();
+  if ( mLayer )
+  {
+    // Save layer metadata properties
+    mLayer->setMetadata( mMetadata );
+  }
 }
 
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()

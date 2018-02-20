@@ -223,6 +223,8 @@ will be performed on the x/y extent of the box only.
 Converts the box to a 2D rectangle.
 %End
 
+    bool operator==( const QgsBox3d &other ) const;
+
 };
 
 /************************************************************************
