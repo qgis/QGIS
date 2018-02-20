@@ -36,7 +36,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayerExporter,
                        QgsProject,
                        QgsSettings)
-from qgis.gui import QgsMessageViewer, QgsProjectionSelectionWidget
+from qgis.gui import QgsMessageViewer
 from qgis.utils import OverrideCursor
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
@@ -68,8 +68,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # updates of UI
         self.setupWorkingMode(self.mode)
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
-        self.widgetSourceSrid.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
-        self.widgetTargetSrid.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
+        self.widgetSourceSrid.setCrs(QgsProject.instance().crs())
+        self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
