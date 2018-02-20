@@ -79,7 +79,7 @@ QIcon QgsLayerItem::iconDefault()
 
 QIcon QgsDataCollectionItem::iconDataCollection()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
 QIcon QgsDataCollectionItem::iconDir()
@@ -688,7 +688,7 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent, const QString
   : QgsDataItem( Collection, parent, name, path )
 {
   mCapabilities = Fertile;
-  mIconName = QStringLiteral( "/mIconDbSchema.png" );
+  mIconName = QStringLiteral( "/mIconDbSchema.svg" );
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()

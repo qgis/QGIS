@@ -369,7 +369,7 @@
         <file>themes/default/mIconColorPicker.svg</file>
         <file>themes/default/mIconColorSwatches.svg</file>
         <file>themes/default/mIconColorWheel.svg</file>
-        <file>themes/default/mIconConnect.png</file>
+        <file>themes/default/mIconConnect.svg</file>
         <file>themes/default/mIconClose.svg</file>
         <file>themes/default/mIconCloseTab.svg</file>
         <file>themes/default/mIconCloseTabHover.svg</file>
@@ -381,7 +381,7 @@
         <file>themes/default/mIconDataDefineExpressionError.svg</file>
         <file>themes/default/mIconDataDefineExpressionOn.svg</file>
         <file>themes/default/mIconDb2.svg</file>
-        <file>themes/default/mIconDbSchema.png</file>
+        <file>themes/default/mIconDbSchema.svg</file>
         <file>themes/default/mIconDelete.svg</file>
         <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconDropDownMenu.svg</file>
@@ -455,7 +455,7 @@
         <file>themes/default/mLayoutItemTable.svg</file>
         <file>themes/default/mMessageLog.svg</file>
         <file>themes/default/mMessageLogRead.svg</file>
-        <file>themes/default/north_arrow.png</file>
+        <file>themes/default/north_arrow.svg</file>
         <file>themes/default/diagramNone.svg</file>
         <file>themes/default/pie-chart.svg</file>
         <file>themes/default/pin.svg</file>

@@ -86,7 +86,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
 QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
