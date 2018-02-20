@@ -41,6 +41,8 @@ class QgsAfsSharedData : public QObject
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
+    bool hasCachedAllFeatures() const;
+
   private:
     friend class QgsAfsProvider;
     QMutex mMutex;

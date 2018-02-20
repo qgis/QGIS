@@ -71,12 +71,15 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
     requestIds.insert( mRequest.filterFid() );
   }
 
-  if ( !mFilterRect.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->sharedData()->hasCachedAllFeatures() )
   {
     // defer request to find features in filter rect until first feature is requested
     // this allows time for a interruption checker to be installed on the iterator
     // and avoids performing this expensive check in the main thread when just
     // preparing iterators
+
+    // (but if we've already cached ALL the features, we skip this -- there's no need for
+    // firing off another request to the server)
     mDeferredFeaturesInFilterRectCheck = true;
   }
 
@@ -129,6 +132,10 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       mFeatureIterator = mRemainingFeatureIds.at( 0 );
 
     mDeferredFeaturesInFilterRectCheck = false;
+
+    // discard the filter rect - we know that the features in mRemainingFeatureIds are gauranteed
+    // to be intersecting the rect, so avoid any extra unnecessary checks
+    mFilterRect = QgsRectangle();
   }
 
   if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
@@ -171,6 +178,10 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         {
           ++mFeatureIterator;
         }
+
+        if ( !mFilterRect.isNull() && ( !f.hasGeometry() || !f.geometry().intersects( mFilterRect ) ) )
+          success = false;
+
         if ( !success )
           continue;
         geometryToDestinationCrs( f, mTransform );

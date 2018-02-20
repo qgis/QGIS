@@ -161,3 +161,8 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   }
   return ids;
 }
+
+bool QgsAfsSharedData::hasCachedAllFeatures() const
+{
+  return mCache.count() == mObjectIds.count();
+}
