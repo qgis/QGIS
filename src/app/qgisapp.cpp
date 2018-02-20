@@ -1902,7 +1902,7 @@ void QgisApp::createActions()
   connect( mActionReshapeFeatures, &QAction::triggered, this, &QgisApp::reshapeFeatures );
   connect( mActionSplitFeatures, &QAction::triggered, this, &QgisApp::splitFeatures );
   connect( mActionSplitParts, &QAction::triggered, this, &QgisApp::splitParts );
-  connect( mActionDeleteSelected, &QAction::triggered, this, [ = ] { deleteSelected(); } );
+  connect( mActionDeleteSelected, &QAction::triggered, this, [ = ] { deleteSelected( nullptr, nullptr, true ); } );
   connect( mActionAddRing, &QAction::triggered, this, &QgisApp::addRing );
   connect( mActionFillRing, &QAction::triggered, this, &QgisApp::fillRing );
   connect( mActionAddPart, &QAction::triggered, this, &QgisApp::addPart );
@@ -7090,7 +7090,7 @@ void QgisApp::layerProperties()
   showLayerProperties( activeLayer() );
 }
 
-void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool promptConfirmation )
+void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFeaturesVisible )
 {
   if ( !layer )
   {
@@ -7145,9 +7145,31 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool promptCo
     return;
   }
   //display a warning
-  if ( promptConfirmation && QMessageBox::warning( parent, tr( "Delete Features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfSelectedFeatures ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( checkFeaturesVisible )
   {
-    return;
+    QgsFeature feat;
+    QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    bool allFeaturesInView = true;
+    QgsRectangle viewRect = mMapCanvas->mapSettings().mapToLayerCoordinates( vlayer, mMapCanvas->extent() );
+
+    while ( it.nextFeature( feat ) )
+    {
+      if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
+      {
+        allFeaturesInView = false;
+        break;
+      }
+    }
+
+    if ( !allFeaturesInView )
+    {
+      // for extra safety to make sure we are not removing geometries by accident
+      int res = QMessageBox::warning( mMapCanvas, tr( "Delete features" ),
+                                      tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+        return;
+    }
   }
 
   vlayer->beginEditCommand( tr( "Features deleted" ) );
@@ -12272,7 +12294,7 @@ void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
   // Delete selected features when it is possible and KeyEvent was not managed by current MapTool
   if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) && e->isAccepted() )
   {
-    deleteSelected();
+    deleteSelected( nullptr, nullptr, true );
   }
 }
 
