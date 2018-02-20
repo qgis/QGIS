@@ -490,6 +490,8 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
   {
     return QVariantMap();
   }
+  if ( feedback && feedback->isCanceled() )
+    return QVariantMap();
 
   // Parse data
   QJsonParseError err;
