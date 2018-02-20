@@ -93,7 +93,7 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   return true;
 }
 
-QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -110,7 +110,7 @@ QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsP
     }
     f.setGeometry( outputGeometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

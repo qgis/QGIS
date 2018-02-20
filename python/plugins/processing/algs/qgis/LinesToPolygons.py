@@ -88,7 +88,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
             feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
             if feature.geometry().isEmpty():
                 feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
-        return feature
+        return [feature]
 
     def convertWkbToPolygons(self, wkb):
         multi_wkb = None

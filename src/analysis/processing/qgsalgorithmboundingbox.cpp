@@ -71,7 +71,7 @@ QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) 
   return fields;
 }
 
-QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -95,7 +95,7 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
           << QVariant();
     f.setAttributes( attrs );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

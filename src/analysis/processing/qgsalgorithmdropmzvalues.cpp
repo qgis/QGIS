@@ -82,7 +82,7 @@ bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   return true;
 }
 
-QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -95,7 +95,7 @@ QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, 
     f.setGeometry( QgsGeometry( newGeom.release() ) );
   }
 
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

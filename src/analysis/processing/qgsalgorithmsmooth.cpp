@@ -101,7 +101,7 @@ bool QgsSmoothAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPro
   return true;
 }
 
-QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -113,7 +113,7 @@ QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsPro
     }
     f.setGeometry( outputGeometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

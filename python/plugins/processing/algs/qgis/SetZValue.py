@@ -101,4 +101,4 @@ class SetZValue(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return feature
+        return [feature]

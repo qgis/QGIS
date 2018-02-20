@@ -871,10 +871,13 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * geometry with the centroid of the original feature geometry for a 'centroid' type
      * algorithm).
      *
-     * Implementations should return the modified feature. Returning an invalid feature (e.g.
-     * a default constructed QgsFeature) will indicate that this feature should be 'skipped',
-     * and will not be added to the algorithm's output. Subclasses can use this approach to
-     * filter the incoming features as desired.
+     * Implementations should return a list containing the modified feature. Returning an empty an list
+     * will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
+     * Subclasses can use this approach to filter the incoming features as desired.
+     *
+     * Additionally, multiple features can be returned for a single input feature. Each returned feature
+     * will be added to the algorithm's output. This allows for "explode" type algorithms where a single
+     * input feature results in multiple output features.
      *
      * The provided \a feedback object can be used to push messages to the log and for giving feedback
      * to users. Note that handling of progress reports and algorithm cancelation is handled by
@@ -885,7 +888,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * can break valid model execution - so use with extreme caution, and consider using
      * \a feedback to instead report non-fatal processing failures for features instead.
      */
-    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
