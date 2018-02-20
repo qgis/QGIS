@@ -531,6 +531,7 @@ void QgsMetadataWidget::setPropertiesFromLayer()
 
   // Links
   const QList<QgsLayerMetadata::Link> &links = mMetadata.links();
+  mLinksModel->setRowCount( 0 );
   for ( const QgsLayerMetadata::Link &link : links )
   {
     int row = mLinksModel->rowCount();

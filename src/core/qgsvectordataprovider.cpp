@@ -483,18 +483,19 @@ void QgsVectorDataProvider::fillMinMaxCache() const
   {
     if ( flds.at( i ).type() == QVariant::Int )
     {
-      mCacheMinValues[i] = QVariant( INT_MAX );
-      mCacheMaxValues[i] = QVariant( INT_MIN );
+      mCacheMinValues[i] = QVariant( std::numeric_limits<int>::max() );
+      mCacheMaxValues[i] = QVariant( std::numeric_limits<int>::lowest() );
     }
     else if ( flds.at( i ).type() == QVariant::LongLong )
     {
       mCacheMinValues[i] = QVariant( std::numeric_limits<qlonglong>::max() );
-      mCacheMaxValues[i] = QVariant( std::numeric_limits<qlonglong>::min() );
+      mCacheMaxValues[i] = QVariant( std::numeric_limits<qlonglong>::lowest() );
     }
     else if ( flds.at( i ).type() == QVariant::Double )
     {
-      mCacheMinValues[i] = QVariant( DBL_MAX );
-      mCacheMaxValues[i] = QVariant( -DBL_MAX );
+      mCacheMinValues[i] = QVariant( std::numeric_limits<double>::max() );
+      mCacheMaxValues[i] = QVariant( std::numeric_limits<double>::lowest() );
+
     }
     else
     {
@@ -504,54 +505,61 @@ void QgsVectorDataProvider::fillMinMaxCache() const
   }
 
   QgsFeature f;
-  QgsAttributeList keys = mCacheMinValues.keys();
+  const QgsAttributeList keys = mCacheMinValues.keys();
   QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys )
                                        .setFlags( QgsFeatureRequest::NoGeometry ) );
 
   while ( fi.nextFeature( f ) )
   {
     QgsAttributes attrs = f.attributes();
-    for ( QgsAttributeList::const_iterator it = keys.constBegin(); it != keys.constEnd(); ++it )
+    for ( int attributeIndex : keys )
     {
-      const QVariant &varValue = attrs.at( *it );
+      const QVariant &varValue = attrs.at( attributeIndex );
 
       if ( varValue.isNull() )
         continue;
 
-      if ( flds.at( *it ).type() == QVariant::Int )
+      switch ( flds.at( attributeIndex ).type() )
       {
-        int value = varValue.toInt();
-        if ( value < mCacheMinValues[*it].toInt() )
-          mCacheMinValues[*it] = value;
-        if ( value > mCacheMaxValues[*it].toInt() )
-          mCacheMaxValues[*it] = value;
-      }
-      else if ( flds.at( *it ).type() == QVariant::LongLong )
-      {
-        qlonglong value = varValue.toLongLong();
-        if ( value < mCacheMinValues[*it].toLongLong() )
-          mCacheMinValues[*it] = value;
-        if ( value > mCacheMaxValues[*it].toLongLong() )
-          mCacheMaxValues[*it] = value;
-      }
-      else if ( flds.at( *it ).type() == QVariant::Double )
-      {
-        double value = varValue.toDouble();
-        if ( value < mCacheMinValues[*it].toDouble() )
-          mCacheMinValues[*it] = value;
-        if ( value > mCacheMaxValues[*it].toDouble() )
-          mCacheMaxValues[*it] = value;
-      }
-      else
-      {
-        QString value = varValue.toString();
-        if ( mCacheMinValues[*it].isNull() || value < mCacheMinValues[*it].toString() )
+        case QVariant::Int:
         {
-          mCacheMinValues[*it] = value;
+          int value = varValue.toInt();
+          if ( value < mCacheMinValues[ attributeIndex ].toInt() )
+            mCacheMinValues[ attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toInt() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
         }
-        if ( mCacheMaxValues[*it].isNull() || value > mCacheMaxValues[*it].toString() )
+        case QVariant::LongLong:
         {
-          mCacheMaxValues[*it] = value;
+          qlonglong value = varValue.toLongLong();
+          if ( value < mCacheMinValues[ attributeIndex ].toLongLong() )
+            mCacheMinValues[ attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toLongLong() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
+        }
+        case QVariant::Double:
+        {
+          double value = varValue.toDouble();
+          if ( value < mCacheMinValues[ attributeIndex ].toDouble() )
+            mCacheMinValues[attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toDouble() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
+        }
+        default:
+        {
+          QString value = varValue.toString();
+          if ( mCacheMinValues[ attributeIndex ].isNull() || value < mCacheMinValues[attributeIndex ].toString() )
+          {
+            mCacheMinValues[attributeIndex] = value;
+          }
+          if ( mCacheMaxValues[attributeIndex].isNull() || value > mCacheMaxValues[attributeIndex].toString() )
+          {
+            mCacheMaxValues[attributeIndex] = value;
+          }
+          break;
         }
       }
     }

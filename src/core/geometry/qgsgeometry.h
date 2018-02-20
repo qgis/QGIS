@@ -798,11 +798,49 @@ class CORE_EXPORT QgsGeometry
      */
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
-    //! Tests for intersection with a rectangle (uses GEOS)
-    bool intersects( const QgsRectangle &r ) const;
+    /**
+     * Returns true if this geometry exactly intersects with a \a rectangle. This test is exact
+     * and can be slow for complex geometries.
+     *
+     * The GEOS library is used to perform the intersection test. Geometries which are not
+     * valid may return incorrect results.
+     *
+     * \see boundingBoxIntersects()
+     */
+    bool intersects( const QgsRectangle &rectangle ) const;
 
-    //! Tests for intersection with a geometry (uses GEOS)
+    /**
+     * Returns true if this geometry exactly intersects with another \a geometry. This test is exact
+     * and can be slow for complex geometries.
+     *
+     * The GEOS library is used to perform the intersection test. Geometries which are not
+     * valid may return incorrect results.
+     *
+     * \see boundingBoxIntersects()
+     */
     bool intersects( const QgsGeometry &geometry ) const;
+
+    /**
+     * Returns true if the bounding box of this geometry intersects with a \a rectangle. Since this
+     * test only considers the bounding box of the geometry, is is very fast to calculate and handles invalid
+     * geometries.
+     *
+     * \see intersects()
+     *
+     * \since QGIS 3.0
+     */
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
+
+    /**
+     * Returns true if the bounding box of this geometry intersects with the bounding box of another \a geometry. Since this
+     * test only considers the bounding box of the geometries, is is very fast to calculate and handles invalid
+     * geometries.
+     *
+     * \see intersects()
+     *
+     * \since QGIS 3.0
+     */
+    bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
 
     //! Tests for containment of a point (uses GEOS)
     bool contains( const QgsPointXY *p ) const;
