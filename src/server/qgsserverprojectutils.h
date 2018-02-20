@@ -150,13 +150,6 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsUseLayerIds( const QgsProject &project );
 
   /**
-   * Returns if the info format is SIA20145.
-    * \param project the QGIS project
-    * \returns if the info format is SIA20145.
-    */
-  SERVER_EXPORT bool wmsInfoFormatSia2045( const QgsProject &project );
-
-  /**
    * Returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
     * \param project the QGIS project
     * \returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
@@ -176,34 +169,6 @@ namespace QgsServerProjectUtils
     * \returns the geometry precision for GetFeatureInfo request.
     */
   SERVER_EXPORT int wmsFeatureInfoPrecision( const QgsProject &project );
-
-  /**
-   * Returns the document element name for XML GetFeatureInfo request.
-    * \param project the QGIS project
-    * \returns the document element name for XML GetFeatureInfo request.
-    */
-  SERVER_EXPORT QString wmsFeatureInfoDocumentElement( const QgsProject &project );
-
-  /**
-   * Returns the document element namespace for XML GetFeatureInfo request.
-    * \param project the QGIS project
-    * \returns the document element namespace for XML GetFeatureInfo request.
-    */
-  SERVER_EXPORT QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
-
-  /**
-   * Returns the schema URL for XML GetFeatureInfo request.
-    * \param project the QGIS project
-    * \returns the schema URL for XML GetFeatureInfo request.
-    */
-  SERVER_EXPORT QString wmsFeatureInfoSchema( const QgsProject &project );
-
-  /**
-   * Returns the mapping between layer name and wms layer name for GetFeatureInfo request.
-    * \param project the QGIS project
-    * \returns the mapping between layer name and wms layer name for GetFeatureInfo request.
-    */
-  SERVER_EXPORT QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
 
   /**
    * Returns if Inspire is activated.

@@ -135,8 +135,6 @@ namespace QgsWms
       QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
       if ( !keywords.isEmpty() )
       {
-        bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
-
         QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
 
         for ( int i = 0; i < keywords.size(); ++i )
@@ -147,10 +145,6 @@ namespace QgsWms
             QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
             QDomText keywordText = doc.createTextNode( keyword );
             keywordElem.appendChild( keywordText );
-            if ( sia2045 )
-            {
-              keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-            }
             keywordsElem.appendChild( keywordElem );
           }
         }
@@ -355,7 +349,6 @@ namespace QgsWms
           if ( !l->keywordList().isEmpty() )
           {
             QStringList keywordStringList = l->keywordList().split( ',' );
-            bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
             QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
             for ( int i = 0; i < keywordStringList.size(); ++i )
@@ -363,10 +356,6 @@ namespace QgsWms
               QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
               QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
               keywordElem.appendChild( keywordText );
-              if ( sia2045 )
-              {
-                keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-              }
               keywordsElem.appendChild( keywordElem );
             }
             layerElem.appendChild( keywordsElem );

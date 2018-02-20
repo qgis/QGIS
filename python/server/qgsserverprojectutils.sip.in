@@ -161,15 +161,6 @@ Returns if layer ids are used as name in WMS.
 :return: if layer ids are used as name.
 %End
 
-  bool wmsInfoFormatSia2045( const QgsProject &project );
-%Docstring
-Returns if the info format is SIA20145.
-
-:param project: the QGIS project
-
-:return: if the info format is SIA20145.
-%End
-
   bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
 %Docstring
 Returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
@@ -196,43 +187,6 @@ Returns the geometry precision for GetFeatureInfo request.
 
 :return: the geometry precision for GetFeatureInfo request.
 %End
-
-  QString wmsFeatureInfoDocumentElement( const QgsProject &project );
-%Docstring
-Returns the document element name for XML GetFeatureInfo request.
-
-:param project: the QGIS project
-
-:return: the document element name for XML GetFeatureInfo request.
-%End
-
-  QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
-%Docstring
-Returns the document element namespace for XML GetFeatureInfo request.
-
-:param project: the QGIS project
-
-:return: the document element namespace for XML GetFeatureInfo request.
-%End
-
-  QString wmsFeatureInfoSchema( const QgsProject &project );
-%Docstring
-Returns the schema URL for XML GetFeatureInfo request.
-
-:param project: the QGIS project
-
-:return: the schema URL for XML GetFeatureInfo request.
-%End
-
-  QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
-%Docstring
-Returns the mapping between layer name and wms layer name for GetFeatureInfo request.
-
-:param project: the QGIS project
-
-:return: the mapping between layer name and wms layer name for GetFeatureInfo request.
-%End
-
   bool wmsInspireActivate( const QgsProject &project );
 %Docstring
 Returns if Inspire is activated.

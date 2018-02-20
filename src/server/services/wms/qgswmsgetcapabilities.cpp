@@ -819,7 +819,6 @@ namespace QgsWms
                                     bool projectSettings )
     {
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
-      bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
@@ -961,10 +960,6 @@ namespace QgsWms
               QDomElement keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
               QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
               keywordElem.appendChild( keywordText );
-              if ( siaFormat )
-              {
-                keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-              }
               keywordListElem.appendChild( keywordElem );
             }
             layerElem.appendChild( keywordListElem );
@@ -1741,7 +1736,6 @@ namespace QgsWms
 
     void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent )
     {
-      bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
       QDomElement keywordsElem = doc.createElement( QStringLiteral( "KeywordList" ) );
       //add default keyword
@@ -1759,10 +1753,6 @@ namespace QgsWms
           keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
           keywordText = doc.createTextNode( keyword );
           keywordElem.appendChild( keywordText );
-          if ( sia2045 )
-          {
-            keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-          }
           keywordsElem.appendChild( keywordElem );
         }
       }

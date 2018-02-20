@@ -252,9 +252,6 @@ namespace QgsWms
         \returns true if width/height values are okay*/
       bool checkMaximumWidthHeight() const;
 
-      //! Converts a feature info xml document to SIA2045 norm
-      void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
-
       //! Converts a feature info xml document to HTML
       QByteArray convertFeatureInfoToHtml( const QDomDocument &doc ) const;
 
