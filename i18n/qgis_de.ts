@@ -2711,7 +2711,7 @@ Abfrage:
     </message>
     <message>
         <source>Saved query:</source>
-        <translation>Gespeicherte Abfrage:</translation>
+        <translation type="obsolete">Gespeicherte Abfrage:</translation>
     </message>
     <message>
         <source>Name</source>
@@ -2772,6 +2772,10 @@ laden</translation>
     <message>
         <source>Set filter</source>
         <translation>Filter setzen</translation>
+    </message>
+    <message>
+        <source>Saved query</source>
+        <translation>Gespeicherte Abfrage</translation>
     </message>
 </context>
 <context>
@@ -2858,11 +2862,15 @@ laden</translation>
     </message>
     <message>
         <source>Saved query:</source>
-        <translation>Gespeicherte Abfrage:</translation>
+        <translation type="obsolete">Gespeicherte Abfrage:</translation>
     </message>
     <message>
         <source>Name</source>
         <translation>Name</translation>
+    </message>
+    <message>
+        <source>Saved query</source>
+        <translation>Gespeicherte Abfrage</translation>
     </message>
 </context>
 <context>
