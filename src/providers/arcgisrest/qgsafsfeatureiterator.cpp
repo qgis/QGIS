@@ -148,7 +148,10 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       if ( mRemainingFeatureIds.empty() )
         return false;
 
-      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f );
+      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, QgsRectangle(), mInterruptionChecker );
+      if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+        return false;
+
       geometryToDestinationCrs( f, mTransform );
       f.setValid( result );
       mRemainingFeatureIds.removeAll( f.id() );
