@@ -559,6 +559,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     struct TaskInfo
     {
       TaskInfo( QgsTask *task = nullptr, int priority = 0 );
+      void createRunnable();
       QgsTask *task = nullptr;
       QAtomicInt added;
       int priority;
