@@ -101,7 +101,7 @@ QMap< QgsOgrProviderUtils::DatasetIdentification,
 
 QMap< QString, int > QgsOgrProviderUtils::sMapCountOpenedDS;
 
-QMap< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
+QHash< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
 
 QMap< QString, QDateTime > QgsOgrProviderUtils::sMapDSNameToLastModifiedDate;
 
@@ -190,7 +190,7 @@ void QgsOgrProvider::repack()
     QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
     if ( QFile::exists( packedDbf ) )
     {
-      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), Qgis::Critical );
 
       mOgrSqlLayer.reset();
       mOgrOrigLayer.reset();
@@ -207,7 +207,7 @@ void QgsOgrProvider::repack()
 
       if ( !mOgrOrigLayer )
       {
-        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), Qgis::Critical );
         mValid = false;
       }
 
@@ -469,9 +469,12 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   bool supportsBoolean = false;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
-  const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
-  if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
-    supportsBoolean = true;
+  if ( mOgrOrigLayer )
+  {
+    const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+    if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
+      supportsBoolean = true;
+  }
 #else
   if ( mGDALDriverName == QLatin1String( "GeoJSON" ) ||
        mGDALDriverName == QLatin1String( "GML" ) ||
@@ -1325,7 +1328,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
   {
     // don't try to set field from attribute map if it's not present in layer
     if ( ogrAttId >= fdef.GetFieldCount() )
+    {
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fdef.GetFieldCount() ).arg( f.attributes().count() ) );
       continue;
+    }
 
     //if(!s.isEmpty())
     // continue;
@@ -1396,10 +1402,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTString:
-          QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
-                       .arg( qgisAttId )
-                       .arg( attrVal.toString(),
-                             textEncoding()->name().data() ) );
+          QgsDebugMsgLevel( QString( "Writing string attribute %1 with %2, encoding %3" )
+                            .arg( qgisAttId )
+                            .arg( attrVal.toString(),
+                                  textEncoding()->name().data() ), 3 );
           OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
           break;
 
@@ -3909,10 +3915,10 @@ void QgsOgrProvider::open( OpenMode mode )
     QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ) );
   }
 
-  QgsDebugMsg( "mFilePath: " + mFilePath );
-  QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
-  QgsDebugMsg( "mLayerName: " + mLayerName );
-  QgsDebugMsg( "mSubsetString: " + mSubsetString );
+  QgsDebugMsgLevel( "mFilePath: " + mFilePath, 3 );
+  QgsDebugMsgLevel( "mLayerIndex: " + QString::number( mLayerIndex ), 3 );
+  QgsDebugMsgLevel( "mLayerName: " + mLayerName, 3 );
+  QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
 
@@ -4053,7 +4059,11 @@ void QgsOgrProvider::open( OpenMode mode )
         int featuresCountedBackup = mFeaturesCounted;
         mFeaturesCounted = -1;
         // Do not update capabilities here
-        mValid = _setSubsetString( mSubsetString, false, false );
+        // but ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to
+        // mSubsetString, which is the case when reloading the dataset)
+        QString origSubsetString = mSubsetString;
+        mSubsetString.clear();
+        mValid = _setSubsetString( origSubsetString, false, false );
         mFeaturesCounted = featuresCountedBackup;
       }
     }
@@ -4383,7 +4393,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
 static QDateTime getLastModified( const QString &dsName )
 {
-  if ( dsName.toLower().endsWith( ".gpkg" ) )
+  if ( dsName.endsWith( ".gpkg", Qt::CaseInsensitive ) )
   {
     QFileInfo info( dsName + "-wal" );
     if ( info.exists() )
@@ -5254,7 +5264,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !hLayer )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
     bool ok = true;
@@ -5318,7 +5327,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !ok )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
   }
@@ -5375,7 +5383,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
     {
       errCause = QObject::tr( "Operation aborted" );
-      mutex->unlock();
       return false;
     }
     bNew = false;
@@ -5426,8 +5433,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
   else
     bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
-
-  mutex->unlock();
 
   if ( !bFeatureOK )
   {
@@ -5741,57 +5746,65 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
                                  subsetString,
                                  ogrGeometryType );
 
+
   GDALDatasetH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
-    if ( layerIndex == -1 )
+    // If we have got a name we convert it into an index
+    if ( ! layerName.isEmpty() )
     {
+      layerIndex = -1;
       for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
       {
         OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
         if ( layerName == QString( OGR_L_GetName( hL ) ) )
         {
           layerIndex = i;
+          break;
         }
       }
     }
-    OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
-    switch ( error )
+    // Do delete!
+    if ( layerIndex != -1 )
     {
-      case OGRERR_NOT_ENOUGH_DATA:
-        errCause = QObject::tr( "Not enough data to deserialize" );
-        break;
-      case OGRERR_NOT_ENOUGH_MEMORY:
-        errCause = QObject::tr( "Not enough memory" );
-        break;
-      case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
-        errCause = QObject::tr( "Unsupported geometry type" );
-        break;
-      case OGRERR_UNSUPPORTED_OPERATION:
-        errCause = QObject::tr( "Unsupported operation" );
-        break;
-      case OGRERR_CORRUPT_DATA:
-        errCause = QObject::tr( "Corrupt data" );
-        break;
-      case OGRERR_FAILURE:
-        errCause = QObject::tr( "Failure" );
-        break;
-      case OGRERR_UNSUPPORTED_SRS:
-        errCause = QObject::tr( "Unsupported SRS" );
-        break;
-      case OGRERR_INVALID_HANDLE:
-        errCause = QObject::tr( "Invalid handle" );
-        break;
-      case OGRERR_NON_EXISTING_FEATURE:
-        errCause = QObject::tr( "Non existing feature" );
-        break;
-      default:
-      case OGRERR_NONE:
-        errCause = QObject::tr( "Success" );
-        break;
+      OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+      switch ( error )
+      {
+        case OGRERR_NOT_ENOUGH_DATA:
+          errCause = QObject::tr( "Not enough data to deserialize" );
+          break;
+        case OGRERR_NOT_ENOUGH_MEMORY:
+          errCause = QObject::tr( "Not enough memory" );
+          break;
+        case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+          errCause = QObject::tr( "Unsupported geometry type" );
+          break;
+        case OGRERR_UNSUPPORTED_OPERATION:
+          errCause = QObject::tr( "Unsupported operation" );
+          break;
+        case OGRERR_CORRUPT_DATA:
+          errCause = QObject::tr( "Corrupt data" );
+          break;
+        case OGRERR_FAILURE:
+          errCause = QObject::tr( "Failure" );
+          break;
+        case OGRERR_UNSUPPORTED_SRS:
+          errCause = QObject::tr( "Unsupported SRS" );
+          break;
+        case OGRERR_INVALID_HANDLE:
+          errCause = QObject::tr( "Invalid handle" );
+          break;
+        case OGRERR_NON_EXISTING_FEATURE:
+          errCause = QObject::tr( "Non existing feature" );
+          break;
+        default:
+        case OGRERR_NONE:
+          errCause = QObject::tr( "Success" );
+          break;
+      }
+      errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
+      return error == OGRERR_NONE;
     }
-    errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
-    return error == OGRERR_NONE;
   }
   // This should never happen:
   errCause = QObject::tr( "Layer not found: %1" ).arg( uri );

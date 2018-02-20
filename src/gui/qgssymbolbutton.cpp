@@ -45,7 +45,7 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
 
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
+  int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
@@ -307,7 +307,7 @@ void QgsSymbolButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
-  QAction *configureAction = new QAction( tr( "Configure symbol..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure symbol…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsSymbolButton::showSettingsDialog );
 

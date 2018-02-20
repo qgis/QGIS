@@ -30,7 +30,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   setupUi( this );
   connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
   connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
-  setPanelTitle( tr( "Shape properties" ) );
+  setPanelTitle( tr( "Shape Properties" ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, shape );

@@ -47,21 +47,40 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   QStringList layerErrors;
   foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
   {
-    QVariantMap layerInfoMap = layerInfo.toMap();
+    const QVariantMap layerInfoMap = layerInfo.toMap();
     if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
     {
       continue;
     }
 
+    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    {
+      // group layer - do not show as it is not possible to load
+      // TODO - turn model into a tree and show nested groups
+      continue;
+    }
+
     // Get layer info
-    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
+    const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
     if ( layerData.isEmpty() )
     {
       layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
       continue;
     }
+    if ( !layerData.value( QStringLiteral( "capabilities" ) ).toString().contains( QStringLiteral( "query" ), Qt::CaseInsensitive ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Layer %1 does not support query capabilities" ).arg( layerInfoMap[QStringLiteral( "id" )].toString() ) );
+      continue;
+    }
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    bool ok = false;
+    int idInt = layerData[QStringLiteral( "id" )].toInt( &ok );
+    if ( ok )
+    {
+      // force display role to be int value, so that sorting works correctly
+      idItem->setData( idInt, Qt::DisplayRole );
+    }
     QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
     QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
     abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );

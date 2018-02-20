@@ -339,7 +339,7 @@ QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
   connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
   lst.append( actionShowNoGeom );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -608,7 +608,7 @@ QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
   lst.append( actionNew );
 

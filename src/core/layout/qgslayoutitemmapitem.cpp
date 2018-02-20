@@ -47,6 +47,10 @@ bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocum
   return true;
 }
 
+void QgsLayoutItemMapItem::finalizeRestoreFromXml()
+{
+}
+
 void QgsLayoutItemMapItem::setMap( QgsLayoutItemMap *map )
 {
   mMap = map;
@@ -193,6 +197,14 @@ bool QgsLayoutItemMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc, 
   }
 
   return true;
+}
+
+void QgsLayoutItemMapItemStack::finalizeRestoreFromXml()
+{
+  for ( QgsLayoutItemMapItem *item : qgis::as_const( mItems ) )
+  {
+    item->finalizeRestoreFromXml();
+  }
 }
 
 void QgsLayoutItemMapItemStack::drawItems( QPainter *painter )

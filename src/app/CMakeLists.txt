@@ -1,4 +1,4 @@
-ADD_SUBDIRECTORY(dwg/libdxfrw)
+ADD_SUBDIRECTORY(../../external/libdxfrw dwg/libdxfrw)
 
 SET(QGIS_APP_SRCS
   qgisapp.cpp
@@ -106,10 +106,10 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsselectedfeature.cpp
-  nodetool/qgsvertexentry.cpp
-  nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool.cpp
+  vertextool/qgsselectedfeature.cpp
+  vertextool/qgsvertexentry.cpp
+  vertextool/qgsvertexeditor.cpp
+  vertextool/qgsvertextool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -337,9 +337,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
 
-  nodetool/qgsselectedfeature.h
-  nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool.h
+  vertextool/qgsselectedfeature.h
+  vertextool/qgsvertexeditor.h
+  vertextool/qgsvertextool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
@@ -456,33 +456,33 @@ IF (WITH_QWTPOLAR)
   IF(WITH_INTERNAL_QWTPOLAR)
     SET(QGIS_APP_SRCS
       ${QGIS_APP_SRCS}
-      gps/qwtpolar-1.1.1/qwt_polar_canvas.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_curve.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_fitter.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_grid.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_item.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_layout.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_marker.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_panner.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_picker.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_plot.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_renderer.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_curve.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_fitter.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_grid.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_item.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_layout.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_marker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
     )
 
     SET (QGIS_APP_MOC_HDRS
       ${QGIS_APP_MOC_HDRS}
-      gps/qwtpolar-1.1.1/qwt_polar_canvas.h
-      gps/qwtpolar-1.1.1/qwt_polar_magnifier.h
-      gps/qwtpolar-1.1.1/qwt_polar_panner.h
-      gps/qwtpolar-1.1.1/qwt_polar_picker.h
-      gps/qwtpolar-1.1.1/qwt_polar_plot.h
-      gps/qwtpolar-1.1.1/qwt_polar_renderer.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.h
     )
 
-    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.1.1)
+    SET(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
 
     SET(QWTPOLAR_LIBRARY "")
   ENDIF(WITH_INTERNAL_QWTPOLAR)
@@ -496,6 +496,10 @@ IF (POSTGRES_FOUND)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
+
+IF (PROJ_HAS_INFO)
+  ADD_DEFINITIONS(-DPROJ_HAS_INFO)
+ENDIF (PROJ_HAS_INFO)
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 
@@ -522,17 +526,22 @@ IF (WIN32)
 
     IF (NOT WINDRES)
       FIND_PROGRAM(WINDRES windres)
-      IF (NOT WINDRES)
+      IF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
         MESSAGE(FATAL_ERROR "windres not found - aborting")
-      ENDIF (NOT WINDRES)
+      ENDIF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
     ENDIF (NOT WINDRES)
-    #############################################################
-    # application icon
-    # resource compilation for MinGW
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
-      -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-    SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+
+    IF (WINDRES)
+        #############################################################
+        # application icon
+        # resource compilation for MinGW
+        ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
+          COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
+          -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
+        SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+    ELSE (WINDRES)
+        # MXE
+    ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
   SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
@@ -556,7 +565,7 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 IF(MSVC)
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
 SET_SOURCE_FILES_PROPERTIES(
   qgisapp.cpp
   main.cpp
@@ -565,18 +574,19 @@ SET_SOURCE_FILES_PROPERTIES(
 ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external/libdxfrw
+  ${CMAKE_SOURCE_DIR}/external/nmea
+
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
-  ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/dxf
@@ -636,7 +646,6 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/annotations
   ../core/auth
-  ../core/composer
   ../core/gps
   ../core/dxf
   ../core/geometry
@@ -663,7 +672,7 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   dwg
-  dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/external/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
 )
@@ -707,8 +716,8 @@ ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDR
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5UiTools_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
@@ -720,6 +729,10 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_app ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF (WITH_3D)
   TARGET_LINK_LIBRARIES(qgis_app
@@ -768,8 +781,8 @@ ENDIF (ANDROID)
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   ADD_DEFINITIONS(-DQSCINTILLA_DLL)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
-  TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} dbghelp)
+  TARGET_LINK_LIBRARIES(qgis_app dbghelp Qt5::WinExtras)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)

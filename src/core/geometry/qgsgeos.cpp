@@ -59,7 +59,7 @@ static void throwGEOSException( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS exception: %1" ).arg( buffer ) );
+  qWarning( "GEOS exception: %s", buffer );
 
   throw GEOSException( QString::fromUtf8( buffer ) );
 }

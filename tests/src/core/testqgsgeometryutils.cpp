@@ -55,6 +55,7 @@ class TestQgsGeometryUtils: public QObject
     void testPerpendicularSegment();
     void testClosestPoint();
     void testSegmentIntersection();
+    void testLineCircleIntersection();
 };
 
 
@@ -795,6 +796,23 @@ void TestQgsGeometryUtils::testSegmentIntersection()
   QVERIFY( intersection );
   QVERIFY( isIntersect );
   QVERIFY( inter == QgsPoint( 0, 0 ) );
+}
+
+void TestQgsGeometryUtils::testLineCircleIntersection()
+{
+  QgsPointXY center = QgsPoint( 2, 2 );
+  double radius = 2.0;
+  QgsPointXY linePoint1 = QgsPoint( 0, 2 );
+  QgsPointXY linePoint2 = QgsPoint( 2, 2 );
+  QgsPointXY intersection = QgsPoint( 3, 3 );
+  bool isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
+  QVERIFY( isIntersection );
+  QVERIFY( intersection == QgsPointXY( 4, 2 ) );
+
+  linePoint1 = QgsPoint( 5, 0 );
+  linePoint2 = QgsPoint( 5, 2 );
+  isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
+  QVERIFY( !isIntersection );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

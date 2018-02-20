@@ -290,6 +290,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
 
     QgsExpressionContext createExpressionContext() const override;
+    void finalizeRestoreFromXml() override;
 
   protected:
 
@@ -310,6 +311,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     //! Associated map (used to display the visible features)
     QgsLayoutItemMap *mMap = nullptr;
+    QString mMapUuid;
 
     //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures = 30;

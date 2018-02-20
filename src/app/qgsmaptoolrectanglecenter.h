@@ -18,8 +18,9 @@
 #define QGSMAPTOOLRECTANGLECENTER_H
 
 #include "qgsmaptooladdrectangle.h"
+#include "qgis_app.h"
 
-class QgsMapToolRectangleCenter: public QgsMapToolAddRectangle
+class APP_EXPORT QgsMapToolRectangleCenter: public QgsMapToolAddRectangle
 {
     Q_OBJECT
 

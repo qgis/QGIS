@@ -78,6 +78,13 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
     Q_ASSERT( map );
+
+    //get the color for map canvas background and set map background color accordingly
+    int bgRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
+    int bgGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
+    int bgBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+    map->setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
+
     if ( QgisApp::instance()->mapCanvas() )
     {
       map->zoomToExtent( QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent() );
@@ -292,7 +299,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     return new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
-  htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
   {
     std::unique_ptr< QgsLayoutItemHtml > htmlMultiFrame = qgis::make_unique< QgsLayoutItemHtml >( layout );
     QgsLayoutItemHtml *html = htmlMultiFrame.get();
@@ -311,7 +318,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     return new QgsLayoutAttributeTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
-  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
   {
     std::unique_ptr< QgsLayoutItemAttributeTable > tableMultiFrame = qgis::make_unique< QgsLayoutItemAttributeTable >( layout );
     QgsLayoutItemAttributeTable *table = tableMultiFrame.get();

@@ -32,13 +32,15 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingOutputRasterLayer,
-                       QgsProcessingParameterString)
+                       QgsProcessingParameterString,
+                       QgsCoordinateTransform)
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 
 
@@ -48,6 +50,7 @@ class RasterCalculator(QgisAlgorithm):
     EXTENT = 'EXTENT'
     CELLSIZE = 'CELLSIZE'
     EXPRESSION = 'EXPRESSION'
+    CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
     def group(self):
@@ -60,13 +63,6 @@ class RasterCalculator(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        layer_param = QgsProcessingParameterMultipleLayers(self.LAYERS,
-                                                           self.tr('Input layers'),
-                                                           layerType=QgsProcessing.TypeRaster,
-                                                           optional=True)
-        layer_param.setMetadata({'widget_wrapper': 'processing.algs.qgis.ui.RasterCalculatorWidgets.LayersListWidgetWrapper'})
-        self.addParameter(layer_param)
-
         class ParameterRasterCalculatorExpression(QgsProcessingParameterString):
 
             def __init__(self, name='', description='', multiLine=False):
@@ -100,6 +96,10 @@ class RasterCalculator(QgisAlgorithm):
 
         self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
                                                               multiLine=True))
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
+                                                               self.tr('Reference layer(s) (used for automated extent, cellsize, and CRS)'),
+                                                               layerType=QgsProcessing.TypeRaster,
+                                                               optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE,
                                                        self.tr('Cell size (use 0 or empty to set it automatically)'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -107,6 +107,7 @@ class RasterCalculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Output extent'),
                                                        optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS', optional=True))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Output')))
 
     def name(self):
@@ -118,9 +119,43 @@ class RasterCalculator(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         expression = self.parameterAsString(parameters, self.EXPRESSION, context)
         layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
+
         layersDict = {}
         if layers:
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
+
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+        if not layers and not crs.isValid():
+            raise QgsProcessingException(self.tr("No reference layer selected nor CRS provided"))
+
+        if not crs.isValid() and layers:
+            crs = list(layersDict.values())[0].crs()
+
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        if not layers and bbox.isNull():
+            raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
+
+        if not bbox.isNull():
+            bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+            if bboxCrs != crs:
+                transform = QgsCoordinateTransform(bboxCrs, crs, context.project())
+                bbox = transform.transformBoundingBox(bbox)
+
+        if bbox.isNull() and layers:
+            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs)
+
+        cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context)
+        if not layers and cellsize == 0:
+            raise QgsProcessingException(self.tr("No reference layer selected nor cellsize value provided"))
+
+        def _cellsize(layer):
+            ext = layer.extent()
+            if layer.crs() != crs:
+                transform = QgsCoordinateTransform(layer.crs(), crs, context.project())
+                ext = transform.transformBoundingBox(ext)
+            return (ext.xMaximum() - ext.xMinimum()) / layer.width()
+        if cellsize == 0:
+            cellsize = min([_cellsize(lyr) for lyr in layersDict.values()])
 
         for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
             name = lyr.name()
@@ -130,28 +165,16 @@ class RasterCalculator(QgisAlgorithm):
         entries = []
         for name, lyr in layersDict.items():
             for n in range(lyr.bandCount()):
-                entry = QgsRasterCalculatorEntry()
-                entry.ref = '{:s}@{:d}'.format(name, n + 1)
-                entry.raster = lyr
-                entry.bandNumber = n + 1
-                entries.append(entry)
+                ref = '{:s}@{:d}'.format(name, n + 1)
+                if ref in expression:
+                    entry = QgsRasterCalculatorEntry()
+                    entry.ref = ref
+                    entry.raster = lyr
+                    entry.bandNumber = n + 1
+                    entries.append(entry)
 
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
-        if bbox.isNull():
-            bbox = QgsProcessingUtils.combineLayerExtents(layers)
 
-        if bbox.isNull():
-            if layersDict:
-                bbox = list(layersDict.values())[0].extent()
-                for lyr in layersDict.values():
-                    bbox.combineExtentWith(lyr.extent())
-            else:
-                raise QgsProcessingException(self.tr("No layers selected"))
-
-        def _cellsize(layer):
-            return (layer.extent().xMaximum() - layer.extent().xMinimum()) / layer.width()
-        cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context) or min([_cellsize(lyr) for lyr in layersDict.values()])
         width = math.floor((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
         height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
         driverName = GdalUtils.getFormatShortNameFromFilename(output)
@@ -159,11 +182,12 @@ class RasterCalculator(QgisAlgorithm):
                                    output,
                                    driverName,
                                    bbox,
+                                   crs,
                                    width,
                                    height,
                                    entries)
 
-        res = calc.processCalculation()
+        res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
             raise QgsProcessingException(self.tr("Error parsing formula"))
 

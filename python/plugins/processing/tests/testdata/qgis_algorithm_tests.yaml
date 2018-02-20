@@ -1267,8 +1267,8 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-  - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multipolygons
     params:
       INPUT:
         name: multipolys.gml
@@ -1284,8 +1284,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from polygons
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from polygons
     params:
       INPUT:
         name: polys.gml
@@ -1301,8 +1301,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from multilines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multilines
     params:
       INPUT:
         name: multilines.gml
@@ -1318,8 +1318,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from lines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from lines
     params:
       INPUT:
         name: lines.gml
@@ -1756,13 +1756,13 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes lines
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices lines
     params:
       INPUT:
         name: lines.gml
         type: vector
-      NODES: 0,-1,2,-2
+      VERTICES: 0,-1,2,-2
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_lines.gml
@@ -1771,13 +1771,13 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes polygons
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices polygons
     params:
       INPUT:
         name: polys.gml
         type: vector
-      NODES: 0,-1,5,-5
+      VERTICES: 0,-1,5,-5
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_polys.gml
@@ -2163,12 +2163,13 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
+      TYPE: '1'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2178,13 +2179,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangles)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2194,13 +2195,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2210,13 +2211,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VSPACING: 5.0
     results:
       OUTPUT:
@@ -2226,13 +2227,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
+      TYPE: '1'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2240,14 +2242,14 @@ tests:
         name: expected/grid_lines_overlay.gml
         type: vector
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangle with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2258,14 +2260,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2276,14 +2278,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VOVERLAY: 1.0
       VSPACING: 5.0
     results:
@@ -2534,7 +2536,7 @@ tests:
             fid: skip
 
 
-  - algorithm: qgis:adduniquevalueindexfield
+  - algorithm: native:adduniquevalueindexfield
     name: add unique field based on another field
     params:
       FIELD: id2
@@ -2545,6 +2547,24 @@ tests:
       OUTPUT:
         name: expected/add_unique_field.gml
         type: vector
+
+  - algorithm: native:adduniquevalueindexfield
+    name: Add unique field summary
+    params:
+      FIELD: id2
+      FIELD_NAME: classes
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      SUMMARY_OUTPUT:
+        name: expected/add_unique_field_summary.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - id2
 
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
@@ -3344,13 +3364,14 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
       EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
       HOVERLAY: 0.0
       HSPACING: 0.1
+      TYPE: '1'
       VOVERLAY: 0.0
       VSPACING: 0.1
     results:
@@ -3524,28 +3545,6 @@ tests:
         compare: false
         type: vector
         name: randompointsinextent.gml
-
-  - algorithm: script:selectbyattribute
-    name: Select by attribute
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/selected_points.gml
-        type: vector
-
-  - algorithm: script:selectbyexpression
-    name: Select by expression
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/select_by_expression.gml
-        type: vector
 
   - algorithm: qgis:randomextract
     name: Random extract by number
@@ -4664,9 +4663,9 @@ tests:
       OUTPUT:
         name: expected/difference.gml
         type: vector
-        
-  - algorithm: native:removeduplicatenodes
-    name: Remove duplicate nodes lines
+
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from lines
     params:
       INPUT:
         name: custom/line_duplicate_nodes.gml
@@ -4676,4 +4675,16 @@ tests:
     results:
       OUTPUT:
         name: expected/removed_duplicated_nodes_line.gml
+        type: vector
+
+  - algorithm: qgis:keepnbiggestparts
+    name: Keep N biggest parts
+    params:
+      PARTS: 1
+      POLYGONS:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/biggest_parts.gml
         type: vector

@@ -37,5 +37,5 @@ class ContextAction:
 
     def tr(self, string, context=''):
         if context == '':
-            context = 'ContextAction'
+            context = self.__class__.__name__
         return QCoreApplication.translate(context, string)

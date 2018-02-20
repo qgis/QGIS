@@ -18,8 +18,9 @@
 #define QGSMAPTOOLCIRCLE2POINTS_H
 
 #include "qgsmaptooladdcircle.h"
+#include "qgis_app.h"
 
-class QgsMapToolCircle2Points: public QgsMapToolAddCircle
+class APP_EXPORT QgsMapToolCircle2Points: public QgsMapToolAddCircle
 {
     Q_OBJECT
 

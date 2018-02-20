@@ -35,7 +35,7 @@ QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *server
 //! Return an additional layer expression filter
 QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   return QString();
 }
@@ -43,7 +43,7 @@ QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *lay
 //! Return an additional layer subset string (typically SQL) filter
 QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   return QString();
 }
@@ -51,7 +51,7 @@ QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *l
 //! Return the layer permissions
 QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   LayerPermissions permissions = QgsAccessControlFilter::LayerPermissions();
   permissions.canRead = permissions.canUpdate = permissions.canInsert = permissions.canDelete = true;
@@ -62,14 +62,14 @@ QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermission
 QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
   Q_UNUSED( layer );
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   return attributes;
 }
 
 //! Are we authorized to modify the feature
 bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   Q_UNUSED( feature );
   return true;

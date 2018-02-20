@@ -425,7 +425,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void finalizeRestoreFromXml() override;
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
@@ -438,7 +438,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
     QString mMapUuid;
-    int mMapId = -1;
 
     QgsScaleBarSettings mSettings;
 

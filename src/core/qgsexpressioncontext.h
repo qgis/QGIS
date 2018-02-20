@@ -865,38 +865,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 
-#ifndef SIP_RUN
-
-    /**
-     * Creates a new scope which contains variables and functions relating to a QgsComposition.
-     * For instance, number of pages and page sizes.
-     * \param composition source composition
-     */
-    static QgsExpressionContextScope *compositionScope( const QgsComposition *composition ) SIP_FACTORY;
-
-    /**
-     * Sets a composition context variable. This variable will be contained within scopes retrieved via
-     * compositionScope().
-     * \param composition target composition
-     * \param name variable name
-     * \param value variable value
-     * \see setCompositionVariables()
-     * \see compositionScope()
-     */
-    static void setCompositionVariable( QgsComposition *composition, const QString &name, const QVariant &value );
-
-    /**
-     * Sets all composition context variables. Existing composition variables will be removed and replaced
-     * with the variables specified.
-     * \param composition target composition
-     * \param variables new set of layer variables
-     * \see setCompositionVariable()
-     * \see compositionScope()
-     */
-    static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
-
-#endif
-
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayout \a layout.
      * For instance, number of pages and page sizes.
@@ -927,33 +895,12 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 
-#ifndef SIP_RUN
-
-    /**
-     * Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
-     * For instance, current page name and number.
-     * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
-     */
-    static QgsExpressionContextScope *compositionAtlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
-
-#endif
-
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
      * For instance, current page name and number.
      * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
     static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
-
-#ifndef SIP_RUN
-
-    /**
-     * Creates a new scope which contains variables and functions relating to a QgsComposerItem.
-     * For instance, item size and position.
-     * \param composerItem source composer item
-     */
-    static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) SIP_FACTORY;
-#endif
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
@@ -982,32 +929,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \since QGIS 3.0
      */
     static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
-
-
-#ifndef SIP_RUN
-
-    /**
-     * Sets a composer item context variable. This variable will be contained within scopes retrieved via
-     * composerItemScope().
-     * \param composerItem target composer item
-     * \param name variable name
-     * \param value variable value
-     * \see setComposerItemVariables()
-     * \see composerItemScope()
-     */
-    static void setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value );
-
-    /**
-     * Sets all composition context variables. Existing compositoin variables will be removed and replaced
-     * with the variables specified.
-     * \param composerItem target composer item
-     * \param variables new set of layer variables
-     * \see setComposerItemVariable()
-     * \see composerItemScope()
-     */
-    static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
-
-#endif
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields

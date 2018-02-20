@@ -28,8 +28,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsRasterCalcDialog() override;
+    QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     QString formulaString() const;
     QString outputFile() const;
@@ -47,12 +46,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QVector<QgsRasterCalculatorEntry> rasterEntries() const;
 
   private slots:
-    void mOutputLayerPushButton_clicked();
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
     void mButtonBox_accepted();
     void mCurrentLayerExtentButton_clicked();
     void mExpressionTextEdit_textChanged();
-    void mOutputLayerLineEdit_textChanged( const QString &text );
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
     void showHelp();
@@ -84,7 +81,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mOrButton_clicked();
 
   private:
-    //insert available GDAL drivers that support the create() option
+    //! Sets the extent and size of the output
+    void setExtentSize( int width, int height, QgsRectangle bbox );
+
+    // Insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();
     //! Accesses the available raster layers/bands from the layer registry
     void insertAvailableRasterBands();
@@ -100,6 +100,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QMap<QString, QString> mDriverExtensionMap;
 
     QList<QgsRasterCalculatorEntry> mAvailableRasterBands;
+
+    bool mExtentSizeSet = false;
 };
 
 #endif // QGSRASTERCALCDIALOG_H

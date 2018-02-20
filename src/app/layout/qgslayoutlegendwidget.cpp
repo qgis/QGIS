@@ -101,7 +101,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
-  setPanelTitle( tr( "Legend properties" ) );
+  setPanelTitle( tr( "Legend Properties" ) );
 
   mTitleFontButton->setMode( QgsFontButton::ModeQFont );
   mGroupFontButton->setMode( QgsFontButton::ModeQFont );
@@ -739,11 +739,11 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
       nodesWithRemoval[nodeLayer].append( _unfilteredLegendNodeIndex( legendNode ) );
     }
   }
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, nodesWithRemoval.keys() )
+  for ( auto it = nodesWithRemoval.constBegin(); it != nodesWithRemoval.constEnd(); ++it )
   {
-    QList<int> toDelete = nodesWithRemoval[nodeLayer];
+    QList<int> toDelete = it.value();
     std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
-    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( it.key() );
 
     Q_FOREACH ( int i, toDelete )
     {
@@ -751,8 +751,8 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
         order.removeAt( i );
     }
 
-    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
+    QgsMapLayerLegendUtils::setLegendNodeOrder( it.key(), order );
+    mItemTreeView->layerTreeModel()->refreshLayerLegend( it.key() );
   }
 
   // then remove layer tree nodes

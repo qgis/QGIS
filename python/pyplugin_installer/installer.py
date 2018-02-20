@@ -22,9 +22,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 import os
+import json
 import zipfile
 
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
@@ -32,7 +32,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication, QFile
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
-from qgis.core import QgsApplication, QgsNetworkAccessManager, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings
 from qgis.gui import QgsMessageBar
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins)
@@ -369,7 +369,7 @@ class QgsPluginInstaller(QObject):
             self.exportPluginsToManager()
 
         if infoString[0]:
-            level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
+            level = error and Qgis.Critical or Qgis.Info
             msg = "<b>%s</b>" % infoString[0]
             if infoString[1]:
                 msg += "<b>:</b> %s" % infoString[1]
@@ -401,7 +401,7 @@ class QgsPluginInstaller(QObject):
         if result:
             QApplication.restoreOverrideCursor()
             msg = "<b>%s:</b>%s" % (self.tr("Plugin uninstall failed"), result)
-            iface.pluginManagerInterface().pushMessage(msg, QgsMessageBar.CRITICAL)
+            iface.pluginManagerInterface().pushMessage(msg, Qgis.Critical)
         else:
             # safe remove
             try:
@@ -421,7 +421,7 @@ class QgsPluginInstaller(QObject):
             plugins.rebuild()
             self.exportPluginsToManager()
             QApplication.restoreOverrideCursor()
-            iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), QgsMessageBar.INFO)
+            iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), Qgis.Info)
 
     # ----------------------------------------- #
     def addRepository(self):
@@ -433,7 +433,7 @@ class QgsPluginInstaller(QObject):
             return
         for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"]:
-                iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
+                iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), Qgis.Warning)
                 return
         settings = QgsSettings()
         settings.beginGroup(reposGroup)
@@ -472,7 +472,7 @@ class QgsPluginInstaller(QObject):
             return  # nothing to do if canceled
         for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"] and dlg.editURL.text().strip() != repositories.all()[reposName]["url"]:
-                iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
+                iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), Qgis.Warning)
                 return
         # delete old repo from QgsSettings and create new one
         settings = QgsSettings()
@@ -501,7 +501,7 @@ class QgsPluginInstaller(QObject):
         settings = QgsSettings()
         settings.beginGroup(reposGroup)
         if settings.value(reposName + "/url", "", type=str) == officialRepo[1]:
-            iface.pluginManagerInterface().pushMessage(self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."), QgsMessageBar.WARNING)
+            iface.pluginManagerInterface().pushMessage(self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."), Qgis.Warning)
             return
         warning = self.tr("Are you sure you want to remove the following repository?") + "\n" + reposName
         if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning, QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
@@ -525,10 +525,10 @@ class QgsPluginInstaller(QObject):
         if not plugin_id or not vote:
             return False
         url = "http://plugins.qgis.org/plugins/RPC2/"
-        params = "{\"id\":\"djangorpc\",\"method\":\"plugin.vote\",\"params\":[%s,%s]}" % (str(plugin_id), str(vote))
+        params = {"id": "djangorpc", "method": "plugin.vote", "params": [str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
-        req.setRawHeader("Content-Type", "application/json")
-        QgsNetworkAccessManager.instance().post(req, params)
+        req.setRawHeader(b"Content-Type", b"application/json")
+        QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
         return True
 
     def installFromZipFile(self, filePath):
@@ -588,7 +588,7 @@ class QgsPluginInstaller(QObject):
             infoString = (self.tr("Plugin installed successfully"), "")
 
         if infoString[0]:
-            level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
+            level = error and Qgis.Critical or Qgis.Info
             msg = "<b>%s</b>" % infoString[0]
             if infoString[1]:
                 msg += "<b>:</b> %s" % infoString[1]

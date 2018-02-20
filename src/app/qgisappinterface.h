@@ -404,7 +404,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionSimplifyFeature() override;
     QAction *actionDeleteRing() override;
     QAction *actionDeletePart() override;
-    QAction *actionNodeTool() override;
+    QAction *actionVertexTool() override;
 
     //! View menu actions
     QAction *actionPan() override;
@@ -445,6 +445,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionPasteLayerStyle() override;
     QAction *actionOpenTable() override;
     QAction *actionOpenFieldCalculator() override;
+    QAction *actionOpenStatisticalSummary() override;
     QAction *actionToggleEditing() override;
     QAction *actionSaveActiveLayerEdits() override;
     QAction *actionAllEdits() override;

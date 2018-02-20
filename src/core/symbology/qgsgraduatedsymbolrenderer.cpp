@@ -32,6 +32,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -812,7 +813,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   bool ok;
   if ( attrNum == -1 )
   {
-    values = vlayer->getDoubleValues( mAttrName, ok );
+    values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
     if ( !ok || values.isEmpty() )
       return;
 
@@ -843,7 +844,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     // get values from layer
     if ( !valuesLoaded )
     {
-      values = vlayer->getDoubleValues( mAttrName, ok );
+      values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
     }
 
     // calculate the breaks

@@ -2524,7 +2524,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
     else
     {
-      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
+      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('…'))" );
       return QDomElement();
     }
   }

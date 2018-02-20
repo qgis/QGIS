@@ -82,7 +82,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * no color settings or the other advanced options QgsTextFormat allows).
      * \see mode()
      */
-    void setMode( const QgsFontButton::Mode &mode );
+    void setMode( Mode mode );
 
     /**
      * Sets the \a title for the text settings dialog window.

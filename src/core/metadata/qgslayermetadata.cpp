@@ -440,7 +440,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
     QList< QgsLayerMetadata::Address > addresses;
-    QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "address" ) );
+    QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
       QDomElement addressElement = addressList.at( j ).toElement();
@@ -663,7 +663,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
 
     for ( const QgsLayerMetadata::Address &oneAddress : contact.addresses )
     {
-      QDomElement addressElement = document.createElement( QStringLiteral( "address" ) );
+      QDomElement addressElement = document.createElement( QStringLiteral( "contactAddress" ) );
       QDomElement typeElement = document.createElement( QStringLiteral( "type" ) );
       QDomElement addressDetailedElement = document.createElement( QStringLiteral( "address" ) );
       QDomElement cityElement = document.createElement( QStringLiteral( "city" ) );
@@ -766,4 +766,74 @@ QList<QgsDateTimeRange> QgsLayerMetadata::Extent::temporalExtents() const
 void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange> &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
+}
+
+bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other ) const
+{
+  return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents;
+}
+
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &metadataOther )  const
+{
+  return ( ( mIdentifier == metadataOther.mIdentifier ) &&
+           ( mParentIdentifier == metadataOther.mParentIdentifier ) &&
+           ( mLanguage == metadataOther.mLanguage ) &&
+           ( mType == metadataOther.mType ) &&
+           ( mTitle == metadataOther.mTitle ) &&
+           ( mAbstract == metadataOther.mAbstract ) &&
+           ( mFees == metadataOther.mFees ) &&
+           ( mConstraints == metadataOther.mConstraints ) &&
+           ( mRights == metadataOther.mRights ) &&
+           ( mLicenses == metadataOther.mLicenses ) &&
+           ( mHistory == metadataOther.mHistory ) &&
+           ( mEncoding == metadataOther.mEncoding ) &&
+           ( mCrs == metadataOther.mCrs ) &&
+           ( mExtent == metadataOther.mExtent ) &&
+           ( mKeywords == metadataOther.mKeywords ) &&
+           ( mContacts == metadataOther.mContacts ) &&
+           ( mLinks == metadataOther.mLinks ) );
+}
+
+bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const
+{
+  return extentCrs == other.extentCrs &&
+         bounds == other.bounds;
+}
+
+bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const
+{
+  return type == other.type && constraint == other.constraint;
+}
+
+bool QgsLayerMetadata::Contact::operator==( const QgsLayerMetadata::Contact &other ) const
+{
+  return name == other.name &&
+         organization == other.organization &&
+         position == other.position &&
+         addresses == other.addresses &&
+         voice == other.voice &&
+         fax == other.fax &&
+         email == other.email &&
+         role == other.role;
+}
+
+bool QgsLayerMetadata::Link::operator==( const QgsLayerMetadata::Link &other ) const
+{
+  return name == other.name &&
+         type == other.type &&
+         description == other.description &&
+         url == other.url &&
+         format == other.format &&
+         mimeType == other.mimeType &&
+         size == other.size;
+}
+
+bool QgsLayerMetadata::Address::operator==( const QgsLayerMetadata::Address &other ) const
+{
+  return type == other.type &&
+         address == other.address &&
+         city == other.city &&
+         administrativeArea == other.administrativeArea &&
+         postalCode == other.postalCode &&
+         country == other.country;
 }

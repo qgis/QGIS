@@ -215,9 +215,11 @@ bool QgsAbstractReportSection::next()
       // if we have a header, then the current section will be the header
       if ( mHeaderEnabled && mHeader )
       {
-        prepareHeader();
-        mCurrentLayout = mHeader.get();
-        return true;
+        if ( prepareHeader() )
+        {
+          mCurrentLayout = mHeader.get();
+          return true;
+        }
       }
 
       // but if not, then the current section is a body
@@ -296,9 +298,11 @@ bool QgsAbstractReportSection::next()
       // if we have a footer, then the current section will be the footer
       if ( mFooterEnabled && mFooter )
       {
-        prepareFooter();
-        mCurrentLayout = mFooter.get();
-        return true;
+        if ( prepareFooter() )
+        {
+          mCurrentLayout = mFooter.get();
+          return true;
+        }
       }
 
       // if not, then we're all done
@@ -336,6 +340,16 @@ void QgsAbstractReportSection::reset()
   {
     section->reset();
   }
+}
+
+bool QgsAbstractReportSection::prepareHeader()
+{
+  return true;
+}
+
+bool QgsAbstractReportSection::prepareFooter()
+{
+  return true;
 }
 
 void QgsAbstractReportSection::setHeader( QgsLayout *header )

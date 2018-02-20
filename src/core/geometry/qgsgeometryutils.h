@@ -90,7 +90,9 @@ class CORE_EXPORT QgsGeometryUtils
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
 
     /**
-     * \brief Compute the intersection between two lines
+     * Computes the intersection between two lines. Z dimension is
+     * supported and is retrieved from the first 3D point amongst \a p1 and
+     * \a p2.
      * \param p1 Point on the first line
      * \param v1 Direction vector of the first line
      * \param p2 Point on the second line
@@ -137,13 +139,28 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
+     * @brief Compute the intersection of a line and a circle.
+     * If the intersection has two solutions (points),
+     * the closest point to the initial \a intersection point is returned.
+     * @param center the center of the circle
+     * @param radius the radius of the circle
+     * @param linePoint1 a first point on the line
+     * @param linePoint2 a second point on the line
+     * @param intersection the initial point and the returned intersection point
+     * @return true if an intersection has been found
+     */
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+                                        QgsPointXY &intersection SIP_INOUT );
+
+    /**
      * \brief Project the point on a segment
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
      * \returns The projection of the point on the segment
      */
-    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
     {
       double nx = s2.y() - s1.y();
       double ny = -( s2.x() - s1.x() );
@@ -169,7 +186,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
+    static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
      * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
@@ -210,7 +227,11 @@ class CORE_EXPORT QgsGeometryUtils
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
-    //! Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
+    /**
+     * Calculates midpoint on circle passing through p1 and p2, closest to
+     * given coordinate. Z dimension is supported and is retrieved from the
+     * first 3D point amongst \a p1 and \a p2.
+     */
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
@@ -394,6 +415,18 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns true if the point is updated, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP

@@ -65,7 +65,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
     QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
     if ( !dlg )
     {
-      QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::Critical );
       continue;
     }
     addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
@@ -173,5 +173,5 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
 {
   ui->mOptionsStackedWidget->currentWidget()->show();
-  QDialog::showEvent( e );
+  QgsOptionsDialogBase::showEvent( e );
 }

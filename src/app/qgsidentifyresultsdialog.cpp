@@ -272,7 +272,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
-  setText( 0, tr( "Loading..." ) );
+  setText( 0, tr( "Loading…" ) );
   connect( mWebView->page(), &QWebPage::loadFinished, this, &QgsIdentifyResultsWebViewItem::loadFinished );
 }
 
@@ -326,7 +326,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormAction->setDisabled( true );
 
   QgsSettings mySettings;
-  mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
+  mDock = new QgsDockWidget( tr( "Identify Results Panel" ), QgisApp::instance() );
   mDock->setObjectName( QStringLiteral( "IdentifyResultsDock" ) );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
@@ -452,8 +452,6 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-  lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
   {
@@ -1073,7 +1071,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Layer properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
@@ -1840,7 +1838,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
   if ( !wv )
   {
-    QMessageBox::warning( this, tr( "Cannot print" ), tr( "Cannot print this item" ) );
+    QMessageBox::warning( this, tr( "Print HTML Response" ), tr( "Cannot print this item." ) );
     return;
   }
 

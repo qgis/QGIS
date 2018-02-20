@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsOrientedMinimumBoundingBoxAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsOrientedMinimumBoundingBoxAlgorithm::name() const
 {
   return QStringLiteral( "orientedminimumboundingbox" );
@@ -99,6 +94,16 @@ QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeat
           << angle
           << area
           << 2 * width + 2 * height;
+    f.setAttributes( attrs );
+  }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant();
     f.setAttributes( attrs );
   }
   return f;

@@ -293,7 +293,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     };
     struct SiblingWidget
     {
-      SiblingWidget( QPointer<QWidget> widgetPointer, SiblingType siblingType, bool natural = true )
+      SiblingWidget( const QPointer<QWidget> &widgetPointer, SiblingType siblingType, bool natural = true )
         : mWidgetPointer( widgetPointer )
         , mSiblingType( siblingType )
         , mNatural( natural )

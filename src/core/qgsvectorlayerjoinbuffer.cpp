@@ -637,6 +637,25 @@ bool QgsVectorLayerJoinBuffer::changeAttributeValue( QgsFeatureId fid, int field
     return false;
 }
 
+bool QgsVectorLayerJoinBuffer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  bool success = true;
+
+  for ( auto it = newValues.constBegin(); it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    success &= changeAttributeValue( fid, field, newValue, oldValue );
+  }
+
+  return success;
+}
+
 bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid ) const
 {
   return deleteFeatures( QgsFeatureIds() << fid );

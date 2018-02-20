@@ -200,7 +200,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QString *errorMsg = new QString();
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg ) )
         {
-          emit messageEmitted( *errorMsg, QgsMessageBar::CRITICAL );
+          emit messageEmitted( *errorMsg, Qgis::Critical );
           delete mRubberBand;
           mRubberBand = nullptr;
         }
@@ -219,4 +219,14 @@ void QgsMapToolMoveFeature::deactivate()
   mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
+}
+
+void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mRubberBand && e->key() == Qt::Key_Escape )
+  {
+    cadDockWidget()->clear();
+    delete mRubberBand;
+    mRubberBand = nullptr;
+  }
 }

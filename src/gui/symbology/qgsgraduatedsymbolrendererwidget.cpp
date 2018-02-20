@@ -55,15 +55,29 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 {
   if ( mRenderer )
   {
-    beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
-    mRenderer = nullptr;
-    endRemoveRows();
+    if ( mRenderer->ranges().size() )
+    {
+      beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
+      mRenderer = nullptr;
+      endRemoveRows();
+    }
+    else
+    {
+      mRenderer = nullptr;
+    }
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
-    mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->ranges().size() )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
+      mRenderer = renderer;
+      endInsertRows();
+    }
+    else
+    {
+      mRenderer = renderer;
+    }
   }
 }
 
@@ -396,7 +410,7 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
@@ -511,10 +525,10 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
-    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
   }

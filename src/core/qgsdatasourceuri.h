@@ -36,6 +36,7 @@
 // (Radim Blazek 4/2012)
 class CORE_EXPORT QgsDataSourceUri
 {
+    Q_GADGET
   public:
     enum SslMode
     {
@@ -46,6 +47,7 @@ class CORE_EXPORT QgsDataSourceUri
       SslVerifyCa,
       SslVerifyFull
     };
+    Q_ENUM( SslMode )
 
     //! default constructor
     QgsDataSourceUri();

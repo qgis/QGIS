@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsBoundingBoxAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsBoundingBoxAlgorithm::name() const
 {
   return QStringLiteral( "boundingboxes" );
@@ -89,6 +84,15 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
           << bounds.height()
           << bounds.area()
           << bounds.perimeter();
+    f.setAttributes( attrs );
+  }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant();
     f.setAttributes( attrs );
   }
   return f;

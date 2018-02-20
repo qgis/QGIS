@@ -468,7 +468,7 @@ class TestQgsGeometry(unittest.TestCase):
                 myFeatures.append(myNewFeature)
 
         myNewMemoryLayer = QgsVectorLayer(
-            ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
+            ('Polygon?crs=epsg:4326&field=name:string(20)&index=yes'),
             'clip-out',
             'memory')
         myNewProvider = myNewMemoryLayer.dataProvider()
@@ -4285,6 +4285,33 @@ class TestQgsGeometry(unittest.TestCase):
             exp = t[3]
             self.assertAlmostEqual(o, exp, 5,
                                    "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def testBoundingBoxIntersects(self):
+        tests = [
+            ["LINESTRING (0 0, 100 100)", "LINESTRING (90 0, 100 0)", True],
+            ["LINESTRING (0 0, 100 100)", "LINESTRING (101 0, 102 0)", False],
+            ["POINT(20 1)", "LINESTRING( 0 0, 100 100 )", True],
+            ["POINT(20 1)", "POINT(21 1)", False],
+            ["POINT(20 1)", "POINT(20 1)", True]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            res = g1.boundingBoxIntersects(g2)
+            self.assertEqual(res, t[2], "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(g1.asWkt(), g2.asWkt(), t[2], res))
+
+    def testBoundingBoxIntersectsRectangle(self):
+        tests = [
+            ["LINESTRING (0 0, 100 100)", QgsRectangle(90, 0, 100, 10), True],
+            ["LINESTRING (0 0, 100 100)", QgsRectangle(101, 0, 102, 10), False],
+            ["POINT(20 1)", QgsRectangle(0, 0, 100, 100), True],
+            ["POINT(20 1)", QgsRectangle(21, 1, 21, 1), False],
+            ["POINT(20 1)", QgsRectangle(20, 1, 20, 1), True]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            res = g1.boundingBoxIntersects(t[1])
+            self.assertEqual(res, t[2], "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(g1.asWkt(), t[1].toString(), t[2], res))
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)

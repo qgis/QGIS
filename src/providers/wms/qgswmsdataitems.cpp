@@ -203,7 +203,7 @@ QList<QAction *> QgsWMSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWMSConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -375,7 +375,7 @@ QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWMSRootItem::newConnection );
   lst.append( actionNew );
 
@@ -474,7 +474,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -505,7 +505,7 @@ QList<QAction *> QgsXyzLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst = QgsLayerItem::actions( parent );
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
   lst << actionEdit;
 

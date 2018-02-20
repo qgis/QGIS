@@ -207,6 +207,7 @@ void TestQgsMapRotation::linesLayer()
   format.setSize( 16 );
   palSettings.setFormat( format );
   mLinesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( palSettings ) );
+  mLinesLayer->setLabelsEnabled( true );
 
   QVERIFY( success );
   mMapSettings->setExtent( mLinesLayer->extent() ); //QgsRectangle(-150,-150,150,150) );

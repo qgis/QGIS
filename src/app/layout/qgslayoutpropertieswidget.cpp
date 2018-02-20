@@ -28,7 +28,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   Q_ASSERT( mLayout );
 
   setupUi( this );
-  setPanelTitle( tr( "Layout properties" ) );
+  setPanelTitle( tr( "Layout Properties" ) );
   blockSignals( true );
 
   updateSnappingElements();
@@ -82,6 +82,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
+  mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
 
   connect( mLayout, &QgsLayout::changed, this, &QgsLayoutPropertiesWidget::updateGui );
 

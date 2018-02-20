@@ -36,7 +36,7 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
-from processing.script.ScriptUtils import ScriptUtils
+from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
 
@@ -58,21 +58,19 @@ from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .EliminateSelection import EliminateSelection
-from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtractSpecificNodes import ExtractSpecificNodes
+from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .GridLine import GridLine
-from .GridPolygon import GridPolygon
+from .Grid import Grid
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
@@ -82,6 +80,7 @@ from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
@@ -180,21 +179,19 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 Difference(),
                 EliminateSelection(),
-                EquivalentNumField(),
                 ExecuteSQL(),
                 Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtractSpecificNodes(),
+                ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                GridLine(),
-                GridPolygon(),
+                Grid(),
                 Heatmap(),
                 Hillshade(),
                 HubDistanceLines(),
@@ -204,6 +201,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
@@ -292,11 +290,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                          VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:
-            script.allowEdit = False
-        algs.extend(scripts)
+        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        #scripts = ScriptUtils.loadFromFolder(folder)
+        #for script in scripts:
+        #    script.allowEdit = False
+        #algs.extend(scripts)
 
         return algs
 

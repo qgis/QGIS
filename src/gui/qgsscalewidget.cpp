@@ -61,5 +61,5 @@ void QgsScaleWidget::setScaleFromCanvas()
 
 void QgsScaleWidget::setScale( double scale )
 {
-  return mScaleComboBox->setScale( scale );
+  mScaleComboBox->setScale( scale );
 }

@@ -59,7 +59,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
   {
-    emit messageEmitted( tr( "To run an action, you must choose an active vector layer." ), QgsMessageBar::INFO );
+    emit messageEmitted( tr( "To run an action, you must choose an active vector layer." ), Qgis::Info );
     return;
   }
 
@@ -72,7 +72,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty() )
   {
-    emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
+    emit messageEmitted( tr( "The active vector layer has no defined actions" ), Qgis::Info );
     return;
   }
 

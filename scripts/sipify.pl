@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use File::Basename;
@@ -23,6 +23,8 @@ use constant CODE_SNIPPET_CPP => 31;
 
 # read arguments
 my $debug = 0;
+#my $SUPPORT_TEMPLATE_DOCSTRING = 0;
+#die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
 die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
@@ -51,6 +53,7 @@ my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
 my $COMMENT_CODE_SNIPPET = 0;
+my $COMMENT_TEMPLATE_DOCSTRING = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -340,9 +343,9 @@ sub fix_annotations {
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/3
+    # https://regex101.com/r/uvCt4M/4
     do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
@@ -370,6 +373,8 @@ sub fix_annotations {
         $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
+    $line =~ s/SIP_DOC_TEMPLATE//;
+    $line =~ s/\s+;$/;/;
     return $line;
 }
 
@@ -400,9 +405,9 @@ sub detect_comment_block{
 }
 
 # Detect if line is a non method member declaration
-# https://regex101.com/r/gUBZUk/10
+# https://regex101.com/r/gUBZUk/13
 sub detect_non_method_member{
-  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/;
+  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|((QMap|QList)<[^()]+>\(\))|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/;
   return 0;
 }
 
@@ -591,7 +596,7 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP)).*?$/){
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
 
@@ -963,6 +968,29 @@ while ($LINE_IDX < $LINE_COUNT){
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
+    # Skip comments
+    $COMMENT_TEMPLATE_DOCSTRING = 0;
+    if ( $LINE =~ m/^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE/ ) {
+        # support Docstring for template based classes in SIP 4.19.7+
+        $COMMENT_TEMPLATE_DOCSTRING = 1;
+    }
+    elsif ( $LINE =~ m/\/\// ||
+            $LINE =~ m/^\s*typedef / ||
+            $LINE =~ m/\s*struct / ||
+            $LINE =~ m/operator\[\]\(/ ||
+            $LINE =~ m/^\s*operator\b/ ||
+            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
+            $LINE =~ m/^\s*%\w+(.*)?$/ ||
+            $LINE =~ m/^\s*namespace\s+\w+/ ||
+            $LINE =~ m/^\s*(virtual\s*)?~/ ||
+            detect_non_method_member() == 1 ){
+        dbg_info('skipping comment');
+        dbg_info('because typedef') if ($LINE =~ m/\s*typedef.*?(?!SIP_DOC_TEMPLATE)/);
+        $COMMENT = '';
+        $RETURN_TYPE = '';
+        $IS_OVERRIDE = 0;
+    }
+
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
@@ -1016,22 +1044,7 @@ while ($LINE_IDX < $LINE_COUNT){
         # do not comment now for templates, wait for class definition
         next;
     }
-    if ( $LINE =~ m/\/\// ||
-            $LINE =~ m/\s*typedef / ||
-            $LINE =~ m/\s*struct / ||
-            $LINE =~ m/operator\[\]\(/ ||
-            $LINE =~ m/^\s*operator\b/ ||
-            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
-            $LINE =~ m/^\s*%\w+(.*)?$/ ||
-            $LINE =~ m/^\s*namespace\s+\w+/ ||
-            $LINE =~ m/^\s*(virtual\s*)?~/ ||
-            detect_non_method_member() == 1 ){
-        dbg_info('skipping comment');
-        $COMMENT = '';
-        $RETURN_TYPE = '';
-        $IS_OVERRIDE = 0;
-    }
-    elsif ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
+    if ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
         if ( $IS_OVERRIDE == 1 && $COMMENT =~ m/^\s*$/ ){
             # overridden method with no new docs - so don't create a Docstring and use
             # parent class Docstring
@@ -1039,7 +1052,9 @@ while ($LINE_IDX < $LINE_COUNT){
         else {
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
-                write_output("CM1", "%Docstring\n");
+                my $doc_prepend = "";
+                $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
+                write_output("CM1", "$doc_prepend%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
@@ -1047,14 +1062,14 @@ while ($LINE_IDX < $LINE_COUNT){
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
-                  write_output("CM2", "$comment_line\n");
+                  write_output("CM2", "$doc_prepend$comment_line\n");
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
                 }
-            write_output("CM4", "%End\n");
+            write_output("CM4", "$doc_prepend%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");

@@ -658,11 +658,38 @@ namespace QgsWfs
 
     if ( paramContainsBbox )
     {
-      // get bbox corners
-      QString bbox = mWfsParameters.bbox();
 
       // get bbox extent
       QgsRectangle extent = mWfsParameters.bboxAsRectangle();
+
+      // handle WFS 1.1.0 optional CRS
+      if ( mWfsParameters.bbox().split( ',' ).size() == 5 && ! mWfsParameters.srsName().isEmpty() )
+      {
+        QString crs( mWfsParameters.bbox().split( ',' )[4] );
+        if ( crs != mWfsParameters.srsName() )
+        {
+          QgsCoordinateReferenceSystem sourceCrs( crs );
+          QgsCoordinateReferenceSystem destinationCrs( mWfsParameters.srsName() );
+          if ( sourceCrs.isValid() && destinationCrs.isValid( ) )
+          {
+            QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
+            QgsCoordinateTransform transform;
+            transform.setSourceCrs( sourceCrs );
+            transform.setDestinationCrs( destinationCrs );
+            try
+            {
+              if ( extentGeom.transform( transform ) == 0 )
+              {
+                extent = QgsRectangle( extentGeom.boundingBox() );
+              }
+            }
+            catch ( QgsException &cse )
+            {
+              Q_UNUSED( cse );
+            }
+          }
+        }
+      }
 
       // set feature request filter rectangle
       QList<getFeatureQuery>::iterator qIt = request.queries.begin();
@@ -1218,11 +1245,10 @@ namespace QgsWfs
       typeNameElement.setAttribute( QStringLiteral( "fid" ), params.typeName + "." + QString::number( feat->id() ) );
       featureElement.appendChild( typeNameElement );
 
-      if ( params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      //add geometry column (as gml)
+      QgsGeometry geom = feat->geometry();
+      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
-        //add geometry column (as gml)
-        QgsGeometry geom = feat->geometry();
-
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
         Q_NOWARN_DEPRECATED_PUSH
@@ -1321,11 +1347,10 @@ namespace QgsWfs
       typeNameElement.setAttribute( QStringLiteral( "gml:id" ), params.typeName + "." + QString::number( feat->id() ) );
       featureElement.appendChild( typeNameElement );
 
-      if ( params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      //add geometry column (as gml)
+      QgsGeometry geom = feat->geometry();
+      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
-        //add geometry column (as gml)
-        QgsGeometry geom = feat->geometry();
-
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
         Q_NOWARN_DEPRECATED_PUSH

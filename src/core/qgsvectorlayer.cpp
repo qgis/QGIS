@@ -147,6 +147,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mConditionalStyles = new QgsConditionalLayerStyles();
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
+  mJoinBuffer->setParent( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -161,8 +162,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   // Default simplify drawing settings
   QgsSettings settings;
-  mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( settings.value( QStringLiteral( "qgis/simplifyDrawingHints" ), static_cast< int>( mSimplifyMethod.simplifyHints() ) ).toInt() ) );
-  mSimplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( settings.value( QStringLiteral( "qgis/simplifyAlgorithm" ), static_cast< int>( mSimplifyMethod.simplifyAlgorithm() ) ).toInt() ) );
+  mSimplifyMethod.setSimplifyHints( settings.enumSettingValue( QStringLiteral( "qgis/simplifyDrawingHints" ), mSimplifyMethod.simplifyHints(), QgsSettings::NoSection, true ) );
+  mSimplifyMethod.setSimplifyAlgorithm( settings.enumSettingValue( QStringLiteral( "qgis/simplifyAlgorithm" ), mSimplifyMethod.simplifyAlgorithm() ) );
   mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
@@ -233,6 +234,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   {
     layer->setLabeling( labeling()->clone() );
   }
+  layer->setLabelsEnabled( labelsEnabled() );
+
   layer->setSimplifyMethod( simplifyMethod() );
 
   if ( diagramRenderer() )
@@ -666,7 +669,12 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  return static_cast< bool >( mLabeling );
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsVectorLayer::setLabelsEnabled( bool enabled )
+{
+  mLabelsEnabled = enabled;
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
@@ -689,46 +697,6 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
 
   return mSymbolFeatureCountMap.value( legendKey );
 }
-
-/**
- * \ingroup core
- * Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
- * \note not available in Python bindings
- */
-class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInterruptionChecker
-{
-  public:
-
-    //! Constructor
-    explicit QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures( QProgressDialog *dialog )
-      : mDialog( dialog )
-    {
-    }
-
-    bool mustStop() const override
-    {
-      if ( mDialog->isVisible() )
-      {
-        // So that we get a chance of hitting the Abort button
-#ifdef Q_OS_LINUX
-        // For some reason on Windows hasPendingEvents() always return true,
-        // but one iteration is actually enough on Windows to get good interactivity
-        // whereas on Linux we must allow for far more iterations.
-        // For safety limit the number of iterations
-        int nIters = 0;
-        while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
-#endif
-        {
-          QCoreApplication::processEvents();
-        }
-        return mDialog->wasCanceled();
-      }
-      return false;
-    }
-
-  private:
-    QProgressDialog *mDialog = nullptr;
-};
 
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
@@ -1546,6 +1514,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     return false;
   }
 
+  mDataProvider->setParent( this );
   connect( mDataProvider, &QgsVectorDataProvider::raiseError, this, &QgsVectorLayer::raiseError );
 
   QgsDebugMsgLevel( QStringLiteral( "Instantiated the data provider plugin" ), 2 );
@@ -1555,6 +1524,12 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   {
     QgsDebugMsgLevel( QStringLiteral( "Invalid provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
     return false;
+  }
+
+  if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
@@ -1949,6 +1924,11 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     }
     setLabeling( labeling );
 
+    if ( node.toElement().hasAttribute( QStringLiteral( "labelsEnabled" ) ) )
+      mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ) ).toInt();
+    else
+      mLabelsEnabled = true;
+
     // get and set the blend mode if it exists
     QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
@@ -2224,6 +2204,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       QDomElement labelingElement = mLabeling->save( doc, context );
       node.appendChild( labelingElement );
     }
+    mapLayerNode.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
     // save the simplification drawing settings
     mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingHints" ), QString::number( mSimplifyMethod.simplifyHints() ) );
@@ -2370,6 +2351,64 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
     updateDefaultValues( fid );
+
+  return result;
+}
+
+bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues, bool skipDefaultValues )
+{
+  bool result = true;
+
+  QgsAttributeMap newValuesJoin;
+  QgsAttributeMap oldValuesJoin;
+
+  QgsAttributeMap newValuesNotJoin;
+  QgsAttributeMap oldValuesNotJoin;
+
+  for ( auto it = newValues.constBegin(); it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    switch ( fields().fieldOrigin( field ) )
+    {
+      case QgsFields::OriginJoin:
+        newValuesJoin[field] = newValue;
+        oldValuesJoin[field] = oldValue;
+        break;
+
+      case QgsFields::OriginProvider:
+      case QgsFields::OriginEdit:
+      case QgsFields::OriginExpression:
+      {
+        newValuesNotJoin[field] = newValue;
+        oldValuesNotJoin[field] = oldValue;
+        break;
+      }
+
+      case QgsFields::OriginUnknown:
+        break;
+    }
+  }
+
+  if ( ! newValuesJoin.isEmpty() && mJoinBuffer )
+  {
+    result = mJoinBuffer->changeAttributeValues( fid, newValuesJoin, oldValuesJoin );
+  }
+
+  if ( ! newValuesNotJoin.isEmpty() && mEditBuffer && mDataProvider )
+  {
+    result &= mEditBuffer->changeAttributeValues( fid, newValues, oldValues );
+  }
+
+  if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
+  {
+    updateDefaultValues( fid );
+  }
 
   return result;
 }
@@ -3582,106 +3621,6 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly, QgsFeedback *feedback ) const
-{
-  QList<QVariant> values;
-
-  std::unique_ptr<QgsExpression> expression;
-  QgsExpressionContext context;
-
-  int attrNum = mFields.lookupField( fieldOrExpression );
-
-  if ( attrNum == -1 )
-  {
-    // try to use expression
-    expression.reset( new QgsExpression( fieldOrExpression ) );
-    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
-
-    if ( expression->hasParserError() || !expression->prepare( &context ) )
-    {
-      ok = false;
-      return values;
-    }
-  }
-
-  QgsFeature f;
-  QSet<QString> lst;
-  if ( !expression )
-    lst.insert( fieldOrExpression );
-  else
-    lst = expression->referencedColumns();
-
-  QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags( ( expression && expression->needsGeometry() ) ?
-                                         QgsFeatureRequest::NoFlags :
-                                         QgsFeatureRequest::NoGeometry )
-                              .setSubsetOfAttributes( lst, fields() );
-
-  QgsFeatureIterator fit;
-  if ( !selectedOnly )
-  {
-    fit = getFeatures( request );
-  }
-  else
-  {
-    fit = getSelectedFeatures( request );
-  }
-
-  // create list of non-null attribute values
-  while ( fit.nextFeature( f ) )
-  {
-    if ( expression )
-    {
-      context.setFeature( f );
-      QVariant v = expression->evaluate( &context );
-      values << v;
-    }
-    else
-    {
-      values << f.attribute( attrNum );
-    }
-    if ( feedback && feedback->isCanceled() )
-    {
-      ok = false;
-      return values;
-    }
-  }
-  ok = true;
-  return values;
-}
-
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly, int *nullCount, QgsFeedback *feedback ) const
-{
-  QList<double> values;
-
-  if ( nullCount )
-    *nullCount = 0;
-
-  QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly );
-  if ( !ok )
-    return values;
-
-  bool convertOk;
-  Q_FOREACH ( const QVariant &value, variantValues )
-  {
-    double val = value.toDouble( &convertOk );
-    if ( convertOk )
-      values << val;
-    else if ( value.isNull() )
-    {
-      if ( nullCount )
-        *nullCount += 1;
-    }
-    if ( feedback && feedback->isCanceled() )
-    {
-      ok = false;
-      return values;
-    }
-  }
-  ok = true;
-  return values;
-}
-
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
@@ -3711,6 +3650,7 @@ double QgsVectorLayer::opacity() const
 void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 {
   setLabeling( nullptr ); // start with no labeling
+  setLabelsEnabled( false );
 
   QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -3931,6 +3871,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   format.setBuffer( bufferSettings );
   settings.setFormat( format );
   setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  setLabelsEnabled( true );
 }
 
 QgsEditFormConfig QgsVectorLayer::editFormConfig() const
@@ -4332,6 +4273,7 @@ void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
   }
 
   mAuxiliaryLayer.reset( alayer );
+  mAuxiliaryLayer->setParent( this );
   updateFields();
 }
 

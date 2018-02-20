@@ -76,7 +76,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & ) { mContextMenu->exec( QCursor::pos() ); }
+  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { mContextMenu->exec( QCursor::pos() ); }
          );
 
   btnColorRamp->setShowRandomColorRamp( true );
@@ -231,7 +231,7 @@ void QgsPalettedRendererWidget::changeColor()
   if ( panel && panel->dockMode() )
   {
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
-    colorWidget->setPanelTitle( tr( "Select color" ) );
+    colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color ) { setSelectionColor( sel, color ); } );
     panel->openPanel( colorWidget );
@@ -423,7 +423,7 @@ void QgsPalettedRendererWidget::classify()
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::collectedClasses, this, &QgsPalettedRendererWidget::gatheredClasses );
     connect( mGatherer, &QgsPalettedRendererClassGatherer::finished, this, &QgsPalettedRendererWidget::gathererThreadFinished );
-    mClassifyButton->setText( tr( "Calculating..." ) );
+    mClassifyButton->setText( tr( "Calculating…" ) );
     mClassifyButton->setEnabled( false );
     mGatherer->start();
   }

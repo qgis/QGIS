@@ -16,7 +16,7 @@
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# searching for the same item do nothing.
 
 # try to use framework on mac
 # want clean framework path, not unix compatibility path
@@ -52,6 +52,9 @@ ENDIF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)
 
 
 IF (PROJ_FOUND)
+   # This macro checks if the symbol exists
+   include(CheckLibraryExists)
+   check_library_exists("${PROJ_LIBRARY}" proj_info "" PROJ_HAS_INFO)
 
    IF (NOT PROJ_FIND_QUIETLY)
       MESSAGE(STATUS "Found Proj: ${PROJ_LIBRARY}")

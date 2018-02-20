@@ -80,12 +80,12 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
   return new QgsLayoutItemPicture( layout );
 }
 
-void QgsLayoutItemPicture::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   //picture resizing
   if ( mMode != FormatUnknown )
@@ -436,6 +436,15 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   }
 }
 
+void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
+{
+  if ( map )
+  {
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+  }
+}
+
 void QgsLayoutItemPicture::updateMapRotation()
 {
   if ( !mRotationMap )
@@ -454,10 +463,11 @@ void QgsLayoutItemPicture::updateMapRotation()
     {
       QgsPointXY center = mRotationMap->extent().center();
       QgsCoordinateReferenceSystem crs = mRotationMap->crs();
+      QgsCoordinateTransformContext transformContext = mLayout->project()->transformContext();
 
       try
       {
-        double bearing = QgsBearingUtils::bearingTrueNorth( crs, center );
+        double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
         rotation += bearing;
       }
       catch ( QgsException &e )
@@ -609,8 +619,7 @@ void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
 {
   if ( mRotationMap )
   {
-    disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnectMap( mRotationMap );
   }
 
   if ( !map ) //disable rotation from map
@@ -772,12 +781,10 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
+  disconnectMap( mRotationMap );
   mRotationMap = nullptr;
-  mRotationMapId = -1;
-  mRotationMapUuid.clear();
-
-  mRotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   mRotationMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+
   return true;
 }
 
@@ -824,9 +831,6 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
 
 void QgsLayoutItemPicture::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  mRotationMapId restore
-#endif
   if ( !mLayout || mRotationMapUuid.isEmpty() )
   {
     mRotationMap = nullptr;
@@ -835,11 +839,9 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
   {
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnectMap( mRotationMap );
     }
-    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) );
-    if ( mRotationMap )
+    if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );

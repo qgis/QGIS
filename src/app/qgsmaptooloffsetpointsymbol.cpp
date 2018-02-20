@@ -113,7 +113,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
 
 void QgsMapToolOffsetPointSymbol::noCompatibleSymbols()
 {
-  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), QgsMessageBar::CRITICAL );
+  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), Qgis::Critical );
 }
 
 void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )

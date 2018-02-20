@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
@@ -213,7 +213,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading start points...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Loading start points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
@@ -236,10 +236,10 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest paths...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Calculating shortest paths…'))
         graph = builder.graph()
 
         idxEnd = graph.findVertex(snappedPoints[0])

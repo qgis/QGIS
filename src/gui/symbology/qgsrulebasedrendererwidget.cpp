@@ -181,12 +181,25 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
     return;
 
   QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
 
-  QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
-  widget->setPanelTitle( tr( "Edit rule" ) );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
-  openPanel( widget );
+  if ( panel && panel->dockMode() )
+  {
+    QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );//panel?
+    widget->setPanelTitle( tr( "Edit Rule" ) );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
+    openPanel( widget );
+    return;
+  }
+
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mContext );
+  if ( dlg.exec() )
+  {
+    mModel->updateRule( index.parent(), index.row() );
+    mModel->clearFeatureCounts();
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::removeRule()
@@ -260,7 +273,7 @@ void QgsRuleBasedRendererWidget::refineRuleScales()
 void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 {
   QgsCategorizedSymbolRendererWidget *w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add categories to rules" ) );
+  w->setPanelTitle( tr( "Add Categories to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -269,7 +282,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 void QgsRuleBasedRendererWidget::refineRuleRangesGui()
 {
   QgsGraduatedSymbolRendererWidget *w = new QgsGraduatedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add ranges to rules" ) );
+  w->setPanelTitle( tr( "Add Ranges to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleRangesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -284,13 +297,13 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     // If any of the rules don't have a symbol let the user know and exit.
     if ( !initialRule->symbol() )
     {
-      QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
+      QMessageBox::warning( this, tr( "Scale Refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
       return;
     }
   }
 
   QString txt = QInputDialog::getText( this,
-                                       tr( "Scale refinement" ),
+                                       tr( "Scale Refinement" ),
                                        tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
   if ( txt.isEmpty() )
     return;
@@ -666,6 +679,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
+#include "qgsvscrollarea.h"
+
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
   : QDialog( parent )
 {
@@ -673,16 +688,21 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
-  this->setLayout( new QVBoxLayout() );
 
-  buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  layout->addWidget( scrollArea );
+
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   mPropsWidget = new QgsRendererRulePropsWidget( rule, layer, style, this, context );
 
-  this->layout()->addWidget( mPropsWidget );
-  this->layout()->addWidget( buttonBox );
+  scrollArea->setWidget( mPropsWidget );
+  layout->addWidget( buttonBox );
+  this->setWindowTitle( "Edit Rule" );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRendererRulePropsDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
@@ -708,6 +728,11 @@ void QgsRendererRulePropsDialog::accept()
 {
   mPropsWidget->apply();
   QDialog::accept();
+}
+
+void QgsRendererRulePropsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-rendering" ) );
 }
 
 

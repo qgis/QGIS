@@ -17,10 +17,11 @@
 #define QGSMAPTOOLADDCIRCULARSTRING_H
 
 #include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
 class QgsGeometryRubberBand;
 
-class QgsMapToolAddCircularString: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
 {
     Q_OBJECT
   public:

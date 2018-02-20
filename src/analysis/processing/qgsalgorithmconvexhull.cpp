@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsConvexHullAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsConvexHullAlgorithm::name() const
 {
   return QStringLiteral( "convexhull" );
@@ -88,6 +83,13 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
       QgsAttributes attrs = f.attributes();
       attrs << outputGeometry.constGet()->area()
             << outputGeometry.constGet()->perimeter();
+      f.setAttributes( attrs );
+    }
+    else
+    {
+      QgsAttributes attrs = f.attributes();
+      attrs << QVariant()
+            << QVariant();
       f.setAttributes( attrs );
     }
   }

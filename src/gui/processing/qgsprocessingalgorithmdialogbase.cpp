@@ -135,7 +135,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
   }
 
-  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagCanRunInBackground )
+  if ( !( algorithm->flags() & QgsProcessingAlgorithm::FlagNoThreading ) )
     mButtonRun->setText( tr( "Run in Background" ) );
 }
 
@@ -233,7 +233,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() )
   {
-    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->id(), mAlgorithm->groupId(), mAlgorithm->name() ) );
+    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), mAlgorithm->name() ) );
   }
 
   if ( !algHelp.isEmpty() )
@@ -417,6 +417,16 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
 
 void QgsProcessingAlgorithmDialogBase::processEvents()
 {
+  if ( mAlgorithmTask )
+  {
+    // no need to call this - the algorithm is running in a thread.
+    // in fact, calling it causes a crash on Windows when the algorithm
+    // is running in a background thread... unfortunately we need something
+    // like this for non-threadable algorithms, otherwise there's no chance
+    // for users to hit cancel or see progress updates...
+    return;
+  }
+
   // So that we get a chance of hitting the Abort button
 #ifdef Q_OS_LINUX
   // For some reason on Windows hasPendingEvents() always return true,

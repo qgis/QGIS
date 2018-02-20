@@ -70,12 +70,12 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::btnClear_clicked );
 
-  pbn = new QPushButton( tr( "&Save..." ) );
+  pbn = new QPushButton( tr( "&Save…" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Save query to an xml file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::saveQuery );
 
-  pbn = new QPushButton( tr( "&Load..." ) );
+  pbn = new QPushButton( tr( "&Load…" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Load query from xml file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::loadQuery );
@@ -254,7 +254,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 }
 
 
-void QgsSearchQueryBuilder::on_btnOk_clicked()
+void QgsSearchQueryBuilder::btnOk_clicked()
 {
   // if user hits OK and there is no query, skip the validation
   if ( txtSQL->text().trimmed().length() > 0 )

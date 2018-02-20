@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
+                       QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -71,6 +73,9 @@ class SelectByAttribute(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def initAlgorithm(self, config=None):
         self.i18n_operators = ['=',
                                '!=',
@@ -85,7 +90,7 @@ class SelectByAttribute(QgisAlgorithm):
                                self.tr('does not contain')
                                ]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
 
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Selection attribute'), parentLayerParameterName=self.INPUT))

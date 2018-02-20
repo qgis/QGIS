@@ -73,7 +73,7 @@ void QgsAuthIdentCertEdit::clearConfig()
 
 void QgsAuthIdentCertEdit::populateIdentityComboBox()
 {
-  cmbIdentityCert->addItem( tr( "Select identity..." ), "" );
+  cmbIdentityCert->addItem( tr( "Select identity…" ), "" );
 
   QList<QSslCertificate> certs( QgsApplication::authManager()->certIdentities() );
   if ( !certs.isEmpty() )

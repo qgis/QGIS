@@ -184,6 +184,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic4")
 
+    def test_wms_getmap_dpi(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DPI": "112.5"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic5")
+
     def test_wms_getmap_invalid_parameters(self):
         # height should be an int
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -888,6 +907,70 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
+
+    def test_wms_getmap_group(self):
+        """A WMS shall render the requested layers by drawing the leftmost in the list 
+        bottommost, the next one over that, and so on."""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Diagrams,Country_Labels,Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_individual, _ = self._result(self._execute_request(qs))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "CountryGroup",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_group, _ = self._result(self._execute_request(qs))
+
+        """ Debug check:
+        f = open('grouped.png', 'wb+')
+        f.write(r_group)
+        f.close()
+        f = open('individual.png', 'wb+')
+        f.write(r_individual)
+        f.close()
+        #"""
+
+        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "SLD": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>CountryGroup</se:Name></NamedLayer> </StyledLayerDescriptor>",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_group_sld, _ = self._result(self._execute_request(qs))
+        self.assertEqual(r_individual, r_group_sld, 'Individual layers query and SLD group layers query results should be identical')
 
 
 if __name__ == '__main__':

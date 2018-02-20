@@ -42,15 +42,16 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputMapLayer)
+                       QgsProcessingOutputMapLayer,
+                       QgsProcessingOutputMultipleLayers)
 
 import processing
-from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
+from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
 from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
@@ -86,8 +87,11 @@ class Processing(object):
         # Add the basic providers
         for c in QgsProcessingProvider.__subclasses__():
             p = c()
-            Processing.BASIC_PROVIDERS.append(p)
-            QgsApplication.processingRegistry().addProvider(p)
+            if p.id() in ('native', '3d'):
+                # c++ providers are already registered
+                continue
+            if QgsApplication.processingRegistry().addProvider(p):
+                Processing.BASIC_PROVIDERS.append(p)
         # And initialize
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
@@ -99,28 +103,6 @@ class Processing(object):
             QgsApplication.processingRegistry().removeProvider(p)
 
         Processing.BASIC_PROVIDERS = []
-
-    @staticmethod
-    def addScripts(folder):
-        Processing.initialize()
-        provider = QgsApplication.processingRegistry().providerById("qgis")
-        scripts = ScriptUtils.loadFromFolder(folder)
-        # fix_print_with_import
-        print(scripts)
-        for script in scripts:
-            script.allowEdit = False
-            script._icon = provider.icon()
-        provider.externalAlgs.extend(scripts)
-        provider.refreshAlgorithms()
-
-    @staticmethod
-    def removeScripts(folder):
-        provider = QgsApplication.processingRegistry().providerById("qgis")
-        for alg in provider.externalAlgs[::-1]:
-            path = os.path.dirname(alg.descriptionFile)
-            if path == folder:
-                provider.externalAlgs.remove(alg)
-        provider.refreshAlgorithms()
 
     @staticmethod
     def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
@@ -182,6 +164,22 @@ class Processing(object):
                             layer = context.takeResultLayer(result) # transfer layer ownership out of context
                             if layer:
                                 results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
+                    elif isinstance(out, QgsProcessingOutputMultipleLayers):
+                        result = results[out.name()]
+                        if result:
+                            layers_result = []
+                            for l in result:
+                                if not isinstance(result, QgsMapLayer):
+                                    layer = context.takeResultLayer(l) # transfer layer ownership out of context
+                                    if layer:
+                                        layers_result.append(layer)
+                                    else:
+                                        layers_result.append(l)
+                                else:
+                                    layers_result.append(l)
+
+                            results[out.name()] = layers_result # replace layers strings ref with actual layers (+ownership)
+
         else:
             msg = Processing.tr("There were errors executing the algorithm.")
             feedback.reportError(msg)

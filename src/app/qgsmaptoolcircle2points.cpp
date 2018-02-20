@@ -28,11 +28,11 @@ QgsMapToolCircle2Points::QgsMapToolCircle2Points( QgsMapToolCapture *parentTool,
 
 void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
@@ -42,6 +42,8 @@ void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    mPoints.append( point );
+
     deactivate();
     if ( mParentTool )
     {
@@ -52,10 +54,10 @@ void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
   if ( mTempRubberBand )
   {
-    mCircle = QgsCircle().from2Points( mPoints.at( 0 ), mapPoint );
+    mCircle = QgsCircle().from2Points( mPoints.at( 0 ), point );
     mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
   }
 }

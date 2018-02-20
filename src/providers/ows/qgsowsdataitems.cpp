@@ -135,7 +135,7 @@ QList<QAction *> QgsOWSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsOWSConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -211,7 +211,7 @@ QList<QAction *> QgsOWSRootItem::actions( QWidget *parent )
   QList<QAction *> lst;
 
 #if 0
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 #endif

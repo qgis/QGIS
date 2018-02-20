@@ -388,7 +388,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
   cmbAttrTableBehavior->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
   cmbAttrTableBehavior->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
-  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
+  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumSettingValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ) ) );
 
   mAttrTableViewComboBox->clear();
   mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
@@ -576,7 +576,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinMaxThreads->setValue( QgsApplication::maxThreads() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( mSettings->value( QStringLiteral( "/qgis/simplifyDrawingHints" ), ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( mSettings->enumSettingValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/simplifyDrawingTol" ), Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
 
@@ -633,11 +633,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
   mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
-  if ( mSettings->contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() ) );
-  else
-    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ?
-        QgsClipboard::AttributesWithWKT : QgsClipboard::AttributesOnly ) );
+  mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() );
 
@@ -744,7 +740,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );
   connect( pbnAddScale, &QAbstractButton::clicked, this, &QgsOptions::addScale );
   connect( pbnRemoveScale, &QAbstractButton::clicked, this, &QgsOptions::removeScale );
-  connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
+  connect( pbnExportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
   connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::importScales );
   connect( pbnDefaultScaleValues, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultScaleValues );
 
@@ -872,9 +868,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() ) );
-  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
+  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt();
+  QgsTolerance::UnitType defSnapUnits = mSettings->enumSettingValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
   if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
@@ -937,7 +933,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
   mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), 1 );
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
-  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
 
@@ -1017,7 +1013,7 @@ void QgsOptions::cbxProjectDefaultNew_toggled( bool checked )
     QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
     if ( ! QFile::exists( fileName ) )
     {
-      QMessageBox::information( nullptr, tr( "Save default project" ), tr( "You must set a default project" ) );
+      QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "You must set a default project" ) );
       cbxProjectDefaultNew->setChecked( false );
     }
   }
@@ -1028,11 +1024,11 @@ void QgsOptions::setCurrentProjectDefault()
   QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
   if ( QgsProject::instance()->write( fileName ) )
   {
-    QMessageBox::information( nullptr, tr( "Save default project" ), tr( "Current project saved as default" ) );
+    QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "Current project saved as default" ) );
   }
   else
   {
-    QMessageBox::critical( nullptr, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+    QMessageBox::critical( nullptr, tr( "Save Default Project" ), tr( "Error saving current project as default" ) );
   }
 }
 
@@ -1920,13 +1916,13 @@ void QgsOptions::browseCacheDirectory()
 void QgsOptions::clearCache()
 {
   QgsNetworkAccessManager::instance()->cache()->clear();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Content cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Content cache has been cleared." ) );
 }
 
 void QgsOptions::clearAccessCache()
 {
   QgsNetworkAccessManager::instance()->clearAccessCache();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Connection authentication cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Connection authentication cache has been cleared." ) );
 }
 
 void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
@@ -2260,7 +2256,7 @@ void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
   }
   else
   {
-    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    QMessageBox::warning( this, tr( "Set Scale" ), tr( "The text you entered is not a valid scale." ) );
     changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
   }
 

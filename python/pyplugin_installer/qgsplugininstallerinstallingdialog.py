@@ -90,7 +90,16 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     # ----------------------------------------- #
     def stateChanged(self, state):
-        messages = [self.tr("Installing..."), self.tr("Resolving host name..."), self.tr("Connecting..."), self.tr("Host connected. Sending request..."), self.tr("Downloading data..."), self.tr("Idle"), self.tr("Closing connection..."), self.tr("Error")]
+        messages = [
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Installing…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Resolving host name…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Connecting…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Host connected. Sending request…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Downloading data…"),
+            self.tr("Idle"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Closing connection…"),
+            self.tr("Error")
+        ]
         self.labelState.setText(messages[state])
 
     # ----------------------------------------- #

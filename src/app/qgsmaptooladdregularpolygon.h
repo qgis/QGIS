@@ -19,10 +19,11 @@
 #include "qgsregularpolygon.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsspinbox.h"
+#include "qgis_app.h"
 
 class QSpinBox;
 
-class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
     Q_OBJECT
 

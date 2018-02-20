@@ -129,7 +129,7 @@ void QgsDb2NewConnection::btnConnect_clicked()
   testConnection();
 }
 
-void QgsDb2NewConnection::on_btnListDatabase_clicked()
+void QgsDb2NewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
@@ -167,7 +167,7 @@ bool QgsDb2NewConnection::testConnection()
   if ( !rc )
   {
     bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -177,14 +177,14 @@ bool QgsDb2NewConnection::testConnection()
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+                      Qgis::Info );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     return false;
   }
 }

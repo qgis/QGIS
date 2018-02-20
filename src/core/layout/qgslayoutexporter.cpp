@@ -333,7 +333,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
   else
   {
-    for ( int page : settings.pages )
+    for ( int page : qgis::as_const( settings.pages ) )
     {
       if ( page >= 0 && page < mLayout->pageCollection()->pageCount() )
         pages << page;
@@ -964,7 +964,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer,
 
   updatePrinterPageSize( layout, printer, 0 );
 
-  // TODO: add option for this in Composer
+  // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
   //printer.setFontEmbeddingEnabled( true );
 

@@ -277,24 +277,26 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
-        self.assertEqual(self.source.minimumValue(1), -200)
-        self.assertEqual(self.source.minimumValue(2), 'Apple')
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
-        subset = self.getSubsetString()
-        self.source.setSubsetString(subset)
-        min_value = self.source.minimumValue(1)
-        self.source.setSubsetString(None)
-        self.assertEqual(min_value, 200)
+        if self.source.supportsSubsetString():
+            subset = self.getSubsetString()
+            self.source.setSubsetString(subset)
+            min_value = self.source.minimumValue(self.source.fields().lookupField('cnt'))
+            self.source.setSubsetString(None)
+            self.assertEqual(min_value, 200)
 
     def testMaxValue(self):
-        self.assertEqual(self.source.maximumValue(1), 400)
-        self.assertEqual(self.source.maximumValue(2), 'Pear')
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
-        subset = self.getSubsetString2()
-        self.source.setSubsetString(subset)
-        max_value = self.source.maximumValue(1)
-        self.source.setSubsetString(None)
-        self.assertEqual(max_value, 300)
+        if self.source.supportsSubsetString():
+            subset = self.getSubsetString2()
+            self.source.setSubsetString(subset)
+            max_value = self.source.maximumValue(self.source.fields().lookupField('cnt'))
+            self.source.setSubsetString(None)
+            self.assertEqual(max_value, 300)
 
     def testExtent(self):
         reference = QgsGeometry.fromRect(
@@ -305,82 +307,87 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
         self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
 
-        # with only one point
-        subset = self.getSubsetString3()
-        self.source.setSubsetString(subset)
-        count = self.source.featureCount()
-        provider_extent = self.source.extent()
-        self.source.setSubsetString(None)
-        self.assertEqual(count, 1)
-        self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
-        self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
-        self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
-        self.assertAlmostEqual(provider_extent.yMaximum(), 70.8, 3)
+        if self.source.supportsSubsetString():
+            # with only one point
+            subset = self.getSubsetString3()
+            self.source.setSubsetString(subset)
+            count = self.source.featureCount()
+            provider_extent = self.source.extent()
+            self.source.setSubsetString(None)
+            self.assertEqual(count, 1)
+            self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
+            self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
+            self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
+            self.assertAlmostEqual(provider_extent.yMaximum(), 70.8, 3)
 
-        # with no points
-        subset = self.getSubsetStringNoMatching()
-        self.source.setSubsetString(subset)
-        count = self.source.featureCount()
-        provider_extent = self.source.extent()
-        self.source.setSubsetString(None)
-        self.assertEqual(count, 0)
-        self.assertTrue(provider_extent.isNull())
+            # with no points
+            subset = self.getSubsetStringNoMatching()
+            self.source.setSubsetString(subset)
+            count = self.source.featureCount()
+            provider_extent = self.source.extent()
+            self.source.setSubsetString(None)
+            self.assertEqual(count, 0)
+            self.assertTrue(provider_extent.isNull())
 
     def testUnique(self):
-        self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(2)))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))), set([-200, 100, 200, 300, 400]))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
-        subset = self.getSubsetString2()
-        self.source.setSubsetString(subset)
-        values = self.source.uniqueValues(1)
-        self.source.setSubsetString(None)
-        self.assertEqual(set(values), set([200, 300]))
+        if self.source.supportsSubsetString():
+            subset = self.getSubsetString2()
+            self.source.setSubsetString(subset)
+            values = self.source.uniqueValues(self.source.fields().lookupField('cnt'))
+            self.source.setSubsetString(None)
+            self.assertEqual(set(values), set([200, 300]))
 
     def testUniqueStringsMatching(self):
-        self.assertEqual(set(self.source.uniqueStringsMatching(2, 'a')), set(['Pear', 'Orange', 'Apple']))
+        field_index = self.source.fields().lookupField('name')
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), set(['Pear', 'Orange', 'Apple']))
         # test case insensitive
-        self.assertEqual(set(self.source.uniqueStringsMatching(2, 'A')), set(['Pear', 'Orange', 'Apple']))
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'A')), set(['Pear', 'Orange', 'Apple']))
         # test string ending in substring
-        self.assertEqual(set(self.source.uniqueStringsMatching(2, 'ney')), set(['Honey']))
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'ney')), set(['Honey']))
         # test limit
-        result = set(self.source.uniqueStringsMatching(2, 'a', 2))
+        result = set(self.source.uniqueStringsMatching(field_index, 'a', 2))
         self.assertEqual(len(result), 2)
         self.assertTrue(result.issubset(set(['Pear', 'Orange', 'Apple'])))
 
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(2)))
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.source.uniqueValues(field_index)), 'Got {}'.format(set(self.source.uniqueValues(field_index)))
 
-        subset = self.getSubsetString2()
-        self.source.setSubsetString(subset)
-        values = self.source.uniqueStringsMatching(2, 'a')
-        self.source.setSubsetString(None)
-        self.assertEqual(set(values), set(['Pear', 'Apple']))
+        if self.source.supportsSubsetString():
+            subset = self.getSubsetString2()
+            self.source.setSubsetString(subset)
+            values = self.source.uniqueStringsMatching(2, 'a')
+            self.source.setSubsetString(None)
+            self.assertEqual(set(values), set(['Pear', 'Apple']))
 
     def testFeatureCount(self):
         self.assertEqual(self.source.featureCount(), 5)
 
-        #Add a subset string and test feature count
-        subset = self.getSubsetString()
-        self.source.setSubsetString(subset)
-        count = self.source.featureCount()
-        self.source.setSubsetString(None)
-        self.assertEqual(count, 3)
-        self.assertEqual(self.source.featureCount(), 5)
+        if self.source.supportsSubsetString():
+            #Add a subset string and test feature count
+            subset = self.getSubsetString()
+            self.source.setSubsetString(subset)
+            count = self.source.featureCount()
+            self.source.setSubsetString(None)
+            self.assertEqual(count, 3)
+            self.assertEqual(self.source.featureCount(), 5)
 
-        # one matching records
-        subset = self.getSubsetString3()
-        self.source.setSubsetString(subset)
-        count = self.source.featureCount()
-        self.source.setSubsetString(None)
-        self.assertEqual(count, 1)
-        self.assertEqual(self.source.featureCount(), 5)
+            # one matching records
+            subset = self.getSubsetString3()
+            self.source.setSubsetString(subset)
+            count = self.source.featureCount()
+            self.source.setSubsetString(None)
+            self.assertEqual(count, 1)
+            self.assertEqual(self.source.featureCount(), 5)
 
-        # no matching records
-        subset = self.getSubsetStringNoMatching()
-        self.source.setSubsetString(subset)
-        count = self.source.featureCount()
-        self.source.setSubsetString(None)
-        self.assertEqual(count, 0)
-        self.assertEqual(self.source.featureCount(), 5)
+            # no matching records
+            subset = self.getSubsetStringNoMatching()
+            self.source.setSubsetString(subset)
+            count = self.source.featureCount()
+            self.source.setSubsetString(None)
+            self.assertEqual(count, 0)
+            self.assertEqual(self.source.featureCount(), 5)
 
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
@@ -439,6 +446,95 @@ class ProviderTestCase(FeatureSourceTestCase):
             result, added = l.dataProvider().addFeatures([f1, f2], QgsFeatureSink.FastInsert)
             self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
             self.assertEqual(l.dataProvider().featureCount(), 7)
+
+    def testAddFeatureMissingAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with missing attributes pads out these
+        # attributes with NULL values to the correct length
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result, 'Provider returned False to addFeatures with missing attributes. Providers should accept these features but add NULL attributes to the end of the existing attributes to the required field length.')
+        f1.setId(added[0].id())
+        f2.setId(added[1].id())
+
+        # check result - feature attributes MUST be padded out to required number of fields
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
+        self.testGetFeatures(l.dataProvider(), [f1, f2])
+
+    def testAddFeatureExtraAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with too many attributes drops these attributes
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
+
+    def testAddFeatureWrongGeomType(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with incorrect geometry type rejects the feature
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setGeometry(QgsGeometry.fromWkt('LineString (-72.345 71.987, -80 80)'))
+        f1.setAttributes([7])
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+        f2.setAttributes([8])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertFalse(result, 'Provider returned True to addFeatures with incorrect geometry type. Providers should reject these features.')
+
+        # make sure feature was not added
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7]
+        self.assertFalse(added)
+
+        # yet providers MUST always accept null geometries
+        f3 = QgsFeature()
+        f3.setAttributes([9])
+        result, added = l.dataProvider().addFeatures([f3])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with null geometry. Providers should always accept these features.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 9][0]
+        self.assertFalse(added.hasGeometry())
 
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):

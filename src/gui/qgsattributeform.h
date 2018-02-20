@@ -364,6 +364,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    bool mValuesInitialized = false;
+    bool mDirty = false;
 
     struct ContainerInformation
     {

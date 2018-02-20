@@ -22,7 +22,7 @@
 
 #define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)
 #define DEFAULT_SIMPLEFILL_STYLE        Qt::SolidPattern
-#define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor(0,0,0)
+#define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor( 35, 35, 35 )
 #define DEFAULT_SIMPLEFILL_BORDERSTYLE  Qt::SolidLine
 #define DEFAULT_SIMPLEFILL_BORDERWIDTH  DEFAULT_LINE_WIDTH
 #define DEFAULT_SIMPLEFILL_JOINSTYLE    Qt::BevelJoin
@@ -692,6 +692,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     * \since QGIS 3.0
+     */
+    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
     // implemented from base classes
     QString layerType() const override;

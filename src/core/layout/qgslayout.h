@@ -247,13 +247,35 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      *
-     * If \a includeTemplateUuids is true, then item's QgsLayoutItem::templateUuid()
-     * will also be tested when trying to match the uuid.
+     * If \a includeTemplateUuids is true, then item's template UUID
+     * will also be tested when trying to match the uuid. This may differ from the item's UUID
+     * for items which have been added to an existing layout from a template. In this case
+     * the template UUID returns the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     * Note that template UUIDs are only available while a layout is being restored from XML.
      *
+     * \see itemByTemplateUuid()
      * \see multiFrameByUuid()
      * \see itemById()
      */
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
+
+    /**
+     * Returns the layout item with matching template \a uuid unique identifier, or a nullptr
+     * if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
+     * template UUIDs for a match.
+     *
+     * Template UUIDs are valid only for items which have been added to an existing layout from a template. In this case
+     * the template UUID is the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     *
+     * Note that template UUIDs are only available while a layout is being restored from XML.
+     *
+     * \see itemByUuid()
+     * \see multiFrameByUuid()
+     * \see itemById()
+     */
+    QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 
     /**
      * Returns a layout item given its \a id.
@@ -266,9 +288,17 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
      * if a matching multiframe could not be found.
+     *
+     * If \a includeTemplateUuids is true, then the multiframe's QgsLayoutMultiFrame::templateUuid()
+     * will also be tested when trying to match the uuid. Template UUIDs are valid only for items
+     * which have been added to an existing layout from a template. In this case
+     * the template UUID is the original item UUID at the time the template was created,
+     * vs the item's uuid() which returns the current instance of the item's unique identifier.
+     * Note that template UUIDs are only available while a layout is being restored from XML.
+     *
      * \see itemByUuid()
      */
-    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
@@ -277,7 +307,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
     /**
-     * Returns the topmost composer item at a specified \a position which is below a specified \a item. Ignores paper items.
+     * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
      * If \a ignoreLocked is set to true any locked items will be ignored.
      */
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
@@ -680,7 +710,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
 
-    //! Item ID for composer map to use for the world file generation
+    //! Item ID for layout map to use for the world file generation
     QString mWorldFileMapId;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML

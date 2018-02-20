@@ -47,17 +47,13 @@ QString QgsPackageAlgorithm::groupId() const
   return QStringLiteral( "database" );
 }
 
-QgsProcessingAlgorithm::Flags QgsPackageAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing GeoPackage" ), false ) );
   addOutput( new QgsProcessingOutputFile( QStringLiteral( "OUTPUT" ), QObject::tr( "GeoPackage" ) ) );
+  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
 }
 
 QString QgsPackageAlgorithm::shortHelpString() const
@@ -102,6 +98,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 
   QgsProcessingMultiStepFeedback multiStepFeedback( layers.count(), feedback );
 
+  QStringList outputLayers;
   int i = 0;
   for ( QgsMapLayer *layer : layers )
   {
@@ -128,6 +125,8 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         if ( !packageVectorLayer( qobject_cast< QgsVectorLayer * >( layer ), packagePath,
                                   context, &multiStepFeedback ) )
           errored = true;
+        else
+          outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( packagePath, layer->name() ) );
         break;
       }
 
@@ -152,6 +151,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), packagePath );
+  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
   return outputs;
 }
 

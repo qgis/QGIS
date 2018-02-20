@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
         , snapTolerance( snapTolerance )
         , mode( mode )
       {}
-      void operator()( QgsFeature &feature ) { return instance->processFeature( feature, snapTolerance, mode ); }
+      void operator()( QgsFeature &feature ) { instance->processFeature( feature, snapTolerance, mode ); }
     };
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };

@@ -42,6 +42,7 @@ class _3D_EXPORT Qgs3DAlgorithms: public QgsProcessingProvider
     QIcon icon() const override;
     QString svgIconPath() const override;
     QString id() const override;
+    QString helpId() const override;
     QString name() const override;
     bool supportsNonFileBasedOutput() const override;
 

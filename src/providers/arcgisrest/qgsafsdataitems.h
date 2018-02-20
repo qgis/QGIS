@@ -25,6 +25,9 @@ class QgsAfsRootItem : public QgsDataCollectionItem
   public:
     QgsAfsRootItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
+
+    QVariant sortKey() const override { return 13; }
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;

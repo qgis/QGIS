@@ -47,7 +47,7 @@ from a plugin or from startup.py).
 
 An example is:
 
-          rom qgis.PyQt.QtWidgets import QWidget
+          from qgis.PyQt.QtWidgets import QWidget
 
           def my_form_open(dialog, layer, feature):
 	geom = feature.geometry()

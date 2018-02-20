@@ -206,7 +206,7 @@ class QgsWFSFeatureIterator : public QObject,
 
     bool close() override;
 
-    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
 
     //! Used by QgsWFSSharedData::registerToCache()
     void connectSignals( QgsWFSFeatureDownloader *downloader );
@@ -232,7 +232,7 @@ class QgsWFSFeatureIterator : public QObject,
     bool mDownloadFinished;
     QEventLoop *mLoop = nullptr;
     QgsFeatureIterator mCacheIterator;
-    QgsInterruptionChecker *mInterruptionChecker = nullptr;
+    QgsFeedback *mInterruptionChecker = nullptr;
 
     //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
     QMutex mMutex;

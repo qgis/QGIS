@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometryselfcontactcheck.cpp                                        *
- *  -------------------                                                    *
- *  copyright            : (C) 2017 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometryselfcontactcheck.cpp
+    ---------------------
+    begin                : September 2017
+    copyright            : (C) 2017 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #include "qgsgeometryselfcontactcheck.h"
@@ -62,7 +70,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
             }
             const QgsPoint &si = ring[i];
             const QgsPoint &sj = ring[j];
-            QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
+            QgsPoint q = QgsGeometryUtils::projectPointOnSegment( p, si, sj );
             if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
             {
               errors.append( new QgsGeometryCheckError( this, layerFeature, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );

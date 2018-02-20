@@ -6,7 +6,7 @@ REM get short path without blanks
 for %%i in ("%OSGEO4W_ROOT%") do set O4W_ROOT=%%~fsi
 if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
-"%OSGEO4W_ROOT%\bin\@package@.bat" --exit
+call "%OSGEO4W_ROOT%\bin\@package@.bat" --postinstall
 
 if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"

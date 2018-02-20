@@ -141,7 +141,7 @@ class ProjectionSettingRestorer
     {
       QgsSettings settings;
       previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QString() );
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
     }
 
     ~ProjectionSettingRestorer()
@@ -295,7 +295,6 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 {
   QString normalized = source;
   normalized.replace( '\\', '/' );
-  normalized.replace( '"', QLatin1String( "'" ) );
   return normalized.trimmed();
 }
 
@@ -389,7 +388,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     destination = layer->id();
 
     // this is a factory, so we need to return a proxy
-    std::unique_ptr< QgsProxyFeatureSink > sink( new QgsProxyFeatureSink( layer->dataProvider() ) );
+    std::unique_ptr< QgsProcessingFeatureSink > sink( new QgsProcessingFeatureSink( layer->dataProvider(), destination, context ) );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
 
     return sink.release();
@@ -416,7 +415,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
       destination = finalFileName;
-      return writer.release();
+      return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
     }
     else
     {
@@ -435,7 +434,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       destination = layer->id();
 
       context.temporaryLayerStore()->addMapLayer( layer.release() );
-      return exporter.release();
+      return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
     }
   }
   return nullptr;
@@ -447,7 +446,7 @@ void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString
 }
 
 
-QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs )
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs )
 {
   QgsRectangle extent;
   Q_FOREACH ( QgsMapLayer *layer, layers )
@@ -750,4 +749,45 @@ QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextSc
     expressionContextScope = generator->createExpressionContextScope();
   }
   return expressionContextScope;
+}
+
+
+//
+// QgsProcessingFeatureSink
+//
+QgsProcessingFeatureSink::QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink )
+  : QgsProxyFeatureSink( originalSink )
+  , mContext( context )
+  , mSinkName( sinkName )
+  , mOwnsSink( ownsOriginalSink )
+{}
+
+QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
+{
+  if ( mOwnsSink )
+    delete destinationSink();
+}
+
+bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
+{
+  bool result = QgsProxyFeatureSink::addFeature( feature, flags );
+  if ( !result )
+    mContext.feedback()->reportError( QObject::tr( "Feature could not be written to %1" ).arg( mSinkName ) );
+  return result;
+}
+
+bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
+{
+  bool result = QgsProxyFeatureSink::addFeatures( features, flags );
+  if ( !result )
+    mContext.feedback()->reportError( QObject::tr( "%1 feature(s) could not be written to %2" ).arg( features.count() ).arg( mSinkName ) );
+  return result;
+}
+
+bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
+{
+  bool result = !QgsProxyFeatureSink::addFeatures( iterator, flags );
+  if ( !result )
+    mContext.feedback()->reportError( QObject::tr( "Features could not be written to %2" ).arg( mSinkName ) );
+  return result;
 }

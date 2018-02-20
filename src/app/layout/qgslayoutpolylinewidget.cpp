@@ -28,7 +28,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   , mPolyline( polyline )
 {
   setupUi( this );
-  setPanelTitle( tr( "Polyline properties" ) );
+  setPanelTitle( tr( "Polyline Properties" ) );
 
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPolylineWidget::arrowStrokeWidthChanged );
   connect( mArrowHeadWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPolylineWidget::arrowHeadWidthChanged );
@@ -44,7 +44,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   connect( mEndMarkerLineEdit, &QLineEdit::textChanged, this, &QgsLayoutPolylineWidget::mEndMarkerLineEdit_textChanged );
   connect( mStartMarkerToolButton, &QToolButton::clicked, this, &QgsLayoutPolylineWidget::mStartMarkerToolButton_clicked );
   connect( mEndMarkerToolButton, &QToolButton::clicked, this, &QgsLayoutPolylineWidget::mEndMarkerToolButton_clicked );
-  setPanelTitle( tr( "Arrow properties" ) );
+  setPanelTitle( tr( "Arrow Properties" ) );
   QButtonGroup *startMarkerGroup = new QButtonGroup( this );
   startMarkerGroup->addButton( mRadioStartNoMarker );
   startMarkerGroup->addButton( mRadioStartArrow );

@@ -236,7 +236,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * Display context menu which allows selecting/deselecting
      * all items at once.
      */
-    void showContextMenu( const QPoint &pos );
+    void showContextMenu( QPoint pos );
 
     /**
      * Selects all items.

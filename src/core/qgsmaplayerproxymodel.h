@@ -33,7 +33,6 @@ class QgsMapLayer;
 class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_FLAGS( Filters )
 
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( QList<QgsMapLayer *> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
@@ -54,6 +53,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       All = RasterLayer | VectorLayer | PluginLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
 
     /**
      * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.

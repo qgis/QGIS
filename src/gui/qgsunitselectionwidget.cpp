@@ -226,7 +226,7 @@ void QgsUnitSelectionWidget::showDialog()
   if ( panel && panel->dockMode() )
   {
     QgsMapUnitScaleWidget *widget = new QgsMapUnitScaleWidget( panel );
-    widget->setPanelTitle( tr( "Adjust scaling range" ) );
+    widget->setPanelTitle( tr( "Adjust Scaling Range" ) );
     widget->setMapCanvas( mCanvas );
     widget->setMapUnitScale( mMapUnitScale );
     connect( widget, &QgsMapUnitScaleWidget::mapUnitScaleChanged, this, &QgsUnitSelectionWidget::widgetChanged );

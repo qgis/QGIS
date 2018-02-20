@@ -49,7 +49,7 @@ void QgsOracleColumnTypeThread::run()
     return;
   }
 
-  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
+  emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties,
                                QgsOracleConn::geometryColumnsOnly( mName ),
@@ -69,7 +69,7 @@ void QgsOracleColumnTypeThread::run()
     if ( !mStopped )
     {
       emit progress( i++, n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
                             .arg( layerProperty.ownerName )
                             .arg( layerProperty.tableName )
                             .arg( layerProperty.geometryColName ) );

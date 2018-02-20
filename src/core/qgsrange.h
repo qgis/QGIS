@@ -393,6 +393,14 @@ class QgsTemporalRange
       return false;
     }
 
+    bool operator==( const QgsTemporalRange<T> &other ) const
+    {
+      return mLower == other.mLower &&
+             mUpper == other.mUpper &&
+             mIncludeLower == other.mIncludeLower &&
+             mIncludeUpper == other.mIncludeUpper;
+    }
+
   private:
 
     T mLower;
@@ -412,7 +420,7 @@ class QgsTemporalRange
  * \since QGIS 3.0
  * \see QgsDateTimeRange
  */
-typedef QgsTemporalRange< QDate > QgsDateRange;
+typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
 
 /**
  * QgsRange which stores a range of date times.
@@ -424,6 +432,6 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
  * \since QGIS 3.0
  * \see QgsDateRange
  */
-typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
+typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
 
 #endif // QGSRANGE_H

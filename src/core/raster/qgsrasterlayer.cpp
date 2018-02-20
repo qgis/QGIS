@@ -614,6 +614,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
     return;
   }
   QgsDebugMsgLevel( "Data provider created", 4 );
+  mDataProvider->setParent( this );
 
   // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
   mPipe.set( mDataProvider );
@@ -622,6 +623,12 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
     setError( mDataProvider->error() );
     appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
     return;
+  }
+
+  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
   if ( provider == QLatin1String( "gdal" ) )

@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
-                       QgsRelationReferenceFieldFormatter, QgsSettings)
+                       QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter, QgsSettings)
 
 from qgis.testing import start_app, unittest
 
@@ -193,6 +193,63 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
+
+        QgsProject.instance().removeAllMapLayers()
+
+
+class TestQgsRangeFieldFormatter(unittest.TestCase):
+
+    def test_representValue(self):
+
+        layer = QgsVectorLayer("point?field=int:integer&field=double:double",
+                               "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayers([layer])
+
+        fieldFormatter = QgsRangeFieldFormatter()
+
+        # Precision is ignored for integers
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, None), 'NULL')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, '123'), '123.0')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0.12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.127'), '0.13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0'), '0.000')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0.127'), '0.127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '1.27e-1'), '0.127')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-123'), '-123.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.123'), '-0.12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.127'), '-0.13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0.127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0.127')
+
+        QgsSettings().setValue("locale/overrideFlag", True)
+        QgsSettings().setValue("locale/userLocale", 'it')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0,12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.127'), '0,13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0'), '0,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0.127'), '0,127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '1.27e-1'), '0,127')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-123'), '-123,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.123'), '-0,12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.127'), '-0,13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0,127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0,127')
 
         QgsProject.instance().removeAllMapLayers()
 

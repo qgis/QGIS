@@ -137,7 +137,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private:
 
-    static QScreen *findScreenAt( const QPoint &pos );
+    static QScreen *findScreenAt( QPoint pos );
 
     bool mAllowAlpha = true;
 

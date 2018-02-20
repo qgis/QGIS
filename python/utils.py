@@ -124,7 +124,7 @@ def showException(type, value, tb, msg, messagebar=False):
     button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
     widget.layout().addWidget(stackbutton)
     widget.layout().addWidget(button)
-    bar.pushWidget(widget, QgsMessageBar.WARNING)
+    bar.pushWidget(widget, Qgis.Warning)
 
 
 def show_message_log(pop_error=True):

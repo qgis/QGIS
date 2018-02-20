@@ -32,7 +32,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
-from qgis.core import (QgsExpressionContextUtils,
+from qgis.core import (Qgis,
+                       QgsExpressionContextUtils,
                        QgsProcessingFeedback,
                        QgsSettings,
                        QgsMapLayerProxyModel,
@@ -258,7 +259,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
-        QgsMessageLog.logMessage(text, self.tr('Processing'), QgsMessageLog.CRITICAL)
+        QgsMessageLog.logMessage(text, self.tr('Processing'), Qgis.Critical)
 
     def wasExecuted(self):
         return self._wasExecuted

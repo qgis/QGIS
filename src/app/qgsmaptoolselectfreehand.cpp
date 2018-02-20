@@ -25,7 +25,6 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
@@ -38,25 +37,10 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  if ( e->button() != Qt::LeftButton )
-    return;
-
-  if ( !mRubberBand )
-  {
-    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setStrokeColor( mStrokeColor );
-  }
-  mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  mDragging = true;
-}
-
 
 void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mDragging || !mRubberBand )
+  if ( !mActive || !mRubberBand )
     return;
 
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
@@ -65,34 +49,50 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand )
-    return;
-
-  bool singleSelect = false;
-  if ( mRubberBand->numberOfVertices() > 0 && mRubberBand->numberOfVertices() <= 2 )
+  if ( !mActive )
   {
-    // single click, not drag - create a rectangle around clicked point
-    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-    if ( vlayer )
+    if ( e->button() != Qt::LeftButton )
+      return;
+
+    if ( !mRubberBand )
     {
-      QRect selectRect;
-      QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
-      QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, mRubberBand );
-      singleSelect = true;
+      mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+      mRubberBand->setFillColor( mFillColor );
+      mRubberBand->setStrokeColor( mStrokeColor );
     }
-  }
-
-  if ( mRubberBand->numberOfVertices() > 2 )
-  {
-    QgsGeometry shapeGeom = mRubberBand->asGeometry();
-    if ( singleSelect )
-      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
     else
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
+    {
+      mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    }
+    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+    mActive = true;
   }
+  else
+  {
+    if ( e->button() == Qt::LeftButton )
+    {
+      if ( mRubberBand && mRubberBand->numberOfVertices() > 2 )
+      {
+        QgsGeometry shapeGeom = mRubberBand->asGeometry();
+        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e->modifiers() );
+      }
+    }
 
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  delete mRubberBand;
-  mRubberBand = nullptr;
-  mDragging = false;
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    delete mRubberBand;
+    mRubberBand = nullptr;
+    mActive = false;
+  }
+}
+
+void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mActive && e->key() == Qt::Key_Escape )
+  {
+    delete mRubberBand;
+    mRubberBand = nullptr;
+    mActive = false;
+    return;
+  }
+  QgsMapTool::keyReleaseEvent( e );
 }

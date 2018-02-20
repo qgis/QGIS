@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmaplayerlistutils.h
+    ---------------------
+    begin                : December 2016
+    copyright            : (C) 2016 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSMAPLAYERLISTUTILS_H
 #define QGSMAPLAYERLISTUTILS_H
 
@@ -63,7 +77,7 @@ inline QList< QgsMapLayerRef > _qgis_listRawToRef( const QList<QgsMapLayer *> &l
   return lst;
 }
 
-inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, QList< QgsMapLayer *> layersToRemove )
+inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, const QList< QgsMapLayer *> &layersToRemove )
 {
   QMutableListIterator<QgsMapLayerRef> it( list );
   while ( it.hasNext() )
@@ -86,7 +100,7 @@ inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList &la
   return lst;
 }
 
-inline static QgsMapLayer *_qgis_findLayer( const QList< QgsMapLayer *> layers, const QString &identifier )
+inline static QgsMapLayer *_qgis_findLayer( const QList< QgsMapLayer *> &layers, const QString &identifier )
 {
   QgsMapLayer *matchId = nullptr;
   QgsMapLayer *matchName = nullptr;

@@ -43,33 +43,53 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Constructor for the wizard.
+     *
+     * If \a layer is set, then this constructor automatically sets the widget's metadata() to match
+     * the layer's metadata..
+
+     * \see setMetadata()
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
-     * Save all fields in a QgsLayerMetadata object.
+     * Sets the \a metadata to display in the widget.
+     *
+     * This method can be called after constructing a QgsMetadataWidget in order
+     * to set the displayed metadata to custom, non-layer based metadata.
+     *
+     * \see metadata()
      */
-    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void setMetadata( const QgsLayerMetadata &metadata );
+
+    /**
+     * Returns a QgsLayerMetadata object representing the current state of the widget.
+     * \see saveMetadata()
+     */
+    QgsLayerMetadata metadata();
+
+    /**
+     * Save all fields in a QgsLayerMetadata object.
+     * \see metadata()
+     * \see acceptMetadata()
+     * \see checkMetadata()
+     */
+    void saveMetadata( QgsLayerMetadata &layerMetadata );
 
     /**
      * Check if values in the wizard are correct.
+     * \see saveMetadata()
      */
-    bool checkMetadata() const;
+    bool checkMetadata();
 
     /**
      * If the CRS is updated.
      */
-    void crsChanged() const;
+    void crsChanged();
 
     /**
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
-
-    /**
-     * Sets the layer's \a metadata store.
-     */
-    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -103,31 +123,34 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
-  private:
-    void updatePanel() const;
-    void fillSourceFromLayer() const;
+  private slots:
+    void removeSelectedCategories();
+    void updatePanel();
+    void fillSourceFromLayer();
     void fillCrsFromLayer();
     void fillCrsFromProvider();
-    void addDefaultCategory() const;
+    void addDefaultCategories();
     void addNewCategory();
-    void removeSelectedCategory() const;
-    void addVocabulary() const;
-    void removeSelectedVocabulary() const;
+    void addVocabulary();
+    void removeSelectedVocabulary();
     void addLicence();
-    void removeSelectedLicence() const;
+    void removeSelectedLicence();
     void addRight();
-    void removeSelectedRight() const;
-    void addConstraint() const;
-    void removeSelectedConstraint() const;
-    void addAddress() const;
-    void removeSelectedAddress() const;
-    void addLink() const;
-    void removeSelectedLink() const;
+    void removeSelectedRight();
+    void addConstraint();
+    void removeSelectedConstraint();
+    void addAddress();
+    void removeSelectedAddress();
+    void addLink();
+    void removeSelectedLink();
     void addHistory();
-    void removeSelectedHistory() const;
-    void fillComboBox() const;
+    void removeSelectedHistory();
+
+  private:
+
+    void fillComboBox();
     void setPropertiesFromLayer();
-    void syncFromCategoriesTabToKeywordsTab() const;
+    void syncFromCategoriesTabToKeywordsTab();
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsCoordinateReferenceSystem mCrs;

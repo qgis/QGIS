@@ -38,7 +38,7 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {

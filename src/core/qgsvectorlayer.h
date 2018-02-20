@@ -695,8 +695,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns whether the layer contains labels which are enabled and should be drawn.
      * \returns true if layer contains enabled labels
      * \since QGIS 2.9
+     *
+     * \see setLabelsEnabled()
      */
     bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is true and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     */
+    void setLabelsEnabled( bool enabled );
 
     /**
      * Returns whether the layer contains diagrams which are enabled and should be drawn.
@@ -1249,13 +1262,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Access to const labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /**
      * Access to labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
@@ -1361,7 +1378,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * retrieved and used. Note that this involves a feature request to the underlying data provider,
      * so it is more efficient to explicitly pass an \a oldValue if it is already available.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValues is set to true, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
      * Returns true if the feature's attribute was successfully changed.
@@ -1377,6 +1394,43 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see updateFeature()
      */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
+
+    /**
+     * Changes attributes' values for a feature (but does not immediately
+     * commit the changes).
+     * The \a fid argument specifies the ID of the feature to be changed.
+     *
+     * The new values to be assigned to the fields are given by \a newValues.
+     *
+     * If a valid QVariant is specified for a field in \a oldValues, it will be
+     * used as the field value in the case of an undo operation corresponding
+     * to this attribute value change. If an invalid QVariant is used (the
+     * default behavior), then the feature's current value will be
+     * automatically retrieved and used. Note that this involves a feature
+     * request to the underlying data provider, so it is more efficient to
+     * explicitly pass an oldValue if it is already available.
+     *
+     * If \a skipDefaultValues is set to true, default field values will not
+     * be updated. This can be used to override default field value
+     * expressions.
+     *
+     * Returns true if feature's attributes was successfully changed.
+     *
+     * \note Calls to changeAttributeValues() are only valid for layers in
+     * which edits have been enabled by a call to startEditing(). Changes made
+     * to features using this method are not committed to the underlying data
+     * provider until a commitChanges() call is made. Any uncommitted changes
+     * can be discarded by calling rollBack().
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeGeometry()
+     * \see updateFeature()
+     * \see changeAttributeValue()
+     *
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
 
     /**
      * Add an attribute field (but does not commit it)
@@ -1766,32 +1820,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr ) const;
-
-    /**
-     * Fetches all values from a specified field name or expression.
-     * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getDoubleValues
-     */
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr ) const;
-
-    /**
-     * Fetches all double values from a specified field name or expression. Null values or
-     * invalid expression results are skipped.
-     * \param fieldOrExpression field name or an expression string evaluating to a double value
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param nullCount optional pointer to integer to store number of null values encountered in
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getValues
-     */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     //! Set the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -2339,6 +2367,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Labeling configuration
     QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
 
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
+
     //! Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering)
     bool mLabelFontNotFoundNotified = false;
 
@@ -2356,6 +2387,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
+    friend class QgsVectorLayerEditPassthrough;
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;

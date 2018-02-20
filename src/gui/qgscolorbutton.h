@@ -399,7 +399,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-    static QScreen *findScreenAt( const QPoint &pos );
+
+    QColor sampleColor( QPoint point ) const;
+
+    static QScreen *findScreenAt( QPoint pos );
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;
@@ -408,6 +411,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
 
     QColor mDefaultColor;
+
+    //! Store current color when start picking
+    QColor mCurrentColor;
+
     QString mContext;
     bool mAllowOpacity = false;
     bool mColorSet = false;
@@ -436,10 +443,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Ends a color picking operation
      * \param eventPos global position of pixel to sample color from
-     * \param sampleColor set to true to actually sample the color, false to just cancel
+     * \param samplingColor set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
-    void stopPicking( QPointF eventPos, bool sampleColor = true );
+    void stopPicking( QPoint eventPos, bool samplingColor = true );
 
     /**
      * Create a color icon for display in the drop-down menu

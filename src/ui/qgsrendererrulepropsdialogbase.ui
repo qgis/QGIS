@@ -49,8 +49,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text">
-          <string>…</string>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
          </property>
         </widget>
        </item>

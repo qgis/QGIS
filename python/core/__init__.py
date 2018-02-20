@@ -139,7 +139,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
             msg = QCoreApplication.translate("UserExpressions",
                                              "The user expression {0} already exists and could not be unregistered.").format(
                 name)
-            QgsMessageLog.logMessage(msg + "\n", msgtitle, QgsMessageLog.WARNING)
+            QgsMessageLog.logMessage(msg + "\n", msgtitle, Qgis.Warning)
             return None
 
     function.__name__ = name

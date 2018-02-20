@@ -122,6 +122,7 @@ class QgsServerTestBase(unittest.TestCase):
         self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
         self.projectStatePath = os.path.join(d, "project_state.qgs")
         self.projectUseLayerIdsPath = os.path.join(d, "project_use_layerids.qgs")
+        self.projectGroupsPath = os.path.join(d, "project_groups.qgs")
 
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
@@ -399,7 +400,6 @@ class TestQgsServer(QgsServerTestBase):
         item_found = False
         for item in str(r).split("\\n"):
             if "OnlineResource" in item:
-                print("OnlineResource: ", item)
                 self.assertEqual("\"my_wcs_advertised_url" in item, True)
                 item_found = True
         self.assertTrue(item_found)

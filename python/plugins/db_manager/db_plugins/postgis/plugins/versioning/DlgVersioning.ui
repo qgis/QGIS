@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Versioning Support to a Table</string>
+   <string>Add Change Logging Support to a Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0" rowspan="2">

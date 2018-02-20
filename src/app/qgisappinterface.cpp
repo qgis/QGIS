@@ -603,7 +603,7 @@ QAction *QgisAppInterface::actionAddPart() { return qgis->actionAddPart(); }
 QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplifyFeature(); }
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
-QAction *QgisAppInterface::actionNodeTool() { return qgis->actionNodeTool(); }
+QAction *QgisAppInterface::actionVertexTool() { return qgis->actionVertexTool(); }
 
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
@@ -641,6 +641,7 @@ QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayer
 QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }
 QAction *QgisAppInterface::actionOpenFieldCalculator() { return qgis->actionOpenFieldCalculator(); }
+QAction *QgisAppInterface::actionOpenStatisticalSummary() { return qgis->actionStatisticalSummary(); }
 QAction *QgisAppInterface::actionToggleEditing() { return qgis->actionToggleEditing(); }
 QAction *QgisAppInterface::actionSaveActiveLayerEdits() { return qgis->actionSaveActiveLayerEdits(); }
 QAction *QgisAppInterface::actionAllEdits() { return qgis->actionAllEdits(); }

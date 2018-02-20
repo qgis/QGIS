@@ -180,7 +180,7 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
     }
   }
 
-  return QObject::eventFilter( obj, event );
+  return QDialog::eventFilter( obj, event );
 }
 
 void QgsSQLComposerDialog::setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback )

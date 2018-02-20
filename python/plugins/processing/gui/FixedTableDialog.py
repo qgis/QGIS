@@ -63,7 +63,7 @@ class FixedTableDialog(BASE, WIDGET):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
-        if self.param.fixedNumOfRows:
+        if self.param.hasFixedNumberRows():
             self.btnAdd.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRemoveAll.setEnabled(False)
@@ -71,12 +71,12 @@ class FixedTableDialog(BASE, WIDGET):
         self.populateTable(table)
 
     def populateTable(self, table):
-        cols = len(self.param.cols)
+        cols = len(self.param.headers())
         rows = len(table)
         model = QStandardItemModel(rows, cols)
 
         # Set headers
-        model.setHorizontalHeaderLabels(self.param.cols)
+        model.setHorizontalHeaderLabels(self.param.headers())
 
         # Populate table
         for i in range(rows):
@@ -101,7 +101,7 @@ class FixedTableDialog(BASE, WIDGET):
     def removeRows(self, removeAll=False):
         if removeAll:
             self.tblView.model().clear()
-            self.tblView.model().setHorizontalHeaderLabels(self.param.cols)
+            self.tblView.model().setHorizontalHeaderLabels(self.param.headers())
         else:
             indexes = sorted(self.tblView.selectionModel().selectedRows())
             self.tblView.setUpdatesEnabled(False)

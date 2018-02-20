@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param mode ResizeMode to use for image file
      * \see resizeMode
      */
-    void setResizeMode( ResizeMode mode );
+    void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
      * Recalculates the source image (if using an expression for picture's source)
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -297,7 +297,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    int mRotationMapId = -1;
     //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
@@ -340,6 +339,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Loads a local picture for the item
      */
     void loadLocalPicture( const QString &path );
+
+    void disconnectMap( QgsLayoutItemMap *map );
 
   private slots:
 

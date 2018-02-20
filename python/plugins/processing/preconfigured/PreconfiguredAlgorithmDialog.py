@@ -81,7 +81,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                 e.widget.setPalette(palette)
                 self.messageBar().pushMessage("", self.tr('Missing parameter value: {0}').format(
                     e.parameter.description()),
-                    level=QgsMessageBar.WARNING, duration=5)
+                    level=Qgis.Warning, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

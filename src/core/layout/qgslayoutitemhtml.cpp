@@ -279,16 +279,15 @@ QSizeF QgsLayoutItemHtml::totalSize() const
   return mSize;
 }
 
-void QgsLayoutItemHtml::render( QgsRenderContext &context, const QRectF &renderExtent, const int,
-                                const QStyleOptionGraphicsItem * )
+void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int )
 {
   if ( !mWebPage )
     return;
 
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor() / mHtmlUnitsToLayoutUnits, context.scaleFactor() / mHtmlUnitsToLayoutUnits );
+  painter->scale( context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits, context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits );
   painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToLayoutUnits );
   mWebPage->mainFrame()->render( painter, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToLayoutUnits, renderExtent.width() * mHtmlUnitsToLayoutUnits, renderExtent.height() * mHtmlUnitsToLayoutUnits ) );
   painter->restore();

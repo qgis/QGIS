@@ -203,7 +203,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionFromSelectedFeature.png</normaloff>:/images/themes/default/mActionFromSelectedFeature.png</iconset>
+              <normaloff>:/images/themes/default/mActionFromSelectedFeature.svg</normaloff>:/images/themes/default/mActionFromSelectedFeature.scg</iconset>
             </property>
            </widget>
           </item>

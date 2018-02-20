@@ -250,6 +250,9 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
   private:
     std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;
     QgsSymbolWidgetContext mContext;
+    QgsFeature mPreviewFeature;
+    QgsExpressionContext mPreviewExpressionContext;
+
 };
 
 /**

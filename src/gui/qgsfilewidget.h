@@ -124,7 +124,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * Sets the selected filter when the file dialog opens.
      */
-    void setSelectedFilter( const QString selectedFilter ) { mSelectedFilter = selectedFilter; }
+    void setSelectedFilter( const QString &selectedFilter ) { mSelectedFilter = selectedFilter; }
 
     /**
      * Returns the selected filter from the last opened file dialog.

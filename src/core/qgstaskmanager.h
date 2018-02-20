@@ -79,7 +79,7 @@ class CORE_EXPORT QgsTask : public QObject
      * \param description text description of task
      * \param flags task flags
      */
-    QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
+    QgsTask( const QString &description = QString(), QgsTask::Flags flags = AllFlags );
 
     ~QgsTask() override;
 
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     struct SubTask
     {
-      SubTask( QgsTask *task, QgsTaskList dependencies, SubTaskDependency dependency )
+      SubTask( QgsTask *task, const QgsTaskList &dependencies, SubTaskDependency dependency )
         : task( task )
         , dependencies( dependencies )
         , dependency( dependency )
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
        * Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
        * but will be transferred to a QgsTaskManager.
        */
-      explicit TaskDefinition( QgsTask *task, QgsTaskList dependentTasks = QgsTaskList() )
+      explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() )
         : task( task )
         , dependentTasks( dependentTasks )
       {}
@@ -559,6 +559,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     struct TaskInfo
     {
       TaskInfo( QgsTask *task = nullptr, int priority = 0 );
+      void createRunnable();
       QgsTask *task = nullptr;
       QAtomicInt added;
       int priority;

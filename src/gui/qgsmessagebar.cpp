@@ -206,22 +206,22 @@ bool QgsMessageBar::clearWidgets()
 
 void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
 {
-  pushMessage( title, message, SUCCESS );
+  pushMessage( title, message, Qgis::Success );
 }
 
 void QgsMessageBar::pushInfo( const QString &title, const QString &message )
 {
-  pushMessage( title, message, INFO );
+  pushMessage( title, message, Qgis::Info );
 }
 
 void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 {
-  pushMessage( title, message, WARNING );
+  pushMessage( title, message, Qgis::Warning );
 }
 
 void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
-  pushMessage( title, message, CRITICAL );
+  pushMessage( title, message, Qgis::Critical );
 }
 
 void QgsMessageBar::showItem( QgsMessageBarItem *item )
@@ -273,26 +273,10 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   // Log all messages that are sent to the message bar into the message log so the
   // user can get them back easier.
   QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
-  QgsMessageLog::MessageLevel level;
-  switch ( item->level() )
-  {
-    case QgsMessageBar::INFO:
-      level = QgsMessageLog::INFO;
-      break;
-    case QgsMessageBar::WARNING:
-      level = QgsMessageLog::WARNING;
-      break;
-    case QgsMessageBar::CRITICAL:
-      level = QgsMessageLog::CRITICAL;
-      break;
-    default:
-      level = QgsMessageLog::NONE;
-      break;
-  }
-  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), level );
+  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), item->level() );
 }
 
-QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item = nullptr;
   item = dynamic_cast<QgsMessageBarItem *>( widget );
@@ -308,7 +292,7 @@ QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::Me
   return item;
 }
 
-void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
   pushItem( item );
@@ -316,18 +300,18 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsM
 
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
-  QgsMessageBarItem *item = new QgsMessageBarItem( text, INFO, 0, parent );
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::Info, 0, parent );
   return item;
 }
 
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
-  return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
+  return new QgsMessageBarItem( title, text, Qgis::Info, 0, parent );
 }
 
 QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
-  return new QgsMessageBarItem( widget, INFO, 0, parent );
+  return new QgsMessageBarItem( widget, Qgis::Info, 0, parent );
 }
 
 void QgsMessageBar::updateCountdown()

@@ -113,8 +113,10 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     }
 #endif
 
-  protected:
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     QgsRectangle calculateBoundingBox() const override;
 
   private:

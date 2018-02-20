@@ -77,11 +77,11 @@ QList<QAction *> QgsGeoPackageRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsGeoPackageRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 
@@ -182,7 +182,7 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
   }
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
@@ -379,11 +379,11 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                       layerName.toUtf8().constData(),
                       layerName.toUtf8().constData() );
         status = sqlite3_exec(
-                   database.get(),                              /* An open database */
-                   sql,                                 /* SQL to be evaluated */
-                   nullptr,                                /* Callback function */
-                   nullptr,                                /* 1st argument to callback */
-                   &errmsg                              /* Error msg written here */
+                   database.get(),               /* An open database */
+                   sql,                          /* SQL to be evaluated */
+                   nullptr,                      /* Callback function */
+                   nullptr,                      /* 1st argument to callback */
+                   &errmsg                       /* Error msg written here */
                  );
         sqlite3_free( sql );
         // Remove from optional tables, may silently fail
@@ -396,11 +396,11 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                                        tableName.toUtf8().constData(),
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            database.get(),                              /* An open database */
+            database.get(),                      /* An open database */
             sql,                                 /* SQL to be evaluated */
-            nullptr,                                /* Callback function */
-            nullptr,                                /* 1st argument to callback */
-            nullptr                                 /* Error msg written here */
+            nullptr,                             /* Callback function */
+            nullptr,                             /* 1st argument to callback */
+            nullptr                              /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -409,11 +409,11 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            database.get(),                              /* An open database */
+            database.get(),                      /* An open database */
             sql,                                 /* SQL to be evaluated */
-            nullptr,                                /* Callback function */
-            nullptr,                                /* 1st argument to callback */
-            nullptr                                 /* Error msg written here */
+            nullptr,                             /* Callback function */
+            nullptr,                             /* 1st argument to callback */
+            nullptr                              /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -421,22 +421,22 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            database.get(),                              /* An open database */
+            database.get(),                      /* An open database */
             sql,                                 /* SQL to be evaluated */
-            nullptr,                                /* Callback function */
-            nullptr,                                /* 1st argument to callback */
-            nullptr                                 /* Error msg written here */
+            nullptr,                             /* Callback function */
+            nullptr,                             /* 1st argument to callback */
+            nullptr                              /* Error msg written here */
           );
           sqlite3_free( sql );
         }
         // Vacuum
         {
           ( void )sqlite3_exec(
-            database.get(),                              /* An open database */
+            database.get(),                      /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
-            nullptr,                                /* Callback function */
-            nullptr,                                /* 1st argument to callback */
-            nullptr                                 /* Error msg written here */
+            nullptr,                             /* Callback function */
+            nullptr,                             /* 1st argument to callback */
+            nullptr                              /* Error msg written here */
           );
         }
 
@@ -487,7 +487,7 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
   lst.append( actionDeleteConnection );
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
   lst.append( actionAddTable );
 
@@ -529,7 +529,7 @@ void QgsGeoPackageCollectionItem::addConnection()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
   QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'..." ).arg( mName ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'…" ).arg( mName ), this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;

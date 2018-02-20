@@ -54,11 +54,6 @@ QgsWkbTypes::Type QgsMinimumEnclosingCircleAlgorithm::outputWkbType( QgsWkbTypes
   return QgsWkbTypes::Polygon;
 }
 
-QgsProcessingAlgorithm::Flags QgsMinimumEnclosingCircleAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), QgsProcessingParameterNumber::Integer,
@@ -103,6 +98,13 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
     QgsAttributes attrs = f.attributes();
     attrs << radius
           << M_PI *radius *radius;
+    f.setAttributes( attrs );
+  }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant();
     f.setAttributes( attrs );
   }
   return f;

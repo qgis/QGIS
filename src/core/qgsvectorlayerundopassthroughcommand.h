@@ -162,7 +162,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeGeometry : public Qg
      * \param fid feature ID of feature to change
      * \param geom new geometru
      */
-    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsFeatureId &fid, const QgsGeometry &geom );
+    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsGeometry &geom );
 
     void undo() override;
     void redo() override;
@@ -201,6 +201,35 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
     const int mField;
     const QVariant mNewValue;
     const QVariant mOldValue;
+};
+
+/**
+ * \ingroup core
+ * \class QgsVectorLayerUndoPassthroughCommandChangeAttributes
+ * \brief Undo command for changing attributes' values from a vector layer in transaction group.
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttributes: public QgsVectorLayerUndoPassthroughCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttributes
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature
+     * \param newValues New values for attributes
+     * \param oldValues Old values for attributes
+     */
+    QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+
+    void undo() override;
+    void redo() override;
+
+  private:
+    QgsFeatureId mFid;
+    const QgsAttributeMap mNewValues;
+    const QgsAttributeMap mOldValues;
 };
 
 /**

@@ -40,6 +40,9 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
     void deactivate() override;
 
+    //! catch escape when active to action
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
   private:
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;

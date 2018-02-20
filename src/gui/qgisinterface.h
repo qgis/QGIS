@@ -250,7 +250,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
-    virtual QAction *actionNodeTool() = 0;
+    virtual QAction *actionVertexTool() = 0;
 
     // View menu actions
     //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.
@@ -314,6 +314,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionOpenFieldCalculator() = 0;
+
+    /**
+     * Statistical summary action.
+     * \since QGIS 3.0
+     */
+    virtual QAction *actionOpenStatisticalSummary() = 0;
+
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionSaveActiveLayerEdits() = 0;
     virtual QAction *actionAllEdits() = 0;

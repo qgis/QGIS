@@ -61,7 +61,10 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsreport.h"
 #include "qgsreportorganizerwidget.h"
+#include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
+#include "ui_defaults.h"
+
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -76,6 +79,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPageSetupDialog>
+#include <QWidgetAction>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -124,6 +128,12 @@ void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> it
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
+}
+
+
+static bool cmpByText_( QAction *a, QAction *b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
 
 
@@ -369,6 +379,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
   connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
 
+#ifdef Q_OS_MAC
+  // OSX has issues with QShortcut when certain children are focused
+  ctrlEquals->setParent( mView );
+  ctrlEquals->setContext( Qt::WidgetWithChildrenShortcut );
+  backSpace->setParent( mView );
+  backSpace->setContext( Qt::WidgetWithChildrenShortcut );
+#endif
+
   mActionPreviewModeOff->setChecked( true );
   connect( mActionPreviewModeOff, &QAction::triggered, this, [ = ]
   {
@@ -610,6 +628,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mActionsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mAtlasToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mReportToolbar->toggleViewAction() );
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
@@ -619,7 +640,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
 
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
-  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
+  mGeneralDock = new QgsDockWidget( tr( "Layout Panel" ), this );
   mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
   mGeneralDock->setMinimumWidth( minDockWidth );
   mGeneralPropertiesStack = new QgsPanelWidgetStack();
@@ -630,14 +651,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGeneralDock->setUserVisible( true );
   } );
 
-  mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
+  mItemDock = new QgsDockWidget( tr( "Item Properties Panel" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
   mItemPropertiesStack = new QgsPanelWidgetStack();
   mItemDock->setWidget( mItemPropertiesStack );
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
-  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
+  mGuideDock = new QgsDockWidget( tr( "Guides Panel" ), this );
   mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
   mGuideDock->setMinimumWidth( minDockWidth );
   mGuideStack = new QgsPanelWidgetStack();
@@ -648,13 +669,13 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
-  mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
-  mUndoDock->setObjectName( QStringLiteral( "CommandDock" ) );
+  mUndoDock = new QgsDockWidget( tr( "Undo History Panel" ), this );
+  mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
   mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
 
-  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
+  mItemsDock = new QgsDockWidget( tr( "Items Panel" ), this );
   mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
@@ -662,11 +683,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
-  mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
+  mAtlasDock = new QgsDockWidget( tr( "Atlas Panel" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
   connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
 
-  mReportDock = new QgsDockWidget( tr( "Report" ), this );
+  mReportDock = new QgsDockWidget( tr( "Report Organizer Panel" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
   connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
 
@@ -717,6 +738,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mLayoutsMenu->setObjectName( QStringLiteral( "mLayoutsMenu" ) );
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgsLayoutDesignerDialog::populateLayoutsMenu );
 
+  QList<QAction *> actions = mPanelsMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mPanelsMenu->insertActions( nullptr, actions );
+
+  actions = mToolbarMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mToolbarMenu->insertActions( nullptr, actions );
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -726,6 +755,71 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
 {
   return mInterface;
+}
+
+QMenu *QgsLayoutDesignerDialog::createPopupMenu()
+{
+  QMenu *menu = QMainWindow::createPopupMenu();
+  QList< QAction * > al = menu->actions();
+  QList< QAction * > panels, toolbars;
+
+  if ( !al.isEmpty() )
+  {
+    bool found = false;
+    for ( int i = 0; i < al.size(); ++i )
+    {
+      if ( al[ i ]->isSeparator() )
+      {
+        found = true;
+        continue;
+      }
+
+      if ( !found )
+      {
+        panels.append( al[ i ] );
+      }
+      else
+      {
+        toolbars.append( al[ i ] );
+      }
+    }
+
+    std::sort( panels.begin(), panels.end(), cmpByText_ );
+    QWidgetAction *panelstitle = new QWidgetAction( menu );
+    QLabel *plabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
+    plabel->setMargin( 3 );
+    plabel->setAlignment( Qt::AlignHCenter );
+    panelstitle->setDefaultWidget( plabel );
+    menu->addAction( panelstitle );
+    Q_FOREACH ( QAction *a, panels )
+    {
+      if ( ( a == mAtlasDock->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportDock->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
+      menu->addAction( a );
+    }
+    menu->addSeparator();
+    QWidgetAction *toolbarstitle = new QWidgetAction( menu );
+    QLabel *tlabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) );
+    tlabel->setMargin( 3 );
+    tlabel->setAlignment( Qt::AlignHCenter );
+    toolbarstitle->setDefaultWidget( tlabel );
+    menu->addAction( toolbarstitle );
+    std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    Q_FOREACH ( QAction *a, toolbars )
+    {
+      if ( ( a == mAtlasToolbar->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportToolbar->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
+      menu->addAction( a );
+    }
+  }
+
+  return menu;
 }
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
@@ -767,6 +861,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuAtlas;
     mMenuAtlas = nullptr;
     mAtlasToolbar->hide();
+    mToolbarMenu->removeAction( mAtlasToolbar->toggleViewAction() );
   }
 
   if ( dynamic_cast< QgsReport * >( layout ) )
@@ -783,6 +878,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuReport;
     mMenuReport = nullptr;
     mReportToolbar->hide();
+    mToolbarMenu->removeAction( mReportToolbar->toggleViewAction() );
   }
 
   updateActionNames( mMasterLayout->layoutType() );
@@ -1455,7 +1551,7 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
   mBlockItemOptions = false;
 
   if ( focusItem )
-    showItemOptions( focusItem );
+    showItemOptions( focusItem, false );
 }
 
 void QgsLayoutDesignerDialog::saveAsTemplate()
@@ -1488,7 +1584,7 @@ void QgsLayoutDesignerDialog::saveAsTemplate()
   context.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
   {
-    QMessageBox::warning( this, tr( "Save template" ), tr( "Error creating template file." ) );
+    QMessageBox::warning( this, tr( "Save Template" ), tr( "Error creating template file." ) );
   }
 }
 
@@ -1512,7 +1608,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
   QFile templateFile( openFileString );
   if ( !templateFile.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+    QMessageBox::warning( this, tr( "Load from Template" ), tr( "Could not read template file." ) );
     return;
   }
 
@@ -1525,7 +1621,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
     QList< QgsLayoutItem * > items = currentLayout()->loadFromTemplate( templateDoc, context, false, &ok );
     if ( !ok )
     {
-      QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+      QMessageBox::warning( this, tr( "Load from Template" ), tr( "Could not read template file." ) );
       return;
     }
     else
@@ -1557,7 +1653,7 @@ void QgsLayoutDesignerDialog::duplicate()
 
   if ( !newDialog )
   {
-    QMessageBox::warning( this, tr( "Duplicate layout" ),
+    QMessageBox::warning( this, tr( "Duplicate Layout" ),
                           tr( "Layout duplication failed." ) );
   }
 }
@@ -1665,15 +1761,15 @@ void QgsLayoutDesignerDialog::print()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Successfully printed layout to %1" ).arg( printerName );
+        message =   tr( "Successfully printed layout to %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Successfully printed layout" );
+        message = tr( "Successfully printed layout." );
       }
       mMessageBar->pushMessage( tr( "Print layout" ),
                                 message,
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
@@ -1682,13 +1778,13 @@ void QgsLayoutDesignerDialog::print()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Could not create print device for %1" ).arg( printerName );
+        message =   tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Could not create print device" );
+        message = tr( "Could not create print device." );
       }
-      QMessageBox::warning( this, tr( "Print layout" ),
+      QMessageBox::warning( this, tr( "Print Layout" ),
                             message,
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -1736,7 +1832,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgisApp::instance()->activateWindow();
   this->raise();
 #endif
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save layout as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Layout as" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )
@@ -1763,7 +1859,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
 
     case QgsLayoutExporter::PrintError:
@@ -1781,7 +1877,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Image Export Error" ),
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
@@ -1867,7 +1963,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
@@ -1887,7 +1983,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export to PDF" ),
                             tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -1974,7 +2070,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
@@ -2001,7 +2097,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -2209,7 +2305,7 @@ void QgsLayoutDesignerDialog::printAtlas()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2242,15 +2338,15 @@ void QgsLayoutDesignerDialog::printAtlas()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Successfully printed atlas to %1" ).arg( printerName );
+        message =   tr( "Successfully printed atlas to %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Successfully printed atlas" );
+        message = tr( "Successfully printed atlas." );
       }
       mMessageBar->pushMessage( tr( "Print atlas" ),
                                 message,
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
@@ -2259,13 +2355,13 @@ void QgsLayoutDesignerDialog::printAtlas()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Could not create print device for %1" ).arg( printerName );
+        message =   tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Could not create print device" );
+        message = tr( "Could not create print device." );
       }
-      QMessageBox::warning( this, tr( "Print atlas" ),
+      QMessageBox::warning( this, tr( "Print Atlas" ),
                             message,
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2273,7 +2369,7 @@ void QgsLayoutDesignerDialog::printAtlas()
     }
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Print Atlas" ),
                             tr( "Printing the layout "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -2282,7 +2378,7 @@ void QgsLayoutDesignerDialog::printAtlas()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Print Atlas" ),
-                            tr( "Error encountered while printing atlas" ),
+                            tr( "Error encountered while printing atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2309,7 +2405,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   // else, it has an atlas to render, so a directory must first be selected
   if ( printAtlas->filenameExpression().isEmpty() )
   {
-    int res = QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+    int res = QMessageBox::warning( nullptr, tr( "Export Atlas as Image" ),
                                     tr( "The filename expression is empty. A default one will be used instead." ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Ok );
@@ -2350,8 +2446,8 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   // test directory (if it exists and is writable)
   if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
   {
-    QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                          tr( "The given output directory is not writable. Canceling." ),
+    QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                          tr( "Unable to write into the given output directory. Canceling." ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;
@@ -2378,7 +2474,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2412,12 +2508,12 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export atlas" ),
                                 tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Atlas Export Error" ),
-                            tr( "Error encountered while exporting atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as Image" ),
+                            tr( "Error encountered while exporting atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2429,14 +2525,14 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
       break;
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Image Export Error" ),
+      QMessageBox::warning( this, tr( "Export Atlas as Image" ),
                             error,
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Atlas as Image" ),
                             tr( "Trying to create image of %2×%3 @ %4dpi "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
@@ -2508,8 +2604,8 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   // test directory (if it exists and is writable)
   if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
   {
-    QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                          tr( "The given output directory is not writable. Canceling." ),
+    QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                          tr( "Unable to write into the given output directory. Canceling." ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;
@@ -2529,7 +2625,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2564,25 +2660,25 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     {
       mMessageBar->pushMessage( tr( "Export atlas" ),
                                 tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Export atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
                             error, QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::SvgLayerError:
-      QMessageBox::warning( this, tr( "Export atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
                             tr( "Cannot create layered SVG file." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::PrintError:
-      QMessageBox::warning( this, tr( "Export atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2590,7 +2686,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
                             tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -2598,8 +2694,8 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Atlas Export Error" ),
-                            tr( "Error encountered while exporting atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as SVG" ),
+                            tr( "Error encountered while exporting atlas." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2670,7 +2766,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   {
     if ( printAtlas->filenameExpression().isEmpty() )
     {
-      int res = QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+      int res = QMessageBox::warning( nullptr, tr( "Export Atlas as PDF" ),
                                       tr( "The filename expression is empty. A default one will be used instead." ),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Ok );
@@ -2714,8 +2810,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     // test directory (if it exists and is writable)
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
-      QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Canceling." ),
+      QMessageBox::warning( nullptr, tr( "Export Atlas as PDF" ),
+                            tr( "Unable to write into the given output directory. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -2735,7 +2831,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
@@ -2778,19 +2874,19 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
                                   tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                  QgsMessageBar::SUCCESS, 0 );
+                                  Qgis::Success, 0 );
       }
       else
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
                                   tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                  QgsMessageBar::SUCCESS, 0 );
+                                  Qgis::Success, 0 );
       }
       break;
     }
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Export atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
                             error, QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -2800,7 +2896,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       break;
 
     case QgsLayoutExporter::PrintError:
-      QMessageBox::warning( this, tr( "Export atlas" ),
+      QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2808,7 +2904,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
                             tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -2816,7 +2912,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Atlas Export Error" ),
+      QMessageBox::warning( this, tr( "Export Atlas as PDF" ),
                             tr( "Error encountered while exporting atlas" ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2836,7 +2932,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save report as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report as" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )
@@ -2859,7 +2955,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -2895,11 +2991,11 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Report Export Error" ),
+      QMessageBox::warning( this, tr( "Export Report as Image" ),
                             tr( "Error encountered while exporting report" ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2912,14 +3008,14 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
       break;
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Image Export Error" ),
+      QMessageBox::warning( this, tr( "Export Report as Image" ),
                             error,
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Report as Image" ),
                             tr( "Trying to create image of %2×%3 @ %4dpi "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
@@ -2941,7 +3037,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   outputFileName = QFileDialog::getSaveFileName(
                      this,
-                     tr( "Export to SVG" ),
+                     tr( "Export Report as SVG" ),
                      outputFileName,
                      tr( "SVG Format" ) + " (*.svg *.SVG)" );
   this->activateWindow();
@@ -2974,7 +3070,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -3011,25 +3107,25 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     {
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Export report" ),
+      QMessageBox::warning( this, tr( "Export Report as SVG" ),
                             error, QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::SvgLayerError:
-      QMessageBox::warning( this, tr( "Export report" ),
+      QMessageBox::warning( this, tr( "Export Report as SVG" ),
                             tr( "Cannot create layered SVG file." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
 
     case QgsLayoutExporter::PrintError:
-      QMessageBox::warning( this, tr( "Export report" ),
+      QMessageBox::warning( this, tr( "Export Report as SVG" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -3037,7 +3133,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Report as SVG" ),
                             tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -3045,8 +3141,8 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Report Export Error" ),
-                            tr( "Error encountered while exporting report" ),
+      QMessageBox::warning( this, tr( "Export Report as SVG" ),
+                            tr( "Error encountered while exporting report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3075,7 +3171,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 #endif
   outputFileName = QFileDialog::getSaveFileName(
                      this,
-                     tr( "Export to PDF" ),
+                     tr( "Export Report as PDF" ),
                      outputFileName,
                      tr( "PDF Format" ) + " (*.pdf *.PDF)" );
   this->activateWindow();
@@ -3108,7 +3204,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -3141,12 +3237,12 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     {
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
     case QgsLayoutExporter::FileError:
-      QMessageBox::warning( this, tr( "Export report" ),
+      QMessageBox::warning( this, tr( "Export Report as PDF" ),
                             error, QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3156,7 +3252,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
       break;
 
     case QgsLayoutExporter::PrintError:
-      QMessageBox::warning( this, tr( "Export report" ),
+      QMessageBox::warning( this, tr( "Export Report as PDF" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -3164,7 +3260,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Export Report as PDF" ),
                             tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -3172,8 +3268,8 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
       break;
 
     case QgsLayoutExporter::IteratorError:
-      QMessageBox::warning( this, tr( "Report Export Error" ),
-                            tr( "Error encountered while exporting report" ),
+      QMessageBox::warning( this, tr( "Export Report as PDF" ),
+                            tr( "Error encountered while exporting report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3204,7 +3300,7 @@ void QgsLayoutDesignerDialog::printReport()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 0, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Printing Report" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
@@ -3237,15 +3333,15 @@ void QgsLayoutDesignerDialog::printReport()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Successfully printed report to %1" ).arg( printerName );
+        message =   tr( "Successfully printed report to %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Successfully printed report" );
+        message = tr( "Successfully printed report." );
       }
       mMessageBar->pushMessage( tr( "Print report" ),
                                 message,
-                                QgsMessageBar::SUCCESS, 0 );
+                                Qgis::Success, 0 );
       break;
     }
 
@@ -3254,13 +3350,13 @@ void QgsLayoutDesignerDialog::printReport()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Could not create print device for %1" ).arg( printerName );
+        message =   tr( "Could not create print device for %1." ).arg( printerName );
       }
       else
       {
-        message = tr( "Could not create print device" );
+        message = tr( "Could not create print device." );
       }
-      QMessageBox::warning( this, tr( "Print report" ),
+      QMessageBox::warning( this, tr( "Print Report" ),
                             message,
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -3268,7 +3364,7 @@ void QgsLayoutDesignerDialog::printReport()
     }
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Print Report" ),
                             tr( "Printing the report "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
@@ -3277,7 +3373,7 @@ void QgsLayoutDesignerDialog::printReport()
 
     case QgsLayoutExporter::IteratorError:
       QMessageBox::warning( this, tr( "Print Report" ),
-                            tr( "Error encountered while printing report" ),
+                            tr( "Error encountered while printing report." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -3378,15 +3474,18 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   // restore the toolbar and dock widgets positions using Qt settings API
   QgsSettings settings;
 
-  //TODO - defaults
-  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) */ ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultLayerDesignerUIstate ), sizeof defaultLayerDesignerUIstate ), QgsSettings::App ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI state failed" );
   }
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) */ ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QgsSettings::App ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI geometry failed" );
+    // default to 80% of screen size, at 10% from top left corner
+    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
+    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    move( pos.width(), pos.height() );
   }
 }
 
@@ -3463,7 +3562,7 @@ void QgsLayoutDesignerDialog::createReportWidget()
 void QgsLayoutDesignerDialog::initializeRegistry()
 {
   sInitializedRegistry = true;
-  auto createPageWidget = ( [this]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     std::unique_ptr< QgsLayoutPagePropertiesWidget > newWidget = qgis::make_unique< QgsLayoutPagePropertiesWidget >( nullptr, item );
     return newWidget.release();
@@ -3610,7 +3709,7 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
 
   if ( memuse > 400 )   // about 4500x4500
   {
-    int answer = QMessageBox::warning( this, tr( "Export layout" ),
+    int answer = QMessageBox::warning( this, tr( "Export Layout" ),
                                        tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
                                        .arg( width ).arg( height ).arg( memuse ),
                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );

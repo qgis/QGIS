@@ -32,7 +32,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
-#include "qgsalgorithmextractnodes.h"
+#include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -49,7 +49,7 @@
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
-#include "qgsalgorithmremoveduplicatenodes.h"
+#include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
@@ -62,6 +62,7 @@
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
+#include "qgsalgorithmuniquevalueindex.h"
 
 
 ///@cond PRIVATE
@@ -85,6 +86,11 @@ QString QgsNativeAlgorithms::id() const
   return QStringLiteral( "native" );
 }
 
+QString QgsNativeAlgorithms::helpId() const
+{
+  return QStringLiteral( "qgis" );
+}
+
 QString QgsNativeAlgorithms::name() const
 {
   return tr( "QGIS (native c++)" );
@@ -98,6 +104,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
@@ -114,7 +121,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
-  addAlgorithm( new QgsExtractNodesAlgorithm() );
+  addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
@@ -131,7 +138,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
-  addAlgorithm( new QgsAlgorithmRemoveDuplicateNodes() );
+  addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );

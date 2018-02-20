@@ -152,7 +152,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
+  mCrs = QgsProject::instance()->crs();
+  updateGuiForMapUnits();
   projectionSelector->setCrs( QgsProject::instance()->crs() );
 
   // Datum transforms
@@ -235,11 +236,24 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // selection of the ellipsoid from settings is defferred to a later point, because it would
   // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
-
   if ( !QgsProject::instance()->crs().isValid() )
   {
     cmbEllipsoid->setCurrentIndex( 0 );
     cmbEllipsoid->setEnabled( false );
+  }
+  else
+  {
+    // attempt to reset the projection ellipsoid according to the srs
+    int index = 0;
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
+    {
+      if ( mEllipsoidList[ i ].acronym == QgsProject::instance()->crs().ellipsoidAcronym() )
+      {
+        index = i;
+        break;
+      }
+    }
+    updateEllipsoidUI( index );
   }
 
   QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
@@ -1260,9 +1274,9 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units )
+void QgsProjectProperties::updateGuiForMapUnits()
 {
-  if ( !projectionSelector->crs().isValid() )
+  if ( !mCrs.isValid() )
   {
     // no projection set - disable everything!
     int idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
@@ -1289,6 +1303,8 @@ void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit unit
   }
   else
   {
+    QgsUnitTypes::DistanceUnit units = mCrs.mapUnits();
+
     mDistanceUnitsCombo->setEnabled( true );
     mAreaUnitsCombo->setEnabled( true );
     mCoordinateDisplayComboBox->setEnabled( true );
@@ -1319,27 +1335,23 @@ void QgsProjectProperties::srIdUpdated()
   if ( !projectionSelector->hasValidSelection() )
     return;
 
-  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
+  mCrs = projectionSelector->crs();
+  updateGuiForMapUnits();
 
-  //set radio button to crs map unit type
-  QgsUnitTypes::DistanceUnit units = srs.mapUnits();
-
-  updateGuiForMapUnits( units );
-
-  if ( srs.isValid() )
+  if ( mCrs.isValid() )
   {
     cmbEllipsoid->setEnabled( true );
     // attempt to reset the projection ellipsoid according to the srs
-    int myIndex = 0;
+    int index = 0;
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
-      if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+      if ( mEllipsoidList[ i ].acronym == mCrs.ellipsoidAcronym() )
       {
-        myIndex = i;
+        index = i;
         break;
       }
     }
-    updateEllipsoidUI( myIndex );
+    updateEllipsoidUI( index );
   }
   else
   {
@@ -1410,10 +1422,8 @@ void QgsProjectProperties::pbnWMSSetUsedSRS_clicked()
   }
 
   QSet<QString> crsList;
-
-  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
-  if ( srs.isValid() )
-    crsList << srs.authid();
+  if ( mCrs.isValid() )
+    crsList << mCrs.authid();
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -1927,7 +1937,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   leSemiMajor->clear();
   leSemiMinor->clear();
 
-  cmbEllipsoid->setEnabled( projectionSelector->crs().isValid() );
+  cmbEllipsoid->setEnabled( mCrs.isValid() );
   cmbEllipsoid->setToolTip( QLatin1String( "" ) );
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
   {
@@ -1945,7 +1955,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
   }
 
-  if ( projectionSelector->crs().isValid() )
+  if ( mCrs.isValid() )
     cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
 
@@ -1956,12 +1966,12 @@ void QgsProjectProperties::projectionSelectorInitialized()
   // Reading ellipsoid from settings
   QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
 
-  int myIndex = 0;
+  int index = 0;
   for ( int i = 0; i < mEllipsoidList.length(); i++ )
   {
     if ( mEllipsoidList.at( i ).acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
     {
-      myIndex = i;
+      index = i;
       break;
     }
   }
@@ -1969,11 +1979,11 @@ void QgsProjectProperties::projectionSelectorInitialized()
   // Update parameters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
-    mEllipsoidList[ myIndex ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ myIndex ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+    mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
+    mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
   }
 
-  updateEllipsoidUI( myIndex );
+  updateEllipsoidUI( index );
 }
 
 void QgsProjectProperties::mButtonAddColor_clicked()
@@ -2028,7 +2038,7 @@ void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
   }
   else
   {
-    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    QMessageBox::warning( this, tr( "Set Scale" ), tr( "The text you entered is not a valid scale." ) );
     changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
   }
 

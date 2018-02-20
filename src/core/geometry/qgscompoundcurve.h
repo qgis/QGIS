@@ -142,10 +142,11 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     }
 #endif
 
+    QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;
-    QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
   private:
     QVector< QgsCurve * > mCurves;

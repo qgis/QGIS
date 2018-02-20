@@ -25,11 +25,13 @@ class QToolButton;
 class QTreeView;
 
 class QgsDoubleSpinBox;
+class QgsFloatingWidget;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsProject;
+
 
 #include "qgssnappingconfig.h"
 
@@ -133,6 +135,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mAllLayersAction = nullptr;
     QAction *mActiveLayerAction = nullptr;
     QAction *mAdvancedModeAction = nullptr;
+    QAction *mEditAdvancedConfigAction = nullptr;
     QToolButton *mTypeButton = nullptr;
     QAction *mTypeAction; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
@@ -147,6 +150,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
+    QgsFloatingWidget *mAdvancedConfigContainer;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };

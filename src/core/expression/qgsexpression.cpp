@@ -664,16 +664,16 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "atlas_featureid" ), QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
   sVariableHelpTexts.insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
-  //composer item variables
-  sVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "Composer item unique ID." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
+  //layout item variables
+  sVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user ID (not necessarily unique)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
 
   //map settings item variables
-  sVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
@@ -827,7 +827,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     QString previewString = value.toString();
     if ( previewString.length() > MAX_PREVIEW + 3 )
     {
-      return QString( tr( "'%1...'" ) ).arg( previewString.left( MAX_PREVIEW ) );
+      return tr( "'%1…'" ).arg( previewString.left( MAX_PREVIEW ) );
     }
     else
     {
@@ -844,7 +844,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
       if ( mapStr.length() > MAX_PREVIEW + 3 )
       {
-        mapStr = QString( tr( "%1..." ) ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = QString( tr( "%1…" ) ).arg( mapStr.left( MAX_PREVIEW ) );
         break;
       }
     }
@@ -860,7 +860,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       listStr.append( formatPreviewString( *it ) );
       if ( listStr.length() > MAX_PREVIEW + 3 )
       {
-        listStr = QString( tr( "%1..." ) ).arg( listStr.left( MAX_PREVIEW ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
         break;
       }
     }

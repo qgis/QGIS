@@ -52,7 +52,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mStrokeWidthSpinBox_valueChanged );
   connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
   connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged );
-  setPanelTitle( tr( "Picture properties" ) );
+  setPanelTitle( tr( "Picture Properties" ) );
 
   mFillColorButton->setAllowOpacity( true );
   mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
@@ -117,7 +117,7 @@ void QgsLayoutPictureWidget::mPictureBrowseButton_clicked()
   }
 
   //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select svg or image file" ), openDir );
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select SVG or Image File" ), openDir );
   if ( filePath.isEmpty() )
   {
     return;
@@ -127,7 +127,7 @@ void QgsLayoutPictureWidget::mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, QStringLiteral( "Invalid file" ), QStringLiteral( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, QStringLiteral( "Select File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
     return;
   }
 
@@ -192,7 +192,7 @@ void QgsLayoutPictureWidget::mPreviewListWidget_currentItemChanged( QListWidgetI
 void QgsLayoutPictureWidget::mAddDirectoryButton_clicked()
 {
   //let user select a directory
-  QString directory = QFileDialog::getExistingDirectory( this, tr( "Select new preview directory" ) );
+  QString directory = QFileDialog::getExistingDirectory( this, tr( "Select New Preview Directory" ) );
   if ( directory.isNull() )
   {
     return; //dialog canceled by user
@@ -544,7 +544,7 @@ int QgsLayoutPictureWidget::addDirectoryToPreview( const QString &path )
   QFileInfoList fileList = directory.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator fileIt = fileList.constBegin();
 
-  QProgressDialog progress( QStringLiteral( "Adding Icons..." ), QStringLiteral( "Abort" ), 0, fileList.size() - 1, this );
+  QProgressDialog progress( tr( "Adding Icons…" ), tr( "Abort" ), 0, fileList.size() - 1, this );
   //cancel button does not seem to work properly with modal dialog
   //progress.setWindowModality(Qt::WindowModal);
 

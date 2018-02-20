@@ -69,7 +69,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
       if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
-            QgsMessageBar::CRITICAL, QgisApp::instance()->messageTimeout() );
+            Qgis::Critical, QgisApp::instance()->messageTimeout() );
         deactivate();
       }
       else
@@ -131,7 +131,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     }
   }
 
-  if ( mPoints.size() == 4 )
+  if ( mPoints.size() == 4 && !mCenters.isEmpty() )
   {
     QgsPoint center = QgsPoint( mCenters.at( 0 ) );
     const double currentDist = mapPoint.distanceSquared( center );
@@ -175,16 +175,16 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     QgsPoint inter;
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
                                            QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
                                            QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
                                            QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
                                            QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
   }
 }
 

@@ -284,7 +284,7 @@ void QgsCompoundColorWidget::importPalette()
 {
   QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select Palette File" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
   if ( filePath.isEmpty() )
   {
@@ -295,7 +295,7 @@ void QgsCompoundColorWidget::importPalette()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "Error, file does not exist or is not readable." ) );
     return;
   }
 
@@ -308,14 +308,14 @@ void QgsCompoundColorWidget::importPalette()
   importedColors = QgsSymbolLayerUtils::importColorsFromGpl( file, ok, paletteName );
   if ( !ok )
   {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "Palette file is not readable." ) );
     return;
   }
 
   if ( importedColors.length() == 0 )
   {
     //no imported colors
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "No colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "No colors found in palette file." ) );
     return;
   }
 
@@ -543,7 +543,7 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
   }
 }
 
-QScreen *QgsCompoundColorWidget::findScreenAt( const QPoint &pos )
+QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
   for ( QScreen *screen : QGuiApplication::screens() )
   {
@@ -756,7 +756,7 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
   if ( !mPickingColor )
   {
     //if not picking a color, use default tool button behavior
-    QWidget::keyPressEvent( e );
+    QgsPanelWidget::keyPressEvent( e );
     return;
   }
 

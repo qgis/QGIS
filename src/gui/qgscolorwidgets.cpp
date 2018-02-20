@@ -1410,7 +1410,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "ColorWidgets/textWidgetFormat" ), 0 ).toInt();
+  mFormat = settings.enumSettingValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), HexRgb );
 
   updateText();
 }

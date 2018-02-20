@@ -127,7 +127,7 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
     {
       displayNull();
     }
-    QWidget::focusOutEvent( event );
+    QAbstractSpinBox::focusOutEvent( event );
     emit editingFinished();
   }
   else
@@ -169,7 +169,7 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
       {
         mOriginalStyleSheet = lineEdit()->styleSheet();
       }
-      lineEdit()->setStyleSheet( QStringLiteral( "font-style: italic; color: grey; }" ) );
+      lineEdit()->setStyleSheet( QStringLiteral( "QLineEdit { font-style: italic; color: grey; }" ) );
     }
     else
     {

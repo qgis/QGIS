@@ -412,7 +412,7 @@ QIcon QgsGrassMapsetItem::icon()
       return QgsApplication::getThemeIcon( "/grass_mapset_search.png" );
     }
   }
-  return QgsDataItem::icon();
+  return QgsDirectoryItem::icon();
 }
 
 void QgsGrassMapsetItem::setState( State state )
@@ -846,7 +846,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                        newExtent, newXSize, newYSize );
           }
-          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate ).toInt();
+          QgsRasterProjector::Precision precision = settings.enumSettingValue( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate );
           projector->setPrecision( precision );
 
           pipe->set( projector );
@@ -995,7 +995,7 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
   if ( !mValid )
   {
     setState( Populated );
-    setIconName( QStringLiteral( "/mIconDelete.png" ) );
+    setIconName( QStringLiteral( "/mIconDelete.svg" ) );
   }
 #ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, mValid, this );
@@ -1219,7 +1219,7 @@ QIcon QgsGrassImportItem::icon()
 {
   if ( mImport && mImport->isCanceled() )
   {
-    setIconName( QStringLiteral( "/mIconDelete.png" ) );
+    setIconName( QStringLiteral( "/mIconDelete.svg" ) );
     return QgsDataItem::icon();
   }
   else

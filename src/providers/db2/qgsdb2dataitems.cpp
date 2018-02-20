@@ -254,7 +254,7 @@ QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
   connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -426,7 +426,7 @@ QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
 {
   QList<QAction *> actionList;
 
-  QAction *action = new QAction( tr( "New Connection..." ), parent );
+  QAction *action = new QAction( tr( "New Connection…" ), parent );
   connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
   actionList.append( action );
 

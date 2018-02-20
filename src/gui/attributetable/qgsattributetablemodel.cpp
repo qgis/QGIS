@@ -37,6 +37,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsfieldmodel.h"
 
 #include <QVariant>
 
@@ -263,6 +264,7 @@ void QgsAttributeTableModel::attributeDeleted( int idx )
 
 void QgsAttributeTableModel::layerDeleted()
 {
+  mLayerCache = nullptr;
   removeRows( 0, rowCount() );
 
   mAttributeWidgetCaches.clear();
@@ -583,8 +585,8 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      QgsField field = layer()->fields().at( mAttributes.at( section ) );
-      return field.name();
+      const QgsField field = layer()->fields().at( mAttributes.at( section ) );
+      return QgsFieldModel::fieldToolTip( field );
     }
   }
   else
@@ -595,7 +597,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() ||
+  if ( !index.isValid() || !layer() ||
        ( role != Qt::TextAlignmentRole
          && role != Qt::DisplayRole
          && role != Qt::ToolTipRole
@@ -741,10 +743,10 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
 
-  if ( index.column() >= mFieldCount )
+  if ( index.column() >= mFieldCount || !layer() )
     return Qt::NoItemFlags;
 
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
   bool editable = false;
   const int fieldIndex = mAttributes[index.column()];
@@ -780,7 +782,7 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
 }
 
 
-void QgsAttributeTableModel::executeAction( const QUuid &action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
   layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );

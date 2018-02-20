@@ -32,7 +32,8 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
 from qgis.PyQt.QtGui import QColor, QPalette
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
@@ -196,10 +197,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     break
 
             self.clearProgress()
-            self.setProgressText(self.tr('Processing algorithm...'))
+            self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
 
             self.setInfo(
-                self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.algorithm().displayName()), escapeHtml=False)
+                self.tr('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
 
             feedback.pushInfo(self.tr('Input parameters:'))
             display_params = []
@@ -251,7 +252,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                     self.finish(ok, results, context, feedback)
 
-                if self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanRunInBackground:
+                if not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
                     # Make sure the Log tab is visible before executing the algorithm
                     self.showLog()
 
@@ -275,7 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 pass
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
-                                          level=QgsMessageBar.WARNING, duration=5)
+                                          level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
@@ -285,7 +286,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
                 if isinstance(out, QgsProcessingOutputHtml) and out.name() in result and result[out.name()]:
-                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(),
+                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(), timestamp=time.localtime(),
                                           result=result[out.name()])
 
             if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen):

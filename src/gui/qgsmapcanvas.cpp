@@ -2,7 +2,7 @@
 qgsmapcanvas.cpp  -  description
 ------------------ -
 begin                : Sun Jun 30 2002
-copyright            : ( C ) 2002 by Gary E.Sherman
+copyright            : (C) 2002 by Gary E.Sherman
 email                : sherman at mrcc.com
 ***************************************************************************/
 
@@ -151,7 +151,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   //segmentation parameters
   QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "qgis/segmentationToleranceType" ), 0 ).toInt() );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumSettingValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 
@@ -503,6 +503,7 @@ void QgsMapCanvas::refreshMap()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
+  mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
   {
@@ -947,7 +948,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   QgsRectangle rect = layer->boundingBoxOfSelected();
   if ( rect.isNull() )
   {
-    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
     return;
   }
 
@@ -994,7 +995,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds 
   }
   else
   {
-    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, Qgis::Warning );
   }
 
 }
@@ -1015,7 +1016,7 @@ void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
   }
   else
   {
-    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, Qgis::Warning );
   }
 }
 
@@ -1070,7 +1071,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   QgsRectangle rect = layer->boundingBoxOfSelected();
   if ( rect.isNull() )
   {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
     return;
   }
 

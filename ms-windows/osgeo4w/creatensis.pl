@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # creates a NSIS installer from OSGeo4W packages
 # note: works also on Unix
 

@@ -465,11 +465,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   QMenu *advMenu = new QMenu;
 
   advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
-  advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Match to symbols from file…" ), this, SLOT( matchToSymbolsFromXml() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mCategorizedSymbol->type() == QgsSymbol::Marker )
   {
-    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend );
   }
@@ -635,7 +635,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
             << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
@@ -1014,7 +1014,7 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {

@@ -76,7 +76,7 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   {
     currentDist = QgsGeometryUtils::sqrDistance2D( pt, vertex );
     // The <= is on purpose: for geometries with closing vertices, this ensures
-    // that the closing vertex is retuned. For the node tool, the rubberband
+    // that the closing vertex is returned. For the vertex tool, the rubberband
     // of the closing vertex is above the opening vertex, hence with the <=
     // situations where the covered opening vertex rubberband is selected are
     // avoided.
@@ -248,6 +248,9 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
+  // z support for intersection point
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
+
   return true;
 }
 
@@ -310,7 +313,57 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 
-QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
+bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const double radius,
+    const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+    QgsPointXY &intersection )
+{
+  // formula taken from http://mathworld.wolfram.com/Circle-LineIntersection.html
+
+  const double x1 = linePoint1.x() - center.x();
+  const double y1 = linePoint1.y() - center.y();
+  const double x2 = linePoint2.x() - center.x();
+  const double y2 = linePoint2.y() - center.y();
+  const double dx = x2 - x1;
+  const double dy = y2 - y1;
+
+  const double dr = std::sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
+  const double d = x1 * y2 - x2 * y1;
+
+  const double disc = std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 );
+
+  if ( disc < 0 )
+  {
+    //no intersection or tangent
+    return false;
+  }
+  else
+  {
+    // two solutions
+    const int sgnDy = dy < 0 ? -1 : 1;
+
+    const double ax = center.x() + ( d * dy + sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double ay = center.y() + ( -d * dx + std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const QgsPointXY p1( ax, ay );
+
+    const double bx = center.x() + ( d * dy - sgnDy * dx * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double by = center.y() + ( -d * dx - std::fabs( dy ) * std::sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const QgsPointXY p2( bx, by );
+
+    // snap to nearest intersection
+
+    if ( intersection.sqrDist( p1 ) < intersection.sqrDist( p2 ) )
+    {
+      intersection.set( p1.x(), p1.y() );
+    }
+    else
+    {
+      intersection.set( p2.x(), p2.y() );
+    }
+    return true;
+  }
+}
+
+QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
 {
   QVector<SelfIntersection> intersections;
 
@@ -554,6 +607,10 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   }
 
   result = possibleMidPoints.at( minDistIndex );
+
+  // add z support if necessary
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, result );
+
   return true;
 }
 
@@ -1114,4 +1171,22 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
     resultAngle = a1 - counterClockwiseDiff / 2.0;
   }
   return normalizedAngle( resultAngle );
+}
+
+bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+{
+  bool rc = false;
+
+  for ( const QgsPoint &pt : points )
+  {
+    if ( pt.is3D() )
+    {
+      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+      point.setZ( pt.z() );
+      rc = true;
+      break;
+    }
+  }
+
+  return rc;
 }

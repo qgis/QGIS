@@ -114,7 +114,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   const QgsAbstractGeometry *geom = featureGeometry.constGet();
 
   // Search for touching neighboring geometries
-  for ( QgsFeatureId testId : featurePool->getIntersects( featureGeometry.boundingBox() ) )
+  const QgsFeatureIds intersects = featurePool->getIntersects( featureGeometry.boundingBox() );
+  for ( QgsFeatureId testId : intersects )
   {
     QgsFeature testFeature;
     if ( !featurePool->get( testId, testFeature ) )

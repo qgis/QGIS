@@ -142,9 +142,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0
@@ -174,9 +174,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0
@@ -211,9 +211,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0
@@ -242,9 +242,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0
@@ -278,9 +278,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 h = feat[height]
                 angle = feat[rotation]
                 if not w or not h or not angle:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width, height or angle. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width, height or angle. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0
@@ -311,9 +311,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 if not w or not h:
-                    feedback.pushInfo(self.tr('Feature {} has empty '
-                                              'width or height. '
-                                              'Skipping...'.format(feat.id())))
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
                     continue
 
                 xOffset = w / 2.0

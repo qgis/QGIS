@@ -59,7 +59,9 @@ class CORE_EXPORT QgsEllipse
 
     /**
      * Constructs an ellipse by foci (\a pt1 and \a pt2) and a point \a pt3.
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance with the third point \a pt3.
      * The azimuth is the angle between \a pt1 and \a pt2.
      * \param pt1 First focus.
@@ -70,7 +72,9 @@ class CORE_EXPORT QgsEllipse
 
     /**
      * Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a pt1 and \a pt2.
      * The azimuth always takes the default value.
      * \param pt1 First corner.
@@ -80,7 +84,9 @@ class CORE_EXPORT QgsEllipse
 
     /**
      * Constructs an ellipse by a center point and a another point.
-     * The center point keeps z and m values from \a ptc.
+     * The center point keeps m value from \a ptc. Z dimension is also
+     * supported and is retrieved from the first 3D point amongst \a ptc and
+     * \a pt1.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1.
      * The azimuth always takes the default value.
      * \param ptc Center point.
@@ -90,7 +96,9 @@ class CORE_EXPORT QgsEllipse
 
     /**
      * Constructs an ellipse by a central point and two other points.
-     * The center point keeps z and m values from \a ptc.
+     * The center point keeps m value from \a ptc. Z dimension is also
+     * supported and is retrieved from the first 3D point amongst \a ptc,
+     * \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1 and \a pt2.
      * The azimuth is the angle between \a ptc and \a pt1.
      * \param ptc Center point.

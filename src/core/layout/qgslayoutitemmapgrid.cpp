@@ -555,7 +555,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   p->save();
   p->setCompositionMode( mBlendMode );
-  p->setRenderHint( QPainter::Antialiasing );
+  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
 
   QRectF thisPaintRect = QRectF( 0, 0, mMap->rect().width(), mMap->rect().height() );
   p->setClipRect( thisPaintRect );
@@ -1458,10 +1458,10 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   switch ( coord )
   {
     case Longitude:
-      return QgsCoordinateFormatter::formatX( value, format, flags );
+      return QgsCoordinateFormatter::formatX( value, format, mGridAnnotationPrecision, flags );
 
     case Latitude:
-      return QgsCoordinateFormatter::formatY( value, format, flags );
+      return QgsCoordinateFormatter::formatY( value, format, mGridAnnotationPrecision, flags );
   }
 
   return QString(); // no warnings
@@ -2329,8 +2329,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
 
-    inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mMap->crs() );
+    inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );
   }
   catch ( QgsCsException &cse )
   {

@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsAddIncrementalFieldAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsAddIncrementalFieldAlgorithm::name() const
 {
   return QStringLiteral( "addautoincrementalfield" );
@@ -104,7 +99,7 @@ QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &fe
 {
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {
-    for ( const QString &field : mGroupedFieldNames )
+    for ( const QString &field : qgis::as_const( mGroupedFieldNames ) )
     {
       int idx = mFields.lookupField( field );
       if ( idx >= 0 )

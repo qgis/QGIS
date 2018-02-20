@@ -1875,7 +1875,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
     case LayoutMeters:
       return QObject::tr( "m" );
     case LayoutInches:
-      return QObject::tr( "in" );
+      return QObject::tr( "in", "unit inch" );
     case LayoutFeet:
       return QObject::tr( "ft" );
     case LayoutPoints:

@@ -119,8 +119,7 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
         reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
 
-        config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
-                          'nothing': self.VALUEMAP_NULL_TEXT}}
+        config = {'map': [{'two': '2'}, {'twoandhalf': '2.5'}, {'NULL text': 'NULL'}, {'nothing': self.VALUEMAP_NULL_TEXT}]}
 
         # Set a configuration containing values and NULL and check if it
         # is returned intact.
