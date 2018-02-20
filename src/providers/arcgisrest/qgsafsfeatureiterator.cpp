@@ -182,8 +182,26 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
           ++mFeatureIterator;
         }
 
-        if ( !mFilterRect.isNull() && ( !f.hasGeometry() || !f.geometry().intersects( mFilterRect ) ) )
-          success = false;
+        if ( !mFilterRect.isNull() )
+        {
+          if ( !f.hasGeometry() )
+            success = false;
+          else
+          {
+            if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+            {
+              // exact intersection check requested
+              if ( !f.geometry().intersects( mFilterRect ) )
+                success = false;
+            }
+            else
+            {
+              // bounding box intersect check only
+              if ( !f.geometry().boundingBoxIntersects( mFilterRect ) )
+                success = false;
+            }
+          }
+        }
 
         if ( !success )
           continue;
