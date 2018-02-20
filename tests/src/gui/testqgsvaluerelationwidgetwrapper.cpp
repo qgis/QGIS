@@ -62,6 +62,7 @@ void TestQgsValueRelationWidgetWrapper::cleanup()
 
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 {
+
   // create a vector layer
   QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk|:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &vl1, false, false );
@@ -76,10 +77,11 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setEnabled( true );
 
   // add an item virtually
-  QListWidgetItem item;
+  QTableWidgetItem item;
   item.setText( QStringLiteral( "MyText" ) );
-  w.mListWidget->addItem( &item );
-  QCOMPARE( w.mListWidget->item( 0 )->text(), QString( "MyText" ) );
+  w.mTableWidget->setItem( 0, 0, &item );
+
+  QCOMPARE( w.mTableWidget->item( 0, 0 )->text(), QString( "MyText" ) );
 
   // when the widget wrapper is enabled, the container should be enabled
   // as well as items
@@ -87,7 +89,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 
   QCOMPARE( w.widget()->isEnabled(), true );
 
-  bool itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  bool itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, true );
 
   // when the widget wrapper is disabled, the container should still be enabled
@@ -95,7 +97,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   // edition
   w.setEnabled( false );
 
-  itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, false );
 
   QCOMPARE( w.widget()->isEnabled(), true );
@@ -104,7 +106,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setEnabled( true );
 
   QCOMPARE( w.widget()->isEnabled(), true );
-  itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, true );
 }
 
