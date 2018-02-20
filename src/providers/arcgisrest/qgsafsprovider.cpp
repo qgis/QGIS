@@ -73,25 +73,43 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
       mSharedData->mExtent = QgsRectangle();
   }
+
+  QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
+  bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
+  QgsRectangle originalExtent;
+  originalExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
+  originalExtent.setYMinimum( layerExtentMap[QStringLiteral( "ymin" )].toDouble( &yminOk ) );
+  originalExtent.setXMaximum( layerExtentMap[QStringLiteral( "xmax" )].toDouble( &xmaxOk ) );
+  originalExtent.setYMaximum( layerExtentMap[QStringLiteral( "ymax" )].toDouble( &ymaxOk ) );
+  if ( mSharedData->mExtent.isEmpty() && ( !xminOk || !yminOk || !xmaxOk || !ymaxOk ) )
+  {
+    appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), QStringLiteral( "AFSProvider" ) ) );
+    return;
+  }
+  QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::parseSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
+  if ( mSharedData->mExtent.isEmpty() && !extentCrs.isValid() )
+  {
+    appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
+    return;
+  }
+
+  if ( xminOk && yminOk && xmaxOk && ymaxOk )
+  {
+    QgsLayerMetadata::SpatialExtent spatialExtent;
+    spatialExtent.bounds = QgsBox3d( originalExtent );
+    spatialExtent.extentCrs = extentCrs;
+    QgsLayerMetadata::Extent metadataExtent;
+    metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
+    mLayerMetadata.setExtent( metadataExtent );
+  }
+  if ( extentCrs.isValid() )
+  {
+    mLayerMetadata.setCrs( extentCrs );
+  }
+
   if ( mSharedData->mExtent.isEmpty() )
   {
-    QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
-    bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
-    mSharedData->mExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
-    mSharedData->mExtent.setYMinimum( layerExtentMap[QStringLiteral( "ymin" )].toDouble( &yminOk ) );
-    mSharedData->mExtent.setXMaximum( layerExtentMap[QStringLiteral( "xmax" )].toDouble( &xmaxOk ) );
-    mSharedData->mExtent.setYMaximum( layerExtentMap[QStringLiteral( "ymax" )].toDouble( &ymaxOk ) );
-    if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
-    {
-      appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), QStringLiteral( "AFSProvider" ) ) );
-      return;
-    }
-    QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::parseSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
-    if ( !extentCrs.isValid() )
-    {
-      appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
-      return;
-    }
+    mSharedData->mExtent = originalExtent;
     Q_NOWARN_DEPRECATED_PUSH
     mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS ).transformBoundingBox( mSharedData->mExtent );
     Q_NOWARN_DEPRECATED_POP
@@ -172,6 +190,17 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     mSharedData->mObjectIds.append( objectId.toInt() );
   }
 
+  // layer metadata
+
+  mLayerMetadata.setIdentifier( mSharedData->mDataSource.param( QStringLiteral( "url" ) ) );
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setAbstract( mLayerDescription );
+  mLayerMetadata.setTitle( mLayerName );
+  QString copyright = layerData[QStringLiteral( "copyrightText" )].toString();
+  if ( !copyright.isEmpty() )
+    mLayerMetadata.setRights( QStringList() << copyright );
+  mLayerMetadata.addLink( QgsLayerMetadata::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
+
   mValid = true;
 }
 
@@ -200,9 +229,14 @@ QgsFields QgsAfsProvider::fields() const
   return mSharedData->mFields;
 }
 
+QgsLayerMetadata QgsAfsProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
-  return QgsVectorDataProvider::SelectAtId;
+  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )

@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
+#include "qgslayermetadata.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -44,6 +45,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QgsFields fields() const override;
+    QgsLayerMetadata layerMetadata() const override;
     /* Read only for the moment
     bool addFeatures( QgsFeatureList &flist ) override{ return false; }
     bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
@@ -75,6 +77,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     int mObjectIdFieldIdx;
     QString mLayerName;
     QString mLayerDescription;
+    QgsLayerMetadata mLayerMetadata;
 };
 
 #endif // QGSAFSPROVIDER_H
