@@ -209,7 +209,6 @@
 %Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
-%Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
 %Include raster/qgsrasterrange.sip
 %Include raster/qgsrasterrenderer.sip
@@ -369,6 +368,7 @@
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
+%Include raster/qgsrasterprojector.sip
 %Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgspoint.sip
