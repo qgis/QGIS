@@ -75,4 +75,4 @@ class PointOnSurface(QgisFeatureBasedAlgorithm):
                 raise QgsProcessingException(self.tr('Error calculating point on surface: `{error_message}`'.format(error_message=output_geometry.error())))
 
             feature.setGeometry(output_geometry)
-        return feature
+        return [feature]

@@ -87,7 +87,7 @@ bool QgsTranslateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   return true;
 }
 
-QgsFeature QgsTranslateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -101,7 +101,7 @@ QgsFeature QgsTranslateAlgorithm::processFeature( const QgsFeature &feature, Qgs
     geometry.translate( mDeltaX, mDeltaY, mDeltaZ, mDeltaM );
     f.setGeometry( geometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 QgsWkbTypes::Type QgsTranslateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const

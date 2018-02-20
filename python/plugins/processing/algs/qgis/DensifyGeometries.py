@@ -75,4 +75,4 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByCount(self.vertices)
             feature.setGeometry(new_geometry)
-        return feature
+        return [feature]
