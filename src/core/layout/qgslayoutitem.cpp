@@ -951,7 +951,7 @@ void QgsLayoutItem::applyDataDefinedOrientation( double &width, double &height, 
     QgsLayoutItemPage::Orientation orientation = QgsLayoutUtils::decodePaperOrientation( orientationString, ok );
     if ( ok )
     {
-      double heightD, widthD;
+      double heightD = 0.0, widthD = 0.0;
       switch ( orientation )
       {
         case QgsLayoutItemPage::Portrait:
