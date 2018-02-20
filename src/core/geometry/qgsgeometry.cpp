@@ -1106,6 +1106,26 @@ bool QgsGeometry::intersects( const QgsGeometry &geometry ) const
   return geos.intersects( geometry.d->geometry.get(), &mLastError );
 }
 
+bool QgsGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  return d->geometry->boundingBox().intersects( rectangle );
+}
+
+bool QgsGeometry::boundingBoxIntersects( const QgsGeometry &geometry ) const
+{
+  if ( !d->geometry || geometry.isNull() )
+  {
+    return false;
+  }
+
+  return d->geometry->boundingBox().intersects( geometry.constGet()->boundingBox() );
+}
+
 bool QgsGeometry::contains( const QgsPointXY *p ) const
 {
   if ( !d->geometry || !p )
