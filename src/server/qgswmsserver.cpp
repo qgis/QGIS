@@ -2426,7 +2426,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     else
     {
       QDomElement featureElement = infoDocument.createElement( "Feature" );
-      featureElement.setAttribute( "id", FID_TO_STRING( feature.id() ) );
+      featureElement.setAttribute( "id", featureGmlId( &feature, layer->dataProvider()->pkAttributeIndexes() ) );
       layerElement.appendChild( featureElement );
 
       //read all attribute values from the feature
