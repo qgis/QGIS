@@ -193,6 +193,13 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   // layer metadata
 
   mLayerMetadata.setIdentifier( mSharedData->mDataSource.param( QStringLiteral( "url" ) ) );
+  const QString parentIdentifier = layerData[QStringLiteral( "parentLayer" )].toMap().value( QStringLiteral( "id" ) ).toString();
+  if ( !parentIdentifier.isEmpty() )
+  {
+    const QString childUrl = mSharedData->mDataSource.param( QStringLiteral( "url" ) );
+    const QString parentUrl = childUrl.left( childUrl.lastIndexOf( '/' ) ) + '/' + parentIdentifier;
+    mLayerMetadata.setParentIdentifier( parentUrl );
+  }
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setAbstract( mLayerDescription );
   mLayerMetadata.setTitle( mLayerName );

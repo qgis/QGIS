@@ -21,16 +21,13 @@ import shutil
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
 
 from qgis.core import (
-    QgsWkbTypes,
     QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
-    QgsRectangle,
-    QgsPointXY,
-    QgsVectorDataProvider,
-    QgsFeatureRequest,
+    QgsLayerMetadata,
+    QgsBox3d,
+    QgsCoordinateReferenceSystem,
     QgsApplication,
-    QgsSettings
+    QgsSettings,
+    QgsRectangle
 )
 from qgis.testing import (start_app,
                           unittest
@@ -406,6 +403,61 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
         assert vl.isValid()
+
+    def testMetadata(self):
+        """ Test that metadata is correctly acquired from provider """
+
+        endpoint = self.basetestpath + '/metadata_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        extent = QgsLayerMetadata.Extent()
+        extent1 = QgsLayerMetadata.SpatialExtent()
+        extent1.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+        extent1.bounds = QgsBox3d(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        extent.setSpatialExtents([extent1])
+        self.assertEqual(vl.metadata().extent(), extent)
+
+        self.assertEqual(vl.metadata().crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+        self.assertEqual(vl.metadata().identifier(), 'http://' + sanitize(endpoint, ''))
+        self.assertEqual(vl.metadata().parentIdentifier(), 'http://' + self.basetestpath + '/2')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().abstract(), 'QGIS Provider Test Layer')
+        self.assertEqual(vl.metadata().title(), 'QGIS Test')
+        self.assertEqual(vl.metadata().rights(), ['not copyright'])
+        l = QgsLayerMetadata.Link()
+        l.name = 'Source'
+        l.type = 'WWW:LINK'
+        l.url = 'http://' + sanitize(endpoint, '')
+        self.assertEqual(vl.metadata().links(), [l])
 
 
 if __name__ == '__main__':
