@@ -30,13 +30,11 @@ from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
                        QgsLineString)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class Explode(QgisAlgorithm):
+class Explode(QgisFeatureBasedAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -50,11 +48,17 @@ class Explode(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Exploded'), QgsProcessing.TypeVectorLine))
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
+    def outputName(self):
+        return self.tr('Exploded')
+
+    def outputWkbType(self, inputWkb):
+        return QgsWkbTypes.singleType(inputWkb)
+
+    def outputLayerType(self):
+        return QgsProcessing.TypeVectorLine
 
     def name(self):
         return 'explodelines'
@@ -62,31 +66,18 @@ class Explode(QgisAlgorithm):
     def displayName(self):
         return self.tr('Explode lines')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), QgsWkbTypes.singleType(source.wkbType()), source.sourceCrs())
+    def processFeature(self, feature, context, feedback):
+        if not feature.hasGeometry():
+            return [feature]
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        for current, feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            feedback.setProgress(int(current * total))
-
-            if not feature.hasGeometry():
-                sink.addFeature(feature, QgsFeatureSink.FastInsert)
-                continue
-
-            outFeat = QgsFeature()
-            inGeom = feature.geometry()
-            segments = self.extractAsSingleSegments(inGeom)
-            outFeat.setAttributes(feature.attributes())
-            for segment in segments:
-                outFeat.setGeometry(segment)
-                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-        return {self.OUTPUT: dest_id}
+        segments = self.extractAsSingleSegments(feature.geometry())
+        output_features = []
+        for segment in segments:
+            output_feature = QgsFeature()
+            output_feature.setAttributes(feature.attributes())
+            output_feature.setGeometry(segment)
+            output_features.append(output_feature)
+        return output_features
 
     def extractAsSingleSegments(self, geom):
         segments = []

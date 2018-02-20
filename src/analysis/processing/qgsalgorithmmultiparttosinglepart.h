@@ -28,15 +28,16 @@
 /**
  * Native multipart to singlepart algorithm.
  */
-class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
+class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
     QgsMultipartToSinglepartAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
+    QString outputName() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
@@ -45,8 +46,8 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,
+                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
