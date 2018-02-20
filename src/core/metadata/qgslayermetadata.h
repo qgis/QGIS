@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLayerMetadata
          */
         void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
 
-        bool operator==( const Extent &other ) const;
+        bool operator==( const QgsLayerMetadata::Extent &other ) const;
 
 #ifndef SIP_RUN
       private:

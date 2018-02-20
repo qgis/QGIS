@@ -89,7 +89,7 @@ Sets the temporal ``extents`` of the resource.
 .. seealso:: :py:func:`temporalExtents`
 %End
 
-        bool operator==( const Extent &other ) const;
+        bool operator==( const QgsLayerMetadata::Extent &other ) const;
 
 
     };
