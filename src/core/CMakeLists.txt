@@ -671,6 +671,7 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterdataprovider.h
   raster/qgsrasterinterface.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterprojector.h
 
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
@@ -1028,7 +1029,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
-  raster/qgsrasterprojector.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
