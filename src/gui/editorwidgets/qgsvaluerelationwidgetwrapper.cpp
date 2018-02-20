@@ -61,6 +61,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
         }
       }
     }
+
     v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
   }
 
