@@ -693,7 +693,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
             options = self._getOptions()
             values = [options[i] if isinstance(i, int) else QgsProcessingModelChildParameterSource.fromStaticValue(i)
                       for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.flags() & QgsProcessing.FlagOptional:
+            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values
 
