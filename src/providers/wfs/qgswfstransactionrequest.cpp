@@ -16,14 +16,14 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString &uri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
 {
 }
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  QUrl url( baseURL() );
+  QUrl url( mUri.requestUrl( QString( ) ) );
 
   QgsDebugMsg( doc.toString() );
 

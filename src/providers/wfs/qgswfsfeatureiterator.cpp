@@ -35,7 +35,7 @@
 #include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri )
   , mNumberMatched( -1 )
 {
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
@@ -77,7 +77,7 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 // -------------------------
 
 QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI.uri() )
+  : QgsWfsRequest( shared->mURI )
   , mShared( shared )
   , mStop( false )
   , mProgressDialogShowImmediately( false )
@@ -187,8 +187,7 @@ QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
 
 QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool forHits )
 {
-  QUrl getFeatureUrl( mShared->mURI.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
 
   QString typenames;
@@ -374,6 +373,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ),
                                 namespaces );
   }
+
+  QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
 
   return getFeatureUrl;
 }

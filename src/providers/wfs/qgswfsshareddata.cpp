@@ -1170,15 +1170,14 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser()
 
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri )
 {
 }
 
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
@@ -1232,14 +1231,13 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
+  : QgsWfsRequest( shared->mURI ), mShared( shared )
 {
 }
 
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );

@@ -75,6 +75,13 @@ class QgsWFSDataSourceURI
 {
   public:
 
+    //! Http method for DCP URIs
+    enum Method
+    {
+      Get,
+      Post
+    };
+
     explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Return the URI, avoiding expansion of authentication configuration, which is handled during network access
@@ -82,6 +89,9 @@ class QgsWFSDataSourceURI
 
     //! Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
+
+    //! Return request URL with SERVICE=WFS parameter)
+    QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
 
     //! Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
@@ -150,9 +160,17 @@ class QgsWFSDataSourceURI
                           const QString &sql = QString(),
                           bool restrictToCurrentViewExtent = false );
 
+    //! Set Get DCP endpoints
+    void setGetEndpoints( const QgsStringMap &map );
+
+    //! Set Post DCP endpoints
+    void setPostEndpoints( const QgsStringMap &map );
+
   private:
     QgsDataSourceUri    mURI;
     QgsWFSAuthorization mAuth;
+    QgsStringMap mGetEndpoints;
+    QgsStringMap mPostEndpoints;
 };
 
 
