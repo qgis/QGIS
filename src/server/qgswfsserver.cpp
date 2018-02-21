@@ -1872,13 +1872,31 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
       fid = fidElem.attribute( "fid" );
       if ( fid.contains( "." ) )
         fid = fid.section( ".", 1, 1 );
-      if ( provider->pkAttributeIndexes().size() == 1 )
+      QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
+      if ( pkAttributes.isEmpty() )
+      {
+        fids.insert( fid.toLongLong( &conversionSuccess ) );
+      }
+      else
       {
         //assume ID is the primary key, as it is more stable than the feature ID
         QgsFeature feature;
         const QgsFields& fields = provider->fields();
-        QString fieldName = fields[provider->pkAttributeIndexes().at( 0 )].name();
-        QgsExpression pkExpression( fieldName + " = " + fid );
+
+        QString expressionString;
+        QStringList pkValues = fid.split( pkSeparator() );
+        int pkExprSize = qMin( pkAttributes.size(), pkValues.size() );
+        for ( int i = 0; i < pkExprSize; ++i )
+        {
+          if ( i > 0 )
+          {
+            expressionString.append( " AND " );
+          }
+          QString fieldName = fields[ pkAttributes.at( i )].name();
+          expressionString.append( fieldName + " = " + pkValues.at( i ) );
+        }
+        QgsExpression pkExpression( expressionString );
+
         QgsExpressionContext exprContext = QgsExpressionContextUtils::createFeatureBasedContext( feature, fields );
         QgsFeatureRequest fReq( pkExpression, exprContext );
         QgsFeatureIterator fIt = provider->getFeatures( fReq );
@@ -1886,10 +1904,6 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
         {
           fids.insert( feature.id() );
         }
-      }
-      else //assume it is the feture id
-      {
-        fids.insert( fid.toLongLong( &conversionSuccess ) );
       }
     }
   }

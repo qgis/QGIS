@@ -55,6 +55,8 @@ class QgsOWSServer
      */
     static void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap );
 
+    static QString pkSeparator() { return "@@"; }
+
   private:
     QgsOWSServer() {}
 
