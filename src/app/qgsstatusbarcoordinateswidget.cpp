@@ -226,8 +226,12 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
                       mMousePrecisionDecimalPlaces ) );
 
   //ensure the label is big (and small) enough
-  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10 );
-  mLineEdit->setMaximumWidth( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10 );
+  int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
+  if( mLineEdit->minimumWidth()+4 < width || mLineEdit->minimumWidth()-4 > width )
+  {
+    mLineEdit->setMinimumWidth( width );
+    mLineEdit->setMaximumWidth( width );
+  }
 }
 
 
@@ -242,7 +246,12 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   QgsRectangle myExtents = mMapCanvas->extent();
   mLabel->setText( tr( "Extents:" ) );
   mLineEdit->setText( myExtents.toString( true ) );
+
   //ensure the label is big (and small) enough
-  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10 );
-  mLineEdit->setMaximumWidth( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10 );
+  int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
+  if( mLineEdit->minimumWidth()+4 < width || mLineEdit->minimumWidth()-4 > width )
+  {
+    mLineEdit->setMinimumWidth( width );
+    mLineEdit->setMaximumWidth( width );
+  }
 }
