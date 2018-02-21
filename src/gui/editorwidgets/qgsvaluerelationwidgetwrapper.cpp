@@ -57,8 +57,8 @@ QVariant QgsValueRelationWidgetWrapper::value() const
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
         {
-        if ( item->checkState() == Qt::Checked )
-          selection << item->data( Qt::UserRole ).toString();
+          if ( item->checkState() == Qt::Checked )
+            selection << item->data( Qt::UserRole ).toString();
         }
       }
     }
