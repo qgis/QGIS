@@ -643,12 +643,12 @@
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
   </widget>
-  <widget class="QToolBar" name="mAdvancedShapeDigitizeToolBar">
+  <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
-    <string>Advanced Shape Digitizing Toolbar</string>
+    <string>Shape Digitizing Toolbar</string>
    </property>
    <property name="toolTip">
-    <string>Advanced Shape Digitizing Toolbar</string>
+    <string>Shape Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
