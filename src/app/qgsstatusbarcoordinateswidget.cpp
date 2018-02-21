@@ -33,6 +33,9 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )
   , mMousePrecisionDecimalPlaces( 0 )
 {
+  // calculate the size of two chars
+  mTwoCharSize = fontMetrics().width( QStringLiteral( "OO" ) );
+
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
   mLabel->setObjectName( QStringLiteral( "mCoordsLabel" ) );
@@ -244,11 +247,12 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   ensureCoordinatesVisible();
 }
 
-void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible(){
+void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
+{
 
   //ensure the label is big (and small) enough
   int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
-  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > fontMetrics().width( QStringLiteral( "OO" ) ) )
+  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
