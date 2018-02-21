@@ -218,7 +218,7 @@ class WidgetWrapper(QObject):
             path = ''
 
         # TODO: should use selectedFilter argument for default file format
-        filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select file'),
+        filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select File'),
                                                                 path, getFileFilter(self.param))
         if filename:
             settings.setValue('/Processing/LastInputPath',
@@ -505,7 +505,7 @@ class FileWidgetWrapper(WidgetWrapper):
             filter = self.tr('All files (*.*)')
 
         filename, selected_filter = QFileDialog.getOpenFileName(self.widget,
-                                                                self.tr('Select file'), path,
+                                                                self.tr('Select File'), path,
                                                                 filter)
         if filename:
             self.combo.setEditText(filename)
