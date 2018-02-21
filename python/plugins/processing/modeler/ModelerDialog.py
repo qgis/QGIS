@@ -530,7 +530,7 @@ class ModelerDialog(BASE, WIDGET):
             QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
                                      self.tr('Processing'),
                                      Qgis.Critical)
-            QMessageBox.critical(self, self.tr('Could not open model'),
+            QMessageBox.critical(self, self.tr('Open Model'),
                                  self.tr('The selected model could not be loaded.\n'
                                          'See the log for more information.'))
 
