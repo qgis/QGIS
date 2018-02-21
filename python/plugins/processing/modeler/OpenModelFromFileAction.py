@@ -26,11 +26,10 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 import os
-import shutil
-from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
-from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
+from qgis.core import QgsApplication, QgsSettings
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
@@ -41,7 +40,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class OpenModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Open Existing Model…')
+        self.name = QCoreApplication.translate('OpenModelFromFileAction', 'Open Existing Model…')
         self.group = self.tr('Tools')
 
     def getIcon(self):

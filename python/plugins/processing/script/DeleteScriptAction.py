@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from qgis.core import QgsApplication, QgsProcessingAlgorithm
@@ -39,7 +40,7 @@ from processing.script import ScriptUtils
 class DeleteScriptAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr("Delete Script…")
+        self.name = QCoreApplication.translate("DeleteScriptAction", "Delete Script…")
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"

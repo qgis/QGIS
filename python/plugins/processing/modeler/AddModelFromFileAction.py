@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
 from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
@@ -42,7 +42,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Add Model from File…')
+        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model from File…')
         self.group = self.tr('Tools')
 
     def getIcon(self):

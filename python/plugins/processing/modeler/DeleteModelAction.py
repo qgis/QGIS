@@ -28,13 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.core import QgsApplication, QgsProcessingModelAlgorithm
 from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.gui.ContextAction import ContextAction
 
 
 class DeleteModelAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Delete Model…', 'DeleteModelAction')
+        self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingModelAlgorithm)
