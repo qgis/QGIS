@@ -227,7 +227,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 
   //ensure the label is big (and small) enough
   int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
-  if( mLineEdit->minimumWidth()+4 < width || mLineEdit->minimumWidth()-4 > width )
+  if ( mLineEdit->minimumWidth() + 4 < width || mLineEdit->minimumWidth() - 4 > width )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
@@ -249,7 +249,7 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
   //ensure the label is big (and small) enough
   int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
-  if( mLineEdit->minimumWidth()+4 < width || mLineEdit->minimumWidth()-4 > width )
+  if ( mLineEdit->minimumWidth() + 4 < width || mLineEdit->minimumWidth() - 4 > width )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
