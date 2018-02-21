@@ -46,6 +46,7 @@ from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.EditModelAction import EditModelAction
+from processing.modeler.OpenModelFromFileAction import OpenModelFromFileAction
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -56,7 +57,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.actions = [CreateNewModelAction(), AddModelFromFileAction()]
+        self.actions = [CreateNewModelAction(), OpenModelFromFileAction(), AddModelFromFileAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
 
