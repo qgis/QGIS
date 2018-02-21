@@ -202,8 +202,10 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
+    mLineEdit->clear();
     mLabel->setText( tr( "Coordinate:" ) );
   }
+  resizeLineEdit();
 }
 
 void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
@@ -232,7 +234,6 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
   }
 }
 
-
 void QgsStatusBarCoordinatesWidget::showExtent()
 {
   if ( !mToggleExtentsViewButton->isChecked() )
@@ -244,9 +245,16 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   QgsRectangle myExtents = mMapCanvas->extent();
   mLabel->setText( tr( "Extents:" ) );
   mLineEdit->setText( myExtents.toString( true ) );
-  //ensure the label is big enough
-  if ( mLineEdit->width() > mLineEdit->minimumWidth() )
-  {
-    mLineEdit->setMinimumWidth( mLineEdit->width() );
-  }
 }
+
+void QgsStatusBarCoordinatesWidget::resizeLineEdit()
+{
+  // margin is set because of this QT bug:
+  // https://bugreports.qt.io/browse/QTBUG-15974
+  int margin = 30;
+  QString text = mLineEdit->text();
+  QFontMetrics fm = mLineEdit->fontMetrics();
+  int w = fm.boundingRect( text ).width() + margin;
+  mLineEdit->setMinimumWidth( w );
+}
+
