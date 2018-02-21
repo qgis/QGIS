@@ -39,14 +39,14 @@ from processing.script import ScriptUtils
 class DeleteScriptAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr("Delete script")
+        self.name = self.tr("Delete Script…")
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr("Confirmation"),
+                                     self.tr("Delete Script"),
                                      self.tr("Are you sure you want to delete this script?"),
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
@@ -56,7 +56,7 @@ class DeleteScriptAction(ContextAction):
                 os.remove(filePath)
                 QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
             else:
-                QgsMessageBox.warning(None,
-                                      self.tr("File not found"),
-                                      self.tr("Can not find corresponding script file.")
-                                      )
+                QMessageBox.warning(None,
+                                    self.tr("Delete Script"),
+                                    self.tr("Can not find corresponding script file.")
+                                    )

@@ -42,7 +42,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Add model from file')
+        self.name = self.tr('Add Model From File…')
         self.group = self.tr('Tools')
 
     def getIcon(self):

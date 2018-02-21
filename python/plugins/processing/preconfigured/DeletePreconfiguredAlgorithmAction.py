@@ -35,14 +35,14 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Delete preconfigured algorithm', 'DeletePreconfiguredAlgorithmAction')
+        self.name = self.tr('Delete Preconfigured Algorithm…', 'DeletePreconfiguredAlgorithmAction')
 
     def isEnabled(self):
         return isinstance(self.itemData, PreconfiguredAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr('Confirmation', 'DeletePreconfiguredAlgorithmAction'),
+                                     self.tr('Delete Algorithm', 'DeletePreconfiguredAlgorithmAction'),
                                      self.tr('Are you sure you want to delete this algorithm?',
                                              'DeletePreconfiguredAlgorithmAction'),
                                      QMessageBox.Yes | QMessageBox.No,

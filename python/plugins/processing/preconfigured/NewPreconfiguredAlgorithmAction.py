@@ -27,7 +27,6 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.preconfigured.PreconfiguredAlgorithmDialog import PreconfiguredAlgorithmDialog
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
@@ -35,7 +34,7 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class NewPreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Create preconfigured algorithm', 'NewPreconfiguredAlgorithmAction')
+        self.name = self.tr('Create Preconfigured Algorithm…', 'NewPreconfiguredAlgorithmAction')
 
     def isEnabled(self):
         return (isinstance(self.itemData, GeoAlgorithm) and

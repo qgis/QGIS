@@ -33,7 +33,7 @@ from processing.modeler.ModelerDialog import ModelerDialog
 class EditModelAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Edit model', 'EditModelAction')
+        self.name = self.tr('Edit Model…', 'EditModelAction')
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingModelAlgorithm)

@@ -37,7 +37,7 @@ from processing.script.ScriptEditorDialog import ScriptEditorDialog
 class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr("Create new script")
+        self.name = self.tr("Create New Script…")
         self.group = self.tr("Tools")
 
     def execute(self):
