@@ -23,6 +23,7 @@
 #include "qgsaccesscontrol.h"
 #endif
 
+#include "qgsfield.h"
 #include <QHash>
 
 class QgsMapLayer;
@@ -54,6 +55,8 @@ class QgsOWSServer
      */
     static void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap );
 
+    static QString pkSeparator() { return "@@"; }
+
   private:
     QgsOWSServer() {}
 
@@ -72,6 +75,13 @@ class QgsOWSServer
      */
     void applyAccessControlLayerFilters( QgsMapLayer* layer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const;
 #endif
+
+    /** Creates gml id for feature. Returns primary key value or feature id in case there is no PK
+     * @param f feature
+     * @param pkAttributes list of attribute indices used as primary key
+     * @return pk as string or feature id
+    */
+    static QString featureGmlId( const QgsFeature* f, const QgsAttributeList& pkAttributes );
 
 };
 
