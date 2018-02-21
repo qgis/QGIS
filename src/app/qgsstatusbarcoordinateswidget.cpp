@@ -225,13 +225,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
   mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( p, mMapCanvas->mapSettings().destinationCrs(),
                       mMousePrecisionDecimalPlaces ) );
 
-  //ensure the label is big (and small) enough
-  int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
-  if ( mLineEdit->minimumWidth() + 4 < width || mLineEdit->minimumWidth() - 4 > width )
-  {
-    mLineEdit->setMinimumWidth( width );
-    mLineEdit->setMaximumWidth( width );
-  }
+  ensureCoordinatesVisible();
 }
 
 
@@ -247,11 +241,17 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   mLabel->setText( tr( "Extents:" ) );
   mLineEdit->setText( myExtents.toString( true ) );
 
+  ensureCoordinatesVisible();
+}
+
+void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible(){
+
   //ensure the label is big (and small) enough
   int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
-  if ( mLineEdit->minimumWidth() + 4 < width || mLineEdit->minimumWidth() - 4 > width )
+  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > fontMetrics().width( QStringLiteral( "OO" ) ) )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
   }
 }
+
