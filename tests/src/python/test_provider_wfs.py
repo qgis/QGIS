@@ -44,11 +44,10 @@ from providertestbase import ProviderTestCase
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        print('Before: ' + endpoint + x)
-        print('After:  ' + ret)
+        #print('Before: ' + endpoint + x)
+        #print('After:  ' + ret)
         return ret
     ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
-    print('After:   ' + ret)
     return ret
 
 

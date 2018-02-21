@@ -90,7 +90,7 @@ class QgsWFSDataSourceURI
     //! Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
-    //! Return request URL with SERVICE=WFS parameter)
+    //! Return request URL (with SERVICE=WFS parameter)
     QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
 
     //! Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
