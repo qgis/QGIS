@@ -5095,6 +5095,34 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
 
+  QgsProcessingModelChildAlgorithm c9b;
+  c9b.setChildId( "c9b" );
+  c9b.addParameterSources( "x", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "c9", "x" ) );
+  alg3.addChildAlgorithm( c9b );
+
+  QCOMPARE( alg3.dependentChildAlgorithms( "c9" ).count(), 1 );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c8" ).count(), 2 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).contains( "c9" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).contains( "c9b" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7" ).count(), 3 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c9" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c9b" ) );
+
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c9b" ).count(), 3 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c7" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c8" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c9" ) );
+
+  alg3.removeChildAlgorithm( "c9b" );
+
+
   // (de)activate child algorithm
   alg3.deactivateChildAlgorithm( "c9" );
   QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
