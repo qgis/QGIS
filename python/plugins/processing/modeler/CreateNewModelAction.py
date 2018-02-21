@@ -38,7 +38,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Create new model')
+        self.name = self.tr('Create New Model…')
         self.group = self.tr('Tools')
 
     def getIcon(self):
