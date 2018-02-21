@@ -449,7 +449,7 @@ void QgsSingleBandPseudoColorRendererWidget::mLoadFromBandButton_clicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries" ).arg( bandIndex ) );
+    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries." ).arg( bandIndex ) );
   }
 
   loadMinMaxFromTree();
@@ -463,7 +463,7 @@ void QgsSingleBandPseudoColorRendererWidget::mLoadFromFileButton_clicked()
   QString badLines;
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir, tr( "Textfile (*.txt)" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, tr( "Textfile (*.txt)" ) );
   QFile inputFile( fileName );
   if ( inputFile.open( QFile::ReadOnly ) )
   {
@@ -536,12 +536,12 @@ void QgsSingleBandPseudoColorRendererWidget::mLoadFromFileButton_clicked()
 
     if ( importError )
     {
-      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n" ) + badLines );
+      QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "The following lines contained errors\n\n" ) + badLines );
     }
   }
   else if ( !fileName.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
+    QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
 
   loadMinMaxFromTree();
@@ -552,7 +552,7 @@ void QgsSingleBandPseudoColorRendererWidget::mExportToFileButton_clicked()
 {
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Map as File" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( !fileName.isEmpty() )
   {
     if ( !fileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
@@ -610,7 +610,7 @@ void QgsSingleBandPseudoColorRendererWidget::mExportToFileButton_clicked()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+      QMessageBox::warning( this, tr( "Save Color Map as File" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
   }
 }
@@ -625,7 +625,7 @@ void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemDoubleClick
   if ( column == ColorColumn )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change color" ), true );
+    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change Color" ), true );
     if ( newColor.isValid() )
     {
       item->setBackground( ColorColumn, QBrush( newColor ) );
@@ -851,7 +851,7 @@ void QgsSingleBandPseudoColorRendererWidget::changeColor()
   }
   QTreeWidgetItem *firstItem = itemList.first();
 
-  QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change color" ), true );
+  QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change Color" ), true );
   if ( newColor.isValid() )
   {
     Q_FOREACH ( QTreeWidgetItem *item, itemList )
