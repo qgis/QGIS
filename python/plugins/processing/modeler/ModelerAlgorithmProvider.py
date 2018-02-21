@@ -62,7 +62,10 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
         # must reload models if providers list is changed - previously unavailable algorithms
         # which models depend on may now be available
-        QgsApplication.processingRegistry().providerAdded.connect(self.refreshAlgorithms)
+        QgsApplication.processingRegistry().providerAdded.connect(self.onProviderAdded)
+
+    def onProviderAdded(self, provider_id):
+        self.refreshAlgorithms()
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
