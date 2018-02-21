@@ -655,6 +655,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                  "    margin-left:98px;"
                  "    padding-top:3px;"
                  "  }"
+                 "  span.version {"
+                 "    cursor: pointer;"
+                 "  }"
                  "</style>";
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
@@ -915,11 +918,17 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
     if ( ver == QLatin1String( "-1" ) ) ver = '?';
-    html += tr( "Installed version: %1 (in %2)<br/>" ).arg( ver, metadata->value( QStringLiteral( "library" ) ) );
+    html += QStringLiteral( "%1 <span class='version' title='%2 %3'> %4 </span><br/>" ).arg( tr( "Installed version:" ),
+            tr( "in" ),
+            metadata->value( QStringLiteral( "library" ) ),
+            ver );
   }
   if ( ! metadata->value( QStringLiteral( "version_available" ) ).isEmpty() )
   {
-    html += tr( "Available version: %1 (in %2)<br/>" ).arg( metadata->value( QStringLiteral( "version_available" ) ), metadata->value( QStringLiteral( "zip_repository" ) ) );
+    html += QStringLiteral( "%1 <span class='version' title='%2 %3'> %4 </span><br/>" ).arg( tr( "Available version:" ),
+            tr( "in" ),
+            metadata->value( QStringLiteral( "zip_repository" ) ),
+            metadata->value( QStringLiteral( "version_available" ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
