@@ -154,7 +154,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
-  bool haveGeom=true;
+  bool haveGeom = true;
   if ( geomTypeXY->isChecked() )
   {
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
@@ -179,15 +179,15 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   }
   else
   {
-    haveGeom=false;
+    haveGeom = false;
     url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
   }
-  if( haveGeom )
+  if ( haveGeom )
   {
-    QgsCoordinateReferenceSystem crs=crsGeometry->crs();
-    if( crs.isValid() )
+    QgsCoordinateReferenceSystem crs = crsGeometry->crs();
+    if ( crs.isValid() )
     {
-        url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+      url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
     }
 
   }
@@ -299,11 +299,11 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
     else geomTypeNone->setChecked( true );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
     swGeomType->setCurrentIndex( bgGeomType->checkedId() );
-    QString authid=settings.value(key+"/crs","").toString();
-    QgsCoordinateReferenceSystem crs=QgsCoordinateReferenceSystem::fromOgcWmsCrs(authid);
-    if( crs.isValid() )
+    QString authid = settings.value( key + "/crs", "" ).toString();
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
+    if ( crs.isValid() )
     {
-        crsGeometry->setCrs(crs);
+      crsGeometry->setCrs( crs );
     }
   }
 
@@ -342,9 +342,9 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
     if ( geomTypeWKT->isChecked() ) geomColumnType = QStringLiteral( "wkt" );
     settings.setValue( key + "/geomColumnType", geomColumnType );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
-    if( crsGeometry->crs().isValid() )
+    if ( crsGeometry->crs().isValid() )
     {
-        settings.setValue( key + "/crs", crsGeometry->crs().authid());
+      settings.setValue( key + "/crs", crsGeometry->crs().authid() );
     }
   }
 
@@ -732,7 +732,7 @@ bool QgsDelimitedTextSourceSelect::validate()
   {
     message = tr( "The WKT field name must be selected" );
   }
-  else if ( ! geomTypeNone->isChecked() && ! crsGeometry->crs().isValid() ) 
+  else if ( ! geomTypeNone->isChecked() && ! crsGeometry->crs().isValid() )
   {
     message = tr( "The CRS must be selected" );
   }
