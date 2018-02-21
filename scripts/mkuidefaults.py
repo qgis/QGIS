@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -39,7 +40,7 @@ QCoreApplication.setOrganizationDomain("qgis.org")
 QCoreApplication.setApplicationName("QGIS3")
 
 if len(sys.argv) == 1:
-    print "Usage: python ./scripts/mkuidefaults.py \"location_to_ini\""
+    print("Usage: ./scripts/mkuidefaults.py \"location_to_ini\"")
     sys.exit(1)
 
 s = QSettings(sys.argv[1], QSettings.IniFormat)
@@ -49,33 +50,40 @@ print
 
 f = open("src/app/ui_defaults.h", "w")
 
-f.write("#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n\nstatic const unsigned char defaultUIgeometry[] =\n{\n")
+f.write("#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n" +
+        "\nstatic const unsigned char defaultUIgeometry[] =\n{\n")
 
 for chunk in chunks(ba, 16):
-    f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
+    f.write('  {},\n'.format(
+        ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
 f.write("};\n\nstatic const unsigned char defaultUIstate[] =\n{\n")
 
 ba = bytes(s.value("/UI/state"))
 
 for chunk in chunks(ba, 16):
-    f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
+    f.write('  {},\n'.format(
+        ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
 try:
     ba = bytes(s.value("/app/LayoutDesigner/geometry"))
-    f.write("};\n\nstatic const unsigned char defaultLayerDesignerUIgeometry[] =\n{\n")
+    f.write("};\n\nstatic const unsigned char " +
+            "defaultLayerDesignerUIgeometry[] =\n{\n")
 
     for chunk in chunks(ba, 16):
-        f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
+        f.write('  {},\n'.format(
+            ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 except TypeError as ex:
     pass
 
 try:
     ba = bytes(s.value("/app/LayoutDesigner/state"))
-    f.write("};\n\nstatic const unsigned char defaultLayerDesignerUIstate[] =\n{\n")
+    f.write("};\n\nstatic const unsigned char " +
+            "defaultLayerDesignerUIstate[] =\n{\n")
 
     for chunk in chunks(ba, 16):
-        f.write('  {},\n'.format(', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
+        f.write('  {},\n'.format(
+            ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 except TypeError as ex:
     pass
 
