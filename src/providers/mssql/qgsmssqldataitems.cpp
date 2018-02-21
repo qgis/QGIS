@@ -505,7 +505,7 @@ QString QgsMssqlLayerItem::createUri()
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.png" );
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
   mCapabilities &= ~( Fertile );
 }

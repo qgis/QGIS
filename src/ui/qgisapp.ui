@@ -997,7 +997,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMoveVertex.png</normaloff>:/images/themes/default/mActionMoveVertex.png</iconset>
+     <normaloff>:/images/themes/default/mActionMoveVertex.svg</normaloff>:/images/themes/default/mActionMoveVertex.svg</iconset>
    </property>
    <property name="text">
     <string>Offset Point Symbol</string>
@@ -1649,7 +1649,7 @@
   <action name="mActionProjectProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+     <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Project Properties...</string>
@@ -1904,7 +1904,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationNorthArrow">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/north_arrow.png</normaloff>:/images/themes/default/north_arrow.png</iconset>
+     <normaloff>:/images/themes/default/north_arrow.svg</normaloff>:/images/themes/default/north_arrow.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;North Arrow…</string>
