@@ -644,19 +644,39 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
   QString html = "<style>"
+                 "  body {"
+                 "    background-color:white;"
+                 "  }"
                  "  body, table {"
                  "    padding:0px;"
                  "    margin:0px;"
-                 "    font-family:verdana;"
-                 "    font-size: 10pt;"
+                 "    font-family:Verdana, Sans-serif;"
+                 "    font-size:10pt;"
+                 "  }"
+                 "  a {"
+                 "    color:#08c;"
+                 "    text-decoration:none;"
+                 "  }"
+                 "  a:hover,a:focus {"
+                 "    color:#005580;"
+                 "    text-decoration:underline;"
                  "  }"
                  "  div#votes {"
                  "    width:360px;"
                  "    margin-left:98px;"
                  "    padding-top:3px;"
                  "  }"
-                 "  span.version {"
-                 "    cursor: pointer;"
+                 "  td {"
+                 "    vertical-align:top;"
+                 "  }"
+                 "  td.key {"
+                 "    font-weight: bold;"
+                 "    white-space:nowrap;"
+                 "    padding-right:10px;"
+                 "    text-align:right;"
+                 "  }"
+                 "  td.version {"
+                 "    cursor:pointer;"
                  "  }"
                  "</style>";
 
@@ -670,6 +690,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
               "    background-size: 92px 16px;"
               "    width:92px;"
               "    height:16px;"
+              "    margin-bottom:16px;"
               "  }"
               "  div#stars {"
               "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
@@ -814,7 +835,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   // Now the metadata
 
-  html += QLatin1String( "<table cellspacing=\"4\" width=\"100%\"><tr><td>" );
+  html += QLatin1String( "<table cellspacing='4' width='100%'>" );
+  html += QLatin1String( "<tr><td colspan='2'>" );
 
   QString iconPath = metadata->value( QStringLiteral( "icon" ) );
 
@@ -843,9 +865,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
+    html += QLatin1String( "<br/><br/>" );
   }
-
-  html += QLatin1String( "<br/><br/>" );
 
   QString votes;
 #ifndef WITH_QTWEBKIT
@@ -873,59 +894,58 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 #else
   voteRating->setText( votes );
 #endif
-  html += QLatin1String( "</td></tr><tr><td>" );
-  html += QLatin1String( "<br/>" );
+
+  html += QLatin1String( "</td></tr>" );
+  html += QLatin1String( "<tr><td width='1%'> </td><td width='99%'> </td></tr>" );
 
   if ( ! metadata->value( QStringLiteral( "category" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1: %2 <br/>" ).arg( tr( "Category" ), metadata->value( QStringLiteral( "category" ) ) );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Category" ), metadata->value( QStringLiteral( "category" ) ) );
   }
   if ( ! metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1: %2 <br/>" ).arg( tr( "Tags" ), metadata->value( QStringLiteral( "tags" ) ) );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), metadata->value( QStringLiteral( "tags" ) ) );
   }
+
   if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1: " ).arg( tr( "More info" ) );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>" ).arg( tr( "More info" ) );
     if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() )
     {
       html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "homepage" ) ), tr( "homepage" ) );
     }
     if ( ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() )
     {
-      html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "tracker" ) ), tr( "bug_tracker" ) );
+      html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "tracker" ) ), tr( "bug tracker" ) );
     }
     if ( ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
     {
-      html += QStringLiteral( "<a href='%1'>%2</a>" ).arg( metadata->value( QStringLiteral( "code_repository" ) ), tr( "code_repository" ) );
+      html += QStringLiteral( "<a href='%1'>%2</a>" ).arg( metadata->value( QStringLiteral( "code_repository" ) ), tr( "code repository" ) );
     }
-    html += QLatin1String( "<br/>" );
+    html += QLatin1String( "</td></tr>" );
   }
-  html += QLatin1String( "<br/>" );
 
   if ( ! metadata->value( QStringLiteral( "author_email" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1: <a href='mailto:%2'>%3</a>" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_email" ) ), metadata->value( QStringLiteral( "author_name" ) ) );
-    html += QLatin1String( "<br/><br/>" );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td><a href='mailto:%2'>%3</a></td></tr>" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_email" ) ), metadata->value( QStringLiteral( "author_name" ) ) );
   }
   else if ( ! metadata->value( QStringLiteral( "author_name" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1: %2" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_name" ) ) );
-    html += QLatin1String( "<br/><br/>" );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_name" ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
     if ( ver == QLatin1String( "-1" ) ) ver = '?';
-    html += QStringLiteral( "%1 <span class='version' title='%2 %3'> %4 </span><br/>" ).arg( tr( "Installed version:" ),
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 </td></tr>" ).arg( tr( "Installed version" ),
             tr( "in" ),
             metadata->value( QStringLiteral( "library" ) ),
             ver );
   }
   if ( ! metadata->value( QStringLiteral( "version_available" ) ).isEmpty() )
   {
-    html += QStringLiteral( "%1 <span class='version' title='%2 %3'> %4 </span><br/>" ).arg( tr( "Available version:" ),
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 </td></tr>" ).arg( tr( "Available version" ),
             tr( "in" ),
             metadata->value( QStringLiteral( "zip_repository" ) ),
             metadata->value( QStringLiteral( "version_available" ) ) );
@@ -933,9 +953,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
   {
-    html += QLatin1String( "<br/>" );
-    QString changelog = QStringLiteral( "%1:<br/>%2 <br/>" ).arg( tr( "Changelog" ), metadata->value( QStringLiteral( "changelog" ) ) );
-    html += changelog.replace( '\n', QLatin1String( "<br/>" ) );
+    QString changelog = metadata->value( QStringLiteral( "changelog" ) );
+    changelog = changelog.trimmed().replace( '\n', QLatin1String( "<br/>" ) );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Changelog" ), changelog );
   }
 
   html += QLatin1String( "</td></tr></table>" );
@@ -1177,8 +1197,9 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
+                     "      background-color: white;"
                      "      margin: 2px;"
-                     "      font-family: verdana;"
+                     "      font-family: Verdana, Sans-serif;"
                      "      font-size: 10pt;"
                      "  }"
                      "</style>";
