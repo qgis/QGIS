@@ -1381,25 +1381,12 @@ QVariantMap QgsApplication::customVariables()
   QVariantMap variables;
 
   //check if settings contains any variables
-  if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
+  settings.beginGroup( "variables" );
+  QStringList childKeys = settings.childKeys();
+  for ( QStringList::const_iterator it = childKeys.constBegin(); it != childKeys.constEnd(); ++it )
   {
-    QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "variables/values" ) ).toList();
-    QList< QVariant > customVariableNames = settings.value( QStringLiteral( "variables/names" ) ).toList();
-    int variableIndex = 0;
-    for ( QList< QVariant >::const_iterator it = customVariableVariants.constBegin();
-          it != customVariableVariants.constEnd(); ++it )
-    {
-      if ( variableIndex >= customVariableNames.length() )
-      {
-        break;
-      }
-
-      QVariant value = ( *it );
-      QString name = customVariableNames.at( variableIndex ).toString();
-
-      variables.insert( name, value );
-      variableIndex++;
-    }
+    QString name = *it;
+    variables.insert( name, settings.value( name ) );
   }
 
   return variables;
@@ -1409,18 +1396,11 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
 {
   QgsSettings settings;
 
-  QList< QVariant > customVariableValues;
-  QList< QVariant > customVariableNames;
-
   QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
-    customVariableNames << it.key();
-    customVariableValues << it.value();
+    settings.setValue( QStringLiteral( "variables/" ) + it.key(), it.value() );
   }
-
-  settings.setValue( QStringLiteral( "variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "variables/values" ), customVariableValues );
 
   emit instance()->customVariablesChanged();
 }
@@ -1430,14 +1410,7 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   // save variable to settings
   QgsSettings settings;
 
-  QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "variables/values" ) ).toList();
-  QList< QVariant > customVariableNames = settings.value( QStringLiteral( "variables/names" ) ).toList();
-
-  customVariableVariants << value;
-  customVariableNames << name;
-
-  settings.setValue( QStringLiteral( "variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "variables/values" ), customVariableVariants );
+  settings.setValue( QStringLiteral( "variables/" ) + name, value );
 
   emit instance()->customVariablesChanged();
 }
