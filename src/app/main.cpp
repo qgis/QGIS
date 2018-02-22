@@ -864,7 +864,7 @@ int main( int argc, char *argv[] )
   // Should be cleaned up in future to make this cleaner.
   QgsSettings settings;
 
-  QgsDebugMsgLevel( QStringLiteral( "User profile details:" ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "TEST User profile details:" ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
