@@ -326,7 +326,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mOpenFormAction->setDisabled( true );
 
   QgsSettings mySettings;
-  mDock = new QgsDockWidget( tr( "Identify Results Panel" ), QgisApp::instance() );
+  mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
   mDock->setObjectName( QStringLiteral( "IdentifyResultsDock" ) );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
