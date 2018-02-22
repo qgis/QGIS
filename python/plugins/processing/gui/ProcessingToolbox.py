@@ -136,6 +136,12 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
             if showTip:
                 self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
+
+            if self.algorithmTree.currentItem() is None or self.algorithmTree.currentItem().isHidden():
+                # if previously selected item was hidden, auto select the first visible algorithm
+                first_visible = self._findFirstVisibleAlgorithm(self.algorithmTree.invisibleRootItem())
+                if first_visible is not None:
+                    self.algorithmTree.setCurrentItem(first_visible)
         else:
             self.algorithmTree.collapseAll()
             self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
@@ -165,6 +171,27 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         else:
             item.setHidden(True)
             return False
+
+    def _findFirstVisibleAlgorithm(self, item):
+        """
+        Returns the first visible algorithm in the tree widget
+        """
+        if item is None:
+            return None
+        if item.childCount() > 0:
+            for i in range(item.childCount()):
+                child = item.child(i)
+                first_visible = self._findFirstVisibleAlgorithm(child)
+                if first_visible is not None:
+                    return first_visible
+            return None
+        elif isinstance(item, TreeAlgorithmItem):
+            if not item.isHidden():
+                return item
+            else:
+                return None
+        else:
+            return None
 
     def addProviderActions(self, provider):
         if provider.id() in ProviderActions.actions:
