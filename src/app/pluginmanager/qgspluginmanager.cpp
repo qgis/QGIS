@@ -690,7 +690,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
               "    background-size: 92px 16px;"
               "    width:92px;"
               "    height:16px;"
-              "    margin-bottom:24px;"
+              "    margin-bottom:16px;"
               "  }"
               "  div#stars {"
               "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
