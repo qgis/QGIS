@@ -16,31 +16,34 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgui.h"
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon, const bool enabledOnlyWhenEditable )
   : QAction( icon, name, parent )
   , mSingleLayer( false )
   , mSpecificLayerType( false )
   , mLayerType( QgsMapLayer::VectorLayer )
   , mTargets( targets )
+  , mEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
 {
 }
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets, const QIcon &icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets, const QIcon &icon, const bool enabledOnlyWhenEditable )
   : QAction( icon, name, parent )
   , mSingleLayer( true )
   , mActionLayer( layer )
   , mSpecificLayerType( false )
   , mLayerType( QgsMapLayer::VectorLayer )
   , mTargets( targets )
+  , mEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
 {
 }
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets, const QIcon &icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets, const QIcon &icon, const bool enabledOnlyWhenEditable )
   : QAction( icon, name, parent )
   , mSingleLayer( false )
   , mSpecificLayerType( true )
   , mLayerType( layerType )
   , mTargets( targets )
+  , mEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
 {
 }
 

@@ -31,7 +31,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
 {
@@ -45,6 +45,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
   mNotificationMessage->setText( notificationMessage );
+  mIsEnabledOnlyWhenEditable->setChecked( isEnabledOnlyWhenEditable );
 
   init( actionScopes );
 }
@@ -107,6 +108,10 @@ QString QgsAttributeActionPropertiesDialog::notificationMessage() const
   return mNotificationMessage->text();
 }
 
+bool QgsAttributeActionPropertiesDialog::isEnabledOnlyWhenEditable() const
+{
+  return mIsEnabledOnlyWhenEditable->isChecked();
+}
 
 bool QgsAttributeActionPropertiesDialog::capture() const
 {

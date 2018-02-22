@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>702</width>
-    <height>547</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,10 +39,28 @@
       <string>Action text</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Execute if notification matches</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mNotificationMessage">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If specified, listen to data source notification and performs action if notification message matches the specified value.&lt;/p&gt;&lt;p&gt;E.g. to match message beginning with &lt;span style=&quot; font-weight:600;&quot;&gt;whatever &lt;/span&gt;use &lt;span style=&quot; font-weight:600;&quot;&gt;^whatever&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QgsFieldExpressionWidget" name="mFieldExpression">
+         <widget class="QgsFieldExpressionWidget" name="mFieldExpression" native="true">
           <property name="focusPolicy">
            <enum>Qt::TabFocus</enum>
           </property>
@@ -110,23 +128,12 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_11">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Execute if notification matches</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="mNotificationMessage">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If specified, listen to data source notification and performs action if notification message matches the specified value.&lt;/p&gt;&lt;p&gt;E.g. to match message beginning with &lt;span style=&quot; font-weight:600;&quot;&gt;whatever &lt;/span&gt;use &lt;span style=&quot; font-weight:600;&quot;&gt;^whatever&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="mIsEnabledOnlyWhenEditable">
+        <property name="text">
+         <string>Enable only when editable</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -316,6 +323,33 @@
   <tabstop>mInsertFieldOrExpression</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
