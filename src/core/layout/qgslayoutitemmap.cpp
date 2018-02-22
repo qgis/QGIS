@@ -729,6 +729,9 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     }
     mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
   }
+
+  updateBoundingRect();
+
   mUpdatesEnabled = true;
   return true;
 }
