@@ -644,11 +644,22 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
   QString html = "<style>"
+                 "  body {"
+                 "    background-color:white;"
+                 "  }"
                  "  body, table {"
                  "    padding:0px;"
                  "    margin:0px;"
-                 "    font-family:verdana;"
+                 "    font-family:Verdana, Sans-serif;"
                  "    font-size: 10pt;"
+                 "  }"
+                 "  a {"
+                 "    color:#08c;"
+                 "    text-decoration:none;"
+                 "  }"
+                 "  a:hover,a:focus {"
+                 "    color:#005580;"
+                 "    text-decoration:underline;"
                  "  }"
                  "  div#votes {"
                  "    width:360px;"
@@ -893,11 +904,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     }
     if ( ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() )
     {
-      html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "tracker" ) ), tr( "bug_tracker" ) );
+      html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "tracker" ) ), tr( "bug tracker" ) );
     }
     if ( ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
     {
-      html += QStringLiteral( "<a href='%1'>%2</a>" ).arg( metadata->value( QStringLiteral( "code_repository" ) ), tr( "code_repository" ) );
+      html += QStringLiteral( "<a href='%1'>%2</a>" ).arg( metadata->value( QStringLiteral( "code_repository" ) ), tr( "code repository" ) );
     }
     html += QLatin1String( "<br/>" );
   }
@@ -1177,8 +1188,9 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
+                     "      background-color: white;"
                      "      margin: 2px;"
-                     "      font-family: verdana;"
+                     "      font-family: Verdana, Sans-serif;"
                      "      font-size: 10pt;"
                      "  }"
                      "</style>";
