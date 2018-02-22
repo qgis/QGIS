@@ -6464,8 +6464,12 @@ void QgisApp::refreshFeatureActions()
   QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Canvas" ) );
   Q_FOREACH ( const QgsAction &action, actions )
   {
+    if( vlayer->readOnly() && action.isEnabledOnlyWhenEditable() )
+      continue;
+
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QStringLiteral( "" );
     QAction *qAction = new QAction( action.icon(), actionTitle, mFeatureActionMenu );
+    qAction->setEnabled( !action.isEnabledOnlyWhenEditable() || vlayer->isEditable() );
     qAction->setData( QVariant::fromValue<QgsAction>( action ) );
     mFeatureActionMenu->addAction( qAction );
 
@@ -6485,6 +6489,10 @@ void QgisApp::refreshFeatureActions()
 
   for ( int i = 0; i < registeredActions.size(); i++ )
   {
+    if( vlayer->readOnly() && registeredActions.at( i )->isEnabledOnlyWhenEditable() )
+      continue;
+
+    registeredActions.at( i )->setEnabled( !registeredActions.at( i )->isEnabledOnlyWhenEditable() || vlayer->isEditable() );
     mFeatureActionMenu->addAction( registeredActions.at( i ) );
     if ( registeredActions.at( i ) == QgsGui::mapLayerActionRegistry()->defaultActionForLayer( vlayer ) )
     {
@@ -7492,31 +7500,27 @@ void QgisApp::setupLayoutManagerConnections()
 
 void QgisApp::setupDuplicateFeaturesAction()
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "tools/showDuplicateFeatureActions" ), false, QgsSettings::App ).toBool() )
+  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate feature" ),
+                                 nullptr, QgsMapLayerAction::SingleFeature,
+                                 QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), true ) );
+
+  QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
+  connect( mDuplicateFeatureAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
   {
-    mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate feature" ),
-                                   nullptr, QgsMapLayerAction::SingleFeature,
-                                   QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) ) );
-
-    QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
-    connect( mDuplicateFeatureAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
-    {
-      duplicateFeatures( layer, feat );
-    }
-           );
-
-    mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate feature and digitize" ),
-                                           nullptr, QgsMapLayerAction::SingleFeature,
-                                           QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ) ) );
-
-    QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
-    connect( mDuplicateFeatureDigitizeAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
-    {
-      duplicateFeatureDigitized( layer, feat );
-    }
-           );
+    duplicateFeatures( layer, feat );
   }
+         );
+
+  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate feature and digitize" ),
+                                         nullptr, QgsMapLayerAction::SingleFeature,
+                                         QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), true ) );
+
+  QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
+  connect( mDuplicateFeatureDigitizeAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
+  {
+    duplicateFeatureDigitized( layer, feat );
+  }
+         );
 }
 
 void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction )
@@ -13204,7 +13208,13 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
-  layer->startEditing();
+  if( !layer->isEditable() )
+  {
+    //should never happen because the action should be disabled
+    QString msg = tr( "Cannot duplicate feature in not editable mode on layer %1" ).arg( layer->name() );
+    messageBar()->pushMessage( msg, Qgis::Warning, 3 );
+    return QgsFeature();
+  }
 
   QgsFeatureList featureList;
 
@@ -13252,7 +13262,13 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
-  layer->startEditing();
+  if( !layer->isEditable() )
+  {
+    //should never happen because the action should be disabled
+    QString msg = tr( "Cannot duplicate feature in not editable mode on layer %1" ).arg( layer->name() );
+    messageBar()->pushMessage( msg, Qgis::Warning, 3 );
+    return QgsFeature();
+  }
 
   QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, mlayer, QgsMapToolCapture::CaptureNone );
 

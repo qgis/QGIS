@@ -50,13 +50,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
      */
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon(), const bool enabledOnlyWhenEditable = false );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), const bool enabledOnlyWhenEditable = false );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), const bool enabledOnlyWhenEditable = false );
 
     ~QgsMapLayerAction() override;
 
@@ -76,6 +76,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void setTargets( Targets targets ) {mTargets = targets;}
     //! Return availibity of action
     const Targets &targets() const {return mTargets;}
+
+    //! Return whether only enabled in editable mode
+    bool isEnabledOnlyWhenEditable() const { return mEnabledOnlyWhenEditable; }
 
   signals:
     //! Triggered when action has been run for a specific list of features
@@ -101,6 +104,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     // determine if the action can be run on layer and/or single feature and/or multiple features
     Targets mTargets;
+
+    bool mEnabledOnlyWhenEditable;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
