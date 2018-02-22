@@ -1938,11 +1938,6 @@ p, li { white-space: pre-wrap; }
                         <string notr="true">image/jpeg</string>
                        </property>
                       </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true">image/jpg</string>
-                       </property>
-                      </item>
                      </widget>
                     </item>
                    </layout>
