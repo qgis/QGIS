@@ -811,6 +811,52 @@ class TestQgsProject(unittest.TestCase):
 
         del project
 
+    def testSymbolicLinkInProjectPath(self):
+        """
+        Test whether paths to layer sources relative to the project are stored correctly
+        when project'name contains a symbolic link.
+        In other words, test if project's and layers' names are correctly resolved.
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shp"), os.path.join(tmpDir.path(), "lines.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.dbf"), os.path.join(tmpDir.path(), "lines.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shx"), os.path.join(tmpDir.path(), "lines.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(tmpDir.path(), "lines.shp"), "lines", "ogr")
+        l2 = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l0.isValid())
+        self.assertTrue(l1.isValid())
+        self.assertTrue(l2.isValid())
+        self.assertTrue(project.addMapLayers([l0, l1, l2]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        # Create symbolic link to previous project
+        tmpDir2 = QTemporaryDir()
+        symlinkDir = os.path.join(tmpDir2.path(), "dir")
+        os.symlink(tmpDir.path(), symlinkDir)
+        tmpFile = "{}/project.qgs".format(symlinkDir)
+
+        # Open project from symmlink and force re-save.
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        with open(tmpFile, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="./lines.shp"' in content)
+            self.assertTrue('source="./points.shp"' in content)
+            self.assertTrue('source="./landsat_4326.tif"' in content)
+
 
 if __name__ == '__main__':
     unittest.main()
