@@ -809,7 +809,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // create undo widget
   startProfile( QStringLiteral( "Undo dock" ) );
-  mUndoDock = new QgsDockWidget( tr( "Undo/Redo Panel" ), this );
+  mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
   mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
   mUndoWidget->setObjectName( QStringLiteral( "Undo" ) );
   mUndoDock->setWidget( mUndoWidget );
@@ -819,6 +819,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // Advanced Digitizing dock
   startProfile( QStringLiteral( "Advanced digitize panel" ) );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
   endProfile();
 
@@ -902,7 +903,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "Layer Style dock" ) );
   mMapStylingDock = new QgsDockWidget( this );
-  mMapStylingDock->setWindowTitle( tr( "Layer Styling Panel" ) );
+  mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
   mMapStylingDock->setObjectName( QStringLiteral( "LayerStyling" ) );
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
@@ -940,7 +941,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   mBrowserModel = new QgsBrowserModel( this );
-  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), mBrowserModel, this );
+  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
@@ -951,7 +952,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
-  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser Panel (2)" ), mBrowserModel, this );
+  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), mBrowserModel, this );
   mBrowserWidget2->setObjectName( QStringLiteral( "Browser2" ) );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
@@ -972,7 +973,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
   //create the dock widget
-  mpGpsDock = new QgsDockWidget( tr( "GPS Information Panel" ), this );
+  mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
   mpGpsDock->setObjectName( QStringLiteral( "GPSInformation" ) );
   mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
@@ -985,7 +986,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mLogViewer = new QgsMessageLogViewer( this );
 
-  mLogDock = new QgsDockWidget( tr( "Log Messages Panel" ), this );
+  mLogDock = new QgsDockWidget( tr( "Log Messages" ), this );
   mLogDock->setObjectName( QStringLiteral( "MessageLog" ) );
   mLogDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
@@ -3383,7 +3384,7 @@ void QgisApp::createOverview()
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
 //  overviewFrame->setLayout(myOverviewLayout);
-  mOverviewDock = new QgsDockWidget( tr( "Overview Panel" ), this );
+  mOverviewDock = new QgsDockWidget( tr( "Overview" ), this );
   mOverviewDock->setObjectName( QStringLiteral( "Overview" ) );
   mOverviewDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mOverviewDock->setWidget( mOverviewCanvas );
@@ -3616,7 +3617,7 @@ void QgisApp::initLayerTreeView()
 {
   mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double-click on a layer in the legend to customize its appearance and set other properties." ) );
 
-  mLayerTreeDock = new QgsDockWidget( tr( "Layers Panel" ), this );
+  mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), this );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
@@ -3713,7 +3714,7 @@ void QgisApp::initLayerTreeView()
   mMapLayerOrder->setObjectName( QStringLiteral( "theMapLayerOrder" ) );
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
-  mLayerOrderDock = new QgsDockWidget( tr( "Layer Order Panel" ), this );
+  mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), this );
   mLayerOrderDock->setObjectName( QStringLiteral( "LayerOrder" ) );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
@@ -13116,6 +13117,14 @@ QMenu *QgisApp::createPopupMenu()
     menu->addAction( panelstitle );
     Q_FOREACH ( QAction *a, panels )
     {
+      if ( !a->property( "fixed_title" ).toBool() )
+      {
+        // append " Panel" to menu text. Only ever do this once, because the actions are not unique to
+        // this single popup menu
+
+        a->setText( tr( "%1 Panel" ).arg( a->text() ) );
+        a->setProperty( "fixed_title", true );
+      }
       menu->addAction( a );
     }
     menu->addSeparator();
