@@ -65,6 +65,7 @@ class TestQgsVertexTool : public QObject
     void testMoveVertexTopo();
     void testDeleteVertexTopo();
     void testActiveLayerPriority();
+    void testSelectedFeaturesPriority();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -571,9 +572,91 @@ void TestQgsVertexTool::testActiveLayerPriority()
   QCOMPARE( layerLine2->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(0 1, 0 0, 1 0)" ) );
   layerLine2->undoStack()->undo();
 
+  mCanvas->setCurrentLayer( nullptr );
+
   // get rid of the temporary layer
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
   QgsProject::instance()->removeMapLayer( layerLine2 );
+}
+
+void TestQgsVertexTool::testSelectedFeaturesPriority()
+{
+  // preparation: make the polygon feature touch line feature
+  mouseClick( 4, 1, Qt::LeftButton );
+  mouseClick( 2, 1, Qt::LeftButton );
+
+  //
+  // test that clicking a location with selected and non-selected feature will always pick the selected feature
+  //
+
+  mLayerLine->selectByIds( QgsFeatureIds() << mFidLineF1 );
+  mLayerPolygon->selectByIds( QgsFeatureIds() );
+
+  mouseClick( 2, 1, Qt::LeftButton );
+  mouseClick( 3, 1, Qt::LeftButton );
+
+  // check that move of (2,1) to (3,1) affects only line layer
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(3 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((2 1, 7 1, 7 4, 4 4, 2 1))" ) );
+  mLayerLine->undoStack()->undo();
+
+  mLayerLine->selectByIds( QgsFeatureIds() );
+  mLayerPolygon->selectByIds( QgsFeatureIds() << mFidPolygonF1 );
+
+  mouseClick( 2, 1, Qt::LeftButton );
+  mouseClick( 3, 1, Qt::LeftButton );
+
+  // check that move of (2,1) to (3,1) affects only polygon layer
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((3 1, 7 1, 7 4, 4 4, 3 1))" ) );
+  mLayerPolygon->undoStack()->undo();
+
+  //
+  // test that dragging rectangle to pick vertices in location with selected and non-selected feature
+  // will always pick vertices only from the selected feature
+  //
+
+  mLayerLine->selectByIds( QgsFeatureIds() );
+  mLayerPolygon->selectByIds( QgsFeatureIds() );
+
+  mousePress( 1.5, 0.5, Qt::LeftButton );
+  mouseMove( 2.5, 1.5 );
+  mouseRelease( 2.5, 1.5, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  // check we have deleted vertex at (2,1) from both line and polygon features
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
+  mLayerLine->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+
+  mLayerLine->selectByIds( QgsFeatureIds() << mFidLineF1 );
+  mLayerPolygon->selectByIds( QgsFeatureIds() );
+
+  mousePress( 1.5, 0.5, Qt::LeftButton );
+  mouseMove( 2.5, 1.5 );
+  mouseRelease( 2.5, 1.5, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  // check we have deleted vertex at (2,1) just from line feature
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((2 1, 7 1, 7 4, 4 4, 2 1))" ) );
+  mLayerLine->undoStack()->undo();
+
+  mLayerLine->selectByIds( QgsFeatureIds() );
+  mLayerPolygon->selectByIds( QgsFeatureIds() << mFidPolygonF1 );
+
+  mousePress( 1.5, 0.5, Qt::LeftButton );
+  mouseMove( 2.5, 1.5 );
+  mouseRelease( 2.5, 1.5, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  // check we have deleted vertex at (2,1) just from polygon feature
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
+  mLayerPolygon->undoStack()->undo();
+
+  mLayerPolygon->undoStack()->undo();  // undo the initial change
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )
