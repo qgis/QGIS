@@ -71,6 +71,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
@@ -295,6 +296,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
+
+    def activateCurrent(self):
+        self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
         item = self.algorithmTree.currentItem()
