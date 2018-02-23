@@ -19,11 +19,9 @@
 #include <QVector>
 #include "qgsconfig.h"
 
-#ifdef QGISDEBUG
 #ifdef WIN32
 #include <windows.h>
 #include <dbghelp.h>
-#endif
 #endif
 
 #include <QStringList>
