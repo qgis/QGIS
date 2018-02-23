@@ -13216,7 +13216,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
-  if( !layer->isEditable() )
+  if ( !layer->isEditable() )
   {
     //should never happen because the action should be disabled
     QString msg = tr( "Cannot duplicate feature in not editable mode on layer %1" ).arg( layer->name() );
@@ -13270,7 +13270,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
-  if( !layer->isEditable() )
+  if ( !layer->isEditable() )
   {
     //should never happen because the action should be disabled
     QString msg = tr( "Cannot duplicate feature in not editable mode on layer %1" ).arg( layer->name() );
