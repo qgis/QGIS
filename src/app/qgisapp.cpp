@@ -2397,6 +2397,7 @@ void QgisApp::createToolBars()
                       << mLayerToolBar
                       << mDigitizeToolBar
                       << mAdvancedDigitizeToolBar
+                      << mShapeDigitizeToolBar
                       << mMapNavToolBar
                       << mAttributesToolBar
                       << mPluginToolBar
@@ -2683,16 +2684,16 @@ void QgisApp::createToolBars()
   }
 
   //circular string digitize tool button
-  QToolButton *tbAddCircularString = new QToolButton( mRegularShapeDigitizeToolBar );
+  QToolButton *tbAddCircularString = new QToolButton( mShapeDigitizeToolBar );
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddCircularString->addAction( mActionCircularStringCurvePoint );
   tbAddCircularString->addAction( mActionCircularStringRadius );
   tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
+  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
 
   //circle digitize tool button
-  QToolButton *tbAddCircle = new QToolButton( mRegularShapeDigitizeToolBar );
+  QToolButton *tbAddCircle = new QToolButton( mShapeDigitizeToolBar );
   tbAddCircle->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddCircle->addAction( mActionCircle2Points );
   tbAddCircle->addAction( mActionCircle3Points );
@@ -2701,10 +2702,10 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircleCenterPoint );
   tbAddCircle->setDefaultAction( mActionCircle2Points );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
+  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
 
   //ellipse digitize tool button
-  QToolButton *tbAddEllipse = new QToolButton( mRegularShapeDigitizeToolBar );
+  QToolButton *tbAddEllipse = new QToolButton( mShapeDigitizeToolBar );
   tbAddEllipse->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddEllipse->addAction( mActionEllipseCenter2Points );
   tbAddEllipse->addAction( mActionEllipseCenterPoint );
@@ -2712,27 +2713,27 @@ void QgisApp::createToolBars()
   tbAddEllipse->addAction( mActionEllipseFoci );
   tbAddEllipse->setDefaultAction( mActionEllipseCenter2Points );
   connect( tbAddEllipse, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
+  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
 
   //Rectangle digitize tool button
-  QToolButton *tbAddRectangle = new QToolButton( mRegularShapeDigitizeToolBar );
+  QToolButton *tbAddRectangle = new QToolButton( mShapeDigitizeToolBar );
   tbAddRectangle->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddRectangle->addAction( mActionRectangleCenterPoint );
   tbAddRectangle->addAction( mActionRectangleExtent );
   tbAddRectangle->addAction( mActionRectangle3Points );
   tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
+  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
 
   //Regular polygon digitize tool button
-  QToolButton *tbAddRegularPolygon = new QToolButton( mRegularShapeDigitizeToolBar );
+  QToolButton *tbAddRegularPolygon = new QToolButton( mShapeDigitizeToolBar );
   tbAddRegularPolygon->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddRegularPolygon->addAction( mActionRegularPolygon2Points );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterPoint );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterCorner );
   tbAddRegularPolygon->setDefaultAction( mActionRegularPolygon2Points );
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
+  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
 
   // move feature tool button
   QToolButton *moveFeatureButton = new QToolButton( mDigitizeToolBar );
@@ -2917,6 +2918,7 @@ void QgisApp::createStatusBar()
   QList< QWidget *> actionObjects;
   actionObjects << menuBar()
                 << mAdvancedDigitizeToolBar
+                << mShapeDigitizeToolBar
                 << mFileToolBar
                 << mDataSourceManagerToolBar
                 << mLayerToolBar
