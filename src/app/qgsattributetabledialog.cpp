@@ -850,11 +850,10 @@ void QgsAttributeTableDialog::editingToggled()
     QMenu *actionMenu = new QMenu();
     Q_FOREACH ( const QgsAction &action, actions )
     {
-      if( mLayer->readOnly() && action.isEnabledOnlyWhenEditable() )
+      if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QAction *qAction = actionMenu->addAction( action.icon(), action.shortTitle() );
-      qAction->setEnabled( !action.isEnabledOnlyWhenEditable() || mLayer->isEditable() );
       qAction->setToolTip( action.name() );
       qAction->setData( QVariant::fromValue<QgsAction>( action ) );
       connect( qAction, &QAction::triggered, this, &QgsAttributeTableDialog::layerActionTriggered );

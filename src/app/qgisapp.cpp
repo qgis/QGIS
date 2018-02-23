@@ -6464,12 +6464,11 @@ void QgisApp::refreshFeatureActions()
   QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Canvas" ) );
   Q_FOREACH ( const QgsAction &action, actions )
   {
-    if( vlayer->readOnly() && action.isEnabledOnlyWhenEditable() )
+    if ( !vlayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QStringLiteral( "" );
     QAction *qAction = new QAction( action.icon(), actionTitle, mFeatureActionMenu );
-    qAction->setEnabled( !action.isEnabledOnlyWhenEditable() || vlayer->isEditable() );
     qAction->setData( QVariant::fromValue<QgsAction>( action ) );
     mFeatureActionMenu->addAction( qAction );
 
@@ -6489,10 +6488,9 @@ void QgisApp::refreshFeatureActions()
 
   for ( int i = 0; i < registeredActions.size(); i++ )
   {
-    if( vlayer->readOnly() && registeredActions.at( i )->isEnabledOnlyWhenEditable() )
+    if ( !vlayer->isEditable() && registeredActions.at( i )->isEnabledOnlyWhenEditable() )
       continue;
 
-    registeredActions.at( i )->setEnabled( !registeredActions.at( i )->isEnabledOnlyWhenEditable() || vlayer->isEditable() );
     mFeatureActionMenu->addAction( registeredActions.at( i ) );
     if ( registeredActions.at( i ) == QgsGui::mapLayerActionRegistry()->defaultActionForLayer( vlayer ) )
     {
