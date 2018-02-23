@@ -571,6 +571,9 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( !action.runable() )
         continue;
 
+      if ( !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
       menu->addAction( action.name(), a, SLOT( execute() ) );
@@ -589,6 +592,9 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 
     Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
+      if ( !vl->isEditable() && action->isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
       menu->addAction( action->text(), a, SLOT( execut() ) );

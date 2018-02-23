@@ -175,6 +175,10 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       case QgsAttributeForm::AggregateSearchMode:
         w->setMode( QgsAttributeFormWidget::AggregateSearchMode );
         break;
+
+      case QgsAttributeForm::IdentifyMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
     }
   }
 
@@ -211,6 +215,11 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       mSearchButtonBox->setVisible( false );
       hideButtonBox();
       break;
+
+    case QgsAttributeForm::IdentifyMode:
+      setFeature( mFeature );
+      mSearchButtonBox->setVisible( false );
+      break;
   }
 
   emit modeChanged( mMode );
@@ -236,6 +245,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     {
       resetValues();
@@ -581,6 +591,7 @@ bool QgsAttributeForm::save()
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case MultiEditMode:
       if ( !mDirty )
         return true;
@@ -605,6 +616,7 @@ bool QgsAttributeForm::save()
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     case SearchMode:
     case AggregateSearchMode:
@@ -692,6 +704,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     {
       emit attributeChanged( eww->field().name(), value );
@@ -1876,6 +1889,7 @@ void QgsAttributeForm::layerSelectionChanged()
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     case SearchMode:
     case AggregateSearchMode:

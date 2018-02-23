@@ -135,6 +135,10 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
     connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ),
              this, static_cast<void ( QgsAttributeTableView::* )()>( &QgsAttributeTableView::repaintRequested ) );
   }
+
+  connect( mFilterModel->layer(), &QgsVectorLayer::editingStarted, this, &QgsAttributeTableView::recreateActionWidgets );
+  connect( mFilterModel->layer(), &QgsVectorLayer::editingStopped, this, &QgsAttributeTableView::recreateActionWidgets );
+  connect( mFilterModel->layer(), &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableView::recreateActionWidgets );
 }
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
@@ -176,6 +180,9 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
   Q_FOREACH ( const QgsAction &action, actions )
   {
+    if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
+      continue;
+
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );
     QAction *act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
@@ -194,6 +201,9 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
               QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(),
                   QgsMapLayerAction::SingleFeature ) )
   {
+    if ( !mFilterModel->layer()->isEditable() && mapLayerAction->isEnabledOnlyWhenEditable() )
+      continue;
+
     QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), container );
     action->setData( "map_layer_action" );
     action->setToolTip( mapLayerAction->text() );
