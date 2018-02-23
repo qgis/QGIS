@@ -25,7 +25,7 @@ QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent
 
 QIcon QgsReportSectionLayout::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayout.svg" ) );
 }
 
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const

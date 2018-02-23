@@ -26,7 +26,7 @@ QgsReport::QgsReport( QgsProject *project )
 
 QIcon QgsReport::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "processingResult.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconReport.svg" ) );
 }
 
 QgsReport *QgsReport::clone() const
