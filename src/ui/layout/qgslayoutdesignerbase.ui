@@ -1193,7 +1193,7 @@
   <action name="mActionDuplicateLayout">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDuplicateComposer.svg</normaloff>:/images/themes/default/mActionDuplicateComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDuplicateLayout.svg</normaloff>:/images/themes/default/mActionDuplicateLayout.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Duplicate Layout…</string>
@@ -1220,7 +1220,7 @@
   <action name="mActionNewLayout">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewLayout.svg</normaloff>:/images/themes/default/mActionNewLayout.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New Layout…</string>
@@ -1235,7 +1235,7 @@
   <action name="mActionLayoutManager">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
+     <normaloff>:/images/themes/default/mActionLayoutManager.svg</normaloff>:/images/themes/default/mActionLayoutManager.svg</iconset>
    </property>
    <property name="text">
     <string>Layout &amp;Manager...</string>
@@ -1522,6 +1522,8 @@
   </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

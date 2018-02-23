@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1018</width>
+    <width>1030</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1018</width>
-     <height>18</height>
+     <width>1030</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -2923,7 +2923,7 @@ Acts on currently active editable layer</string>
   <action name="mActionShowLayoutManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
+     <normaloff>:/images/themes/default/mActionLayoutManager.svg</normaloff>:/images/themes/default/mActionLayoutManager.svg</iconset>
    </property>
    <property name="text">
     <string>Layout Manager…</string>
@@ -2935,7 +2935,7 @@ Acts on currently active editable layer</string>
   <action name="mActionNewPrintLayout">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewLayout.svg</normaloff>:/images/themes/default/mActionNewLayout.svg</iconset>
    </property>
    <property name="text">
     <string>New &amp;Print Layout</string>
@@ -2950,7 +2950,7 @@ Acts on currently active editable layer</string>
   <action name="mActionNewReport">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewReport.svg</normaloff>:/images/themes/default/mActionNewReport.svg</iconset>
    </property>
    <property name="text">
     <string>New &amp;Report</string>
@@ -2961,6 +2961,7 @@ Acts on currently active editable layer</string>
   </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

@@ -641,6 +641,12 @@
         <file>themes/default/mActionDuplicateFeatureDigitized.svg</file>
         <file>themes/default/mActionDuplicateFeature.svg</file>
         <file>themes/default/mActionExport.svg</file>
+        <file>themes/default/mActionLayoutManager.svg</file>
+        <file>themes/default/mActionNewLayout.svg</file>
+        <file>themes/default/mActionDuplicateLayout.svg</file>
+        <file>themes/default/mIconLayout.svg</file>
+        <file>themes/default/mActionNewReport.svg</file>
+        <file>themes/default/mIconReport.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

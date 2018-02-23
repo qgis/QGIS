@@ -4102,16 +4102,28 @@ void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type 
   {
     case QgsMasterLayoutInterface::PrintLayout:
       mActionDuplicateLayout->setText( tr( "&Duplicate Layout…" ) );
+      mActionDuplicateLayout->setToolTip( tr( "Duplicate layout" ) );
+      mActionDuplicateLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDuplicateLayout.svg" ) ) );
       mActionRemoveLayout->setText( tr( "Delete Layout…" ) );
+      mActionRemoveLayout->setToolTip( tr( "Delete layout" ) );
       mActionRenameLayout->setText( tr( "Rename Layout…" ) );
+      mActionRenameLayout->setToolTip( tr( "Rename layout" ) );
       mActionNewLayout->setText( tr( "New Layout…" ) );
+      mActionNewLayout->setToolTip( tr( "New layout" ) );
+      mActionNewLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewLayout.svg" ) ) );
       break;
 
     case QgsMasterLayoutInterface::Report:
       mActionDuplicateLayout->setText( tr( "&Duplicate Report…" ) );
+      mActionDuplicateLayout->setToolTip( tr( "Duplicate report" ) );
+      mActionDuplicateLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDuplicateLayout.svg" ) ) );
       mActionRemoveLayout->setText( tr( "Delete Report…" ) );
+      mActionRemoveLayout->setToolTip( tr( "Delete report" ) );
       mActionRenameLayout->setText( tr( "Rename Report…" ) );
+      mActionRenameLayout->setToolTip( tr( "Rename report" ) );
       mActionNewLayout->setText( tr( "New Report…" ) );
+      mActionNewLayout->setToolTip( tr( "New report" ) );
+      mActionNewLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewReport.svg" ) ) );
       break;
   }
 }
