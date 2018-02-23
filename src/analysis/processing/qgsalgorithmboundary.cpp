@@ -95,7 +95,7 @@ QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWk
   return outputWkb;
 }
 
-QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature outFeature = feature;
 
@@ -113,7 +113,7 @@ QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsP
       outFeature.setGeometry( outputGeometry );
     }
   }
-  return outFeature;
+  return QgsFeatureList() << outFeature;
 }
 
 ///@endcond

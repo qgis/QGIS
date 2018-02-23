@@ -150,6 +150,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setSectionTitle( const QString &title );
 
+    /**
+     * Overloaded function used to sort menu entries alphabetically
+     */
+    QMenu *createPopupMenu() override;
+
   public slots:
 
     /**

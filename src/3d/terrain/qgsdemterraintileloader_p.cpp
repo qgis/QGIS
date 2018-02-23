@@ -32,6 +32,8 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
   const float *zBits = ( const float * ) heightMap.constData();
   int zCount = heightMap.count() / sizeof( float );
   bool first = true;
+
+  zMin = zMax = std::numeric_limits<float>::quiet_NaN();
   for ( int i = 0; i < zCount; ++i )
   {
     float z = zBits[i];
@@ -45,9 +47,6 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
     zMin = qMin( zMin, z );
     zMax = qMax( zMax, z );
   }
-
-  if ( first )
-    zMin = zMax = std::numeric_limits<float>::quiet_NaN();
 }
 
 

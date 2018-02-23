@@ -85,11 +85,15 @@ class Processing(object):
         if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         # Add the basic providers
-        for c in QgsProcessingProvider.__subclasses__():
+        for c in [
+            QgisAlgorithmProvider,
+            Grass7AlgorithmProvider,
+            GdalAlgorithmProvider,
+            SagaAlgorithmProvider,
+            ScriptAlgorithmProvider,
+            ModelerAlgorithmProvider
+        ]:
             p = c()
-            if p.id() in ('native', '3d'):
-                # c++ providers are already registered
-                continue
             if QgsApplication.processingRegistry().addProvider(p):
                 Processing.BASIC_PROVIDERS.append(p)
         # And initialize

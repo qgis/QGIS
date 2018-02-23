@@ -32,7 +32,6 @@ class QgsFieldModel;
 class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_FLAGS( Filters )
 
   public:
 
@@ -50,6 +49,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       AllTypes = Numeric | Date | String | Time, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
 
     /**
      * \brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.

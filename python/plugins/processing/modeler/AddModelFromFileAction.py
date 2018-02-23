@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
 from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
@@ -42,7 +42,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Add model from file')
+        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model from File…')
         self.group = self.tr('Tools')
 
     def getIcon(self):
@@ -52,7 +52,7 @@ class AddModelFromFileAction(ToolboxAction):
         settings = QgsSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
-                                                                self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                                                self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
                                                                 self.tr('Processing model files (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
         if filename:
             settings.setValue('Processing/lastModelsDir',
@@ -62,7 +62,7 @@ class AddModelFromFileAction(ToolboxAction):
             if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,
-                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                    self.tr('Open Model', 'AddModelFromFileAction'),
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))

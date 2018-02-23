@@ -25,7 +25,7 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
-QgsWfsRequest::QgsWfsRequest( const QString &uri )
+QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : mUri( uri )
   , mErrorCode( QgsWfsRequest::NoError )
   , mIsAborted( false )
@@ -33,7 +33,7 @@ QgsWfsRequest::QgsWfsRequest( const QString &uri )
   , mTimedout( false )
   , mGotNonEmptyResponse( false )
 {
-  QgsDebugMsg( "theUri = " + uri );
+  QgsDebugMsg( "theUri = " + uri.uri( ) );
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
 }
 
@@ -46,6 +46,11 @@ void QgsWfsRequest::requestTimedOut( QNetworkReply *reply )
 {
   if ( reply == mReply )
     mTimedout = true;
+}
+
+QUrl QgsWfsRequest::requestUrl( const QString &request ) const
+{
+  return mUri.requestUrl( request );
 }
 
 bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefresh, bool cache )
@@ -61,6 +66,8 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   mResponse.clear();
 
   QUrl modifiedUrl( url );
+
+  // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     // Just for testing with local files instead of http:// resources

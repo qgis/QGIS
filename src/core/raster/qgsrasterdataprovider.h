@@ -87,11 +87,32 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Q_OBJECT
 
   public:
+
+    /**
+     * Enumeration with capabilities that raster providers might implement.
+     * \since QGIS 3.0
+     */
+    enum ProviderCapability
+    {
+      NoProviderCapabilities = 0,       //!< Provider has no capabilities
+      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
+      WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+    };
+
+    //! Provider capabilities
+    Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
+
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString &uri );
 
     QgsRasterInterface *clone() const override = 0;
+
+    /**
+     * Returns flags containing the supported capabilities of the data provider.
+     * \since QGIS 3.0
+     */
+    virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ); return false; }
@@ -539,6 +560,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     mutable QgsRectangle mExtent;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRasterDataProvider::ProviderCapabilities )
 
 // clazy:excludeall=qstring-allocations
 

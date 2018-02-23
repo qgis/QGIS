@@ -301,7 +301,7 @@ class ShowTestDialog(QDialog):
         QDialog.__init__(self)
         self.setModal(True)
         self.resize(600, 400)
-        self.setWindowTitle(self.tr('Unit test'))
+        self.setWindowTitle(self.tr('Unit Test'))
         layout = QVBoxLayout()
         self.text = QTextEdit()
         self.text.setFontFamily("monospace")

@@ -79,6 +79,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPageSetupDialog>
+#include <QWidgetAction>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -127,6 +128,12 @@ void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> it
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
+}
+
+
+static bool cmpByText_( QAction *a, QAction *b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
 
 
@@ -621,6 +628,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mActionsToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mAtlasToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mReportToolbar->toggleViewAction() );
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
@@ -728,6 +738,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mLayoutsMenu->setObjectName( QStringLiteral( "mLayoutsMenu" ) );
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgsLayoutDesignerDialog::populateLayoutsMenu );
 
+  QList<QAction *> actions = mPanelsMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mPanelsMenu->insertActions( nullptr, actions );
+
+  actions = mToolbarMenu->actions();
+  std::sort( actions.begin(), actions.end(), cmpByText_ );
+  mToolbarMenu->insertActions( nullptr, actions );
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -737,6 +755,80 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
 {
   return mInterface;
+}
+
+QMenu *QgsLayoutDesignerDialog::createPopupMenu()
+{
+  QMenu *menu = QMainWindow::createPopupMenu();
+  QList< QAction * > al = menu->actions();
+  QList< QAction * > panels, toolbars;
+
+  if ( !al.isEmpty() )
+  {
+    bool found = false;
+    for ( int i = 0; i < al.size(); ++i )
+    {
+      if ( al[ i ]->isSeparator() )
+      {
+        found = true;
+        continue;
+      }
+
+      if ( !found )
+      {
+        panels.append( al[ i ] );
+      }
+      else
+      {
+        toolbars.append( al[ i ] );
+      }
+    }
+
+    std::sort( panels.begin(), panels.end(), cmpByText_ );
+    QWidgetAction *panelstitle = new QWidgetAction( menu );
+    QLabel *plabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
+    plabel->setMargin( 3 );
+    plabel->setAlignment( Qt::AlignHCenter );
+    panelstitle->setDefaultWidget( plabel );
+    menu->addAction( panelstitle );
+    Q_FOREACH ( QAction *a, panels )
+    {
+      if ( ( a == mAtlasDock->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportDock->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
+
+      if ( !a->property( "fixed_title" ).toBool() )
+      {
+        // append " Panel" to menu text. Only ever do this once, because the actions are not unique to
+        // this single popup menu
+        a->setText( tr( "%1 Panel" ).arg( a->text() ) );
+        a->setProperty( "fixed_title", true );
+      }
+
+      menu->addAction( a );
+    }
+    menu->addSeparator();
+    QWidgetAction *toolbarstitle = new QWidgetAction( menu );
+    QLabel *tlabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) );
+    tlabel->setMargin( 3 );
+    tlabel->setAlignment( Qt::AlignHCenter );
+    toolbarstitle->setDefaultWidget( tlabel );
+    menu->addAction( toolbarstitle );
+    std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    Q_FOREACH ( QAction *a, toolbars )
+    {
+      if ( ( a == mAtlasToolbar->toggleViewAction() && !dynamic_cast< QgsPrintLayout * >( mMasterLayout ) ) ||
+           ( a == mReportToolbar->toggleViewAction() && !dynamic_cast< QgsReport * >( mMasterLayout ) ) )
+      {
+        a->setVisible( false );
+      }
+      menu->addAction( a );
+    }
+  }
+
+  return menu;
 }
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
@@ -778,6 +870,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuAtlas;
     mMenuAtlas = nullptr;
     mAtlasToolbar->hide();
+    mToolbarMenu->removeAction( mAtlasToolbar->toggleViewAction() );
   }
 
   if ( dynamic_cast< QgsReport * >( layout ) )
@@ -794,6 +887,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuReport;
     mMenuReport = nullptr;
     mReportToolbar->hide();
+    mToolbarMenu->removeAction( mReportToolbar->toggleViewAction() );
   }
 
   updateActionNames( mMasterLayout->layoutType() );
@@ -4008,16 +4102,28 @@ void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type 
   {
     case QgsMasterLayoutInterface::PrintLayout:
       mActionDuplicateLayout->setText( tr( "&Duplicate Layout…" ) );
+      mActionDuplicateLayout->setToolTip( tr( "Duplicate layout" ) );
+      mActionDuplicateLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDuplicateLayout.svg" ) ) );
       mActionRemoveLayout->setText( tr( "Delete Layout…" ) );
+      mActionRemoveLayout->setToolTip( tr( "Delete layout" ) );
       mActionRenameLayout->setText( tr( "Rename Layout…" ) );
+      mActionRenameLayout->setToolTip( tr( "Rename layout" ) );
       mActionNewLayout->setText( tr( "New Layout…" ) );
+      mActionNewLayout->setToolTip( tr( "New layout" ) );
+      mActionNewLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewLayout.svg" ) ) );
       break;
 
     case QgsMasterLayoutInterface::Report:
       mActionDuplicateLayout->setText( tr( "&Duplicate Report…" ) );
+      mActionDuplicateLayout->setToolTip( tr( "Duplicate report" ) );
+      mActionDuplicateLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDuplicateLayout.svg" ) ) );
       mActionRemoveLayout->setText( tr( "Delete Report…" ) );
+      mActionRemoveLayout->setToolTip( tr( "Delete report" ) );
       mActionRenameLayout->setText( tr( "Rename Report…" ) );
+      mActionRenameLayout->setToolTip( tr( "Rename report" ) );
       mActionNewLayout->setText( tr( "New Report…" ) );
+      mActionNewLayout->setToolTip( tr( "New report" ) );
+      mActionNewLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewReport.svg" ) ) );
       break;
   }
 }

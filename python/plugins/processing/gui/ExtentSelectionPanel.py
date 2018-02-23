@@ -132,7 +132,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 layerName = layer.name()
             extents.append(layerName)
             extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
-        (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
+        (item, ok) = QInputDialog.getItem(self, self.tr('Select Extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
             self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))

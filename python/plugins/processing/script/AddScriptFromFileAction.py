@@ -40,7 +40,7 @@ from processing.script import ScriptUtils
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr("Add script from file")
+        self.name = self.tr("Add Script from File…")
         self.group = self.tr("Tools")
 
     def execute(self):

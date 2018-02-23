@@ -74,7 +74,7 @@ QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
   return new QgsTessellateAlgorithm();
 }
 
-QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -105,7 +105,7 @@ QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, Qg
       f.setGeometry( g );
     }
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

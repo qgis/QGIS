@@ -69,7 +69,7 @@ QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) c
   return fields;
 }
 
-QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -93,7 +93,7 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
       f.setAttributes( attrs );
     }
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

@@ -118,4 +118,4 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
                 raise QgsProcessingException(
                     self.tr('{} is not a geometry').format(value))
             feature.setGeometry(value)
-        return feature
+        return [feature]

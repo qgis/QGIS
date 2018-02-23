@@ -102,7 +102,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
             if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 actionSkipOutput = QAction(
-                    self.tr('Skip output'), self.btnSelect)
+                    self.tr('Skip Output'), self.btnSelect)
                 actionSkipOutput.triggered.connect(self.skipOutput)
                 popupMenu.addAction(actionSkipOutput)
 
@@ -110,15 +110,15 @@ class DestinationSelectionPanel(BASE, WIDGET):
                     and self.parameter.supportsNonFileBasedOutput():
                 # use memory layers for temporary layers if supported
                 actionSaveToTemp = QAction(
-                    self.tr('Create temporary layer'), self.btnSelect)
+                    self.tr('Create Temporary Layer'), self.btnSelect)
             else:
                 actionSaveToTemp = QAction(
-                    self.tr('Save to a temporary file'), self.btnSelect)
+                    self.tr('Save to a Temporary File'), self.btnSelect)
             actionSaveToTemp.triggered.connect(self.saveToTemporary)
             popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
-                QCoreApplication.translate('DestinationSelectionPanel', 'Save to file…'), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to File…'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
@@ -129,7 +129,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
                 popupMenu.addAction(actionSaveToGpkg)
                 actionSaveToPostGIS = QAction(
-                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS table…'), self.btnSelect)
+                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS Table…'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
                 settings = QgsSettings()
                 settings.beginGroup('/PostgreSQL/connections/')
@@ -139,7 +139,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 popupMenu.addAction(actionSaveToPostGIS)
 
             actionSetEncoding = QAction(
-                QCoreApplication.translate('DestinationSelectionPanel', 'Change file encoding ({})…').format(self.encoding), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Change File Encoding ({})…').format(self.encoding), self.btnSelect)
             actionSetEncoding.triggered.connect(self.selectEncoding)
             popupMenu.addAction(actionSetEncoding)
 
@@ -260,7 +260,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         if not lastDir:
             lastDir = settings.value("/Processing/LastOutputPath", QDir.homePath())
 
-        dirName = QFileDialog.getExistingDirectory(self, self.tr('Select directory'),
+        dirName = QFileDialog.getExistingDirectory(self, self.tr('Select Directory'),
                                                    lastDir, QFileDialog.ShowDirsOnly)
         if dirName:
             self.leText.setText(QDir.toNativeSeparators(dirName))

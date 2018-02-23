@@ -36,7 +36,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 {
   mLineEdit->setShowClearButton( true );
 #ifdef Q_OS_MACX
-  mLineEdit->setPlaceholderText( trUtf8( "Type to locate (⌘K)" ) );
+  mLineEdit->setPlaceholderText( tr( "Type to locate (⌘K)" ) );
 #else
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
 #endif
@@ -289,7 +289,7 @@ void QgsLocatorWidget::configMenuAboutToShow()
     mMenu->addAction( action );
   }
   mMenu->addSeparator();
-  QAction *configAction = new QAction( trUtf8( "Configure…" ), mMenu );
+  QAction *configAction = new QAction( tr( "Configure…" ), mMenu );
   connect( configAction, &QAction::triggered, this, &QgsLocatorWidget::configTriggered );
   mMenu->addAction( configAction );
 

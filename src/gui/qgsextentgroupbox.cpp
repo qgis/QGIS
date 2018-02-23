@@ -140,7 +140,7 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
     }
   }
 
-  int decimals;
+  int decimals = 4;
   switch ( mOutputCrs.mapUnits() )
   {
     case QgsUnitTypes::DistanceDegrees:

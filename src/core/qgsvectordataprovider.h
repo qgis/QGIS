@@ -88,6 +88,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
                                                                *  ChangeGeometries | ChangeAttributeValues */
       RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
       FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
+      ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
+      WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

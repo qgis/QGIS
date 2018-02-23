@@ -495,6 +495,13 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
   int fieldindex = layer->fields().indexFromName( fieldName );
+  if ( fieldindex < 0 )
+  {
+    // this shouldn't happen... but it did. There's probably some deeper underlying issue
+    // but we may as well play it safe here.
+    QMessageBox::critical( nullptr, tr( "Update Attributes" ), tr( "An error occurred while trying to update the field %1" ).arg( fieldName ) );
+    return;
+  }
 
   bool calculationSuccess = true;
   QString error;

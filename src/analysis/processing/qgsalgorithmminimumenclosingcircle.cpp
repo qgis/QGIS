@@ -86,7 +86,7 @@ bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &pa
   return true;
 }
 
-QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -107,7 +107,7 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
           << QVariant();
     f.setAttributes( attrs );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

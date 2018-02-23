@@ -66,7 +66,7 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
   return new QgsCentroidAlgorithm();
 }
 
-QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
@@ -77,7 +77,7 @@ QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcess
       feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1" ).arg( feature.id() ) );
     }
   }
-  return feature;
+  return QgsFeatureList() << feature;
 }
 
 ///@endcond

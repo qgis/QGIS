@@ -54,7 +54,7 @@
   <widget class="QStatusBar" name="mStatusBar"/>
   <widget class="QToolBar" name="mLayoutToolbar">
    <property name="windowTitle">
-    <string>Layout</string>
+    <string>Layout Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -79,7 +79,7 @@
   </widget>
   <widget class="QToolBar" name="mToolsToolbar">
    <property name="windowTitle">
-    <string>Toolbox</string>
+    <string>Toolbox Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -306,7 +306,7 @@
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
    <property name="windowTitle">
-    <string>Navigation</string>
+    <string>Navigation Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -322,7 +322,7 @@
   </widget>
   <widget class="QToolBar" name="mActionsToolbar">
    <property name="windowTitle">
-    <string>Actions</string>
+    <string>Actions Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -337,7 +337,7 @@
   </widget>
   <widget class="QToolBar" name="mAtlasToolbar">
    <property name="windowTitle">
-    <string>Atlas</string>
+    <string>Atlas Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -355,7 +355,7 @@
   </widget>
   <widget class="QToolBar" name="mReportToolbar">
    <property name="windowTitle">
-    <string>Report</string>
+    <string>Report Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1193,7 +1193,7 @@
   <action name="mActionDuplicateLayout">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDuplicateComposer.svg</normaloff>:/images/themes/default/mActionDuplicateComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDuplicateLayout.svg</normaloff>:/images/themes/default/mActionDuplicateLayout.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Duplicate Layout…</string>
@@ -1220,7 +1220,7 @@
   <action name="mActionNewLayout">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewLayout.svg</normaloff>:/images/themes/default/mActionNewLayout.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New Layout…</string>
@@ -1235,7 +1235,7 @@
   <action name="mActionLayoutManager">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
+     <normaloff>:/images/themes/default/mActionLayoutManager.svg</normaloff>:/images/themes/default/mActionLayoutManager.svg</iconset>
    </property>
    <property name="text">
     <string>Layout &amp;Manager...</string>
@@ -1522,6 +1522,8 @@
   </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

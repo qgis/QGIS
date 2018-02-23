@@ -202,6 +202,8 @@ class CORE_EXPORT QgsBox3d
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
 
+    bool operator==( const QgsBox3d &other ) const;
+
   private:
 
     QgsRectangle mBounds2d;

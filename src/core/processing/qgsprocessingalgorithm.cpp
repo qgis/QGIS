@@ -741,9 +741,9 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     }
 
     context.expressionContext().setFeature( f );
-    QgsFeature transformed = processFeature( f, context, feedback );
-    if ( transformed.isValid() )
-      sink->addFeature( transformed, QgsFeatureSink::FastInsert );
+    const QgsFeatureList transformed = processFeature( f, context, feedback );
+    for ( QgsFeature transformedFeature : transformed )
+      sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;

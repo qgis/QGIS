@@ -168,4 +168,4 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             attributes.append(value)
         feature.setAttributes(attributes)
         self._row_number += 1
-        return feature
+        return [feature]
