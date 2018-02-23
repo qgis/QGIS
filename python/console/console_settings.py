@@ -18,15 +18,15 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import range
 
 from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
-from .console_compile_apis import PrepareAPIDialog
 
-from .ui_console_settings import Ui_SettingsDialogPythonConsole
 from qgis.core import QgsSettings
+
+from .console_compile_apis import PrepareAPIDialog
+from .ui_console_settings import Ui_SettingsDialogPythonConsole
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
