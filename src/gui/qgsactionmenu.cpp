@@ -68,7 +68,7 @@ void QgsActionMenu::setFeature( const QgsFeature &feature )
 
 void QgsActionMenu::setMode( const QgsAttributeForm::Mode mode )
 {
-  mMode=mode;
+  mMode = mode;
   reloadActions();
 }
 
@@ -116,17 +116,16 @@ void QgsActionMenu::reloadActions()
 
   Q_FOREACH ( const QgsAction &action, mActions )
   {
-    if( mLayer->readOnly() && action.isEnabledOnlyWhenEditable() )
+    if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    if( action.isEnabledOnlyWhenEditable() && mMode==QgsAttributeForm::AddFeatureMode )
+    if ( action.isEnabledOnlyWhenEditable() && ( mMode==QgsAttributeForm::AddFeatureMode || mMode==QgsAttributeForm::IdentifyMode ) )
       continue;
 
     QgsAction act( action );
     act.setExpressionContextScope( mExpressionContextScope );
 
     QAction *qAction = new QAction( action.icon(), action.name(), this );
-    qAction->setEnabled( !action.isEnabledOnlyWhenEditable() || mLayer->isEditable() );
     qAction->setData( QVariant::fromValue<ActionData>( ActionData( act, mFeatureId, mLayer ) ) );
     qAction->setIcon( action.icon() );
 
@@ -155,14 +154,13 @@ void QgsActionMenu::reloadActions()
     {
       QgsMapLayerAction *qaction = mapLayerActions.at( i );
 
-      if( mLayer->readOnly() && qaction->isEnabledOnlyWhenEditable() )
+      if ( !mLayer->isEditable() && qaction->isEnabledOnlyWhenEditable() )
         continue;
 
-      if( qaction->isEnabledOnlyWhenEditable() && mMode==QgsAttributeForm::AddFeatureMode )
+      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode==QgsAttributeForm::AddFeatureMode || mMode==QgsAttributeForm::IdentifyMode ) )
         continue;
 
       QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
-      qAction->setEnabled( !qaction->isEnabledOnlyWhenEditable() || mLayer->isEditable() );
       qAction->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
       addAction( qAction );
       connect( qAction, &QAction::triggered, this, &QgsActionMenu::triggerAction );

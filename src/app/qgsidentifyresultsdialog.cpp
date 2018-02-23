@@ -511,7 +511,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       if ( !action.runable() )
         continue;
 
-      if( action.isEnabledOnlyWhenEditable() )
+      if ( action.isEnabledOnlyWhenEditable() )
         continue;
 
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action.name() );
@@ -524,7 +524,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     //add actions from QgsMapLayerActionRegistry
     for ( int i = 0; i < registeredActions.size(); i++ )
     {
-      if( registeredActions.at( i )->isEnabledOnlyWhenEditable() )
+      if ( registeredActions.at( i )->isEnabledOnlyWhenEditable() )
         continue;
 
       QgsMapLayerAction *action = registeredActions.at( i );
@@ -1098,7 +1098,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
         if ( !action.runable() )
           continue;
 
-        if( action.isEnabledOnlyWhenEditable() )
+        if ( action.isEnabledOnlyWhenEditable() )
           continue;
 
         QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, action.id(), idx, this );
@@ -1122,7 +1122,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       QList<QgsMapLayerAction *>::const_iterator actionIt;
       for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
       {
-        if( ( *actionIt )->isEnabledOnlyWhenEditable() )
+        if ( ( *actionIt )->isEnabledOnlyWhenEditable() )
           continue;
 
         QgsIdentifyResultsDialogMapLayerAction *a = new QgsIdentifyResultsDialogMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), vlayer, &( mFeatures[ featIdx ] ) );

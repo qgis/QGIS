@@ -571,16 +571,15 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( !action.runable() )
         continue;
 
-      if( vl->readOnly() && action.isEnabledOnlyWhenEditable() )
+      if ( !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      QAction *ma = menu->addAction( action.name(), a, SLOT( execute() ) );
+      menu->addAction( action.name(), a, SLOT( execute() ) );
 #else
-      QAction *ma = menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
+      menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
 #endif
-      ma->setEnabled( !action.isEnabledOnlyWhenEditable() || vl->isEditable() );
     }
   }
 
@@ -593,16 +592,15 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 
     Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
-      if( vl->readOnly() && action->isEnabledOnlyWhenEditable() )
+      if ( !vl->isEditable() && action->isEnabledOnlyWhenEditable() )
         continue;
 
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      QAction *ma = menu->addAction( action->text(), a, SLOT( execut() ) );
+      menu->addAction( action->text(), a, SLOT( execut() ) );
 #else
-      QAction *ma = menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
+      menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
 #endif
-      ma->setEnabled( !action->isEnabledOnlyWhenEditable() || vl->isEditable() );
     }
   }
 
