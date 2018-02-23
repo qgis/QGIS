@@ -119,7 +119,7 @@ void QgsActionMenu::reloadActions()
     if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    if ( action.isEnabledOnlyWhenEditable() && ( mMode==QgsAttributeForm::AddFeatureMode || mMode==QgsAttributeForm::IdentifyMode ) )
+    if ( action.isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
       continue;
 
     QgsAction act( action );
@@ -157,7 +157,7 @@ void QgsActionMenu::reloadActions()
       if ( !mLayer->isEditable() && qaction->isEnabledOnlyWhenEditable() )
         continue;
 
-      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode==QgsAttributeForm::AddFeatureMode || mMode==QgsAttributeForm::IdentifyMode ) )
+      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
         continue;
 
       QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
