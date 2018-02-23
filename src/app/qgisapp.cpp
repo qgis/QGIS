@@ -9005,12 +9005,6 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
 void QgisApp::showScale( double scale )
 {
   mScaleWidget->setScale( scale );
-
-  // Not sure if the lines below do anything meaningful /Homann
-  if ( mScaleWidget->width() > mScaleWidget->minimumWidth() )
-  {
-    mScaleWidget->setMinimumWidth( mScaleWidget->width() );
-  }
 }
 
 
