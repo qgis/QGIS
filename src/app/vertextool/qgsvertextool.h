@@ -119,6 +119,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void removeTemporaryRubberBands();
 
+    void cleanupVertexEditor();
+
     /**
      * Temporarily override snapping config and snap to vertices and edges
      of any editable vector layer, to allow selection of vertex for editing
@@ -201,8 +203,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      * center of the edge and whether we are close enough to the center
      */
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr = nullptr );
-
-    void cleanupVertexEditor();
 
     //! Run validation on a geometry (in a background thread)
     void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );

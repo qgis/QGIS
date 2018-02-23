@@ -374,8 +374,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  cleanupVertexEditor();
-
   if ( !mDraggingVertex && !mSelectedVertices.isEmpty() && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
   {
     // only remove highlight if not clicked on one of highlighted vertices
@@ -1041,6 +1039,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
   QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
   connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+  connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
   connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 
