@@ -100,11 +100,8 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         folders = ScriptUtils.scriptsFolders()
         for folder in folders:
             items = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-            #items = os.scandir(folder)
             for entry in items:
                 if entry.lower().endswith(".py"):
-                #if entry.name.lower().endswith(".py") and entry.is_file():
-                    #moduleName = os.path.splitext(entry.name)[0]
                     moduleName = os.path.splitext(os.path.basename(entry))[0]
                     filePath = os.path.abspath(os.path.join(folder, entry))
                     alg = ScriptUtils.loadAlgorithm(moduleName, filePath)
