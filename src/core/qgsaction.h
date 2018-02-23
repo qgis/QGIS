@@ -57,6 +57,7 @@ class CORE_EXPORT QgsAction
      * \param description   A human readable description string
      * \param command       The action text. Its interpretation depends on the type
      * \param capture       If this is set to true, the output will be captured when an action is run
+     * \param enabledOnlyWhenEditable if true then action is only enable in editmode
      */
     QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false, bool enabledOnlyWhenEditable = false )
       : mType( type )
@@ -78,6 +79,7 @@ class CORE_EXPORT QgsAction
      * \param shortTitle           A short string used to label user interface elements like buttons
      * \param actionScopes         A set of scopes in which this action will be available
      * \param notificationMessage  A particular message which reception will trigger the action
+     * \param enabledOnlyWhenEditable if true then action is only enable in editmode
      */
     QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable = false )
       : mType( type )
