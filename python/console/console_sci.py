@@ -18,8 +18,6 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import bytes
-from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
@@ -600,7 +598,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             more = False
         else:
             self.buffer.append(cmd)
-            src = u"\n".join(self.buffer)
+            src = "\n".join(self.buffer)
             more = self.runsource(src)
             if not more:
                 self.buffer = []
@@ -627,7 +625,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         hook = sys.excepthook
         try:
             def excepthook(etype, value, tb):
-                self.write(u"".join(traceback.format_exception(etype, value, tb)))
+                self.write("".join(traceback.format_exception(etype, value, tb)))
 
             sys.excepthook = excepthook
 
