@@ -755,14 +755,48 @@ were found.
 .. versionadded:: 3.0
 %End
 
-    bool intersects( const QgsRectangle &r ) const;
+    bool intersects( const QgsRectangle &rectangle ) const;
 %Docstring
-Tests for intersection with a rectangle (uses GEOS)
+Returns true if this geometry exactly intersects with a ``rectangle``. This test is exact
+and can be slow for complex geometries.
+
+The GEOS library is used to perform the intersection test. Geometries which are not
+valid may return incorrect results.
+
+.. seealso:: :py:func:`boundingBoxIntersects`
 %End
 
     bool intersects( const QgsGeometry &geometry ) const;
 %Docstring
-Tests for intersection with a geometry (uses GEOS)
+Returns true if this geometry exactly intersects with another ``geometry``. This test is exact
+and can be slow for complex geometries.
+
+The GEOS library is used to perform the intersection test. Geometries which are not
+valid may return incorrect results.
+
+.. seealso:: :py:func:`boundingBoxIntersects`
+%End
+
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
+%Docstring
+Returns true if the bounding box of this geometry intersects with a ``rectangle``. Since this
+test only considers the bounding box of the geometry, is is very fast to calculate and handles invalid
+geometries.
+
+.. seealso:: :py:func:`intersects`
+
+.. versionadded:: 3.0
+%End
+
+    bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
+%Docstring
+Returns true if the bounding box of this geometry intersects with the bounding box of another ``geometry``. Since this
+test only considers the bounding box of the geometries, is is very fast to calculate and handles invalid
+geometries.
+
+.. seealso:: :py:func:`intersects`
+
+.. versionadded:: 3.0
 %End
 
     bool contains( const QgsPointXY *p ) const;

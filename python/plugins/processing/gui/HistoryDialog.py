@@ -85,7 +85,7 @@ class HistoryDialog(BASE, WIDGET):
 
     def saveLog(self):
         fileName, filter = QFileDialog.getSaveFileName(self,
-                                                       self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+                                                       self.tr('Save File'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -133,7 +133,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 popupmenu = QMenu()
-                createTestAction = QAction(self.tr('Create test'), self.tree)
+                createTestAction = QAction(self.tr('Create Test…'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
                 popupmenu.exec_(self.tree.mapToGlobal(point))

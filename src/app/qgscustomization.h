@@ -115,6 +115,7 @@ class APP_EXPORT QgsCustomization : public QObject
       User      = 1, // Set by user
       Default   = 2  // Default customization loaded and set
     };
+    Q_ENUM( Status )
 
     //! Returns the instance pointer, creating the object on the first call
     static QgsCustomization *instance();

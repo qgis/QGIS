@@ -79,7 +79,7 @@ QIcon QgsLayerItem::iconDefault()
 
 QIcon QgsDataCollectionItem::iconDataCollection()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
 QIcon QgsDataCollectionItem::iconDir()
@@ -100,7 +100,7 @@ QIcon QgsDataCollectionItem::iconDir()
 
 QIcon QgsFavoritesItem::iconFavorites()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) );
 }
 
 QVariant QgsFavoritesItem::sortKey() const
@@ -688,7 +688,7 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent, const QString
   : QgsDataItem( Collection, parent, name, path )
 {
   mCapabilities = Fertile;
-  mIconName = QStringLiteral( "/mIconDbSchema.png" );
+  mIconName = QStringLiteral( "/mIconDbSchema.svg" );
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
@@ -1104,7 +1104,7 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, co
   Q_UNUSED( path );
   mCapabilities |= Fast;
   mType = Favorites;
-  mIconName = QStringLiteral( "/mIconFavourites.png" );
+  mIconName = QStringLiteral( "/mIconFavourites.svg" );
   populate();
 }
 

@@ -197,7 +197,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
         if ( files.isEmpty() )
           break;
 
-        if ( QMessageBox::warning( this, tr( "Warning" ),
+        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ),
                                    tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
                                    QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
           break;

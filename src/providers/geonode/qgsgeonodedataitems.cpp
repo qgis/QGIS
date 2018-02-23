@@ -28,7 +28,7 @@ QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString
   , mUri( conn->uri().uri() )
 {
   mConnection = std::move( conn );
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
 QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()

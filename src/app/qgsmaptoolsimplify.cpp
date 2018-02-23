@@ -73,7 +73,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
 {
   QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
-  mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt();
+  mToleranceUnits = settings.enumSettingValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), QgsTolerance::LayerUnits );
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }

@@ -75,7 +75,7 @@ QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputW
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
@@ -86,7 +86,7 @@ QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProces
       feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );
     }
   }
-  return feature;
+  return QgsFeatureList() << feature;
 }
 
 bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

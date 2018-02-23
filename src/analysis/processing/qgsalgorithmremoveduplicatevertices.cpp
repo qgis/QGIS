@@ -84,7 +84,7 @@ bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &p
   return true;
 }
 
-QgsFeature QgsAlgorithmRemoveDuplicateVertices::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsAlgorithmRemoveDuplicateVertices::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -93,7 +93,7 @@ QgsFeature QgsAlgorithmRemoveDuplicateVertices::processFeature( const QgsFeature
     geometry.removeDuplicateNodes( mTolerance, mUseZValues );
     f.setGeometry( geometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

@@ -94,7 +94,7 @@ void QgsMessageBarItem::writeContent()
     switch ( mLevel )
     {
       case Qgis::Critical:
-        msgIcon = QStringLiteral( "/mIconCritical.png" );
+        msgIcon = QStringLiteral( "/mIconCritical.svg" );
         break;
       case Qgis::Warning:
         msgIcon = QStringLiteral( "/mIconWarning.svg" );

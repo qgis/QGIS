@@ -232,19 +232,19 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         popupmenu = QMenu()
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg
-            executeAction = QAction(self.tr('Execute'), self.algorithmTree)
+            executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
             if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 executeBatchAction = QAction(
-                    self.tr('Execute as batch process'),
+                    QCoreApplication.translate('ProcessingToolbox', 'Execute as Batch Process…'),
                     self.algorithmTree)
                 executeBatchAction.triggered.connect(
                     self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
             editRenderingStylesAction = QAction(
-                self.tr('Edit rendering styles for outputs'),
+                QCoreApplication.translate('ProcessingToolbox', 'Edit Rendering Styles for Outputs…'),
                 self.algorithmTree)
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)

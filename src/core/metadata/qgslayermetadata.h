@@ -84,6 +84,8 @@ class CORE_EXPORT QgsLayerMetadata
        * \see extentCrs
        */
       QgsBox3d bounds;
+
+      bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
     };
 
     /**
@@ -120,6 +122,8 @@ class CORE_EXPORT QgsLayerMetadata
          */
         void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
 
+        bool operator==( const QgsLayerMetadata::Extent &other ) const;
+
 #ifndef SIP_RUN
       private:
 
@@ -154,6 +158,9 @@ class CORE_EXPORT QgsLayerMetadata
        * Free-form constraint string.
        */
       QString constraint;
+
+      bool operator==( const QgsLayerMetadata::Constraint &other ) const;
+
     };
 
     /**
@@ -209,6 +216,8 @@ class CORE_EXPORT QgsLayerMetadata
        * Free-form country string.
        */
       QString country;
+
+      bool operator==( const QgsLayerMetadata::Address &other ) const;
     };
 
     /**
@@ -266,6 +275,8 @@ class CORE_EXPORT QgsLayerMetadata
        * E.g. 'custodian', 'owner', 'distributor', etc.
        */
       QString role;
+
+      bool operator==( const QgsLayerMetadata::Contact &other ) const;
     };
 
     /**
@@ -324,6 +335,8 @@ class CORE_EXPORT QgsLayerMetadata
        * Estimated size (in bytes) of the online resource response.
        */
       QString size;
+
+      bool operator==( const QgsLayerMetadata::Link &other ) const;
     };
 
     /**
@@ -725,6 +738,8 @@ class CORE_EXPORT QgsLayerMetadata
      * \returns true if successful
      */
     bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+
+    bool operator==( const QgsLayerMetadata &metadataOther ) const;
 
   private:
 

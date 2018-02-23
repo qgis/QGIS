@@ -85,4 +85,4 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
                 feature[self.field_idx] = float(value)
         except:
             feature[self.field_idx] = None
-        return feature
+        return [feature]

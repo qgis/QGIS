@@ -79,14 +79,14 @@ void QgsNewAuxiliaryFieldDialog::accept()
   const int idx = mLayer->fields().lookupField( fieldName );
   if ( idx >= 0 )
   {
-    const QString title = tr( "Invalid name" );
-    const QString msg = tr( "Auxiliary field '%1' already exists" ).arg( fieldName );
+    const QString title = tr( "New Auxiliary Field" );
+    const QString msg = tr( "Invalid name. Auxiliary field '%1' already exists." ).arg( fieldName );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
   else if ( def.comment().isEmpty() )
   {
-    const QString title = tr( "Invalid name" );
-    const QString msg = tr( "Name is a mandatory parameter" );
+    const QString title = tr( "New Auxiliary Field" );
+    const QString msg = tr( "Name is a mandatory parameter." );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
   else

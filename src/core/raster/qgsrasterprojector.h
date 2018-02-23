@@ -46,6 +46,8 @@ class QgsPointXY;
  */
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -57,6 +59,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       Approximate = 0, //!< Approximate (default), fast but possibly inaccurate
       Exact = 1,   //!< Exact, precise but slow
     };
+    Q_ENUM( Precision )
 
     QgsRasterProjector();
 

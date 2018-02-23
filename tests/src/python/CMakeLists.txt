@@ -9,6 +9,7 @@ IF (WITH_SERVER)
 ENDIF (WITH_SERVER)
 
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
+ADD_PYTHON_TEST(PyQgsAFSProvider test_provider_afs.py)
 ADD_PYTHON_TEST(PyQgsAggregateCalculator test_qgsaggregatecalculator.py)
 ADD_PYTHON_TEST(PyQgsAnnotation test_qgsannotation.py)
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)

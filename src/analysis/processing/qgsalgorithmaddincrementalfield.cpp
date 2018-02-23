@@ -95,7 +95,7 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
   return true;
 }
 
-QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {
@@ -127,7 +127,7 @@ QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &fe
     mGroupedValues[ groupAttributes ] = value;
   }
   f.setAttributes( attributes );
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

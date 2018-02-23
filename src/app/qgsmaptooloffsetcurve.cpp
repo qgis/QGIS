@@ -90,6 +90,18 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();
+
+        bool hasZ = QgsWkbTypes::hasZ( mLayer->wkbType() );
+        bool hasM = QgsWkbTypes::hasZ( mLayer->wkbType() );
+        if ( hasZ || hasM )
+        {
+          emit messageEmitted( QString( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
+                               .arg( mLayer->name() )
+                               .arg( hasZ ? "Z" : "" )
+                               .arg( hasZ && hasM ? "/" : "" )
+                               .arg( hasM ? "M" : "" )
+                               , Qgis::Warning );
+        }
       }
     }
 
@@ -568,10 +580,10 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
 
   QgsGeometry offsetGeom;
   QgsSettings s;
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
+  QgsGeometry::JoinStyle joinStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
   int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
   double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-  QgsGeometry::EndCapStyle capStyle = static_cast< QgsGeometry::EndCapStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsGeometry::CapRound ).toInt() );
+  QgsGeometry::EndCapStyle capStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
 
 
   if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
@@ -619,10 +631,10 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
 
   QgsSettings s;
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
+  QgsGeometry::JoinStyle joinStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
   int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
   double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-  QgsGeometry::EndCapStyle capStyle = static_cast< QgsGeometry::EndCapStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsGeometry::CapRound ).toInt() );
+  QgsGeometry::EndCapStyle capStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
 
   mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
   mQuadrantSpinBox->setValue( quadSegments );

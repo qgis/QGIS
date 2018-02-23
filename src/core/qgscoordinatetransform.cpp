@@ -644,7 +644,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     QString msg = QObject::tr( "%1 of\n"
                                "%2"
-                               "PROJ.4: %3 +to %4\n"
+                               "PROJ: %3 +to %4\n"
                                "Error: %5" )
                   .arg( dir,
                         points,

@@ -243,6 +243,8 @@ Returns true if this range contains a specified ``element``.
 Returns true if this range overlaps another range.
 %End
 
+    bool operator==( const QgsTemporalRange<T> &other ) const;
+
 };
 
 

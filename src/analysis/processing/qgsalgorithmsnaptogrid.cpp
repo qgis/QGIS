@@ -90,7 +90,7 @@ bool QgsSnapToGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
   return true;
 }
 
-QgsFeature QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -102,7 +102,7 @@ QgsFeature QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, Qg
     }
     f.setGeometry( outputGeometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

@@ -77,7 +77,7 @@ QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields 
   return fields;
 }
 
-QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -106,7 +106,7 @@ QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeat
           << QVariant();
     f.setAttributes( attrs );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

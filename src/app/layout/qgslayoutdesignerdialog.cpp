@@ -640,7 +640,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
 
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
-  mGeneralDock = new QgsDockWidget( tr( "Layout Panel" ), this );
+  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
   mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
   mGeneralDock->setMinimumWidth( minDockWidth );
   mGeneralPropertiesStack = new QgsPanelWidgetStack();
@@ -651,14 +651,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGeneralDock->setUserVisible( true );
   } );
 
-  mItemDock = new QgsDockWidget( tr( "Item Properties Panel" ), this );
+  mItemDock = new QgsDockWidget( tr( "Item Properties" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
   mItemPropertiesStack = new QgsPanelWidgetStack();
   mItemDock->setWidget( mItemPropertiesStack );
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
-  mGuideDock = new QgsDockWidget( tr( "Guides Panel" ), this );
+  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
   mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
   mGuideDock->setMinimumWidth( minDockWidth );
   mGuideStack = new QgsPanelWidgetStack();
@@ -669,13 +669,13 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
-  mUndoDock = new QgsDockWidget( tr( "Undo History Panel" ), this );
+  mUndoDock = new QgsDockWidget( tr( "Undo History" ), this );
   mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
   mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
 
-  mItemsDock = new QgsDockWidget( tr( "Items Panel" ), this );
+  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
   mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
@@ -683,11 +683,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
-  mAtlasDock = new QgsDockWidget( tr( "Atlas Panel" ), this );
+  mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
   connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
 
-  mReportDock = new QgsDockWidget( tr( "Report Organizer Panel" ), this );
+  mReportDock = new QgsDockWidget( tr( "Report Organizer" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
   connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
 
@@ -798,6 +798,15 @@ QMenu *QgsLayoutDesignerDialog::createPopupMenu()
       {
         a->setVisible( false );
       }
+
+      if ( !a->property( "fixed_title" ).toBool() )
+      {
+        // append " Panel" to menu text. Only ever do this once, because the actions are not unique to
+        // this single popup menu
+        a->setText( tr( "%1 Panel" ).arg( a->text() ) );
+        a->setProperty( "fixed_title", true );
+      }
+
       menu->addAction( a );
     }
     menu->addSeparator();
