@@ -786,10 +786,6 @@ namespace QgsWms
     // Keyword list
     addKeywordListElement( project, doc, layerParentElem );
 
-    // Metadata (empty but needed for OGC tests RECOMMENDATIONS)
-    QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-    layerParentElem.appendChild( metaUrlElem );
-
     // Root Layer tree name
     if ( projectSettings )
     {

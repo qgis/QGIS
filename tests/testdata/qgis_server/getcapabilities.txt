@@ -115,7 +115,6 @@ Content-Type: text/xml; charset=utf-8
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
-   <MetadataURL/>
    <Layer queryable="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
