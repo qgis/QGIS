@@ -133,7 +133,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def commandName(self):
         parameters = {}
-        for output in self.outputs:
+        for output in self.outputDefinitions():
             output.setValue("dummy")
         for param in self.parameterDefinitions():
             parameters[param.name()] = "1"
