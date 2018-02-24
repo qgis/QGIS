@@ -21,3 +21,4 @@ set OSGEO4W_ROOT=%OSGEO4W_ROOT:\=\\%
 textreplace -std -t "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
 nircmd elevate "%WINDIR%\regedit" /s "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
 del /s /q "%OSGEO4W_ROOT%\apps\@package@\python\*.pyc"
+exit /b 0
