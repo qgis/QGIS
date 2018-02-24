@@ -253,6 +253,17 @@ must be called on the parent model.
 .. seealso:: :py:func:`modelOutputs`
 %End
 
+    bool removeModelOutput( const QString &name );
+%Docstring
+Removes an existing output from the final model outputs.
+
+QgsProcessingModelAlgorithm.updateDestinationParameters() must be called on the parent model.
+
+.. seealso:: :py:func:`modelOutputs`
+
+.. versionadded:: 3.2
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this child to a QVariant.

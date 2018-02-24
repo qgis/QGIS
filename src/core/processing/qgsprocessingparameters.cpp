@@ -29,6 +29,22 @@
 #include "qgsprocessingparametertype.h"
 #include <functional>
 
+
+QVariant QgsProcessingOutputLayerDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "sink" ), sink.toVariant() );
+  map.insert( QStringLiteral( "create_options" ), createOptions );
+  return map;
+}
+
+bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
+{
+  sink.loadVariant( map.value( QStringLiteral( "sink" ) ) );
+  createOptions = map.value( QStringLiteral( "create_options" ) ).toMap();
+  return true;
+}
+
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
   QVariant val = parameters.value( name );

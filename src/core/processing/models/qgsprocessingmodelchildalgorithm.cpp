@@ -74,6 +74,12 @@ void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsP
   }
 }
 
+bool QgsProcessingModelChildAlgorithm::removeModelOutput( const QString &name )
+{
+  mModelOutputs.remove( name );
+  return true;
+}
+
 QVariant QgsProcessingModelChildAlgorithm::toVariant() const
 {
   QVariantMap map;

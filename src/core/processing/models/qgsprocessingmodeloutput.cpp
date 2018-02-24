@@ -28,6 +28,18 @@ QVariant QgsProcessingModelOutput::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), mName );
+
+  if ( mDefaultValue.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QVariantMap defaultMap = mDefaultValue.value<QgsProcessingOutputLayerDefinition>().toVariant().toMap();
+    defaultMap.insert( QStringLiteral( "class" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
+    map.insert( QStringLiteral( "default_value" ), defaultMap );
+  }
+  else
+  {
+    map.insert( QStringLiteral( "default_value" ), mDefaultValue );
+  }
+
   map.insert( QStringLiteral( "child_id" ), mChildId );
   map.insert( QStringLiteral( "output_name" ), mOutputName );
   saveCommonProperties( map );
@@ -37,6 +49,27 @@ QVariant QgsProcessingModelOutput::toVariant() const
 bool QgsProcessingModelOutput::loadVariant( const QVariantMap &map )
 {
   mName = map.value( QStringLiteral( "name" ) ).toString();
+
+  QVariant defaultValue = map.value( QStringLiteral( "default_value" ) );
+  if ( defaultValue.type() == QVariant::Map )
+  {
+    QVariantMap defaultMap = defaultValue.toMap();
+    if ( defaultMap["class"] == "QgsProcessingOutputLayerDefinition" )
+    {
+      QgsProcessingOutputLayerDefinition value( "" );
+      value.loadVariant( defaultMap );
+      mDefaultValue = QVariant( value );
+    }
+    else
+    {
+      mDefaultValue = QVariant();
+    }
+  }
+  else
+  {
+    mDefaultValue = map.value( QStringLiteral( "default_value" ) );
+  }
+
   mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
   mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
   restoreCommonProperties( map );

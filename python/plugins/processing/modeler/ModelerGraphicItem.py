@@ -92,7 +92,7 @@ class ModelerGraphicItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setZValue(1000)
 
-        if not isinstance(element, QgsProcessingModelOutput) and controls:
+        if controls:
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
             picture = QPicture()
             painter = QPainter(picture)
@@ -224,6 +224,17 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.updateAlgorithm(alg)
                 self.scene.dialog.repaintModel()
 
+        elif isinstance(self.element, QgsProcessingModelOutput):
+            child_alg = self.model.childAlgorithm(self.element.childId())
+            param_name = '{}:{}'.format(self.element.childId(), self.element.name())
+            dlg = ModelerParameterDefinitionDialog(self.model,
+                                                   param=self.model.parameterDefinition(param_name))
+            if dlg.exec_() and dlg.param is not None:
+                model_output = child_alg.modelOutput(self.element.name())
+                model_output.setDescription(dlg.param.description())
+                model_output.setDefaultValue(dlg.param.defaultValue())
+                self.model.updateDestinationParameters()
+
     def updateAlgorithm(self, alg):
         existing_child = self.model.childAlgorithm(alg.childId())
         alg.setPosition(existing_child.position())
@@ -234,6 +245,8 @@ class ModelerGraphicItem(QGraphicsItem):
                                              alg.position() + QPointF(
                 ModelerGraphicItem.BOX_WIDTH,
                 (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
+            #if existing_child.modelOutput(out):
+            #    alg.modelOutput(out).setDefaultValue(existing_child.modelOutput(out).defaultValue())
         self.model.setChildAlgorithm(alg)
 
     def removeElement(self):
@@ -258,6 +271,11 @@ class ModelerGraphicItem(QGraphicsItem):
             else:
                 self.scene.dialog.haschanged = True
                 self.scene.dialog.repaintModel()
+        elif isinstance(self.element, QgsProcessingModelOutput):
+            self.model.childAlgorithm(self.element.childId()).removeModelOutput(self.element.name())
+            self.model.updateDestinationParameters()
+            self.scene.dialog.haschanged = True
+            self.scene.dialog.repaintModel()
 
     def getAdjustedText(self, text):
         font = QFont('Verdana', 8)

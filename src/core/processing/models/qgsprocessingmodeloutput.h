@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingparameters.h"
 
 ///@cond NOT_STABLE
 
@@ -32,6 +33,11 @@
 class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
 {
   public:
+
+    /*
+    //! Output flags
+    Q_DECLARE_FLAGS( Flags, QgsProcessingParameterDefinition::Flag )
+    */
 
     /**
      * Constructor for QgsProcessingModelOutput with the specified \a name and \a description.
@@ -49,6 +55,20 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * \see name()
      */
     void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns the default value for the model output parameter.
+     * \see setDefaultValue()
+     * \since QGIS 3.2
+     */
+    QVariant defaultValue() const { return mDefaultValue; }
+
+    /**
+     * Sets the default value for the model output.
+     * \see defaultValue()
+     * \since QGIS 3.2
+     */
+    void setDefaultValue( const QVariant &value ) { mDefaultValue = value; }
 
     /**
      * Returns the child algorithm ID from which this output is generated.
@@ -89,6 +109,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
   private:
 
     QString mName;
+    QVariant mDefaultValue;
     QString mChildId;
     QString mOutputName;
 };

@@ -153,6 +153,21 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
      */
     QVariantMap createOptions;
 
+    /**
+     * Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * \see loadVariant()
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this output layer definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * \see toVariant()
+     */
+    bool loadVariant( const QVariantMap &map );
 
     //! Allows direct construction of QVariants.
     operator QVariant() const
