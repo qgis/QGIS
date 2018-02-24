@@ -26,6 +26,7 @@ class QgsAttributeForm : QWidget
       MultiEditMode,
       SearchMode,
       AggregateSearchMode,
+      IdentifyMode
     };
 
     enum FilterType
