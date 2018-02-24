@@ -154,9 +154,6 @@ void QgsActionMenu::reloadActions()
     {
       QgsMapLayerAction *qaction = mapLayerActions.at( i );
 
-      if ( !mLayer->isEditable() && qaction->isEnabledOnlyWhenEditable() )
-        continue;
-
       if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
         continue;
 
