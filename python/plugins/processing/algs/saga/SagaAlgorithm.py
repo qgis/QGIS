@@ -277,8 +277,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                 values = []
                 values.append(rect.xMinimum())
-                values.append(rect.yMinimum())
                 values.append(rect.xMaximum())
+                values.append(rect.yMinimum())
                 values.append(rect.yMaximum())
 
                 for i in range(4):
