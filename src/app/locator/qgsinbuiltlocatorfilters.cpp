@@ -288,6 +288,11 @@ QgsExpressionCalculatorLocatorFilter::QgsExpressionCalculatorLocatorFilter( QObj
   setUseWithoutPrefix( false );
 }
 
+QgsExpressionCalculatorLocatorFilter *QgsExpressionCalculatorLocatorFilter::clone() const
+{
+  return new QgsExpressionCalculatorLocatorFilter();
+}
+
 void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   QgsExpressionContext context;
