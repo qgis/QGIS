@@ -63,9 +63,15 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterBand
-                       )
+                       QgsProcessingParameterBand,
+                       QgsProcessingDestinationParameter,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterVectorDestination)
 
+from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.enummodelerwidget import EnumModelerWidget
 from processing.gui.matrixmodelerwidget import MatrixModelerWidget
 from processing.core import parameters
@@ -293,6 +299,11 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.widget.setFixedRows(self.param.hasFixedNumberRows())
             self.verticalLayout.addWidget(self.widget)
 
+        elif isinstance(self.param, QgsProcessingDestinationParameter):
+            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
+            self.defaultWidget = DestinationSelectionPanel(self.param, self.alg)
+            self.verticalLayout.addWidget(self.defaultWidget)
+
         self.verticalLayout.addSpacing(20)
         self.requiredCheck = QCheckBox()
         self.requiredCheck.setText(self.tr('Mandatory'))
@@ -425,6 +436,42 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_MATRIX or
                 isinstance(self.param, QgsProcessingParameterMatrix)):
             self.param = QgsProcessingParameterMatrix(name, description, hasFixedNumberRows=self.widget.fixedRows(), headers=self.widget.headers(), defaultValue=self.widget.value())
+
+        # Destination parameter
+        elif (isinstance(self.param, QgsProcessingParameterFeatureSink)):
+            self.param = QgsProcessingParameterFeatureSink(
+                name=name,
+                description=self.param.description(),
+                type=self.param.dataType(),
+                defaultValue=self.defaultWidget.getValue(),
+                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        elif (isinstance(self.param, QgsProcessingParameterFileDestination)):
+            self.param = QgsProcessingParameterFileDestination(
+                name=name,
+                description=self.param.description(),
+                fileFilter=self.param.fileFilter(),
+                defaultValue=str(self.defaultWidget.getValue()),
+                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
+            self.param = QgsProcessingParameterFolderDestination(
+                name=name,
+                description=self.param.description(),
+                defaultValue=str(self.defaultWidget.getValue()),
+                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
+            self.param = QgsProcessingParameterRasterDestination(
+                name=name,
+                description=self.param.description(),
+                defaultValue=str(self.defaultWidget.getValue()),
+                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
+            self.param = QgsProcessingParameterVectorDestination(
+                name=name,
+                description=self.param.description(),
+                type=self.param.dataType(),
+                defaultValue=str(self.defaultWidget.getValue()),
+                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
         else:
             if self.paramType:
                 typeId = self.paramType

@@ -85,6 +85,21 @@ to automatically load the resulting sink/layer after completing processing.
 
     QVariantMap createOptions;
 
+    QVariant toVariant() const;
+%Docstring
+Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.writeVariant to save it to an XML document.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this output layer definition from a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.readVariant to load it from an XML document.
+
+.. seealso:: :py:func:`toVariant`
+%End
 
     operator QVariant() const;
 

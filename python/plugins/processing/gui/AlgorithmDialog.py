@@ -111,6 +111,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         dest_project = QgsProject.instance()
 
                 value = self.mainWidget().outputWidgets[param.name()].getValue()
+                if value == '':
+                    value = self.parameter.generateTemporaryDestination()
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
                 if value:

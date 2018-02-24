@@ -85,6 +85,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
             elif not isinstance(self.parameter, QgsProcessingParameterFolderDestination):
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
+        self.setValue(self.parameter.defaultValue())
+
         self.btnSelect.clicked.connect(self.selectOutput)
         self.leText.textEdited.connect(self.textChanged)
 
@@ -285,8 +287,12 @@ signal        """
         self.skipOutputChanged.emit(False)
 
     def setValue(self, value):
-        if value == 'memory:':
+        if value == 'memory:' or not value:
             self.saveToTemporary()
+        elif isinstance(value, QgsProcessingOutputLayerDefinition):
+            self.leText.setText(value.sink.staticValue())
+            self.encoding = value.createOptions['fileEncoding']
+            self.use_temporary = False
         else:
             self.leText.setText(value)
             self.use_temporary = False

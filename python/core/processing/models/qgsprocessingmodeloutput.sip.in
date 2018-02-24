@@ -23,6 +23,7 @@ Represents a final output created by the model.
 %End
   public:
 
+
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.
@@ -40,6 +41,24 @@ Returns the model output name.
 Sets the model output ``name``.
 
 .. seealso:: :py:func:`name`
+%End
+
+    QVariant defaultValue() const;
+%Docstring
+Returns the default value for the model output parameter.
+
+.. seealso:: :py:func:`setDefaultValue`
+
+.. versionadded:: 3.2
+%End
+
+    void setDefaultValue( const QVariant &value );
+%Docstring
+Sets the default value for the model output.
+
+.. seealso:: :py:func:`defaultValue`
+
+.. versionadded:: 3.2
 %End
 
     QString childId() const;
