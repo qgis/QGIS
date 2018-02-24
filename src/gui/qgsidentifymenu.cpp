@@ -346,6 +346,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
+      featureActionMenu->setMode( QgsAttributeForm::IdentifyMode );
       featureActionMenu->setExpressionContextScope( mExpressionContextScope );
     }
 

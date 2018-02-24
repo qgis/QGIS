@@ -201,9 +201,6 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
               QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(),
                   QgsMapLayerAction::SingleFeature ) )
   {
-    if ( !mFilterModel->layer()->isEditable() && mapLayerAction->isEnabledOnlyWhenEditable() )
-      continue;
-
     QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), container );
     action->setData( "map_layer_action" );
     action->setToolTip( mapLayerAction->text() );
