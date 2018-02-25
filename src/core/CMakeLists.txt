@@ -311,6 +311,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayertools.cpp
+  qgsvectorlayerupdater.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerundopassthroughcommand.cpp
   qgsvectorlayerutils.cpp
@@ -924,6 +925,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerlabeling.h
+  qgsvectorlayerupdater.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
