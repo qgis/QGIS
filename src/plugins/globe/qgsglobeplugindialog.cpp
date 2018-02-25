@@ -341,7 +341,7 @@ void QgsGlobePluginDialog::addCustomTMSImagery()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add TMS Imagery" ), validationError );
     }
     else
     {
@@ -358,7 +358,7 @@ void QgsGlobePluginDialog::addCustomWMSImagery()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add WMS Imagery" ), validationError );
     }
     else
     {
@@ -402,7 +402,7 @@ void QgsGlobePluginDialog::addCustomTMSElevation()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add TMS Elevation" ), validationError );
     }
     else
     {

@@ -481,7 +481,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     return;
   }
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Fix errors?" ), tr( "Do you want to fix %1 errors?" ).arg( errors.size() ), QMessageBox::Yes, QMessageBox::No ) )
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Fix Errors" ), tr( "Do you want to fix %1 errors?" ).arg( errors.size() ), QMessageBox::Yes, QMessageBox::No ) )
   {
     return;
   }
@@ -626,7 +626,7 @@ void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
   {
     if ( mTabWidget->currentWidget() == this )
     {
-      QMessageBox::critical( this, tr( "Layer removed" ), tr( "One or more layers have been removed." ) );
+      QMessageBox::critical( this, tr( "Remove Layer" ), tr( "One or more layers have been removed." ) );
     }
     setEnabled( false );
     qDeleteAll( mCurrentRubberBands );
