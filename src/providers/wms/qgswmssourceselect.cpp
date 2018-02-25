@@ -1107,7 +1107,6 @@ void QgsWMSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
   exampleServers[QStringLiteral( "QGIS Server Demo - Alaska" )] = QStringLiteral( "http://demo.qgis.org/cgi-bin/qgis_mapserv.fcgi?map=/web/demos/alaska/alaska_map.qgs" );
-  exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
 
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
