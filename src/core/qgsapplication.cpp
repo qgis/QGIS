@@ -1404,8 +1404,8 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
   QgsSettings settings;
 
   QVariantMap::const_iterator it = variables.constBegin();
-  settings.beginGroup("variables");
-  settings.remove("");
+  settings.beginGroup( "variables" );
+  settings.remove( "" );
   for ( ; it != variables.constEnd(); ++it )
   {
     settings.setValue( it.key(), it.value() );

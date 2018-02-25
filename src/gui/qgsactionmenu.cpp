@@ -44,6 +44,9 @@ void QgsActionMenu::init()
   setTitle( tr( "&Actions" ) );
 
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsActionMenu::reloadActions );
 
   reloadActions();
 }
@@ -61,6 +64,12 @@ QgsFeature QgsActionMenu::feature()
 void QgsActionMenu::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
+}
+
+void QgsActionMenu::setMode( const QgsAttributeForm::Mode mode )
+{
+  mMode = mode;
+  reloadActions();
 }
 
 void QgsActionMenu::triggerAction()
@@ -107,6 +116,12 @@ void QgsActionMenu::reloadActions()
 
   Q_FOREACH ( const QgsAction &action, mActions )
   {
+    if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
+      continue;
+
+    if ( action.isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
+      continue;
+
     QgsAction act( action );
     act.setExpressionContextScope( mExpressionContextScope );
 
@@ -138,6 +153,10 @@ void QgsActionMenu::reloadActions()
     for ( int i = 0; i < mapLayerActions.size(); ++i )
     {
       QgsMapLayerAction *qaction = mapLayerActions.at( i );
+
+      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
+        continue;
+
       QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
       qAction->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
       addAction( qAction );

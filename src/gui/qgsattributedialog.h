@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
+#include "qgsactionmenu.h"
 
 #include <QDialog>
 #include <QMenuBar>
@@ -77,7 +78,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
-    void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
+    void setMode( QgsAttributeForm::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -118,6 +119,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     // true if this dialog is editable
     bool mEditable;
+
+    QgsActionMenu *mMenu;
 
     static int sFormCounter;
     static QString sSettingsPath;

@@ -73,6 +73,13 @@ Change the feature on which actions are performed
 as long as the menu is displayed and the action is running.
 %End
 
+    void setMode( const QgsAttributeForm::Mode mode );
+%Docstring
+Change the mode of the actions
+
+:param mode: The mode of the attribute form
+%End
+
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 %Docstring
 Sets an expression context scope used to resolve underlying actions.
