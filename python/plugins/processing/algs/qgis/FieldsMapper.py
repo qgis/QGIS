@@ -138,10 +138,11 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             expression.setDistanceUnits(context.project().distanceUnits())
             expression.setAreaUnits(context.project().areaUnits())
             if expression.hasParserError():
-                raise QgsProcessingException(
+                feedback.reportError(
                     self.tr(u'Parser error in expression "{}": {}')
                     .format(expression.expression(),
                             expression.parserErrorString()))
+                return False
             self.expressions.append(expression)
         return True
 
