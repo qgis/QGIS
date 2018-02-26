@@ -2031,7 +2031,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec.at( idx );
+      QVariant v = attributevec.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
       if ( fieldId.contains( idx ) )
         continue;
 
@@ -2050,7 +2050,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( i = 1; i < flist.size(); i++ )
       {
         QgsAttributes attrs2 = flist[i].attributes();
-        QVariant v2 = attrs2.at( idx );
+        QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
 
         if ( v2 != v )
           break;
