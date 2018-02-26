@@ -1298,6 +1298,13 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       geometryAttribute = name;
       geomType = QGis::WKBMultiLineString;
     }
+    // such as http://go.geozug.ch/Zug_WFS_Baumkataster/service.svc/get
+    else if ( type == "gmgml:Point_MultiPointPropertyType" )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = name;
+      geomType = QGis::WKBMultiPoint;
+    }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
     else if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" )
