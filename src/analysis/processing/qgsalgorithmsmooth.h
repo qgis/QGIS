@@ -52,8 +52,16 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
     int mIterations = 1;
+    bool mDynamicIterations = false;
+    QgsProperty mIterationsProperty;
+
     double mOffset = 0.25;
+    bool mDynamicOffset = false;
+    QgsProperty mOffsetProperty;
+
     double mMaxAngle = 0;
+    bool mDynamicMaxAngle = false;
+    QgsProperty mMaxAngleProperty;
 };
 
 ///@endcond PRIVATE

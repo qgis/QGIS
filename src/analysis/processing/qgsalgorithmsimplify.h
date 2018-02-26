@@ -53,6 +53,8 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   private:
 
     double mTolerance = 1.0;
+    bool mDynamicTolerance = false;
+    QgsProperty mToleranceProperty;
     QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
     std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
 

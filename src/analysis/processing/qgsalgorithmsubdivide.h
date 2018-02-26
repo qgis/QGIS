@@ -54,7 +54,8 @@ class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   private:
 
     int mMaxNodes = -1;
-
+    bool mDynamicMaxNodes = false;
+    QgsProperty mMaxNodesProperty;
 };
 
 ///@endcond PRIVATE
