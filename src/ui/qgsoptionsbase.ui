@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1040,7 +1040,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
+                <width>843</width>
                 <height>1110</height>
                </rect>
               </property>
@@ -1576,8 +1576,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>593</width>
-                <height>387</height>
+                <width>857</width>
+                <height>826</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1743,8 +1743,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>787</height>
+                <width>857</width>
+                <height>826</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2111,7 +2111,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
+                <width>843</width>
                 <height>1110</height>
                </rect>
               </property>
@@ -2862,8 +2862,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>523</width>
-                <height>246</height>
+                <width>857</width>
+                <height>826</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3119,8 +3119,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>660</height>
+                <width>857</width>
+                <height>826</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3563,8 +3563,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>239</height>
+                <width>857</width>
+                <height>826</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3601,6 +3601,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="0" rowspan="8">
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="4" column="1">
                    <widget class="QToolButton" name="mButtonPasteColors">
                     <property name="toolTip">
@@ -3626,13 +3633,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
                     </property>
                    </widget>
                   </item>
@@ -3664,6 +3664,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <item>
+                     <widget class="QComboBox" name="mColorSchemesComboBox"/>
+                    </item>
+                   </layout>
+                  </item>
                   <item row="6" column="1">
                    <widget class="QToolButton" name="mButtonExportColors">
                     <property name="toolTip">
@@ -3678,12 +3685,15 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_22">
-                    <item>
-                     <widget class="QComboBox" name="mColorSchemesComboBox"/>
-                    </item>
-                   </layout>
+                  <item row="0" column="1">
+                   <widget class="QToolButton" name="mSchemeToolButton">
+                    <property name="text">
+                     <string>…</string>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::InstantPopup</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -5259,9 +5269,53 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
     </widget>
    </item>
   </layout>
+  <action name="mActionImportPalette">
+   <property name="text">
+    <string>Import Palette...</string>
+   </property>
+   <property name="toolTip">
+    <string>Import palette from file</string>
+   </property>
+  </action>
+  <action name="mActionRemovePalette">
+   <property name="text">
+    <string>Remove Palette</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove current palette</string>
+   </property>
+  </action>
+  <action name="mActionNewPalette">
+   <property name="text">
+    <string>New Palette...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new palette</string>
+   </property>
+  </action>
+  <action name="mActionShowInButtons">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show in Color Buttons</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
@@ -5278,12 +5332,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5306,12 +5354,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QWidget</extends>
-   <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSettingsTree</class>
