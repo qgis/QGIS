@@ -810,6 +810,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // create undo widget
   startProfile( QStringLiteral( "Undo dock" ) );
   mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
+  mUndoDock->toggleViewAction()->setShortcut( tr( "Alt+5", "Keyboard shortcut: Show undo/redo panel." ) );
   mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
   mUndoWidget->setObjectName( QStringLiteral( "Undo" ) );
   mUndoDock->setWidget( mUndoWidget );
@@ -820,6 +821,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Advanced digitize panel" ) );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
+  mAdvancedDigitizingDockWidget->toggleViewAction()->setShortcut( tr( "Alt+4", "Keyboard shortcut: Show advanced digitizing panel." ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
   endProfile();
 
@@ -827,6 +829,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Stats dock" ) );
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
   mStatisticalSummaryDockWidget->setObjectName( QStringLiteral( "StatistalSummaryDockWidget" ) );
+  mStatisticalSummaryDockWidget->toggleViewAction()->setShortcut( tr( "Alt+6", "Keyboard shortcut: Show statisics panel." ) );
   connect( mStatisticalSummaryDockWidget, &QDockWidget::visibilityChanged, mActionStatisticalSummary, &QAction::setChecked );
   endProfile();
 
@@ -834,6 +837,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Bookmarks widget" ) );
   mBookMarksDockWidget = new QgsBookmarks( this );
   mBookMarksDockWidget->setObjectName( QStringLiteral( "BookmarksDockWidget" ) );
+  mBookMarksDockWidget->toggleViewAction()->setShortcut( tr( "Alt+7", "Keyboard shortcut: Show bookmarks panel." ) );
   connect( mBookMarksDockWidget, &QDockWidget::visibilityChanged, mActionShowBookmarks, &QAction::setChecked );
   endProfile();
 
@@ -903,6 +907,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "Layer Style dock" ) );
   mMapStylingDock = new QgsDockWidget( this );
+  mMapStylingDock->toggleViewAction()->setShortcut( tr( "Alt+3", "Keyboard shortcut: Show style panel." ) );
   mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
   mMapStylingDock->setObjectName( QStringLiteral( "LayerStyling" ) );
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapLayerPanelFactories );
@@ -942,6 +947,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBrowserModel = new QgsBrowserModel( this );
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
+  mBrowserWidget->toggleViewAction()->setShortcut( tr( "Alt+2", "Keyboard shortcut: Show browser panel." ) );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
@@ -974,6 +980,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
+  mpGpsDock->toggleViewAction()->setShortcut( tr( "Alt+0", "Keyboard shortcut: Show GPS information panel." ) );
   mpGpsDock->setObjectName( QStringLiteral( "GPSInformation" ) );
   mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
@@ -3388,6 +3395,7 @@ void QgisApp::createOverview()
 //  myOverviewLayout->addWidget(overviewCanvas);
 //  overviewFrame->setLayout(myOverviewLayout);
   mOverviewDock = new QgsDockWidget( tr( "Overview" ), this );
+  mOverviewDock->toggleViewAction()->setShortcut( tr( "Alt+8", "Keyboard shortcut: Show overview panel." ) );
   mOverviewDock->setObjectName( QStringLiteral( "Overview" ) );
   mOverviewDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mOverviewDock->setWidget( mOverviewCanvas );
@@ -3621,6 +3629,7 @@ void QgisApp::initLayerTreeView()
   mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double-click on a layer in the legend to customize its appearance and set other properties." ) );
 
   mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), this );
+  mLayerTreeDock->toggleViewAction()->setShortcut( tr( "Alt+1", "Keyboard shortcut: Show layers panel." ) );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
@@ -3718,6 +3727,7 @@ void QgisApp::initLayerTreeView()
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), this );
+  mLayerOrderDock->toggleViewAction()->setShortcut( tr( "Alt+9", "Keyboard shortcut: Show layer order panel." ) );
   mLayerOrderDock->setObjectName( QStringLiteral( "LayerOrder" ) );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
