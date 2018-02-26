@@ -23,9 +23,7 @@ QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &u
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ) ) );
-  // We don't want/need REQUEST=Transaction
-  url.removeQueryItem( QStringLiteral( "REQUEST" ) );
+  QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), QgsWFSDataSourceURI::Method::Post ) );
 
   QgsDebugMsgLevel( doc.toString(), 4 );
 

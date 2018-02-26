@@ -182,7 +182,7 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &meth
   }
   QUrl url( endpoint );
   url.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
-  if ( ! request.isEmpty() )
+  if ( method == Method::Get && ! request.isEmpty() )
     url.addQueryItem( QStringLiteral( "REQUEST" ), request );
   return url;
 }
