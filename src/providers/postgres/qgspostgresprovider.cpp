@@ -4726,6 +4726,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
+    conn->unref();
     return QLatin1String( "" );
   }
 
