@@ -12431,6 +12431,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
+    node.setAttribute( QStringLiteral( "zoomSelected" ), w->isAutoZoomToSelected() );
     writeDockWidgetSettings( w, node );
     mapViewNode.appendChild( node );
   }
@@ -12552,6 +12553,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
       bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
+      bool zoomSelected = elementNode.attribute( QStringLiteral( "zoomSelected" ), QStringLiteral( "0" ) ).toInt();
 
       QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName );
       readDockWidgetSettings( mapCanvasDock, elementNode );
@@ -12562,6 +12564,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       mapCanvasDock->setViewScaleSynchronized( scaleSynced );
       mapCanvasDock->setMainCanvasExtentVisible( showExtent );
       mapCanvasDock->setLabelsVisible( showLabels );
+      mapCanvasDock->setAutoZoomToSelected( zoomSelected );
       mapCanvas->readProject( doc );
       views << mapCanvas;
     }

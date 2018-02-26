@@ -2088,9 +2088,12 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  emit selectionChanged( layer );
-  refresh();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( layer )
+  {
+    emit selectionChanged( layer );
+    refresh();
+  }
 }
 
 void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *e )
