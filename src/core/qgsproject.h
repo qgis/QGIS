@@ -42,6 +42,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
+#include "qgsreadwritecontext.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -894,7 +895,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @param layerName the layer name
      * @param messages a list of pairs of Qgis::MessageLevel and messages
      */
-    void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
+    void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );

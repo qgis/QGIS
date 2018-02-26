@@ -912,7 +912,7 @@ Emitted when a layer from a projects was read.
 
     void loadingLayer( const QString &layerName );
 
-    void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
+    void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 %Docstring
  Emitted when loading layers has produced some messages
 @param layerName the layer name

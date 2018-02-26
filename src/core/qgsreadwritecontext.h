@@ -32,25 +32,74 @@ class CORE_EXPORT QgsReadWriteContext
   public:
 
     /**
+     * Struct for QgsReadWriteContext error or warning messages
+     * \since QGIS 3.2
+     */
+    struct ReadWriteMessage
+    {
+        //! Construct a container for QgsReadWriteContext error or warning messages
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning,  QStringList categories = QStringList() )
+          : mMessage( message )
+          , mLevel( level )
+          , mCategories( categories )
+        {}
+
+        //! Return the message string
+        QString message() const {return mMessage;}
+
+        //! Return the message level
+        Qgis::MessageLevel level() const {return mLevel;}
+
+        //! Return the stack of categories of the message
+        QStringList categories() const {return mCategories;}
+
+      private:
+        QString mMessage = QString();
+        Qgis::MessageLevel mLevel = Qgis::Warning;
+        QStringList mCategories = QStringList();
+    };
+
+    /**
      * Constructor for QgsReadWriteContext.
      */
     QgsReadWriteContext() = default;
 
+    ~QgsReadWriteContext();
+
     //! Returns path resolver for conversion between relative and absolute paths
-    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+    const QgsPathResolver &pathResolver() const;
 
     //! Sets up path resolver for conversion between relative and absolute paths
-    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
+    void setPathResolver( const QgsPathResolver &resolver );
 
-    //! append a message to the context
-    void pushMessage( Qgis::MessageLevel level, const QString &message ) {mMessages.append( qMakePair( level, message ) );}
+    /**
+     * append a message to the context
+     * \since QGIS 3.2
+     */
+    void pushMessage( const QString &message, Qgis::MessageLevel level );
 
-    //! return the stored messages and remove them
-    QList<QPair<Qgis::MessageLevel, QString>> takeMessages() {return mMessages; mMessages.clear();}
+    /**
+     * Push a category to the stack
+     * \since QGIS 3.2
+     */
+    void enterCategory( const QString &category, const QString &details = QString() );
+
+    /**
+     * Pop the last category
+     * \since QGIS 3.2
+     */
+    void leaveCategory();
+
+    /**
+     * return the stored messages and remove them
+     * \since QGIS 3.2
+     */
+    QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 
   private:
     QgsPathResolver mPathResolver;
-    QList<QPair<Qgis::MessageLevel, QString>> mMessages;
+    QList<ReadWriteMessage> mMessages;
+    QStringList mCategories = QStringList();
 };
 
 #endif // QGSREADWRITECONTEXT_H

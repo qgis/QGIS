@@ -22,10 +22,36 @@ The class is used as a container of context for various read/write operations on
 %End
   public:
 
+    struct ReadWriteMessage
+    {
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning,  QStringList categories = QStringList() );
+%Docstring
+Construct a container for QgsReadWriteContext error or warning messages
+%End
+
+        QString message() const;
+%Docstring
+Return the message string
+%End
+
+        Qgis::MessageLevel level() const;
+%Docstring
+Return the message level
+%End
+
+        QStringList categories() const;
+%Docstring
+Return the stack of categories of the message
+%End
+
+    };
+
     QgsReadWriteContext();
 %Docstring
 Constructor for QgsReadWriteContext.
 %End
+
+    ~QgsReadWriteContext();
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
@@ -37,14 +63,32 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
-    void pushMessage( Qgis::MessageLevel level, const QString &message );
+    void pushMessage( const QString &message, Qgis::MessageLevel level );
 %Docstring
 append a message to the context
+
+.. versionadded:: 3.2
 %End
 
-    QList<QPair<Qgis::MessageLevel, QString>> takeMessages();
+    void enterCategory( const QString &category, const QString &details = QString() );
+%Docstring
+Push a category to the stack
+
+.. versionadded:: 3.2
+%End
+
+    void leaveCategory();
+%Docstring
+Pop the last category
+
+.. versionadded:: 3.2
+%End
+
+    QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
 return the stored messages and remove them
+
+.. versionadded:: 3.2
 %End
 
 };

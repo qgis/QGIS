@@ -430,6 +430,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   // the subclass can also read custom properties
   readCustomProperties( layerElement );
 
+  context.enterCategory( tr( "Layer" ), mne.text() );
+
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
 
@@ -554,6 +556,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   // mMetadata.readFromLayer( this );
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
+
+  context.leaveCategory();
 
   return true;
 } // bool QgsMapLayer::readLayerXML

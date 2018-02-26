@@ -260,6 +260,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
 
 void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &context )
 {
+  context.enterCategory( QString( "Edit form config" ) );
   d.detach();
 
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
@@ -387,6 +388,8 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       onRelationsLoaded();
     }
   }
+
+  context.leaveCategory();
 }
 
 void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &context ) const

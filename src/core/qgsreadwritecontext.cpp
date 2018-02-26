@@ -13,3 +13,45 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
+
+QgsReadWriteContext::~QgsReadWriteContext()
+{
+  // be sure that categories have been emptied
+  Q_ASSERT( mCategories.isEmpty() );
+}
+
+const QgsPathResolver &QgsReadWriteContext::pathResolver() const
+{
+  return mPathResolver;
+}
+
+void QgsReadWriteContext::setPathResolver( const QgsPathResolver &resolver )
+{
+  mPathResolver = resolver;
+}
+
+void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLevel level )
+{
+  mMessages.append( ReadWriteMessage( message, level, mCategories ) );
+}
+
+void QgsReadWriteContext::enterCategory( const QString &category, const QString &details )
+{
+  QString message = category;
+  if ( !details.isEmpty() )
+    message.append( QString( " :: %1" ).arg( details ) );
+  mCategories.push_front( message );
+}
+
+void QgsReadWriteContext::leaveCategory()
+{
+  if ( !mCategories.isEmpty() )
+    mCategories.pop_front();
+}
+
+QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
+{
+  QList<QgsReadWriteContext::ReadWriteMessage > messages = mMessages;
+  mMessages.clear();
+  return messages;
+}

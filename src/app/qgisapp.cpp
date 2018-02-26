@@ -11240,11 +11240,11 @@ void QgisApp::showStatusMessage( const QString &message )
   mStatusBar->showMessage( message );
 }
 
-void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString> > &messages )
+void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages )
 {
   for ( const auto message : messages )
   {
-    messageBar()->pushMessage( layerName, message.second, message.first );
+    messageBar()->pushMessage( layerName, message.message(), message.level() );
   }
 }
 
