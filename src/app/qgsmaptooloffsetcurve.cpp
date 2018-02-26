@@ -580,10 +580,10 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
 
   QgsGeometry offsetGeom;
   QgsSettings s;
-  QgsGeometry::JoinStyle joinStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
+  QgsGeometry::JoinStyle joinStyle = s.enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
   int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
   double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-  QgsGeometry::EndCapStyle capStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
+  QgsGeometry::EndCapStyle capStyle = s.enumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
 
 
   if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
@@ -631,10 +631,10 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
 
   QgsSettings s;
-  QgsGeometry::JoinStyle joinStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
+  QgsGeometry::JoinStyle joinStyle = s.enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ),  QgsGeometry::JoinStyleRound );
   int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
   double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-  QgsGeometry::EndCapStyle capStyle = s.enumSettingValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
+  QgsGeometry::EndCapStyle capStyle = s.enumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ),  QgsGeometry::CapRound );
 
   mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
   mQuadrantSpinBox->setValue( quadSegments );
