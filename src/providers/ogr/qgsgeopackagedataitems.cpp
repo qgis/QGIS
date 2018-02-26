@@ -265,6 +265,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
+            options.insert( QStringLiteral( "forceSinglePartGeometryType" ), true );
             QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;
@@ -537,40 +538,48 @@ QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 
 void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
-  // Check if the layer is in the registry
-  const QgsMapLayer *projectLayer = nullptr;
+  // Check if the layer(s) are in the registry
+  QList<QgsMapLayer *> layersList;
   const auto mapLayers( QgsProject::instance()->mapLayers() );
-  for ( const QgsMapLayer *layer :  mapLayers )
+  for ( QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )
     {
-      projectLayer = layer;
+      layersList << layer;
     }
   }
-  if ( ! projectLayer )
-  {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                                QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-      return;
 
-    QString errCause;
-    bool res = executeDeleteLayer( errCause );
-    if ( !res )
+  if ( ! layersList.isEmpty( ) )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
+                                " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     {
-      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+      return;
     }
-    else
-    {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
-      if ( mParent )
-        mParent->refreshConnections();
-    }
+  }
+  else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                   QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  {
+    return;
+  }
+
+  if ( layersList.isEmpty() )
+  {
+    QgsProject::instance()->removeMapLayers( layersList );
+  }
+
+  QString errCause;
+  bool res = executeDeleteLayer( errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
   }
   else
   {
-    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> cannot be deleted because it is in the current project as <b>%2</b>,"
-                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
+    if ( mParent )
+      mParent->refreshConnections();
   }
 
 }
