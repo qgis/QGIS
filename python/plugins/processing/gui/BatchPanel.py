@@ -159,7 +159,7 @@ class BatchPanel(BASE, WIDGET):
                     if param.isDestination():
                         continue
                     if param.name() in params:
-                        value = params[param.name()].strip("'")
+                        value = eval(params[param.name()])
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
