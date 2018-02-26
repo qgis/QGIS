@@ -371,6 +371,12 @@ QVector<QgsDataItem *>QgsGrassLocationItem::createChildren()
   return mapsets;
 }
 
+QIcon QgsGrassLocationItem::icon()
+{
+  return QgsApplication::getThemeIcon( "/grass_mapset.svg" );
+}
+
+
 //----------------------- QgsGrassMapsetItem ------------------------------
 
 QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
@@ -412,7 +418,7 @@ QIcon QgsGrassMapsetItem::icon()
       return QgsApplication::getThemeIcon( "/grass_mapset_search.svg" );
     }
   }
-  return QgsDirectoryItem::icon();
+  return QgsApplication::getThemeIcon( "/grass_mapset.svg" );
 }
 
 void QgsGrassMapsetItem::setState( State state )
