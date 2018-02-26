@@ -47,64 +47,59 @@ vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'qgis:sumlinelengths': analysisToolsMenu,
-                           'qgis:pointsinpolygon': analysisToolsMenu,
                            'qgis:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsforfields': analysisToolsMenu,
                            'qgis:nearestneighbouranalysis': analysisToolsMenu,
-                           'qgis:meancoordinates': analysisToolsMenu,
-                           'qgis:lineintersections': analysisToolsMenu})
+                           'native:meancoordinates': analysisToolsMenu,
+                           'native:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
-defaultMenuEntries.update({'qgis:randomselection': researchToolsMenu,
+defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
+                           'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
                            'qgis:randompointsinextent': researchToolsMenu,
                            'qgis:randompointsinlayerbounds': researchToolsMenu,
-                           'qgis:randompointsinsidepolygonsfixed': researchToolsMenu,
-                           'qgis:randompointsinsidepolygonsvariable': researchToolsMenu,
+                           'qgis:randompointsinsidepolygons': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
-                           'qgis:vectorgrid': researchToolsMenu,
-                           'qgis:selectbylocation': researchToolsMenu,
+                           'native:selectbylocation': researchToolsMenu,
                            'qgis:polygonfromlayerextent': researchToolsMenu})
 
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
-defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
-                           'qgis:fixeddistancebuffer': geoprocessingToolsMenu,
-                           'qgis:variabledistancebuffer': geoprocessingToolsMenu,
+defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
+                           'native:convexhull': geoprocessingToolsMenu,
                            'qgis:intersection': geoprocessingToolsMenu,
                            'qgis:union': geoprocessingToolsMenu,
                            'qgis:symmetricaldifference': geoprocessingToolsMenu,
                            'native:clip': geoprocessingToolsMenu,
                            'qgis:difference': geoprocessingToolsMenu,
-                           'qgis:dissolve': geoprocessingToolsMenu,
+                           'native:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
 geometryToolsMenu = vectorMenu + "/" + Processing.tr('G&eometry Tools')
 defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:exportaddgeometrycolumns': geometryToolsMenu,
-                           'qgis:centroids': geometryToolsMenu,
+                           'native:centroids': geometryToolsMenu,
                            'qgis:delaunaytriangulation': geometryToolsMenu,
                            'qgis:voronoipolygons': geometryToolsMenu,
-                           'qgis:simplifygeometries': geometryToolsMenu,
+                           'native:simplifygeometries': geometryToolsMenu,
                            'qgis:densifygeometries': geometryToolsMenu,
-                           'qgis:multiparttosingleparts': geometryToolsMenu,
-                           'qgis:singlepartstomultipart': geometryToolsMenu,
+                           'native:multiparttosingleparts': geometryToolsMenu,
+                           'native:collect': geometryToolsMenu,
                            'qgis:polygonstolines': geometryToolsMenu,
                            'qgis:linestopolygons': geometryToolsMenu,
-                           'qgis:extractnodes': geometryToolsMenu})
+                           'native:extractvertices': geometryToolsMenu})
 managementToolsMenu = vectorMenu + "/" + Processing.tr('&Data Management Tools')
 defaultMenuEntries.update({'qgis:definecurrentprojection': managementToolsMenu,
                            'qgis:joinattributesbylocation': managementToolsMenu,
                            'qgis:splitvectorlayer': managementToolsMenu,
-                           'qgis:mergevectorlayers': managementToolsMenu,
+                           'native:mergevectorlayers': managementToolsMenu,
                            'qgis:createspatialindex': managementToolsMenu})
 
 rasterMenu = Processing.tr('&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
-                           'gdal:assignprojection': projectionsMenu,
-                           'gdal:extractprojection': projectionsMenu})
+                           'gdal:assignprojection': projectionsMenu})
 conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
 defaultMenuEntries.update({'gdal:rasterize': conversionMenu,
-                           'gdal:rasterize_over': conversionMenu,
                            'gdal:polygonize': conversionMenu,
                            'gdal:translate': conversionMenu,
                            'gdal:rgbtopct': conversionMenu,
@@ -120,18 +115,18 @@ defaultMenuEntries.update({'gdal:sieve': analysisMenu,
                            'gdal:proximity': analysisMenu,
                            'gdal:griddatametrics': analysisMenu,
                            'gdal:gridaverage': analysisMenu,
-                           'gdal:gridinvdist': analysisMenu,
+                           'gdal:gridinversedistance': analysisMenu,
                            'gdal:gridnearestneighbor': analysisMenu,
                            'gdal:aspect': analysisMenu,
                            'gdal:hillshade': analysisMenu,
                            'gdal:roughness': analysisMenu,
                            'gdal:slope': analysisMenu,
-                           'gdal:tpi': analysisMenu,
-                           'gdal:tri': analysisMenu})
+                           'gdal:tpitopographicpositionindex': analysisMenu,
+                           'gdal:triterrainruggednessindex': analysisMenu})
 miscMenu = rasterMenu + "/" + Processing.tr('Miscellaneous')
 defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
                            'gdal:merge': miscMenu,
-                           'gdal:rasterinfo': miscMenu,
+                           'gdal:gdalinfo': miscMenu,
                            'gdal:overviews': miscMenu,
                            'gdal:tileindex': miscMenu})
 
