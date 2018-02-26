@@ -70,7 +70,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
-    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumSettingValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
+    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {

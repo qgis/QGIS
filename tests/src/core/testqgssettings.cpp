@@ -30,11 +30,11 @@ class TestQgsSettings : public QObject
     Q_OBJECT
 
   private slots:
-    void enumSettingValue();
+    void enumValue();
 };
 
 
-void TestQgsSettings::enumSettingValue()
+void TestQgsSettings::enumValue()
 {
   QgsSettings settings;
 
@@ -48,23 +48,23 @@ void TestQgsSettings::enumSettingValue()
   QCOMPARE( v1, -1 );
 
   // enum method returns default value if current setting is incorrect
-  QgsUnitTypes::LayoutUnit v2 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
+  QgsUnitTypes::LayoutUnit v2 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v2, QgsUnitTypes::LayoutMeters );
 
   // test a different value than default
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
-  QgsUnitTypes::LayoutUnit v3 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
+  QgsUnitTypes::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
 
   // test for flags
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
   QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), 1e8 ); // invalid
-  QgsMapLayerProxyModel::Filters v4 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine );
+  QgsMapLayerProxyModel::Filters v4 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine );
   QCOMPARE( v4, pointAndLine );
 
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), static_cast<int>( pointAndPolygon ) );
-  QgsMapLayerProxyModel::Filters v5 = settings.enumSettingValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine, QgsSettings::NoSection, true );
+  QgsMapLayerProxyModel::Filters v5 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine, QgsSettings::NoSection, true );
   QCOMPARE( v5, pointAndPolygon );
 }
 

@@ -101,7 +101,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   if ( mode == DefaultQgsSetting )
   {
     QgsSettings settings;
-    mode = settings.enumSettingValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
+    mode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
   }
 
   if ( mode == LayerSelection )
