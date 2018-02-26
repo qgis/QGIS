@@ -3919,13 +3919,12 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri( false ) );
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ) );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
-    delete provider;
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
@@ -3986,7 +3985,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
-        delete provider;
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
@@ -4006,7 +4004,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      delete provider;
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
