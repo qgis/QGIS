@@ -3230,7 +3230,7 @@ void QgisApp::setupConnections()
            this, &QgisApp::showProgress );
   connect( QgsProject::instance(), &QgsProject::loadingLayer,
            this, &QgisApp::showStatusMessage );
-  connect( QgsProject::instance(), &QgsProject::loadingLayerMessages,
+  connect( QgsProject::instance(), &QgsProject::loadingLayerMessageReceived,
            this, &QgisApp::loadingLayerMessages );
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgisApp::readProject );

@@ -888,14 +888,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerLoaded( int i, int n );
 
+    //! Emitted when a layer is loaded
     void loadingLayer( const QString &layerName );
 
     /**
-     * @brief Emitted when loading layers has produced some messages
-     * @param layerName the layer name
-     * @param messages a list of pairs of Qgis::MessageLevel and messages
+     * \brief Emitted when loading layers has produced some messages
+     * \param layerName the layer name
+     * \param messages a list of pairs of Qgis::MessageLevel and messages
+     * \since 3.2
      */
-    void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
+    void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );

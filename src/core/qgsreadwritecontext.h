@@ -38,7 +38,7 @@ class CORE_EXPORT QgsReadWriteContext
     struct ReadWriteMessage
     {
         //! Construct a container for QgsReadWriteContext error or warning messages
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning,  QStringList categories = QStringList() )
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() )
           : mMessage( message )
           , mLevel( level )
           , mCategories( categories )
@@ -54,9 +54,9 @@ class CORE_EXPORT QgsReadWriteContext
         QStringList categories() const {return mCategories;}
 
       private:
-        QString mMessage = QString();
-        Qgis::MessageLevel mLevel = Qgis::Warning;
-        QStringList mCategories = QStringList();
+        QString mMessage;
+        Qgis::MessageLevel mLevel;
+        QStringList mCategories;
     };
 
     /**
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsReadWriteContext
     void setPathResolver( const QgsPathResolver &resolver );
 
     /**
-     * append a message to the context
+     * Append a message to the context
      * \since QGIS 3.2
      */
     void pushMessage( const QString &message, Qgis::MessageLevel level );
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsReadWriteContext
     void leaveCategory();
 
     /**
-     * return the stored messages and remove them
+     * Return the stored messages and remove them
      * \since QGIS 3.2
      */
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();

@@ -260,7 +260,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
 
 void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &context )
 {
-  context.enterCategory( QString( "Edit form config" ) );
+  context.enterCategory( QObject::tr( "Edit form config" ) );
   d.detach();
 
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );

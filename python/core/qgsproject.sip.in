@@ -911,12 +911,18 @@ Emitted when a layer from a projects was read.
 %End
 
     void loadingLayer( const QString &layerName );
+%Docstring
+Emitted when a layer is loaded
+%End
 
-    void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
+    void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 %Docstring
  Emitted when loading layers has produced some messages
-@param layerName the layer name
-@param messages a list of pairs of Qgis.MessageLevel and messages
+
+:param layerName: the layer name
+:param messages: a list of pairs of Qgis.MessageLevel and messages
+
+.. versionadded:: 3.2
 %End
 
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
