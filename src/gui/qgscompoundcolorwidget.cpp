@@ -280,15 +280,17 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
   mSchemeComboBox->blockSignals( false );
 }
 
-void QgsCompoundColorWidget::importPalette()
+
+QgsUserColorScheme *QgsCompoundColorWidget::importUserPaletteFromFile( QWidget *parent )
 {
   QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select Palette File" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
-  activateWindow();
+  QString filePath = QFileDialog::getOpenFileName( parent, tr( "Select Palette File" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
+  if ( parent )
+    parent->activateWindow();
   if ( filePath.isEmpty() )
   {
-    return;
+    return nullptr;
   }
 
   //check if file exists
@@ -296,7 +298,7 @@ void QgsCompoundColorWidget::importPalette()
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
     QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "Error, file does not exist or is not readable." ) );
-    return;
+    return nullptr;
   }
 
   s.setValue( QStringLiteral( "/UI/lastGplPaletteDir" ), fileInfo.absolutePath() );
@@ -309,14 +311,14 @@ void QgsCompoundColorWidget::importPalette()
   if ( !ok )
   {
     QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "Palette file is not readable." ) );
-    return;
+    return nullptr;
   }
 
   if ( importedColors.length() == 0 )
   {
     //no imported colors
     QMessageBox::critical( nullptr, tr( "Import Color Palette" ), tr( "No colors found in palette file." ) );
-    return;
+    return nullptr;
   }
 
   //TODO - handle conflicting file names, name for new palette
@@ -325,10 +327,40 @@ void QgsCompoundColorWidget::importPalette()
   importedScheme->setColors( importedColors );
 
   QgsApplication::colorSchemeRegistry()->addColorScheme( importedScheme );
+  return importedScheme;
+}
 
-  //refresh combobox
-  refreshSchemeComboBox();
-  mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+void QgsCompoundColorWidget::importPalette()
+{
+  if ( importUserPaletteFromFile( this ) )
+  {
+    //refresh combobox
+    refreshSchemeComboBox();
+    mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+  }
+}
+
+
+bool QgsCompoundColorWidget::removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent )
+{
+  if ( QMessageBox::question( parent, tr( "Remove Color Palette" ),
+                              QString( tr( "Are you sure you want to remove %1?" ) ).arg( scheme->schemeName() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  {
+    //user canceled
+    return false;
+  }
+
+  //remove palette and associated gpl file
+  if ( !scheme->erase() )
+  {
+    //something went wrong
+    return false;
+  }
+
+  //remove scheme from registry
+  QgsApplication::colorSchemeRegistry()->removeColorScheme( scheme );
+  return true;
 }
 
 void QgsCompoundColorWidget::removePalette()
@@ -348,41 +380,27 @@ void QgsCompoundColorWidget::removePalette()
     return;
   }
 
-  if ( QMessageBox::question( this, tr( "Remove Color Palette" ),
-                              QString( tr( "Are you sure you want to remove %1?" ) ).arg( userScheme->schemeName() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( removeUserPalette( userScheme, this ) )
   {
-    //user canceled
-    return;
+    refreshSchemeComboBox();
+    prevIndex = std::max( std::min( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
+    mSchemeComboBox->setCurrentIndex( prevIndex );
   }
-
-  //remove palette and associated gpl file
-  if ( !userScheme->erase() )
-  {
-    //something went wrong
-    return;
-  }
-
-  //remove scheme from registry
-  QgsApplication::colorSchemeRegistry()->removeColorScheme( userScheme );
-  refreshSchemeComboBox();
-  prevIndex = std::max( std::min( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
-  mSchemeComboBox->setCurrentIndex( prevIndex );
 }
 
-void QgsCompoundColorWidget::newPalette()
+QgsUserColorScheme *QgsCompoundColorWidget::createNewUserPalette( QWidget *parent )
 {
   bool ok = false;
-  QString name = QInputDialog::getText( this, tr( "Create New Palette" ), tr( "Enter a name for the new palette:" ),
+  QString name = QInputDialog::getText( parent, tr( "Create New Palette" ), tr( "Enter a name for the new palette:" ),
                                         QLineEdit::Normal, tr( "New palette" ), &ok );
 
   if ( !ok || name.isEmpty() )
   {
     //user canceled
-    return;
+    return nullptr;
   }
 
-  //generate file name for new palette
+//generate file name for new palette
   QDir palettePath( gplFilePath() );
   QRegExp badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
   QString filename = name.simplified().toLower().replace( badChars, QStringLiteral( "_" ) );
@@ -403,15 +421,22 @@ void QgsCompoundColorWidget::newPalette()
   newScheme->setName( name );
 
   QgsApplication::colorSchemeRegistry()->addColorScheme( newScheme );
+  return newScheme;
+}
 
-  //refresh combobox and set new scheme as active
-  refreshSchemeComboBox();
-  mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+void QgsCompoundColorWidget::newPalette()
+{
+  if ( createNewUserPalette( this ) )
+  {
+    //refresh combobox and set new scheme as active
+    refreshSchemeComboBox();
+    mSchemeComboBox->setCurrentIndex( mSchemeComboBox->count() - 1 );
+  }
 }
 
 QString QgsCompoundColorWidget::gplFilePath()
 {
-  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
 
   QDir localDir;
   if ( !localDir.mkpath( palettesDir ) )

@@ -64,7 +64,7 @@ void QgsColorSchemeRegistry::initStyleScheme()
 
 void QgsColorSchemeRegistry::addUserSchemes()
 {
-  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
 
   QDir localDir;
   if ( !localDir.mkpath( palettesDir ) )

@@ -303,8 +303,6 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   : mFilename( filename )
 {
   QFile sourceFile( gplFilePath() );
-  QFileInfo sourceFileInfo( gplFilePath() );
-  mEditable = sourceFileInfo.isWritable();
 
   //read in name
   if ( sourceFile.open( QIODevice::ReadOnly ) )
@@ -394,7 +392,7 @@ void QgsUserColorScheme::setShowSchemeInMenu( bool show )
 
 QString QgsUserColorScheme::gplFilePath()
 {
-  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
 
   QDir localDir;
   if ( !localDir.mkpath( palettesDir ) )

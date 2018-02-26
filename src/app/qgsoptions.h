@@ -264,6 +264,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+
+    void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
+
+
 };
 
 #endif // #ifndef QGSOPTIONS_H

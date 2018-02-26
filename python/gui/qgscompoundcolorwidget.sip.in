@@ -67,6 +67,45 @@ be stored in the recent color list.
 .. versionadded:: 3.0
 %End
 
+    static QgsUserColorScheme *importUserPaletteFromFile( QWidget *parent );
+%Docstring
+Triggers a user prompt for importing a new color scheme from an existing GPL file.
+
+The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`createNewUserPalette`
+
+.. seealso:: :py:func:`removeUserPalette`
+%End
+
+    static QgsUserColorScheme *createNewUserPalette( QWidget *parent );
+%Docstring
+Triggers a user prompt for creating a new user color scheme.
+
+The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`importUserPaletteFromFile`
+
+.. seealso:: :py:func:`removeUserPalette`
+%End
+
+    static bool removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent );
+%Docstring
+Triggers a user prompt for removing an existing user color ``scheme``.
+
+The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`importUserPaletteFromFile`
+
+.. seealso:: :py:func:`createNewUserPalette`
+%End
+
   signals:
 
     void currentColorChanged( const QColor &color );
