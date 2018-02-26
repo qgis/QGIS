@@ -11244,7 +11244,7 @@ void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QgsRea
 {
   for ( const auto message : messages )
   {
-    messageBar()->pushMessage( layerName, message.message(), message.level() );
+    messageBar()->pushMessage( layerName, message.message(), message.categories().join( '\n' ), message.level() );
   }
 }
 

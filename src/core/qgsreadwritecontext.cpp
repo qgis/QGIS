@@ -40,13 +40,13 @@ void QgsReadWriteContext::enterCategory( const QString &category, const QString 
   QString message = category;
   if ( !details.isEmpty() )
     message.append( QString( " :: %1" ).arg( details ) );
-  mCategories.push_front( message );
+  mCategories.push_back( message );
 }
 
 void QgsReadWriteContext::leaveCategory()
 {
   if ( !mCategories.isEmpty() )
-    mCategories.pop_front();
+    mCategories.pop_back();
 }
 
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
