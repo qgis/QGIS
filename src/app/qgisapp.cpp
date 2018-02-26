@@ -2372,13 +2372,13 @@ void QgisApp::refreshProfileMenu()
 
   mConfigMenu->addSeparator( );
 
-  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open active profile folder" ) );
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]()
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
   } );
 
-  QAction *newProfileAction = mConfigMenu->addAction( tr( "New profile" ) );
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 }
 
