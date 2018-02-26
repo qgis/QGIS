@@ -688,11 +688,9 @@ void QgsGeorefPluginGui::localHistogramStretch()
 }
 
 // Info slots
-void QgsGeorefPluginGui::contextHelp()
+void QgsGeorefPluginGui::showHelp()
 {
-  QgsGeorefDescriptionDialog dlg( this );
-  dlg.exec();
-}
+ QgsHelp::openHelp( QStringLiteral( "plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );}
 
 // Comfort slots
 void QgsGeorefPluginGui::jumpToGCP( uint theGCPIndex )
@@ -914,7 +912,7 @@ void QgsGeorefPluginGui::createActions()
 
   // Help actions
   mActionHelp = new QAction( tr( "Help" ), this );
-  connect( mActionHelp, &QAction::triggered, this, &QgsGeorefPluginGui::contextHelp );
+  connect( mActionHelp, &QAction::triggered, this, &QgsGeorefPluginGui::showHelp );
 
   mActionQuit->setIcon( getThemeIcon( QStringLiteral( "/mActionQuit.png" ) ) );
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
