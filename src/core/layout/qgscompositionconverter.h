@@ -144,6 +144,23 @@ class CORE_EXPORT QgsCompositionConverter
         QPointF *position = nullptr,
         bool pasteInPlace = false );
 
+    /**
+     * Check if the given \a document is a composition template
+     * \param document a dom document
+     * \return true if the document is a composition template
+     */
+    static bool isCompositionTemplate( const QDomDocument &document );
+
+    /**
+     * Convert a composition template \a document to a layout template
+     * \param document containing a composition
+     * \param project
+     * \return dom document with the converted template
+     */
+    static QDomDocument convertCompositionTemplate( const QDomDocument
+        &document, QgsProject *project );
+
+
   private:
 
 
