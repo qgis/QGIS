@@ -151,7 +151,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   //segmentation parameters
   QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumSettingValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 

@@ -71,7 +71,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   mModulesDebugCheckBox->setChecked( QgsGrass::modulesDebug() );
 
   // Browser
-  QgsRasterProjector::Precision crsTransform = settings.enumSettingValue( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate );
+  QgsRasterProjector::Precision crsTransform = settings.enumValue( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate );
   mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Approximate ), QgsRasterProjector::Approximate );
   mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Exact ), QgsRasterProjector::Exact );
   mCrsTransformationComboBox->setCurrentIndex( mCrsTransformationComboBox->findData( crsTransform ) );
