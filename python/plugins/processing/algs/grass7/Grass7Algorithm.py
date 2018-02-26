@@ -561,7 +561,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     value = '"{}"'.format(
                         self.parameterAsString(parameters, paramName, context)
                     )
-            # For numbers and points, we translate as a string
+            elif isinstance(param, QgsProcessingParameterPoint):
+                if self.parameterAsString(parameters, paramName, context):
+                    # parameter specified, evaluate as point
+                    # TODO - handle CRS transform
+                    point = self.parameterAsPoint(parameters, paramName, context)
+                    value = '{},{}'.format(point.x(), point.y())
+            # For numbers, we translate as a string
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
                 value = self.parameterAsString(parameters, paramName, context)
