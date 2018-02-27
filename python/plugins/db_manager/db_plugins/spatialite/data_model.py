@@ -75,10 +75,6 @@ class SLSqlResultModelTask(SqlResultModelTask):
     def run(self):
         try:
             self.clone = SLDatabase(None, self.db.connector.uri())
-
-            #import time
-            #self.clone.connector.connection.create_function("sleep", 1, time.sleep)
-
             self.model = SLSqlResultModel(self.clone, self.sql, None)
         except BaseError as e:
             self.error = e
