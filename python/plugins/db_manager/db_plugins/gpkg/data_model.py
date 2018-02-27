@@ -56,7 +56,7 @@ class GPKGTableDataModel(TableDataModel):
 class GPKGSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelTask.__init__(self, db, sql, parent)
+        super().__init__(db, sql, parent)
 
     def run(self):
         try:
@@ -75,7 +75,7 @@ class GPKGSqlResultModelTask(SqlResultModelTask):
 class GPKGSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelAsync.__init__(self)
+        super().__init__()
 
         self.task = GPKGSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)

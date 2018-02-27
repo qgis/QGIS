@@ -69,7 +69,7 @@ class SLTableDataModel(TableDataModel):
 class SLSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelTask.__init__(self, db, sql, parent)
+        super().__init__(db, sql, parent)
         self.clone = None
 
     def run(self):
@@ -96,7 +96,7 @@ class SLSqlResultModelTask(SqlResultModelTask):
 class SLSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelAsync.__init__(self)
+        super().__init__()
 
         self.task = SLSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)

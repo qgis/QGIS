@@ -153,7 +153,7 @@ class SqlResultModelAsync(QObject):
     done = pyqtSignal()
 
     def __init__(self):
-        QObject.__init__(self)
+        super().__init__()
         self.error = BaseError('')
         self.status = None
         self.model = None
@@ -177,7 +177,7 @@ class SqlResultModelAsync(QObject):
 class SqlResultModelTask(QgsTask):
 
     def __init__(self, db, sql, parent):
-        QgsTask.__init__(self)
+        super().__init__()
         self.db = db
         self.sql = sql
         self.parent = parent
@@ -211,7 +211,7 @@ class SqlResultModel(BaseTableModel):
             data = []
             header = []
 
-        BaseTableModel.__init__(self, header, data, parent)
+        super().__init__(header, data, parent)
 
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()

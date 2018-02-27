@@ -73,7 +73,7 @@ class LTableDataModel(TableDataModel):
 class LSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelTask.__init__(self, db, sql, parent)
+        super().__init__(db, sql, parent)
 
         tf = QTemporaryFile()
         tf.open()
@@ -105,7 +105,7 @@ class LSqlResultModelTask(SqlResultModelTask):
 class LSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent=None):
-        SqlResultModelAsync.__init__(self)
+        super().__init__()
 
         self.task = LSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)

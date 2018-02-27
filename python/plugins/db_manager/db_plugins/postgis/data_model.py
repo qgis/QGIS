@@ -86,7 +86,7 @@ class PGTableDataModel(TableDataModel):
 class PGSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelTask.__init__(self, db, sql, parent)
+        super().__init__(db, sql, parent)
 
     def run(self):
         try:
@@ -105,7 +105,7 @@ class PGSqlResultModelTask(SqlResultModelTask):
 class PGSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelAsync.__init__(self)
+        super().__init__()
 
         self.task = PGSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)
