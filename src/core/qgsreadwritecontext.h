@@ -21,6 +21,8 @@
 #include "qgspathresolver.h"
 #include "qgis.h"
 
+class QgsReadWriteContextCategoryPopper;
+
 /**
  * \class QgsReadWriteContext
  * \ingroup core
@@ -76,19 +78,18 @@ class CORE_EXPORT QgsReadWriteContext
      * Append a message to the context
      * \since QGIS 3.2
      */
-    void pushMessage( const QString &message, Qgis::MessageLevel level );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+
+#ifndef SIP_RUN
 
     /**
      * Push a category to the stack
+     * \note The return value should always be used so category can be automatically left.
+     * \note Not available in the Python bindings.
      * \since QGIS 3.2
      */
-    void enterCategory( const QString &category, const QString &details = QString() );
-
-    /**
-     * Pop the last category
-     * \since QGIS 3.2
-     */
-    void leaveCategory();
+    NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() );
+#endif
 
     /**
      * Return the stored messages and remove them
@@ -96,10 +97,37 @@ class CORE_EXPORT QgsReadWriteContext
      */
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 
+
   private:
+    //! Pop the last category
+    void leaveCategory();
+
     QgsPathResolver mPathResolver;
     QList<ReadWriteMessage> mMessages;
     QStringList mCategories = QStringList();
+
+    friend class QgsReadWriteContextCategoryPopper;
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsReadWriteContextCategoryPopper
+{
+  public:
+
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext *context )
+      : mContext( context )
+    {}
+
+    ~QgsReadWriteContextCategoryPopper()
+    {
+      if ( mContext )
+        mContext->leaveCategory();
+    }
+
+    QgsReadWriteContext *mContext;
+};
+///@endcond PRIVATE
+#endif
 
 #endif // QGSREADWRITECONTEXT_H

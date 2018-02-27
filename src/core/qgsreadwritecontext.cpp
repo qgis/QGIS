@@ -35,12 +35,13 @@ void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLeve
   mMessages.append( ReadWriteMessage( message, level, mCategories ) );
 }
 
-void QgsReadWriteContext::enterCategory( const QString &category, const QString &details )
+QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QString &category, const QString &details )
 {
   QString message = category;
   if ( !details.isEmpty() )
     message.append( QString( " :: %1" ).arg( details ) );
   mCategories.push_back( message );
+  return QgsReadWriteContextCategoryPopper( this );
 }
 
 void QgsReadWriteContext::leaveCategory()

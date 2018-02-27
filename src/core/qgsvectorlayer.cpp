@@ -1688,7 +1688,7 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 
 bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context )
 {
-  context.enterCategory( tr( "Symbology" ) );
+  MAYBE_UNUSED QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
 
   if ( !mExpressionFieldBuffer )
     mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -1874,8 +1874,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     mReadOnly = true;
 
   updateFields();
-
-  context.leaveCategory();
 
   return true;
 }
