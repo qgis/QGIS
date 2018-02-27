@@ -46,6 +46,8 @@ INCLUDE_DIRECTORIES(SYSTEM
 ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS} ${WMS_MOC_SRCS})
 ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_MOC_SRCS})
 
+ADD_DEPENDENCIES(wmsprovider qgis_gui)
+
 TARGET_LINK_LIBRARIES(wmsprovider
   qgis_core
   qgis_gui
