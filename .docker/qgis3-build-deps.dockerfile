@@ -1,18 +1,21 @@
-FROM      ubuntu:16.04
-MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
+FROM      ubuntu:18.04
+MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
 
+# && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
+# && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
+# && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
+
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
-  && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
   && apt-get update \
   && apt-get install -y \
     bison \
     ca-certificates \
     ccache \
     clang \
-    # cmake \
+    cmake \
     curl \
     dh-python \
     flex \
@@ -29,6 +32,7 @@ RUN  apt-get update \
     libproj-dev \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
+    libqt53drender5 \
     libqt5opengl5-dev \
     libqt5scintilla2-dev \
     libqt5sql5-sqlite \
@@ -66,6 +70,11 @@ RUN  apt-get update \
     python3-sip-dev \
     python3-termcolor \
     python3-yaml \
+    qt3d5-dev \
+    qt3d-assimpsceneimport-plugin \
+    qt3d-defaultgeometryloader-plugin \
+    qt3d-gltfsceneio-plugin \
+    qt3d-scene2d-plugin \
     qt5keychain-dev \
     qtbase5-dev \
     qtpositioning5-dev \
@@ -88,10 +97,7 @@ RUN  apt-get update \
     future \
     termcolor \
   && apt-get autoremove -y python3-pip python2.7 \
-  && apt-get clean \
-  && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.1-Linux-x86_64.tar.gz \
-  && tar --strip-components=1 -zx -f cmake-3.10.1-Linux-x86_64.tar.gz -C /usr/local \
-  && rm cmake-3.10.1-Linux-x86_64.tar.gz
+  && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
