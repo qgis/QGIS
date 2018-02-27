@@ -146,8 +146,8 @@ class CORE_EXPORT QgsCompositionConverter
 
     /**
      * Check if the given \a document is a composition template
-     * \param document a dom document
      * \return true if the document is a composition template
+     * \since QGIS 3.0.1
      */
     static bool isCompositionTemplate( const QDomDocument &document );
 
@@ -156,6 +156,7 @@ class CORE_EXPORT QgsCompositionConverter
      * \param document containing a composition
      * \param project
      * \return dom document with the converted template
+     * \since QGIS 3.0.1
      */
     static QDomDocument convertCompositionTemplate( const QDomDocument
         &document, QgsProject *project );
