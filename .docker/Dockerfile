@@ -92,6 +92,10 @@ RUN  apt-get update \
   && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.1-Linux-x86_64.tar.gz \
   && tar --strip-components=1 -zx -f cmake-3.10.1-Linux-x86_64.tar.gz -C /usr/local \
   && rm cmake-3.10.1-Linux-x86_64.tar.gz
+  
+RUN echo "deb  http://deb.debian.org/debian experimental main" >> /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get -t experimental install -y --allow-unauthenticated libproj-dev
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
