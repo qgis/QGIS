@@ -543,12 +543,12 @@
         <file>themes/default/mActionHighlightFeature.svg</file>
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
-        <file>themes/default/cadtools/construction.png</file>
-        <file>themes/default/cadtools/delta.png</file>
+        <file>themes/default/cadtools/construction.svg</file>
+        <file>themes/default/cadtools/delta.svg</file>
         <file>themes/default/cadtools/cad.svg</file>
-        <file>themes/default/cadtools/lock.png</file>
-        <file>themes/default/cadtools/parallel.png</file>
-        <file>themes/default/cadtools/perpendicular.png</file>
+        <file>themes/default/cadtools/lock.svg</file>
+        <file>themes/default/cadtools/parallel.svg</file>
+        <file>themes/default/cadtools/perpendicular.svg</file>
         <file>themes/default/mIconSuccess.svg</file>
         <file>themes/default/mIconWarning.svg</file>
         <file>themes/default/mIconPaintEffects.svg</file>
