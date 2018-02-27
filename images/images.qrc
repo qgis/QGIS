@@ -440,6 +440,7 @@
         <file>themes/default/mIconWms.svg</file>
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
+        <file>themes/default/mIndicatorFilter.svg</file>
         <file>themes/default/mLayoutItem.svg</file>
         <file>themes/default/mLayoutItemShapeEllipse.svg</file>
         <file>themes/default/mLayoutItemShapeRectangle.svg</file>
