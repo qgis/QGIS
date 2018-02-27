@@ -6,6 +6,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
+From build dir, run: ctest -R PyQgsServer -V
+
 """
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
@@ -577,7 +579,7 @@ class TestQgsServer(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857",
-            "SELECTION": "Country: 4"
+            "SELECTION": "Country: 4,1;Hello: 2,5"
         }.items())])
 
         r, h = self._result(self.server.handleRequest(qs))
