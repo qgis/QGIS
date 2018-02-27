@@ -26,7 +26,7 @@ QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider
   : QObject( view )
   , mLayerTreeView( view )
 {
-  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) );
+  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorFilter.svg" ) );
 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
