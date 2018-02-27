@@ -457,13 +457,15 @@ static GEOSGeometry *LWGEOM_GEOS_nodeLines( const GEOSGeometry *lines )
   if ( ! point )
     return nullptr;
 
-  GEOSGeometry *noded = GEOSUnion_r( handle, lines, point );
-  if ( !noded )
+  GEOSGeometry *noded = nullptr;
+  try
   {
-    GEOSGeom_destroy_r( handle, point );
-    return nullptr;
+    noded = GEOSUnion_r( handle, lines, point );
   }
-
+  catch ( GEOSException & )
+  {
+    // no need to do anything here - we'll return nullptr anyway
+  }
   GEOSGeom_destroy_r( handle, point );
   return noded;
 }
