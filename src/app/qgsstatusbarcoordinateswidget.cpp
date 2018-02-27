@@ -226,7 +226,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
     return;
   }
 
-  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( p, mMapCanvas->mapSettings().destinationCrs(),
+  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), p, mMapCanvas->mapSettings().destinationCrs(),
                       mMousePrecisionDecimalPlaces ) );
 
   ensureCoordinatesVisible();
