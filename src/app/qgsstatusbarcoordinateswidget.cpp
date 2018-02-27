@@ -35,6 +35,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 {
   // calculate the size of two chars
   mTwoCharSize = fontMetrics().width( QStringLiteral( "OO" ) );
+  mMinimumWidth = mTwoCharSize * 4;
 
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
@@ -251,7 +252,7 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
 
   //ensure the label is big (and small) enough
-  int width = mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10;
+  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10, mMinimumWidth );
   if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
     mLineEdit->setMinimumWidth( width );
