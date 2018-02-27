@@ -439,7 +439,7 @@ void QgsSymbolsListWidget::symbolAddedToStyle( const QString &name, QgsSymbol *s
 void QgsSymbolsListWidget::addSymbolToStyle()
 {
   bool ok;
-  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+  QString name = QInputDialog::getText( this, tr( "Save Symbol" ),
                                         tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
   if ( !ok || name.isEmpty() )
     return;
@@ -447,7 +447,7 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( name ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                     tr( "Symbol with name '%1' already exists. Overwrite?" )
                                     .arg( name ),
                                     QMessageBox::Yes | QMessageBox::No );
@@ -477,7 +477,7 @@ void QgsSymbolsListWidget::saveSymbol()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                     tr( "Symbol with name '%1' already exists. Overwrite?" )
                                     .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );

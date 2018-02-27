@@ -72,12 +72,12 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
     }
     else
     {
-      QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "This tool only supports vector data" ) );
+      QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "This tool only supports vector data." ) );
     }
   }
   else
   {
-    QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "No active layers found" ) );
+    QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "No active layers found." ) );
   }
 }
 

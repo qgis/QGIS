@@ -248,13 +248,13 @@ bool eVisGenericEventBrowserGui::initBrowser()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Warning" ), tr( "This tool only supports vector data" ) );
+        QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "This tool only supports vector data." ) );
         return false;
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "Warning" ), tr( "No active layers found" ) );
+      QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "No active layers found." ) );
       return false;
     }
   }
@@ -271,19 +271,19 @@ bool eVisGenericEventBrowserGui::initBrowser()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Warning" ), tr( "This tool only supports vector data" ) );
+        QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "This tool only supports vector data." ) );
         return false;
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "Warning" ), tr( "No active layers found" ) );
+      QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "No active layers found." ) );
       return false;
     }
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to connect to either the map canvas or application interface" ) );
+    QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "Unable to connect to either the map canvas or application interface." ) );
     return false;
   }
 
@@ -310,11 +310,11 @@ bool eVisGenericEventBrowserGui::initBrowser()
   if ( 0 == mFeatureIds.size() )
     return false;
 
-  //get the first feature in the list so we can set the field in the pulldown menues
+  //get the first feature in the list so we can set the field in the pull-down menus
   QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
   if ( !myFeature )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "An invalid feature was received during initialization" ) );
+    QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "An invalid feature was received during initialization." ) );
     return false;
   }
 
