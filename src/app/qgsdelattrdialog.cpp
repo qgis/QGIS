@@ -40,12 +40,12 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
           break;
 
         case QgsFields::OriginJoin:
-          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
+          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
           item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           break;
 
         default:
-          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.png" ) ) );
+          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ) );
           if ( !vl->isEditable() || !canDeleteAttributes )
             item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           break;

@@ -140,7 +140,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
           </property>
          </item>
          <item>
@@ -164,7 +164,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
          <item>
@@ -176,7 +176,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
           </property>
          </item>
          <item>
@@ -200,7 +200,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/digitizing.png</normaloff>:/images/themes/default/propertyicons/digitizing.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
           </property>
          </item>
          <item>
@@ -260,7 +260,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
           </property>
          </item>
          <item>

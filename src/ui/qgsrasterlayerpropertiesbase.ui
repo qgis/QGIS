@@ -131,7 +131,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/transparency.svg</normaloff>:/images/themes/default/propertyicons/transparency.svg</iconset>
           </property>
          </item>
          <item>
@@ -143,7 +143,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/histogram.svg</normaloff>:/images/themes/default/propertyicons/histogram.svg</iconset>
           </property>
          </item>
          <item>
@@ -167,7 +167,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/pyramids.png</normaloff>:/images/themes/default/propertyicons/pyramids.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/pyramids.svg</normaloff>:/images/themes/default/propertyicons/pyramids.svg</iconset>
           </property>
          </item>
          <item>
@@ -197,7 +197,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
         </widget>

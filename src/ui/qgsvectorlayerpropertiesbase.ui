@@ -201,7 +201,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/join.svg</normaloff>:/images/themes/default/propertyicons/join.svg</iconset>
           </property>
          </item>
          <item>
@@ -303,7 +303,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
         </widget>

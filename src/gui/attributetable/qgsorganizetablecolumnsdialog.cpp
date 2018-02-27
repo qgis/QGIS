@@ -75,11 +75,11 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
             break;
 
           case QgsFields::OriginJoin:
-            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
+            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
             break;
 
           default:
-            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.png" ) ) );
+            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ) );
             break;
         }
       }
