@@ -142,9 +142,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     QgsReadWriteContext context;
     if ( project )
       context.setPathResolver( project->pathResolver() );
-    QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
+    std::unique_ptr< QgsFillSymbol > symbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
     if ( symbol )
-      layout->pageCollection()->setPageStyleSymbol( symbol );
+      layout->pageCollection()->setPageStyleSymbol( symbol.get() );
   }
 
   QString name = composerElement.attribute( QStringLiteral( "name" ) );
