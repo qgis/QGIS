@@ -2923,6 +2923,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     QgsGeometry validGeom = geom.makeValid();
     if ( validGeom.isNull() )
     {
+      QgsDebugMsg( QString( "Could not repair geometry: %1" ).arg( validGeom.lastError() ) );
       return QgsGeometry();
     }
     geom = validGeom;
