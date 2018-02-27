@@ -72,7 +72,8 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     QValidator *mCoordsEditValidator = nullptr;
     QTimer *mDizzyTimer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    int mTwoCharSize;
+    int mTwoCharSize = 0;
+    int mMinimumWidth = 0;
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
