@@ -657,6 +657,9 @@
                       <property name="text">
                        <string>Modeless data source manager dialog</string>
                       </property>
+                      <property name="tooltip">
+                       <string>A modeless dialog allows you to interact with QGIS main window and dialogs.</string>
+                      </property>
                      </widget>
                     </item>
                     <item row="1" column="1">
