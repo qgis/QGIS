@@ -90,7 +90,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
       ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
       WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
-      CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.0
+      CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
