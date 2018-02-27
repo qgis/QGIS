@@ -26,6 +26,7 @@
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
+class QgsProject;
 
 //not stable api - I plan on reworking this when QgsCoordinateFormatter lands in 2.16
 ///@cond NOT_STABLE_API
@@ -53,7 +54,12 @@ class CORE_EXPORT QgsCoordinateUtils
      */
     static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
-    static QString formatCoordinateForProject( const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+    /**
+     * Formats a \a point coordinate for use with the specified \a project, respecting the project's
+     * coordinate display settings.
+     * \since QGIS 3.2
+     */
+    static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 
