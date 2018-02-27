@@ -124,7 +124,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
       </property>
      </item>
     </widget>
