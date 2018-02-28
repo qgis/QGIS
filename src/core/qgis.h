@@ -566,9 +566,9 @@ typedef unsigned long long qgssize;
 #elif defined(__clang__)
 #define MAYBE_UNUSED [[maybe_unused]]
 #elif __has_cpp_attribute(gnu::unused)
-#define NODISCARD [[gnu::unused]]
+#define MAYBE_UNUSED [[gnu::unused]]
 #else
-#define NODISCARD
+#define MAYBE_UNUSED
 #endif
 
 
