@@ -81,7 +81,7 @@ timeout ${TIMEOUT}s ${CTEST_BUILD_COMMAND}
 rv=$?
 if [ $rv -eq 124 ] ; then
     printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
-    exit $rv
+    exit #$rv
 fi
 
 # Temporarily uncomment to debug ccache issues

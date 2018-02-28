@@ -13,7 +13,4 @@
 #                                                                         #
 ###########################################################################
 
-# store the time stamp to calculate the time out for building
-echo `date +%s` > /tmp/travis_timestamp
-
 #pip3 install termcolor

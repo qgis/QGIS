@@ -17,8 +17,6 @@ set -e
 
 pushd .docker
 
-export TRAVIS_TIMESTAMP=`cat /tmp/travis_timestamp`
-
 echo "travis_fold:start:travis_env"
 echo "${bold}${endbold}"
 echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
