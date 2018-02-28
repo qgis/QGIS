@@ -210,6 +210,8 @@ class edit(object):
             self.layer.rollBack()
             return False
 
+# Python class to mimic QgsReadWriteContextCategoryPopper C++ class
+
 
 class ReadWriteContextEnterCategory():
     def __init__(self, context, category_name, details=None):
@@ -227,6 +229,7 @@ class ReadWriteContextEnterCategory():
         return True
 
 
+# Inject the context manager into QgsReadWriteContext class as a member
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 
 

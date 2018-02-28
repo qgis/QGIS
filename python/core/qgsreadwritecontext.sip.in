@@ -116,7 +116,7 @@ This would happen when it gets out of scope.
 #include "qgsreadwritecontext.h"
 %End
   public:
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context );
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext *context );
 %Docstring
 Creates a popper
 %End
