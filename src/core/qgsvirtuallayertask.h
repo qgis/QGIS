@@ -48,6 +48,11 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
     QgsVectorLayer *layer();
 
     /**
+     * Returns the underlying virtual layer and ownership.
+     */
+    QgsVectorLayer *takeLayer();
+
+    /**
      * Returns the virtual layer definition.
      */
     QgsVirtualLayerDefinition definition() const;

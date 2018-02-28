@@ -36,6 +36,11 @@ Constructor.
 Returns the underlying virtual layer.
 %End
 
+    QgsVectorLayer *takeLayer();
+%Docstring
+Returns the underlying virtual layer and ownership.
+%End
+
     QgsVirtualLayerDefinition definition() const;
 %Docstring
 Returns the virtual layer definition.
