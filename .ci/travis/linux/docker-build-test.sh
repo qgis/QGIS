@@ -69,7 +69,7 @@ echo "travis_fold:end:cmake"
 TRAVIS_TIME=90
 UPLOAD_TIME=8
 CURRENT_TIME=`date +%s`
-TIMEOUT=$(expr (${TRAVIS_TIME}-${UPLOAD_TIME}) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
+TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
 TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
 echo "Timeout: $TIMEOUTs (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 
