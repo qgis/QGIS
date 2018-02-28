@@ -59,10 +59,30 @@ echo "travis_fold:end:cmake"
 #######
 # Build
 #######
+# Calculate the timeout for building.
+# The tests should be aborted before travis times out, in order to allow uploading
+# the ccache and therefore speedup subsequent e builds.
+#
+# Travis will kill the job after approx 90 minutes, we subtract 8 minutes for
+# uploading and subtract the bootstrapping time from that.
+# Hopefully clocks are in sync :)
+TRAVIS_TIME=90
+UPLOAD_TIME=8
+CURRENT_TIME=`date +%s`
+TIMEOUT=$(expr (${TRAVIS_TIME}-${UPLOAD_TIME})) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
+TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
+echo "Timeout: $TIMEOUTs (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
+
 # echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
-${CTEST_BUILD_COMMAND}
+timeout ${TIMEOUT}s ${CTEST_BUILD_COMMAND}
 # echo "travis_fold:end:ninja-build.1"
+
+rv=$?
+if [ $rv -eq 124 ] ; then
+    printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
+    exit $rv
+fi
 
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"
