@@ -80,16 +80,18 @@ class CORE_EXPORT QgsReadWriteContext
      */
     void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
 
-#ifndef SIP_RUN
-
     /**
      * Push a category to the stack
      * \note The return value should always be used so category can be automatically left.
-     * \note Not available in the Python bindings.
+     * \note It is not aimed at being used in Python. Instead use the context manager.
+     * \code{.py}
+     *   context = QgsReadWriteContext()
+     *   with QgsReadWriteContext.enterCategory(context, category, details):
+     *     # do something
+     * \endcode
      * \since QGIS 3.2
      */
-    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() );
-#endif
+    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) SIP_PYNAME( _enterCategory );
 
     /**
      * Return the stored messages and remove them
@@ -109,17 +111,21 @@ class CORE_EXPORT QgsReadWriteContext
     friend class QgsReadWriteContextCategoryPopper;
 };
 
-#ifndef SIP_RUN
-///@cond PRIVATE
-class QgsReadWriteContextCategoryPopper
+
+/**
+ * QgsReadWriteContextCategoryPopper allows entering a context category
+ * and takes care of leaving this category on deletion of the class.
+ * This would happen when it gets out of scope.
+ * \since 3.2
+ */
+class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
   public:
+    //! Creates a popper
     QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context ) : mContext( context ) {}
     ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
   private:
     QgsReadWriteContext mContext;
 };
-///@endcond PRIVATE
-#endif
 
 #endif // QGSREADWRITECONTEXT_H

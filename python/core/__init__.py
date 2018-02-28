@@ -211,6 +211,25 @@ class edit(object):
             return False
 
 
+class ReadWriteContextEnterCategory():
+    def __init__(self, context, category_name, details=None):
+        self.context = context
+        self.category_name = category_name
+        self.details = details
+        self.popper = None
+
+    def __enter__(self):
+        self.popper = self.context._enterCategory(self.category_name, self.details)
+        return self.context
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        del self.popper
+        return True
+
+
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+
+
 class QgsTaskWrapper(QgsTask):
 
     def __init__(self, description, flags, function, on_finished, *args, **kwargs):

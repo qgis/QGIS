@@ -71,6 +71,25 @@ Append a message to the context
 .. versionadded:: 3.2
 %End
 
+QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) /PyName=_enterCategory/;
+%Docstring
+Push a category to the stack
+
+.. note::
+
+   The return value should always be used so category can be automatically left.
+
+.. note::
+
+   It is not aimed at being used in Python. Instead use the context manager.
+.. code-block:: python
+
+       context = QgsReadWriteContext()
+       with QgsReadWriteContext.enterCategory(context, category, details):
+         # do something
+
+.. versionadded:: 3.2
+%End
 
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
@@ -82,6 +101,27 @@ Return the stored messages and remove them
 
 };
 
+
+class QgsReadWriteContextCategoryPopper
+{
+%Docstring
+QgsReadWriteContextCategoryPopper allows entering a context category
+and takes care of leaving this category on deletion of the class.
+This would happen when it gets out of scope.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsreadwritecontext.h"
+%End
+  public:
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context );
+%Docstring
+Creates a popper
+%End
+    ~QgsReadWriteContextCategoryPopper();
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
