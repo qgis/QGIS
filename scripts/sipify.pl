@@ -847,6 +847,8 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
         $LINE =~ s/\s*\bextern \b//;
+        $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
+        $LINE =~ s/\s*\bNODISCARD \b//;   
         $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;

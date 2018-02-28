@@ -756,7 +756,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
 
     /**
      * Write vector layer specific state to project file Dom node.
@@ -868,7 +868,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     /**
      * Write the symbology for the layer into the docment provided.

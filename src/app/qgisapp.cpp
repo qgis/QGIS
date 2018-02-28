@@ -3230,6 +3230,8 @@ void QgisApp::setupConnections()
            this, &QgisApp::showProgress );
   connect( QgsProject::instance(), &QgsProject::loadingLayer,
            this, &QgisApp::showStatusMessage );
+  connect( QgsProject::instance(), &QgsProject::loadingLayerMessageReceived,
+           this, &QgisApp::loadingLayerMessages );
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgisApp::readProject );
   connect( QgsProject::instance(), &QgsProject::writeProject,
@@ -8928,8 +8930,10 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *de
     rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
-    srcLayer->writeSymbology( rootNode, doc, errorMsg, QgsReadWriteContext() );
-    destLayer->readSymbology( rootNode, errorMsg, QgsReadWriteContext() );
+    QgsReadWriteContext writeContext = QgsReadWriteContext();
+    srcLayer->writeSymbology( rootNode, doc, errorMsg, writeContext );
+    QgsReadWriteContext readContext = QgsReadWriteContext();
+    destLayer->readSymbology( rootNode, errorMsg, readContext );
   }
 }
 
@@ -11234,6 +11238,14 @@ void QgisApp::updateMouseCoordinatePrecision()
 void QgisApp::showStatusMessage( const QString &message )
 {
   mStatusBar->showMessage( message );
+}
+
+void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages )
+{
+  for ( const auto message : messages )
+  {
+    messageBar()->pushMessage( layerName, message.message(), message.categories().join( '\n' ), message.level() );
+  }
 }
 
 void QgisApp::displayMapToolMessage( const QString &message, Qgis::MessageLevel level )

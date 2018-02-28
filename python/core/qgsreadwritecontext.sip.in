@@ -9,6 +9,7 @@
 
 
 
+
 class QgsReadWriteContext
 {
 %Docstring
@@ -22,10 +23,36 @@ The class is used as a container of context for various read/write operations on
 %End
   public:
 
+    struct ReadWriteMessage
+    {
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() );
+%Docstring
+Construct a container for QgsReadWriteContext error or warning messages
+%End
+
+        QString message() const;
+%Docstring
+Return the message string
+%End
+
+        Qgis::MessageLevel level() const;
+%Docstring
+Return the message level
+%End
+
+        QStringList categories() const;
+%Docstring
+Return the stack of categories of the message
+%End
+
+    };
+
     QgsReadWriteContext();
 %Docstring
 Constructor for QgsReadWriteContext.
 %End
+
+    ~QgsReadWriteContext();
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
@@ -37,6 +64,63 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+%Docstring
+Append a message to the context
+
+.. versionadded:: 3.2
+%End
+
+QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) /PyName=_enterCategory/;
+%Docstring
+Push a category to the stack
+
+.. note::
+
+   The return value should always be used so category can be automatically left.
+
+.. note::
+
+   It is not aimed at being used in Python. Instead use the context manager.
+.. code-block:: python
+
+       context = QgsReadWriteContext()
+       with QgsReadWriteContext.enterCategory(context, category, details):
+         # do something
+
+.. versionadded:: 3.2
+%End
+
+    QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
+%Docstring
+Return the stored messages and remove them
+
+.. versionadded:: 3.2
+%End
+
+
+};
+
+
+class QgsReadWriteContextCategoryPopper
+{
+%Docstring
+QgsReadWriteContextCategoryPopper allows entering a context category
+and takes care of leaving this category on deletion of the class.
+This would happen when it gets out of scope.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsreadwritecontext.h"
+%End
+  public:
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext *context );
+%Docstring
+Creates a popper
+%End
+    ~QgsReadWriteContextCategoryPopper();
 };
 
 /************************************************************************

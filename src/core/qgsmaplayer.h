@@ -460,7 +460,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        \returns true if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 
     /**
      * Stores state in Dom node
@@ -763,7 +763,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) = 0;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -774,7 +774,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
     /**
      * Write the symbology for the layer into the docment provided.
@@ -1180,7 +1180,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Called by readLayerXML(), used by children to read state specific to them from
      *  project files.
      */
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
     /**
      * Called by writeLayerXML(), used by children to write state specific to them to

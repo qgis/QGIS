@@ -19,6 +19,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgsmessageviewer.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -295,6 +296,32 @@ QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLeve
 void QgsMessageBar::pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
+  pushItem( item );
+}
+
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level, int duration )
+{
+  QgsMessageViewer *mv = new QgsMessageViewer();
+  mv->setWindowTitle( title );
+  mv->setMessageAsPlainText( text + "\n\n" + showMore );
+
+  QToolButton *showMoreButton = new QToolButton();
+  QAction *act = new QAction( showMoreButton );
+  act->setText( tr( "Show more" ) );
+  showMoreButton->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+  showMoreButton->setCursor( Qt::PointingHandCursor );
+  showMoreButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  showMoreButton->addAction( act );
+  showMoreButton->setDefaultAction( act );
+  connect( showMoreButton, &QToolButton::triggered, mv, &QDialog::exec );
+  connect( showMoreButton, &QToolButton::triggered, showMoreButton, &QObject::deleteLater );
+
+  QgsMessageBarItem *item = new QgsMessageBarItem(
+    title,
+    text,
+    showMoreButton,
+    level,
+    duration );
   pushItem( item );
 }
 

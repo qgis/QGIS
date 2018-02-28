@@ -548,4 +548,29 @@ typedef unsigned long long qgssize;
 #define FALLTHROUGH
 #endif
 
+// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
+#if __cplusplus >= 201703L
+#define NODISCARD [[nodiscard]]
+#elif defined(__clang__)
+#define NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(nodiscard)
+#define NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(gnu::warn_unused_result)
+#define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+
+#if __cplusplus >= 201703L
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(__clang__)
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif __has_cpp_attribute(gnu::unused)
+#define NODISCARD [[gnu::unused]]
+#else
+#define NODISCARD
+#endif
+
+
+
 
