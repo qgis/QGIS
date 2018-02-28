@@ -3402,7 +3402,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
 
 QgsProcessingOutputDefinition *QgsProcessingParameterFileDestination::toOutputDefinition() const
 {
-  return nullptr;
+  return new QgsProcessingOutputFile( name(), description() );
 }
 
 QString QgsProcessingParameterFileDestination::defaultFileExtension() const
