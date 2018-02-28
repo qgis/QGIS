@@ -58,6 +58,9 @@ class StatisticsByCategories(QgisAlgorithm):
     def groupId(self):
         return 'vectoranalysis'
 
+    def tags(self):
+        return self.tr('groups').split(',')
+
     def __init__(self):
         super().__init__()
 
