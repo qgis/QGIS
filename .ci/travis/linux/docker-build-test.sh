@@ -71,7 +71,7 @@ UPLOAD_TIME=8
 CURRENT_TIME=`date +%s`
 TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
 TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
-echo "Timeout: $TIMEOUTs (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
+echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 
 # echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
