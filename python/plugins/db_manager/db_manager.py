@@ -55,6 +55,7 @@ class DBManager(QMainWindow):
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
+        self.toolBar.setIconSize(self.iface.iconSize())
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
         self.tree.model().dataChanged.connect(self.iface.reloadConnections)
