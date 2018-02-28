@@ -98,7 +98,6 @@ class LSqlResultModelTask(SqlResultModelTask):
         return True
 
     def cancel(self):
-        self.subtask.cancel()
         SqlResultModelTask.cancel(self)
 
 
