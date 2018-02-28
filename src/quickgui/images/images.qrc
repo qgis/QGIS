@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ic_broken_image_black.svg</file>
+        <file>ic_camera_alt_border.svg</file>
+        <file>ic_check_black.svg</file>
+        <file>ic_clear_black.svg</file>
+        <file>ic_clear_white.svg</file>
+        <file>ic_delete_forever_white.svg</file>
+        <file>ic_navigation_black.svg</file>
+        <file>ic_photo_notavailable_white.svg</file>
+        <file>ic_save_white.svg</file>
+    </qresource>
+</RCC>
