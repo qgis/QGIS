@@ -1,0 +1,64 @@
+/***************************************************************************
+                         qgsalgorithmmultiringbuffer.h
+                         -------------------------
+    begin                : February 2018
+    copyright            : (C) 2018 by Alexander Bruy
+    email                : alexander dot bruy at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSALGORITHMMULTIRINGBUFFER_H
+#define QGSALGORITHMMULTIRINGBUFFER_H
+
+#define SIP_NO_FILE
+
+#include "qgis.h"
+#include "qgsprocessingalgorithm.h"
+
+///@cond PRIVATE
+
+/**
+ * Native multiring buffer algorithm.
+ */
+class QgsMultiRingBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsMultiRingBufferAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QgsMultiRingBufferAlgorithm *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+
+  protected:
+
+    QString outputName() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPolygon; }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Polygon; }
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    int mRingsNumber = 0;
+    double mDistance = 0.0;
+};
+
+///@endcond PRIVATE
+
+#endif // QGSALGORITHMMULTIRINGBUFFER_H
+
+
