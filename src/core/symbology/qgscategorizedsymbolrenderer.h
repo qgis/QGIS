@@ -56,8 +56,18 @@ class CORE_EXPORT QgsRendererCategory
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
     void setLabel( const QString &label );
 
-    // \since QGIS 2.5
+    /**
+     * Returns true if the category is currently enabled and should be rendered.
+     * \see setRenderState()
+     * \since QGIS 2.5
+     */
     bool renderState() const;
+
+    /**
+     * Sets whether the category is currently enabled and should be rendered.
+     * \see renderState()
+     * \since QGIS 2.5
+     */
     void setRenderState( bool render );
 
     // debugging
@@ -233,9 +243,33 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     void rebuildHash();
 
-    QgsSymbol *skipRender();
+    /**
+     * \deprecated No longer used, will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
-    QgsSymbol *symbolForValue( const QVariant &value );
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     * \deprecated use variant which takes a second bool argument instead.
+     */
+    Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) SIP_DEPRECATED;
+
+    // TODO QGIS 4.0 - rename Python method to symbolForValue
+
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     *
+     * Will return nullptr if no matching symbol was found for \a value, or
+     * if the category corresponding to \a value is currently disabled (see QgsRendererCategory::renderState()).
+     *
+     * If \a foundMatchingSymbol is specified then it will be set to true if
+     * a matching category was found. This can be used to differentiate between
+     * a nullptr returned as a result of no matching category vs a nullptr as a result
+     * of disabled categories.
+     *
+     * \note available in Python bindings as symbolForValue2
+     */
+    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol SIP_OUT ) SIP_PYNAME( symbolForValue2 );
 
   private:
 #ifdef SIP_RUN

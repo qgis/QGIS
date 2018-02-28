@@ -849,6 +849,7 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 %End
 
 
+
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 %Docstring
 Open a url in the users browser. By default the QGIS doc directory is used
