@@ -50,9 +50,21 @@ class QgsSnapToGridAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
     double mIntervalX = 0.0;
+    bool mDynamicIntervalX = false;
+    QgsProperty mIntervalXProperty;
+
     double mIntervalY = 0.0;
+    bool mDynamicIntervalY = false;
+    QgsProperty mIntervalYProperty;
+
     double mIntervalZ = 0.0;
+    bool mDynamicIntervalZ = false;
+    QgsProperty mIntervalZProperty;
+
     double mIntervalM = 0.0;
+    bool mDynamicIntervalM = false;
+    QgsProperty mIntervalMProperty;
+
 };
 
 ///@endcond PRIVATE

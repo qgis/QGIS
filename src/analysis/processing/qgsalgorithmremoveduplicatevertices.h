@@ -51,8 +51,12 @@ class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgo
   private:
 
     double mTolerance = 1.0;
-    bool mUseZValues = false;
+    bool mDynamicTolerance = false;
+    QgsProperty mToleranceProperty;
 
+    bool mUseZValues = false;
+    bool mDynamicUseZ = false;
+    QgsProperty mUseZProperty;
 };
 
 

@@ -52,9 +52,20 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   private:
 
     double mDeltaX = 0.0;
+    bool mDynamicDeltaX = false;
+    QgsProperty mDeltaXProperty;
+
     double mDeltaY = 0.0;
+    bool mDynamicDeltaY = false;
+    QgsProperty mDeltaYProperty;
+
     double mDeltaZ = 0.0;
+    bool mDynamicDeltaZ = false;
+    QgsProperty mDeltaZProperty;
+
     double mDeltaM = 0.0;
+    bool mDynamicDeltaM = false;
+    QgsProperty mDeltaMProperty;
 
 };
 
