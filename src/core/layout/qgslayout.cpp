@@ -27,6 +27,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
+#include "qgscompositionconverter.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -609,7 +610,17 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
     clear();
   }
 
-  QDomDocument doc = document;
+  QDomDocument doc;
+
+  // If this is a 2.x composition template, convert it to a layout template
+  if ( QgsCompositionConverter::isCompositionTemplate( document ) )
+  {
+    doc = QgsCompositionConverter::convertCompositionTemplate( document, mProject );
+  }
+  else
+  {
+    doc = document;
+  }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
   QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
