@@ -371,6 +371,12 @@ QVector<QgsDataItem *>QgsGrassLocationItem::createChildren()
   return mapsets;
 }
 
+QIcon QgsGrassLocationItem::icon()
+{
+  return QgsApplication::getThemeIcon( "/grass_mapset.svg" );
+}
+
+
 //----------------------- QgsGrassMapsetItem ------------------------------
 
 QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
@@ -412,7 +418,7 @@ QIcon QgsGrassMapsetItem::icon()
       return QgsApplication::getThemeIcon( "/grass_mapset_search.svg" );
     }
   }
-  return QgsDirectoryItem::icon();
+  return QgsApplication::getThemeIcon( "/grass_mapset.svg" );
 }
 
 void QgsGrassMapsetItem::setState( State state )
@@ -846,7 +852,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                        newExtent, newXSize, newYSize );
           }
-          QgsRasterProjector::Precision precision = settings.enumSettingValue( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate );
+          QgsRasterProjector::Precision precision = settings.enumValue( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate );
           projector->setPrecision( precision );
 
           pipe->set( projector );

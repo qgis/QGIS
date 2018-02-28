@@ -228,8 +228,8 @@ class CORE_EXPORT QgsSettings : public QObject
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      */
     template <class T>
-    T enumSettingValue( const QString &key, const T &defaultValue,
-                        const Section section = NoSection, bool flag = false ) const
+    T enumValue( const QString &key, const T &defaultValue,
+                 const Section section = NoSection, bool flag = false ) const
     {
       T v;
       if ( !flag )

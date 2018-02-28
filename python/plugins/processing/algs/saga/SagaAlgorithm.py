@@ -30,6 +30,7 @@ import os
 import importlib
 from copy import deepcopy
 from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
@@ -100,6 +101,12 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def shortHelpString(self):
         return shortHelp.get(self.id(), None)
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerSaga.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerSaga.svg")
 
     def flags(self):
         # TODO - maybe it's safe to background thread this?

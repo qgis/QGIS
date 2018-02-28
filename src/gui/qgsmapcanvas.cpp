@@ -151,7 +151,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   //segmentation parameters
   QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumSettingValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 
@@ -2088,9 +2088,12 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  emit selectionChanged( layer );
-  refresh();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( layer )
+  {
+    emit selectionChanged( layer );
+    refresh();
+  }
 }
 
 void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *e )

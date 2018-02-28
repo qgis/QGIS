@@ -159,7 +159,7 @@ class BatchPanel(BASE, WIDGET):
                     if param.isDestination():
                         continue
                     if param.name() in params:
-                        value = params[param.name()].strip("'")
+                        value = eval(params[param.name()])
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
@@ -193,7 +193,7 @@ class BatchPanel(BASE, WIDGET):
                     continue
                 wrapper = self.wrappers[row][col]
                 if not param.checkValueIsAcceptable(wrapper.value(), context):
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
                         level=Qgis.Warning, duration=5)
                     return
@@ -208,7 +208,7 @@ class BatchPanel(BASE, WIDGET):
                     algOutputs[out.name()] = text.strip()
                     col += 1
                 else:
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
                         out.description(), row + 1),
                         level=Qgis.Warning, duration=5)
                     return

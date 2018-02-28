@@ -76,7 +76,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 QString QgsClipboard::generateClipboardText() const
 {
-  CopyFormat format = QgsSettings().enumSettingValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
+  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
 
   switch ( format )
   {
@@ -155,7 +155,7 @@ void QgsClipboard::setSystemClipboard()
 
   if ( mFeatureClipboard.count() < 1000 )
   {
-    CopyFormat format = QgsSettings().enumSettingValue( QStringLiteral( "qgis/copyFeatureFormat" ), AttributesWithWKT );
+    CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ), AttributesWithWKT );
 
     QString htmlCopy;
     switch ( format )

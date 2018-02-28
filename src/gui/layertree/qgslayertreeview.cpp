@@ -26,6 +26,9 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
+#include "qgslayertreeviewindicator.h"
+#include "qgslayertreeviewitemdelegate.h"
+
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -41,6 +44,10 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
+
+  // we need a custom item delegate in order to draw indicators
+  setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
+  setStyle( new QgsLayerTreeViewProxyStyle( this ) );
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
@@ -332,6 +339,22 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
   return list;
 }
 
+void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
+{
+  if ( !mIndicators[node].contains( indicator ) )
+    mIndicators[node].append( indicator );
+}
+
+void QgsLayerTreeView::removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
+{
+  mIndicators[node].removeOne( indicator );
+}
+
+QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNode *node ) const
+{
+  return mIndicators.value( node );
+}
+
 
 void QgsLayerTreeView::refreshLayerSymbology( const QString &layerId )
 {
@@ -388,6 +411,10 @@ void QgsLayerTreeView::collapseAllNodes()
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+  // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
+  // (the item delegate needs to know which indicator has been clicked)
+  mLastReleaseMousePos = event->pos();
+
   const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
   if ( event->modifiers() & Qt::ControlModifier )
     layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );

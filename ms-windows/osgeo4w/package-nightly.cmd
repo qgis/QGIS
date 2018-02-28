@@ -219,6 +219,8 @@ if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
 
+reg add "HKCU\Software\Microsoft\Windows\Windows Error Reporting" /v DontShow /t REG_DWORD /d 1 /f
+
 set oldtemp=%TEMP%
 set oldtmp=%TMP%
 set oldpath=%PATH%

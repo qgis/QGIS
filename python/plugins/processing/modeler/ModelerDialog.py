@@ -82,7 +82,9 @@ class ModelerDialog(BASE, WIDGET):
     update_model = pyqtSignal()
 
     def __init__(self, model=None):
-        super(ModelerDialog, self).__init__(None)
+        super().__init__(None)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
         self.setupUi(self)
 
         self.bar = QgsMessageBar()
