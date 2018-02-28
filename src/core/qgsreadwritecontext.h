@@ -88,7 +88,7 @@ class CORE_EXPORT QgsReadWriteContext
      * \note Not available in the Python bindings.
      * \since QGIS 3.2
      */
-    NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() );
+    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() );
 #endif
 
     /**
@@ -114,18 +114,10 @@ class CORE_EXPORT QgsReadWriteContext
 class QgsReadWriteContextCategoryPopper
 {
   public:
-
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext *context )
-      : mContext( context )
-    {}
-
-    ~QgsReadWriteContextCategoryPopper()
-    {
-      if ( mContext )
-        mContext->leaveCategory();
-    }
-
-    QgsReadWriteContext *mContext;
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context ) : mContext( context ) {}
+    ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
+  private:
+    QgsReadWriteContext mContext;
 };
 ///@endcond PRIVATE
 #endif

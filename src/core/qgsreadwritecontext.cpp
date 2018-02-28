@@ -41,7 +41,7 @@ QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QStr
   if ( !details.isEmpty() )
     message.append( QString( " :: %1" ).arg( details ) );
   mCategories.push_back( message );
-  return QgsReadWriteContextCategoryPopper( this );
+  return QgsReadWriteContextCategoryPopper( *this );
 }
 
 void QgsReadWriteContext::leaveCategory()

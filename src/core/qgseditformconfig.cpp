@@ -260,7 +260,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
 
 void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &context )
 {
-  MAYBE_UNUSED QgsReadWriteContextCategoryPopper p = context.enterCategory( QObject::tr( "Edit form config" ) );
+  QgsReadWriteContextCategoryPopper p = context.enterCategory( QObject::tr( "Edit form config" ) );
 
   d.detach();
 

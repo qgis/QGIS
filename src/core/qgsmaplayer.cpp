@@ -430,7 +430,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   // the subclass can also read custom properties
   readCustomProperties( layerElement );
 
-  MAYBE_UNUSED QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
+  QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
 
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
