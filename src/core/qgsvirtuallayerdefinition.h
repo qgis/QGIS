@@ -136,6 +136,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * delayed until an explicit reloading of the layer.
      * \param lazy True to delay the loading, false otherwise
      * \since QGIS 3.2
+     * \see QgsDataProvider::reloadData()
+     * \see isLazy()
      */
     void setLazy( bool lazy ) { mLazy = lazy; }
 
@@ -143,6 +145,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * Returns the lazy mode.
      * \returns True if the loading is delayed, false otherwise.
      * \since QGIS 3.2
+     * \see setLazy()
      */
     bool isLazy() const { return mLazy; }
 
