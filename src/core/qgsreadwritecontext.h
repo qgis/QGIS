@@ -113,10 +113,12 @@ class CORE_EXPORT QgsReadWriteContext
 
 
 /**
- * QgsReadWriteContextCategoryPopper allows entering a context category
- * and takes care of leaving this category on deletion of the class.
+ * \class QgsReadWriteContextCategoryPopper
+ * \ingroup core
+ * Allows entering a context category and takes care of
+ * leaving this category on deletion of the class.
  * This would happen when it gets out of scope.
- * \since 3.2
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
