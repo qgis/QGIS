@@ -45,6 +45,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputMapLayer,
                        QgsProcessingOutputMultipleLayers)
 
+from .parameters import initializeParameters
+
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
@@ -67,6 +69,7 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 
 class Processing(object):
     BASIC_PROVIDERS = []
+    REGISTERED_PARAMETERS = dict()
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
@@ -97,6 +100,7 @@ class Processing(object):
             if QgsApplication.processingRegistry().addProvider(p):
                 Processing.BASIC_PROVIDERS.append(p)
         # And initialize
+        initializeParameters()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
@@ -107,6 +111,33 @@ class Processing(object):
             QgsApplication.processingRegistry().removeProvider(p)
 
         Processing.BASIC_PROVIDERS = []
+        Processing.REGISTERED_PARAMETERS = dict()
+
+    @staticmethod
+    def registerParameter(id, name, parameter, metadata=dict(), description=None):
+        """Register a new parameter.
+        The ``name`` is a human readable translated string, the ``parameter`` is a class type with the base class ``qgis.core.QgsProcessingParameterDefinition``,
+        the ``metadata`` is a dictionary with additional metadata, mainly used for widget wrappers.
+        """
+        Processing.REGISTERED_PARAMETERS[id] = {
+            'name': name,
+            'parameter': parameter,
+            'metadata': metadata,
+            'description': description
+        }
+
+    @staticmethod
+    def unregisterParameter(name):
+        """Unregister a registered parameter with the given name.
+        """
+        del Processing.REGISTERED_PARAMETERS[name]
+
+    @staticmethod
+    def registeredParameters():
+        """Returns a set of registered parameters.
+        Each entry is a tuple consisting of a human readable name and the class.
+        """
+        return Processing.REGISTERED_PARAMETERS
 
     @staticmethod
     def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
