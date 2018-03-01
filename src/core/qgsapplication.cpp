@@ -220,7 +220,7 @@ void QgsApplication::init( QString profileFolder )
       setPrefixPath( myPrefix, true );
 #else
       QDir myDir( applicationDirPath() );
-      // Fix for server wich is one level deeper in /usr/lib/cgi-bin
+      // Fix for server which is one level deeper in /usr/lib/cgi-bin
       if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
       {
         myDir.cdUp();
