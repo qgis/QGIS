@@ -196,7 +196,7 @@ bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
     }
     if ( !success && errMsg )
     {
-      *errMsg = QString( "Could not load UI from %1 (%2)" ).arg( ui ).arg( reply->errorString() );
+      *errMsg = QStringLiteral( "Could not load UI from %1 (%2)" ).arg( ui ).arg( reply->errorString() );
     }
   }
   else
