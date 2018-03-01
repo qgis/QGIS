@@ -32,7 +32,6 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
                        QgsFeatureRequest)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -76,7 +75,6 @@ class BoxPlot(QgisAlgorithm):
             options=msd, defaultValue=0))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Box plot'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Box plot')))
 
     def name(self):
         return 'boxplot'

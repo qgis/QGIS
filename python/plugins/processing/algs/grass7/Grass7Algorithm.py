@@ -59,10 +59,6 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
-                       QgsProcessingOutputFolder,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputHtml,
                        QgsProcessingUtils)
 from qgis.utils import iface
 
@@ -178,10 +174,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for p in self.params:
             # We use createOutput argument for automatic output creation
             res = self.addParameter(p, True)
-            # File destinations are not automatically added as outputs
-            if (isinstance(p, QgsProcessingParameterFileDestination)
-                    and p.defaultFileExtension().lower() == 'html'):
-                self.addOutput(QgsProcessingOutputHtml(p.name(), p.description()))
 
     def defineCharacteristicsFromFile(self):
         """
