@@ -36,6 +36,8 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
+from PyQt5.QtCore import QCoreApplication
+
 from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
@@ -154,6 +156,7 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
+    fieldMappingParameterName = QCoreApplication.translate('Processing', 'Fields Mapper')
 
     def __init__(self):
         super().__init__()
@@ -316,6 +319,30 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
         for a in self.externalAlgs:
             self.addAlgorithm(a)
+
+    def load(self):
+        success = super().load()
+
+        from processing.core.Processing import Processing
+
+        if success:
+            Processing.registerParameter(
+                'Fields Mapper',
+                self.fieldMappingParameterName,
+                parameter=FieldsMapper.ParameterFieldsMapping,
+                metadata={'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'}
+            )
+
+        return success
+
+    def unload(self):
+        super().unload()
+        from processing.core.Processing import Processing
+        Processing.unregisterParameter(self.fieldMappingParameterName)
+
+    def createParameter(self, type, name):
+        if type == 'fields_mapping':
+            return FieldsMapper.ParameterFieldsMapping(name)
 
     def supportsNonFileBasedOutput(self):
         return True

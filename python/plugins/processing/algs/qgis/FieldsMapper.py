@@ -54,49 +54,8 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         return self.tr('attributes,table').split(',')
 
     def initParameters(self, config=None):
-
-        class ParameterFieldsMapping(QgsProcessingParameterDefinition):
-
-            def __init__(self, name, description, parentLayerParameterName='INPUT'):
-                super().__init__(name, description)
-                self._parentLayerParameter = parentLayerParameterName
-
-            def clone(self):
-                copy = ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
-                return copy
-
-            def type(self):
-                return 'fields_mapping'
-
-            def checkValueIsAcceptable(self, value, context=None):
-                if not isinstance(value, list):
-                    return False
-                for field_def in value:
-                    if not isinstance(field_def, dict):
-                        return False
-                    if 'name' not in field_def.keys():
-                        return False
-                    if 'type' not in field_def.keys():
-                        return False
-                    if 'expression' not in field_def.keys():
-                        return False
-                return True
-
-            def valueAsPythonString(self, value, context):
-                return str(value)
-
-            def asScriptCode(self):
-                raise NotImplementedError()
-
-            @classmethod
-            def fromScriptCode(cls, name, description, isOptional, definition):
-                raise NotImplementedError()
-
-            def parentLayerParameter(self):
-                return self._parentLayerParameter
-
-        fields_mapping = ParameterFieldsMapping(self.FIELDS_MAPPING,
-                                                description=self.tr('Fields mapping'))
+        fields_mapping = FieldsMapper.ParameterFieldsMapping(self.FIELDS_MAPPING,
+                                                             description=self.tr('Fields mapping'))
         fields_mapping.setMetadata({
             'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
         })
@@ -181,3 +140,47 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         feature.setAttributes(attributes)
         self._row_number += 1
         return [feature]
+
+    class ParameterFieldsMapping(QgsProcessingParameterDefinition):
+
+        def __init__(self, name, description='', parentLayerParameterName='INPUT'):
+            super().__init__(name, description)
+            self._parentLayerParameter = parentLayerParameterName
+
+        def clone(self):
+            copy = FieldsMapper.ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
+            return copy
+
+        def type(self):
+            return self.typeName()
+
+        @staticmethod
+        def typeName():
+            return 'fields_mapping'
+
+        def checkValueIsAcceptable(self, value, context=None):
+            if not isinstance(value, list):
+                return False
+            for field_def in value:
+                if not isinstance(field_def, dict):
+                    return False
+                if 'name' not in field_def.keys():
+                    return False
+                if 'type' not in field_def.keys():
+                    return False
+                if 'expression' not in field_def.keys():
+                    return False
+            return True
+
+        def valueAsPythonString(self, value, context):
+            return str(value)
+
+        def asScriptCode(self):
+            raise NotImplementedError()
+
+        @classmethod
+        def fromScriptCode(cls, name, description, isOptional, definition):
+            raise NotImplementedError()
+
+        def parentLayerParameter(self):
+            return self._parentLayerParameter
