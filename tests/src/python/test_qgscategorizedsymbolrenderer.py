@@ -19,9 +19,12 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
                        QgsField,
-                       QgsFields
+                       QgsFields,
+                       QgsFeature,
+                       QgsRenderContext
                        )
 from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QColor
 
 start_app()
 
@@ -170,6 +173,144 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(renderer.filter(fields), "(field + field2) IN (2)")
         assert renderer.updateCategoryRenderState(1, False)
         self.assertEqual(renderer.filter(fields), "FALSE")
+
+    def testSymbolForValue(self):
+        """Test symbolForValue"""
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('field')
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        # add default category
+        default_symbol = createMarkerSymbol()
+        default_symbol.setColor(QColor(255, 255, 255))
+        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
+
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertEqual(symbol.color(), QColor(255, 0, 0))
+        self.assertTrue(ok)
+        symbol, ok = renderer.symbolForValue2('b')
+        self.assertEqual(symbol.color(), QColor(0, 255, 0))
+        self.assertTrue(ok)
+
+        # hidden category
+        symbol, ok = renderer.symbolForValue2('c')
+        self.assertIsNone(symbol)
+        self.assertTrue(ok)
+
+        # no matching category
+        symbol, ok = renderer.symbolForValue2('xxxx')
+        self.assertIsNone(symbol)
+        self.assertFalse(ok)
+
+        renderer.stopRender(context)
+
+    def testOriginalSymbolForFeature(self):
+        # test renderer with features
+        fields = QgsFields()
+        fields.append(QgsField('x'))
+
+        # setup renderer
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('x')
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        # add default category
+        default_symbol = createMarkerSymbol()
+        default_symbol.setColor(QColor(255, 255, 255))
+        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
+
+        context = QgsRenderContext()
+        renderer.startRender(context, fields)
+
+        f = QgsFeature(fields)
+        f.setAttributes(['a'])
+
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertEqual(symbol.color(), QColor(255, 0, 0))
+
+        f.setAttributes(['b'])
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertEqual(symbol.color(), QColor(0, 255, 0))
+
+        # hidden category
+        f.setAttributes(['c'])
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertIsNone(symbol)
+
+        # no matching category
+        f.setAttributes(['xxx'])
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertEqual(symbol.color(), QColor(255, 255, 255)) # default symbol
+
+        renderer.stopRender(context)
+
+    def testLegendKeysWhileCounting(self):
+        # test determining legend keys for features, while counting features
+        fields = QgsFields()
+        fields.append(QgsField('x'))
+
+        # setup renderer
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('x')
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        # add default category
+        default_symbol = createMarkerSymbol()
+        default_symbol.setColor(QColor(255, 255, 255))
+        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
+
+        context = QgsRenderContext()
+        context.setRendererScale(0) # simulate counting
+        renderer.startRender(context, fields)
+
+        f = QgsFeature(fields)
+        f.setAttributes(['a'])
+
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertEqual(keys, {'0'})
+
+        f.setAttributes(['b'])
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertEqual(keys, {'1'})
+
+        # hidden category, should still return keys
+        f.setAttributes(['c'])
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertEqual(keys, {'2'})
+
+        # no matching category
+        f.setAttributes(['xxx'])
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertFalse(keys)
+
+        renderer.stopRender(context)
 
 
 if __name__ == "__main__":
