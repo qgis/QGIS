@@ -128,24 +128,27 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
     connect( mDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ),
-    this, [ = ]( double value ) { emit valueChanged( value ); } );
+    this, [ = ]( double ) { emitValueChanged(); } );
   }
   else if ( mIntSpinBox )
   {
     QgsSpinBox *qgsWidget = qobject_cast<QgsSpinBox *>( mIntSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
+    int minval = min.toInt();
     if ( allowNull )
     {
-      int minval = min.toInt();
       int stepval = step.toInt();
       minval -= stepval;
       mIntSpinBox->setValue( minval );
       mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
-    setupIntEditor( min, max, step, mIntSpinBox, this );
+    setupIntEditor( minval, max, step, mIntSpinBox, this );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mIntSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
+
+    connect( mIntSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ),
+    this, [ = ]( int ) { emitValueChanged(); } );
   }
   else
   {
