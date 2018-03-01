@@ -2772,8 +2772,9 @@ tests:
         type: vector
 
   - algorithm: native:joinattributestable
-    name: join the attribute table by common field
+    name: join the attribute table by common field (one-to-one)
     params:
+      METHOD: 0
       INPUT:
         name: points.gml
         type: vector
@@ -2788,8 +2789,26 @@ tests:
         type: vector
 
   - algorithm: native:joinattributestable
+    name: join the attribute table by common field (one-to-many)
+    params:
+      METHOD: 1
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table_all_match.gml
+        type: vector
+
+  - algorithm: native:joinattributestable
     name: Join attributes table with subset of fields
     params:
+      METHOD: 0
       FIELD: id
       FIELDS_TO_COPY:
       - NUM_A
