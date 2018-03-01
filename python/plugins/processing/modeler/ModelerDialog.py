@@ -227,7 +227,7 @@ class ModelerDialog(BASE, WIDGET):
 
         def _mimeDataInput(items):
             mimeData = QMimeData()
-            text = items[0].text(0)
+            text = items[0].data(0, Qt.UserRole)
             mimeData.setText(text)
             return mimeData
 
@@ -629,8 +629,8 @@ class ModelerDialog(BASE, WIDGET):
         sortedParams = sorted(Processing.registeredParameters().items())
         for param in sortedParams:
             paramItem = QTreeWidgetItem()
-            paramItem.setText(0, param[0])
-            paramItem.setData(0, Qt.UserRole, param[1]['parameter'])
+            paramItem.setText(0, param[1]['name'])
+            paramItem.setData(0, Qt.UserRole, param[0])
             paramItem.setIcon(0, icon)
             paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
             paramItem.setToolTip(0, param[1]['description'])
