@@ -37,7 +37,6 @@ from qgis.core import (QgsFeatureRequest,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsSpatialIndex)
 
@@ -73,7 +72,6 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour')))
 
         self.addOutput(QgsProcessingOutputNumber(self.OBSERVED_MD,
                                                  self.tr('Observed mean distance')))

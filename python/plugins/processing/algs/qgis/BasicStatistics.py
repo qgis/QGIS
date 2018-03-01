@@ -38,7 +38,6 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -98,7 +97,6 @@ class BasicStatisticsForField(QgisAlgorithm):
                                                       None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(QgsProcessingOutputNumber(self.UNIQUE, self.tr('Number of unique values')))

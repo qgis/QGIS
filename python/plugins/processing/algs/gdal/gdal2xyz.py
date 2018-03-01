@@ -29,8 +29,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputFile)
+                       QgsProcessingParameterFileDestination
+                       )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows
@@ -58,7 +58,6 @@ class gdal2xyz(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('XYZ ASCII file'),
                                                                 self.tr('CSV files (*.csv)')))
-        self.addOutput(QgsProcessingOutputFile(self.OUTPUT, self.tr('XYZ ASCII file')))
 
     def name(self):
         return 'gdal2xyz'
