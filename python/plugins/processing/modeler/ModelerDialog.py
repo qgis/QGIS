@@ -154,12 +154,14 @@ class ModelerDialog(BASE, WIDGET):
                 event.ignore()
 
         def _dropEvent(event):
+            from processing.core.Processing import Processing
+
             if event.mimeData().hasText():
-                text = event.mimeData().text()
-                if text in ModelerParameterDefinitionDialog.paramTypes:
-                    self.addInputOfType(text, event.pos())
+                itemId = event.mimeData().text()
+                if itemId in Processing.registeredParameters():
+                    self.addInputOfType(itemId, event.pos())
                 else:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(text)
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(itemId)
                     if alg is not None:
                         self._addAlgorithm(alg, event.pos())
                 event.accept()
@@ -225,7 +227,7 @@ class ModelerDialog(BASE, WIDGET):
 
         def _mimeDataInput(items):
             mimeData = QMimeData()
-            text = items[0].text(0)
+            text = items[0].data(0, Qt.UserRole)
             mimeData.setText(text)
             return mimeData
 
@@ -545,25 +547,24 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInput(self):
         item = self.inputsTree.currentItem()
-        paramType = str(item.text(0))
-        self.addInputOfType(paramType)
+        param = item.data(0, Qt.UserRole)
+        self.addInputOfType(param)
 
     def addInputOfType(self, paramType, pos=None):
-        if paramType in ModelerParameterDefinitionDialog.paramTypes:
-            dlg = ModelerParameterDefinitionDialog(self.model, paramType)
-            dlg.exec_()
-            if dlg.param is not None:
-                if pos is None:
-                    pos = self.getPositionForParameterItem()
-                if isinstance(pos, QPoint):
-                    pos = QPointF(pos)
-                component = QgsProcessingModelParameter(dlg.param.name())
-                component.setDescription(dlg.param.name())
-                component.setPosition(pos)
-                self.model.addModelParameter(dlg.param, component)
-                self.repaintModel()
-                # self.view.ensureVisible(self.scene.getLastParameterItem())
-                self.hasChanged = True
+        dlg = ModelerParameterDefinitionDialog(self.model, paramType)
+        dlg.exec_()
+        if dlg.param is not None:
+            if pos is None:
+                pos = self.getPositionForParameterItem()
+            if isinstance(pos, QPoint):
+                pos = QPointF(pos)
+            component = QgsProcessingModelParameter(dlg.param.name())
+            component.setDescription(dlg.param.name())
+            component.setPosition(pos)
+            self.model.addModelParameter(dlg.param, component)
+            self.repaintModel()
+            # self.view.ensureVisible(self.scene.getLastParameterItem())
+            self.hasChanged = True
 
     def getPositionForParameterItem(self):
         MARGIN = 20
@@ -620,16 +621,21 @@ class ModelerDialog(BASE, WIDGET):
             return False
 
     def fillInputsTree(self):
+        from processing.core.Processing import Processing
+
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
-        for paramType in sorted(ModelerParameterDefinitionDialog.paramTypes):
-            paramItem = QTreeWidgetItem()
-            paramItem.setText(0, paramType)
-            paramItem.setIcon(0, icon)
-            paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-            paramItem.setToolTip(0, ModelerParameterDefinitionDialog.inputTooltip(paramType))
-            parametersItem.addChild(paramItem)
+        sortedParams = sorted(Processing.registeredParameters().items())
+        for param in sortedParams:
+            if param[1]['exposeToModeller']:
+                paramItem = QTreeWidgetItem()
+                paramItem.setText(0, param[1]['name'])
+                paramItem.setData(0, Qt.UserRole, param[0])
+                paramItem.setIcon(0, icon)
+                paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+                paramItem.setToolTip(0, param[1]['description'])
+                parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
 
