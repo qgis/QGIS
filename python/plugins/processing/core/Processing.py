@@ -135,8 +135,14 @@ class Processing(object):
 
     @staticmethod
     def registeredParameters():
-        """Returns a set of registered parameters.
-        Each entry is a tuple consisting of a human readable name and the class.
+        """Returns a dict of registered parameters. The key of the dict is the id of the parameter.
+        Each entry is itself a dict with the keys
+
+          - name: The human readable name of the parameter
+          - parameter: The class of the parameter
+          - metadata: Additional metadata for the parameter, mainly used for widget wrappers
+          - description: A longer description for the parameter, suitable for tooltips etc
+          - exposeToModeller: A boolean indicating if the parameter is available as model parameter input
         """
         return Processing.REGISTERED_PARAMETERS
 
