@@ -146,9 +146,6 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     setupIntEditor( minval, max, step, mIntSpinBox, this );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mIntSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
-
-    connect( mIntSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ),
-    this, [ = ]( int ) { emitValueChanged(); } );
   }
   else
   {
