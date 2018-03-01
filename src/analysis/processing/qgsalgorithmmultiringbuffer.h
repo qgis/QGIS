@@ -54,7 +54,12 @@ class QgsMultiRingBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   private:
     int mRingsNumber = 0;
+    bool mDynamicRingsNumber = false;
+    QgsProperty mRingsNumberProperty;
+
     double mDistance = 0.0;
+    bool mDynamicDistance = false;
+    QgsProperty mDistanceProperty;
 };
 
 ///@endcond PRIVATE

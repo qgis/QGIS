@@ -61,25 +61,35 @@ QgsMultiRingBufferAlgorithm *QgsMultiRingBufferAlgorithm::createInstance() const
 
 void QgsMultiRingBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
+  std::unique_ptr< QgsProcessingParameterNumber> rings = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "RINGS" ),
+      QObject::tr( "Number of rings" ), QgsProcessingParameterNumber::Integer,
+      1, false, 0 );
+  rings->setIsDynamic( true );
+  rings->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
+  rings->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( rings.release() );
 
-  auto ringsParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
-  //ringsParam->setIsDynamic( true );
-  //ringsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Number of rings" ), QObject::tr( "Number of rings" ), QgsPropertyDefinition::Integer ) );
-  //ringsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
-  addParameter( ringsParam.release() );
-
-  auto distanceParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), QgsProcessingParameterNumber::Double, 1 );
-  //distanceParam->setIsDynamic( true );
-  //distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance between rings" ), QObject::tr( "Distance between rings" ), QgsPropertyDefinition::Double ) );
-  //distanceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
-  addParameter( distanceParam.release() );
+  std::unique_ptr< QgsProcessingParameterNumber> distance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ),
+      QObject::tr( "Distance between rings" ), QgsProcessingParameterNumber::Double,
+      1, false, 0 );
+  distance->setIsDynamic( true );
+  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
+  distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( distance.release() );
 }
 
 bool QgsMultiRingBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mRingsNumber = parameterAsInt( parameters, QStringLiteral( "RINGS" ), context );
+  mDynamicRingsNumber = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "RINGS" ) );
+  if ( mDynamicRingsNumber )
+    mRingsNumberProperty = parameters.value( QStringLiteral( "RINGS" ) ).value< QgsProperty >();
+
   mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  if ( mDynamicDistance )
+    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
+
   return true;
 }
 
