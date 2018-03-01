@@ -182,7 +182,7 @@ bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
     QNetworkReply *reply = fetcher.reply();
-    if ( reply )
+    if ( reply && reply->error() == QNetworkReply::NoError )
     {
       QTemporaryFile *localFile = new QTemporaryFile( QStringLiteral( "XXXXXX.ui" ) );
       if ( localFile->open() )
@@ -196,7 +196,7 @@ bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
     }
     if ( !success && errMsg )
     {
-      *errMsg = QString( "Could not load UI from %1" ).arg( ui );
+      *errMsg = QString( "Could not load UI from %1 (%2)" ).arg( ui ).arg( reply->errorString() );
     }
   }
   else

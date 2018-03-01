@@ -13,14 +13,19 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import os
+import filecmp
 
 from qgis.core import (QgsVectorLayer,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsEditFormConfig)
 from qgis.gui import QgsGui
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from utilities import unitTestDataPath
 
+TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
@@ -56,6 +61,33 @@ class TestQgsEditFormConfig(unittest.TestCase):
         self.assertFalse(config2.readOnly(1))
         self.assertFalse(config2.labelOnTop(0))
         self.assertTrue(config2.labelOnTop(1))
+
+    def testFormUi(self):
+        layer = self.createLayer()
+        config = layer.editFormConfig()
+
+        uiLocal = os.path.join(TEST_DATA_DIR, 'layer_attribute_form.ui')
+        (ok, _) = config.setUiForm(uiLocal)
+        self.assertTrue(ok)
+        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
+        self.assertEqual(config.uiForm(QgsEditFormConfig.Original), uiLocal)
+        self.assertEqual(config.uiForm(QgsEditFormConfig.LocalCopy), uiLocal)
+
+        uiUrl = 'https://raw.githubusercontent.com/3nids/QGIS/7ac09b1f9b1921e7f95ab077d97dcf0dfd57be4a/tests/testdata/layer_attribute_form.ui'
+        (ok, _) = config.setUiForm(uiUrl)
+        self.assertTrue(ok)
+        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
+        self.assertEqual(config.uiForm(QgsEditFormConfig.Original), uiUrl)
+        localCopy = config.uiForm(QgsEditFormConfig.LocalCopy)
+        self.assertNotEqual(localCopy, uiUrl)
+        filecmp.cmp(localCopy, uiLocal)
+
+        uiBadUrl = 'http://www.qwertzuiopasdfghjklyxcvbnm.qwer/xxx.ui'
+        (ok, _) = config.setUiForm(uiBadUrl)
+        self.assertFalse(ok)
+        self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
+        self.assertEqual(config.uiForm(QgsEditFormConfig.Original), uiBadUrl)
+        self.assertEqual(config.uiForm(QgsEditFormConfig.LocalCopy), '')
 
     def testReadOnly(self):
         layer = self.createLayer()
