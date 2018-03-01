@@ -242,11 +242,6 @@ def getParameterFromString(s):
 def initializeParameters():
     from processing.core.Processing import Processing
 
-    """
-    ModelerParameterDefinitionDialog.PARAMETER_TABLE: QCoreApplication.translate('Processing',
-                                                                                 'A vector layer parameter, e.g. for algorithms which change layer styles, edit layers in place, or other operations which affect an entire layer.'),
-    """
-
     Processing.registerParameter(PARAMETER_MAP_LAYER, QCoreApplication.translate('Processing', 'Map Layer'),
                                  QgsProcessingParameterMapLayer,
                                  description=QCoreApplication.translate('Processing', 'A generic map layer parameter, which accepts either vector or raster layers.'))
