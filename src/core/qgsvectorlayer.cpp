@@ -1465,10 +1465,22 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   // reset style if loading default style, style is missing, or geometry type has changed
   if ( !renderer() || !legend() || geomType != geometryType() || loadDefaultStyleFlag )
   {
-    // check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
     bool defaultLoadedFlag = false;
-    if ( loadDefaultStyleFlag )
+
+    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    {
+      // first try to create a renderer directly from the data provider
+      std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
+      if ( defaultRenderer )
+      {
+        defaultLoadedFlag = true;
+        setRenderer( defaultRenderer.release() );
+      }
+    }
+
+    // else check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
     }
@@ -1484,6 +1496,23 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   }
 
   emit repaintRequested();
+}
+
+QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
+{
+  if ( isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+  {
+    // first try to create a renderer directly from the data provider
+    std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
+    if ( defaultRenderer )
+    {
+      resultFlag = true;
+      setRenderer( defaultRenderer.release() );
+      return QString();
+    }
+  }
+
+  return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
 

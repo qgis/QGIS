@@ -930,6 +930,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+
     /**
      * Count features for symbols.
      * The method will return the feature counter task. You will need to
