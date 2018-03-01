@@ -333,25 +333,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
       mActionSearchForm->setToolTip( tr( "Search is not supported when using custom UI forms" ) );
     }
 
-    QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Layer" ) );
-
-    if ( actions.isEmpty() )
-    {
-      mActionFeatureActions->setVisible( false );
-    }
-    else
-    {
-      QMenu *actionMenu = new QMenu();
-      Q_FOREACH ( const QgsAction &action, actions )
-      {
-        QAction *qAction = actionMenu->addAction( action.icon(), action.shortTitle() );
-        qAction->setToolTip( action.name() );
-        qAction->setData( QVariant::fromValue<QgsAction>( action ) );
-        connect( qAction, &QAction::triggered, this, &QgsAttributeTableDialog::layerActionTriggered );
-      }
-      mActionFeatureActions->setMenu( actionMenu );
-    }
-
     editingToggled();
     // Close and delete if the layer has been destroyed
     connect( mLayer, &QObject::destroyed, this, &QWidget::close );
@@ -495,6 +476,13 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
   int fieldindex = layer->fields().indexFromName( fieldName );
+  if ( fieldindex < 0 )
+  {
+    // this shouldn't happen... but it did. There's probably some deeper underlying issue
+    // but we may as well play it safe here.
+    QMessageBox::critical( nullptr, tr( "Update Attributes" ), tr( "An error occurred while trying to update the field %1" ).arg( fieldName ) );
+    return;
+  }
 
   bool calculationSuccess = true;
   QString error;
@@ -850,6 +838,29 @@ void QgsAttributeTableDialog::editingToggled()
   }
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
+
+  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Layer" ) );
+
+  if ( actions.isEmpty() )
+  {
+    mActionFeatureActions->setVisible( false );
+  }
+  else
+  {
+    QMenu *actionMenu = new QMenu();
+    Q_FOREACH ( const QgsAction &action, actions )
+    {
+      if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
+        continue;
+
+      QAction *qAction = actionMenu->addAction( action.icon(), action.shortTitle() );
+      qAction->setToolTip( action.name() );
+      qAction->setData( QVariant::fromValue<QgsAction>( action ) );
+      connect( qAction, &QAction::triggered, this, &QgsAttributeTableDialog::layerActionTriggered );
+    }
+    mActionFeatureActions->setMenu( actionMenu );
+  }
+
 }
 
 void QgsAttributeTableDialog::mActionAddAttribute_triggered()

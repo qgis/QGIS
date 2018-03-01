@@ -17,11 +17,9 @@
 
 #include <QVector>
 
-#ifdef QGISDEBUG
 #ifdef WIN32
 #include <windows.h>
 #include <dbghelp.h>
-#endif
 #endif
 
 #include "qgis.h"

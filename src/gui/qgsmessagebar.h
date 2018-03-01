@@ -89,6 +89,9 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     //! convenience method for pushing a message with title to the bar
     void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
 
+    //! convenience method for pushing a message to the bar with a detail text which be shown when pressing a "more" button
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+
     QgsMessageBarItem *currentItem() { return mCurrentItem; }
 
   signals:

@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
+  qgslayertreeviewfilterindicator.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -263,6 +264,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
+  qgslayertreeviewfilterindicator.h
   qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
@@ -496,6 +498,10 @@ IF (POSTGRES_FOUND)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
+
+IF (PROJ_HAS_INFO)
+  ADD_DEFINITIONS(-DPROJ_HAS_INFO)
+ENDIF (PROJ_HAS_INFO)
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 

@@ -30,7 +30,8 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
@@ -63,7 +64,7 @@ class Grid(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
+        return QgsApplication.getThemeIcon("/vector_grid.svg")
 
     def tags(self):
         return self.tr('grid,lines,polygons,vector,create,fishnet,diamond,hexagon').split(',')

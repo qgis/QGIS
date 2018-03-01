@@ -28,7 +28,6 @@
 %Include qgsdatadefinedsizelegend.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
-%Include qgsdatasourceuri.sip
 %Include qgsdatetimestatisticalsummary.sip
 %Include qgsdatumtransform.sip
 %Include qgsdbfilterproxymodel.sip
@@ -127,7 +126,6 @@
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerundopassthroughcommand.sip
 %Include qgsvectorlayerutils.sip
-%Include qgsvectorsimplifymethod.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
@@ -211,7 +209,6 @@
 %Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
-%Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
 %Include raster/qgsrasterrange.sip
 %Include raster/qgsrasterrenderer.sip
@@ -258,7 +255,6 @@
 %Include symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include layertree/qgslayertreeutils.sip
 %Include locator/qgslocatorcontext.sip
-%Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsbox3d.sip
 %Include geometry/qgscircularstring.sip
 %Include geometry/qgscircle.sip
@@ -305,6 +301,7 @@
 %Include qgscredentials.sip
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
+%Include qgsdatasourceuri.sip
 %Include qgsfeature.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
@@ -353,6 +350,7 @@
 %Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayertools.sip
+%Include qgsvectorsimplifymethod.sip
 %Include qgssettings.sip
 %Include annotations/qgsannotation.sip
 %Include annotations/qgsannotationmanager.sip
@@ -370,8 +368,10 @@
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
-%Include geometry/qgspoint.sip
+%Include raster/qgsrasterprojector.sip
+%Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsgeometry.sip
+%Include geometry/qgspoint.sip
 %Include geocms/geonode/qgsgeonoderequest.sip
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsdetector.sip

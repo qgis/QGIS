@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 
@@ -87,12 +87,12 @@ class BatchInputSelectionPanel(QWidget):
         if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                 self.param.layerType == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
-                self.tr('Select from open layers'), self.pushButton)
+                QCoreApplication.translate('BatchInputSelectionPanel', 'Select from Open Layers…'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
 
         selectFileAction = QAction(
-            self.tr('Select from file system'), self.pushButton)
+            QCoreApplication.translate('BatchInputSelectionPanel', 'Select from File System…'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
 
@@ -156,7 +156,7 @@ class BatchInputSelectionPanel(QWidget):
         else:
             path = ''
 
-        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
+        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select Files'), path,
                                                             getFileFilter(self.param))
         if ret:
             files = list(ret)

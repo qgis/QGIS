@@ -210,6 +210,28 @@ class edit(object):
             self.layer.rollBack()
             return False
 
+# Python class to mimic QgsReadWriteContextCategoryPopper C++ class
+
+
+class ReadWriteContextEnterCategory():
+    def __init__(self, context, category_name, details=None):
+        self.context = context
+        self.category_name = category_name
+        self.details = details
+        self.popper = None
+
+    def __enter__(self):
+        self.popper = self.context._enterCategory(self.category_name, self.details)
+        return self.context
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        del self.popper
+        return True
+
+
+# Inject the context manager into QgsReadWriteContext class as a member
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+
 
 class QgsTaskWrapper(QgsTask):
 

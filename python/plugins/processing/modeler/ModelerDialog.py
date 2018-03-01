@@ -82,7 +82,9 @@ class ModelerDialog(BASE, WIDGET):
     update_model = pyqtSignal()
 
     def __init__(self, model=None):
-        super(ModelerDialog, self).__init__(None)
+        super().__init__(None)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
         self.setupUi(self)
 
         self.bar = QgsMessageBar()
@@ -530,7 +532,7 @@ class ModelerDialog(BASE, WIDGET):
             QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
                                      self.tr('Processing'),
                                      Qgis.Critical)
-            QMessageBox.critical(self, self.tr('Could not open model'),
+            QMessageBox.critical(self, self.tr('Open Model'),
                                  self.tr('The selected model could not be loaded.\n'
                                          'See the log for more information.'))
 

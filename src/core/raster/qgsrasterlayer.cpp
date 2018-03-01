@@ -625,6 +625,12 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
     return;
   }
 
+  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+  }
+
   if ( provider == QLatin1String( "gdal" ) )
   {
     // make sure that the /vsigzip or /vsizip is added to uri, if applicable
@@ -1299,7 +1305,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
   QDomElement rasterRendererElem;
@@ -1391,7 +1397,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
   return readSymbology( node, errorMessage, context );
 } //readSymbology
@@ -1402,7 +1408,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, con
 
   \note Called by QgsMapLayer::readXml().
 */
-bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
+bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   // Make sure to read the file first so stats etc are initialized properly!

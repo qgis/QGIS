@@ -251,11 +251,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     // ! Clears the list of extents and sets current extent as first item
     void clearExtentHistory();
 
-    /**
-     * Zoom to the extent of the selected features of current (vector) layer.
-     * \param layer optionally specify different than current layer
-     */
-    void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
     /**
      * Set canvas extent to the bounding box of a set of features
@@ -699,6 +694,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom out with fixed factor
     void zoomOut();
 
+    /**
+     * Zoom to the extent of the selected features of provided (vector) layer.
+     * \param layer optionally specify different than current layer
+     */
+    void zoomToSelected( QgsVectorLayer *layer = nullptr );
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -785,9 +786,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
-    // ### QGIS 3: remove the signal
+
     //! Emitted when selection in any layer gets changed
-    void selectionChanged( QgsMapLayer *layer );
+    void selectionChanged( QgsVectorLayer *layer );
 
     //! Emitted when zoom last status changed
     void zoomLastStatusChanged( bool );

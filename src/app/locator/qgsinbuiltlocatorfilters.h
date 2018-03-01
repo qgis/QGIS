@@ -18,13 +18,14 @@
 #ifndef QGSINBUILTLOCATORFILTERS_H
 #define QGSINBUILTLOCATORFILTERS_H
 
+#include "qgisapp.h"
 #include "qgslocatorfilter.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
 
 class QAction;
 
-class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
@@ -43,7 +44,7 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 
 };
 
-class QgsLayoutLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsLayoutLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
@@ -110,6 +111,24 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QgsFeatureIterator mIterator;
     QString mLayerId;
     QIcon mLayerIcon;
+};
+
+class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
+    QgsExpressionCalculatorLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "calculator" ); }
+    QString displayName() const override { return tr( "Calculator" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "=" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
 };
 
 

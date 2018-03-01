@@ -253,6 +253,7 @@ class ProcessingPlugin:
         self.resultsDock.setVisible(False)
         self.iface.removeDockWidget(self.resultsDock)
 
+        self.toolbox.deleteLater()
         self.menu.deleteLater()
 
         # delete temporary output files

@@ -83,9 +83,11 @@ class QgsVertexEditor : public QgsDockWidget
 
   signals:
     void deleteSelectedRequested();
+    void editorClosed();
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
+    void closeEvent( QCloseEvent *event ) override;
 
   private slots:
     void updateTableSelection();

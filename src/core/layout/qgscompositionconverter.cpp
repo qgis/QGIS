@@ -452,6 +452,29 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
   return newItems;
 }
 
+bool QgsCompositionConverter::isCompositionTemplate( const QDomDocument &document )
+{
+  return document.elementsByTagName( QStringLiteral( "Composition" ) ).count() > 0;
+}
+
+QDomDocument QgsCompositionConverter::convertCompositionTemplate( const QDomDocument &document, QgsProject *project )
+{
+  QDomDocument doc;
+  QgsReadWriteContext context;
+  if ( project )
+    context.setPathResolver( project->pathResolver() );
+  if ( document.elementsByTagName( QStringLiteral( "Composition" ) ).count( ) > 0 )
+  {
+    QDomElement composerElem = document.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement( );
+
+    std::unique_ptr<QgsLayout> layout = createLayoutFromCompositionXml( composerElem,
+                                        project );
+    QDomElement elem = layout->writeXml( doc, context );
+    doc.appendChild( elem );
+  }
+  return doc;
+}
+
 bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
   Q_UNUSED( project );

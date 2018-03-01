@@ -48,9 +48,9 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
   QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
-  QAction *loadFromFile = mAdvancedMenu->addAction( trUtf8( "Load color map from file…" ) );
+  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load color map from file…" ) );
   connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
-  QAction *exportToFile = mAdvancedMenu->addAction( trUtf8( "Export color map to file…" ) );
+  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export color map to file…" ) );
   connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
 
 
@@ -350,7 +350,7 @@ void QgsPalettedRendererWidget::loadColorTable()
 {
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Table from File" ), lastDir );
   if ( !fileName.isEmpty() )
   {
     QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::classDataFromFile( fileName );
@@ -363,7 +363,7 @@ void QgsPalettedRendererWidget::loadColorTable()
     }
     else
     {
-      QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Could not interpret file as a raster color table." ) );
+      QMessageBox::critical( nullptr, tr( "Load Color Table" ), tr( "Could not interpret file as a raster color table." ) );
     }
   }
 }
@@ -372,7 +372,7 @@ void QgsPalettedRendererWidget::saveColorTable()
 {
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Text (*.clr)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Table as File" ), lastDir, tr( "Text (*.clr)" ) );
   if ( !fileName.isEmpty() )
   {
     if ( !fileName.endsWith( QLatin1String( ".clr" ), Qt::CaseInsensitive ) )
@@ -393,7 +393,7 @@ void QgsPalettedRendererWidget::saveColorTable()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+      QMessageBox::warning( this, tr( "Save Color Table as File" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
   }
 }
@@ -454,7 +454,7 @@ void QgsPalettedRendererWidget::bandChanged( int band )
   if ( !mModel->classData().isEmpty() )
   {
     int res = QMessageBox::question( this,
-                                     tr( "Confirm Delete" ),
+                                     tr( "Delete Classification" ),
                                      tr( "The classification band was changed from %1 to %2.\n"
                                          "Should the existing classes be deleted?" ).arg( mBand ).arg( band ),
                                      QMessageBox::Yes | QMessageBox::No );

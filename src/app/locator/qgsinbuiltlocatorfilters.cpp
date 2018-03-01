@@ -26,6 +26,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include <QToolButton>
+#include <QClipboard>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -276,4 +277,46 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
     return;
 
   QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+}
+
+//
+// QgsExpressionCalculatorLocatorFilter
+//
+QgsExpressionCalculatorLocatorFilter::QgsExpressionCalculatorLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{
+  setUseWithoutPrefix( false );
+}
+
+QgsExpressionCalculatorLocatorFilter *QgsExpressionCalculatorLocatorFilter::clone() const
+{
+  return new QgsExpressionCalculatorLocatorFilter();
+}
+
+void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  QString error;
+  if ( QgsExpression::checkExpression( string, &context, error ) )
+  {
+    QgsExpression exp( string );
+    QString resultString = exp.evaluate( &context ).toString();
+    if ( !resultString.isEmpty() )
+    {
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Copy “%1” to clipboard" ).arg( resultString );
+      result.userData = resultString;
+      result.score = 1;
+      emit resultFetched( result );
+    }
+  }
+}
+
+void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QApplication::clipboard()->setText( result.userData.toString() );
 }

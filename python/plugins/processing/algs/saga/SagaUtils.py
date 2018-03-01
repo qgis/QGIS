@@ -169,7 +169,7 @@ def executeSaga(feedback):
     else:
         os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
                  stat.S_IREAD | stat.S_IWRITE)
-        command = [sagaBatchJobFilename()]
+        command = ["'" + sagaBatchJobFilename() + "'"]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
     with subprocess.Popen(

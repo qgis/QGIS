@@ -185,6 +185,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
     if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
+      askToUser.setWindowTitle( tr( "Save Style" ) );
       askToUser.setText( tr( "Save default style to: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
@@ -227,6 +228,7 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
     if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
+      askToUser.setWindowTitle( tr( "Load Style" ) );
       askToUser.setText( tr( "Load default style from: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );

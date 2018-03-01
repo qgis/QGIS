@@ -16,27 +16,27 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString &uri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
 {
 }
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  QUrl url( baseURL() );
+  QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), QgsWFSDataSourceURI::Method::Post ) );
 
-  QgsDebugMsg( doc.toString() );
+  QgsDebugMsgLevel( doc.toString(), 4 );
 
   if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ) ) )
   {
     QString errorMsg;
     if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )
     {
-      QgsDebugMsg( mResponse );
-      QgsDebugMsg( errorMsg );
+      QgsDebugMsgLevel( mResponse, 4 );
+      QgsDebugMsgLevel( errorMsg, 4 );
       return false;
     }
-    QgsDebugMsg( mResponse );
+    QgsDebugMsgLevel( mResponse, 4 );
     return true;
   }
   return false;

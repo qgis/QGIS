@@ -191,6 +191,7 @@ Advanced digitizing dock widget
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+    virtual QToolBar *shapeDigitizeToolBar() = 0;
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
@@ -846,6 +847,7 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
 %End
+
 
 
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;

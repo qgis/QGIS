@@ -387,6 +387,13 @@ void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
   }
 }
 
+void QgsVertexEditor::closeEvent( QCloseEvent *event )
+{
+  QgsDockWidget::closeEvent( event );
+
+  emit editorClosed();
+}
+
 //
 // CoordinateItemDelegate
 //

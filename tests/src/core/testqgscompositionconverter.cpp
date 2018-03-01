@@ -44,6 +44,16 @@
 #include "qgslayoutitemattributetable.h"
 
 
+// Debug output for dom nodes
+QDebug operator<<( QDebug dbg, const QDomNode &node )
+{
+  QString s;
+  QTextStream str( &s, QIODevice::WriteOnly );
+  node.save( str, 2 );
+  dbg << qPrintable( s );
+  return dbg;
+}
+
 class TestQgsCompositionConverter: public QObject
 {
     Q_OBJECT
@@ -125,7 +135,17 @@ class TestQgsCompositionConverter: public QObject
     /**
      * Test automatic conversion from a composer template
      */
-    void convertComposerTemplate();
+    void convertComposition();
+
+    /**
+     * Test if a composition template can be detected from a dom document
+     */
+    void isCompositionTemplate();
+
+    /**
+     * Test if a composition template can be converted to a layout template
+     */
+    void convertCompositionTemplate();
 
 
   private:
@@ -523,7 +543,7 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
 }
 
 
-void TestQgsCompositionConverter::convertComposerTemplate()
+void TestQgsCompositionConverter::convertComposition()
 {
 
   QgsProject project;
@@ -539,6 +559,42 @@ void TestQgsCompositionConverter::convertComposerTemplate()
   // Check guides
   QCOMPARE( layout->guides().rowCount( QModelIndex() ), 8 );
 
+}
+
+void TestQgsCompositionConverter::isCompositionTemplate()
+{
+  QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/2x_template.qpt" );
+  QDomDocument doc( "mydocument" );
+  QFile file( templatePath );
+  file.open( QIODevice::ReadOnly );
+  doc.setContent( &file );
+  file.close();
+
+  QVERIFY( QgsCompositionConverter::isCompositionTemplate( doc ) );
+
+}
+
+void TestQgsCompositionConverter::convertCompositionTemplate()
+{
+  QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/2x_template.qpt" );
+  QDomDocument doc( "mydocument" );
+  QFile file( templatePath );
+  file.open( QIODevice::ReadOnly );
+  doc.setContent( &file );
+  file.close();
+
+  QgsProject project;
+
+  QDomDocument layoutDoc = QgsCompositionConverter::convertCompositionTemplate( doc, &project );
+  //qDebug() << layoutDoc;
+  QCOMPARE( layoutDoc.elementsByTagName( QStringLiteral( "Layout" ) ).count(), 1 );
+
+  std::unique_ptr<QgsLayout> layout = qgis::make_unique<QgsLayout>( &project );
+  QgsReadWriteContext context;
+  context.setPathResolver( project.pathResolver() );
+  layout->readXml( layoutDoc.elementsByTagName( QStringLiteral( "Layout" ) ).at( 0 ).toElement(), layoutDoc, context );
+  QVERIFY( layout.get() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 2 );
 }
 
 void TestQgsCompositionConverter::importComposerTemplate()
@@ -646,7 +702,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
   checker.setSize( size );
   checker.setControlPathPrefix( QStringLiteral( "compositionconverter" ) );
-  QVERIFY( checker.testLayout( mReport, pageNumber, 0, true ) );
+  QVERIFY( checker.testLayout( mReport, pageNumber, 0, false ) );
 }
 
 

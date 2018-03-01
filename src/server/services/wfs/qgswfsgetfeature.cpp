@@ -1245,11 +1245,10 @@ namespace QgsWfs
       typeNameElement.setAttribute( QStringLiteral( "fid" ), params.typeName + "." + QString::number( feat->id() ) );
       featureElement.appendChild( typeNameElement );
 
-      if ( params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      //add geometry column (as gml)
+      QgsGeometry geom = feat->geometry();
+      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
-        //add geometry column (as gml)
-        QgsGeometry geom = feat->geometry();
-
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
         Q_NOWARN_DEPRECATED_PUSH
@@ -1348,11 +1347,10 @@ namespace QgsWfs
       typeNameElement.setAttribute( QStringLiteral( "gml:id" ), params.typeName + "." + QString::number( feat->id() ) );
       featureElement.appendChild( typeNameElement );
 
-      if ( params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      //add geometry column (as gml)
+      QgsGeometry geom = feat->geometry();
+      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
-        //add geometry column (as gml)
-        QgsGeometry geom = feat->geometry();
-
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
         Q_NOWARN_DEPRECATED_PUSH

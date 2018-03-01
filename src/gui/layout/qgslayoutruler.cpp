@@ -715,7 +715,7 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
 
 void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( mView->currentLayout() )
+  if ( !mView->currentLayout() )
     return;
 
   if ( event->button() == Qt::LeftButton )

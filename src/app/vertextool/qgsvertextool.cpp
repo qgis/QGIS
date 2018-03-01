@@ -192,6 +192,36 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
     }
 };
 
+
+/**
+ * Keeps the best match from a selected feature so that we can possibly use it with higher priority.
+ * If we do not encounter any selected feature within tolerance, we use the best match as usual.
+ */
+class SelectedMatchFilter : public QgsPointLocator::MatchFilter
+{
+  public:
+    explicit SelectedMatchFilter( double tol )
+      : mTolerance( tol ) {}
+
+    virtual bool acceptMatch( const QgsPointLocator::Match &match )
+    {
+      if ( match.distance() <= mTolerance && match.layer() && match.layer()->selectedFeatureIds().contains( match.featureId() ) )
+      {
+        if ( !mBestSelectedMatch.isValid() || match.distance() < mBestSelectedMatch.distance() )
+          mBestSelectedMatch = match;
+      }
+      return true;
+    }
+
+    bool hasSelectedMatch() const { return mBestSelectedMatch.isValid(); }
+    QgsPointLocator::Match bestSelectedMatch() const { return mBestSelectedMatch; }
+
+  private:
+    double mTolerance;
+    QgsPointLocator::Match mBestSelectedMatch;
+};
+
+
 //
 //
 //
@@ -344,8 +374,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  cleanupVertexEditor();
-
   if ( !mDraggingVertex && !mSelectedVertices.isEmpty() && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
   {
     // only remove highlight if not clicked on one of highlighted vertices
@@ -440,6 +468,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsPointXY pt1 = toMapCoordinates( e->pos() );
     QgsRectangle map_rect( pt0, pt1 );
     QList<Vertex> vertices;
+    QList<Vertex> selectedVertices;
 
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
@@ -454,15 +483,25 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setSubsetOfAttributes( QgsAttributeList() ) );
       while ( fi.nextFeature( f ) )
       {
+        bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
         for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
         {
           QgsPointXY pt = g.vertexAt( i );
           if ( layerRect.contains( pt ) )
+          {
             vertices << Vertex( vlayer, f.id(), i );
+            if ( isFeatureSelected )
+              selectedVertices << Vertex( vlayer, f.id(), i );
+          }
         }
       }
     }
+
+    // If there were any vertices that come from selected features, use just vertices from selected features.
+    // This allows user to select a bunch of features in complex situations to constrain the selection.
+    if ( !selectedVertices.isEmpty() )
+      vertices = selectedVertices;
 
     HighlightMode mode = ModeReset;
     if ( e->modifiers() & Qt::ShiftModifier )
@@ -639,7 +678,15 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       }
 
       snapUtils->setConfig( config );
-      m = snapUtils->snapToMap( mapPoint );
+      SelectedMatchFilter filter( tol );
+      m = snapUtils->snapToMap( mapPoint, &filter );
+
+      // we give priority to snap matches that are from selected features
+      if ( filter.hasSelectedMatch() )
+      {
+        m = filter.bestSelectedMatch();
+        mLastSnap.reset();
+      }
     }
   }
 
@@ -658,7 +705,15 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
     }
 
     snapUtils->setConfig( config );
-    m = snapUtils->snapToMap( mapPoint );
+    SelectedMatchFilter filter( tol );
+    m = snapUtils->snapToMap( mapPoint, &filter );
+
+    // we give priority to snap matches that are from selected features
+    if ( filter.hasSelectedMatch() )
+    {
+      m = filter.bestSelectedMatch();
+      mLastSnap.reset();
+    }
   }
 
   // try to stay snapped to previously used feature
@@ -984,6 +1039,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
   QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
   connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+  connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
   connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsLayerDefinition
     //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
     static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, const QgsReadWriteContext &context );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context );
     //! Export the selected layer tree nodes to a QLR file
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT );
     //! Export the selected layer tree nodes to a QLR-XML document
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsLayerDefinition
      * This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
      * \see loadLayerDefinition()
      */
-    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Creates new layers from a layer definition file (.QLR)

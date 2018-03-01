@@ -38,7 +38,7 @@ static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString name, const QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
   populate();
 }
@@ -488,7 +488,7 @@ QString QgsDb2LayerItem::createUri()
 QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.png" );
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
 }
 
 QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SpatialJoin.py
+    SpatialJoinSummary.py
     ---------------------
     Date                 : September 2017
     Copyright            : (C) 2017 by Nyall Dawson

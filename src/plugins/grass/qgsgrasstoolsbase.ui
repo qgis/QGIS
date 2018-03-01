@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GRASS Tools</string>
+   <string>&amp;GRASS Tools</string>
   </property>
   <widget class="QWidget" name="mContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -44,7 +44,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mIconListView.png</normaloff>:/images/themes/default/mIconListView.png</iconset>
+              <normaloff>:/images/themes/default/mIconListView.svg</normaloff>:/images/themes/default/mIconListView.svg</iconset>
             </property>
            </widget>
           </item>
@@ -59,7 +59,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="mFilterInput"/>
+           <widget class="QLineEdit" name="mFilterInput">
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

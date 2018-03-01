@@ -33,7 +33,7 @@ QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, QString n
   : QgsDataCollectionItem( parent, name, path )
   , mColumnTypeThread( nullptr )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = "mIconConnect.svg";
   mCapabilities |= Collapse;
 }
 

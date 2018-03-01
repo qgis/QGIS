@@ -728,7 +728,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
     if ( scope->hasVariable( newName ) )
     {
       //existing name
-      QMessageBox::warning( mParentTree, tr( "Rename variable" ), tr( "A variable with the name \"%1\" already exists in this context." ).arg( newName ) );
+      QMessageBox::warning( mParentTree, tr( "Rename Variable" ), tr( "A variable with the name \"%1\" already exists in this context." ).arg( newName ) );
       newName.append( "_1" );
     }
 

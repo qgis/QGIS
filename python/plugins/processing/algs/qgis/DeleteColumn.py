@@ -88,4 +88,4 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         for index in self.field_indices:
             del attributes[index]
         feature.setAttributes(attributes)
-        return feature
+        return [feature]

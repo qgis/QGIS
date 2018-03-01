@@ -17,20 +17,26 @@
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="1">
-      <widget class="QPushButton" name="mButtonEditHeader">
+      <widget class="QPushButton" name="mButtonEditBody">
+       <property name="toolTip">
+        <string>Edit the static layout</string>
+       </property>
        <property name="text">
         <string>Edit</string>
        </property>
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QCheckBox" name="mCheckShowHeader">
+      <widget class="QCheckBox" name="mCheckShowBody">
+       <property name="toolTip">
+        <string>Include a static layout inserted into the report</string>
+       </property>
        <property name="text">
-        <string>Include header</string>
+        <string>Include section</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
+     <item row="0" column="2">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -42,34 +48,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="2" column="0">
-      <widget class="QCheckBox" name="mCheckShowFooter">
-       <property name="text">
-        <string>Include footer</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="mButtonEditFooter">
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="mButtonEditBody">
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="mCheckShowBody">
-       <property name="text">
-        <string>Include body</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
@@ -88,6 +66,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mCheckShowBody</tabstop>
+  <tabstop>mButtonEditBody</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

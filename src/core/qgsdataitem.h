@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setToolTip( const QString &msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
-    // deleteLater() items anc clear the vector
+    // deleteLater() items and clear the vector
     static void deleteLater( QVector<QgsDataItem *> &items );
 
     //! Move object and all its descendants to thread

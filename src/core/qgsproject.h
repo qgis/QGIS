@@ -42,6 +42,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
+#include "qgsreadwritecontext.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -887,7 +888,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerLoaded( int i, int n );
 
-    void loadingLayer( const QString & );
+    //! Emitted when a layer is loaded
+    void loadingLayer( const QString &layerName );
+
+    /**
+     * \brief Emitted when loading layers has produced some messages
+     * \param layerName the layer name
+     * \param messages a list of pairs of Qgis::MessageLevel and messages
+     * \since 3.2
+     */
+    void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
@@ -1134,7 +1144,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Creates layer and adds it to maplayer registry
      * \note not available in Python bindings
      */
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group ) SIP_SKIP;

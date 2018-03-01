@@ -252,7 +252,7 @@ Set type of feature form pop-up suppression after feature creation (overrides ap
 %End
 
 
-    void readXml( const QDomNode &node, const QgsReadWriteContext &context );
+    void readXml( const QDomNode &node,  QgsReadWriteContext &context );
 %Docstring
 Read XML information
 Deserialize on project load

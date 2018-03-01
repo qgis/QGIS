@@ -2482,6 +2482,38 @@ tests:
         name: expected/refactorfields.gml
         type: vector
 
+  - algorithm: qgis:refactorfields
+    name: Refactor fields, empty expression
+    params:
+      FIELDS_MAPPING:
+      - expression: '"fid"'
+        length: 0
+        name: fid
+        precision: 0
+        type: 10
+      - expression: '"id"'
+        length: 0
+        name: id
+        precision: 0
+        type: 2
+      - expression: '"id2"'
+        length: 0
+        name: id2
+        precision: 0
+        type: 2
+      - expression: ''
+        length: 0
+        name: no_exp
+        precision: 0
+        type: 10
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/refactor_fields_null.gml
+        type: vector
+
   - algorithm: native:reprojectlayer
     name: reproject vector layer
     params:
@@ -4662,6 +4694,32 @@ tests:
     results:
       OUTPUT:
         name: expected/difference.gml
+        type: vector
+
+  - algorithm: native:projectpointcartesian
+    name: Project points cartesian
+    params:
+      BEARING: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_points.gml
+        type: vector
+
+  - algorithm: native:projectpointcartesian
+    name: Project multipoints cartesian
+    params:
+      BEARING: -90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_multipoints.gml
         type: vector
 
   - algorithm: native:removeduplicatevertices

@@ -76,15 +76,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 QString QgsClipboard::generateClipboardText() const
 {
-  QgsSettings settings;
-  CopyFormat format = AttributesWithWKT;
-  if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
-  else
-  {
-    //old format setting
-    format = settings.value( QStringLiteral( "qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
-  }
+  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
 
   switch ( format )
   {
@@ -163,12 +155,7 @@ void QgsClipboard::setSystemClipboard()
 
   if ( mFeatureClipboard.count() < 1000 )
   {
-    QgsSettings settings;
-    CopyFormat format = AttributesWithWKT;
-    if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    {
-      format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
-    }
+    CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ), AttributesWithWKT );
 
     QString htmlCopy;
     switch ( format )

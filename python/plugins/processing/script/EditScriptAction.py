@@ -29,6 +29,8 @@ import inspect
 
 from qgis.core import QgsProcessingAlgorithm
 from qgis.utils import iface
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
 
@@ -39,7 +41,7 @@ from processing.script import ScriptUtils
 class EditScriptAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr("Edit script")
+        self.name = QCoreApplication.translate("EditScriptAction", "Edit Script…")
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
@@ -50,7 +52,7 @@ class EditScriptAction(ContextAction):
             dlg = ScriptEditorDialog(filePath, iface.mainWindow())
             dlg.show()
         else:
-            QgsMessageBox.warning(None,
-                                  self.tr("File not found"),
-                                  self.tr("Can not find corresponding script file.")
-                                  )
+            QMessageBox.warning(None,
+                                self.tr("Edit Script"),
+                                self.tr("Can not find corresponding script file.")
+                                )

@@ -165,6 +165,28 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
   return url;
 }
 
+QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &method ) const
+{
+  QString endpoint;
+  switch ( method )
+  {
+    case Post:
+      endpoint = mPostEndpoints.contains( request ) ?
+                 mPostEndpoints[ request ] : mURI.param( QgsWFSConstants::URI_PARAM_URL );
+      break;
+    default:
+    case Get:
+      endpoint = mGetEndpoints.contains( request ) ?
+                 mGetEndpoints[ request ] : mURI.param( QgsWFSConstants::URI_PARAM_URL );
+      break;
+  }
+  QUrl url( endpoint );
+  url.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+  if ( method == Method::Get && ! request.isEmpty() )
+    url.addQueryItem( QStringLiteral( "REQUEST" ), request );
+  return url;
+}
+
 QString QgsWFSDataSourceURI::version() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_VERSION ) )
@@ -297,4 +319,14 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri,
   if ( restrictToCurrentViewExtent )
     uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   return uri.uri();
+}
+
+void QgsWFSDataSourceURI::setGetEndpoints( const QgsStringMap &map )
+{
+  mGetEndpoints = map;
+}
+
+void QgsWFSDataSourceURI::setPostEndpoints( const QgsStringMap &map )
+{
+  mPostEndpoints = map;
 }

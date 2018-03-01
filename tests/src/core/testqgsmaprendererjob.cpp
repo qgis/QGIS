@@ -278,7 +278,8 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   }
 
   QString errorMsg;
-  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsReadWriteContext() ) )
+  QgsReadWriteContext context = QgsReadWriteContext();
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, context ) )
   {
     QFAIL( errorMsg.toLocal8Bit().data() );
   }

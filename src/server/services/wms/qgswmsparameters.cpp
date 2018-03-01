@@ -1658,7 +1658,7 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::selections() const
   {
-    return toStringList( ParameterName::SELECTION );
+    return toStringList( ParameterName::SELECTION, ';' );
   }
 
   QStringList QgsWmsParameters::opacities() const

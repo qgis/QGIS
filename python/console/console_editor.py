@@ -432,7 +432,7 @@ class Editor(QsciScintilla):
         getCmd = []
         for strLine in listText:
             getCmd.append(strLine)
-        pasteText = u"\n".join(getCmd)
+        pasteText = "\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang': 'Python',
                   'code': pasteText,
@@ -591,7 +591,7 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand(u"exec(open(u'{0}'.encode('{1}')).read())"
+            self.parent.pc.shell.runCommand("exec(open('{0}'.encode('{1}')).read())"
                                             .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
     def runSelectedCode(self):  # spellok
@@ -626,9 +626,9 @@ class Editor(QsciScintilla):
             if not filename:
                 filename = self.parent.tw.currentWidget().path
             # source = open(filename, 'r').read() + '\n'
-            if isinstance(source, type(u"")):
+            if isinstance(source, type("")):
                 source = source.encode('utf-8')
-            if isinstance(filename, type(u"")):
+            if isinstance(filename, type("")):
                 filename = filename.encode('utf-8')
             if filename:
                 compile(source, filename, 'exec')

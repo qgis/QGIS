@@ -847,7 +847,8 @@ class CORE_EXPORT QgsPalLayerSettings
       DDColor,
       DDJoinStyle,
       DDBlendMode,
-      DDPointF
+      DDPointF,
+      DDSizeF, //!< Data defined size
     };
 
     // convenience data defined evaluation function

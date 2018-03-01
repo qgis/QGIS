@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QVariant>
 #include <QSettings>
+#include <QImageReader>
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #endif
@@ -235,7 +236,10 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 
     if ( mDocumentViewerContent == Image )
     {
-      QPixmap pm( resolvedPath );
+      // use an image reader to ensure image orientation and transforms are correctly handled
+      QImageReader ir( resolvedPath );
+      ir.setAutoTransform( true );
+      QPixmap pm = QPixmap::fromImage( ir.read() );
       mPixmapLabel->setPixmap( pm );
       updateDocumentViewer();
     }

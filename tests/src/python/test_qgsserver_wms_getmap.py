@@ -750,7 +750,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857",
-            "SELECTION": "Country: 4"
+            "SELECTION": "Country: 4,1;Hello: 2,5"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))

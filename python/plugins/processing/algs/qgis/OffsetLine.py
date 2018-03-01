@@ -113,4 +113,4 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(output_geometry)
 
-        return feature
+        return [feature]

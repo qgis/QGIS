@@ -48,11 +48,13 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
 
     double mTolerance = 1.0;
+    bool mDynamicTolerance = false;
+    QgsProperty mToleranceProperty;
     QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
     std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
 

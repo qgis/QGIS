@@ -131,6 +131,7 @@ class QgsPGLayerItem : public QgsLayerItem
     void deleteLayer();
     void renameLayer();
     void truncateTable();
+    void refreshMaterializedView();
 #endif
 
   private:

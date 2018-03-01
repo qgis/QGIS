@@ -47,14 +47,15 @@ class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
 
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
 
     int mMaxNodes = -1;
-
+    bool mDynamicMaxNodes = false;
+    QgsProperty mMaxNodesProperty;
 };
 
 ///@endcond PRIVATE

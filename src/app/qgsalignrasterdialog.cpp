@@ -77,7 +77,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   setupUi( this );
 
   mBtnAdd->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
-  mBtnEdit->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
+  mBtnEdit->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   mBtnRemove->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   mAlign = new QgsAlignRaster;

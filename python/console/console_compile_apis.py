@@ -64,7 +64,7 @@ class PrepareAPIDialog(QDialog):
         rslt = self.tr("Error")
         if prepd:
             rslt = QCoreApplication.translate("PythonConsole", "Saved")
-        self.ui.label.setText(u'{0} {1}'.format(self.ui.label.text(), rslt))
+        self.ui.label.setText('{0} {1}'.format(self.ui.label.text(), rslt))
         self._api = None
         self.ui.progressBar.setVisible(False)
         self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(
@@ -73,7 +73,7 @@ class PrepareAPIDialog(QDialog):
 
     def prepareAPI(self):
         # self.ui.textEdit_Qsci.setLexer(0)
-        exec(u'self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer))
+        exec('self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer))
         # self.ui.textEdit_Qsci.setLexer(self.qlexer)
         self._api = QsciAPIs(self.qlexer)
         self._api.apiPreparationFinished.connect(self._preparationFinished)

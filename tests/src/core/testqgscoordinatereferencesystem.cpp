@@ -118,7 +118,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
-  qDebug() << "PROJ.4 version:         " << PJ_VERSION;
+  qDebug() << "PROJ version:           " << PJ_VERSION;
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
@@ -338,11 +338,11 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
     return QStringLiteral( "test %1 crs is invalid" );
 #if 0
   if ( myCrs.toProj4() != myProj4Strings[i] )
-    return QString( "test %1 PROJ.4 = [ %2 ] expecting [ %3 ]"
+    return QString( "test %1 PROJ = [ %2 ] expecting [ %3 ]"
                   ).arg( i ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
 #endif
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
-    return QStringLiteral( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
+    return QStringLiteral( "test %1 [%2] not found, PROJ = [%3] expecting [%4]"
                          ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
   if ( myCrs.authid() != myAuthIdStrings[i] )
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"

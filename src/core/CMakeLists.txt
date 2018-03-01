@@ -578,6 +578,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgsdatasourceuri.h
   qgsdbfilterproxymodel.h
   qgsfeature.h
   qgsfeedback.h
@@ -639,6 +640,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayerjoinbuffer.h
   qgsvectorlayerrenderer.h
   qgsvectorlayertools.h
+  qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
@@ -669,9 +671,11 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterdataprovider.h
   raster/qgsrasterinterface.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterprojector.h
 
-  geometry/qgspoint.h
+  geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
+  geometry/qgspoint.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -809,7 +813,6 @@ SET(QGIS_CORE_HDRS
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
-  qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
   qgsdbfilterproxymodel.h
@@ -924,7 +927,6 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
-  qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
@@ -1027,7 +1029,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
-  raster/qgsrasterprojector.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
@@ -1079,7 +1080,6 @@ SET(QGIS_CORE_HDRS
 
   locator/qgslocatorcontext.h
 
-  geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircularstring.h
   geometry/qgscircle.h

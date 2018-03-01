@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>316</width>
-    <height>276</height>
+    <width>285</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,16 +18,7 @@
     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>3</number>
-   </property>
-   <property name="topMargin">
-    <number>3</number>
-   </property>
-   <property name="rightMargin">
-    <number>3</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>3</number>
    </property>
    <item row="0" column="0" colspan="2">
@@ -55,6 +46,12 @@
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="mCheckBoxMinScale">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Minimum scale</string>
         </property>
@@ -69,6 +66,12 @@
       </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="mCheckBoxMaxScale">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Maximum scale</string>
         </property>
@@ -85,7 +88,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -98,6 +101,12 @@
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="0">
        <widget class="QCheckBox" name="mCheckBoxMinSize">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Minimum size</string>
         </property>
@@ -105,6 +114,12 @@
       </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="mCheckBoxMaxSize">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Maximum size</string>
         </property>
@@ -157,6 +172,7 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

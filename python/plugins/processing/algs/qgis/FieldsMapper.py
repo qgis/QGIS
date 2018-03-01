@@ -32,7 +32,8 @@ from qgis.core import (
     QgsFields,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition)
+    QgsProcessingParameterDefinition,
+    NULL)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -48,6 +49,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
     def groupId(self):
         return 'vectortable'
+
+    def tags(self):
+        return self.tr('attributes,table').split(',')
 
     def initParameters(self, config=None):
 
@@ -133,16 +137,20 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                                         typeName="",
                                         len=field_def.get('length', 0),
                                         prec=field_def.get('precision', 0)))
-            expression = QgsExpression(field_def['expression'])
-            expression.setGeomCalculator(da)
-            expression.setDistanceUnits(context.project().distanceUnits())
-            expression.setAreaUnits(context.project().areaUnits())
-            if expression.hasParserError():
-                raise QgsProcessingException(
-                    self.tr(u'Parser error in expression "{}": {}')
-                    .format(expression.expression(),
-                            expression.parserErrorString()))
-            self.expressions.append(expression)
+            if field_def['expression']:
+                expression = QgsExpression(field_def['expression'])
+                expression.setGeomCalculator(da)
+                expression.setDistanceUnits(context.project().distanceUnits())
+                expression.setAreaUnits(context.project().areaUnits())
+                if expression.hasParserError():
+                    feedback.reportError(
+                        self.tr(u'Parser error in expression "{}": {}')
+                        .format(expression.expression(),
+                                expression.parserErrorString()))
+                    return False
+                self.expressions.append(expression)
+            else:
+                self.expressions.append(None)
         return True
 
     def outputFields(self, inputFields):
@@ -150,22 +158,26 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
     def processAlgorithm(self, parameters, context, feeback):
         for expression in self.expressions:
-            expression.prepare(self.expr_context)
+            if expression is not None:
+                expression.prepare(self.expr_context)
         self._row_number = 0
         return super().processAlgorithm(parameters, context, feeback)
 
     def processFeature(self, feature, context, feedback):
         attributes = []
         for expression in self.expressions:
-            self.expr_context.setFeature(feature)
-            self.expr_context.lastScope().setVariable("row_number", self._row_number)
-            value = expression.evaluate(self.expr_context)
-            if expression.hasEvalError():
-                raise QgsProcessingException(
-                    self.tr(u'Evaluation error in expression "{}": {}')
-                        .format(expression.expression(),
-                                expression.parserErrorString()))
-            attributes.append(value)
+            if expression is not None:
+                self.expr_context.setFeature(feature)
+                self.expr_context.lastScope().setVariable("row_number", self._row_number)
+                value = expression.evaluate(self.expr_context)
+                if expression.hasEvalError():
+                    raise QgsProcessingException(
+                        self.tr(u'Evaluation error in expression "{}": {}')
+                            .format(expression.expression(),
+                                    expression.parserErrorString()))
+                attributes.append(value)
+            else:
+                attributes.append(NULL)
         feature.setAttributes(attributes)
         self._row_number += 1
-        return feature
+        return [feature]

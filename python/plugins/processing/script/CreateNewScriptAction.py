@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
@@ -37,7 +39,7 @@ from processing.script.ScriptEditorDialog import ScriptEditorDialog
 class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr("Create new script")
+        self.name = QCoreApplication.translate("CreateNewScriptAction", "Create New Script…")
         self.group = self.tr("Tools")
 
     def execute(self):

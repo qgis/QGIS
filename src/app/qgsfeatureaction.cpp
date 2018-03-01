@@ -82,6 +82,9 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       if ( !action.runable() )
         continue;
 
+      if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );

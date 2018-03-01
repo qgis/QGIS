@@ -542,14 +542,16 @@ QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QStr
 void QgsMapLayerStyleCommand::undo()
 {
   QString error;
-  mLayer->readStyle( mLastState, error, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  mLayer->readStyle( mLastState, error, context );
   mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
 {
   QString error;
-  mLayer->readStyle( mXml, error, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  mLayer->readStyle( mXml, error, context );
   mLayer->triggerRepaint();
 }
 

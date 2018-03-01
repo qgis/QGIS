@@ -78,6 +78,11 @@ void QgsStatusBarScaleWidget::setScale( double scale )
   mScale->blockSignals( true );
   mScale->setScale( scale );
   mScale->blockSignals( false );
+
+  if ( mScale->width() > mScale->minimumWidth() )
+  {
+    mScale->setMinimumWidth( mScale->width() );
+  }
 }
 
 bool QgsStatusBarScaleWidget::isLocked() const

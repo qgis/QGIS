@@ -41,10 +41,14 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
 void QgsProcessingAlgRunnerTask::cancel()
 {
   mFeedback->cancel();
+  QgsTask::cancel();
 }
 
 bool QgsProcessingAlgRunnerTask::run()
 {
+  if ( isCanceled() )
+    return false;
+
   connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
   bool ok = false;
   try

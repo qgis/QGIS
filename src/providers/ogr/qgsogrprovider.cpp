@@ -4560,7 +4560,6 @@ QgsWkbTypes::Type QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType t
   {
     case wkbUnknown:
       return QgsWkbTypes::Unknown;
-
     case wkbPoint:
       return QgsWkbTypes::Point;
     case wkbLineString:

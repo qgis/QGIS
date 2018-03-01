@@ -27,7 +27,7 @@ class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString &uri );
+    explicit QgsWfsRequest( const QgsWFSDataSourceURI &uri );
 
     ~QgsWfsRequest() override;
 
@@ -53,6 +53,9 @@ class QgsWfsRequest : public QObject
 
     //! \brief Return server response (after download/post)
     QByteArray response() const { return mResponse; }
+
+    //! Return the url for a WFS request
+    QUrl requestUrl( const QString &request ) const;
 
   public slots:
     //! Abort network request immediately
@@ -100,12 +103,10 @@ class QgsWfsRequest : public QObject
 
   protected:
 
-    //! base service URL
-    QUrl baseURL() const { return mUri.baseURL(); }
-
     /**
      * Return (translated) error message, composed with a
-        (possibly translated, but sometimes coming from server) reason  */
+     * (possibly translated, but sometimes coming from server) reason
+     */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
     //! Return experiation delay in second
