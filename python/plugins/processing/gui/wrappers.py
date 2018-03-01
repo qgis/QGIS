@@ -1029,7 +1029,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return widget
 
     def layerChanged(self, layer):
-        if layer is not None or layer.type() != QgsMapLayer.VectorLayer or layer.selectedFeatureCount() == 0:
+        if layer is None or layer.type() != QgsMapLayer.VectorLayer or layer.selectedFeatureCount() == 0:
             self.use_selection_checkbox.setChecked(False)
             self.use_selection_checkbox.setEnabled(False)
         else:
