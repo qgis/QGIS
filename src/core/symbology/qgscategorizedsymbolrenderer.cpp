@@ -168,21 +168,25 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   for ( int i = 0; i < mCategories.size(); ++i )
   {
     const QgsRendererCategory &cat = mCategories.at( i );
-    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : skipRender() );
+    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : nullptr );
   }
 }
 
 QgsSymbol *QgsCategorizedSymbolRenderer::skipRender()
 {
-  static QgsMarkerSymbol *skipRender = nullptr;
-  if ( !skipRender )
-    skipRender = new QgsMarkerSymbol();
-
-  return skipRender;
+  return nullptr;
 }
 
 QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value )
 {
+  bool found = false;
+  return symbolForValue( value, found );
+}
+
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, bool &foundMatchingSymbol )
+{
+  foundMatchingSymbol = false;
+
   // TODO: special case for int, double
   QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QLatin1String( "" ) : value.toString() );
   if ( it == mSymbolHash.constEnd() )
@@ -197,6 +201,8 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value )
     }
     return nullptr;
   }
+
+  foundMatchingSymbol = true;
 
   return *it;
 }
@@ -228,15 +234,14 @@ QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( QgsFeature &f
 {
   QVariant value = valueForFeature( feature, context );
 
+  bool foundCategory = false;
   // find the right symbol for the category
-  QgsSymbol *symbol = symbolForValue( value );
-  if ( symbol == skipRender() )
-    return nullptr;
+  QgsSymbol *symbol = symbolForValue( value, foundCategory );
 
-  if ( !symbol )
+  if ( !foundCategory )
   {
-    // if no symbol found use default one
-    return symbolForValue( QVariant( "" ) );
+    // if no symbol found, use default symbol
+    return symbolForValue( QVariant( "" ), foundCategory );
   }
 
   return symbol;
@@ -793,7 +798,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &fe
   {
     if ( value == cat.value() )
     {
-      if ( cat.renderState() )
+      if ( cat.renderState() || mCounting )
         return QSet< QString >() << QString::number( i );
       else
         return QSet< QString >();

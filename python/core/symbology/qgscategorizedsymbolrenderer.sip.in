@@ -45,7 +45,22 @@ copy constructor
     void setLabel( const QString &label );
 
     bool renderState() const;
+%Docstring
+Returns true if the category is currently enabled and should be rendered.
+
+.. seealso:: :py:func:`setRenderState`
+
+.. versionadded:: 2.5
+%End
+
     void setRenderState( bool render );
+%Docstring
+Sets whether the category is currently enabled and should be rendered.
+
+.. seealso:: :py:func:`renderState`
+
+.. versionadded:: 2.5
+%End
 
     QString dump() const;
 
@@ -252,9 +267,36 @@ Will return null if the functionality is disabled.
 hashtable for faster access to symbols
 %End
 
-    QgsSymbol *skipRender();
+ QgsSymbol *skipRender() /Deprecated/;
+%Docstring
 
-    QgsSymbol *symbolForValue( const QVariant &value );
+.. deprecated:: No longer used, will be removed in QGIS 4.0
+%End
+
+ QgsSymbol *symbolForValue( const QVariant &value ) /Deprecated/;
+%Docstring
+Returns the matching symbol corresponding to an attribute ``value``.
+
+.. deprecated:: use variant which takes a second bool argument instead.
+%End
+
+
+    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol /Out/ ) /PyName=symbolForValue2/;
+%Docstring
+Returns the matching symbol corresponding to an attribute ``value``.
+
+Will return None if no matching symbol was found for ``value``, or
+if the category corresponding to ``value`` is currently disabled (see QgsRendererCategory.renderState()).
+
+If ``foundMatchingSymbol`` is specified then it will be set to true if
+a matching category was found. This can be used to differentiate between
+a None returned as a result of no matching category vs a None as a result
+of disabled categories.
+
+.. note::
+
+   available in Python bindings as symbolForValue2
+%End
 
   private:
     QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
