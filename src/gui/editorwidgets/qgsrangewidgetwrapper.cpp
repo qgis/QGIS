@@ -98,7 +98,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 
     mDoubleSpinBox->setDecimals( precisionval );
 
-    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
+    QgsDoubleSpinBox *qgsWidget = qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
 
 
     if ( qgsWidget )
@@ -132,7 +132,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mIntSpinBox )
   {
-    QgsSpinBox *qgsWidget = dynamic_cast<QgsSpinBox *>( mIntSpinBox );
+    QgsSpinBox *qgsWidget = qobject_cast<QgsSpinBox *>( mIntSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
     if ( allowNull )
