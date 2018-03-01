@@ -182,9 +182,9 @@ void QgsLayoutItemLegend::adjustBoxSize()
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
-    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+    QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
     //set new rect, respecting position mode and data defined size/position
-    attemptSetSceneRect( targetRect );
+    attemptResize( newSize );
   }
 }
 
