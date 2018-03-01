@@ -936,6 +936,9 @@ data source
 .. versionadded:: 2.10
 %End
 
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
+
+
     QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
 Count features for symbols.

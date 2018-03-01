@@ -681,6 +681,11 @@ bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
   return false;
 }
 
+QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const SIP_FACTORY
+{
+  return nullptr;
+}
+
 void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QgsDebugMsg( msg );
