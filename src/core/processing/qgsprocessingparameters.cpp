@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsprocessingregistry.h"
 #include <functional>
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -1079,6 +1080,21 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterFolderDestination( name ) );
   else if ( type == QgsProcessingParameterBand::typeName() )
     def.reset( new QgsProcessingParameterBand( name ) );
+  else
+  {
+    const QList<QgsProcessingProvider *> providers = QgsApplication::instance()->processingRegistry()->providers();
+
+    for ( QgsProcessingProvider *provider : providers )
+    {
+      QgsProcessingParameterDefinition *param = provider->createParameter( type, name );
+
+      if ( param )
+      {
+        def.reset( param );
+        break;
+      }
+    }
+  }
 
   if ( !def )
     return nullptr;

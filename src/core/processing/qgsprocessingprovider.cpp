@@ -74,6 +74,13 @@ const QgsProcessingAlgorithm *QgsProcessingProvider::algorithm( const QString &n
   return mAlgorithms.value( name );
 }
 
+QgsProcessingParameterDefinition *QgsProcessingProvider::createParameter( const QString &type, const QString &name )
+{
+  Q_UNUSED( type )
+  Q_UNUSED( name )
+  return nullptr;
+}
+
 bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   if ( !algorithm )
