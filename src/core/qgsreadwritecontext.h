@@ -124,14 +124,10 @@ class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
   public:
     //! Creates a popper
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext *context ) : mContext( context ) {}
-    ~QgsReadWriteContextCategoryPopper()
-    {
-      if ( mContext )
-        mContext->leaveCategory();
-    }
+    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context ) : mContext( context ) {}
+    ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
   private:
-    QgsReadWriteContext *mContext;
+    QgsReadWriteContext &mContext;
 };
 
 #endif // QGSREADWRITECONTEXT_H
