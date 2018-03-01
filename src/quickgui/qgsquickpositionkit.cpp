@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgsmessagelog.h"
 
 #include "qgsquickpositionkit.h"
@@ -39,7 +40,7 @@ QGeoPositionInfoSource  *QgsQuickPositionKit::gpsSource()
     QgsMessageLog::logMessage( tr( "Unable to create default GPS Position Source" )
                                + "(" + QString::number( ( long )source->error() ) + ")"
                                , "QgsQuick"
-                               , QgsMessageLog::WARNING );
+                               , Qgis::Warning );
     delete source;
     return 0;
   }

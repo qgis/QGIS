@@ -15,6 +15,7 @@
 
 #include <QDebug>
 
+#include "qgis.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 
@@ -160,7 +161,7 @@ bool QgsQuickFeatureModel::save()
 
   QgsFeature feat = mFeature;
   if ( !mLayer->updateFeature( feat ) )
-    QgsMessageLog::logMessage( tr( "Cannot update feature" ), "QgsQuick", QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( tr( "Cannot update feature" ), "QgsQuick", Qgis::Warning );
   rv = commit();
 
   if ( rv )
@@ -169,7 +170,7 @@ bool QgsQuickFeatureModel::save()
     if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature.id() ) ).nextFeature( feat ) )
       setFeature( feat );
     else
-      QgsMessageLog::logMessage( tr( "Feature %1 could not be fetched after commit" ).arg( mFeature.id() ), "QgsQuick", QgsMessageLog::WARNING );
+      QgsMessageLog::logMessage( tr( "Feature %1 could not be fetched after commit" ).arg( mFeature.id() ), "QgsQuick", Qgis::Warning );
   }
   return rv;
 }
@@ -187,7 +188,7 @@ bool QgsQuickFeatureModel::deleteFeature()
   }
 
   if ( !mLayer->deleteFeature( mFeature.id() ) )
-    QgsMessageLog::logMessage( tr( "Cannot delete feature" ), "QgsQuick", QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( tr( "Cannot delete feature" ), "QgsQuick", Qgis::Warning );
   rv = commit();
 
   return rv;
@@ -247,7 +248,7 @@ void QgsQuickFeatureModel::create()
   startEditing();
   if ( !mLayer->addFeature( mFeature ) )
   {
-    QgsMessageLog::logMessage( tr( "Feature could not be added" ), "QgsQuick", QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( tr( "Feature could not be added" ), "QgsQuick", Qgis::Critical );
   }
   commit();
 }
@@ -256,7 +257,7 @@ bool QgsQuickFeatureModel::commit()
 {
   if ( !mLayer->commitChanges() )
   {
-    QgsMessageLog::logMessage( tr( "Could not save changes. Rolling back." ), "QgsQuick", QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( tr( "Could not save changes. Rolling back." ), "QgsQuick", Qgis::Critical );
     mLayer->rollBack();
     return false;
   }
@@ -274,7 +275,7 @@ bool QgsQuickFeatureModel::startEditing()
 
   if ( !mLayer->startEditing() )
   {
-    QgsMessageLog::logMessage( tr( "Cannot start editing" ), "QgsQuick", QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( tr( "Cannot start editing" ), "QgsQuick", Qgis::Warning );
     return false;
   }
   else

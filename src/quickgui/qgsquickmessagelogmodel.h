@@ -18,6 +18,7 @@
 
 #include <QAbstractListModel>
 
+#include "qgis.h"
 #include "qgsmessagelog.h"
 
 #include "qgis_quick.h"
@@ -42,7 +43,7 @@ class QUICK_EXPORT QgsQuickMessageLogModel : public QAbstractListModel
       LogMessage()
       {}
 
-      LogMessage( const QString &tag, const QString &message, QgsMessageLog::MessageLevel level )
+      LogMessage( const QString &tag, const QString &message, Qgis::MessageLevel level )
       {
         this->tag = tag;
         this->message = message;
@@ -51,7 +52,7 @@ class QUICK_EXPORT QgsQuickMessageLogModel : public QAbstractListModel
 
       QString tag;
       QString message;
-      QgsMessageLog::MessageLevel level;
+      Qgis::MessageLevel level;
     };
 
     enum Roles
@@ -70,7 +71,7 @@ class QUICK_EXPORT QgsQuickMessageLogModel : public QAbstractListModel
     QVariant data( const QModelIndex &index, int role ) const override;
 
   private slots:
-    void onMessageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void onMessageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
   private:
     QgsMessageLog *mMessageLog;

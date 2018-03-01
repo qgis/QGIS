@@ -61,15 +61,14 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     Qt5::Gui
     Qt5::Qml
     Qt5::Quick
     Qt5::Xml
-    Qt5::Widgets
     qgis_core
     qgis_quick)
 

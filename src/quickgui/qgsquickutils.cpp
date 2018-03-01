@@ -21,10 +21,10 @@
 #include <QString>
 #include <QThread>
 
+#include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
-#include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsquickmapsettings.h"
@@ -142,7 +142,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
 
   if ( !QDir::root().mkpath( targetPath ) )
   {
-    QgsApplication::messageLog()->logMessage( tr( "Could not create folder %1" ).arg( targetPath ), "QgsQuick", QgsMessageLog::CRITICAL );
+    QgsApplication::messageLog()->logMessage( tr( "Could not create folder %1" ).arg( targetPath ), "QgsQuick", Qgis::Critical );
     return;
   }
 
@@ -154,7 +154,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
     qDebug() << "Couldn't rename file! Trying to copy instead";
     if ( !QFile( sourcePath ).copy( dir.absoluteFilePath( filename ) ) )
     {
-      QgsApplication::messageLog()->logMessage( tr( "File %1 could not be copied to folder %2.", "QgsQuick", QgsMessageLog::CRITICAL ).arg( sourcePath, targetPath ) );
+      QgsApplication::messageLog()->logMessage( tr( "File %1 could not be copied to folder %2.", "QgsQuick", Qgis::Critical ).arg( sourcePath, targetPath ) );
       return;
     }
   }
@@ -172,7 +172,7 @@ QString QgsQuickUtils::getFileName( QString path )
   return filename;
 }
 
-void QgsQuickUtils::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
+void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
   QgsMessageLog::logMessage( message, tag, level );
 }

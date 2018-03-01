@@ -21,6 +21,7 @@
 #include <QString>
 #include <QUrl>
 
+#include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
@@ -105,7 +106,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE QString getFileName( QString path );
     Q_INVOKABLE void logMessage( const QString &message,
                                  const QString &tag = QString( "QgsQuick" ),
-                                 QgsMessageLog::MessageLevel level = QgsMessageLog::WARNING );
+                                 Qgis::MessageLevel level = Qgis::Warning );
 
     // Themes
 
