@@ -74,7 +74,7 @@ class ClipRasterByMask(GdalAlgorithm):
                                                        defaultValue=0.0,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.ALPHA_BAND,
-                                                        self.tr('Create and output alpha band'),
+                                                        self.tr('Create an output alpha band'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.CROP_TO_CUTLINE,
                                                         self.tr('Crop the extent of the target dataset to the extent of the cutline'),
