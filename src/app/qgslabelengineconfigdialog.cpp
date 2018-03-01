@@ -85,5 +85,5 @@ void QgsLabelEngineConfigDialog::setDefaults()
 
 void QgsLabelEngineConfigDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#setting-the-automated-placement-engine" ) );
 }
