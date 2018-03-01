@@ -28,6 +28,9 @@
 #include "qgssourceselectprovider.h"
 #endif
 
+#include "qgssinglesymbolrenderer.h"
+#include "qgscategorizedsymbolrenderer.h"
+
 #include <QEventLoop>
 #include <QMessageBox>
 #include <QNetworkRequest>
@@ -51,7 +54,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
 
   // Get layer info
   QString errorTitle, errorMessage;
-  QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -74,7 +77,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       mSharedData->mExtent = QgsRectangle();
   }
 
-  QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
+  const QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
   QgsRectangle originalExtent;
   originalExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
@@ -208,6 +211,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     mLayerMetadata.setRights( QStringList() << copyright );
   mLayerMetadata.addLink( QgsLayerMetadata::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
 
+  // renderer
+  mRendererDataMap = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "renderer" ) ).toMap();
+
   mValid = true;
 }
 
@@ -243,7 +249,12 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
 
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
-  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  if ( !mRendererDataMap.empty() )
+  {
+    c = c | QgsVectorDataProvider::CreateRenderer;
+  }
+  return c;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
@@ -280,6 +291,65 @@ QString QgsAfsProvider::dataComment() const
 void QgsAfsProvider::reloadData()
 {
   mSharedData->clearCache();
+}
+
+QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
+{
+  const QString type = mRendererDataMap.value( QStringLiteral( "type" ) ).toString();
+  if ( type == QLatin1String( "simple" ) )
+  {
+    const QVariantMap symbolProps = mRendererDataMap.value( QStringLiteral( "symbol" ) ).toMap();
+    std::unique_ptr< QgsSymbol > symbol = QgsArcGisRestUtils::parseEsriSymbolJson( symbolProps );
+    if ( symbol )
+      return new QgsSingleSymbolRenderer( symbol.release() );
+    else
+      return nullptr;
+  }
+  else if ( type == QLatin1String( "uniqueValue" ) )
+  {
+    const QString attribute = mRendererDataMap.value( QStringLiteral( "field1" ) ).toString();
+    // TODO - handle field2, field3
+    const QVariantList categories = mRendererDataMap.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
+    QgsCategoryList categoryList;
+    for ( const QVariant &category : categories )
+    {
+      const QVariantMap categoryData = category.toMap();
+      const QString value = categoryData.value( QStringLiteral( "value" ) ).toString();
+      const QString label = categoryData.value( QStringLiteral( "label" ) ).toString();
+      std::unique_ptr< QgsSymbol > symbol = QgsArcGisRestUtils::parseEsriSymbolJson( categoryData.value( QStringLiteral( "symbol" ) ).toMap() );
+      if ( symbol )
+      {
+        categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
+      }
+    }
+
+    std::unique_ptr< QgsSymbol > defaultSymbol = QgsArcGisRestUtils::parseEsriSymbolJson( mRendererDataMap.value( QStringLiteral( "defaultSymbol" ) ).toMap() );
+    if ( defaultSymbol )
+    {
+      categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), mRendererDataMap.value( QStringLiteral( "defaultLabel" ) ).toString() ) );
+    }
+
+    if ( categoryList.empty() )
+      return nullptr;
+
+    return new QgsCategorizedSymbolRenderer( attribute, categoryList );
+  }
+  else if ( type == QLatin1String( "classBreaks" ) )
+  {
+// currently unsupported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "heatmap" ) )
+  {
+// currently unsupported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "vectorField" ) )
+  {
+// currently unsupported
+    return nullptr;
+  }
+  return nullptr;
 }
 
 

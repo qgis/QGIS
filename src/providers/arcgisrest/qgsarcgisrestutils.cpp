@@ -28,7 +28,11 @@
 #include "geometry/qgspolygon.h"
 #include "geometry/qgspoint.h"
 #include "qgsfeedback.h"
-
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include <QEventLoop>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -504,6 +508,190 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
     return QVariantMap();
   }
   return doc.object().toVariantMap();
+}
+
+std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVariantMap &symbolData )
+{
+  const QString type = symbolData.value( QStringLiteral( "type" ) ).toString();
+  if ( type == QLatin1String( "esriSMS" ) )
+  {
+    // marker symbol
+    return parseEsriMarkerSymbolJson( symbolData );
+  }
+  else if ( type == QLatin1String( "esriSLS" ) )
+  {
+    // line symbol
+    return parseEsriLineSymbolJson( symbolData );
+  }
+  else if ( type == QLatin1String( "esriSFS" ) )
+  {
+    // fill symbol
+    return parseEsriFillSymbolJson( symbolData );
+  }
+  else if ( type == QLatin1String( "esriPFS" ) )
+  {
+    // picture fill - not supported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "esriPMS" ) )
+  {
+    // picture marker - not supported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "esriTS" ) )
+  {
+    // text symbol - not supported
+    return nullptr;
+  }
+  return nullptr;
+}
+
+std::unique_ptr<QgsLineSymbol> QgsArcGisRestUtils::parseEsriLineSymbolJson( const QVariantMap &symbolData )
+{
+  QColor lineColor = parseEsriColorJson( symbolData.value( QStringLiteral( "color" ) ) );
+  if ( !lineColor.isValid() )
+    return nullptr;
+
+  bool ok = false;
+  double widthInPoints = symbolData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+  if ( !ok )
+    return nullptr;
+
+  QgsSymbolLayerList layers;
+  Qt::PenStyle penStyle = parseEsriLineStyle( symbolData.value( QStringLiteral( "style" ) ).toString() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
+  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  layers.append( lineLayer.release() );
+
+  std::unique_ptr< QgsLineSymbol > symbol = qgis::make_unique< QgsLineSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( const QVariantMap &symbolData )
+{
+  QColor fillColor = parseEsriColorJson( symbolData.value( QStringLiteral( "color" ) ) );
+  Qt::BrushStyle brushStyle = parseEsriFillStyle( symbolData.value( QStringLiteral( "style" ) ).toString() );
+
+  const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
+  QColor lineColor = parseEsriColorJson( outlineData.value( QStringLiteral( "color" ) ) );
+  Qt::PenStyle penStyle = parseEsriLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
+  bool ok = false;
+  double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
+  fillLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+  layers.append( fillLayer.release() );
+
+  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  return symbol;
+}
+
+QgsSimpleMarkerSymbolLayerBase::Shape parseEsriMarkerShape( const QString &style )
+{
+  if ( style == QLatin1String( "esriSMSCircle" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Circle;
+  else if ( style == QLatin1String( "esriSMSCross" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Cross;
+  else if ( style == QLatin1String( "esriSMSDiamond" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Diamond;
+  else if ( style == QLatin1String( "esriSMSSquare" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Square;
+  else if ( style == QLatin1String( "esriSMSX" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Cross2;
+  else if ( style == QLatin1String( "esriSMSTriangle" ) )
+    return QgsSimpleMarkerSymbolLayerBase::Triangle;
+  else
+    return QgsSimpleMarkerSymbolLayerBase::Circle;
+}
+
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  QColor fillColor = parseEsriColorJson( symbolData.value( QStringLiteral( "color" ) ) );
+  bool ok = false;
+  const double sizeInPoints = symbolData.value( QStringLiteral( "size" ) ).toDouble( &ok );
+  if ( !ok )
+    return nullptr;
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  QgsSimpleMarkerSymbolLayerBase::Shape shape = parseEsriMarkerShape( symbolData.value( QStringLiteral( "style" ) ).toString() );
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
+  QColor lineColor = parseEsriColorJson( outlineData.value( QStringLiteral( "color" ) ) );
+  Qt::PenStyle penStyle = parseEsriLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
+  double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, QgsSymbol::ScaleArea, fillColor, lineColor );
+  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setStrokeStyle( penStyle );
+  markerLayer->setStrokeWidth( penWidthInPoints );
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+QColor QgsArcGisRestUtils::parseEsriColorJson( const QVariant &colorData )
+{
+  const QVariantList colorParts = colorData.toList();
+  if ( colorParts.count() < 4 )
+    return QColor();
+
+  int red = colorParts.at( 0 ).toInt();
+  int green = colorParts.at( 1 ).toInt();
+  int blue = colorParts.at( 2 ).toInt();
+  int alpha = colorParts.at( 3 ).toInt();
+  return QColor( red, green, blue, alpha );
+}
+
+Qt::PenStyle QgsArcGisRestUtils::parseEsriLineStyle( const QString &style )
+{
+  if ( style == QLatin1String( "esriSLSSolid" ) )
+    return Qt::SolidLine;
+  else if ( style == QLatin1String( "esriSLSDash" ) )
+    return Qt::DashLine;
+  else if ( style == QLatin1String( "esriSLSDashDot" ) )
+    return Qt::DashDotLine;
+  else if ( style == QLatin1String( "esriSLSDashDotDot" ) )
+    return Qt::DashDotDotLine;
+  else if ( style == QLatin1String( "esriSLSDot" ) )
+    return Qt::DotLine;
+  else if ( style == QLatin1String( "esriSLSNull" ) )
+    return Qt::NoPen;
+  else
+    return Qt::SolidLine;
+}
+
+Qt::BrushStyle QgsArcGisRestUtils::parseEsriFillStyle( const QString &style )
+{
+  if ( style == QLatin1String( "esriSFSBackwardDiagonal" ) )
+    return Qt::BDiagPattern;
+  else if ( style == QLatin1String( "esriSFSCross" ) )
+    return Qt::CrossPattern;
+  else if ( style == QLatin1String( "esriSFSDiagonalCross" ) )
+    return Qt::DiagCrossPattern;
+  else if ( style == QLatin1String( "esriSFSForwardDiagonal" ) )
+    return Qt::FDiagPattern;
+  else if ( style == QLatin1String( "esriSFSHorizontal" ) )
+    return Qt::HorPattern;
+  else if ( style == QLatin1String( "esriSFSNull" ) )
+    return Qt::NoBrush;
+  else if ( style == QLatin1String( "esriSFSSolid" ) )
+    return Qt::SolidPattern;
+  else if ( style == QLatin1String( "esriSFSVertical" ) )
+    return Qt::VerPattern;
+  else
+    return Qt::SolidPattern;
 }
 
 QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )
