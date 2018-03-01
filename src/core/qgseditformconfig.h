@@ -94,7 +94,7 @@ class CORE_EXPORT QgsEditFormConfig
     };
 
     /**
-     * The FormPath enum determins the path of the custom UI form
+     * The FormPath enum determines the path of the custom UI form
      */
     enum FormPath
     {
