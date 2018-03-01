@@ -628,13 +628,14 @@ class ModelerDialog(BASE, WIDGET):
         parametersItem.setText(0, self.tr('Parameters'))
         sortedParams = sorted(Processing.registeredParameters().items())
         for param in sortedParams:
-            paramItem = QTreeWidgetItem()
-            paramItem.setText(0, param[1]['name'])
-            paramItem.setData(0, Qt.UserRole, param[0])
-            paramItem.setIcon(0, icon)
-            paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-            paramItem.setToolTip(0, param[1]['description'])
-            parametersItem.addChild(paramItem)
+            if param[1]['exposeToModeller']:
+                paramItem = QTreeWidgetItem()
+                paramItem.setText(0, param[1]['name'])
+                paramItem.setData(0, Qt.UserRole, param[0])
+                paramItem.setIcon(0, icon)
+                paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+                paramItem.setToolTip(0, param[1]['description'])
+                parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
 

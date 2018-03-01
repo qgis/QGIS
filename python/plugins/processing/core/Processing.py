@@ -114,7 +114,7 @@ class Processing(object):
         Processing.REGISTERED_PARAMETERS = dict()
 
     @staticmethod
-    def registerParameter(id, name, parameter, metadata=dict(), description=None):
+    def registerParameter(id, name, parameter, metadata=dict(), description=None, exposeToModeller=True):
         """Register a new parameter.
         The ``name`` is a human readable translated string, the ``parameter`` is a class type with the base class ``qgis.core.QgsProcessingParameterDefinition``,
         the ``metadata`` is a dictionary with additional metadata, mainly used for widget wrappers.
@@ -123,7 +123,8 @@ class Processing(object):
             'name': name,
             'parameter': parameter,
             'metadata': metadata,
-            'description': description
+            'description': description,
+            'exposeToModeller': exposeToModeller
         }
 
     @staticmethod

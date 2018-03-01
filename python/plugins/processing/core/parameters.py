@@ -262,7 +262,7 @@ def initializeParameters():
     Processing.registerParameter(PARAMETER_RANGE, QCoreApplication.translate('Processing', 'Range'), QgsProcessingParameterRange)
     Processing.registerParameter(PARAMETER_POINT, QCoreApplication.translate('Processing', 'Point'), QgsProcessingParameterPoint,
                                  description=QCoreApplication.translate('Processing', 'A geographic point parameter.'))
-    Processing.registerParameter(PARAMETER_ENUM, QCoreApplication.translate('Processing', 'Enum'), QgsProcessingParameterEnum)
+    Processing.registerParameter(PARAMETER_ENUM, QCoreApplication.translate('Processing', 'Enum'), QgsProcessingParameterEnum, exposeToModeller=False)
     Processing.registerParameter(PARAMETER_EXTENT, QCoreApplication.translate('Processing', 'Extent'), QgsProcessingParameterExtent,
                                  description=QCoreApplication.translate('Processing', 'A map extent parameter.'))
     Processing.registerParameter(PARAMETER_MATRIX, QCoreApplication.translate('Processing', 'Matrix'), QgsProcessingParameterMatrix)
@@ -270,10 +270,10 @@ def initializeParameters():
                                  description=QCoreApplication.translate('Processing', 'A file parameter, for use with non-map layer file sources.'))
     Processing.registerParameter(PARAMETER_TABLE_FIELD, QCoreApplication.translate('Processing', 'Field'), QgsProcessingParameterField,
                                  description=QCoreApplication.translate('Processing', 'A vector field parameter, for selecting an existing field from a vector source.'))
-    Processing.registerParameter(PARAMETER_VECTOR_DESTINATION, QCoreApplication.translate('Processing', 'Vector Destination'), QgsProcessingParameterVectorDestination)
-    Processing.registerParameter(PARAMETER_FILE_DESTINATION, QCoreApplication.translate('Processing', 'File Destination'), QgsProcessingParameterFileDestination)
-    Processing.registerParameter(PARAMETER_FOLDER_DESTINATION, QCoreApplication.translate('Processing', 'Folder Destination'), QgsProcessingParameterFolderDestination)
-    Processing.registerParameter(PARAMETER_RASTER_DESTINATION, QCoreApplication.translate('Processing', 'Raster Destination'), QgsProcessingParameterRasterDestination)
+    Processing.registerParameter(PARAMETER_VECTOR_DESTINATION, QCoreApplication.translate('Processing', 'Vector Destination'), QgsProcessingParameterVectorDestination, exposeToModeller=False)
+    Processing.registerParameter(PARAMETER_FILE_DESTINATION, QCoreApplication.translate('Processing', 'File Destination'), QgsProcessingParameterFileDestination, exposeToModeller=False)
+    Processing.registerParameter(PARAMETER_FOLDER_DESTINATION, QCoreApplication.translate('Processing', 'Folder Destination'), QgsProcessingParameterFolderDestination, exposeToModeller=False)
+    Processing.registerParameter(PARAMETER_RASTER_DESTINATION, QCoreApplication.translate('Processing', 'Raster Destination'), QgsProcessingParameterRasterDestination, exposeToModeller=False)
     Processing.registerParameter(PARAMETER_STRING, QCoreApplication.translate('Processing', 'String'), QgsProcessingParameterString,
                                  description=QCoreApplication.translate('Processing', 'A freeform string parameter.'))
     Processing.registerParameter(PARAMETER_MULTIPLE, QCoreApplication.translate('Processing', 'Multiple Layers'), QgsProcessingParameterMultipleLayers,
