@@ -344,17 +344,17 @@ class QgsOracleSharedData
     QgsOracleSharedData();
 
     // FID lookups
-    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
     QVariant removeFid( QgsFeatureId fid );
-    void insertFid( QgsFeatureId fid, const QVariant &k );
-    QVariant lookupKey( QgsFeatureId featureId );
+    void insertFid( QgsFeatureId fid, const QVariantList &k );
+    QVariantList lookupKey( QgsFeatureId featureId );
 
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
     QgsFeatureId mFidCounter;                    // next feature id if map is used
-    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
 
