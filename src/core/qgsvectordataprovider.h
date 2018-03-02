@@ -250,11 +250,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual bool truncate();
 
     /**
-     * Cancels the pending query.
-     * \returns true if the pending query has been interrupted, false otherwise
+     * Cancels the current reloading of data.
+     * \returns true if the reloading has been correctly interrupted, false otherwise
      * \since QGIS 3.2
+     * \see reloadData()
      */
-    virtual bool cancel();
+    virtual bool cancelReload();
 
     /**
      * Adds new \a attributes to the provider. Returns true in case of success and false in case of failure.

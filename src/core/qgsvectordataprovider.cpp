@@ -804,7 +804,7 @@ QTextCodec *QgsVectorDataProvider::textEncoding() const
   return mEncoding;
 }
 
-bool QgsVectorDataProvider::cancel()
+bool QgsVectorDataProvider::cancelReload()
 {
   return false;
 }

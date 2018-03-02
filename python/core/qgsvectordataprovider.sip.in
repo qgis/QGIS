@@ -232,13 +232,15 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 .. seealso:: :py:func:`deleteFeatures`
 %End
 
-    virtual bool cancel();
+    virtual bool cancelReload();
 %Docstring
-Cancels the pending query.
+Cancels the current reloading of data.
 
-:return: true if the pending query has been interrupted, false otherwise
+:return: true if the reloading has been correctly interrupted, false otherwise
 
 .. versionadded:: 3.2
+
+.. seealso:: :py:func:`reloadData`
 %End
 
     virtual bool addAttributes( const QList<QgsField> &attributes );

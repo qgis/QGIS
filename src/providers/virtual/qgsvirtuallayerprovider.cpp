@@ -455,7 +455,7 @@ bool QgsVirtualLayerProvider::createIt()
   return true;
 }
 
-bool QgsVirtualLayerProvider::cancel()
+bool QgsVirtualLayerProvider::cancelReload()
 {
   return mSqlite.interrupt();
 }

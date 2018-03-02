@@ -53,7 +53,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     QSet<QgsMapLayerDependency> dependencies() const override;
-    bool cancel() override;
+    bool cancelReload() override;
     void reloadData() override;
 
   private:

@@ -59,6 +59,6 @@ QgsVectorLayer *QgsVirtualLayerTask::takeLayer()
 
 void QgsVirtualLayerTask::cancel()
 {
-  mLayer->dataProvider()->cancel();
+  mLayer->dataProvider()->cancelReload();
   QgsTask::cancel();
 }
