@@ -3386,7 +3386,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
 
 QgsProcessingOutputDefinition *QgsProcessingParameterFileDestination::toOutputDefinition() const
 {
-  if ( !mFileFilter.isEmpty() and mFileFilter.contains( QStringLiteral( "html" ), Qt::CaseInsensitive ) )
+  if ( !mFileFilter.isEmpty() && mFileFilter.contains( QStringLiteral( "htm" ), Qt::CaseInsensitive ) )
   {
     return new QgsProcessingOutputHtml( name(), description() );
   }
