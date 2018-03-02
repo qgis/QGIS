@@ -116,7 +116,7 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
 
   QgsFeatureList outputs;
 
-  for ( int i = 1; i <= mRingsNumber; ++i )
+  for ( int i = 1; i <= rings; ++i )
   {
     QgsFeature out;
     currentDistance = i * distance;
