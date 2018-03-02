@@ -47,8 +47,8 @@ QString QgsJoinByAttributeAlgorithm::groupId() const
 void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList methods;
-  methods << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" )
-          << QObject::tr( "Create separate feature for each matching feature (one-to-many)" );
+  methods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
+          << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
@@ -67,7 +67,7 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
                 QObject::tr( "Join type" ),
-                methods, false, 0 ) );
+                methods, false, 1 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
                 QObject::tr( "Discard records which could not be joined" ),
                 false ) );
@@ -158,7 +158,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
     feedback->setProgress( i * step );
 
-    if ( joinMethod == 0 && input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
+    if ( joinMethod == 1 && input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
       continue;
 
     // only keep selected attributes
