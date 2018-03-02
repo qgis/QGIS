@@ -51,22 +51,24 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     Q_PROPERTY( bool constraintsValid READ constraintsValid NOTIFY constraintsValidChanged )
 
   public:
+
+    //! Feature fieds's roles
     enum FeatureRoles
     {
-      ElementType = Qt::UserRole + 1,
-      Name,
-      AttributeValue,
-      AttributeEditable,
-      EditorWidget,
-      EditorWidgetConfig,
-      RememberValue,
-      Field,
-      FieldIndex,
-      Group,
-      AttributeEditorElement,
-      CurrentlyVisible,
-      ConstraintValid,
-      ConstraintDescription
+      ElementType = Qt::UserRole + 1, //!< Element type
+      Name, //!< Field Name
+      AttributeValue, //!< Field Value
+      AttributeEditable,  //!< Field editable
+      EditorWidget, //!< Widget
+      EditorWidgetConfig, //!< Config
+      RememberValue, //!< Remember value
+      Field, //!< Field
+      FieldIndex, //!< Index
+      Group, //!< Group
+      AttributeEditorElement, //!< Attibute editor element
+      CurrentlyVisible, //!< Field visible
+      ConstraintValid, //!< Contraint valid
+      ConstraintDescription //!< Contraint description
     };
 
     Q_ENUM( FeatureRoles )
