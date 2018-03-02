@@ -106,12 +106,20 @@ QgsFeatureList QgsMultiRingBufferAlgorithm::processFeature( const QgsFeature &fe
   double currentDistance = 0;
   QgsGeometry outputGeometry, previousGeometry;
 
+  int rings = mRingsNumber;
+  if ( mDynamicRingsNumber )
+    rings = mRingsNumberProperty.valueAsInt( context.expressionContext(), rings );
+
+  double distance = mDistance;
+  if ( mDynamicDistance )
+    distance = mDistanceProperty.valueAsDouble( context.expressionContext(), distance );
+
   QgsFeatureList outputs;
 
   for ( int i = 1; i <= mRingsNumber; ++i )
   {
     QgsFeature out;
-    currentDistance = i * mDistance;
+    currentDistance = i * distance;
     outputGeometry = feature.geometry().buffer( currentDistance, 40 );
     if ( !outputGeometry )
     {
