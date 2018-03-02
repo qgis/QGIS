@@ -42,8 +42,12 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
+    //! Feature model with attributes
     Q_PROPERTY( QgsQuickFeatureModel *featureModel READ featureModel WRITE setFeatureModel NOTIFY featureModelChanged )
+    //! Whether use tabs layout
     Q_PROPERTY( bool hasTabs READ hasTabs WRITE setHasTabs NOTIFY hasTabsChanged )
+
+    //! Returns true if all constraints defined on fields are satisfied with the current attribute values
     Q_PROPERTY( bool constraintsValid READ constraintsValid NOTIFY constraintsValidChanged )
 
   public:
@@ -67,24 +71,44 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
     Q_ENUM( FeatureRoles )
 
+    //! create new attribute form model
     QgsQuickAttributeFormModel( QObject *parent = nullptr );
 
+    //! Return whether model has tabs layout
     bool hasTabs() const;
+
+    //! Set tabs layout
     void setHasTabs( bool hasTabs );
 
+    //! Return feature model associated
     QgsQuickFeatureModel *featureModel() const;
+
+    //! Set feature model
     void setFeatureModel( QgsQuickFeatureModel *featureModel );
 
+    //! Whether all constraints are valid for feature model
     bool constraintsValid() const;
 
+    //! Update QgsFeature based on changes
     Q_INVOKABLE void save();
+
+    //! Create new QgsFeature
     Q_INVOKABLE void create();
+
+    //! Return attribute value with name
     Q_INVOKABLE QVariant attribute( const QString &name );
 
   signals:
+    //! feature model changed
     void featureModelChanged();
+
+    //! has tabs changed
     void hasTabsChanged();
+
+    //! feature changed
     void featureChanged();
+
+    //! constraints valid changed
     void constraintsValidChanged();
 
   protected:

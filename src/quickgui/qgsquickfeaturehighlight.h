@@ -38,19 +38,33 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsQuickFeatureModel *model MEMBER mModel NOTIFY modelChanged )
-    Q_PROPERTY( QColor color MEMBER mColor NOTIFY colorChanged )
-    Q_PROPERTY( unsigned int width MEMBER mWidth NOTIFY widthChanged )
+    //! map settings
     Q_PROPERTY( QgsQuickMapSettings *mapSettings MEMBER mMapSettings NOTIFY mapSettingsChanged )
+    //! feature model (for geometry)
+    Q_PROPERTY( QgsQuickFeatureModel *model MEMBER mModel NOTIFY modelChanged )
+    //! color of the highlighed geometry
+    Q_PROPERTY( QColor color MEMBER mColor NOTIFY colorChanged )
+    //! pen width of the highlight
+    Q_PROPERTY( unsigned int width MEMBER mWidth NOTIFY widthChanged )
 
   public:
+    //! create new feature highlight
     explicit QgsQuickFeatureHighlight( QQuickItem *parent = 0 );
 
   signals:
+    //! model changed
     void modelChanged();
+
+    //! color changed
     void colorChanged();
+
+    //! map canvas changed
     void mapCanvasChanged();
+
+    //! width changed
     void widthChanged();
+
+    //! map settings changed
     void mapSettingsChanged();
 
   private slots:

@@ -29,7 +29,7 @@ import QgisQuick 0.1 as QgsQuick
 
 Item {
   signal saved
-  signal cancelled
+  signal canceled
   signal aboutToSave
 
   property QgsQuick.AttributeFormModel model
@@ -443,7 +443,7 @@ Item {
         onClicked: {
           Qt.inputMethod.hide()
 
-          cancelled()
+          canceled()
         }
       }
     }
@@ -462,7 +462,7 @@ Item {
       model.featureModel.deleteFeature()
       visible = false
 
-      cancelled()
+      canceled()
     }
     onRejected: {
       visible = false

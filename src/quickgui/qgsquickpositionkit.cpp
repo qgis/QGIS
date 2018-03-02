@@ -133,3 +133,28 @@ void QgsQuickPositionKit::onUpdateTimeout()
     emit hasPositionChanged();
   }
 }
+
+bool QgsQuickPositionKit::hasPosition() const
+{
+  return mHasPosition;
+}
+
+QgsPoint QgsQuickPositionKit::position() const
+{
+  return mPosition;
+}
+
+qreal QgsQuickPositionKit::accuracy() const
+{
+  return mAccuracy;
+}
+
+qreal QgsQuickPositionKit::direction() const
+{
+  return mDirection;
+}
+
+bool QgsQuickPositionKit::simulated() const
+{
+  return mIsSimulated;
+}

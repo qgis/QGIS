@@ -35,8 +35,11 @@
 class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
 {
     Q_OBJECT
+    //! feature
     Q_PROPERTY( QgsFeature feature READ feature WRITE setFeature NOTIFY featureChanged )
+    //! layer to which \a feature belogs
     Q_PROPERTY( QgsVectorLayer *layer READ layer WRITE setLayer NOTIFY layerChanged )
+    //! feature roles
     Q_ENUMS( FeatureRoles )
 
   public:
@@ -45,12 +48,16 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
       AttributeName = Qt::UserRole + 1,  //!< Attribute's display name (the original field name or a custom alias)
       AttributeValue,                    //!< Value of the feature's attribute
       Field,                             //!< Field definition (QgsField)
-      RememberAttribute
+      RememberAttribute                  //!< Remember attribute value for next feature
     };
 
+    //! Create new feature model
     explicit QgsQuickFeatureModel( QObject *parent = 0 );
+
+    //! Create new feature model
     explicit QgsQuickFeatureModel( const QgsFeature &feat, QObject *parent = 0 );
 
+    //! Set feature to feature model
     void setFeature( const QgsFeature &feature );
 
     /**
@@ -58,8 +65,10 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
      */
     QgsFeature feature() const;
 
-
+    //! Set feature model layer
     void setLayer( QgsVectorLayer *layer );
+
+    //! Return feature model layer
     QgsVectorLayer *layer() const;
 
 
@@ -86,21 +95,31 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
      * Will reset the feature to the original values and dismiss any buffered edits.
      */
     Q_INVOKABLE void reset();
+
+    //! Add mFeature to mLayer
     Q_INVOKABLE void create();
 
+    /**
+     * Suppress layer's QgsEditFormConfig
+     *
+     * \sa QgsEditFormConfig::suppress
+     */
     Q_INVOKABLE bool suppressFeatureForm() const;
 
+    //! Reset remembered attributes
     Q_INVOKABLE void resetAttributes();
 
+    //! Get remembered attributes
     QVector<bool> rememberedAttributes() const;
 
   public slots:
 
   signals:
+    //! feature changed
     void featureChanged();
-    void layerChanged();
 
-    void warning( const QString &text );
+    //! layer changed
+    void layerChanged();
 
   private:
     bool commit();

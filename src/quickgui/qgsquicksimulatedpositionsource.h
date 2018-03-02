@@ -45,8 +45,6 @@
  *
  * \since QGIS 3.2
  */
-
-//!
 class QUICK_NO_EXPORT QgsQuickSimulatedPositionSource : public QGeoPositionInfoSource
 {
     Q_OBJECT

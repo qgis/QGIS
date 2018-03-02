@@ -44,6 +44,9 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
 {
     Q_OBJECT
 
+    /**
+      * Associated map settings
+      */
     Q_PROPERTY( QgsQuickMapSettings *mapSettings MEMBER mMapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
     /**
@@ -62,26 +65,48 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
     Q_PROPERTY( int distance READ distance NOTIFY scaleBarChanged )
 
     /**
-      * Calculated width of scalebar in pixels representing distance + units. Differs minimum possible from prefferedWidth to
+      * Calculated width of scalebar in pixels representing distance + units. Differs minimum possible from preferredWidth to
       * get "nice" distance number.
       */
     Q_PROPERTY( int width READ width NOTIFY scaleBarChanged )
 
   public:
+    //! create new scale bar kit
     explicit QgsQuickScaleBarKit( QObject *parent = 0 );
     ~QgsQuickScaleBarKit();
 
+    //! Set map settings
     void setMapSettings( QgsQuickMapSettings *mapSettings );
+
+    //! Returns calculated width in pixels
     int width() const;
+
+    /**
+     * Returns distance corensponding to width
+     *
+     * \see QgsQuickScaleBarKit::units()
+     */
     int distance() const;
+
+    /**
+     * Returns units of distance (m, km)
+     *
+     * \see QgsQuickScaleBarKit::distance()
+     */
     QString units() const;
 
   signals:
+    //! width, distance and/or units changed
     void scaleBarChanged();
+
+    //! map settings changed
     void mapSettingsChanged();
+
+    //! preferred width changed
     void preferredWidthChanged();
 
   public slots:
+    //! recalculate width, distance and units
     void updateScaleBar();
 
   private:

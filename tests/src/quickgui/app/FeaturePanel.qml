@@ -73,7 +73,7 @@ Drawer {
       onSaved: {
         featurePanel.visible = false
       }
-      onCancelled: featurePanel.visible = false
+      onCanceled: featurePanel.visible = false
     }
 
 }

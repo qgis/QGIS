@@ -59,12 +59,11 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_PROPERTY( qreal dp READ screenDensity CONSTANT )
 
   public:
+    //! return instance of the QgsQuickUtils singleton
     static QgsQuickUtils *instance();
 
     //! Calculated density of the screen - see "dp" property for more details
     qreal screenDensity() const;
-
-    // CRS and geometry
 
     /**
       * Create crs from epsg code in QML
@@ -95,27 +94,31 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const;
 
     /**
-      * Has QgsFeature a geometry that can be added to the layer (non-emptry, same geometry type)?
+      * Has QgsFeature a geometry that can be added to the layer (non-empty, same geometry type)?
       */
     Q_INVOKABLE bool hasValidGeometry( QgsVectorLayer *layer, const QgsFeature &feat );
 
-    // Common
+    //! Check if file on path exists
     Q_INVOKABLE bool fileExists( QString path );
+
+    //! Copy file from sourcePath to targetPath
     Q_INVOKABLE void copyFile( QString sourcePath, QString targetPath );
+
+    //! Delete file on path from disk
     Q_INVOKABLE void remove( QString path );
+
+    //! Extract filename from path
     Q_INVOKABLE QString getFileName( QString path );
+
+    //! Log message in QgsMessageLog
     Q_INVOKABLE void logMessage( const QString &message,
                                  const QString &tag = QString( "QgsQuick" ),
                                  Qgis::MessageLevel level = Qgis::Warning );
-
-    // Themes
 
     /**
       * Get icon from custom theme dir or default if not found in the theme dir
       */
     Q_INVOKABLE QUrl getThemeIcon( const QString &name );
-
-    // Formatting
 
     /**
       * point to string, e.g. -2.234521, 34.4444421 -> -2.234, 34.444

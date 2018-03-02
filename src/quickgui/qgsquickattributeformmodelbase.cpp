@@ -136,7 +136,7 @@ void QgsQuickAttributeFormModelBase::onLayerChanged()
     }
     else
     {
-      root = generateRootContainer();
+      root = generateRootContainer();  //#spellok
       mTemporaryContainer = root;
     }
 
@@ -187,7 +187,7 @@ void QgsQuickAttributeFormModelBase::onFeatureChanged()
   updateVisibility();
 }
 
-QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::generateRootContainer() const
+QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::generateRootContainer() const  //#spellok
 {
   QgsAttributeEditorContainer *root = new QgsAttributeEditorContainer( QString(), nullptr );
   QgsFields fields = mLayer->fields();

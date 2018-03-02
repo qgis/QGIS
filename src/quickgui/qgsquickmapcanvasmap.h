@@ -36,6 +36,10 @@ class QgsLabelingResults;
  * according to the current map settings. Client code is expected to use
  * MapCanvas item rather than using this class directly.
  *
+ * QgsQuickMapCanvasMap instance internally creates QgsQuickMapSettings in
+ * constructor. The map settings for other QgsQuick components should
+ * be initialized from  QgsQuickMapCanvasMap's mapSettings
+ *
  * \note QML Type: MapCanvasMap
  *
  * \sa QgsQuickMapCanvas
@@ -46,9 +50,11 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsCoordinateReferenceSystem destinationCrs READ destinationCrs WRITE setDestinationCrs NOTIFY destinationCrsChanged )
+    //! map settings. The map settings should be source of map settings for all other components
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings )
+    //! do not refresh canvas
     Q_PROPERTY( bool freeze READ freeze WRITE setFreeze NOTIFY freezeChanged )
+    //! QgsMapRendererParallelJob is running
     Q_PROPERTY( bool isRendering READ isRendering NOTIFY isRenderingChanged )
 
     /**
@@ -57,71 +63,74 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
      * Default is 250 [ms].
      */
     Q_PROPERTY( int mapUpdateInterval READ mapUpdateInterval WRITE setMapUpdateInterval NOTIFY mapUpdateIntervalChanged )
+    //! allow increamental rendering - automatic refresh of map canvas while a rendering job is ongoing
     Q_PROPERTY( bool incrementalRendering READ incrementalRendering WRITE setIncrementalRendering NOTIFY incrementalRenderingChanged )
 
   public:
+    //! create map canvas map
     QgsQuickMapCanvasMap( QQuickItem *parent = 0 );
     ~QgsQuickMapCanvasMap();
 
-    QgsPoint toMapCoordinates( QPoint canvasCoordinates );
-
+    //! Return map settings associated
     QgsQuickMapSettings *mapSettings() const;
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
-    void setMapUnits( const QgsUnitTypes::DistanceUnit &mapUnits );
-
-    QList<QgsMapLayer *> layerSet() const;
-    void setLayerSet( const QList<QgsMapLayer *> &layerSet );
-
-    bool hasCrsTransformEnabled() const;
-    void setCrsTransformEnabled( bool hasCrsTransformEnabled );
-
-    QgsCoordinateReferenceSystem destinationCrs() const;
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
-
-    QgsRectangle extent() const;
-    void setExtent( const QgsRectangle &extent );
-
+    //! Return map canvas for Qt Quick scene graph changes
     virtual QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * );
 
+    //! Return whether canvas refresh is frozen
     bool freeze() const;
+
+    //! Freeze canvas refresh
     void setFreeze( bool freeze );
 
+    //! Whether renderer job is running
     bool isRendering() const;
 
+    //! Return current map update interval for incremental rendering
     int mapUpdateInterval() const;
+
+    //! Set map update interval for incremental rendering
     void setMapUpdateInterval( int mapUpdateInterval );
 
+    //! Return whether incremental rendering is on
     bool incrementalRendering() const;
+    //! Set incremental rendering
     void setIncrementalRendering( bool incrementalRendering );
 
   signals:
+    //! rendering starting
     void renderStarting();
 
+    //! canvas refreshed
     void mapCanvasRefreshed();
 
-    void extentChanged();
-
-    void destinationCrsChanged();
-
+    //! freeze changed
     void freezeChanged();
 
+    //! is rendering changed
     void isRenderingChanged();
 
+    //! map update interval for incremental rendering changed
     void mapUpdateIntervalChanged();
 
+    //! incremental rendering changed
     void incrementalRenderingChanged();
 
   protected:
+    //! geometry changed
     void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry );
 
   public slots:
+    //! stop rendering
     void stopRendering();
 
-    void zoomToFullExtent();
-
+    //! Zoom the map by adjusting map settings extent
     void zoom( QPointF center, qreal scale );
+
+    //! Pan the map
     void pan( QPointF oldPos, QPointF newPos );
+
+    //! Refresh the map
     void refresh();
 
   private slots:
@@ -141,6 +150,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void destroyJob( QgsMapRendererJob *job );
     QgsMapSettings prepareMapSettings() const;
     void updateTransform();
+    void zoomToFullExtent();
 
     QgsQuickMapSettings *mMapSettings;
 

@@ -35,36 +35,65 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
 {
     Q_OBJECT
 
+    //! projected (destination) position
     Q_PROPERTY( QgsPoint projectedPosition READ projectedPosition NOTIFY projectedPositionChanged )
+
+    //! Source position
     Q_PROPERTY( QgsPoint sourcePosition READ sourcePosition WRITE setSourcePosition NOTIFY sourcePositionChanged )
+
+    //! Destination CRS
     Q_PROPERTY( QgsCoordinateReferenceSystem destinationCrs READ destinationCrs WRITE setDestinationCrs NOTIFY destinationCrsChanged )
+
+    //! Source CRS, default 4326
     Q_PROPERTY( QgsCoordinateReferenceSystem sourceCrs READ sourceCrs WRITE setSourceCrs NOTIFY sourceCrsChanged )
+
+    //! Map settings, for getting transformation context
     Q_PROPERTY( QgsQuickMapSettings *mapSettings MEMBER mMapSettings NOTIFY mapSettingsChanged )
 
   public:
+    //! create new coordinate transformer
     explicit QgsQuickCoordinateTransformer( QObject *parent = 0 );
+
+    //! Return projected position (in destination CRS)
     QgsPoint projectedPosition() const;
 
+    //! Return source position (in source CRS)
     QgsPoint sourcePosition() const;
+
+    //! Set source position (in source CRS)
     void setSourcePosition( QgsPoint sourcePosition );
 
+    //! Return destination CRS
     QgsCoordinateReferenceSystem destinationCrs() const;
+
+    //! Set destination CRS
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
+    //! Return source CRS
     QgsCoordinateReferenceSystem sourceCrs() const;
+
+    //! Set source CRS
     void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
+
+  signals:
+    //! projected position changed
+    void projectedPositionChanged();
+
+    //! source position changed
+    void sourcePositionChanged();
+
+    //! destination CRS changed
+    void destinationCrsChanged();
+
+    //! source CRS changed
+    void sourceCrsChanged();
+
+    //! map settings changed
+    void mapSettingsChanged();
 
   private:
     void updatePosition();
 
-  signals:
-    void projectedPositionChanged();
-    void sourcePositionChanged();
-    void destinationCrsChanged();
-    void sourceCrsChanged();
-    void mapSettingsChanged();
-
-  private:
     QgsPoint mProjectedPosition;
     QgsPoint mSourcePosition;
     QgsCoordinateTransform mCoordinateTransform;

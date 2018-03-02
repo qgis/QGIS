@@ -50,7 +50,7 @@ QgsQuickUtils::QgsQuickUtils( QObject *parent )
   // calculate screen density for calculation of real pixel sizes from density-independent pixels
   int dpiX = QApplication::desktop()->physicalDpiX();
   int dpiY = QApplication::desktop()->physicalDpiY();
-  int dpi = dpiX < dpiY ? dpiX : dpiY; // In case of asymetrical DPI. Improbable
+  int dpi = dpiX < dpiY ? dpiX : dpiY; // In case of asymmetrical DPI. Improbable
   mScreenDensity = dpi / 160.;  // 160 DPI is baseline for density-independent pixels in Android
 }
 
@@ -122,14 +122,7 @@ bool QgsQuickUtils::fileExists( QString path )
 {
   QFileInfo check_file( path );
   // check if file exists and if yes: Is it really a file and no directory?
-  if ( check_file.exists() && check_file.isFile() )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return ( check_file.exists() && check_file.isFile() );
 }
 
 void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )

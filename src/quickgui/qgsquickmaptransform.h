@@ -37,18 +37,31 @@ class QgsQuickMapSettings;
 class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
 {
     Q_OBJECT
+
+    //! map settings
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
   public:
+    //! create new map transform
     QgsQuickMapTransform();
     ~QgsQuickMapTransform();
 
+    /**
+     * Apply transformation based on current map settings to a matrix.
+     *
+     * Also optimize resulting matrix after transformation
+     * \param matrix Matrix to be transformed
+     */
     void applyTo( QMatrix4x4 *matrix ) const;
 
+    //! Return map settings
     QgsQuickMapSettings *mapSettings() const;
+
+    //! Set map settings
     void setMapSettings( QgsQuickMapSettings *mapSettings );
 
   signals:
+    //! Map settings changed
     void mapSettingsChanged();
 
   private slots:

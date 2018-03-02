@@ -25,7 +25,7 @@
 
 /**
  * \ingroup quick
- * Convinient set of tools to read GPS position and accuracy.
+ * Convenient set of tools to read GPS position and accuracy.
  *
  * Also, if one can use use_simulated_location to specify simulated position.
  * Simulated position source generates random points in circles around the selected
@@ -65,20 +65,36 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     Q_PROPERTY( bool isSimulated READ simulated NOTIFY isSimulatedChanged )
 
   public:
+    //! Create new position kit
     explicit QgsQuickPositionKit( QObject *parent = 0 );
 
-    bool hasPosition() const { return mHasPosition; }
-    QgsPoint position() const { return mPosition; }
-    qreal accuracy() const { return mAccuracy; }
-    qreal direction() const { return mDirection; }
-    bool simulated() const { return mIsSimulated; }
+    //! Return if GPS position is available
+    bool hasPosition() const;
+
+    //! Return GPS position in WGS84 coords
+    QgsPoint position() const;
+
+    //! Return GPS horizontal accuracy in meters, -1 if not available
+    qreal accuracy() const;
+
+    //! Return GPS direction, bearing in degrees clockwise from north to direction of travel. -1 if not available
+    qreal direction() const;
+
+    //! Return whether GPS source is simulated.
+    bool simulated() const;
 
     /**
      * Use simulated GPS source.
      *
+     * Simulated GPS source emulates point on circle around defined point in specified radius
+     *
      * We do not want to have the origin point as property
      * We basically want to set it once based on project/map cente and keep
      * it that way regardless of mapsettings change (e.g. zoom etc)
+     *
+     * \param longitude longitude of the centre of the emulated points
+     * \param latitude latitude of the centre of the emulated points
+     * \param radius distance of emulated points from the centre (in degrees WSG84)
      */
     Q_INVOKABLE void use_simulated_location( double longitude, double latitude, double radius );
 
@@ -88,18 +104,20 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     Q_INVOKABLE void use_gps_location();
 
   signals:
+    //! GPS position changed
     void positionChanged();
+
+    //! hasPosition changed
     void hasPositionChanged();
+
+    //! changed if GPS position is simulated or not
     void isSimulatedChanged();
-    void statusChanged();
 
   public slots:
 
   private slots:
     void positionUpdated( const QGeoPositionInfo &info );
     void onUpdateTimeout();
-
-  protected:
 
   protected:
     QgsPoint mPosition;

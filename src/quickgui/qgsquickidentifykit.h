@@ -34,7 +34,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup quick
- * Convinient set of tools to get a list of QgsFeatures in a defined radius from a point.
+ * Convenient set of tools to get a list of QgsFeatures in a defined radius from a point.
  * Also possible to get a feature with the closest distance to the point or feature(s) from
  * specified QgsVectorLayer
  *
@@ -45,6 +45,7 @@ class QgsVectorLayer;
 class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
 {
     Q_OBJECT
+    //! map settings. Set directly when creating QML object
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
     /**
@@ -58,12 +59,18 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     Q_PROPERTY( long featuresLimit MEMBER mFeaturesLimit NOTIFY featuresLimitChanged )
 
   public:
+    //! create new identify kit
     explicit QgsQuickIdentifyKit( QObject *parent = 0 );
 
+    //! Getter for map settings
     QgsQuickMapSettings *mapSettings() const;
+
+    //! Set map settings
     void setMapSettings( QgsQuickMapSettings *mapSettings );
 
+    //! Return search radius for looking for features.
     double searchRadiusMm() const;
+    //! Set search radius
     void setSearchRadiusMm( double searchRadiusMm );
 
     /**
@@ -88,8 +95,11 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
 
 
   signals:
+    //! map settings changed
     void mapSettingsChanged();
+    //! search radius changed
     void searchRadiusMmChanged();
+    //! features limit changed
     void featuresLimitChanged();
 
   private:

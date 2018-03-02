@@ -33,7 +33,12 @@ class QgsProject;
  * The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
  * settings of configuration of map rendering via QML properties.
  *
+ * On top of QgsMapSettings functionality, when QgsProject is attached,
+ * it automatically loads its default settings from the project.
+ *
  * \note QML Type: MapSettings
+ *
+ * \sa QgsMapCanvas
  *
  * \since QGIS 3.2
  */
@@ -41,30 +46,54 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
 {
     Q_OBJECT
 
+    //! QGIS project
     Q_PROPERTY( QgsProject *project READ project WRITE setProject NOTIFY projectChanged )
+    //! \see QgsMapSettings::extent()
     Q_PROPERTY( QgsRectangle extent READ extent WRITE setExtent NOTIFY extentChanged )
+    //! \see QgsMapSettings::visibleExtent()
     Q_PROPERTY( QgsRectangle visibleExtent READ visibleExtent NOTIFY visibleExtentChanged )
+    //! \see QgsMapSettings::mapUnitsPerPixel()
     Q_PROPERTY( double mapUnitsPerPixel READ mapUnitsPerPixel NOTIFY mapUnitsPerPixelChanged )
+    //! \see QgsMapSettings::rotation()
     Q_PROPERTY( double rotation READ rotation WRITE setRotation NOTIFY rotationChanged )
+    //! \see QgsMapSettings::outputSize()
     Q_PROPERTY( QSize outputSize READ outputSize WRITE setOutputSize NOTIFY outputSizeChanged )
+    //! \see QgsMapSettings::outputDpi()
     Q_PROPERTY( double outputDpi READ outputDpi WRITE setOutputDpi NOTIFY outputDpiChanged )
+    //! \see QgsMapSettings::destinationCrs()
     Q_PROPERTY( QgsCoordinateReferenceSystem destinationCrs READ destinationCrs WRITE setDestinationCrs NOTIFY destinationCrsChanged )
+    //! \see QgsMapSettings::layers()
     Q_PROPERTY( QList<QgsMapLayer *> layers READ layers WRITE setLayers NOTIFY layersChanged )
 
   public:
+    //! Create new map settings
     QgsQuickMapSettings( QObject *parent = 0 );
     ~QgsQuickMapSettings();
 
+    //! Clone map settings
+    QgsMapSettings mapSettings() const;
+
+    //! \see QgsMapSettings::extent()
     QgsRectangle extent() const;
+
+    //! \see QgsMapSettings::setExtent()
     void setExtent( const QgsRectangle &extent );
 
+    /**
+     * Attach \a project with the map settings.
+     * When project is loaded, map settings are automatically populated from it's stored values
+     */
     void setProject( QgsProject *project );
+    //! Return associated QGIS project
     QgsProject *project() const;
 
+    //! Move current map extent to have center point defined by \a center
     Q_INVOKABLE void setCenter( const QgsPoint &center );
 
+    //! \see QgsMapSettings::mapUnitsPerPixel()
     double mapUnitsPerPixel() const;
 
+    //! \see QgsMapSettings::visibleExtent()
     QgsRectangle visibleExtent() const;
 
     /**
@@ -77,9 +106,9 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     /**
      * Convert a map coordinate to screen pixel coordinates
      *
-     * @param p A coordinate in map coordinates
+     * \param p A coordinate in map coordinates
      *
-     * @return A coordinate in pixel / screen space
+     * \return A coordinate in pixel / screen space
      */
     Q_INVOKABLE QPointF coordinateToScreen( const QgsPoint &p ) const;
 
@@ -87,9 +116,9 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     /**
      * Convert a screen coordinate to a map coordinate
      *
-     * @param p A coordinate in pixel / screen coordinates
+     * \param p A coordinate in pixel / screen coordinates
      *
-     * @return A coordinate in map coordinates
+     * \return A coordinate in map coordinates
      */
     Q_INVOKABLE QgsPoint screenToCoordinate( const QPointF &p ) const;
 
@@ -103,35 +132,95 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    //! Return rotation
     double rotation() const;
+
+    //! Set rotation
     void setRotation( double rotation );
 
-    QgsMapSettings mapSettings() const;
-
+    /**
+     * Return output size
+     * \see QgsMapSettings::outputSize()
+     */
     QSize outputSize() const;
+
+    /**
+     * Set output size and emit outputSizeChanged
+     * \see QgsMapSettings::setOutputSize()
+     */
     void setOutputSize( const QSize &outputSize );
 
+    /**
+     * Return output DPI
+     * \see QgsMapSettings::outputDpi()
+     */
     double outputDpi() const;
+
+    /**
+     * Set output DPI and emit outputDpiChanged
+     * \see QgsMapSettings::setOutputDpi()
+     */
     void setOutputDpi( double outputDpi );
 
+    /**
+     * Return destination CRS
+     * \see QgsMapSettings::destinationCrs()
+     */
     QgsCoordinateReferenceSystem destinationCrs() const;
+
+    /**
+     * Set destination CRS and emit destinationCrsChanged
+     * \see QgsMapSettings::setDestinationCrs()
+     */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
+    /**
+     * Return layers
+     * \see QgsMapSettings::layers()
+     */
     QList<QgsMapLayer *> layers() const;
+
+    /**
+     * Set layers and emit layersChanged
+     * \see QgsMapSettings::setLayers()
+     */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
   signals:
+    //! project changed
     void projectChanged();
+
+    //! extent changed
     void extentChanged();
+
+    //! destination CRS changed
     void destinationCrsChanged();
+
+    //! map units per pixel changed
     void mapUnitsPerPixelChanged();
+
+    //! rotation changed
     void rotationChanged();
+
+    //! visible extent changed
     void visibleExtentChanged();
+
+    //! output size changed
     void outputSizeChanged();
+
+    //! output DPI changed
     void outputDpiChanged();
+
+    //! layers changed
     void layersChanged();
 
   private slots:
+
+    /**
+     * Read map canvas settings stored in a QGIS project file
+     *
+     * \param doc parsed DOM of a QgsProject
+     */
     void onReadProject( const QDomDocument &doc );
 
   private:

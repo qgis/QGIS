@@ -36,6 +36,7 @@
 class QUICK_NO_EXPORT QgsQuickHighlightSGNode : public QSGNode
 {
   public:
+    //! Create new QT Quick scene node based on geometry
     QgsQuickHighlightSGNode( const QVector<QgsPoint> &points, QgsWkbTypes::GeometryType type, const QColor &color, qreal width );
 
   private:

@@ -63,6 +63,7 @@ class QUICK_EXPORT QgsQuickMessageLogModel : public QAbstractListModel
     };
 
   public:
+    //! Create new message log model
     QgsQuickMessageLogModel( QObject *parent = nullptr );
 
     QHash<int, QByteArray> roleNames() const override;
