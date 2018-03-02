@@ -30,8 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -69,7 +68,6 @@ class gdalinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
                                                                 self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
         return 'gdalinfo'

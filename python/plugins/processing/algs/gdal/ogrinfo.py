@@ -28,8 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -57,7 +56,6 @@ class ogrinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
                                                                 self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
         return 'ogrinfo'
