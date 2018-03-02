@@ -4398,6 +4398,16 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // outputs definitio test
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "HTML files" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "Text files (*.htm)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString( "Text files (*.txt)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString(), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
 }
 
 void TestQgsProcessing::parameterFolderOut()

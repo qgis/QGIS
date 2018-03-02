@@ -31,8 +31,7 @@ import numpy as np
 
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -62,7 +61,6 @@ class PolarPlot(QgisAlgorithm):
                                                       self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Polar plot')))
 
     def name(self):
         return 'polarplot'

@@ -31,8 +31,7 @@ import plotly.graph_objs as go
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingUtils,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
@@ -64,7 +63,6 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                                                       self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Plot'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Plot')))
 
     def name(self):
         return 'meanandstandarddeviationplot'
