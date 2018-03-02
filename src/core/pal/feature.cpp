@@ -856,11 +856,16 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
   {
     lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
   }
-  else // line length < label width => centering label position
+  else if ( !line->isClosed() ) // line length < label width => centering label position
   {
     currentDistanceAlongLine = - ( labelWidth - totalLineLength ) / 2.0;
     lineStepDistance = -1;
     totalLineLength = labelWidth;
+  }
+  else
+  {
+    // closed line, not long enough for label => no candidates!
+    currentDistanceAlongLine = std::numeric_limits< double >::max();
   }
 
   double candidateLength;
