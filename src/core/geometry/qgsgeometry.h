@@ -175,8 +175,8 @@ class CORE_EXPORT QgsGeometry
      * \note In QGIS 2.x this method was named geometry().
      *
      * \since QGIS 3.0
-     * \see primitive()
      * \see set()
+     * \see get()
     */
     const QgsAbstractGeometry *constGet() const;
 

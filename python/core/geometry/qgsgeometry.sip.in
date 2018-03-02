@@ -100,9 +100,9 @@ This is much faster then calling the non-const get() method.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`primitive`
-
 .. seealso:: :py:func:`set`
+
+.. seealso:: :py:func:`get`
 %End
 
     QgsAbstractGeometry *get();
