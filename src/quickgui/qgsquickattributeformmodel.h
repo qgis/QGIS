@@ -65,7 +65,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
       Field, //!< Field
       FieldIndex, //!< Index
       Group, //!< Group
-      AttributeEditorElement, //!< Attibute editor element
+      AttributeEditorElement, //!< Attribute editor element
       CurrentlyVisible, //!< Field visible
       ConstraintValid, //!< Contraint valid
       ConstraintDescription //!< Contraint description
