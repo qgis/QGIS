@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmmultiringbuffer.h
+                         qgsalgorithmmultiringconstantbuffer.h
                          -------------------------
     begin                : February 2018
     copyright            : (C) 2018 by Alexander Bruy
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMMULTIRINGBUFFER_H
-#define QGSALGORITHMMULTIRINGBUFFER_H
+#ifndef QGSALGORITHMMULTIRINGCONSTANTBUFFER_H
+#define QGSALGORITHMMULTIRINGCONSTANTBUFFER_H
 
 #define SIP_NO_FILE
 
@@ -28,19 +28,19 @@
 /**
  * Native multiring buffer algorithm.
  */
-class QgsMultiRingBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsMultiRingBufferAlgorithm() = default;
+    QgsMultiRingConstantBufferAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsMultiRingBufferAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsMultiRingConstantBufferAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -64,6 +64,6 @@ class QgsMultiRingBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMMULTIRINGBUFFER_H
+#endif // QGSALGORITHMMULTIRINGCONSTANTBUFFER_H
 
 

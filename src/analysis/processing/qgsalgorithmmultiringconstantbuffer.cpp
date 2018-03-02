@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmnultitingbuffer.cpp
+                         qgsalgorithmnultitingconstantbuffer.cpp
                          --------------------------
     begin                : February 2018
     copyright            : (C) 2018 by Alexander Bruy
@@ -15,51 +15,51 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmmultiringbuffer.h"
+#include "qgsalgorithmmultiringconstantbuffer.h"
 
 ///@cond PRIVATE
 
-QString QgsMultiRingBufferAlgorithm::name() const
+QString QgsMultiRingConstantBufferAlgorithm::name() const
 {
-  return QStringLiteral( "multiringbuffer" );
+  return QStringLiteral( "multiringconstantbuffer" );
 }
 
-QString QgsMultiRingBufferAlgorithm::displayName() const
+QString QgsMultiRingConstantBufferAlgorithm::displayName() const
 {
-  return QObject::tr( "Multi-ring buffer" );
+  return QObject::tr( "Multi-ring buffer (constant distance)" );
 }
 
-QStringList QgsMultiRingBufferAlgorithm::tags() const
+QStringList QgsMultiRingConstantBufferAlgorithm::tags() const
 {
   return QObject::tr( "buffer,grow,multiple,rings,distance,donut" ).split( ',' );
 }
 
-QString QgsMultiRingBufferAlgorithm::group() const
+QString QgsMultiRingConstantBufferAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsMultiRingBufferAlgorithm::groupId() const
+QString QgsMultiRingConstantBufferAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-QString QgsMultiRingBufferAlgorithm::outputName() const
+QString QgsMultiRingConstantBufferAlgorithm::outputName() const
 {
-  return QObject::tr( "Multi-ring buffer" );
+  return QObject::tr( "Multi-ring buffer (constant distance)" );
 }
 
-QString QgsMultiRingBufferAlgorithm::shortHelpString() const
+QString QgsMultiRingConstantBufferAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm computes multi-ring ('donuts') buffer for all the features in an input layer, using a fixed or dynamic distance and rings number." );
 }
 
-QgsMultiRingBufferAlgorithm *QgsMultiRingBufferAlgorithm::createInstance() const
+QgsMultiRingConstantBufferAlgorithm *QgsMultiRingConstantBufferAlgorithm::createInstance() const
 {
-  return new QgsMultiRingBufferAlgorithm();
+  return new QgsMultiRingConstantBufferAlgorithm();
 }
 
-void QgsMultiRingBufferAlgorithm::initParameters( const QVariantMap & )
+void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber> rings = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "RINGS" ),
       QObject::tr( "Number of rings" ), QgsProcessingParameterNumber::Integer,
@@ -78,7 +78,7 @@ void QgsMultiRingBufferAlgorithm::initParameters( const QVariantMap & )
   addParameter( distance.release() );
 }
 
-bool QgsMultiRingBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mRingsNumber = parameterAsInt( parameters, QStringLiteral( "RINGS" ), context );
   mDynamicRingsNumber = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "RINGS" ) );
@@ -93,7 +93,7 @@ bool QgsMultiRingBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   return true;
 }
 
-QgsFields QgsMultiRingBufferAlgorithm::outputFields( const QgsFields &inputFields ) const
+QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields fields = inputFields;
   fields.append( QgsField( QStringLiteral( "ringId" ), QVariant::Int, QString(), 10, 0 ) );
@@ -101,7 +101,7 @@ QgsFields QgsMultiRingBufferAlgorithm::outputFields( const QgsFields &inputField
   return fields;
 }
 
-QgsFeatureList QgsMultiRingBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   double currentDistance = 0;
   QgsGeometry outputGeometry, previousGeometry;
