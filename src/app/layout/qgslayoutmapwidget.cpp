@@ -596,7 +596,7 @@ void QgsLayoutMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
-  mLabel->setText( tr( "Map %1" ).arg( mMapItem->id() ) );
+  mLabel->setText( mMapItem->displayName() );
 
   whileBlocking( mCrsSelector )->setCrs( mMapItem->presetCrs() );
 
