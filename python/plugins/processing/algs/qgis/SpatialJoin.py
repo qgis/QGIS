@@ -87,8 +87,8 @@ class SpatialJoin(QgisAlgorithm):
                                     'crosses': 'crosses'}
 
         self.methods = [
-            self.tr('Create separate feature for each located feature (one-to-one)'),
-            self.tr('Take attributes of the first located feature only (one-to-many)')
+            self.tr('Create separate feature for each located feature (one-to-many)'),
+            self.tr('Take attributes of the first located feature only (one-to-one)')
         ]
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
