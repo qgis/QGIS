@@ -44,6 +44,7 @@
 #include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
+#include "qgsalgorithmmultiringconstantbuffer.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
 #include "qgsalgorithmpackage.h"
@@ -134,6 +135,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMergeVectorAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
+  addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );

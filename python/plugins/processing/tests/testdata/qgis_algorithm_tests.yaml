@@ -4765,3 +4765,16 @@ tests:
       OUTPUT:
         name: expected/biggest_parts.gml
         type: vector
+
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring buffer with points
+    params:
+      DISTANCE: 0.05
+      INPUT:
+        name: points.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/multiring_buffer.gml
+        type: vector
