@@ -156,13 +156,18 @@ namespace pal
        */
       double length() const;
 
+      /**
+       * Returns true if pointset is closed.
+       */
+      bool isClosed() const;
+
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
       int nbPoints;
       double *x = nullptr;
-      double *y;   // points order is counterclockwise
+      double *y = nullptr;   // points order is counterclockwise
 
       int *cHull = nullptr;
       int cHullSize;
