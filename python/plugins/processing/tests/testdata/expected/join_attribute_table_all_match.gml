@@ -27,8 +27,8 @@
       <ogr:id>2</ogr:id>
       <ogr:id2>1</ogr:id2>
       <ogr:id_2>2</ogr:id_2>
-      <ogr:NUM_A>2.200000</ogr:NUM_A>
-      <ogr:ST_A>string a</ogr:ST_A>
+      <ogr:NUM_A>2.400000</ogr:NUM_A>
+      <ogr:ST_A>string c</ogr:ST_A>
     </ogr:join_attribute_table>
   </gml:featureMember>
   <gml:featureMember>
@@ -37,8 +37,8 @@
       <ogr:id>2</ogr:id>
       <ogr:id2>1</ogr:id2>
       <ogr:id_2>2</ogr:id_2>
-      <ogr:NUM_A>2.400000</ogr:NUM_A>
-      <ogr:ST_A>string c</ogr:ST_A>
+      <ogr:NUM_A>2.200000</ogr:NUM_A>
+      <ogr:ST_A>string a</ogr:ST_A>
     </ogr:join_attribute_table>
   </gml:featureMember>
   <gml:featureMember>
