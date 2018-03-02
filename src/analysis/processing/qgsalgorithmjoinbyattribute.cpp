@@ -26,12 +26,12 @@ QString QgsJoinByAttributeAlgorithm::name() const
 
 QString QgsJoinByAttributeAlgorithm::displayName() const
 {
-  return QObject::tr( "Join attributes table" );
+  return QObject::tr( "Join attributes by field value" );
 }
 
 QStringList QgsJoinByAttributeAlgorithm::tags() const
 {
-  return QObject::tr( "join,connect,attributes,values,fields" ).split( ',' );
+  return QObject::tr( "join,connect,attributes,values,fields,tables" ).split( ',' );
 }
 
 QString QgsJoinByAttributeAlgorithm::group() const
@@ -65,10 +65,12 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
                 QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
                 true, true ) );
 
-  addParameter( new QgsProcessingParameterEnum(
-                  QStringLiteral( "METHOD" ),
-                  QObject::tr( "Join type" ),
-                  methods, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
+                QObject::tr( "Join type" ),
+                methods, false, 0 ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
+                QObject::tr( "Discard records which could not be joined" ),
+                false ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ) ) );
 }
@@ -78,8 +80,7 @@ QString QgsJoinByAttributeAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the "
                       "input one, with additional attributes in its attribute table.\n\n"
                       "The additional attributes and their values are taken from a second vector layer. An attribute is selected "
-                      "in each of them to define the join criteria.\n\n"
-                      "The algorithm will output one feature per matching row(s) from the second vector layer." );
+                      "in each of them to define the join criteria." );
 }
 
 QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
@@ -90,6 +91,7 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
   std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   std::unique_ptr< QgsFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
@@ -199,7 +201,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
         sink->addFeature( feat, QgsFeatureSink::FastInsert );
       }
     }
-    else
+    else if ( !discardNonMatching )
     {
       sink->addFeature( feat, QgsFeatureSink::FastInsert );
     }

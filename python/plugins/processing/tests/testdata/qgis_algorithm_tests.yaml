@@ -2789,6 +2789,24 @@ tests:
         type: vector
 
   - algorithm: native:joinattributestable
+    name: join the attribute table by common field, discard non matching (one-to-one)
+    params:
+      METHOD: 0
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table2.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+      DISCARD_NONMATCHING: true
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table_discard_nonmatching.gml
+        type: vector
+
+  - algorithm: native:joinattributestable
     name: join the attribute table by common field (one-to-many)
     params:
       METHOD: 1
