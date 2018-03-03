@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.exceptions import UndefinedParameterException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -399,9 +400,12 @@ class ModelerParameterDefinitionDialog(QDialog):
               isinstance(self.param, QgsProcessingParameterCrs)):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         else:
-            paramType = QgsApplication.instance().processingRegistry().parameterType(self.paramType)
-            self.param = paramType.create(name)
-            self.param.setMetadata(paramType.metadata())
+            paramTypeDef = QgsApplication.instance().processingRegistry().parameterType(self.paramType)
+            if not paramTypeDef:
+                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(self.paramType))
+                raise UndefinedParameterException(msg)
+            self.param = paramTypeDef.create(name)
+            self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
