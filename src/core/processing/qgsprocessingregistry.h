@@ -23,6 +23,8 @@
 #include "qgsprocessingprovider.h"
 #include <QMap>
 
+class QgsProcessingParameterType;
+
 /**
  * \class QgsProcessingRegistry
  * \ingroup core
@@ -130,6 +132,41 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
 
+    /**
+     * Register a new parameter type for processing.
+     * Will emit parameterTypeAdded
+     *
+     * \see removeParameterType
+     *
+     * \since QGIS 3.2
+     */
+    void addParameterType( QgsProcessingParameterType *type );
+
+    /**
+     * Unregister a custom parameter type from processing.
+     * Will emit parameterTypeRemoved
+     *
+     * \see addParameterType
+     *
+     * \since QGIS 3.2
+     */
+    void removeParameterType( QgsProcessingParameterType *type );
+
+    /**
+     * Return the parameter type registered for \a id.
+     *
+     * \since QGIS 3.2
+     */
+    QgsProcessingParameterType *parameterType( const QString &id ) const;
+
+    /**
+     * Return a list with all known parameter types.
+     *
+     * \since QGIS 3.2
+     */
+    QList<QgsProcessingParameterType *> parameterTypes() const;
+
+
   signals:
 
     //! Emitted when a provider has been added to the registry.
@@ -138,10 +175,28 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     //! Emitted when a provider is removed from the registry
     void providerRemoved( const QString &id );
 
+    /**
+     * Emitted when a new parameter type has been added to the registry.
+     *
+     * \since QGIS 3.2
+     */
+    void parameterTypeAdded( QgsProcessingParameterType *type );
+
+    /**
+     * Emitted when a parameter type has been removed from the
+     * registry and is about to be deleted.
+     *
+     * \since QGIS 3.2
+     */
+    void parameterTypeRemoved( QgsProcessingParameterType *type );
+
   private:
 
     //! Map of available providers by id. This class owns the pointers
     QMap<QString, QgsProcessingProvider *> mProviders;
+
+    //! Hash of available parameter types by id. This object owns the pointers.
+    QHash<QString, QgsProcessingParameterType *> mParameterTypes;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

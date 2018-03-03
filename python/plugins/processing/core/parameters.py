@@ -255,21 +255,7 @@ def initializeParameters():
                                  description=QCoreApplication.translate('Processing', 'A raster layer parameter.'))
     Processing.registerParameter(PARAMETER_TABLE, QCoreApplication.translate('Processing', 'Vector Layer'), QgsProcessingParameterVectorLayer,
                                  description=QCoreApplication.translate('Processing', 'A vector feature parameter, e.g. for algorithms which operate on the features within a layer.'))
-    Processing.registerParameter(PARAMETER_BOOLEAN, QCoreApplication.translate('Processing', 'Boolean'), QgsProcessingParameterBoolean,
-                                 description=QCoreApplication.translate('Processing', 'A boolean parameter, for true/false values.'))
-    Processing.registerParameter(PARAMETER_CRS, QCoreApplication.translate('Processing', 'CRS'), QgsProcessingParameterCrs,
-                                 description=QCoreApplication.translate('Processing', 'A coordinate reference system (CRS) input parameter.'))
-    Processing.registerParameter(PARAMETER_RANGE, QCoreApplication.translate('Processing', 'Range'), QgsProcessingParameterRange)
-    Processing.registerParameter(PARAMETER_POINT, QCoreApplication.translate('Processing', 'Point'), QgsProcessingParameterPoint,
-                                 description=QCoreApplication.translate('Processing', 'A geographic point parameter.'))
-    Processing.registerParameter(PARAMETER_ENUM, QCoreApplication.translate('Processing', 'Enum'), QgsProcessingParameterEnum, exposeToModeller=False)
-    Processing.registerParameter(PARAMETER_EXTENT, QCoreApplication.translate('Processing', 'Extent'), QgsProcessingParameterExtent,
-                                 description=QCoreApplication.translate('Processing', 'A map extent parameter.'))
-    Processing.registerParameter(PARAMETER_MATRIX, QCoreApplication.translate('Processing', 'Matrix'), QgsProcessingParameterMatrix)
-    Processing.registerParameter(PARAMETER_FILE, QCoreApplication.translate('Processing', 'File'), QgsProcessingParameterFile,
-                                 description=QCoreApplication.translate('Processing', 'A file parameter, for use with non-map layer file sources.'))
-    Processing.registerParameter(PARAMETER_TABLE_FIELD, QCoreApplication.translate('Processing', 'Field'), QgsProcessingParameterField,
-                                 description=QCoreApplication.translate('Processing', 'A vector field parameter, for selecting an existing field from a vector source.'))
+
     Processing.registerParameter(PARAMETER_VECTOR_DESTINATION, QCoreApplication.translate('Processing', 'Vector Destination'), QgsProcessingParameterVectorDestination, exposeToModeller=False)
     Processing.registerParameter(PARAMETER_FILE_DESTINATION, QCoreApplication.translate('Processing', 'File Destination'), QgsProcessingParameterFileDestination, exposeToModeller=False)
     Processing.registerParameter(PARAMETER_FOLDER_DESTINATION, QCoreApplication.translate('Processing', 'Folder Destination'), QgsProcessingParameterFolderDestination, exposeToModeller=False)

@@ -177,6 +177,8 @@
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingoutputs.sip
 %Include processing/qgsprocessingparameters.sip
+%Include processing/qgsprocessingparametertype.sip
+%Include processing/qgsprocessingparametertypeimpl.sip
 %Include processing/qgsprocessingutils.sip
 %Include processing/models/qgsprocessingmodelalgorithm.sip
 %Include processing/models/qgsprocessingmodelchildalgorithm.sip
