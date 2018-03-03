@@ -405,6 +405,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(self.paramType))
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
+            self.param.setDescription(name)
             self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():
