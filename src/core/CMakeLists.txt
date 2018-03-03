@@ -105,7 +105,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
-  processing/qgsprocessingparametertypeimpl.cpp
+  processing/qgsprocessingparametertype.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp

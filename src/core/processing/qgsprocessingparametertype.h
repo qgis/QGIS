@@ -42,6 +42,18 @@ class CORE_EXPORT QgsProcessingParameterType
      * A static id for this type which will be used for storing this parameter type.
      */
     virtual QString id() const = 0;
+
+    /**
+     * Determines if this parameter is available in the modeller.
+     * The default implementation returns true.
+     */
+    virtual bool exposeToModeller() const;
+
+    /**
+     * Metadata for this parameter type. Can be used for example to define custom widgets.
+     * The default implementation returns an empty map.
+     */
+    virtual QVariantMap metadata() const;
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPE_H

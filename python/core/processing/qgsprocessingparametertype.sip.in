@@ -44,6 +44,18 @@ This will be used in comboboxes and list widgets.
 %Docstring
 A static id for this type which will be used for storing this parameter type.
 %End
+
+    virtual bool exposeToModeller() const;
+%Docstring
+Determines if this parameter is available in the modeller.
+The default implementation returns true.
+%End
+
+    virtual QVariantMap metadata() const;
+%Docstring
+Metadata for this parameter type. Can be used for example to define custom widgets.
+The default implementation returns an empty map.
+%End
 };
 
 /************************************************************************
