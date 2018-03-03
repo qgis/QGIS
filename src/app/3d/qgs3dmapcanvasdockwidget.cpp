@@ -114,6 +114,8 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
+  dlg.setWindowTitle( tr( "3D Configuration" ) );
+
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
