@@ -159,7 +159,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             return QCoreApplication.translate('Processing', 'Fields Mapper')
 
         def id(self):
-            return 'Fields Mapper'
+            return 'fields_mapping'
 
         def description(self):
             return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')
