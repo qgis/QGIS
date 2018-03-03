@@ -6,6 +6,7 @@
 #include "qgsprocessingparametertype.h"
 #include <QCoreApplication>
 
+#define SIP_NO_FILE
 
 class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingParameterType
 {
