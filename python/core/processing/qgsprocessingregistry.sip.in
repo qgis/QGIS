@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingRegistry : QObject
 {
 %Docstring
@@ -106,6 +107,41 @@ according to some user configuration.
 .. seealso:: :py:func:`algorithmById`
 %End
 
+    void addParameterType( QgsProcessingParameterType *type );
+%Docstring
+Register a new parameter type for processing.
+Will emit parameterTypeAdded
+
+.. seealso:: :py:func:`removeParameterType`
+
+.. versionadded:: 3.2
+%End
+
+    void removeParameterType( QgsProcessingParameterType *type );
+%Docstring
+Unregister a custom parameter type from processing.
+Will emit parameterTypeRemoved
+
+.. seealso:: :py:func:`addParameterType`
+
+.. versionadded:: 3.2
+%End
+
+    QgsProcessingParameterType *parameterType( const QString &id ) const;
+%Docstring
+Return the parameter type registered for ``id``.
+
+.. versionadded:: 3.2
+%End
+
+    QList<QgsProcessingParameterType *> parameterTypes() const;
+%Docstring
+Return a list with all known parameter types.
+
+.. versionadded:: 3.2
+%End
+
+
   signals:
 
     void providerAdded( const QString &id );
@@ -116,6 +152,21 @@ Emitted when a provider has been added to the registry.
     void providerRemoved( const QString &id );
 %Docstring
 Emitted when a provider is removed from the registry
+%End
+
+    void parameterTypeAdded( QgsProcessingParameterType *type );
+%Docstring
+Emitted when a new parameter type has been added to the registry.
+
+.. versionadded:: 3.2
+%End
+
+    void parameterTypeRemoved( QgsProcessingParameterType *type );
+%Docstring
+Emitted when a parameter type has been removed from the
+registry and is about to be deleted.
+
+.. versionadded:: 3.2
 %End
 
   private:

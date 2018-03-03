@@ -105,6 +105,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
+  processing/qgsprocessingparametertypeimpl.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -996,6 +997,8 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingcontext.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertype.h
+  processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingutils.h
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h

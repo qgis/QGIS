@@ -1,0 +1,55 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertype.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsProcessingParameterType
+{
+%Docstring
+Makes metadata of processing parameters available.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparametertype.h"
+%End
+  public:
+
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
+%Docstring
+Creates a new parameter of this type.
+%End
+
+    virtual ~QgsProcessingParameterType();
+
+    virtual QString description() const = 0;
+%Docstring
+A human readable and translatable description for this parameter type.
+This can be a longer description suitable for tooltips and other elements
+that give the user context for a given parameter.
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+A human readable and translatable short name for this parameter type.
+This will be used in comboboxes and list widgets.
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+A static id for this type which will be used for storing this parameter type.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertype.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
