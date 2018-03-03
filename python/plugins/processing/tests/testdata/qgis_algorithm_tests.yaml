@@ -870,7 +870,7 @@ tests:
         name: expected/zm_dropped.shp
         type: vector
 
-  - algorithm: qgis:pointonsurface
+  - algorithm: native:pointonsurface
     name: Point on polygon surface
     params:
       INPUT:
