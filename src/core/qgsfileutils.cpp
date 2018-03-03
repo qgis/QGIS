@@ -86,7 +86,7 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
 
 QString QgsFileUtils::stringToSafeFilename( const QString &string )
 {
-  QRegularExpression rx( "[^\\w\\-. ]" );
+  QRegularExpression rx( "[/\\\\\\?%\\*\\:\\|\"<>]" );
   QString s = string;
   s.replace( rx, QStringLiteral( "_" ) );
   return s;
