@@ -5797,6 +5797,11 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile1 != tempFile2 );
   QVERIFY( tempFile2.endsWith( "test.txt" ) );
   QVERIFY( tempFile2.startsWith( tempFolder ) );
+
+  // invalid characters
+  QString tempFile3 = QgsProcessingUtils::generateTempFilename( "mybad:file.txt" );
+  QVERIFY( tempFile3.endsWith( "mybad_file.txt" ) );
+  QVERIFY( tempFile3.startsWith( tempFolder ) );
 }
 
 void TestQgsProcessing::convertCompatible()
