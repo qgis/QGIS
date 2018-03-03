@@ -206,17 +206,6 @@ algorithm is contained by this provider.
 .. seealso:: :py:func:`algorithms`
 %End
 
-    virtual QgsProcessingParameterDefinition *createParameter( const QString &type, const QString &name ) /Factory/;
-%Docstring
-Returns a new parameter from of the given type and name.
-This should be reimplemented by providers that implement custom types.
-If the provider does not implement the parameter with ``type``, a None will be returned.
-
-By default, this returns a None.
-
-.. versionadded:: 3.2
-%End
-
   signals:
 
     void algorithmsLoaded();

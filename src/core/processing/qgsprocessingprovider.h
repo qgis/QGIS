@@ -203,17 +203,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      */
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 
-    /**
-     * Returns a new parameter from of the given type and name.
-     * This should be reimplemented by providers that implement custom types.
-     * If the provider does not implement the parameter with \a type, a nullptr will be returned.
-     *
-     * By default, this returns a nullptr.
-     *
-     * \since QGIS 3.2
-     */
-    virtual QgsProcessingParameterDefinition *createParameter( const QString &type, const QString &name ) SIP_FACTORY;
-
   signals:
 
     /**
