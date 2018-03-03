@@ -625,7 +625,7 @@ class ModelerDialog(BASE, WIDGET):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
-        sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.id())
+        sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.name())
         for param in sortedParams:
             if param.exposeToModeller():
                 paramItem = QTreeWidgetItem()
