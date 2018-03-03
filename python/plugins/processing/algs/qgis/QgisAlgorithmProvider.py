@@ -89,7 +89,6 @@ from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -211,7 +210,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
-                PointOnSurface(),
                 PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),

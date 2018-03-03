@@ -317,10 +317,6 @@ qgis:orthogonalize: >
 
   The algorithm is iterative. Setting a larger number for the maximum iterations will result in a more orthogonal geometry at the cost of extra processing time.
 
-qgis:pointonsurface: >
-  Returns a point guaranteed to lie on the surface of a geometry.
-
-
 qgis:pointsalonglines: >
   Creates points at regular intervals along line or polygon geometries. Created points will have new attributes added for the distance along the geometry and the angle of the line at the point.
 
