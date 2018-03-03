@@ -52,6 +52,7 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
+                       QgsProcessingParameterType
                        )
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -154,11 +155,9 @@ class ModelerDialog(BASE, WIDGET):
                 event.ignore()
 
         def _dropEvent(event):
-            from processing.core.Processing import Processing
-
             if event.mimeData().hasText():
                 itemId = event.mimeData().text()
-                if itemId in Processing.registeredParameters():
+                if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
                     self.addInputOfType(itemId, event.pos())
                 else:
                     alg = QgsApplication.processingRegistry().createAlgorithmById(itemId)
@@ -626,15 +625,15 @@ class ModelerDialog(BASE, WIDGET):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
-        sortedParams = sorted(Processing.registeredParameters().items())
+        sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.id())
         for param in sortedParams:
-            if param[1]['exposeToModeller']:
+            if param.exposeToModeller():
                 paramItem = QTreeWidgetItem()
-                paramItem.setText(0, param[1]['name'])
-                paramItem.setData(0, Qt.UserRole, param[0])
+                paramItem.setText(0, param.name())
+                paramItem.setData(0, Qt.UserRole, param.id())
                 paramItem.setIcon(0, icon)
                 paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-                paramItem.setToolTip(0, param[1]['description'])
+                paramItem.setToolTip(0, param.description())
                 parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)

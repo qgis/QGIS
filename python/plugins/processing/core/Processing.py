@@ -45,8 +45,6 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputMapLayer,
                        QgsProcessingOutputMultipleLayers)
 
-from .parameters import initializeParameters
-
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
@@ -69,7 +67,6 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 
 class Processing(object):
     BASIC_PROVIDERS = []
-    REGISTERED_PARAMETERS = dict()
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
@@ -100,7 +97,6 @@ class Processing(object):
             if QgsApplication.processingRegistry().addProvider(p):
                 Processing.BASIC_PROVIDERS.append(p)
         # And initialize
-        initializeParameters()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
@@ -111,40 +107,6 @@ class Processing(object):
             QgsApplication.processingRegistry().removeProvider(p)
 
         Processing.BASIC_PROVIDERS = []
-        Processing.REGISTERED_PARAMETERS = dict()
-
-    @staticmethod
-    def registerParameter(id, name, parameter, metadata=dict(), description=None, exposeToModeller=True):
-        """Register a new parameter.
-        The ``name`` is a human readable translated string, the ``parameter`` is a class type with the base class ``qgis.core.QgsProcessingParameterDefinition``,
-        the ``metadata`` is a dictionary with additional metadata, mainly used for widget wrappers.
-        """
-        Processing.REGISTERED_PARAMETERS[id] = {
-            'name': name,
-            'parameter': parameter,
-            'metadata': metadata,
-            'description': description,
-            'exposeToModeller': exposeToModeller
-        }
-
-    @staticmethod
-    def unregisterParameter(name):
-        """Unregister a registered parameter with the given name.
-        """
-        del Processing.REGISTERED_PARAMETERS[name]
-
-    @staticmethod
-    def registeredParameters():
-        """Returns a dict of registered parameters. The key of the dict is the id of the parameter.
-        Each entry is itself a dict with the keys
-
-          - name: The human readable name of the parameter
-          - parameter: The class of the parameter
-          - metadata: Additional metadata for the parameter, mainly used for widget wrappers
-          - description: A longer description for the parameter, suitable for tooltips etc
-          - exposeToModeller: A boolean indicating if the parameter is available as model parameter input
-        """
-        return Processing.REGISTERED_PARAMETERS
 
     @staticmethod
     def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
