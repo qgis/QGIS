@@ -27,7 +27,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Raster Layer" );
+      return QStringLiteral( "raster" );
     }
 };
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Vector Layer" );
+      return QStringLiteral( "vector" );
     }
 };
 
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Boolean" );
+      return QStringLiteral( "boolean" );
     }
 };
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
 
     virtual QString id() const override
     {
-      return QStringLiteral( "CRS" );
+      return QStringLiteral( "crs" );
     }
 };
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "TODO." );
+      return QCoreApplication::translate( "Processing", "A numeric range parameter for processing algorithms." );
     }
 
     virtual QString name() const override
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Range" );
+      return QStringLiteral( "range" );
     }
 };
 
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Point" );
+      return QStringLiteral( "point" );
     }
 };
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Enum" );
+      return QStringLiteral( "enum" );
     }
 };
 
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Extent" );
+      return QStringLiteral( "extent" );
     }
 };
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Matrix" );
+      return QStringLiteral( "matrix" );
     }
 };
 
@@ -229,12 +229,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 
     virtual QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Extent" );
+      return QCoreApplication::translate( "Processing", "File" );
     }
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Extent" );
+      return QStringLiteral( "file" );
     }
 };
 
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Field" );
+      return QStringLiteral( "field" );
     }
 };
 
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Vector Destination" );
+      return QStringLiteral( "vectorDestination" );
     }
 };
 
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 
     virtual QString id() const override
     {
-      return QStringLiteral( "File Destination" );
+      return QStringLiteral( "fileDestination" );
     }
 };
 
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Folder Destination" );
+      return QStringLiteral( "folderDestination" );
     }
 };
 
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Raster Destination" );
+      return QStringLiteral( "rasterDestination" );
     }
 };
 
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
 
     virtual QString id() const override
     {
-      return QStringLiteral( "String" );
+      return QStringLiteral( "string" );
     }
 };
 
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Multiple Input" );
+      return QStringLiteral( "multilayer" );
     }
 };
 
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Vector Features" );
+      return QStringLiteral( "source" );
     }
 };
 
@@ -455,7 +455,7 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Number" );
+      return QStringLiteral( "number" );
     }
 };
 
@@ -478,7 +478,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
 
     virtual QString id() const override
     {
-      return QStringLiteral( "Raster Band" );
+      return QStringLiteral( "band" );
     }
 };
 
