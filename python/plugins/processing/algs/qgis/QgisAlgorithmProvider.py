@@ -323,26 +323,16 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
     def load(self):
         success = super().load()
 
-        from processing.core.Processing import Processing
-
         if success:
-            Processing.registerParameter(
-                'Fields Mapper',
-                self.fieldMappingParameterName,
-                parameter=FieldsMapper.ParameterFieldsMapping,
-                metadata={'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'}
-            )
+            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
+            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
 
         return success
 
     def unload(self):
         super().unload()
-        from processing.core.Processing import Processing
-        Processing.unregisterParameter(self.fieldMappingParameterName)
 
-    def createParameter(self, type, name):
-        if type == 'fields_mapping':
-            return FieldsMapper.ParameterFieldsMapping(name)
+        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

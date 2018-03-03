@@ -33,7 +33,10 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
+    QgsProcessingParameterType,
     NULL)
+
+from PyQt5.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -140,6 +143,26 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         feature.setAttributes(attributes)
         self._row_number += 1
         return [feature]
+
+    class ParameterFieldsMappingType(QgsProcessingParameterType):
+
+        def __init__(self):
+            super().__init__()
+
+        def create(self, name):
+            return FieldsMapper.ParameterFieldsMapping(name)
+
+        def metadata(self):
+            return {'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'}
+
+        def name(self):
+            return QCoreApplication.translate('Processing', 'Fields Mapper')
+
+        def id(self):
+            return 'Fields Mapper'
+
+        def description(self):
+            return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')
 
     class ParameterFieldsMapping(QgsProcessingParameterDefinition):
 

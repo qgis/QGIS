@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import math
 
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
-from qgis.core import (QgsSettings,
+from qgis.core import (QgsApplication,
+                       QgsSettings,
                        QgsProcessing,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
@@ -49,7 +50,8 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterBand)
+                       QgsProcessingParameterBand
+                       )
 from qgis.PyQt.QtCore import (Qt,
                               QByteArray,
                               QCoreApplication)
@@ -397,12 +399,9 @@ class ModelerParameterDefinitionDialog(QDialog):
               isinstance(self.param, QgsProcessingParameterCrs)):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         else:
-            from processing.core.Processing import Processing
-
-            param = Processing.registeredParameters()[self.paramType]
-
-            self.param = param['parameter'](name, description, None)
-            self.param.setMetadata(param['metadata'])
+            paramType = QgsApplication.instance().processingRegistry().parameterType(self.paramType)
+            self.param = paramType.create(name)
+            self.param.setMetadata(paramType.metadata())
 
         if not self.requiredCheck.isChecked():
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)

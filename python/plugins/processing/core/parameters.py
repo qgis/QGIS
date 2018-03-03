@@ -237,34 +237,3 @@ def getParameterFromString(s):
         param = QgsProcessingParameters.parameterFromScriptCode(s)
         if param:
             return param
-
-
-def initializeParameters():
-    from processing.core.Processing import Processing
-
-    Processing.registerParameter(PARAMETER_MAP_LAYER, QCoreApplication.translate('Processing', 'Map Layer'),
-                                 QgsProcessingParameterMapLayer,
-                                 description=QCoreApplication.translate('Processing', 'A generic map layer parameter, which accepts either vector or raster layers.'))
-    Processing.registerParameter(PARAMETER_BAND, QCoreApplication.translate('Processing', 'Raster Band'),
-                                 QgsProcessingParameterBand,
-                                 description=QCoreApplication.translate('Processing', 'A raster band parameter, for selecting an existing band from a raster source.'))
-    Processing.registerParameter(PARAMETER_EXPRESSION, QCoreApplication.translate('Processing', 'Expression'),
-                                 QgsProcessingParameterExpression,
-                                 description=QCoreApplication.translate('Processing', 'A QGIS expression parameter, which presents an expression builder widget to users.'))
-    Processing.registerParameter(PARAMETER_RASTER, QCoreApplication.translate('Processing', 'Raster Layer'), QgsProcessingParameterRasterLayer,
-                                 description=QCoreApplication.translate('Processing', 'A raster layer parameter.'))
-    Processing.registerParameter(PARAMETER_TABLE, QCoreApplication.translate('Processing', 'Vector Layer'), QgsProcessingParameterVectorLayer,
-                                 description=QCoreApplication.translate('Processing', 'A vector feature parameter, e.g. for algorithms which operate on the features within a layer.'))
-
-    Processing.registerParameter(PARAMETER_VECTOR_DESTINATION, QCoreApplication.translate('Processing', 'Vector Destination'), QgsProcessingParameterVectorDestination, exposeToModeller=False)
-    Processing.registerParameter(PARAMETER_FILE_DESTINATION, QCoreApplication.translate('Processing', 'File Destination'), QgsProcessingParameterFileDestination, exposeToModeller=False)
-    Processing.registerParameter(PARAMETER_FOLDER_DESTINATION, QCoreApplication.translate('Processing', 'Folder Destination'), QgsProcessingParameterFolderDestination, exposeToModeller=False)
-    Processing.registerParameter(PARAMETER_RASTER_DESTINATION, QCoreApplication.translate('Processing', 'Raster Destination'), QgsProcessingParameterRasterDestination, exposeToModeller=False)
-    Processing.registerParameter(PARAMETER_STRING, QCoreApplication.translate('Processing', 'String'), QgsProcessingParameterString,
-                                 description=QCoreApplication.translate('Processing', 'A freeform string parameter.'))
-    Processing.registerParameter(PARAMETER_MULTIPLE, QCoreApplication.translate('Processing', 'Multiple Layers'), QgsProcessingParameterMultipleLayers,
-                                 description=QCoreApplication.translate('Processing', 'An input allowing selection of multiple sources, including multiple map layers or file sources.'))
-    Processing.registerParameter(PARAMETER_VECTOR, QCoreApplication.translate('Processing', 'Feature Source'), QgsProcessingParameterFeatureSource)
-    Processing.registerParameter(PARAMETER_NUMBER, QCoreApplication.translate('Processing', 'Number'), QgsProcessingParameterNumber,
-                                 description=QCoreApplication.translate('Processing', 'A numeric parameter, including float or integer values.'))
-    Processing.registeredParameters()
