@@ -4794,3 +4794,27 @@ tests:
       OUTPUT:
         name: expected/multiring_buffer.gml
         type: vector
+
+  - algorithm: native:segmentizebymaxangle
+    name: Segmentize by angle
+    params:
+      ANGLE: 20.0
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_angle.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxdistance
+    name: Segmentize by distance
+    params:
+      DISTANCE: 0.2
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_distance.gml
+        type: vector

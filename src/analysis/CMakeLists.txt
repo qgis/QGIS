@@ -59,6 +59,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
+  processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp
