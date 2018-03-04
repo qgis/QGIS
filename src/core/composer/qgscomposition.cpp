@@ -3058,8 +3058,8 @@ QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
   {
     //output size in pixels specified, calculate resolution using average of
     //derived x/y dpi
-    resolution = ( imageSize.width() / mPageWidth
-                   + imageSize.height() / mPageHeight ) / 2.0 * 25.4;
+    resolution = qRound(( imageSize.width() / mPageWidth
+                          + imageSize.height() / mPageHeight ) / 2.0 * 25.4 );
   }
   else if ( dpi > 0 )
   {
@@ -3092,8 +3092,8 @@ QImage QgsComposition::renderRectAsRaster( const QRectF& rect, QSize imageSize, 
   {
     //output size in pixels specified, calculate resolution using average of
     //derived x/y dpi
-    resolution = ( imageSize.width() / rect.width()
-                   + imageSize.height() / rect.height() ) / 2.0 * 25.4;
+    resolution = qRound(( imageSize.width() / rect.width()
+                          + imageSize.height() / rect.height() ) / 2.0 * 25.4 );
   }
   else if ( dpi > 0 )
   {
