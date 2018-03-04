@@ -6193,9 +6193,11 @@ void QgisApp::togglePanelsVisibility()
 
   QStringList docksTitle = settings.value( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() ).toStringList();
   QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() ).toStringList();
+  QStringList toolBarsActive = settings.value( QStringLiteral( "UI/hiddenToolBarsActive" ), QStringList() ).toStringList();
 
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  QList<QToolBar *> toolBars = findChildren<QToolBar *>();
 
   if ( docksTitle.isEmpty() )
   {
@@ -6214,8 +6216,20 @@ void QgisApp::togglePanelsVisibility()
       docksActive << tabBar->tabText( tabBar->currentIndex() );
     }
 
+    Q_FOREACH ( QToolBar *toolBar, toolBars )
+    {
+      if ( toolBar->isVisible() && !toolBar->isFloating() )
+      {
+        toolBarsActive << toolBar->windowTitle();
+        toolBar->setVisible( false );
+      }
+    }
+
+    this->menuBar()->setVisible( false );
+    this->statusBar()->setVisible( false );
     settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), docksTitle );
     settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), docksActive );
+    settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
   }
   else
   {
@@ -6238,8 +6252,18 @@ void QgisApp::togglePanelsVisibility()
       }
     }
 
+    Q_FOREACH ( QToolBar *toolBar, toolBars )
+    {
+      if ( toolBarsActive.contains( toolBar->windowTitle() ) )
+      {
+        toolBar->setVisible( true );
+      }
+    }
+    this->menuBar()->setVisible( true ); // not working as no QMenuBar visible?
+    this->statusBar()->setVisible( true );
     settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() );
     settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() );
+    settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), QStringList() );
   }
 }
 
