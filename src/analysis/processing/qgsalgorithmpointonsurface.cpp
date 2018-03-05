@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpointonsurface.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
@@ -59,19 +60,72 @@ QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
   return new QgsPointOnSurfaceAlgorithm();
 }
 
-QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+void QgsPointOnSurfaceAlgorithm::initParameters( const QVariantMap & )
 {
+  std::unique_ptr< QgsProcessingParameterBoolean> allParts = qgis::make_unique< QgsProcessingParameterBoolean >(
+        QStringLiteral( "ALL_PARTS" ),
+        QObject::tr( "Create point on surface for each part" ),
+        false );
+  allParts->setIsDynamic( true );
+  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create point on surface for each part" ), QgsPropertyDefinition::Boolean ) );
+  allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( allParts.release() );
+}
+
+bool QgsPointOnSurfaceAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mAllParts = parameterAsBool( parameters, QStringLiteral( "ALL_PARTS" ), context );
+  mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
+  if ( mDynamicAllParts )
+    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value< QgsProperty >();
+
+  return true;
+}
+
+QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsFeatureList list;
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
-    QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
-    if ( !outputGeometry )
+    QgsGeometry geom = feature.geometry();
+
+    bool allParts = mAllParts;
+    if ( mDynamicAllParts )
+      allParts = mAllPartsProperty.valueAsBool( context.expressionContext(), allParts );
+
+    if ( allParts && geom.isMultipart() )
     {
-      feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
+      const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
+
+      for ( int i = 0; i < geomCollection->partCount(); ++i )
+      {
+        QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
+        QgsGeometry outputGeometry = partGeometry.pointOnSurface();
+        if ( !outputGeometry )
+        {
+          feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
+        }
+        feature.setGeometry( outputGeometry );
+        list << feature;
+      }
     }
-    feature.setGeometry( outputGeometry );
+    else
+    {
+      QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
+      if ( !outputGeometry )
+      {
+        feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
+      }
+      feature.setGeometry( outputGeometry );
+      list << feature;
+    }
   }
-  return QgsFeatureList() << feature;
+  else
+  {
+    list << feature;
+  }
+  return list;
 }
 
 ///@endcond

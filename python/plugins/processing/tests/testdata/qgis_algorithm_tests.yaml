@@ -881,6 +881,18 @@ tests:
         name: expected/point_on_poly.gml
         type: vector
 
+  - algorithm: native:pointonsurface
+    name: Point on all parts of multi polygon surface
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      ALL_PARTS: true
+    results:
+      OUTPUT:
+        name: expected/point_on_multipoly.gml
+        type: vector
+
   - algorithm: qgis:pointonsurface
     name: Point on multipoint surface
     params:
