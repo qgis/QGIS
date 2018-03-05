@@ -256,7 +256,15 @@ QList<QgsMapLayer *> QgsMapSettings::layers() const
 
 void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  mLayers = _qgis_listRawToQPointer( layers );
+  // filter list, removing null layers and non-spatial layers
+  auto filteredList = layers;
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
+                                      []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isSpatial();
+  } ), filteredList.end() );
+
+  mLayers = _qgis_listRawToQPointer( filteredList );
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
