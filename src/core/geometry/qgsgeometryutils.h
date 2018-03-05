@@ -262,7 +262,7 @@ class CORE_EXPORT QgsGeometryUtils
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
-     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> (\a x2, \a y2).
      * A positive return value indicates the point is to the right of the line.
      *
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
@@ -371,6 +371,22 @@ class CORE_EXPORT QgsGeometryUtils
                                QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
+
+    /**
+     * Returns true if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
+     * that arc portion already described by \a a1, \a a2 and \a a3.
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of point \b and where it would fall on the candidate arc.
+     *
+     * This method only consider a segments as continuing an arc if the points are all regularly spaced
+     * on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \since QGIS 3.2
+     */
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
 
     /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.

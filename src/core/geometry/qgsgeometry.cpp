@@ -2129,6 +2129,13 @@ QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
   return engine.densifyByDistance( distance );
 }
 
+QgsGeometry QgsGeometry::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.convertToCurves( distanceTolerance, angleTolerance );
+}
+
 QgsGeometry QgsGeometry::centroid() const
 {
   if ( !d->geometry )

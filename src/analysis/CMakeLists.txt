@@ -39,6 +39,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
+  processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdeleteduplicategeometries.cpp

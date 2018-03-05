@@ -34,6 +34,7 @@
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
+#include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmdbscanclustering.h"
 #include "qgsalgorithmdeleteduplicategeometries.h"
@@ -231,6 +232,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
+  addAlgorithm( new QgsConvertToCurvesAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );

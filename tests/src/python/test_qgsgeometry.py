@@ -5183,6 +5183,32 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertAlmostEqual(o, exp, 5,
                                    "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
 
+    def testConvertToCurves(self):
+        tests = [
+            ["LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,-0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,-0.414213562373101 4.41421356237309 3,0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)",
+             "CompoundCurveZ (CircularStringZ (3 3 3, -1 2.99999999999998979 3, 3 3 3))", 0.00000001, 0.0000001],
+            ["LINESTRING(0 0,10 0,10 10,0 10,0 0)", "CompoundCurve((0 0,10 0,10 10,0 10,0 0))", 0.00000001, 0.00000001],
+            ["LINESTRING(0 0,10 0,10 10,0 10)", "CompoundCurve((0 0,10 0,10 10,0 10))", 0.00000001, 0.00000001],
+            ["LINESTRING(10 10,0 10,0 0,10 0)", "CompoundCurve((10 10,0 10,0 0,10 0))", 0.0000001, 0.00000001],
+            ["LINESTRING(0 0, 1 1)", "CompoundCurve((0 0, 1 1))", 0.00000001, 0.00000001],
+            ["GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))",
+             "MultiCurve (CompoundCurve ((10 10, 10 11)),CompoundCurve ((10 11, 11 11)),CompoundCurve ((11 11, 10 10)))", 0.000001, 0.000001],
+            ["GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))",
+             "MultiCurve (CompoundCurve ((4 4, 4 8)),CompoundCurve (CircularString (4 8, 6 10, 8 8)),CompoundCurve ((8 8, 8 4)))", 0.0000001, 0.0000001],
+            ["LINESTRING(-13151357.927248 3913656.64539871,-13151419.0845266 3913664.12016378,-13151441.323537 3913666.61175286,-13151456.8908442 3913666.61175286,-13151476.9059536 3913666.61175286,-13151496.921063 3913666.61175287,-13151521.3839744 3913666.61175287,-13151591.4368571 3913665.36595828)",
+             "CompoundCurve ((-13151357.92724799923598766 3913656.64539870992302895, -13151419.08452660031616688 3913664.12016378017142415, -13151441.32353699952363968 3913666.61175285978242755, -13151456.8908441998064518 3913666.61175285978242755, -13151476.90595359914004803 3913666.61175285978242755, -13151496.92106300033628941 3913666.61175287002697587, -13151521.38397439941763878 3913666.61175287002697587, -13151591.43685710057616234 3913665.36595827993005514))", 0.000001, 0.0000001],
+            ["Point( 1 2 )", "Point( 1 2 )", 0.00001, 0.00001],
+            ["MultiPoint( 1 2, 3 4 )", "MultiPoint( (1 2 ), (3 4 ))", 0.00001, 0.00001]
+
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            distance_tolerance = t[2]
+            angle_tolerance = t[3]
+            o = g1.convertToCurves(distance_tolerance, angle_tolerance)
+            self.assertTrue(compareWkt(o.asWkt(), t[1], 0.00001),
+                            "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(t[1], o.asWkt()))
+
     def testBoundingBoxIntersects(self):
         tests = [
             ["LINESTRING (0 0, 100 100)", "LINESTRING (90 0, 100 0)", True],

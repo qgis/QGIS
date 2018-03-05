@@ -1244,6 +1244,21 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry densifyByDistance( double distance ) const;
 
     /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry convertToCurves( double distanceTolerance = 1e-8, double angleTolerance = 1e-8 ) const;
+
+    /**
      * Returns the center of mass of a geometry.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
