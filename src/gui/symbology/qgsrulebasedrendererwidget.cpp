@@ -680,8 +680,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [ = ] { editFilter->setText( QStringLiteral( "ELSE" ) );} );
-
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
 
 #include "qgsvscrollarea.h"
@@ -806,7 +805,7 @@ void QgsRendererRulePropsWidget::testFilter()
 
 void QgsRendererRulePropsWidget::apply()
 {
-  QString filter = mElseRadio->isChecked() ? "ELSE" : editFilter->text();
+  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );

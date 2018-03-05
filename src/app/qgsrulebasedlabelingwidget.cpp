@@ -629,7 +629,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [ = ] { editFilter->setText( QStringLiteral( "ELSE" ) );} );
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()
@@ -698,7 +698,8 @@ void QgsLabelingRulePropsWidget::buildExpression()
 
 void QgsLabelingRulePropsWidget::apply()
 {
-  mRule->setFilterExpression( editFilter->text() );
+  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );
   mRule->setMaximumScale( groupScale->isChecked() ? mScaleRangeWidget->maximumScale() : 0 );
