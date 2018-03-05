@@ -750,6 +750,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   //listen out to status bar updates from the view
   connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
+
+  connect( QgsProject::instance(), &QgsProject::projectDirty, this, &QgsLayoutDesignerDialog::updateWindowTitle );
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -4130,10 +4132,16 @@ void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type 
 
 void QgsLayoutDesignerDialog::updateWindowTitle()
 {
+  QString title;
   if ( mSectionTitle.isEmpty() )
-    setWindowTitle( mTitle );
+    title = mTitle;
   else
-    setWindowTitle( QStringLiteral( "%1 - %2" ).arg( mTitle, mSectionTitle ) );
+    title = QStringLiteral( "%1 - %2" ).arg( mTitle, mSectionTitle );
+
+  if ( QgsProject::instance()->isDirty() )
+    title.prepend( '*' );
+
+  setWindowTitle( title );
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
