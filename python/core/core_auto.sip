@@ -347,6 +347,7 @@
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayer.sip
+%Include qgsvirtuallayertask.sip
 %Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayertools.sip

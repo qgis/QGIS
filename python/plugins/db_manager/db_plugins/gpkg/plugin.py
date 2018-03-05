@@ -132,6 +132,11 @@ class GPKGDatabase(Database):
 
         return GPKGSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import GPKGSqlResultModelAsync
+
+        return GPKGSqlResultModelAsync(self, sql, parent)
+
     def registerDatabaseActions(self, mainWindow):
         action = QAction(self.tr("Run &Vacuum"), self)
         mainWindow.registerAction(action, self.tr("&Database"), self.runVacuumActionSlot)

@@ -59,6 +59,12 @@ class SpatiaLiteDBConnector(DBConnector):
     def _connectionInfo(self):
         return str(self.dbname)
 
+    def cancel(self):
+        # https://www.sqlite.org/c3ref/interrupt.html
+        # This function causes any pending database operation to abort and return at its earliest opportunity.
+        if self.connection:
+            self.connection.interrupt()
+
     @classmethod
     def isValidDatabase(self, path):
         if not QFile.exists(path):

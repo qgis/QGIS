@@ -134,6 +134,11 @@ class PGDatabase(Database):
 
         return PGSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import PGSqlResultModelAsync
+
+        return PGSqlResultModelAsync(self, sql, parent)
+
     def registerDatabaseActions(self, mainWindow):
         Database.registerDatabaseActions(self, mainWindow)
 

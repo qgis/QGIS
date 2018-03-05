@@ -42,6 +42,9 @@ class DBConnector(object):
     def uri(self):
         return QgsDataSourceUri(self._uri.uri(False))
 
+    def cancel(self):
+        pass
+
     def publicUri(self):
         publicUri = QgsDataSourceUri.removePassword(self._uri.uri(False))
         return QgsDataSourceUri(publicUri)

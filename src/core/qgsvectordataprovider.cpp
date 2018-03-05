@@ -804,6 +804,11 @@ QTextCodec *QgsVectorDataProvider::textEncoding() const
   return mEncoding;
 }
 
+bool QgsVectorDataProvider::cancelReload()
+{
+  return false;
+}
+
 QStringList QgsVectorDataProvider::sEncodings;
 
 QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer *, const QList<QgsVectorLayer *> & ) const
