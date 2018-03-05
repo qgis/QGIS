@@ -1094,6 +1094,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when the project dirty status changes.
      *
      * \param dirty True if the project is in a dirty state and has pending unsaved changes.
+     * \since QGIS 3.2
+     *
      */
     void projectDirty( const bool dirty );
 
