@@ -39,6 +39,7 @@ class QCloseEvent;
 class QTreeWidgetItem;
 class QAction;
 class QMenu;
+class QToolButton;
 
 class QgsFeatureStore;
 class QgsVectorLayer;
@@ -254,6 +255,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
     QgsExpressionContextScope mExpressionContextScope;
+    QToolButton *selectModeBtn;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
@@ -261,6 +263,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
+
 
     void highlightLayer( QTreeWidgetItem *object );
     void layerProperties( QTreeWidgetItem *object );
@@ -289,6 +292,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void setPolygonSelectionMode();
     void setFreehandSelectionMode();
     void setRadiusSelectionMode();
+    void initSelectionModes();
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction
