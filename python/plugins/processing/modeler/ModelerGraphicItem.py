@@ -61,7 +61,11 @@ class ModelerGraphicItem(QGraphicsItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             self.pixmap = None
-            self.text = self.model.parameterDefinition(element.parameterName()).description()
+            paramDef = self.model.parameterDefinition(element.parameterName())
+            if paramDef:
+                self.text = paramDef.description()
+            else:
+                self.text = 'Error ({})'.format(element.parameterName())
         elif isinstance(element, QgsProcessingModelOutput):
             # Output name
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
