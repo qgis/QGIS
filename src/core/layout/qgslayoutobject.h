@@ -92,7 +92,9 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ScalebarFillColor, //!< Scalebar fill color
       ScalebarFillColor2, //!< Scalebar secondary fill color
       ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width
+      ScalebarLineWidth, //!< Scalebar line width,
+      //table item
+      AttributeTableSourceLayer, //!< Attribute table source layer
     };
 
     /**

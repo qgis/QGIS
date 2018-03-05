@@ -292,6 +292,8 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     QgsExpressionContext createExpressionContext() const override;
     void finalizeRestoreFromXml() override;
 
+    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+
   protected:
 
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -303,6 +305,10 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     ContentSource mSource = LayerAttributes;
     //! Associated vector layer
     QgsVectorLayerRef mVectorLayer;
+
+    //! Data defined vector layer - only
+    QPointer< QgsVectorLayer > mDataDefinedVectorLayer;
+
     //! Relation id, if in relation children mode
     QString mRelationId;
 

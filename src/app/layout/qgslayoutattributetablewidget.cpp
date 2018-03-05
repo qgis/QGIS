@@ -131,7 +131,11 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
     {
       connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutAttributeTableWidget::atlasToggled );
     }
+
+    mLayerSourceDDBtn->registerExpressionContextGenerator( mTable );
   }
+
+  registerDataDefinedButton( mLayerSourceDDBtn, QgsLayoutObject::AttributeTableSourceLayer );
 
   //embed widget for general options
   if ( mFrame )
@@ -925,6 +929,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
     case QgsLayoutItemAttributeTable::LayerAttributes:
       mLayerComboBox->setEnabled( true );
       mLayerComboBox->setVisible( true );
+      mLayerSourceDDBtn->setVisible( true );
       mLayerLabel->setVisible( true );
       mRelationsComboBox->setEnabled( false );
       mRelationsComboBox->setVisible( false );
@@ -938,6 +943,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
     case QgsLayoutItemAttributeTable::AtlasFeature:
       mLayerComboBox->setEnabled( false );
       mLayerComboBox->setVisible( false );
+      mLayerSourceDDBtn->setVisible( false );
       mLayerLabel->setVisible( false );
       mRelationsComboBox->setEnabled( false );
       mRelationsComboBox->setVisible( false );
@@ -952,6 +958,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mLayerComboBox->setEnabled( false );
       mLayerComboBox->setVisible( false );
       mLayerLabel->setVisible( false );
+      mLayerSourceDDBtn->setVisible( false );
       mRelationsComboBox->setEnabled( true );
       mRelationsComboBox->setVisible( true );
       mRelationLabel->setVisible( true );
