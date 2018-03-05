@@ -1090,7 +1090,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
-
+    /**
+     * Emitted when the project dirty status changes.
+     *
+     * \param dirty True if the project is in a dirty state and has pending unsaved changes.
+     */
+    void projectDirty( const bool dirty );
 
   public slots:
 
