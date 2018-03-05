@@ -1170,6 +1170,18 @@ tests:
             precision: 7
 
   - algorithm: native:centroids
+    name: Centroid (multipolygons)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      ALL_PARTS: true
+    results:
+      OUTPUT:
+        name: expected/centroid_multipoly_all_parts.gml
+        type: vector
+
+  - algorithm: native:centroids
     name: Centroid (points)
     params:
       INPUT:
