@@ -64,6 +64,33 @@ Returns the project's title.
 .. seealso:: :py:func:`setTitle`
 %End
 
+    QString id() const;
+%Docstring
+Returns the project's stable id.
+%End
+
+    QString saveId() const;
+%Docstring
+Returns the project's current save id. This value is changed on after each save.
+Use :py:func:`id` if you need a stable id for the project.
+%End
+
+    int saveCounter() const;
+%Docstring
+Returns the save counter for the project. Like a car odometer but better because it's QGIS.
+This will change with each save like :py:func:`saveId`
+%End
+
+    QString saveUser() const;
+%Docstring
+Returns the user name that did the last save.
+%End
+
+    QString saveUserFullname() const;
+%Docstring
+Returns the full user name that did the last save.
+%End
+
     bool isDirty() const;
 %Docstring
 Returns true if the project has been modified since the last write()

@@ -121,6 +121,33 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString title() const;
 
     /**
+     * Returns the project's stable id.
+    */
+    QString id() const;
+
+    /**
+     * Returns the project's current save id. This value is changed on after each save.
+     * Use \see id() if you need a stable id for the project.
+    */
+    QString saveId() const;
+
+    /**
+     * Returns the save counter for the project. Like a car odometer but better because it's QGIS.
+     * This will change with each save like \see saveId()
+    */
+    int saveCounter() const;
+
+    /**
+     * Returns the user name that did the last save.
+    */
+    QString saveUser() const;
+
+    /**
+     * Returns the full user name that did the last save.
+    */
+    QString saveUserFullname() const;
+
+    /**
      * Returns true if the project has been modified since the last write()
      */
     bool isDirty() const;
@@ -1207,6 +1234,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
+    QString mId;              // project id
+    QString mSaveId;              // changing id for each save.
+    QString mSaveUser;              // last saved user.
+    QString mSaveUserFull;              // last saved user.
+    int mSaveCounter;              // increasing save counter
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
