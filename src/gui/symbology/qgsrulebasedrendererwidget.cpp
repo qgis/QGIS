@@ -635,6 +635,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mElseRadio->setChecked( mRule->isElse() );
+  mFilterRadio->setChecked( !mRule->isElse() );
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
   editLabel->setText( mRule->label() );
@@ -677,6 +679,9 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ] { editFilter->setText( QStringLiteral( "ELSE" ) );} );
+
 }
 
 #include "qgsvscrollarea.h"
@@ -754,6 +759,9 @@ void QgsRendererRulePropsWidget::buildExpression()
 
 void QgsRendererRulePropsWidget::testFilter()
 {
+  if ( !mFilterRadio->isChecked() )
+    return;
+
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
@@ -798,7 +806,8 @@ void QgsRendererRulePropsWidget::testFilter()
 
 void QgsRendererRulePropsWidget::apply()
 {
-  mRule->setFilterExpression( editFilter->text() );
+  QString filter = mElseRadio->isChecked() ? "ELSE" : editFilter->text();
+  mRule->setFilterExpression( filter );
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
   // caution: rule uses scale denom, scale widget uses true scales
