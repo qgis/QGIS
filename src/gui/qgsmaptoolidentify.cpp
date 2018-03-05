@@ -89,13 +89,13 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 }
 
 QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
+//QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, IdentifySelection selectionMode )
 {
   QList<IdentifyResult> results;
 
   mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
-
   mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
 
   if ( mode == DefaultQgsSetting )
@@ -122,6 +122,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
+    // TODO @vsklencar two version functions??
+    //identifyLayer( &results, layer, mLastPolygon, mLastExtent, mLastMapUnitsPerPixel, layerType );
     identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
   }
   else
@@ -186,7 +188,11 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), point );
+      QPoint point1 = mSelectRect.topLeft();
+      QPoint point2 = mSelectRect.bottomRight();
+      QgsRectangle rectangle = QgsRectangle(point1.x(), point1.y(), point2.x(), point2.y());
+
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), rectangle );
   }
   else
   {
@@ -194,6 +200,97 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsRectangle &rectangle)
+{
+
+    if ( !layer || !layer->isSpatial() )
+      return false;
+    if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
+    {
+      QgsDebugMsg( "Out of scale limits" );
+      return false;
+    }
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    QMap< QString, QString > commonDerivedAttributes;
+
+    //commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
+    //commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+
+    int featureCount = 0;
+
+    QgsFeatureList featureList;
+
+    // toLayerCoordinates will throw an exception for an 'invalid' point.
+    // For example, if you project a world map onto a globe using EPSG 2163
+    // and then click somewhere off the globe, an exception will be thrown.
+    try
+    {
+      QgsRectangle r;
+      r = toLayerCoordinates( layer, rectangle );
+
+      QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+      QgsFeature f;
+      while ( fit.nextFeature( f ) )
+      {
+          if (mSelectionGeometry.intersects(f.geometry()))
+            featureList << QgsFeature( f );
+      }
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      // catch exception for 'invalid' point and proceed with no features found
+      QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+    }
+
+    QgsFeatureList::iterator f_it = featureList.begin();
+
+    bool filter = false;
+
+    QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+    context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+    std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
+    if ( renderer )
+    {
+      // setup scale for scale dependent visibility (rule based)
+      renderer->startRender( context, layer->fields() );
+      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+    }
+
+    for ( ; f_it != featureList.end(); ++f_it )
+    {
+      QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
+
+      QgsFeatureId fid = f_it->id();
+      context.expressionContext().setFeature( *f_it );
+
+      if ( filter && !renderer->willRenderFeature( *f_it, context ) )
+        continue;
+
+      featureCount++;
+
+      // TODO @vsklencar
+      //derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
+
+      derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
+
+      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
+    }
+
+    if ( renderer )
+    {
+      renderer->stopRender( context );
+    }
+
+    QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
+
+    QApplication::restoreOverrideCursor();
+    return featureCount > 0;
+}
+
+// TODO @vsklencar -> used in QgsMapToolIdentifyFeature
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
   if ( !layer || !layer->isSpatial() )

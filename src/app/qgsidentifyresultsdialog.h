@@ -26,6 +26,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmaptoolidentifyaction.h"
 
 #include <QWidget>
 #include <QList>
@@ -167,6 +168,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
      */
     QgsExpressionContextScope expressionContextScope() const;
 
+    QgsMapToolIdentifyAction::IdentifySelection selectionMode();
+
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -279,6 +282,13 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 
     void showHelp();
+
+    QgsMapToolIdentifyAction::IdentifySelection mSelectionMode;
+
+    void setFeaturesSelectionMode();
+    void setPolygonSelectionMode();
+    void setFreehandSelectionMode();
+    void setRadiusSelectionMode();
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

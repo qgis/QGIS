@@ -20,6 +20,7 @@
 #include "qgsfields.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
+#include "qgspolygon.h"
 #include "qgsunittypes.h"
 
 #include <QObject>
@@ -122,6 +123,17 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+//    /**
+//     * Performs the identification.
+//    To avoid being forced to specify IdentifyMode with a list of layers
+//    this has been made private and two publics methods are offered
+//    \param x x coordinates of mouseEvent
+//    \param y y coordinates of mouseEvent
+//    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+//    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+//    \returns a list of IdentifyResult*/
+//    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType, IdentifySelection selectionMode = SelectFeatures );
+
     /**
      * return a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized
@@ -150,6 +162,9 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
+    //QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, IdentifySelection selectionMode = SelectFeatures );
+
+
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
@@ -157,6 +172,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsRectangle &rectangle);
+
+    //! stores actual select rect
+    QRect mSelectRect;
+
+    //! stores exact selection geometry
+    QgsGeometry mSelectionGeometry;
 
   private:
 
@@ -202,11 +224,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     // Last point in canvas CRS
     QgsPointXY mLastPoint;
 
+    QgsPolygon mLastPolygon;
+
     double mLastMapUnitsPerPixel;
 
     QgsRectangle mLastExtent;
 
     int mCoordinatePrecision;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )
