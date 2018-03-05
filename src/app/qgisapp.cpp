@@ -467,12 +467,18 @@ static void setTitleBarText_( QWidget &qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption = projectFileInfo.completeBaseName() + " - ";
+      caption = projectFileInfo.completeBaseName();
     }
   }
   else
   {
-    caption = QgsProject::instance()->title() + " - ";
+    caption = QgsProject::instance()->title();
+  }
+  if ( !caption.isEmpty() )
+  {
+    if ( QgsProject::instance()->isDirty() )
+      caption.prepend( '*' );
+    caption += " - ";
   }
 
   caption += QgisApp::tr( "QGIS" );
@@ -747,6 +753,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
   endProfile();
+
+  connect( QgsProject::instance(), &QgsProject::projectDirty, this, [ = ] { setTitleBarText_( *this ); } );
 
   // what type of project to auto-open
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
