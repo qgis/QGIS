@@ -859,6 +859,14 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
     // with no way for users to repair them
     if ( param )
       addParameter( param.release() );
+    else
+    {
+      QVariantMap map = paramDefIt.value().toMap();
+      QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
+      QString name = map.value( QStringLiteral( "name" ) ).toString();
+
+      QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
+    }
   }
 
   updateDestinationParameters();
