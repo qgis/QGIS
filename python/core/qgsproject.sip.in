@@ -1142,9 +1142,11 @@ advertised by this signal.
 
     void projectDirty( const bool dirty );
 %Docstring
-Emitted, when the project dirty status changes.
+Emitted when the project dirty status changes.
 
 :param dirty: True if the project is in a dirty state and has pending unsaved changes.
+
+.. versionadded:: 3.2
 %End
 
   public slots:

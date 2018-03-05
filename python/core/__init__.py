@@ -214,6 +214,7 @@ class edit(object):
 
 
 class ReadWriteContextEnterCategory():
+
     def __init__(self, context, category_name, details=None):
         self.context = context
         self.category_name = category_name
