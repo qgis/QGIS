@@ -1238,7 +1238,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString mSaveId;              // changing id for each save.
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;              // last saved user.
-    int mSaveCounter;              // increasing save counter
+    int mSaveCounter = 0;              // increasing save counter
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
