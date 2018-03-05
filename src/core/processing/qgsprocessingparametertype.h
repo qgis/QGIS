@@ -10,6 +10,7 @@
  * Makes metadata of processing parameters available.
  *
  * \since QGIS 3.2
+ * \ingroup core
  */
 class CORE_EXPORT QgsProcessingParameterType
 {

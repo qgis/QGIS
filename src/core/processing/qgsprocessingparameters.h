@@ -994,7 +994,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 /**
  * \class QgsProcessingParameterMatrix
  * \ingroup core
- * An table (matrix) parameter for processing algorithms.
+ * A table (matrix) parameter for processing algorithms.
   * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDefinition

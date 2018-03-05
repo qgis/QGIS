@@ -956,7 +956,7 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 {
 %Docstring
-An table (matrix) parameter for processing algorithms.
+A table (matrix) parameter for processing algorithms.
 
 .. versionadded:: 3.0
 %End

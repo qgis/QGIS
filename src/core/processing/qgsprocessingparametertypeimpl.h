@@ -8,6 +8,13 @@
 
 #define SIP_NO_FILE
 
+/**
+ * A raster layer parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -31,6 +38,13 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
     }
 };
 
+/**
+ * A vector layer parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -54,6 +68,13 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
     }
 };
 
+/**
+ * A boolean parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -77,6 +98,13 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
     }
 };
 
+/**
+ * A crs parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -100,6 +128,13 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
     }
 };
 
+/**
+ * A numeric range parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -123,6 +158,13 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
     }
 };
 
+/**
+ * A point parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -146,6 +188,13 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
     }
 };
 
+/**
+ * An enum based parameter for processing algorithms, allowing for selection from predefined values.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -169,6 +218,13 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
     }
 };
 
+/**
+ * A rectangular map extent parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -192,6 +248,13 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
     }
 };
 
+/**
+ * A table (matrix) parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -215,6 +278,13 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     }
 };
 
+/**
+ * An input file or folder parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -238,6 +308,13 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
     }
 };
 
+/**
+ * A vector layer or feature source field parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -261,6 +338,14 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
     }
 };
 
+/**
+ * A vector layer destination parameter, for specifying the destination path for a vector layer
+ * created by the algorithm.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -288,6 +373,14 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     }
 };
 
+/**
+ * A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
+ * created by the algorithm.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -313,6 +406,15 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     }
 };
 
+/**
+ * A folder destination parameter, for specifying the destination path for a folder created
+ * by the algorithm or used for creating new files within the algorithm.
+ * A folder output parameter.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -338,6 +440,14 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     }
 };
 
+/**
+ * A raster layer destination parameter, for specifying the destination path for a raster layer
+ * created by the algorithm.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -363,6 +473,13 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     }
 };
 
+/**
+ * A string parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -386,6 +503,13 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     }
 };
 
+/**
+ * A parameter for processing algorithms which accepts multiple map layers.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -409,6 +533,13 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
     }
 };
 
+/**
+ * An input feature source (such as vector layers) parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -436,6 +567,13 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     }
 };
 
+/**
+ * A numeric parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -459,6 +597,13 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
     }
 };
 
+/**
+ * A raster band parameter for Processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
 class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameterType
 {
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
