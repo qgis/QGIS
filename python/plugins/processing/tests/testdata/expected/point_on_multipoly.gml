@@ -43,4 +43,11 @@
       <ogr:Bfloatval>-0.12300</ogr:Bfloatval>
     </ogr:point_on_multipoly>
   </gml:featureMember>
+  <gml:featureMember>
+    <ogr:point_on_multipoly fid="multipolys.3">
+      <ogr:Bname>Test</ogr:Bname>
+      <ogr:Bintval>3</ogr:Bintval>
+      <ogr:Bfloatval>0</ogr:Bfloatval>
+    </ogr:point_on_multipoly>
+  </gml:featureMember>
 </ogr:FeatureCollection>

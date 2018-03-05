@@ -43,4 +43,11 @@
       <ogr:Bfloatval>-0.12300</ogr:Bfloatval>
     </ogr:centroid_multipoly_all_parts>
   </gml:featureMember>
+  <gml:featureMember>
+    <ogr:centroid_multipoly_all_parts fid="multipolys.3">
+      <ogr:Bname>Test</ogr:Bname>
+      <ogr:Bintval>3</ogr:Bintval>
+      <ogr:Bfloatval>0</ogr:Bfloatval>
+    </ogr:centroid_multipoly_all_parts>
+  </gml:featureMember>
 </ogr:FeatureCollection>
