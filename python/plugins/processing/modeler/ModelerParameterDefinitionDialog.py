@@ -400,9 +400,14 @@ class ModelerParameterDefinitionDialog(QDialog):
               isinstance(self.param, QgsProcessingParameterCrs)):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         else:
-            paramTypeDef = QgsApplication.instance().processingRegistry().parameterType(self.paramType)
+            if self.paramType:
+                typeId = self.paramType
+            else:
+                typeId = self.param.type()
+
+            paramTypeDef = QgsApplication.instance().processingRegistry().parameterType(typeId)
             if not paramTypeDef:
-                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(self.paramType))
+                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(typeId))
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
             self.param.setDescription(name)
