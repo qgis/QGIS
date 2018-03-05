@@ -133,6 +133,8 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set list of layers for map rendering. The layers must be registered in QgsProject.
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \note Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
