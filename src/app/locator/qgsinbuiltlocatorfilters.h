@@ -132,6 +132,25 @@ class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 };
 
 
+class QgsBookmarkLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBookmarkLocatorFilter( QObject *parent = nullptr );
+    QgsBookmarkLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "bookmarks" ); }
+    QString displayName() const override { return tr( "Spatial bookmarks" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "b" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+};
+
 #endif // QGSINBUILTLOCATORFILTERS_H
 
 
