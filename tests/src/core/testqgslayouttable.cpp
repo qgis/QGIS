@@ -70,6 +70,7 @@ class TestQgsLayoutTable : public QObject
     void autoWrap(); //test auto word wrap
     void cellStyles(); //test cell styles
     void cellStylesRender(); //test rendering cell styles
+    void dataDefinedSource();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -1321,6 +1322,70 @@ void TestQgsLayoutTable::cellStylesRender()
   checker.setColorTolerance( 10 );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   QVERIFY( checker.testLayout( mReport, 0 ) );
+}
+
+void TestQgsLayoutTable::dataDefinedSource()
+{
+  // add a couple of layers
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer1->isValid() );
+  QgsFeature f( layer1->fields() );
+  f.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+  layer1->dataProvider()->addFeature( f );
+
+  // different field order
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col3:integer&field=col2:integer" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer2->isValid() );
+  QgsFeature f2( layer2->fields() );
+  f2.setAttributes( QgsAttributes() << 11 << 13 << 12 );
+  layer2->dataProvider()->addFeature( f2 );
+
+  // missing fields
+  QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col3:integer" ), QStringLiteral( "l3" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer3->isValid() );
+  QgsFeature f3( layer3->fields() );
+  f3.setAttributes( QgsAttributes() << 21 << 23 );
+  layer3->dataProvider()->addFeature( f3 );
+
+  QgsProject p;
+  p.addMapLayer( layer1 );
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer3 );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setSource( QgsLayoutItemAttributeTable::LayerAttributes );
+  table->setVectorLayer( layer1 );
+  table->setMaximumNumberOfFeatures( 50 );
+  QCOMPARE( table->contents().length(), 1 );
+  QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
+
+  // data defined table name, by layer id
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, layer1->id() );
+  table->refresh();
+  QCOMPARE( table->contents().length(), 1 );
+  QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
+
+  // by layer name
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, QStringLiteral( "l2" ) );
+  table->refresh();
+  QCOMPARE( table->contents().length(), 1 );
+  QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 11 << 12 << 13 );
+
+  // by layer name (case insensitive)
+  table->dataDefinedProperties().setProperty( QgsLayoutObject::AttributeTableSourceLayer, QStringLiteral( "L3" ) );
+  table->refresh();
+  QCOMPARE( table->contents().length(), 1 );
+  QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 21 << QVariant() << 23 );
+
+  // delete current data defined layer match
+  p.removeMapLayer( layer3->id() );
+  QApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  // expect table to return to preset layer
+  table->refreshAttributes();
+  QCOMPARE( table->contents().length(), 1 );
+  QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )

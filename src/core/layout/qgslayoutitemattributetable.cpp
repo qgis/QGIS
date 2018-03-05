@@ -552,6 +552,28 @@ void QgsLayoutItemAttributeTable::finalizeRestoreFromXml()
   }
 }
 
+void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
+{
+  QgsExpressionContext context = createExpressionContext();
+
+  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
+       ( property == QgsLayoutObject::AttributeTableSourceLayer || property == QgsLayoutObject::AllProperties ) )
+  {
+    mDataDefinedVectorLayer = nullptr;
+
+    QString currentLayerIdentifier;
+    if ( QgsVectorLayer *currentLayer = mVectorLayer.get() )
+      currentLayerIdentifier = currentLayer->id();
+
+    const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::AttributeTableSourceLayer, context, currentLayerIdentifier );
+    QgsVectorLayer *ddLayer = qobject_cast< QgsVectorLayer * >( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
+    if ( ddLayer )
+      mDataDefinedVectorLayer = ddLayer;
+  }
+
+  QgsLayoutMultiFrame::refreshDataDefinedProperty( property );
+}
+
 QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant ) const
 {
   //avoid converting variants to string if not required (try to maintain original type for sorting)
@@ -570,7 +592,12 @@ QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
     case QgsLayoutItemAttributeTable::AtlasFeature:
       return mLayout->reportContext().layer();
     case QgsLayoutItemAttributeTable::LayerAttributes:
-      return mVectorLayer.get();
+    {
+      if ( mDataDefinedVectorLayer )
+        return mDataDefinedVectorLayer;
+      else
+        return mVectorLayer.get();
+    }
     case QgsLayoutItemAttributeTable::RelationChildren:
     {
       QgsRelation relation = mLayout->project()->relationManager()->relation( mRelationId );
