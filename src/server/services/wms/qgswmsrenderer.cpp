@@ -68,6 +68,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemlegend.h"
+#include "qgsserverexception.h"
 
 #include <QImage>
 #include <QPainter>
@@ -379,11 +380,11 @@ namespace QgsWms
     configurePrintLayout( layout.get(), mapSettings );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
     if ( !tempOutputFile.open() )
     {
-      // let the caller handle this
-      return nullptr;
+      throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
+
     }
 
     if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
