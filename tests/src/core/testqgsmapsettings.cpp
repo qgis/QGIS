@@ -41,6 +41,7 @@ class TestQgsMapSettings: public QObject
     void testIsLayerVisible();
     void testMapLayerListUtils();
     void testXmlReadWrite();
+    void testSetLayers();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -279,6 +280,23 @@ void TestQgsMapSettings::testXmlReadWrite()
   s1.writeXml( element, doc );
   s2.readXml( element );
   QVERIFY( !s2.destinationCrs().isValid() );
+}
+
+void TestQgsMapSettings::testSetLayers()
+{
+  std::unique_ptr<  QgsVectorLayer  > vlA = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<  QgsVectorLayer  > vlB = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<  QgsVectorLayer  > nonSpatial = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "none" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+
+  QgsMapSettings ms;
+  ms.setLayers( QList< QgsMapLayer * >() << vlA.get() );
+  QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() );
+  ms.setLayers( QList< QgsMapLayer * >() << vlB.get() << vlA.get() );
+  QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlB.get() << vlA.get() );
+
+  // non spatial and null layers should be stripped
+  ms.setLayers( QList< QgsMapLayer * >() << vlA.get() << nonSpatial.get() << nullptr << vlB.get() );
+  QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() << vlB.get() );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
