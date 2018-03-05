@@ -917,12 +917,6 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
-  QgsDebugMsg( "Project title: " + mTitle );
-  QgsDebugMsg( "Project id: " + mId );
-  QgsDebugMsg( "Project save id: " + mSaveId );
-  QgsDebugMsg( QString( "Project save counter: %1" ).arg( mSaveCounter ) );
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
@@ -1150,6 +1144,13 @@ bool QgsProject::readProjectFile( const QString &filename )
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+
+  QgsDebugMsg( "Project title: " + mTitle );
+  QgsDebugMsg( "Project id: " + mId );
+  QgsDebugMsg( "Project save id: " + mSaveId );
+  QgsDebugMsg( QString( "Project save counter: %1" ).arg( mSaveCounter ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
 
   return true;
 }
