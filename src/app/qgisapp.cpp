@@ -1863,6 +1863,7 @@ void QgisApp::createActions()
   connect( mActionNewBlankProject, &QAction::triggered, this, &QgisApp::fileNewBlank );
   connect( mActionOpenProject, &QAction::triggered, this, &QgisApp::fileOpen );
   connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
+  connect( mActionWelcomePage, &QAction::triggered, this, [ = ] { mCentralContainer->setCurrentIndex( 1 ); } );
   connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );

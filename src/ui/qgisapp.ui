@@ -46,6 +46,7 @@
     <addaction name="mActionOpenProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
+    <addaction name="mActionWelcomePage"/>
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
@@ -2957,6 +2958,11 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>New Report</string>
+   </property>
+  </action>
+  <action name="mActionWelcomePage">
+   <property name="text">
+    <string>Welcome Page</string>
    </property>
   </action>
  </widget>
