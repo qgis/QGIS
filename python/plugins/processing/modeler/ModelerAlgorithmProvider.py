@@ -60,6 +60,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         self.actions = [CreateNewModelAction(), OpenModelFromFileAction(), AddModelFromFileAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
+        self.isLoading = False
 
         # must reload models if providers list is changed - previously unavailable algorithms
         # which models depend on may now be available
@@ -102,12 +103,16 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def loadAlgorithms(self):
+        if self.isLoading:
+            return
+        self.isLoading = True
         self.algs = []
         folders = ModelerUtils.modelsFolders()
         for f in folders:
             self.loadFromFolder(f)
         for a in self.algs:
             self.addAlgorithm(a)
+        self.isLoading = False
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
