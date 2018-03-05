@@ -196,6 +196,7 @@ QSizeF QgsLayoutTable::totalSize() const
 
 void QgsLayoutTable::refresh()
 {
+  QgsLayoutMultiFrame::refresh();
   refreshAttributes();
 }
 
