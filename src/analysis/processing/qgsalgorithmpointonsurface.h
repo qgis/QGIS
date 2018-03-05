@@ -41,6 +41,7 @@ class QgsPointOnSurfaceAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsPointOnSurfaceAlgorithm *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
 
@@ -48,7 +49,15 @@ class QgsPointOnSurfaceAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    bool mAllParts = false;
+    bool mDynamicAllParts = false;
+    QgsProperty mAllPartsProperty;
+
 };
 
 ///@endcond PRIVATE
