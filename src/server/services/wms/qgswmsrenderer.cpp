@@ -1357,6 +1357,16 @@ namespace QgsWms
       return false;
     }
 
+    QgsFeatureRequest fReq;
+
+    // Transform filter geometry to layer CRS
+    std::unique_ptr<QgsGeometry> layerFilterGeom;
+    if ( filterGeom )
+    {
+      layerFilterGeom.reset( new QgsGeometry( *filterGeom ) );
+      layerFilterGeom->transform( QgsCoordinateTransform( mapSettings.destinationCrs(), layer->crs(), fReq.transformContext() ) );
+    }
+
     //we need a selection rect (0.01 of map width)
     QgsRectangle mapRect = mapSettings.extent();
     QgsRectangle layerRect = mapSettings.mapToLayerCoordinates( layer, mapRect );
@@ -1369,9 +1379,9 @@ namespace QgsWms
     {
       searchRect = featureInfoSearchRect( layer, mapSettings, renderContext, *infoPoint );
     }
-    else if ( filterGeom )
+    else if ( layerFilterGeom )
     {
-      searchRect = filterGeom->boundingBox();
+      searchRect = layerFilterGeom->boundingBox();
     }
     else if ( mParameters.contains( QStringLiteral( "BBOX" ) ) )
     {
@@ -1389,8 +1399,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
-    QgsFeatureRequest fReq;
-    bool hasGeometry = addWktGeometry || featureBBox || filterGeom;
+    bool hasGeometry = addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
@@ -1402,9 +1411,10 @@ namespace QgsWms
       fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
     }
 
-    if ( filterGeom )
+
+    if ( layerFilterGeom )
     {
-      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->asWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
