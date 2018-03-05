@@ -1863,7 +1863,7 @@ void QgisApp::createActions()
   connect( mActionNewBlankProject, &QAction::triggered, this, &QgisApp::fileNewBlank );
   connect( mActionOpenProject, &QAction::triggered, this, &QgisApp::fileOpen );
   connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
-  connect( mActionWelcomePage, &QAction::triggered, this, [ = ] { mCentralContainer->setCurrentIndex( 1 ); } );
+  connect( mActionCloseProject, &QAction::triggered, this, &QgisApp::fileClose );
   connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
@@ -5015,29 +5015,35 @@ void QgisApp::fileExit()
 }
 
 
-void QgisApp::fileNew()
+bool QgisApp::fileNew()
 {
-  fileNew( true ); // prompts whether to save project
+  return fileNew( true ); // prompts whether to save project
 } // fileNew()
 
 
-void QgisApp::fileNewBlank()
+bool QgisApp::fileNewBlank()
 {
-  fileNew( true, true );
+  return fileNew( true, true );
+}
+
+void QgisApp::fileClose()
+{
+  if ( fileNewBlank() )
+    mCentralContainer->setCurrentIndex( 1 );
 }
 
 
 //as file new but accepts flags to indicate whether we should prompt to save
-void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
+bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 {
   if ( checkTasksDependOnProject() )
-    return;
+    return false;
 
   if ( promptToSaveFlag )
   {
     if ( !saveDirty() )
     {
-      return; //cancel pressed
+      return false; //cancel pressed
     }
   }
 
@@ -5119,7 +5125,7 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
-
+  return true;
 }
 
 bool QgisApp::fileNewFromTemplate( const QString &fileName )

@@ -78,6 +78,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Add a project
     bool addProject( const QString &projectName ) override;
+
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
 

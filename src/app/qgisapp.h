@@ -1228,11 +1228,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a project
     void fileOpen();
     //! Create a new project
-    void fileNew();
+    bool fileNew();
     //! Create a new blank project (no template)
-    void fileNewBlank();
+    bool fileNewBlank();
+
+    /**
+     * Close the current open project and show the welcome screen again.
+     */
+    void fileClose();
+
     //! As above but allows forcing without prompt and forcing blank project
-    void fileNew( bool promptToSaveFlag, bool forceBlank = false );
+    bool fileNew( bool promptToSaveFlag, bool forceBlank = false );
     //! What type of project to open after launch
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
