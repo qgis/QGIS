@@ -146,6 +146,7 @@ class QgsXyzTileRootItem : public QgsDataCollectionItem
   private slots:
 #ifdef HAVE_GUI
     void newConnection();
+    void addDefaultXYZServers();
 #endif
 };
 
