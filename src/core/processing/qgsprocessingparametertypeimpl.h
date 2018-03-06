@@ -388,6 +388,15 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     {
       return QStringLiteral( "vectorDestination" );
     }
+
+    virtual ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+
+      return flags;
+    }
 };
 
 /**
@@ -420,6 +429,15 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     virtual QString id() const override
     {
       return QStringLiteral( "fileDestination" );
+    }
+
+    virtual ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+
+      return flags;
     }
 };
 
@@ -455,6 +473,15 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     {
       return QStringLiteral( "folderDestination" );
     }
+
+    virtual ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+
+      return flags;
+    }
 };
 
 /**
@@ -487,6 +514,15 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     virtual QString id() const override
     {
       return QStringLiteral( "rasterDestination" );
+    }
+
+    virtual ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+
+      return flags;
     }
 };
 
