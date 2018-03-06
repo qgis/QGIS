@@ -1413,10 +1413,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Converts the geometry to straight line segments, if it is a curved geometry type.
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      * \since QGIS 2.10
      * \see requiresConversionToStraightSegments
      */
-    void convertToStraightSegment();
+    void convertToStraightSegment( double tolerance = M_PI / 180., QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle );
 
     /**
      * Returns true if the geometry is a curved geometry type which requires conversion to
