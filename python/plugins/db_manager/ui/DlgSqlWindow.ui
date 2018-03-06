@@ -407,8 +407,11 @@ unique values</string>
      </item>
      <item>
       <widget class="QPushButton" name="btnCancel">
+       <property name="toolTip">
+        <string>Cancel query (ESC)</string>
+       </property>
        <property name="text">
-        <string>Cancel (ESC)</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
