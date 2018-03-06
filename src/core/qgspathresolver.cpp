@@ -207,8 +207,29 @@ QString QgsPathResolver::writePath( const QString &src ) const
 
   if ( n == 0 )
   {
-    // no common parts; might not even by a file
-    return src;
+    // can be that projPath and srcPath belongs to a linked path
+    // try to normalize also projPath
+    projPath = pfi.canonicalFilePath();
+    projElems = projPath.split( '/', QString::SkipEmptyParts );
+    projElems.removeLast();
+    projElems.removeAll( QStringLiteral( "." ) );
+
+    // remove common part
+    n = 0;
+    while ( !srcElems.isEmpty() &&
+            !projElems.isEmpty() &&
+            srcElems[0].compare( projElems[0], cs ) == 0 )
+    {
+      srcElems.removeFirst();
+      projElems.removeFirst();
+      n++;
+    }
+
+    if ( n == 0 )
+    {
+      // no common parts; might not even by a file
+      return src;
+    }
   }
 
   if ( !projElems.isEmpty() )
