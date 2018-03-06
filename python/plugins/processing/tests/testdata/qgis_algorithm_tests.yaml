@@ -4842,3 +4842,28 @@ tests:
       OUTPUT:
         name: expected/segmentize_by_distance.gml
         type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around centroid
+    params:
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_centroid.gml
+        type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around point
+    params:
+      ANCHOR: 2.3,3 [EPSG:4326]
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_point.gml
+        type: vector
