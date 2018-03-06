@@ -109,7 +109,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
   if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-    if ( nodeLayer->layer()->isSpatial() )
+    if ( nodeLayer->layer() && nodeLayer->layer()->isSpatial() )
     {
       allLayers << nodeLayer->layer();
       if ( nodeLayer->isVisible() )
