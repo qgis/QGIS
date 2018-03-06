@@ -19,8 +19,8 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsproxystyle.h"
 #include <QStandardItem>
-#include <QProxyStyle>
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 #include "qgis_gui.h"
@@ -66,12 +66,12 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 };
 
 // View style which shows drop indicator line between items
-class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
+class QgsGraduatedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
   public:
-    explicit QgsGraduatedSymbolRendererViewStyle( QStyle *style = nullptr );
+    explicit QgsGraduatedSymbolRendererViewStyle( QWidget *parent );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };

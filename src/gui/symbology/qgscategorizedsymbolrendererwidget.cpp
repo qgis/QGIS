@@ -364,8 +364,8 @@ void QgsCategorizedSymbolRendererModel::updateSymbology()
 }
 
 // ------------------------------ View style --------------------------------
-QgsCategorizedSymbolRendererViewStyle::QgsCategorizedSymbolRendererViewStyle( QStyle *style )
-  : QProxyStyle( style )
+QgsCategorizedSymbolRendererViewStyle::QgsCategorizedSymbolRendererViewStyle( QWidget *parent )
+  : QgsProxyStyle( parent )
 {}
 
 void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
@@ -443,7 +443,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   viewCategories->resizeColumnToContents( 1 );
   viewCategories->resizeColumnToContents( 2 );
 
-  viewCategories->setStyle( new QgsCategorizedSymbolRendererViewStyle( viewCategories->style() ) );
+  viewCategories->setStyle( new QgsCategorizedSymbolRendererViewStyle( viewCategories ) );
 
   connect( mModel, &QgsCategorizedSymbolRendererModel::rowsMoved, this, &QgsCategorizedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
