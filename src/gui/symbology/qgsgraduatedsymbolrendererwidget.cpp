@@ -377,8 +377,8 @@ void QgsGraduatedSymbolRendererModel::updateLabels()
 }
 
 // ------------------------------ View style --------------------------------
-QgsGraduatedSymbolRendererViewStyle::QgsGraduatedSymbolRendererViewStyle( QStyle *style )
-  : QProxyStyle( style )
+QgsGraduatedSymbolRendererViewStyle::QgsGraduatedSymbolRendererViewStyle( QWidget *parent )
+  : QgsProxyStyle( parent )
 {}
 
 void QgsGraduatedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
@@ -483,7 +483,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   }
 
 
-  viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated->style() ) );
+  viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
   mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 

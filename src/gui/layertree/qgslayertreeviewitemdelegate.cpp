@@ -25,9 +25,9 @@
 /// @cond PRIVATE
 
 QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView )
-  : mLayerTreeView( treeView )
+  : QgsProxyStyle( treeView )
+  , mLayerTreeView( treeView )
 {
-  setParent( treeView );
 }
 
 

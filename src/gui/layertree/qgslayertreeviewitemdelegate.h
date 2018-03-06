@@ -33,13 +33,13 @@ SIP_NO_FILE
 
 class QgsLayerTreeView;
 
-#include <QProxyStyle>
+#include "qgsproxystyle.h"
 #include <QStyledItemDelegate>
 
 /**
  * Proxy style to make the item text rect shorter so that indicators fit in without colliding with text
  */
-class QgsLayerTreeViewProxyStyle : public QProxyStyle
+class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
 {
   public:
     explicit QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView );
