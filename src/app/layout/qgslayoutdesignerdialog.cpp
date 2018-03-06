@@ -751,7 +751,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //listen out to status bar updates from the view
   connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
 
-  connect( QgsProject::instance(), &QgsProject::projectDirty, this, &QgsLayoutDesignerDialog::updateWindowTitle );
+  connect( QgsProject::instance(), &QgsProject::isDirtyChanged, this, &QgsLayoutDesignerDialog::updateWindowTitle );
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()

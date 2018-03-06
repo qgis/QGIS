@@ -1097,7 +1097,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      *
      */
-    void projectDirty( const bool dirty );
+    void isDirtyChanged( bool dirty );
 
   public slots:
 

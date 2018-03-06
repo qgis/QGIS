@@ -414,7 +414,7 @@ bool QgsProject::isDirty() const
 void QgsProject::setDirty( bool b )
 {
   mDirty = b;
-  emit projectDirty( mDirty );
+  emit isDirtyChanged( mDirty );
 }
 
 void QgsProject::setFileName( const QString &name )

@@ -1140,7 +1140,7 @@ advertised by this signal.
 :param layers: List of QgsMapLayer which were added to the legend.
 %End
 
-    void projectDirty( const bool dirty );
+    void isDirtyChanged( bool dirty );
 %Docstring
 Emitted when the project dirty status changes.
 
