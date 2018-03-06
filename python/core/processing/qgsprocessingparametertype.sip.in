@@ -23,6 +23,14 @@ Makes metadata of processing parameters available.
 %End
   public:
 
+    enum ParameterFlag
+    {
+      ExposeToModeler
+    };
+    typedef QFlags<QgsProcessingParameterType::ParameterFlag> ParameterFlags;
+
+
+
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
 %Docstring
 Creates a new parameter of this type.
@@ -48,7 +56,7 @@ This will be used in comboboxes and list widgets.
 A static id for this type which will be used for storing this parameter type.
 %End
 
-    virtual bool exposeToModeler() const;
+    virtual ParameterFlags flags() const;
 %Docstring
 Determines if this parameter is available in the modeler.
 The default implementation returns true.
