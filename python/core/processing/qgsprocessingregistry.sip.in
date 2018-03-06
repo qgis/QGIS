@@ -107,10 +107,11 @@ according to some user configuration.
 .. seealso:: :py:func:`algorithmById`
 %End
 
-    void addParameterType( QgsProcessingParameterType *type );
+    void addParameterType( QgsProcessingParameterType *type /Transfer/ );
 %Docstring
 Register a new parameter type for processing.
-Will emit parameterTypeAdded
+Ownership is transferred to the registry.
+Will emit parameterTypeAdded.
 
 .. seealso:: :py:func:`removeParameterType`
 
@@ -120,7 +121,8 @@ Will emit parameterTypeAdded
     void removeParameterType( QgsProcessingParameterType *type );
 %Docstring
 Unregister a custom parameter type from processing.
-Will emit parameterTypeRemoved
+The type will be deleted.
+Will emit parameterTypeRemoved.
 
 .. seealso:: :py:func:`addParameterType`
 

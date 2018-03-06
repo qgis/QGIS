@@ -134,17 +134,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     /**
      * Register a new parameter type for processing.
-     * Will emit parameterTypeAdded
+     * Ownership is transferred to the registry.
+     * Will emit parameterTypeAdded.
      *
      * \see removeParameterType
      *
      * \since QGIS 3.2
      */
-    void addParameterType( QgsProcessingParameterType *type );
+    void addParameterType( QgsProcessingParameterType *type SIP_TRANSFER );
 
     /**
      * Unregister a custom parameter type from processing.
-     * Will emit parameterTypeRemoved
+     * The type will be deleted.
+     * Will emit parameterTypeRemoved.
      *
      * \see addParameterType
      *
@@ -196,7 +198,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QMap<QString, QgsProcessingProvider *> mProviders;
 
     //! Hash of available parameter types by id. This object owns the pointers.
-    QHash<QString, QgsProcessingParameterType *> mParameterTypes;
+    QMap<QString, QgsProcessingParameterType *> mParameterTypes;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );
