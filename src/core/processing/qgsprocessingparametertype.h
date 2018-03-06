@@ -45,10 +45,10 @@ class CORE_EXPORT QgsProcessingParameterType
     virtual QString id() const = 0;
 
     /**
-     * Determines if this parameter is available in the modeller.
+     * Determines if this parameter is available in the modeler.
      * The default implementation returns true.
      */
-    virtual bool exposeToModeller() const;
+    virtual bool exposeToModeler() const;
 
     /**
      * Metadata for this parameter type. Can be used for example to define custom widgets.

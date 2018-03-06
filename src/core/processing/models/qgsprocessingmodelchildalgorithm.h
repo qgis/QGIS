@@ -175,7 +175,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     /**
      * Returns true if the list of parameters for this algorithm should be collapsed
-     * in the graphical modeller.
+     * in the graphical modeler.
      * \see setParametersCollapsed()
      * \see outputsCollapsed()
      */
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     /**
      * Sets whether the list of parameters for this algorithm should be collapsed
-     * in the graphical modeller.
+     * in the graphical modeler.
      * \see parametersCollapsed()
      * \see setOutputsCollapsed()
      */
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     /**
      * Returns true if the list of outputs for this algorithm should be collapsed
-     * in the graphical modeller.
+     * in the graphical modeler.
      * \see setParametersCollapsed()
      * \see parametersCollapsed()
      */
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     /**
      * Sets whether the list of outputs for this algorithm should be collapsed
-     * in the graphical modeller.
+     * in the graphical modeler.
      * \see outputsCollapsed()
      * \see setParametersCollapsed()
      */
@@ -274,9 +274,9 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     //! List of child algorithms from the parent model on which this algorithm is dependent
     QStringList mDependencies;
 
-    //! Whether list of parameters should be collapsed in the graphical modeller
+    //! Whether list of parameters should be collapsed in the graphical modeler
     bool mParametersCollapsed = true;
-    //! Whether list of outputs should be collapsed in the graphical modeller
+    //! Whether list of outputs should be collapsed in the graphical modeler
     bool mOutputsCollapsed = true;
 
 };
