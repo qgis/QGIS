@@ -193,10 +193,19 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
                                  'INFO_FORMAT=text%2Fxml&' +
-                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'width=600&height=400&srs=EPSG%3A4326&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&' +
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_geometry_filter')
+
+        # Test feature info request with filter geometry in non-layer CRS
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER_GEOM=POLYGON ((913213.6839952 5606021.5399693, 913215.6988780 5606021.5399693, 913215.6988780 5606015.09643322, 913213.6839952 5606015.0964332, 913213.6839952 5606021.5399693))',
+                                 'wms_getfeatureinfo_geometry_filter_3857')
 
         # Test feature info request with invalid query_layer
         self.wms_request_compare('GetFeatureInfo',
