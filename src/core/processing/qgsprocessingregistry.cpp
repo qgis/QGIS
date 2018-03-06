@@ -163,8 +163,11 @@ bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
   }
   else
   {
+    QgsLogger::warning( QStringLiteral( "Duplicate parameter type %1 (\"%2\") registered" ).arg( type->id(), type->name() ) );
+
     if ( mParameterTypes.value( type->id() ) != type )
       delete type;
+
     return false;
   }
 }

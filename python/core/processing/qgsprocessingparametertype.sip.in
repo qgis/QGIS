@@ -69,6 +69,9 @@ The default implementation returns an empty map.
 %End
 };
 
+QFlags<QgsProcessingParameterType::ParameterFlag> operator|(QgsProcessingParameterType::ParameterFlag f1, QFlags<QgsProcessingParameterType::ParameterFlag> f2);
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

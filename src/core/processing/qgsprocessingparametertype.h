@@ -86,4 +86,6 @@ class CORE_EXPORT QgsProcessingParameterType
     virtual QVariantMap metadata() const;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterType::ParameterFlags )
+
 #endif // QGSPROCESSINGPARAMETERTYPE_H
