@@ -1509,6 +1509,22 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+        # test adding a part to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)))')
+        g2 = QgsGeometry.fromWkt('CurvePolygon ((0 0,0 1,1 1,0 0))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a multisurface to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((20 0,20 1,21 1,20 0)))')
+        g2 = QgsGeometry.fromWkt('MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((20 0, 20 1, 21 1, 20 0)),Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
         # Test adding parts to empty geometry, should become first part
         empty = QgsGeometry()
         # if not default type specified, addPart should fail
