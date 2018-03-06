@@ -3135,6 +3135,11 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+    if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
+    {
+      pointRenderContext.setFlag( QgsRenderContext::Antialiasing, true );
+      p.setRenderHint( QPainter::Antialiasing, true );
+    }
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
