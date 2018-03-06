@@ -153,10 +153,20 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
   return creation.release();
 }
 
-void QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
+bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
 {
-  mParameterTypes.insert( type->id(), type );
-  emit parameterTypeAdded( type );
+  if ( !mParameterTypes.contains( type->id() ) )
+  {
+    mParameterTypes.insert( type->id(), type );
+    emit parameterTypeAdded( type );
+    return true;
+  }
+  else
+  {
+    if ( mParameterTypes.value( type->id() ) != type )
+      delete type;
+    return false;
+  }
 }
 
 void QgsProcessingRegistry::removeParameterType( QgsProcessingParameterType *type )

@@ -6002,7 +6002,12 @@ void TestQgsProcessing::addParameterType()
 {
   QgsProcessingRegistry reg;
   QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeAdded );
-  reg.addParameterType( new DummyParameterType() );
+  DummyParameterType *dpt = new DummyParameterType();
+  QVERIFY( reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( new DummyParameterType() ) );
   QCOMPARE( spy.count(), 1 );
 }
 

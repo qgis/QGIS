@@ -141,7 +141,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      *
      * \since QGIS 3.2
      */
-    void addParameterType( QgsProcessingParameterType *type SIP_TRANSFER );
+    bool addParameterType( QgsProcessingParameterType *type SIP_TRANSFER );
 
     /**
      * Unregister a custom parameter type from processing.
