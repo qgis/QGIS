@@ -107,7 +107,7 @@ according to some user configuration.
 .. seealso:: :py:func:`algorithmById`
 %End
 
-    void addParameterType( QgsProcessingParameterType *type /Transfer/ );
+    bool addParameterType( QgsProcessingParameterType *type /Transfer/ );
 %Docstring
 Register a new parameter type for processing.
 Ownership is transferred to the registry.
