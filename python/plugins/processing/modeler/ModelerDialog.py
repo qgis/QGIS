@@ -620,14 +620,12 @@ class ModelerDialog(BASE, WIDGET):
             return False
 
     def fillInputsTree(self):
-        from processing.core.Processing import Processing
-
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
         sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.name())
         for param in sortedParams:
-            if param.exposeToModeller():
+            if param.flags() & QgsProcessingParameterType.ExposeToModeler:
                 paramItem = QTreeWidgetItem()
                 paramItem.setText(0, param.name())
                 paramItem.setData(0, Qt.UserRole, param.id())

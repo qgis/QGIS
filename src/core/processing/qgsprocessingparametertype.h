@@ -35,6 +35,17 @@ class CORE_EXPORT QgsProcessingParameterType
   public:
 
     /**
+     * Each parameter type can offer a number of additional flags to finetune its behavior
+     * and capabilities.
+     */
+    enum ParameterFlag
+    {
+      ExposeToModeler = 1 //!< Is this parameter available in the modeler. Is set to on by default.
+    };
+    Q_DECLARE_FLAGS( ParameterFlags, ParameterFlag )
+
+
+    /**
      * Creates a new parameter of this type.
      */
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 SIP_FACTORY;
@@ -66,7 +77,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * Determines if this parameter is available in the modeler.
      * The default implementation returns true.
      */
-    virtual bool exposeToModeler() const;
+    virtual ParameterFlags flags() const;
 
     /**
      * Metadata for this parameter type. Can be used for example to define custom widgets.
