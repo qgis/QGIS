@@ -1,6 +1,6 @@
 #include "qgsprocessingparametertype.h"
 
-bool QgsProcessingParameterType::exposeToModeller() const
+bool QgsProcessingParameterType::exposeToModeler() const
 {
   return true;
 }

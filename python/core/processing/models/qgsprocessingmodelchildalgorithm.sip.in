@@ -181,7 +181,7 @@ dependent algorithms.
     bool parametersCollapsed() const;
 %Docstring
 Returns true if the list of parameters for this algorithm should be collapsed
-in the graphical modeller.
+in the graphical modeler.
 
 .. seealso:: :py:func:`setParametersCollapsed`
 
@@ -191,7 +191,7 @@ in the graphical modeller.
     void setParametersCollapsed( bool collapsed );
 %Docstring
 Sets whether the list of parameters for this algorithm should be collapsed
-in the graphical modeller.
+in the graphical modeler.
 
 .. seealso:: :py:func:`parametersCollapsed`
 
@@ -201,7 +201,7 @@ in the graphical modeller.
     bool outputsCollapsed() const;
 %Docstring
 Returns true if the list of outputs for this algorithm should be collapsed
-in the graphical modeller.
+in the graphical modeler.
 
 .. seealso:: :py:func:`setParametersCollapsed`
 
@@ -211,7 +211,7 @@ in the graphical modeller.
     void setOutputsCollapsed( bool collapsed );
 %Docstring
 Sets whether the list of outputs for this algorithm should be collapsed
-in the graphical modeller.
+in the graphical modeler.
 
 .. seealso:: :py:func:`outputsCollapsed`
 
