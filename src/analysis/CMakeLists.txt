@@ -58,6 +58,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmsimplify.cpp
