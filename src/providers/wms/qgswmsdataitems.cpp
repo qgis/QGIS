@@ -474,9 +474,17 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
+  QList<QAction *> lst;
+
   QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+  QAction *addDefaultServers = new QAction( tr( "Add Default XYZ Tiles Server…" ), parent );
+  connect( addDefaultServers, &QAction::triggered, this, &QgsXyzTileRootItem::addDefaultXYZServers );
+
+  lst.append( actionNew );
+  lst.append( addDefaultServers );
+
+  return lst;
 }
 
 void QgsXyzTileRootItem::newConnection()
@@ -486,6 +494,38 @@ void QgsXyzTileRootItem::newConnection()
     return;
 
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
+  refreshConnections();
+}
+
+void QgsXyzTileRootItem::addDefaultXYZServers()
+{
+  QMap<QString, QString> defaultXYZServers;
+  defaultXYZServers[QStringLiteral( "OpenStreetMap Mapnick" )] = QStringLiteral( "http://tile.openstreetmap.org/{z}/{x}/{y}.png" );
+  defaultXYZServers[QStringLiteral( "OSM Cycle Map" )] = QStringLiteral( "http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png" );
+  defaultXYZServers[QStringLiteral( "OSM Black and White" )] = QStringLiteral( "http://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" );
+  defaultXYZServers[QStringLiteral( "Esri Imagery/Satellite" )] = QStringLiteral( "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" );
+  defaultXYZServers[QStringLiteral( "Esri Streets" )] = QStringLiteral( "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}" );
+  defaultXYZServers[QStringLiteral( "Esri Topo" )] = QStringLiteral( "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}" );
+  defaultXYZServers[QStringLiteral( "Google Satellite" )] = QStringLiteral( "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}" );
+  defaultXYZServers[QStringLiteral( "Google Streets" )] = QStringLiteral( "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" );
+  defaultXYZServers[QStringLiteral( "Carto Positron" )] = QStringLiteral( "https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png" );
+  defaultXYZServers[QStringLiteral( "Stamen Terrain" )] = QStringLiteral( "http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png" );
+
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
+  QMap<QString, QString>::const_iterator i = defaultXYZServers.constBegin();
+  for ( ; i != defaultXYZServers.constEnd(); ++i )
+  {
+    QStringList global = settings.globalChildGroups();
+    if ( !global.contains( i.key() ) )
+    {
+      QgsXyzConnection conn;
+      conn.name = i.key();
+      conn.url = i.value();
+      QgsXyzConnectionUtils::addConnection( conn );
+    }
+  }
+  settings.endGroup();
   refreshConnections();
 }
 #endif
