@@ -172,7 +172,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsRectangle &rectangle);
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer);
 
     //! stores actual select rect
     QRect mSelectRect;
@@ -223,8 +223,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     // Last point in canvas CRS
     QgsPointXY mLastPoint;
-
-    QgsPolygon mLastPolygon;
 
     double mLastMapUnitsPerPixel;
 

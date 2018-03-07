@@ -89,7 +89,6 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 }
 
 QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
-//QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, IdentifySelection selectionMode )
 {
   QList<IdentifyResult> results;
 
@@ -121,9 +120,6 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     }
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    // TODO @vsklencar two version functions??
-    //identifyLayer( &results, layer, mLastPolygon, mLastExtent, mLastMapUnitsPerPixel, layerType );
     identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
   }
   else
@@ -188,11 +184,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-      QPoint point1 = mSelectRect.topLeft();
-      QPoint point2 = mSelectRect.bottomRight();
-      QgsRectangle rectangle = QgsRectangle(point1.x(), point1.y(), point2.x(), point2.y());
-
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), rectangle );
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ));
   }
   else
   {
@@ -200,7 +192,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsRectangle &rectangle)
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer)
 {
 
     if ( !layer || !layer->isSpatial() )
@@ -215,8 +207,15 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
     QMap< QString, QString > commonDerivedAttributes;
 
-    //commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
-    //commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+    QPoint point;
+    bool isSingleClick = mSelectionGeometry.type() == QgsWkbTypes::PointGeometry;
+    if (isSingleClick)
+    {
+        point = mSelectionGeometry.asPoint().toQPointF().toPoint();
+
+        commonDerivedAttributes.insert( tr( "(cqg)" ), formatXCoordinate( point ) );
+        commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+    }
 
     int featureCount = 0;
 
@@ -227,11 +226,25 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     // and then click somewhere off the globe, an exception will be thrown.
     try
     {
-      QgsRectangle r;
-      r = toLayerCoordinates( layer, rectangle );
+        QgsRectangle r;
+        if (isSingleClick)
+        {
+            int boxSize = (int) searchRadiusMU( mCanvas );
+            mSelectRect.setLeft( point.x() - boxSize);
+            mSelectRect.setRight( point.x() + boxSize );
+            mSelectRect.setTop( point.y() - boxSize );
+            mSelectRect.setBottom( point.y() + boxSize );
 
-      QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-      QgsFeature f;
+            QPoint point1 = mSelectRect.topLeft();
+            QPoint point2 = mSelectRect.bottomRight();
+
+            r = QgsRectangle(point1.x(), point1.y(), point2.x(), point2.y());;
+        } else {
+            r = toLayerCoordinates( layer, mSelectionGeometry.boundingBox());
+        }
+
+        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+        QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
           if (mSelectionGeometry.intersects(f.geometry()))
@@ -272,8 +285,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
       featureCount++;
 
       // TODO @vsklencar
-      //derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
-
+      if (isSingleClick)
+        derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
       derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
@@ -290,7 +303,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     return featureCount > 0;
 }
 
-// TODO @vsklencar -> used in QgsMapToolIdentifyFeature
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
   if ( !layer || !layer->isSpatial() )

@@ -236,6 +236,19 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QToolButton" name="mHelpToolButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Help</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

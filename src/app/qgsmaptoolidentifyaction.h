@@ -44,12 +44,17 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   public:
 
+    // Select features to identify by:
     enum IdentifySelection
     {
-        SelectFeatures = 0,
-        SelectPolygon = 1,
-        SelectFreehand = 2,
-        SelectRadius = 3
+        // single click or drawing a rectangle
+        SelectSimple,
+        // drawing a polygon
+        SelectPolygon,
+        // free hand selection
+        SelectFreehand,
+        // a circle
+        SelectRadius
     };
     Q_ENUM( IdentifySelection )
 
@@ -70,9 +75,9 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
-    void setSelectPolygonMode();
-
     void handleOnCanvasRelease(QgsMapMouseEvent *e);
+
+    void initRubberBand();
 
 public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
@@ -94,9 +99,11 @@ public slots:
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
-    bool mActive = false;
+    bool mSelectionActive = false;
 
-    QgsRubberBand *mRubberBand = nullptr;
+    //QgsRubberBand *mSelectionRubberBand = nullptr;
+    // TODO @vsklencar
+    std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 
     QColor mFillColor;
 
@@ -109,7 +116,7 @@ public slots:
     //! Center point for the radius
     QgsPointXY mRadiusCenter;
 
-    QPoint mInitDraggPos;
+    QPoint mInitDragPos;
 
     QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     QgsUnitTypes::AreaUnit displayAreaUnits() const override;
@@ -130,6 +137,7 @@ public slots:
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
     void keyReleaseEvent( QKeyEvent *e );
+
 
     friend class TestQgsMapToolIdentifyAction;
 };
