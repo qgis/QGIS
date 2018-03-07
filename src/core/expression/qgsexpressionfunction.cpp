@@ -2998,7 +2998,7 @@ static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionCo
   return dt.toString( format );
 }
 
-static QVariant fcnColorGrayscale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
   int avg = ( color.red() + color.green() + color.blue() ) / 3;
@@ -4133,7 +4133,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), 2, fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale" ), 1, fcnColorGrayscale, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ), 1, fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), 3, fcnColorMixRgb, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgb" ), 3, fcnColorRgb, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgba" ), 4, fncColorRgba, QStringLiteral( "Color" ) )
