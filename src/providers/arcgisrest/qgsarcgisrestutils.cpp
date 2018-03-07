@@ -33,6 +33,9 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include <QEventLoop>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -639,6 +642,65 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
 
   std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
   return symbol;
+}
+
+QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &rendererData )
+{
+  const QString type = rendererData.value( QStringLiteral( "type" ) ).toString();
+  if ( type == QLatin1String( "simple" ) )
+  {
+    const QVariantMap symbolProps = rendererData.value( QStringLiteral( "symbol" ) ).toMap();
+    std::unique_ptr< QgsSymbol > symbol = parseEsriSymbolJson( symbolProps );
+    if ( symbol )
+      return new QgsSingleSymbolRenderer( symbol.release() );
+    else
+      return nullptr;
+  }
+  else if ( type == QLatin1String( "uniqueValue" ) )
+  {
+    const QString attribute = rendererData.value( QStringLiteral( "field1" ) ).toString();
+    // TODO - handle field2, field3
+    const QVariantList categories = rendererData.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
+    QgsCategoryList categoryList;
+    for ( const QVariant &category : categories )
+    {
+      const QVariantMap categoryData = category.toMap();
+      const QString value = categoryData.value( QStringLiteral( "value" ) ).toString();
+      const QString label = categoryData.value( QStringLiteral( "label" ) ).toString();
+      std::unique_ptr< QgsSymbol > symbol = QgsArcGisRestUtils::parseEsriSymbolJson( categoryData.value( QStringLiteral( "symbol" ) ).toMap() );
+      if ( symbol )
+      {
+        categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
+      }
+    }
+
+    std::unique_ptr< QgsSymbol > defaultSymbol = parseEsriSymbolJson( rendererData.value( QStringLiteral( "defaultSymbol" ) ).toMap() );
+    if ( defaultSymbol )
+    {
+      categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( QStringLiteral( "defaultLabel" ) ).toString() ) );
+    }
+
+    if ( categoryList.empty() )
+      return nullptr;
+
+    return new QgsCategorizedSymbolRenderer( attribute, categoryList );
+  }
+  else if ( type == QLatin1String( "classBreaks" ) )
+  {
+    // currently unsupported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "heatmap" ) )
+  {
+    // currently unsupported
+    return nullptr;
+  }
+  else if ( type == QLatin1String( "vectorField" ) )
+  {
+    // currently unsupported
+    return nullptr;
+  }
+  return nullptr;
 }
 
 QColor QgsArcGisRestUtils::parseEsriColorJson( const QVariant &colorData )

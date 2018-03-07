@@ -31,6 +31,7 @@ class QgsSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsMarkerSymbol;
+class QgsFeatureRenderer;
 
 class QgsArcGisRestUtils
 {
@@ -54,6 +55,7 @@ class QgsArcGisRestUtils
     static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
+    static QgsFeatureRenderer *parseEsriRenderer( const QVariantMap &rendererData );
 
     static QColor parseEsriColorJson( const QVariant &colorData );
     static Qt::PenStyle parseEsriLineStyle( const QString &style );
