@@ -417,6 +417,17 @@ void QgsProject::setDirty( bool b )
   emit isDirtyChanged( mDirty );
 }
 
+void QgsProject::setPresetHomePath( const QString &path )
+{
+  if ( path == mHomePath )
+    return;
+
+  mHomePath = path;
+  emit homePathChanged();
+
+  setDirty( true );
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -488,6 +499,7 @@ void QgsProject::clear()
   mFile.setFileName( QString() );
   mProperties.clearKeys();
   mTitle.clear();
+  mHomePath.clear();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -894,6 +906,19 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // now get project title
   _getTitle( *doc, mTitle );
+
+  QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
+  if ( homePathNl.count() > 0 )
+  {
+    QDomElement homePathElement = homePathNl.at( 0 ).toElement();
+    QString homePath = homePathElement.attribute( QStringLiteral( "path" ) );
+    if ( !homePath.isEmpty() )
+      setPresetHomePath( homePath );
+  }
+  else
+  {
+    emit homePathChanged();
+  }
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
@@ -1369,6 +1394,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::QGIS_VERSION ) );
 
   doc->appendChild( qgisNode );
+
+  QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
+  homePathNode.setAttribute( QStringLiteral( "path" ), mHomePath );
+  qgisNode.appendChild( homePathNode );
 
   // title
   QDomElement titleNode = doc->createElement( QStringLiteral( "title" ) );
@@ -2077,11 +2106,31 @@ void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 
 QString QgsProject::homePath() const
 {
+  if ( !mHomePath.isEmpty() )
+  {
+    QFileInfo homeInfo( mHomePath );
+    if ( !homeInfo.isRelative() )
+      return mHomePath;
+  }
+
   QFileInfo pfi( fileName() );
   if ( !pfi.exists() )
-    return QString();
+    return mHomePath;
 
-  return pfi.canonicalPath();
+  if ( !mHomePath.isEmpty() )
+  {
+    // path is relative to project file
+    return QDir::cleanPath( pfi.path() + '/' + mHomePath );
+  }
+  else
+  {
+    return pfi.canonicalPath();
+  }
+}
+
+QString QgsProject::presetHomePath() const
+{
+  return mHomePath;
 }
 
 QgsRelationManager *QgsProject::relationManager() const
