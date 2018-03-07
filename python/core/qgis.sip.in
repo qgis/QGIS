@@ -85,8 +85,6 @@ The Qgis class provides global constants for use throughout the application.
 
 
 
-
-
 uint qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
