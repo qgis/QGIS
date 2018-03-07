@@ -314,26 +314,26 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 
 void QgsIdentifyResultsDialog::initSelectionModes()
 {
-    selectModeBtn = new QToolButton( mIdentifyToolbar );
-    selectModeBtn->setPopupMode( QToolButton::MenuButtonPopup );
-    QList<QAction *> selectActions;
-    selectActions << mActionSelectFeatures << mActionSelectPolygon
-                  << mActionSelectFreehand << mActionSelectRadius;
-    selectModeBtn->addActions( selectActions );
-    selectModeBtn->setDefaultAction( mActionSelectFeatures );
+  selectModeBtn = new QToolButton( mIdentifyToolbar );
+  selectModeBtn->setPopupMode( QToolButton::MenuButtonPopup );
+  QList<QAction *> selectActions;
+  selectActions << mActionSelectFeatures << mActionSelectPolygon
+                << mActionSelectFreehand << mActionSelectRadius;
+  selectModeBtn->addActions( selectActions );
+  selectModeBtn->setDefaultAction( mActionSelectFeatures );
 
-    mIdentifyToolbar->addWidget(selectModeBtn);
+  mIdentifyToolbar->addWidget( selectModeBtn );
 
-    connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
-    connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
-    connect( mActionSelectFreehand, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
-    connect( mActionSelectRadius, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectFreehand, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectRadius, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
 }
 
 QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mCanvas( canvas )
-  , mSelectionMode (QgsMapToolIdentifyAction::SelectSimple)
+  , mSelectionMode( QgsMapToolIdentifyAction::SelectSimple )
 {
   setupUi( this );
   connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
@@ -2006,32 +2006,32 @@ void QgsIdentifyResultsDialog::showHelp()
 
 void QgsIdentifyResultsDialog::setSelectionMode()
 {
-    QObject* obj = sender();
-    if( obj == mActionSelectFeatures )
-    {
-        selectModeBtn->setDefaultAction(mActionSelectFeatures);
-        mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
-    }
-    else if ( obj == mActionSelectPolygon )
-    {
-        selectModeBtn->setDefaultAction(mActionSelectPolygon);
-        mSelectionMode = QgsMapToolIdentifyAction::SelectPolygon;
-    }
-    else if ( obj == mActionSelectFreehand )
-    {
-        selectModeBtn->setDefaultAction(mActionSelectFreehand);
-        mSelectionMode = QgsMapToolIdentifyAction::SelectFreehand;
-    }
-    else if ( obj == mActionSelectRadius )
-    {
-        selectModeBtn->setDefaultAction(mActionSelectRadius);
-        mSelectionMode = QgsMapToolIdentifyAction::SelectRadius;
-    }
+  QObject *obj = sender();
+  if ( obj == mActionSelectFeatures )
+  {
+    selectModeBtn->setDefaultAction( mActionSelectFeatures );
+    mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
+  }
+  else if ( obj == mActionSelectPolygon )
+  {
+    selectModeBtn->setDefaultAction( mActionSelectPolygon );
+    mSelectionMode = QgsMapToolIdentifyAction::SelectPolygon;
+  }
+  else if ( obj == mActionSelectFreehand )
+  {
+    selectModeBtn->setDefaultAction( mActionSelectFreehand );
+    mSelectionMode = QgsMapToolIdentifyAction::SelectFreehand;
+  }
+  else if ( obj == mActionSelectRadius )
+  {
+    selectModeBtn->setDefaultAction( mActionSelectRadius );
+    mSelectionMode = QgsMapToolIdentifyAction::SelectRadius;
+  }
 }
 
 QgsMapToolIdentifyAction::IdentifySelection QgsIdentifyResultsDialog::selectionMode()
 {
-    return mSelectionMode;
+  return mSelectionMode;
 }
 
 

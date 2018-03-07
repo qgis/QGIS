@@ -47,14 +47,14 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     // Select features to identify by:
     enum IdentifySelection
     {
-        // single click or drawing a rectangle
-        SelectSimple,
-        // drawing a polygon
-        SelectPolygon,
-        // free hand selection
-        SelectFreehand,
-        // a circle
-        SelectRadius
+      // single click or drawing a rectangle
+      SelectSimple,
+      // drawing a polygon
+      SelectPolygon,
+      // free hand selection
+      SelectFreehand,
+      // a circle
+      SelectRadius
     };
     Q_ENUM( IdentifySelection )
 
@@ -75,11 +75,11 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
-    void handleOnCanvasRelease(QgsMapMouseEvent *e);
+    void handleOnCanvasRelease( QgsMapMouseEvent *e );
 
     void initRubberBand();
 
-public slots:
+  public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<IdentifyResult> &results );
 
@@ -120,17 +120,17 @@ public slots:
     QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
 
-    void selectFeaturesMoveEvent(QgsMapMouseEvent *e);
-    void selectFeaturesReleaseEvent(QgsMapMouseEvent *e);
+    void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
+    void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
 
-    void selectPolygonMoveEvent(QgsMapMouseEvent *e);
-    void selectPolygonReleaseEvent(QgsMapMouseEvent *e);
+    void selectPolygonMoveEvent( QgsMapMouseEvent *e );
+    void selectPolygonReleaseEvent( QgsMapMouseEvent *e );
 
-    void selectFreehandMoveEvent(QgsMapMouseEvent *e);
-    void selectFreehandReleaseEvent(QgsMapMouseEvent *e);
+    void selectFreehandMoveEvent( QgsMapMouseEvent *e );
+    void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
 
-    void selectRadiusMoveEvent(QgsMapMouseEvent *e);
-    void selectRadiusReleaseEvent(QgsMapMouseEvent *e);
+    void selectRadiusMoveEvent( QgsMapMouseEvent *e );
+    void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
