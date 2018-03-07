@@ -28,9 +28,6 @@
 #include "qgssourceselectprovider.h"
 #endif
 
-#include "qgssinglesymbolrenderer.h"
-#include "qgscategorizedsymbolrenderer.h"
-
 #include <QEventLoop>
 #include <QMessageBox>
 #include <QNetworkRequest>
@@ -295,61 +292,7 @@ void QgsAfsProvider::reloadData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  const QString type = mRendererDataMap.value( QStringLiteral( "type" ) ).toString();
-  if ( type == QLatin1String( "simple" ) )
-  {
-    const QVariantMap symbolProps = mRendererDataMap.value( QStringLiteral( "symbol" ) ).toMap();
-    std::unique_ptr< QgsSymbol > symbol = QgsArcGisRestUtils::parseEsriSymbolJson( symbolProps );
-    if ( symbol )
-      return new QgsSingleSymbolRenderer( symbol.release() );
-    else
-      return nullptr;
-  }
-  else if ( type == QLatin1String( "uniqueValue" ) )
-  {
-    const QString attribute = mRendererDataMap.value( QStringLiteral( "field1" ) ).toString();
-    // TODO - handle field2, field3
-    const QVariantList categories = mRendererDataMap.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
-    QgsCategoryList categoryList;
-    for ( const QVariant &category : categories )
-    {
-      const QVariantMap categoryData = category.toMap();
-      const QString value = categoryData.value( QStringLiteral( "value" ) ).toString();
-      const QString label = categoryData.value( QStringLiteral( "label" ) ).toString();
-      std::unique_ptr< QgsSymbol > symbol = QgsArcGisRestUtils::parseEsriSymbolJson( categoryData.value( QStringLiteral( "symbol" ) ).toMap() );
-      if ( symbol )
-      {
-        categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
-      }
-    }
-
-    std::unique_ptr< QgsSymbol > defaultSymbol = QgsArcGisRestUtils::parseEsriSymbolJson( mRendererDataMap.value( QStringLiteral( "defaultSymbol" ) ).toMap() );
-    if ( defaultSymbol )
-    {
-      categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), mRendererDataMap.value( QStringLiteral( "defaultLabel" ) ).toString() ) );
-    }
-
-    if ( categoryList.empty() )
-      return nullptr;
-
-    return new QgsCategorizedSymbolRenderer( attribute, categoryList );
-  }
-  else if ( type == QLatin1String( "classBreaks" ) )
-  {
-// currently unsupported
-    return nullptr;
-  }
-  else if ( type == QLatin1String( "heatmap" ) )
-  {
-// currently unsupported
-    return nullptr;
-  }
-  else if ( type == QLatin1String( "vectorField" ) )
-  {
-// currently unsupported
-    return nullptr;
-  }
-  return nullptr;
+  return QgsArcGisRestUtils::parseEsriRenderer( mRendererDataMap );
 }
 
 
