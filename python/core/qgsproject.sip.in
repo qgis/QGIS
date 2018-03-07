@@ -442,9 +442,34 @@ Sets the default area measurement units for the project.
 
     QString homePath() const;
 %Docstring
-Return project's home path
+Returns the project's home path. This will either be a manually set home path
+(see presetHomePath()) or the path containing the project file itself.
 
-:return: home path of project (or null QString if not set) *
+This method always returns the absolute path to the project's home. See
+presetHomePath() to retrieve any manual project home path override (e.g.
+relative home paths).
+
+.. seealso:: :py:func:`setPresetHomePath`
+
+.. seealso:: :py:func:`presetHomePath`
+
+.. seealso:: :py:func:`homePathChanged`
+%End
+
+    QString presetHomePath() const;
+%Docstring
+Returns any manual project home path setting, or an empty string if not set.
+
+This path may be a relative path. See homePath() to retrieve a path which is always
+an absolute path.
+
+.. seealso:: :py:func:`homePath`
+
+.. seealso:: :py:func:`setPresetHomePath`
+
+.. seealso:: :py:func:`homePathChanged`
+
+.. versionadded:: 3.2
 %End
 
     QgsRelationManager *relationManager() const;
@@ -937,7 +962,13 @@ Emitted when the file name of the project changes
 
     void homePathChanged();
 %Docstring
-Emitted when the home path of the project changes
+Emitted when the home path of the project changes.
+
+.. seealso:: :py:func:`setPresetHomePath`
+
+.. seealso:: :py:func:`homePath`
+
+.. seealso:: :py:func:`presetHomePath`
 %End
 
     void snappingConfigChanged( const QgsSnappingConfig &config );
@@ -1168,6 +1199,20 @@ be asked to save changes to the project before closing the current project.
 .. note::
 
    promoted to public slot in 2.16
+%End
+
+    void setPresetHomePath( const QString &path );
+%Docstring
+Sets the project's home ``path``. If an empty path is specified than the
+home path will be automatically determined from the project's file path.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`presetHomePath`
+
+.. seealso:: :py:func:`homePath`
+
+.. seealso:: :py:func:`homePathChanged`
 %End
 
 };

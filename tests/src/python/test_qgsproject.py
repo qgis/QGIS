@@ -857,6 +857,63 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue('source="./points.shp"' in content)
             self.assertTrue('source="./landsat_4326.tif"' in content)
 
+    def testHomePath(self):
+        p = QgsProject()
+        path_changed_spy = QSignalSpy(p.homePathChanged)
+        self.assertFalse(p.homePath())
+        self.assertFalse(p.presetHomePath())
+
+        # simulate save file
+        tmp_dir = QTemporaryDir()
+        tmp_file = "{}/project.qgs".format(tmp_dir.path())
+        with open(tmp_file, 'w') as f:
+            pass
+        p.setFileName(tmp_file)
+
+        # home path should be file path
+        self.assertEqual(p.homePath(), tmp_dir.path())
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 1)
+
+        # manually override home path
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        # no extra signal if path is unchanged
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        # setting file name should not affect home path is manually set
+        tmp_file_2 = "{}/project/project2.qgs".format(tmp_dir.path())
+        os.mkdir(tmp_dir.path() + '/project')
+        with open(tmp_file_2, 'w') as f:
+            pass
+        p.setFileName(tmp_file_2)
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        # clear manual path
+        p.setPresetHomePath('')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/project')
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 3)
+
+        # relative path
+        p.setPresetHomePath('../home')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/home')
+        self.assertEqual(p.presetHomePath(), '../home')
+        self.assertEqual(len(path_changed_spy), 4)
+
+        # relative path, no filename
+        p.setFileName('')
+        self.assertEqual(p.homePath(), '../home')
+        self.assertEqual(p.presetHomePath(), '../home')
+
 
 if __name__ == '__main__':
     unittest.main()
