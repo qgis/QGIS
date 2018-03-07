@@ -108,6 +108,7 @@ this has been made private and two publics methods are offered
 :return: a list of IdentifyResult*
 %End
 
+
     QgsIdentifyMenu *identifyMenu();
 %Docstring
 return a pointer to the identify menu which will be used in layer selection mode
@@ -140,6 +141,8 @@ this has been made private and two publics methods are offered
 %End
 
 
+
+
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 %Docstring
 Call the right method depending on layer type
@@ -147,6 +150,9 @@ Call the right method depending on layer type
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer);
+
+
 
 };
 

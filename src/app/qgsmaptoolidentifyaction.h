@@ -101,8 +101,6 @@ public slots:
 
     bool mSelectionActive = false;
 
-    //QgsRubberBand *mSelectionRubberBand = nullptr;
-    // TODO @vsklencar
     std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 
     QColor mFillColor;

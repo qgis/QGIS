@@ -58,7 +58,6 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
 
-  // TODO @vsklencar refactor with QgsMapToolSelectRectangle
   mSelectionRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
   mStrokeColor = QColor( 254, 58, 29, 100 );
@@ -120,13 +119,12 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease(QgsMapMouseEvent *e)
     // enable the right click for extended menu so it behaves as a contextual menu
     // this would be removed when a true contextual menu is brought in QGIS
     bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
-    // TODO @vsklencar
     extendedMenu = extendedMenu && !mJustFinishedSelection;
     identifyMenu()->setExecWithSingleResult( extendedMenu );
     identifyMenu()->setShowFeatureActions( extendedMenu );
     IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
-    // TODO @vsklencar get selection mode before handling
-    mSelectionMode = mResultsDialog->selectionMode();
+//    // TODO @vsklencar get selection mode before handling
+//    mSelectionMode = mResultsDialog->selectionMode();
 
     QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
 
@@ -224,7 +222,6 @@ void QgsMapToolIdentifyAction::updateRadiusFromEdge( QgsPointXY &radiusEdge )
     mSelectionRubberBand->closePoints( true );
 }
 
-// TODO @vsklencar refactor with QgsMapToolSelectRectangle
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
 
