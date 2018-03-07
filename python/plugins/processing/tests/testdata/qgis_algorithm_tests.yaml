@@ -1513,6 +1513,7 @@ tests:
         - 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
         - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         - c05cd8dbfb00200a3803dcdc74ad177588eb8379867c4046463f73f1
+        - 8f59f545b5df01f213b7a2233eb364d05b5801676d1f4285ad1225a1
         type: rasterhash
 
   - algorithm: qgis:relief
