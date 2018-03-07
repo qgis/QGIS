@@ -1,89 +1,106 @@
 matrix:
   fast_finish: true
   include:
-  - os: linux
-    services: docker
-    language: python
-    env:
-    - TRAVIS_CONFIG=linux
-    - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-    - DOCKER_TAG=$(if [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]]; then if [[ $TRAVIS_EVENT_TYPE
-      =~ push ]]; then echo $TRAVIS_BRANCH | sed 's/master/latest/'; elif [[ $TRAVIS_EVENT_TYPE
-      =~ pull_request ]] && [[ `git log --format=%B --no-merges -n 1` =~ \[dockerdeps\]
-      ]]; then echo "PR-$TRAVIS_PULL_REQUEST"; else echo "latest"; fi; else echo "latest";
-      fi)
-    - DOCKER_DEPS_PUSH=$(if [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE
-      =~ push ]] || [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE
-      =~ pull_request ]] && [[ `git log --format=%B --no-merges -n 1` =~ \[dockerdeps\]
-      ]]; then echo "true"; else echo "false"; fi )
-    - DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies'
-      ]] && echo "true" || echo "false" )
-    - DOCKER_QGIS_IMAGE_BUILD_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE
-      =~ cron ]] && echo "true" || echo "false" )
-    - QGIS_LAST_BUILD_SUCCESS=true
-    - TRAVIS_TIMESTAMP=$(date +%s)
-    - CCACHE_DIR=${HOME}/.ccache
-    dist: trusty
-    sudo: false
-    cache:
-      apt: true
-      pip: true
-      directories:
-      - "$HOME/.ccache"
-      timeout: 1000
-    compiler: clang
-    python: '3.5'
-    addons:
-      apt:
-        sources:
-        packages:
-  - os: linux
-    language: python
-    python: '3.5'
-    env:
-    - TRAVIS_CONFIG=code_layout
-    dist: trusty
-    sudo: false
-    cache:
-      apt: true
-    addons:
-      apt:
-        sources:
-        - sourceline: ppa:jonathonf/backports
-        - sourceline: ppa:sergey-dryabzhinsky/packages
-        packages:
-        - doxygen
-        - graphviz
-        - txt2tags
-        - pkg-config
-        - xvfb
-        - flip
-        - perl
-        - silversearcher-ag
-        - expect-dev
-        - coreutils
-        - libyaml-tiny-perl
+    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
+    - os: linux
+      services: docker
+      language: python # This lets us use newer python versions from virtualenv
+      env:
+        - TRAVIS_CONFIG=linux
+        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE =~ push ]] && echo "true" || echo "false" )
+        - DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
+        # on cron job, QGIS image is built and push without testing
+        - DOCKER_QGIS_IMAGE_BUILD_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE =~ cron ]] && echo "true" || echo "false" )
+        - QGIS_LAST_BUILD_SUCCESS=true # TODO use API to know if last build succeed https://developer.travis-ci.com/resource/builds
+        - TRAVIS_TIMESTAMP=$(date +%s)
+        - CCACHE_DIR=${HOME}/.ccache
+      dist: trusty
+      sudo: false
+      cache:
+        apt: true
+        pip: true
+        directories:
+          - $HOME/.ccache
+        timeout: 1000
+      compiler: clang
+      python: "3.5"
+      addons:
+        apt:
+          sources:
+          packages:
+
+
+    - os: linux
+      language: python
+      python: "3.5"
+      env:
+        - TRAVIS_CONFIG=code_layout
+      dist: trusty
+      sudo: false
+      cache:
+        apt: true
+      addons:
+        apt:
+          sources:
+            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
+          packages:
+            - doxygen
+            - graphviz
+            - txt2tags
+            - pkg-config
+            - xvfb
+            - flip
+            # used for spell checks
+            - perl  # sipify, lookahead regex in spell check script
+            - silversearcher-ag
+            - expect-dev  # unbuffer
+            - coreutils
+            - libyaml-tiny-perl
+    # OSX based build with QT4 and Python 2
+#    - os: osx
+#      osx_image: xcode8.3 # MacOS 10.12: Sierra
+#      cache:
+#        pip: true
+#        directories:
+#          - $HOME/.ccache
+#      env:
+#        - TRAVIS_CONFIG=macos
+#        - IGNORE_BUILD_FAILURES=YES
+#
+#  allow_failures:
+#    - os: osx
+
 git:
   depth: 120
+
+notifications:
+  irc: "chat.freenode.net#qgis-test"
+  on_failure: change
+  on_success: change
+  skip_join: true
+
 notifications:
   webhooks:
     urls:
-    - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
-    on_success: change
-    on_failure: always
-    on_start: never
+      - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always # options: [always|never|change] default: always
+    on_start: never # default: never
+
 before_install:
-- "./.ci/travis/${TRAVIS_CONFIG}/before_install.sh"
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_install.sh
+
 install:
-- "./.ci/travis/${TRAVIS_CONFIG}/install.sh"
+  - ./.ci/travis/${TRAVIS_CONFIG}/install.sh
+
 before_script:
-- "./.ci/travis/${TRAVIS_CONFIG}/before_script.sh"
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_script.sh
+
 script:
-- "./.ci/travis/${TRAVIS_CONFIG}/script.sh"
+  - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
+
 after_script:
-- "./.ci/travis/${TRAVIS_CONFIG}/after_script.sh"
-env:
-  global:
-  # docker usr & pwd
-  - secure: Cg2F2wKuh8q4dAPZW/vXHhNUMsvwAlNGTYQSXmiuGiHupYZ4rkOPagal9HGFKcp09Fpjus/yGmIh9HqNeOQB498xIbqbfCDvD57haFwXXOWE259WRgu6jE41+B2jLuyjUog3dbHoUwLOMmdkm1qI4EOTekyAFv9fhHfkFMNSlFA=
-  - secure: CvQJKEvzm8d7YBUoK9CjDdRkNKFBxs4U4k4q0m7yMg2NnUNgZh1rA26BDwFQJWFODiWNeYMlw6WlPfMiLi8rBTPZodtzapiasExbLc7jX7tHKkuEJsQBC4pcZfQ8FbPZxhR4W42Aj36nfqmE+QBZA2BPwAVmrF3buFN3j0oDzUM=
+  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh
