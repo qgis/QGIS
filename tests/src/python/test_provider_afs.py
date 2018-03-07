@@ -27,7 +27,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsApplication,
     QgsSettings,
-    QgsRectangle
+    QgsRectangle,
+    QgsCategorizedSymbolRenderer
 )
 from qgis.testing import (start_app,
                           unittest
@@ -458,6 +459,108 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         l.type = 'WWW:LINK'
         l.url = 'http://' + sanitize(endpoint, '')
         self.assertEqual(vl.metadata().links(), [l])
+
+    def testRenderer(self):
+        """ Test that renderer is correctly acquired from provider """
+
+        endpoint = self.basetestpath + '/renderer_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "drawingInfo":{"renderer": {
+    "type": "uniqueValue",
+    "field1": "COUNTRY",
+    "uniqueValueInfos": [
+      {
+        "value": "US",
+        "symbol": {
+          "color": [
+            253,
+            127,
+            111,
+            255
+          ],
+          "size": 12.75,
+          "angle": 0,
+          "xoffset": 0,
+          "yoffset": 0,
+          "type": "esriSMS",
+          "style": "esriSMSCircle",
+          "outline": {
+            "color": [
+              26,
+              26,
+              26,
+              255
+            ],
+            "width": 0.75,
+            "type": "esriSLS",
+            "style": "esriSLSSolid"
+          }
+        },
+        "label": "US"
+      },
+      {
+        "value": "Canada",
+        "symbol": {
+          "color": [
+            126,
+            176,
+            213,
+            255
+          ],
+          "size": 12.75,
+          "angle": 0,
+          "xoffset": 0,
+          "yoffset": 0,
+          "type": "esriSMS",
+          "style": "esriSMSCircle",
+          "outline": {
+            "color": [
+              26,
+              26,
+              26,
+              255
+            ],
+            "width": 0.75,
+            "type": "esriSLS",
+            "style": "esriSLSSolid"
+          }
+        },
+        "label": "Canada"
+      }]}},
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertIsNotNone(vl.dataProvider().createRenderer())
+        self.assertIsInstance(vl.renderer(), QgsCategorizedSymbolRenderer)
+        self.assertEqual(len(vl.renderer().categories()), 2)
+        self.assertEqual(vl.renderer().categories()[0].value(), 'US')
+        self.assertEqual(vl.renderer().categories()[1].value(), 'Canada')
 
 
 if __name__ == '__main__':
