@@ -1316,6 +1316,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), mComboCopyFeatureFormat->currentData().toInt() );
+  QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
