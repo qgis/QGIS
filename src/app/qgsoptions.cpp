@@ -1315,10 +1315,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
-  QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
-
-  bool createRasterLegendIcons = mSettings->value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/createRasterLegendIcons" ), cbxCreateRasterLegendIcons->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), mComboCopyFeatureFormat->currentData().toInt() );
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
