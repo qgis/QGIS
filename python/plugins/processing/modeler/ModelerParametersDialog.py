@@ -360,9 +360,10 @@ class ModelerParametersDialog(QDialog):
             else:
                 item = QComboBox()
                 item.setEditable(True)
+                item.addItem(unicode(param.default or "")+" (the default)", param.default)
                 for desc, val in options:
                     item.addItem(desc, val)
-                item.setEditText(unicode(param.default or ""))
+                item.setCurrentIndex(0)
         elif isinstance(param, ParameterTableField):
             item = QComboBox()
             item.setEditable(True)
@@ -379,9 +380,10 @@ class ModelerParametersDialog(QDialog):
             item = QComboBox()
             item.setEditable(True)
             numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
+            item.addItem(unicode(param.default), param.default)
             for n in numbers:
                 item.addItem(self.resolveValueDescription(n), n)
-            item.setEditText(unicode(param.default))
+            item.setCurrentIndex(0)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterExtent):

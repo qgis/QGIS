@@ -50,6 +50,7 @@ class rasterize(GdalAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
+    BURN = 'BURN'
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
@@ -80,10 +81,13 @@ class rasterize(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute field'), self.INPUT))
+                                              self.tr('Attribute field'), self.INPUT, optional=True))
+        self.addParameter(ParameterNumber(self.BURN,
+                                          self.tr('Burn value (used unless attribute is given)'), default=1.0, optional=True))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
-                                             self.tr('Set output raster size (ignored if above option is checked)'),
-                                             ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
+                                             self.tr('Define whether to specify target size or resolution'),
+                                             ['Horizontal, Vertical is target size in pixels',
+                                              'Horizontal, Vertical is target resolution in georeferenced units'], 1))
         self.addParameter(ParameterNumber(self.WIDTH,
                                           self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT,
@@ -143,9 +147,13 @@ class rasterize(GdalAlgorithm):
         rastext = unicode(self.getParameterValue(self.RAST_EXT))
 
         arguments = []
-        arguments.append('-a')
-        arguments.append(unicode(self.getParameterValue(self.FIELD)))
-
+        attr = self.getParameterValue(self.FIELD)
+        if (attr):
+            arguments.append('-a')
+            arguments.append(unicode(attr))
+        else:
+            arguments.append('-burn')
+            arguments.append(str(self.getParameterValue(self.BURN)))
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
