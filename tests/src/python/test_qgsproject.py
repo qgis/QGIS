@@ -24,7 +24,8 @@ from qgis.core import (QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
                        QgsRasterLayer,
-                       QgsMapLayer)
+                       QgsMapLayer,
+                       QgsExpressionContextUtils)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -880,6 +881,9 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.homePath(), '/tmp/my_path')
         self.assertEqual(p.presetHomePath(), '/tmp/my_path')
         self.assertEqual(len(path_changed_spy), 2)
+        # check project scope
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
 
         # no extra signal if path is unchanged
         p.setPresetHomePath('/tmp/my_path')
@@ -897,11 +901,17 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.presetHomePath(), '/tmp/my_path')
         self.assertEqual(len(path_changed_spy), 2)
 
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
+
         # clear manual path
         p.setPresetHomePath('')
         self.assertEqual(p.homePath(), tmp_dir.path() + '/project')
         self.assertFalse(p.presetHomePath())
         self.assertEqual(len(path_changed_spy), 3)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/project')
 
         # relative path
         p.setPresetHomePath('../home')
@@ -909,10 +919,16 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.presetHomePath(), '../home')
         self.assertEqual(len(path_changed_spy), 4)
 
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/home')
+
         # relative path, no filename
         p.setFileName('')
         self.assertEqual(p.homePath(), '../home')
         self.assertEqual(p.presetHomePath(), '../home')
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '../home')
 
 
 if __name__ == '__main__':
