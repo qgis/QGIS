@@ -235,19 +235,19 @@ def run(item, action, mainwindow):
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:
             nodeLayer = groupFaces.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         groupNodes = QgsLayerTreeGroup(u'Nodes')
         for layer in nodeLayers:
             nodeLayer = groupNodes.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         groupEdges = QgsLayerTreeGroup(u'Edges')
         for layer in edgeLayers:
             nodeLayer = groupEdges.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         supergroup = QgsLayerTreeGroup(u'Topology "%s"' % toponame)
