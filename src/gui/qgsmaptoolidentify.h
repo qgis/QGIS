@@ -47,7 +47,6 @@ class QgsDistanceArea;
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
     Q_OBJECT
-    Q_FLAGS( LayerType )
 
   public:
 
@@ -59,6 +58,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       TopDownAll,
       LayerSelection
     };
+    Q_ENUM( IdentifyMode )
 
     enum Type
     {
@@ -67,6 +67,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       AllLayers = VectorLayer | RasterLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
+    Q_FLAG( LayerType )
 
     struct IdentifyResult
     {

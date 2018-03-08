@@ -276,7 +276,7 @@ void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QW
 {
 }
 
-void QgsLayoutItemGroup::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 {
   // nothing to draw here!
 }

@@ -29,7 +29,7 @@ files also store the layer tree info for the exported layers, including group in
 %Docstring
 Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
 %End
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, const QgsReadWriteContext &context );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, QgsReadWriteContext &context );
 %Docstring
 Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
 %End
@@ -54,7 +54,7 @@ This is a low-level routine that does not write layer tree.
 .. seealso:: :py:func:`exportLayerDefinition`
 %End
 
-    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context ) /Factory/;
+    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates new layers from a layer definition document.
 This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins

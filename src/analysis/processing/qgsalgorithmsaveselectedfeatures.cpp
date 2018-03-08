@@ -21,7 +21,7 @@
 
 QgsProcessingAlgorithm::Flags QgsSaveSelectedFeatures::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )

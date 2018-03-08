@@ -92,7 +92,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
       }
 
-      menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+      menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
       menu->addAction( actions->actionAddGroup( menu ) );
     }
@@ -188,7 +188,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
 
             menuStyleManager->addSeparator();
-            QAction *editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
+            QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menuStyleManager );
             //store the layer id in action, so we can later retrieve the corresponding layer
             editSymbolAction->setProperty( "layerId", vlayer->id() );
             connect( editSymbolAction, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::editVectorSymbol );
@@ -242,12 +242,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           duplicateLayersAction->setEnabled( false );
 
         // save as vector file
-        menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
-        menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        menu->addAction( tr( "Save as…" ), QgisApp::instance(), SLOT( saveAsFile() ) );
+        menu->addAction( tr( "Save as Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
           action->setEnabled( !vlayer->isEditable() );
         }
 
@@ -257,8 +257,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
       else if ( rlayer )
       {
-        menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
-        menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        menu->addAction( tr( "Save As…" ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+        menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
       }
       else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
       {
@@ -281,7 +281,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
-        menu->addAction( tr( "Edit virtual layer settings" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
+        menu->addAction( tr( "Edit Virtual Layer…" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
       }
     }
 
@@ -329,7 +329,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addSeparator();
       }
 
-      QAction *editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menu );
       //store the layer id and rule key in action, so we can later retrieve the corresponding
       //legend node, if it still exists
       editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );

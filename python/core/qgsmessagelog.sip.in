@@ -29,27 +29,18 @@ QgsMessageLog is not usually directly created, but rather accessed through
 %End
   public:
 
-    enum MessageLevel
-    {
-      ALL,
-      INFO,
-      WARNING,
-      CRITICAL,
-      NONE
-    };
-
     QgsMessageLog();
 %Docstring
 Constructor for QgsMessageLog.
 %End
 
-    static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning );
 %Docstring
 add a message to the instance (and create it if necessary)
 %End
 
   signals:
-    void messageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
     void messageReceived( bool received );
 
@@ -71,7 +62,7 @@ be the right choice for apps without GUI.
     QgsMessageLogConsole();
 
   public slots:
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
 
 /************************************************************************

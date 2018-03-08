@@ -16,6 +16,18 @@
 
 class QgsSpatialIndex
 {
+%Docstring
+
+A spatial index for QgsFeature objects.
+
+QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
+
+.. note::
+
+   While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
+   class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
+   be used across multiple threads.
+%End
 
 %TypeHeaderCode
 #include "qgsspatialindex.h"
@@ -25,7 +37,7 @@ class QgsSpatialIndex
 
     QgsSpatialIndex();
 %Docstring
-Constructor - creates R-tree
+Constructor for QgsSpatialIndex. Creates an empty R-tree index.
 %End
 
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
@@ -61,9 +73,9 @@ Copy constructor
 
 
 
-    bool insertFeature( const QgsFeature &f );
+    bool insertFeature( const QgsFeature &feature );
 %Docstring
-Add feature to index
+Adds a ``feature`` to the index.
 %End
 
     bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
@@ -75,21 +87,33 @@ Add a feature ``id`` to the index with a specified bounding box.
 .. versionadded:: 3.0
 %End
 
-    bool deleteFeature( const QgsFeature &f );
+    bool deleteFeature( const QgsFeature &feature );
 %Docstring
-Remove feature from index
+Removes a ``feature`` from the index.
 %End
 
 
 
-    QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
+    QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;
 %Docstring
-Returns features that intersect the specified rectangle
+Returns a list of features with a bounding box which intersects the specified ``rectangle``.
+
+.. note::
+
+   The intersection test is performed based on the feature bounding boxes only, so for non-point
+   geometry features it is necessary to manually test the returned features for exact geometry intersection
+   when required.
 %End
 
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 %Docstring
-Returns nearest neighbors (their count is specified by second parameter)
+Returns nearest neighbors to a ``point``. The number of neighbours returned is specified
+by the ``neighbours`` argument.
+
+.. note::
+
+   The nearest neighbour test is performed based on the feature bounding boxes only, so for non-point
+   geometry features this method is not guaranteed to return the actual closest neighbours.
 %End
 
 

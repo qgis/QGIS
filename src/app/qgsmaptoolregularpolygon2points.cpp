@@ -36,11 +36,11 @@ QgsMapToolRegularPolygon2Points::~QgsMapToolRegularPolygon2Points()
 
 void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    mPoints.append( point );
 
     if ( !mPoints.isEmpty() )
     {
@@ -55,6 +55,8 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
   }
   else if ( e->button() == Qt::RightButton )
   {
+    mPoints.append( point );
+
     deactivate();
     if ( mParentTool )
     {
@@ -65,10 +67,10 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
 
 void QgsMapToolRegularPolygon2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
   if ( mTempRubberBand )
   {
-    mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), mapPoint, mNumberSidesSpinBox->value() );
+    mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value() );
     mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
   }
 }

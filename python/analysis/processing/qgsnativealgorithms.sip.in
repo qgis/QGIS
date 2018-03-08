@@ -33,6 +33,8 @@ Constructor for QgsNativeAlgorithms.
 
     virtual QString id() const;
 
+    virtual QString helpId() const;
+
     virtual QString name() const;
 
     virtual bool supportsNonFileBasedOutput() const;

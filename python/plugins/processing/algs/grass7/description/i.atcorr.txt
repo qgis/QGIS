@@ -2,11 +2,11 @@ i.atcorr
 Performs atmospheric correction using the 6S algorithm.
 Imagery (i.*)
 QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
-QgsProcessingParameterRange|range|Input imagery range [0,255]|0,255|True
+QgsProcessingParameterRange|range|Input imagery range [0,255]|QgsProcessingParameterNumber.Integer|0,255|True
 QgsProcessingParameterRasterLayer|elevation|Input altitude raster map in m (optional)|None|True
 QgsProcessingParameterRasterLayer|visibility|Input visibility raster map in km (optional)|None|True
-QgsProcessingParameterFile|parameters|Name of input text file|False|txt|None|False
-QgsProcessingParameterRange|rescale|Rescale output raster map [0,255]|0,255|True
+QgsProcessingParameterFile|parameters|Name of input text file|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterRange|rescale|Rescale output raster map [0,255]|QgsProcessingParameterNumber.Integer|0,255|True
 QgsProcessingParameterRasterDestination|output|Atmospheric correction
 *QgsProcessingParameterBoolean|-i|Output raster map as integer|False
 *QgsProcessingParameterBoolean|-r|Input raster map converted to reflectance (default is radiance)|False

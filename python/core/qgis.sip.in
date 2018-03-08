@@ -35,6 +35,15 @@ The Qgis class provides global constants for use throughout the application.
     static const char *QGIS_DEV_VERSION;
 
 
+    enum MessageLevel
+    {
+      Info,
+      Warning,
+      Critical,
+      Success,
+      None
+    };
+
     enum DataType
     {
       UnknownDataType,
@@ -69,6 +78,9 @@ The Qgis class provides global constants for use throughout the application.
 
     static const double UI_SCALE_FACTOR;
 
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 
@@ -196,6 +208,10 @@ const double DEFAULT_SEGMENT_EPSILON;
 
 
 typedef unsigned long long qgssize;
+
+
+
+
 
 
 

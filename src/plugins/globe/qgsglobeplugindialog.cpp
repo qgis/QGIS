@@ -49,11 +49,11 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget *parent, Qt::WFlags fl )
   tmsImageryMenu->addAction( "Readymap: High resolution insets from various world locations", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/3/" );
   tmsImageryMenu->addAction( "Readymap: Global Land Cover Facility 15m Landsat", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/6/" );
   tmsImageryMenu->addAction( "Readymap: NASA BlueMarble + Landsat + Ocean Masking Layer", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/7/" );
-  tmsImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomTMSImagery() ) );
+  tmsImageryMenu->addAction( tr( "Custom…" ), this, SLOT( addCustomTMSImagery() ) );
   addImageryMenu->addAction( tr( "TMS" ) )->setMenu( tmsImageryMenu );
 
   QMenu *wmsImageryMenu = new QMenu( this );
-  wmsImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomWMSImagery() ) );
+  wmsImageryMenu->addAction( tr( "Custom…" ), this, SLOT( addCustomWMSImagery() ) );
   addImageryMenu->addAction( tr( "WMS" ) )->setMenu( wmsImageryMenu );
 
   QMenu *fileImageryMenu = new QMenu( this );
@@ -63,7 +63,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget *parent, Qt::WFlags fl )
     worldtif = QDir::cleanPath( QgsApplication::buildSourcePath() + "/src/plugins/globe/images/world.tif" );
   }
   fileImageryMenu->addAction( tr( "world.tif" ), this, SLOT( addRasterImagery() ) )->setData( worldtif );
-  fileImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomRasterImagery() ) );
+  fileImageryMenu->addAction( tr( "Custom…" ), this, SLOT( addCustomRasterImagery() ) );
   addImageryMenu->addAction( tr( "Raster" ) )->setMenu( fileImageryMenu );
 
   mAddImageryButton->setMenu( addImageryMenu );
@@ -73,11 +73,11 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget *parent, Qt::WFlags fl )
 
   QMenu *tmsElevationMenu = new QMenu( this );
   tmsElevationMenu->addAction( "Readymap: SRTM 90m Elevation Data", this, SLOT( addTMSElevation() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/9/" );
-  tmsElevationMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomTMSElevation() ) );
+  tmsElevationMenu->addAction( tr( "Custom…" ), this, SLOT( addCustomTMSElevation() ) );
   addElevationMenu->addAction( tr( "TMS" ) )->setMenu( tmsElevationMenu );
 
   QMenu *fileElevationMenu = new QMenu( this );
-  fileElevationMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomRasterElevation() ) );
+  fileElevationMenu->addAction( tr( "Custom…" ), this, SLOT( addCustomRasterElevation() ) );
   addElevationMenu->addAction( tr( "Raster" ) )->setMenu( fileElevationMenu );
 
   mAddElevationButton->setMenu( addElevationMenu );
@@ -341,7 +341,7 @@ void QgsGlobePluginDialog::addCustomTMSImagery()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add TMS Imagery" ), validationError );
     }
     else
     {
@@ -358,7 +358,7 @@ void QgsGlobePluginDialog::addCustomWMSImagery()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add WMS Imagery" ), validationError );
     }
     else
     {
@@ -402,7 +402,7 @@ void QgsGlobePluginDialog::addCustomTMSElevation()
     QString validationError;
     if ( !validateRemoteUri( url, validationError ) )
     {
-      QMessageBox::warning( this, tr( "Invalid URL" ), validationError );
+      QMessageBox::warning( this, tr( "Add TMS Elevation" ), validationError );
     }
     else
     {

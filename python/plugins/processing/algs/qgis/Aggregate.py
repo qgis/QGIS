@@ -170,7 +170,7 @@ class Aggregate(QgisAlgorithm):
         return True
 
     def processAlgorithm(self, parameters, context, feedback):
-        expr_context = self.createExpressionContext(parameters, context)
+        expr_context = self.createExpressionContext(parameters, context, self.source)
         self.group_by_expr.prepare(expr_context)
 
         # Group features in memory layers

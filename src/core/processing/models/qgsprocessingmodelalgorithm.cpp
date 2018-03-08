@@ -78,6 +78,12 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
+QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
+{
+  // TODO - check child algorithms, if they all support threading, then the model supports threading...
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
@@ -768,15 +774,6 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
-
-      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param.get() ) )
-      {
-        std::unique_ptr< QgsProcessingOutputDefinition > output( destParam->toOutputDefinition() );
-        if ( output )
-        {
-          addOutput( output.release() );
-        }
-      }
       addParameter( param.release() );
     }
   }
@@ -862,6 +859,14 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
     // with no way for users to repair them
     if ( param )
       addParameter( param.release() );
+    else
+    {
+      QVariantMap map = paramDefIt.value().toMap();
+      QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
+      QString name = map.value( QStringLiteral( "name" ) ).toString();
+
+      QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
+    }
   }
 
   updateDestinationParameters();
@@ -1048,7 +1053,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
-          dependsOnChildAlgorithmsRecursive( childIt->childId(), depends );
+          dependentChildAlgorithmsRecursive( childIt->childId(), depends );
           break;
         }
       }

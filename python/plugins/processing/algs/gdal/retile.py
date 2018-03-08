@@ -139,8 +139,6 @@ class retile(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
 
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
-
         output_csv_param = QgsProcessingParameterFileDestination(self.OUTPUT_CSV,
                                                                  self.tr('CSV file containing the tile(s) georeferencing information'),
                                                                  'CSV files (*.csv)',

@@ -35,7 +35,7 @@
 #ifndef COORDINATECAPTURE_H
 #define COORDINATECAPTURE_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 #include <QPointer>
 

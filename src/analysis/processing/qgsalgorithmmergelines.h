@@ -38,7 +38,6 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsMergeLinesAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -52,7 +51,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsProcessing::SourceType outputLayerType() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

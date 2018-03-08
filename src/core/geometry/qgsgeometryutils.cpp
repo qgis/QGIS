@@ -76,7 +76,7 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   {
     currentDist = QgsGeometryUtils::sqrDistance2D( pt, vertex );
     // The <= is on purpose: for geometries with closing vertices, this ensures
-    // that the closing vertex is retuned. For the node tool, the rubberband
+    // that the closing vertex is returned. For the vertex tool, the rubberband
     // of the closing vertex is above the opening vertex, hence with the <=
     // situations where the covered opening vertex rubberband is selected are
     // avoided.
@@ -247,6 +247,9 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
   double k = ( dy * v2.x() - dx * v2.y() ) / d;
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
+
+  // z support for intersection point
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -604,6 +607,10 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   }
 
   result = possibleMidPoints.at( minDistIndex );
+
+  // add z support if necessary
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, result );
+
   return true;
 }
 
@@ -1164,4 +1171,22 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
     resultAngle = a1 - counterClockwiseDiff / 2.0;
   }
   return normalizedAngle( resultAngle );
+}
+
+bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+{
+  bool rc = false;
+
+  for ( const QgsPoint &pt : points )
+  {
+    if ( pt.is3D() )
+    {
+      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+      point.setZ( pt.z() );
+      rc = true;
+      break;
+    }
+  }
+
+  return rc;
 }

@@ -187,7 +187,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnChangeColor->setAllowOpacity( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select Line color" ) );
+  btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
 
   spinOffset->setClearValue( 0.0 );
@@ -1390,12 +1390,12 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
   group2->addButton( mRadioUseMaxDistance );
   group2->addButton( mRadioUseWholeShape );
   btnChangeColor->setAllowOpacity( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select Gradient color" ) );
+  btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
   btnChangeColor2->setAllowOpacity( true );
-  btnChangeColor2->setColorDialogTitle( tr( "Select Gradient color" ) );
+  btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
@@ -2373,7 +2373,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
 
 void QgsSVGFillSymbolLayerWidget::mBrowseToolButton_clicked()
 {
-  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG texture file" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
+  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG Texture File" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
   if ( !filePath.isNull() )
   {
     mSVGLineEdit->setText( filePath );
@@ -3237,14 +3237,14 @@ void QgsRasterFillSymbolLayerWidget::mBrowseToolButton_clicked()
   }
 
   //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select image file" ), openDir );
+  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select Image File" ), openDir );
   if ( !filePath.isNull() )
   {
     //check if file exists
     QFileInfo fileInfo( filePath );
     if ( !fileInfo.exists() || !fileInfo.isReadable() )
     {
-      QMessageBox::critical( nullptr, QStringLiteral( "Invalid file" ), QStringLiteral( "Error, file does not exist or is not readable" ) );
+      QMessageBox::critical( nullptr, QStringLiteral( "Select Image File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
       return;
     }
 

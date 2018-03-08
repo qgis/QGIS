@@ -106,7 +106,10 @@ void QgsLayoutUndoStack::push( QUndoCommand *cmd )
   if ( mBlockedCommands > 0 )
     delete cmd;
   else
+  {
     mUndoStack->push( cmd );
+    mLayout->project()->setDirty( true );
+  }
 }
 
 void QgsLayoutUndoStack::indexChanged()

@@ -110,6 +110,7 @@ struct QgsGeometryPrivate;
 
 class CORE_EXPORT QgsGeometry
 {
+    Q_GADGET
   public:
 
     /**
@@ -174,8 +175,8 @@ class CORE_EXPORT QgsGeometry
      * \note In QGIS 2.x this method was named geometry().
      *
      * \since QGIS 3.0
-     * \see primitive()
      * \see set()
+     * \see get()
     */
     const QgsAbstractGeometry *constGet() const;
 
@@ -797,11 +798,49 @@ class CORE_EXPORT QgsGeometry
      */
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
-    //! Tests for intersection with a rectangle (uses GEOS)
-    bool intersects( const QgsRectangle &r ) const;
+    /**
+     * Returns true if this geometry exactly intersects with a \a rectangle. This test is exact
+     * and can be slow for complex geometries.
+     *
+     * The GEOS library is used to perform the intersection test. Geometries which are not
+     * valid may return incorrect results.
+     *
+     * \see boundingBoxIntersects()
+     */
+    bool intersects( const QgsRectangle &rectangle ) const;
 
-    //! Tests for intersection with a geometry (uses GEOS)
+    /**
+     * Returns true if this geometry exactly intersects with another \a geometry. This test is exact
+     * and can be slow for complex geometries.
+     *
+     * The GEOS library is used to perform the intersection test. Geometries which are not
+     * valid may return incorrect results.
+     *
+     * \see boundingBoxIntersects()
+     */
     bool intersects( const QgsGeometry &geometry ) const;
+
+    /**
+     * Returns true if the bounding box of this geometry intersects with a \a rectangle. Since this
+     * test only considers the bounding box of the geometry, is is very fast to calculate and handles invalid
+     * geometries.
+     *
+     * \see intersects()
+     *
+     * \since QGIS 3.0
+     */
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
+
+    /**
+     * Returns true if the bounding box of this geometry intersects with the bounding box of another \a geometry. Since this
+     * test only considers the bounding box of the geometries, is is very fast to calculate and handles invalid
+     * geometries.
+     *
+     * \see intersects()
+     *
+     * \since QGIS 3.0
+     */
+    bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
 
     //! Tests for containment of a point (uses GEOS)
     bool contains( const QgsPointXY *p ) const;
@@ -848,6 +887,7 @@ class CORE_EXPORT QgsGeometry
       SideLeft = 0, //!< Buffer to left of line
       SideRight, //!< Buffer to right of line
     };
+    Q_ENUM( BufferSide );
 
     //! End cap styles for buffers
     enum EndCapStyle
@@ -856,6 +896,7 @@ class CORE_EXPORT QgsGeometry
       CapFlat, //!< Flat cap (in line with start/end of line)
       CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
     };
+    Q_ENUM( EndCapStyle );
 
     //! Join styles for buffers
     enum JoinStyle
@@ -864,6 +905,7 @@ class CORE_EXPORT QgsGeometry
       JoinStyleMiter, //!< Use mitered joins
       JoinStyleBevel, //!< Use beveled joins
     };
+    Q_ENUM( JoinStyle );
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
@@ -1371,10 +1413,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Converts the geometry to straight line segments, if it is a curved geometry type.
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      * \since QGIS 2.10
      * \see requiresConversionToStraightSegments
      */
-    void convertToStraightSegment();
+    void convertToStraightSegment( double tolerance = M_PI / 180., QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle );
 
     /**
      * Returns true if the geometry is a curved geometry type which requires conversion to

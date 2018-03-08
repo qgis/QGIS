@@ -19,6 +19,7 @@
 #include <QListWidgetItem>
 #include "qgis_gui.h"
 #include "qgis.h"
+#include "qgsoptionsdialoghighlightwidget.h"
 
 /**
  * \ingroup gui
@@ -51,6 +52,14 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      */
     virtual QString helpKey() const { return QString(); }
 
+
+    /**
+     * Returns the registered highlight widgets used to search and highlight text in
+     * options dialogs.
+     */
+    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() {return mHighlighWidgets;} SIP_SKIP
+
+
   public slots:
 
     /**
@@ -58,6 +67,22 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * QgsSettings objects). This is usually called when the options dialog is accepted.
      */
     virtual void apply() = 0;
+
+  protected:
+
+    /**
+     * Register a highlight widget to be used to search and highlight text in
+     * options dialogs. This can be used to provide a custom implementation of
+     * QgsOptionsDialogHighlightWidget.
+     */
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget )
+    {
+      mHighlighWidgets.insert( highlightWidget->widget(), highlightWidget );
+    }
+
+  private:
+    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlighWidgets;
+
 
 };
 

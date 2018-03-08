@@ -213,6 +213,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+    virtual QToolBar *shapeDigitizeToolBar() = 0;
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
@@ -250,7 +251,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
-    virtual QAction *actionNodeTool() = 0;
+    virtual QAction *actionVertexTool() = 0;
 
     // View menu actions
     //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.

@@ -56,10 +56,8 @@ from qgis.testing import (
     unittest,
 )
 
-try:
-    QGIS_SERVER_WFST_PORT = os.environ['QGIS_SERVER_WFST_PORT']
-except:
-    QGIS_SERVER_WFST_PORT = '0'  # Auto
+# 0 = auto
+QGIS_SERVER_PORT = os.environ.get('QGIS_SERVER_PORT', '0')
 
 
 qgis_app = start_app()
@@ -70,7 +68,7 @@ class TestWFST(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_PORT
+        cls.port = QGIS_SERVER_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'

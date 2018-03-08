@@ -201,7 +201,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
 
 Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractListModel::flags( index );
 
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
@@ -230,7 +230,9 @@ void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
 
 void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
 {
+  beginRemoveRows( index, index.row(), index.row() );
   mRecentProjects.removeAt( index.row() );
+  endRemoveRows();
 }
 
 void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )

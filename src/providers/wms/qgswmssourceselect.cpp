@@ -202,8 +202,8 @@ void QgsWMSSourceSelect::btnDelete_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result == QMessageBox::Yes )
   {
     QgsWMSConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
@@ -1107,7 +1107,8 @@ void QgsWMSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
   exampleServers[QStringLiteral( "QGIS Server Demo - Alaska" )] = QStringLiteral( "http://demo.qgis.org/cgi-bin/qgis_mapserv.fcgi?map=/web/demos/alaska/alaska_map.qgs" );
-  exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
+  exampleServers[QStringLiteral( "Geoserver Demo" )] = QStringLiteral( "https://demo.geo-solutions.it/geoserver/wms/" );
+  exampleServers[QStringLiteral( "Mapserver Demo" )] = QStringLiteral( "http://demo.mapserver.org/cgi-bin/wms" );
 
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
@@ -1234,8 +1235,8 @@ void QgsWMSSourceSelect::btnAddWMS_clicked()
   if ( settings.contains( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
   {
     QString msg = tr( "The %1 connection already exists. Do you want to overwrite it?" ).arg( wmsTitle );
-    QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-    if ( result != QMessageBox::Ok )
+    QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Yes | QMessageBox::No );
+    if ( result != QMessageBox::Yes )
     {
       return;
     }

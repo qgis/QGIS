@@ -435,7 +435,7 @@ void QgsGrassNewMapset::setGrassProjection()
 
     if ( errcode != OGRERR_NONE )
     {
-      QgsDebugMsg( QString( "OGR can't parse PROJ.4-style parameter string:\n%1\nOGR Error code was %2" ).arg( proj4 ).arg( errcode ) );
+      QgsDebugMsg( QString( "OGR can't parse PROJ-style parameter string:\n%1\nOGR Error code was %2" ).arg( proj4 ).arg( errcode ) );
 
       mCellHead.proj = PROJECTION_XY;
       mCellHead.zone = 0;

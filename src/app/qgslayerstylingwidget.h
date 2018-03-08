@@ -118,7 +118,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
      * Sets the current visible page in the widget.
      * \param page standard page to display
      */
-    void setCurrentPage( Page page );
+    void setCurrentPage( QgsLayerStylingWidget::Page page );
 
   private slots:
 

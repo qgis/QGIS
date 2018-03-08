@@ -19,7 +19,6 @@
 #define QGIS_H
 
 #include <QEvent>
-#include "qgis_sip.h"
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
@@ -35,6 +34,7 @@
 #include <cmath>
 #include <qnumeric.h>
 
+#include "qgstolerance.h"
 #include "qgswkbtypes.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -70,6 +70,19 @@ class CORE_EXPORT Qgis
 
     // Enumerations
     //
+
+    /**
+     * \brief Level for messages
+     * This will be used both for message log and message bar in application.
+     */
+    enum MessageLevel
+    {
+      Info = 0,
+      Warning = 1,
+      Critical = 2,
+      Success = 3,
+      None = 4
+    };
 
     /**
      * Raster data types.
@@ -137,6 +150,17 @@ class CORE_EXPORT Qgis
     */
     static const double UI_SCALE_FACTOR;
 
+    /**
+     * Default snapping distance tolerance.
+     *  \since QGIS 3.0
+    */
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    /**
+     * Default snapping distance units.
+     *  \since QGIS 3.0
+    */
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 // hack to workaround warnings when casting void pointers
@@ -523,5 +547,34 @@ typedef unsigned long long qgssize;
 #else
 #define FALLTHROUGH
 #endif
+
+// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
+#if __cplusplus >= 201703L
+#define NODISCARD [[nodiscard]]
+#elif defined(__clang__)
+#define NODISCARD [[nodiscard]]
+#elif defined(_MSC_VER)
+#define NODISCARD // no support
+#elif __has_cpp_attribute(nodiscard)
+#define NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(gnu::warn_unused_result)
+#define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+
+#if __cplusplus >= 201703L
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(__clang__)
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(_MSC_VER)
+#define MAYBE_UNUSED // no support
+#elif __has_cpp_attribute(gnu::unused)
+#define MAYBE_UNUSED [[gnu::unused]]
+#else
+#define MAYBE_UNUSED
+#endif
+
+
 
 

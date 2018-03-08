@@ -304,7 +304,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+             <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
            </property>
           </widget>
          </item>
@@ -369,7 +369,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+     <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
    </property>
    <property name="text">
     <string>Edit item...</string>

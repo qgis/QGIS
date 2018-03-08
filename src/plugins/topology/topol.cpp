@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          begin                : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -21,7 +21,7 @@
 #include "qgisinterface.h"
 #include "qgsguiutils.h"
 
-// Qt4 Related Includes
+// Qt Related Includes
 #include <QAction>
 #include <QToolBar>
 #include <QFile>

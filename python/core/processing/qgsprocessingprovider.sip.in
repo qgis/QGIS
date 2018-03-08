@@ -53,6 +53,17 @@ should be a unique, short, character only string, eg "qgis" or "gdal". This
 string should not be localised.
 
 .. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`helpId`
+%End
+
+    virtual QString helpId() const;
+%Docstring
+Returns the provider help id string, used for creating QgsHelp urls for algorithms
+belong to this provider. By default, this returns the provider's id(). This string
+should not be localised.
+
+.. seealso:: :py:func:`id`
 %End
 
     virtual QString name() const = 0;
@@ -143,7 +154,14 @@ Otherwise the first reported supported raster format will be used.
     virtual bool supportsNonFileBasedOutput() const;
 %Docstring
 Returns true if the provider supports non-file based outputs (such as memory layers
-or direct database outputs).
+or direct database outputs). If a provider returns false for this method than it
+indicates that none of the outputs from any of the provider's algorithms have
+support for non-file based outputs. Returning true indicates that the algorithm's
+parameters will each individually declare their non-file based support.
+
+The default behavior for providers is to support non-file based outputs, and most
+providers which rely solely on QGIS API (and which do not depend on third-party scripts
+or external dependencies) will automatically support this.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 %End

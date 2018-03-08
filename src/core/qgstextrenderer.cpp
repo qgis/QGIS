@@ -413,7 +413,7 @@ QSizeF QgsTextBackgroundSettings::size() const
   return d->size;
 }
 
-void QgsTextBackgroundSettings::setSize( const QSizeF &size )
+void QgsTextBackgroundSettings::setSize( QSizeF size )
 {
   d->size = size;
 }
@@ -463,7 +463,7 @@ QPointF QgsTextBackgroundSettings::offset() const
   return d->offset;
 }
 
-void QgsTextBackgroundSettings::setOffset( const QPointF &offset )
+void QgsTextBackgroundSettings::setOffset( QPointF offset )
 {
   d->offset = offset;
 }
@@ -493,7 +493,7 @@ QSizeF QgsTextBackgroundSettings::radii() const
   return d->radii;
 }
 
-void QgsTextBackgroundSettings::setRadii( const QSizeF &radii )
+void QgsTextBackgroundSettings::setRadii( QSizeF radii )
 {
   d->radii = radii;
 }
@@ -1676,7 +1676,7 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
   drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
 }
 
-void QgsTextRenderer::drawText( const QPointF &point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
@@ -1779,7 +1779,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
   }
 }
 
-void QgsTextRenderer::drawPart( const QPointF &origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
 {
   if ( !context.painter() )
   {

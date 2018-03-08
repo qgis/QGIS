@@ -1675,6 +1675,9 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   QString fieldName = mAttributeFields.at( index ).name();
   QString typeName = mAttributeFields.at( index ).typeName();
 
+  // Remove schema extension from typeName
+  typeName.remove( QRegularExpression( "^([^.]+\\.)+" ) );
+
   //is type an enum?
   QString typeSql = QStringLiteral( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
   QgsPostgresResult typeRes( connectionRO()->PQexec( typeSql ) );
@@ -1727,12 +1730,22 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   enumValues.clear();
 
   //is it a domain type with a check constraint?
-  QString domainSql = QStringLiteral( "SELECT domain_name FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
+  QString domainSql = QStringLiteral( "SELECT domain_name, domain_schema FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
-  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 )
+  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
     //a domain type
-    QString domainCheckDefinitionSql = QStringLiteral( "SELECT consrc FROM pg_constraint WHERE conname=(SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name=%1)" ).arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) );
+    QString domainCheckDefinitionSql = QStringLiteral( ""
+                                       "SELECT consrc FROM pg_constraint "
+                                       "  WHERE contypid =("
+                                       "    SELECT oid FROM pg_type "
+                                       "      WHERE typname = %1 "
+                                       "      AND typnamespace =("
+                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                       "      )"
+                                       "    )" )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {
@@ -2018,7 +2031,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec.at( idx );
+      QVariant v = attributevec.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
       if ( fieldId.contains( idx ) )
         continue;
 
@@ -2037,7 +2050,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( i = 1; i < flist.size(); i++ )
       {
         QgsAttributes attrs2 = flist[i].attributes();
-        QVariant v2 = attrs2.at( idx );
+        QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
 
         if ( v2 != v )
           break;
@@ -2145,7 +2158,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
-        QVariant value = attrs.at( attrIdx );
+        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QVariant( QVariant::Int );
 
         QString v;
         if ( value.isNull() )
@@ -3906,13 +3919,12 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri( false ) );
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ) );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
-    delete provider;
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
@@ -3973,7 +3985,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
-        delete provider;
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
@@ -3993,7 +4004,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      delete provider;
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
@@ -4716,6 +4726,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
+    conn->unref();
     return QLatin1String( "" );
   }
 

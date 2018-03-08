@@ -39,11 +39,6 @@ QString QgsExtractByAttributeAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractByAttributeAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsExtractByAttributeAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorselection" );
@@ -55,7 +50,7 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OPERATOR" ), QObject::tr( "Operator" ), QStringList()
                 << QObject::tr( "=" )
-                << QObject::trUtf8( "≠" )
+                << QObject::tr( "≠" )
                 << QObject::tr( ">" )
                 << QObject::tr( ">=" )
                 << QObject::tr( "<" )

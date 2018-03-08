@@ -144,15 +144,13 @@ the frame size has no minimum in that direction.
 .. seealso:: :py:func:`recalculateFrameRects`
 %End
 
-    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                         const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
+    virtual void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex ) = 0;
 %Docstring
 Renders a portion of the multiframe's content into a render ``context``.
 
 :param context: destination render painter
 :param renderExtent: visible extent of content to render into the painter.
 :param frameIndex: frame number for content
-:param itemStyle: item style options for graphics item rendering
 %End
 
     virtual void addFrame( QgsLayoutFrame *frame /Transfer/, bool recalcFrameSizes = true );
@@ -366,12 +364,6 @@ refreshed.
 %End
 
   signals:
-
-    void changed();
-%Docstring
-Emitted when the properties of a multi frame have changed, and the GUI item widget
-must be updated.
-%End
 
     void contentsChanged();
 %Docstring

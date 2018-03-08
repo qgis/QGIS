@@ -36,7 +36,6 @@ class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsTessellateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
-    Flags flags() const override;
     QStringList tags() const override;
     QString group() const override;
     QString shortHelpString() const override;
@@ -48,7 +47,7 @@ class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessing::SourceType outputLayerType() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
 
-    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

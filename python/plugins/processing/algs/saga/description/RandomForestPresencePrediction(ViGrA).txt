@@ -10,8 +10,8 @@ QgsProcessingParameterNumber|mRMR_NFEATURES|Number of Features|QgsProcessingPara
 QgsProcessingParameterBoolean|mRMR_DISCRETIZE|Discretization|True
 QgsProcessingParameterNumber|mRMR_THRESHOLD|Discretization Threshold|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterEnum|mRMR_METHOD|Selection Method|[0] Mutual Information Difference (MID);[1] Mutual Information Quotient (MIQ)|False|0
-QgsProcessingParameterFile|RF_IMPORT|Import from File|False|None|False
-QgsProcessingParameterFile|RF_EXPORT|Export to File|False|None|False
+QgsProcessingParameterFile|RF_IMPORT|Import from File|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterFile|RF_EXPORT|Export to File|QgsProcessingParameterFile.File|None|False
 QgsProcessingParameterNumber|RF_TREE_COUNT|Tree Count|QgsProcessingParameterNumber.Integer|32|False| 1|None
 QgsProcessingParameterNumber|RF_TREE_SAMPLES|Samples per Tree|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000| 1.000000
 QgsProcessingParameterBoolean|RF_REPLACE|Sample with Replacement|True

@@ -65,7 +65,11 @@ void QgsCollapsibleGroupBoxBasic::init()
   // TODO set size (as well as margins) depending on theme, in updateStyle()
   mCollapseButton->setIconSize( QSize( 12, 12 ) );
   mCollapseButton->setIcon( mCollapseIcon );
+  // FIXME: This appears to mess up parent-child relationships and causes double-frees of children when destroying in Qt5.10, needs further investigation
+  // See also https://github.com/qgis/QGIS/pull/6301
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   setFocusProxy( mCollapseButton );
+#endif
   setFocusPolicy( Qt::StrongFocus );
 
   connect( mCollapseButton, &QAbstractButton::clicked, this, &QgsCollapsibleGroupBoxBasic::toggleCollapsed );

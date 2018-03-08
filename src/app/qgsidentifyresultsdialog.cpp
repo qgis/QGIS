@@ -274,7 +274,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
-  setText( 0, tr( "Loading..." ) );
+  setText( 0, tr( "Loading…" ) );
   connect( mWebView->page(), &QWebPage::loadFinished, this, &QgsIdentifyResultsWebViewItem::loadFinished );
 }
 
@@ -475,8 +475,6 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-  lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
   {
@@ -536,6 +534,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       if ( !action.runable() )
         continue;
 
+      if ( action.isEnabledOnlyWhenEditable() )
+        continue;
+
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action.name() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
       twi->setData( 0, Qt::UserRole, "action" );
@@ -546,6 +547,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     //add actions from QgsMapLayerActionRegistry
     for ( int i = 0; i < registeredActions.size(); i++ )
     {
+      if ( registeredActions.at( i )->isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsMapLayerAction *action = registeredActions.at( i );
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action->text() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
@@ -635,7 +639,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     QString value = fields.at( i ).displayString( attrs.at( i ) );
     const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields.at( i ).name() );
-    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), value );
+    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
 
     tblResults->setRowCount( j + 1 );
 
@@ -1096,7 +1100,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Layer properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
@@ -1117,6 +1121,9 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
         if ( !action.runable() )
           continue;
 
+        if ( action.isEnabledOnlyWhenEditable() )
+          continue;
+
         QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, action.id(), idx, this );
         mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), action.name(), a, SLOT( execute() ) );
       }
@@ -1135,9 +1142,12 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      QList<QgsMapLayerAction *>::iterator actionIt;
+      QList<QgsMapLayerAction *>::const_iterator actionIt;
       for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
       {
+        if ( ( *actionIt )->isEnabledOnlyWhenEditable() )
+          continue;
+
         QgsIdentifyResultsDialogMapLayerAction *a = new QgsIdentifyResultsDialogMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), vlayer, &( mFeatures[ featIdx ] ) );
         mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), ( *actionIt )->text(), a, SLOT( execute() ) );
       }
@@ -1863,7 +1873,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
   if ( !wv )
   {
-    QMessageBox::warning( this, tr( "Cannot print" ), tr( "Cannot print this item" ) );
+    QMessageBox::warning( this, tr( "Print HTML Response" ), tr( "Cannot print this item." ) );
     return;
   }
 

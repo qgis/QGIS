@@ -107,13 +107,16 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
   mProvider = provider;
 
-  // need to update all destination parameters to set whether the provider supports non file based outputs
-  Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
+  if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
-    if ( definition->isDestination() && mProvider )
+    // need to update all destination parameters to turn off non file based outputs
+    Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
     {
-      const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
-      const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+      if ( definition->isDestination() )
+      {
+        const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
+        const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
+      }
     }
   }
 }
@@ -240,13 +243,19 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
     return false;
 
   // check for duplicate named parameters
-  if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
+  const QgsProcessingParameterDefinition *existingDef = QgsProcessingAlgorithm::parameterDefinition( definition->name() );
+  if ( existingDef && existingDef->name() == definition->name() ) // parameterDefinition is case-insensitive, but we DO allow case-different duplicate names
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
+  }
 
   if ( definition->isDestination() && mProvider )
   {
     QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
-    destParam->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+    if ( !mProvider->supportsNonFileBasedOutput() )
+      destParam->setSupportsNonFileBasedOutput( false );
   }
 
   mParameters << definition;
@@ -275,7 +284,11 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
 
   // check for duplicate named outputs
   if ( QgsProcessingAlgorithm::outputDefinition( definition->name() ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Duplicate output %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
+  }
 
   mOutputs << definition;
   return true;
@@ -293,7 +306,15 @@ QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &
 
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  // first pass - case sensitive match
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->name() == name )
+      return def;
+  }
+
+  // second pass - case insensitive
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
       return def;
@@ -362,7 +383,7 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }
@@ -388,7 +409,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return false;
   }
@@ -473,7 +494,7 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }
@@ -622,7 +643,6 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
   if ( !addOutput( output ) )
   {
     // couldn't add output - probably a duplicate name
-    delete output;
     return false;
   }
   else
@@ -721,9 +741,9 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     }
 
     context.expressionContext().setFeature( f );
-    QgsFeature transformed = processFeature( f, context, feedback );
-    if ( transformed.isValid() )
-      sink->addFeature( transformed, QgsFeatureSink::FastInsert );
+    const QgsFeatureList transformed = processFeature( f, context, feedback );
+    for ( QgsFeature transformedFeature : transformed )
+      sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;

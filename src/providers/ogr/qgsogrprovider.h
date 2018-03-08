@@ -358,7 +358,7 @@ class QgsOgrProviderUtils
     static QMap< QString, int > sMapCountOpenedDS;
 
     //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
+    static QHash< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
 
     //! Map a dataset name to its last modified data
     static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;

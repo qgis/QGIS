@@ -181,7 +181,6 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 
 ////////////////////////////////////////////////////////////////////////////
 
-
 /**
  * \ingroup core
  * Helper class used when traversing the index with areas - builds a list of matches.
@@ -205,7 +204,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry *g = mLocator->mGeoms.value( id );
       if ( g->intersects( mGeomPt ) )
-        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, QgsPointXY() );
+        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
     }
   private:
     QgsPointLocator *mLocator = nullptr;
@@ -882,6 +881,40 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
 }
+
+QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+{
+  if ( !mRTree )
+  {
+    init();
+    if ( !mRTree ) // still invalid?
+      return Match();
+  }
+
+  MatchList mlist = pointInPolygon( point );
+  if ( mlist.count() && mlist.at( 0 ).isValid() )
+  {
+    return mlist.at( 0 );
+  }
+
+  if ( tolerance == 0 )
+  {
+    return Match();
+  }
+
+  // discard point and line layers to keep only polygons
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+    return Match();
+
+  // use edges for adding tolerance
+  Match m = nearestEdge( point, tolerance, filter );
+  if ( m.isValid() )
+    return Match( Area, m.layer(), m.featureId(), m.distance(), m.point() );
+  else
+    return Match();
+}
+
 
 QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
 {

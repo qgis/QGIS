@@ -133,6 +133,26 @@ from a source to destination coordinate reference system.
 .. seealso:: :py:func:`transformContext`
 %End
 
+    const QgsPathResolver &pathResolver() const;
+%Docstring
+Returns the path resolver for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`setPathResolver`
+%End
+
+    void setPathResolver( const QgsPathResolver &resolver );
+%Docstring
+Sets the path ``resolver`` for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`pathResolver`
+%End
+
     const QgsRectangle &extent() const;
 
     const QgsMapToPixel &mapToPixel() const;

@@ -572,6 +572,7 @@ QToolBar *QgisAppInterface::layerToolBar() { return qgis->layerToolBar(); }
 QToolBar *QgisAppInterface::mapNavToolToolBar() { return qgis->mapNavToolToolBar(); }
 QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); }
 QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDigitizeToolBar(); }
+QToolBar *QgisAppInterface::shapeDigitizeToolBar() { return qgis->shapeDigitizeToolBar(); }
 QToolBar *QgisAppInterface::attributesToolBar() { return qgis->attributesToolBar(); }
 QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
@@ -603,7 +604,7 @@ QAction *QgisAppInterface::actionAddPart() { return qgis->actionAddPart(); }
 QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplifyFeature(); }
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
-QAction *QgisAppInterface::actionNodeTool() { return qgis->actionNodeTool(); }
+QAction *QgisAppInterface::actionVertexTool() { return qgis->actionVertexTool(); }
 
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }

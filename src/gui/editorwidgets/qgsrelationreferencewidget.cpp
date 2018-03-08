@@ -442,7 +442,7 @@ void QgsRelationReferenceWidget::init()
 
     if ( !mFilterFields.isEmpty() )
     {
-      for ( const QString &fieldName : mFilterFields )
+      for ( const QString &fieldName : qgis::as_const( mFilterFields ) )
       {
         int idx = mReferencedLayer->fields().lookupField( fieldName );
 

@@ -3,5 +3,5 @@ Calculates range of patch area size on a raster map
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
 QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
-QgsProcessingParameterFile|config|Landscape structure configuration file|False|txt|None|True
+QgsProcessingParameterFile|config|Landscape structure configuration file|QgsProcessingParameterFile.File|txt|None|True
 QgsProcessingParameterRasterDestination|output|Pad Range

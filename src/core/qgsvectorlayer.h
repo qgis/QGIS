@@ -756,7 +756,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
 
     /**
      * Write vector layer specific state to project file Dom node.
@@ -868,7 +868,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     /**
      * Write the symbology for the layer into the docment provided.
@@ -929,6 +929,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 2.10
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
     /**
      * Count features for symbols.
@@ -1378,7 +1380,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * retrieved and used. Note that this involves a feature request to the underlying data provider,
      * so it is more efficient to explicitly pass an \a oldValue if it is already available.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValues is set to true, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
      * Returns true if the feature's attribute was successfully changed.
@@ -1394,6 +1396,43 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see updateFeature()
      */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
+
+    /**
+     * Changes attributes' values for a feature (but does not immediately
+     * commit the changes).
+     * The \a fid argument specifies the ID of the feature to be changed.
+     *
+     * The new values to be assigned to the fields are given by \a newValues.
+     *
+     * If a valid QVariant is specified for a field in \a oldValues, it will be
+     * used as the field value in the case of an undo operation corresponding
+     * to this attribute value change. If an invalid QVariant is used (the
+     * default behavior), then the feature's current value will be
+     * automatically retrieved and used. Note that this involves a feature
+     * request to the underlying data provider, so it is more efficient to
+     * explicitly pass an oldValue if it is already available.
+     *
+     * If \a skipDefaultValues is set to true, default field values will not
+     * be updated. This can be used to override default field value
+     * expressions.
+     *
+     * Returns true if feature's attributes was successfully changed.
+     *
+     * \note Calls to changeAttributeValues() are only valid for layers in
+     * which edits have been enabled by a call to startEditing(). Changes made
+     * to features using this method are not committed to the underlying data
+     * provider until a commitChanges() call is made. Any uncommitted changes
+     * can be discarded by calling rollBack().
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeGeometry()
+     * \see updateFeature()
+     * \see changeAttributeValue()
+     *
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
 
     /**
      * Add an attribute field (but does not commit it)
@@ -1783,32 +1822,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr ) const;
-
-    /**
-     * Fetches all values from a specified field name or expression.
-     * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getDoubleValues
-     */
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr ) const;
-
-    /**
-     * Fetches all double values from a specified field name or expression. Null values or
-     * invalid expression results are skipped.
-     * \param fieldOrExpression field name or an expression string evaluating to a double value
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param nullCount optional pointer to integer to store number of null values encountered in
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getValues
-     */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     //! Set the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -2376,6 +2389,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
+    friend class QgsVectorLayerEditPassthrough;
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;

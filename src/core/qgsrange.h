@@ -393,6 +393,14 @@ class QgsTemporalRange
       return false;
     }
 
+    bool operator==( const QgsTemporalRange<T> &other ) const
+    {
+      return mLower == other.mLower &&
+             mUpper == other.mUpper &&
+             mIncludeLower == other.mIncludeLower &&
+             mIncludeUpper == other.mIncludeUpper;
+    }
+
   private:
 
     T mLower;

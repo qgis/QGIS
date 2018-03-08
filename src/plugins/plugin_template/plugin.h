@@ -35,7 +35,7 @@
 #ifndef [pluginname]_H
 #define [pluginname]_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 
 //QGIS includes

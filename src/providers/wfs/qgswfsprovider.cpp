@@ -419,7 +419,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     concatenatedTypenames += typeName;
   }
 
-  QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI.uri() );
+  QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
   if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
        concatenatedTypenames ) )
   {
@@ -1168,7 +1168,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute,
 {
   fields.clear();
 
-  QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI.uri() );
+  QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
   if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
        mShared->mURI.typeName(), forceSingularTypeNames ) )
   {
@@ -1374,6 +1374,13 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = name;
       geomType = QgsWkbTypes::MultiLineString;
     }
+    // such as http://go.geozug.ch/Zug_WFS_Baumkataster/service.svc/get
+    else if ( type == QLatin1String( "gmgml:Point_MultiPointPropertyType" ) )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = name;
+      geomType = QgsWkbTypes::MultiPoint;
+    }
     //is it a geometry attribute?
     // the GeometryAssociationType has been seen in #11785
     else if ( ! foundGeometryAttribute && ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) ) )
@@ -1450,7 +1457,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
     return false;
   }
 
-  QgsWFSTransactionRequest request( mShared->mURI.uri() );
+  QgsWFSTransactionRequest request( mShared->mURI );
   return request.send( doc, serverResponse );
 }
 
@@ -1464,11 +1471,13 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
   transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
 
-  QUrl describeFeatureTypeURL( mShared->mURI.baseURL() );
+  QUrl describeFeatureTypeURL = mShared->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) );
   // For tests (since the URL contains part of random data, we need to replace it with a fixed content)
-  if ( mShared->mURI.baseURL().toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( describeFeatureTypeURL.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  {
     describeFeatureTypeURL = QUrl( QStringLiteral( "http://fake_qgis_http_endpoint" ) );
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+  }
   describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
   //TODO: proper support of 2.0.0, for now hardcoded
   describeFeatureTypeURL.addQueryItem( QgsWFSUtils::typeNameParameterForVersion( WfsVersion ).toUpper(), mShared->mURI.typeName() );
@@ -1562,6 +1571,8 @@ bool QgsWFSProvider::getCapabilities()
 
     const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
     mShared->mCaps = caps;
+    mShared->mURI.setGetEndpoints( caps.operationGetEndpoints );
+    mShared->mURI.setPostEndpoints( caps.operationPostEndpoints );
   }
 
   mShared->mWFSVersion = mShared->mCaps.version;

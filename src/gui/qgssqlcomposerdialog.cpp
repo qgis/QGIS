@@ -180,7 +180,7 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
     }
   }
 
-  return QObject::eventFilter( obj, event );
+  return QDialog::eventFilter( obj, event );
 }
 
 void QgsSQLComposerDialog::setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback )
@@ -213,12 +213,12 @@ void QgsSQLComposerDialog::accept()
     {
       if ( errorMsg.isEmpty() )
         errorMsg = tr( "An error occurred during evaluation of the SQL statement." );
-      QMessageBox::critical( this, tr( "SQL Error" ), errorMsg );
+      QMessageBox::critical( this, tr( "SQL Evaluation" ), errorMsg );
       return;
     }
     if ( !warningMsg.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "SQL Warning" ), warningMsg );
+      QMessageBox::warning( this, tr( "SQL Evaluation" ), warningMsg );
     }
   }
   QDialog::accept();

@@ -9,10 +9,64 @@
 
 
 
+
+class QgsLayoutItemRenderContext
+{
+%Docstring
+Contains settings and helpers relating to a render of a QgsLayoutItem.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitem.h"
+%End
+  public:
+
+    QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor = 1.0 );
+%Docstring
+Constructor for QgsLayoutItemRenderContext.
+
+The ``renderContext`` parameter specifies a QgsRenderContext for use within
+the QgsLayoutItemRenderContext.
+
+The ``viewScaleFactor`` gives the current view zoom (scale factor). It can be
+used to scale render graphics so that they always appear a constant size,
+regardless of the current view zoom.
+%End
+
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+
+Note that the context's painter has been scaled so that painter units are pixels.
+Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+%End
+
+
+    double viewScaleFactor() const;
+%Docstring
+Returns the current view zoom (scale factor). It can be
+used to scale render graphics so that they always appear a constant size,
+regardless of the current view zoom.
+
+E.g. a value of 0.5 indicates that the view is zoomed out to 50% size, so rendered
+items must be scaled by 200% in order to have a constant visible size. A value
+of 2.0 indicates that the view is zoomed in 200%, so rendered items must be
+scaled by 50% in order to have a constant visible size.
+%End
+
+  private:
+    QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &rh );
+};
+
+
 class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
- Base class for graphical items within a QgsLayout.
+ Base class for graphical items within a :py:class:`QgsLayout`.
 
 .. versionadded:: 3.0
 %End
@@ -852,6 +906,9 @@ Cancels the current item command and discards it.
 Returns whether the item should be drawn in the current context.
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   public slots:
 
     virtual void refresh();
@@ -900,9 +957,6 @@ Rotates the item by a specified ``angle`` in degrees clockwise around a specifie
 .. seealso:: :py:func:`itemRotation`
 %End
 
-    virtual QgsExpressionContext createExpressionContext() const;
-
-
   signals:
 
     void frameChanged();
@@ -939,9 +993,10 @@ painter.
 :param painter: destination QPainter
 %End
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
+    virtual void draw( QgsLayoutItemRenderContext &context ) = 0;
 %Docstring
-Draws the item's contents using the specified render ``context``.
+Draws the item's contents using the specified item render ``context``.
+
 Note that the context's painter has been scaled so that painter units are pixels.
 Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
 %End

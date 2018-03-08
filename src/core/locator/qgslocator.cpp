@@ -24,8 +24,6 @@ QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
 {
   qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-
-  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsLocator::finished );
 }
 
 QgsLocator::~QgsLocator()
@@ -58,13 +56,13 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 {
   mFilters.append( filter );
   filter->setParent( this );
-  connect( filter, &QgsLocatorFilter::resultFetched, this, &QgsLocator::filterSentResult, Qt::QueuedConnection );
 
   if ( !filter->prefix().isEmpty() )
   {
     if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
          || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
-         || filter->name() == QStringLiteral( "features" ) )
+         || filter->name() == QStringLiteral( "features" ) || filter->name() == QStringLiteral( "calculator" )
+         || filter->name() == QStringLiteral( "bookmarks" ) )
     {
       //inbuilt filter, no prefix check
       mPrefixedFilters.insert( filter->prefix(), filter );
@@ -104,34 +102,75 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  mActiveFilters.clear();
+  QList< QgsLocatorFilter * > activeFilters;
   QString searchString = string;
   if ( searchString.indexOf( ' ' ) > 0 )
   {
     QString prefix = searchString.left( searchString.indexOf( ' ' ) );
     if ( mPrefixedFilters.contains( prefix ) && mPrefixedFilters.value( prefix )->enabled() )
     {
-      mActiveFilters << mPrefixedFilters.value( prefix );
+      activeFilters << mPrefixedFilters.value( prefix );
       searchString = searchString.mid( prefix.length() + 1 );
     }
   }
-  if ( mActiveFilters.isEmpty() )
+  if ( activeFilters.isEmpty() )
   {
-    Q_FOREACH ( QgsLocatorFilter *filter, mFilters )
+    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
       if ( filter->useWithoutPrefix() && filter->enabled() )
-        mActiveFilters << filter;
+        activeFilters << filter;
     }
   }
 
-  auto gatherFilterResults = [searchString, context, feedback]( QgsLocatorFilter * filter )
+  QList< QgsLocatorFilter *> threadedFilters;
+  for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
   {
-    if ( !feedback->isCanceled() )
-      filter->fetchResults( searchString, context, feedback );
-  };
+    std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
+    connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
+    {
+      result.filter = filter;
+      emit filterSentResult( result );
+    } );
+    clone->prepare( searchString, context );
 
-  mFuture = QtConcurrent::map( mActiveFilters, gatherFilterResults );
-  mFutureWatcher.setFuture( mFuture );
+    if ( clone->flags() & QgsLocatorFilter::FlagFast )
+    {
+      // filter is fast enough to fetch results on the main thread
+      clone->fetchResults( searchString, context, feedback );
+    }
+    else
+    {
+      // run filter in background
+      threadedFilters.append( clone.release() );
+    }
+  }
+
+  mActiveThreads.clear();
+  for ( QgsLocatorFilter *filter : qgis::as_const( threadedFilters ) )
+  {
+    QThread *thread = new QThread();
+    mActiveThreads.append( thread );
+    filter->moveToThread( thread );
+    connect( thread, &QThread::started, filter, [filter, searchString, context, feedback]
+    {
+      if ( !feedback->isCanceled() )
+        filter->fetchResults( searchString, context, feedback );
+      filter->emit finished();
+    }, Qt::QueuedConnection );
+    connect( filter, &QgsLocatorFilter::finished, thread, &QThread::quit );
+    connect( filter, &QgsLocatorFilter::finished, filter, &QgsLocatorFilter::deleteLater );
+    connect( thread, &QThread::finished, thread, [this, thread]
+    {
+      mActiveThreads.removeAll( thread );
+      if ( mActiveThreads.empty() )
+        emit finished();
+    } );
+    connect( thread, &QThread::finished, thread, &QThread::deleteLater );
+    thread->start();
+  }
+
+  if ( mActiveThreads.empty() )
+    emit finished();
 }
 
 void QgsLocator::cancel()
@@ -147,7 +186,7 @@ void QgsLocator::cancelWithoutBlocking()
 
 bool QgsLocator::isRunning() const
 {
-  return mFuture.isRunning();
+  return !mActiveThreads.empty();
 }
 
 void QgsLocator::filterSentResult( QgsLocatorResult result )
@@ -156,22 +195,18 @@ void QgsLocator::filterSentResult( QgsLocatorResult result )
   if ( mFeedback->isCanceled() )
     return;
 
-  if ( !result.filter )
-  {
-    // filter forgot to set itself
-    result.filter = qobject_cast< QgsLocatorFilter *>( sender() );
-  }
-
   emit foundResult( result );
 }
 
 void QgsLocator::cancelRunningQuery()
 {
-  if ( mFuture.isRunning() )
+  if ( !mActiveThreads.empty() )
   {
     // cancel existing job
     mFeedback->cancel();
-    mFuture.cancel();
-    mFuture.waitForFinished();
+    while ( !mActiveThreads.empty() )
+    {
+      QCoreApplication::processEvents();
+    }
   }
 }

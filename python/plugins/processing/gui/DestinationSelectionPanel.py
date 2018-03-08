@@ -77,7 +77,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 self.leText.setPlaceholderText(self.SKIP_OUTPUT)
                 self.use_temporary = False
             elif isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and alg.provider().supportsNonFileBasedOutput():
+                    and self.parameter.supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
             elif not isinstance(self.parameter, QgsProcessingParameterFolderDestination):
@@ -102,34 +102,34 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
             if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 actionSkipOutput = QAction(
-                    self.tr('Skip output'), self.btnSelect)
+                    self.tr('Skip Output'), self.btnSelect)
                 actionSkipOutput.triggered.connect(self.skipOutput)
                 popupMenu.addAction(actionSkipOutput)
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and self.alg.provider().supportsNonFileBasedOutput():
+                    and self.parameter.supportsNonFileBasedOutput():
                 # use memory layers for temporary layers if supported
                 actionSaveToTemp = QAction(
-                    self.tr('Create temporary layer'), self.btnSelect)
+                    self.tr('Create Temporary Layer'), self.btnSelect)
             else:
                 actionSaveToTemp = QAction(
-                    self.tr('Save to a temporary file'), self.btnSelect)
+                    self.tr('Save to a Temporary File'), self.btnSelect)
             actionSaveToTemp.triggered.connect(self.saveToTemporary)
             popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
-                self.tr('Save to file...'), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to File…'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and self.alg.provider().supportsNonFileBasedOutput():
+                    and self.parameter.supportsNonFileBasedOutput():
                 actionSaveToGpkg = QAction(
-                    self.tr('Save to GeoPackage...'), self.btnSelect)
+                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to GeoPackage…'), self.btnSelect)
                 actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
                 popupMenu.addAction(actionSaveToGpkg)
                 actionSaveToPostGIS = QAction(
-                    self.tr('Save to PostGIS table...'), self.btnSelect)
+                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS Table…'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
                 settings = QgsSettings()
                 settings.beginGroup('/PostgreSQL/connections/')
@@ -139,14 +139,14 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 popupMenu.addAction(actionSaveToPostGIS)
 
             actionSetEncoding = QAction(
-                self.tr('Change file encoding ({})...').format(self.encoding), self.btnSelect)
+                QCoreApplication.translate('DestinationSelectionPanel', 'Change File Encoding ({})…').format(self.encoding), self.btnSelect)
             actionSetEncoding.triggered.connect(self.selectEncoding)
             popupMenu.addAction(actionSetEncoding)
 
             popupMenu.exec_(QCursor.pos())
 
     def saveToTemporary(self):
-        if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.alg.provider().supportsNonFileBasedOutput():
+        if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.supportsNonFileBasedOutput():
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
         else:
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
@@ -188,7 +188,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         filename, filter = QFileDialog.getSaveFileName(self, self.tr("Save to GeoPackage"), path,
                                                        file_filter, options=QFileDialog.DontConfirmOverwrite)
 
-        if filename is None:
+        if not filename:
             return
 
         layer_name, ok = QInputDialog.getText(self, self.tr('Save to GeoPackage'), self.tr('Layer name'), text=self.parameter.name().lower())
@@ -260,7 +260,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         if not lastDir:
             lastDir = settings.value("/Processing/LastOutputPath", QDir.homePath())
 
-        dirName = QFileDialog.getExistingDirectory(self, self.tr('Select directory'),
+        dirName = QFileDialog.getExistingDirectory(self, self.tr('Select Directory'),
                                                    lastDir, QFileDialog.ShowDirsOnly)
         if dirName:
             self.leText.setText(QDir.toNativeSeparators(dirName))
@@ -271,6 +271,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.saveToTemporary()
         else:
             self.leText.setText(value)
+            self.use_temporary = False
 
     def getValue(self):
         key = None

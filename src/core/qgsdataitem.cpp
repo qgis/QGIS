@@ -42,7 +42,7 @@
 #include "qgsanimatedicon.h"
 
 // use GDAL VSI mechanism
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
@@ -79,7 +79,7 @@ QIcon QgsLayerItem::iconDefault()
 
 QIcon QgsDataCollectionItem::iconDataCollection()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
 QIcon QgsDataCollectionItem::iconDir()
@@ -100,7 +100,7 @@ QIcon QgsDataCollectionItem::iconDir()
 
 QIcon QgsFavoritesItem::iconFavorites()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) );
 }
 
 QVariant QgsFavoritesItem::sortKey() const
@@ -605,13 +605,13 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
   return QgsMapLayer::VectorLayer;
 }
 
-QString QgsLayerItem::layerTypeAsString( const QgsLayerItem::LayerType &layerType )
+QString QgsLayerItem::layerTypeAsString( QgsLayerItem::LayerType layerType )
 {
   static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
   return staticMetaObject.enumerator( enumIdx ).valueToKey( layerType );
 }
 
-QString QgsLayerItem::iconName( const QgsLayerItem::LayerType &layerType )
+QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
 {
   switch ( layerType )
   {
@@ -688,7 +688,7 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent, const QString
   : QgsDataItem( Collection, parent, name, path )
 {
   mCapabilities = Fertile;
-  mIconName = QStringLiteral( "/mIconDbSchema.png" );
+  mIconName = QStringLiteral( "/mIconDbSchema.svg" );
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
@@ -798,7 +798,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 
     if ( fileInfo.suffix() == QLatin1String( "qgs" ) || fileInfo.suffix() == QLatin1String( "qgz" ) )
     {
-      QgsDataItem *item = new QgsProjectItem( this, fileInfo.baseName(), path );
+      QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
       children.append( item );
       continue;
     }
@@ -1093,7 +1093,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const 
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )
   : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
-  mIconName = QStringLiteral( "/mIconDelete.png" );
+  mIconName = QStringLiteral( "/mIconDelete.svg" );
 
   setState( Populated ); // no more children
 }
@@ -1104,7 +1104,7 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, co
   Q_UNUSED( path );
   mCapabilities |= Fast;
   mType = Favorites;
-  mIconName = QStringLiteral( "/mIconFavourites.png" );
+  mIconName = QStringLiteral( "/mIconFavourites.svg" );
   populate();
 }
 
@@ -1628,4 +1628,3 @@ void QgsFavoriteItem::rename( const QString &name )
 
 
 ///@endcond
-

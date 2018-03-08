@@ -59,7 +59,7 @@ services. A module may register multiple services.
 
 The registry gain ownership of services and will call 'delete' on cleanup
 
-:param service: a QgsServerResponse to be registered
+:param service: a QgsService to be registered
 %End
 
     int unregisterService( const QString &name, const QString &version = QString() );

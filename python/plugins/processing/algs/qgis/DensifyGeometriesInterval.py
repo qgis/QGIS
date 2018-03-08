@@ -36,6 +36,9 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
     INTERVAL = 'INTERVAL'
 
+    def tags(self):
+        return self.tr('add,vertex,vertices,points,nodes').split(',')
+
     def group(self):
         return self.tr('Vector geometry')
 
@@ -71,4 +74,4 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByDistance(float(interval))
             feature.setGeometry(new_geometry)
-        return feature
+        return [feature]

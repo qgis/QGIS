@@ -69,9 +69,22 @@ Abstract base class for filters which collect locator results.
       Lowest
     };
 
+    enum Flag
+    {
+      FlagFast,
+    };
+    typedef QFlags<QgsLocatorFilter::Flag> Flags;
+
+
     QgsLocatorFilter( QObject *parent = 0 );
 %Docstring
 Constructor for QgsLocatorFilter.
+%End
+
+    virtual QgsLocatorFilter *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the filter. New requests are always executed in a
+clone of the original filter.
 %End
 
     virtual QString name() const = 0;
@@ -86,6 +99,11 @@ Returns the unique name for the filter. This should be an untranslated string id
 Returns a translated, user-friendly name for the filter.
 
 .. seealso:: :py:func:`name`
+%End
+
+    virtual QgsLocatorFilter::Flags flags() const;
+%Docstring
+Returns flags which specify the filter's behavior.
 %End
 
     virtual Priority priority() const;
@@ -108,6 +126,14 @@ results from this filter.
    be ignored.
 %End
 
+    virtual void prepare( const QString &string, const QgsLocatorContext &context );
+%Docstring
+Prepares the filter instance for an upcoming search for the specified ``string``. This method is always called
+from the main thread, and individual filter subclasses should perform whatever
+tasks are required in order to allow a subsequent search to safely execute
+on a background thread.
+%End
+
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Retrieves the filter results for a specified search ``string``. The ``context``
@@ -120,6 +146,9 @@ signal whenever they encounter a matching result.
 Subclasses should periodically check the ``feedback`` object to determine
 whether the query has been canceled. If so, the subclass should return
 from this method as soon as possible.
+
+This will be called from a background thread unless flags() returns the
+QgsLocatorFilter.FlagFast flag.
 %End
 
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
@@ -190,6 +219,11 @@ custom configuration widget.
 
   signals:
 
+    void finished();
+%Docstring
+Emitted when the filter finishes fetching results.
+%End
+
     void resultFetched( const QgsLocatorResult &result );
 %Docstring
 Should be emitted by filters whenever they encounter a matching result
@@ -197,6 +231,9 @@ during within their fetchResults() implementation.
 %End
 
 };
+
+QFlags<QgsLocatorFilter::Flag> operator|(QgsLocatorFilter::Flag f1, QFlags<QgsLocatorFilter::Flag> f2);
+
 
 
 

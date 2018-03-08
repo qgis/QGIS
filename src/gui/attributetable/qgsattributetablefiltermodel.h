@@ -2,7 +2,7 @@
   QgsAttributeTableFilterModel.h - Filter Model for attribute table
   -------------------
          date                 : Feb 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited        //!< Show only features which have unsaved changes
     };
+    Q_ENUM( FilterMode )
 
     /**
      * The type of a column.
@@ -59,6 +60,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ColumnTypeField,       //!< This column shows a field
       ColumnTypeActionButton //!< This column shows action buttons
     };
+    Q_ENUM( ColumnType )
 
     /**
      * The additional roles defined by this filter model.

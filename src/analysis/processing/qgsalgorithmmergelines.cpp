@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsMergeLinesAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsMergeLinesAlgorithm::name() const
 {
   return QStringLiteral( "mergelines" );
@@ -81,10 +76,10 @@ QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
   return new QgsMergeLinesAlgorithm();
 }
 
-QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
-    return feature;
+    return QgsFeatureList() << feature;
 
   QgsFeature out = feature;
   QgsGeometry outputGeometry = feature.geometry().mergeLines();
@@ -92,7 +87,7 @@ QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, Qg
     feedback->reportError( QObject::tr( "Error merging lines for feature %1" ).arg( feature.id() ) );
 
   out.setGeometry( outputGeometry );
-  return out;
+  return QgsFeatureList() << out;
 }
 
 ///@endcond

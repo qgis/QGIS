@@ -339,6 +339,9 @@ void QgsLayoutRuler::drawGuideAtPos( QPainter *painter, QPoint pos )
 
 void QgsLayoutRuler::createTemporaryGuideItem()
 {
+  if ( !mView->currentLayout() )
+    return;
+
   delete mGuideItem;
   mGuideItem = new QGraphicsLineItem();
 
@@ -579,6 +582,9 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
   mMarkerPos = event->pos();
   update();
 
+  if ( !mView->currentLayout() )
+    return;
+
   QPointF displayPos;
   if ( mCreatingGuide || mDraggingGuide )
   {
@@ -678,6 +684,9 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
 
 void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
 {
+  if ( !mView->currentLayout() )
+    return;
+
   if ( event->button() == Qt::LeftButton )
   {
     mDraggingGuide = guideAtPoint( event->pos() );
@@ -706,6 +715,9 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
 
 void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
 {
+  if ( !mView->currentLayout() )
+    return;
+
   if ( event->button() == Qt::LeftButton )
   {
     if ( mDraggingGuide )

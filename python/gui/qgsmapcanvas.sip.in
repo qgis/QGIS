@@ -230,12 +230,6 @@ Zoom to the next extent (view)
 
     void clearExtentHistory();
 
-    void zoomToSelected( QgsVectorLayer *layer = 0 );
-%Docstring
-Zoom to the extent of the selected features of current (vector) layer.
-
-:param layer: optionally specify different than current layer
-%End
 
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 %Docstring
@@ -796,6 +790,13 @@ Zoom in with fixed factor
 Zoom out with fixed factor
 %End
 
+    void zoomToSelected( QgsVectorLayer *layer = 0 );
+%Docstring
+Zoom to the extent of the selected features of provided (vector) layer.
+
+:param layer: optionally specify different than current layer
+%End
+
   signals:
 
     void xyCoordinates( const QgsPointXY &p );
@@ -878,7 +879,8 @@ Emit map tool changed with the old tool
 .. versionadded:: 2.3
 %End
 
-    void selectionChanged( QgsMapLayer *layer );
+
+    void selectionChanged( QgsVectorLayer *layer );
 %Docstring
 Emitted when selection in any layer gets changed
 %End
@@ -930,7 +932,7 @@ Emitted when the canvas has been assigned a different map theme.
 .. versionadded:: 3.0
 %End
 
-    void messageEmitted( const QString &title, const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
 %Docstring
 emit a message (usually to be displayed in a message bar)
 %End

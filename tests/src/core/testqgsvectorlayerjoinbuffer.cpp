@@ -511,7 +511,8 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   mProject.removeAllMapLayers();
 
   // Load QLR
-  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, context );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer

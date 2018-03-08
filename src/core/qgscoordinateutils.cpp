@@ -62,9 +62,12 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
-QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
+QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
 {
-  QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+  if ( !project )
+    return QString();
+
+  QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
 
   QgsPointXY geo = point;
   if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
@@ -73,9 +76,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPointXY &point,
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ) );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ), project );
       try
       {
         geo = ct.transform( point );

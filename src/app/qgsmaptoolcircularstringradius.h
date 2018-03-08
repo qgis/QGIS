@@ -19,10 +19,11 @@
 
 #include "qgsmaptooladdcircularstring.h"
 #include "qgspoint.h"
+#include "qgis_app.h"
 
 class QDoubleSpinBox;
 
-class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
+class APP_EXPORT QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
 {
     Q_OBJECT
   public:

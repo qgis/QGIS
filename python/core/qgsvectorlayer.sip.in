@@ -728,7 +728,7 @@ Return the provider type for this layer
     virtual QString sourceName() const;
 
 
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
 %Docstring
 Reads vector layer specific state from project file Dom node.
@@ -849,7 +849,7 @@ Returns the current auxiliary layer.
 %End
 
 
-    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context );
 
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
@@ -861,7 +861,7 @@ Read the symbology for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
 %Docstring
 Read the style for the current layer from the Dom node supplied.
@@ -935,6 +935,9 @@ data source
 
 .. versionadded:: 2.10
 %End
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
+
 
     QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
@@ -1483,7 +1486,7 @@ QVariant is used (the default behavior), then the feature's current value will b
 retrieved and used. Note that this involves a feature request to the underlying data provider,
 so it is more efficient to explicitly pass an ``oldValue`` if it is already available.
 
-If ``skipDefaultValue`` is set to true, default field values will not
+If ``skipDefaultValues`` is set to true, default field values will not
 be updated. This can be used to override default field value expressions.
 
 Returns true if the feature's attribute was successfully changed.
@@ -1502,6 +1505,50 @@ Returns true if the feature's attribute was successfully changed.
 .. seealso:: :py:func:`changeGeometry`
 
 .. seealso:: :py:func:`updateFeature`
+%End
+
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
+%Docstring
+Changes attributes' values for a feature (but does not immediately
+commit the changes).
+The ``fid`` argument specifies the ID of the feature to be changed.
+
+The new values to be assigned to the fields are given by ``newValues``.
+
+If a valid QVariant is specified for a field in ``oldValues``, it will be
+used as the field value in the case of an undo operation corresponding
+to this attribute value change. If an invalid QVariant is used (the
+default behavior), then the feature's current value will be
+automatically retrieved and used. Note that this involves a feature
+request to the underlying data provider, so it is more efficient to
+explicitly pass an oldValue if it is already available.
+
+If ``skipDefaultValues`` is set to true, default field values will not
+be updated. This can be used to override default field value
+expressions.
+
+Returns true if feature's attributes was successfully changed.
+
+.. note::
+
+   Calls to changeAttributeValues() are only valid for layers in
+   which edits have been enabled by a call to startEditing(). Changes made
+   to features using this method are not committed to the underlying data
+   provider until a commitChanges() call is made. Any uncommitted changes
+   can be discarded by calling rollBack().
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitChanges`
+
+.. seealso:: :py:func:`changeGeometry`
+
+.. seealso:: :py:func:`updateFeature`
+
+.. seealso:: :py:func:`changeAttributeValue`
+
+
+.. versionadded:: 3.0
 %End
 
     bool addAttribute( const QgsField &field );
@@ -1969,40 +2016,6 @@ Calculates an aggregated value from the layer's features.
 :return: calculated aggregate value
 
 .. versionadded:: 2.16
-%End
-
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 ) const;
-%Docstring
-Fetches all values from a specified field name or expression.
-
-:param fieldOrExpression: field name or an expression string
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
-:param feedback: optional feedback object to allow cancelation
-
-:return: list of fetched values
-
-.. versionadded:: 2.9
-
-.. seealso:: :py:func:`getDoubleValues`
-%End
-
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 ) const;
-%Docstring
-Fetches all double values from a specified field name or expression. Null values or
-invalid expression results are skipped.
-
-:param fieldOrExpression: field name or an expression string evaluating to a double value
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
-:param nullCount: optional pointer to integer to store number of null values encountered in
-:param feedback: optional feedback object to allow cancelation
-
-:return: list of fetched values
-
-.. versionadded:: 2.9
-
-.. seealso:: :py:func:`getValues`
 %End
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );

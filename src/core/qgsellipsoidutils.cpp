@@ -76,7 +76,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   //
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
-  // Continue with PROJ.4 list of ellipsoids.
+  // Continue with PROJ list of ellipsoids.
 
   //check the db is available
   int result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );

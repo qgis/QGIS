@@ -47,11 +47,12 @@ for module in "${modules[@]}"; do
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $header > python/$sipfile.in
+        ./scripts/sipify.pl $header > python/$sipfile.in &
       fi
       count=$((count+1))
   done < <( ${GP}sed -n -r "s/^%Include (.*\.sip)/${module}\/\1/p" python/${module}/${module}_auto.sip )
 done
+wait # wait for sipify processes to finish
 
 echo " => $count files sipified! 🍺"
 

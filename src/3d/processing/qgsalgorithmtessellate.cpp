@@ -31,11 +31,6 @@ QString QgsTessellateAlgorithm::displayName() const
   return QObject::tr( "Tessellate" );
 }
 
-QgsProcessingAlgorithm::Flags QgsTessellateAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QStringList QgsTessellateAlgorithm::tags() const
 {
   return QObject::tr( "3d,triangle" ).split( ',' );
@@ -79,7 +74,7 @@ QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
   return new QgsTessellateAlgorithm();
 }
 
-QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -110,7 +105,7 @@ QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, Qg
       f.setGeometry( g );
     }
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

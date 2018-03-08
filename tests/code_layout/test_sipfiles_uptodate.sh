@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 DIR=$(git rev-parse --show-toplevel)
 
 # GNU prefix command for mac os support (gsed, gsplit)
@@ -16,7 +18,7 @@ while read -r sipfile; do
     if [ ! -f $header ]; then
       echo "*** Missing header: $header for sipfile $sipfile"
     else
-      outdiff=$(./scripts/sipify.pl $header | diff python/$sipfile -)
+      outdiff=$(./scripts/sipify.pl $header | diff python/$sipfile.in -)
       if [[ -n $outdiff ]]; then
         echo " *** SIP file not up to date: $sipfile"
         code=1

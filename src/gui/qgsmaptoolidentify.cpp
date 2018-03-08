@@ -100,7 +100,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   if ( mode == DefaultQgsSetting )
   {
     QgsSettings settings;
-    mode = static_cast<IdentifyMode>( settings.value( QStringLiteral( "Map/identifyMode" ), 0 ).toInt() );
+    mode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
   }
 
   if ( mode == LayerSelection )
@@ -145,7 +145,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
         layer = layerList.value( i );
 
       emit identifyProgress( i, mCanvas->layerCount() );
-      emit identifyMessage( tr( "Identifying on %1..." ).arg( layer->name() ) );
+      emit identifyMessage( tr( "Identifying on %1…" ).arg( layer->name() ) );
 
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
@@ -432,7 +432,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
 
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
-  return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
+  return QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), canvasPoint, mCanvas->mapSettings().destinationCrs(),
          mCoordinatePrecision );
 }
 

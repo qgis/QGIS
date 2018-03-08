@@ -55,15 +55,29 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 {
   if ( mRenderer )
   {
-    beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
-    mRenderer = nullptr;
-    endRemoveRows();
+    if ( mRenderer->ranges().size() )
+    {
+      beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
+      mRenderer = nullptr;
+      endRemoveRows();
+    }
+    else
+    {
+      mRenderer = nullptr;
+    }
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
-    mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->ranges().size() )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
+      mRenderer = renderer;
+      endInsertRows();
+    }
+    else
+    {
+      mRenderer = renderer;
+    }
   }
 }
 
@@ -511,10 +525,10 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
-    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
   }
@@ -676,7 +690,7 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int i
 
     if ( !ramp )
     {
-      QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
+      QMessageBox::critical( this, tr( "Select Method" ), tr( "No color ramp defined." ) );
       return;
     }
     mRenderer->setSourceColorRamp( ramp );
@@ -789,7 +803,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
-    QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
+    QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );
     return;
   }
 
@@ -809,7 +823,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   // and give the user the chance to cancel
   if ( QgsGraduatedSymbolRenderer::Jenks == mode && mLayer->featureCount() > 50000 )
   {
-    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
+    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
       return;
   }
 
@@ -822,7 +836,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   {
     if ( !ramp )
     {
-      QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
+      QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );
       return;
     }
     mRenderer->setSourceColorRamp( ramp.release() );
@@ -1033,7 +1047,7 @@ void QgsGraduatedSymbolRendererWidget::toggleBoundariesLink( bool linked )
     {
       int result = QMessageBox::warning(
                      this,
-                     tr( "Linked range warning" ),
+                     tr( "Link Class Boundaries" ),
                      tr( "Rows will be reordered before linking boundaries. Continue?" ),
                      QMessageBox::Ok | QMessageBox::Cancel );
       if ( result != QMessageBox::Ok )

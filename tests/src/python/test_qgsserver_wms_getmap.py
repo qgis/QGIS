@@ -184,6 +184,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic4")
 
+    def test_wms_getmap_dpi(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DPI": "112.5"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic5")
+
     def test_wms_getmap_invalid_parameters(self):
         # height should be an int
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -731,7 +750,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857",
-            "SELECTION": "Country: 4"
+            "SELECTION": "Country: 4,1;Hello: 2,5"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -890,12 +909,15 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
     def test_wms_getmap_group(self):
+        """A WMS shall render the requested layers by drawing the leftmost in the list 
+        bottommost, the next one over that, and so on."""
+
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectGroupsPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
-            "LAYERS": "Country,Country_Labels,Country_Diagrams",
+            "LAYERS": "Country_Diagrams,Country_Labels,Country",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-16817707,-4710778,5696513,14587125",
@@ -921,6 +943,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r_group, _ = self._result(self._execute_request(qs))
+
+        """ Debug check:
+        f = open('grouped.png', 'wb+')
+        f.write(r_group)
+        f.close()
+        f = open('individual.png', 'wb+')
+        f.write(r_individual)
+        f.close()
+        #"""
+
         self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({

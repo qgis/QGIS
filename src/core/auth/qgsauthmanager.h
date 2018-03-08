@@ -769,7 +769,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool passwordHelperWrite( const QString &password );
 
     //! Error message setter
-    void passwordHelperSetErrorMessage( const QString errorMessage ) { mPasswordHelperErrorMessage = errorMessage; }
+    void passwordHelperSetErrorMessage( const QString &errorMessage ) { mPasswordHelperErrorMessage = errorMessage; }
 
     //! Clear error code and message
     void passwordHelperClearErrors();

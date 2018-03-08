@@ -54,11 +54,6 @@ QgsWkbTypes::Type QgsMinimumEnclosingCircleAlgorithm::outputWkbType( QgsWkbTypes
   return QgsWkbTypes::Polygon;
 }
 
-QgsProcessingAlgorithm::Flags QgsMinimumEnclosingCircleAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), QgsProcessingParameterNumber::Integer,
@@ -91,7 +86,7 @@ bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &pa
   return true;
 }
 
-QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -105,7 +100,14 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
           << M_PI *radius *radius;
     f.setAttributes( attrs );
   }
-  return f;
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant();
+    f.setAttributes( attrs );
+  }
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

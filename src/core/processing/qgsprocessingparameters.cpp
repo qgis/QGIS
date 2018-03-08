@@ -25,6 +25,8 @@
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingparametertype.h"
 #include <functional>
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -1079,6 +1081,12 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterFolderDestination( name ) );
   else if ( type == QgsProcessingParameterBand::typeName() )
     def.reset( new QgsProcessingParameterBand( name ) );
+  else
+  {
+    QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
+    if ( paramType )
+      def.reset( paramType->create( name ) );
+  }
 
   if ( !def )
     return nullptr;
@@ -2064,7 +2072,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterNumber::dataType() cons
   return mDataType;
 }
 
-void QgsProcessingParameterNumber::setDataType( const Type &dataType )
+void QgsProcessingParameterNumber::setDataType( Type dataType )
 {
   mDataType = dataType;
 }
@@ -2167,7 +2175,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
   return mDataType;
 }
 
-void QgsProcessingParameterRange::setDataType( const QgsProcessingParameterNumber::Type &dataType )
+void QgsProcessingParameterRange::setDataType( QgsProcessingParameterNumber::Type dataType )
 {
   mDataType = dataType;
 }
@@ -2787,7 +2795,7 @@ QgsProcessingParameterField::DataType QgsProcessingParameterField::dataType() co
   return mDataType;
 }
 
-void QgsProcessingParameterField::setDataType( const DataType &dataType )
+void QgsProcessingParameterField::setDataType( DataType dataType )
 {
   mDataType = dataType;
 }
@@ -3209,7 +3217,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
 {
-  if ( supportsNonFileBasedOutputs() )
+  if ( supportsNonFileBasedOutput() )
     return QStringLiteral( "memory:%1" ).arg( description() );
   else
     return QgsProcessingDestinationParameter::generateTemporaryDestination();
@@ -3386,7 +3394,14 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
 
 QgsProcessingOutputDefinition *QgsProcessingParameterFileDestination::toOutputDefinition() const
 {
-  return nullptr;
+  if ( !mFileFilter.isEmpty() && mFileFilter.contains( QStringLiteral( "htm" ), Qt::CaseInsensitive ) )
+  {
+    return new QgsProcessingOutputHtml( name(), description() );
+  }
+  else
+  {
+    return new QgsProcessingOutputFile( name(), description() );
+  }
 }
 
 QString QgsProcessingParameterFileDestination::defaultFileExtension() const

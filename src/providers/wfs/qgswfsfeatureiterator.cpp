@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgsfeedback.h"
 
 #include <QDir>
 #include <QProgressDialog>
@@ -34,7 +35,7 @@
 #include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri )
   , mNumberMatched( -1 )
 {
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
@@ -76,7 +77,7 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 // -------------------------
 
 QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI.uri() )
+  : QgsWfsRequest( shared->mURI )
   , mShared( shared )
   , mStop( false )
   , mProgressDialogShowImmediately( false )
@@ -186,8 +187,7 @@ QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
 
 QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool forHits )
 {
-  QUrl getFeatureUrl( mShared->mURI.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
 
   QString typenames;
@@ -373,6 +373,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ),
                                 namespaces );
   }
+
+  QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
 
   return getFeatureUrl;
 }
@@ -965,7 +967,7 @@ void QgsWFSFeatureIterator::endOfDownload( bool )
     mLoop->quit();
 }
 
-void QgsWFSFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+void QgsWFSFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mInterruptionChecker = interruptionChecker;
 }
@@ -1018,7 +1020,7 @@ void QgsWFSFeatureIterator::checkInterruption()
 {
   //QgsDebugMsg("QgsWFSFeatureIterator::checkInterruption()");
 
-  if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+  if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
   {
     mDownloadFinished = true;
     if ( mLoop )
@@ -1037,7 +1039,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
   QgsFeature cachedFeature;
   while ( mCacheIterator.nextFeature( cachedFeature ) )
   {
-    if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+    if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
     //QgsDebugMsg(QString("QgsWFSSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
@@ -1134,7 +1136,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     {
       while ( !mReaderStream->atEnd() )
       {
-        if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+        if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
 
         QgsFeature feat;
@@ -1186,7 +1188,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 
     if ( mDownloadFinished )
       return false;
-    if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
+    if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
     //QgsDebugMsg("fetchFeature before loop");

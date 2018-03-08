@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SpatialJoin.py
+    SpatialJoinSummary.py
     ---------------------
     Date                 : September 2017
     Copyright            : (C) 2017 by Nyall Dawson
@@ -270,6 +270,13 @@ class SpatialJoinSummary(QgisAlgorithm):
 
             if not f.hasGeometry():
                 if not discard_nomatch:
+                    # ensure consistent count of attributes - otherwise non matching
+                    # features will have incorrect attribute length
+                    # and provider may reject them
+                    attrs = f.attributes()
+                    if len(attrs) < len(out_fields):
+                        attrs += [NULL] * (len(out_fields) - len(attrs))
+                    f.setAttributes(attrs)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                 continue
 
@@ -302,6 +309,13 @@ class SpatialJoinSummary(QgisAlgorithm):
                 if discard_nomatch:
                     continue
                 else:
+                    # ensure consistent count of attributes - otherwise non matching
+                    # features will have incorrect attribute length
+                    # and provider may reject them
+                    attrs = f.attributes()
+                    if len(attrs) < len(out_fields):
+                        attrs += [NULL] * (len(out_fields) - len(attrs))
+                    f.setAttributes(attrs)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 attrs = f.attributes()

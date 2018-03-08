@@ -121,14 +121,14 @@ void QgsStyleExportImportDialog::doExportImport()
   QModelIndexList selection = listItems->selectionModel()->selectedIndexes();
   if ( selection.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Export/import error" ),
+    QMessageBox::warning( this, tr( "Export/import Symbols or Color Ramps" ),
                           tr( "You should select at least one symbol/color ramp." ) );
     return;
   }
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save styles" ), QDir::homePath(),
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Styles" ), QDir::homePath(),
                        tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
@@ -146,14 +146,14 @@ void QgsStyleExportImportDialog::doExportImport()
     moveStyles( &selection, mStyle, mTempStyle );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
-      QMessageBox::warning( this, tr( "Export/import error" ),
+      QMessageBox::warning( this, tr( "Export Symbols" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
                             .arg( mTempStyle->errorString() ) );
       return;
     }
     else
     {
-      QMessageBox::information( this, tr( "Export successful" ),
+      QMessageBox::information( this, tr( "Export Symbols" ),
                                 tr( "The selected symbols were successfully exported to file:\n%1" )
                                 .arg( mFileName ) );
     }
@@ -180,7 +180,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     // NOTE mTempStyle is style here
     if ( !style->importXml( mFileName ) )
     {
-      QMessageBox::warning( this, tr( "Import Error" ),
+      QMessageBox::warning( this, tr( "Import Symbols or Color Ramps" ),
                             tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
       return false;
     }
@@ -278,7 +278,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->symbolNames().contains( symbolName ) && prompt )
       {
-        int res = QMessageBox::warning( this, tr( "Duplicate Names" ),
+        int res = QMessageBox::warning( this, tr( "Export/import Symbols" ),
                                         tr( "Symbol with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
@@ -322,7 +322,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->colorRampNames().contains( symbolName ) && prompt )
       {
-        int res = QMessageBox::warning( this, tr( "Duplicate Names" ),
+        int res = QMessageBox::warning( this, tr( "Export/import Color Ramps" ),
                                         tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
@@ -482,7 +482,7 @@ void QgsStyleExportImportDialog::browse()
 
   if ( type == QLatin1String( "file" ) )
   {
-    mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), QDir::homePath(),
+    mFileName = QFileDialog::getOpenFileName( this, tr( "Load Styles" ), QDir::homePath(),
                 tr( "XML files (*.xml *XML)" ) );
     if ( mFileName.isEmpty() )
     {
@@ -522,7 +522,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
       delete dummy;
     }
     mProgressDlg = new QProgressDialog();
-    mProgressDlg->setLabelText( tr( "Downloading style ... " ) );
+    mProgressDlg->setLabelText( tr( "Downloading style…" ) );
     mProgressDlg->setAutoClose( true );
 
     connect( mProgressDlg, &QProgressDialog::canceled, this, &QgsStyleExportImportDialog::downloadCanceled );
@@ -549,8 +549,8 @@ void QgsStyleExportImportDialog::httpFinished()
     mTempFile->remove();
     mFileName.clear();
     mProgressDlg->hide();
-    QMessageBox::information( this, tr( "HTTP Error!" ),
-                              tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
+    QMessageBox::information( this, tr( "Import from URL" ),
+                              tr( "HTTP Error! Download failed: %1." ).arg( mNetReply->errorString() ) );
     return;
   }
   else

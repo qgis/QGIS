@@ -40,6 +40,11 @@ QString Qgs3DAlgorithms::id() const
   return QStringLiteral( "3d" );
 }
 
+QString Qgs3DAlgorithms::helpId() const
+{
+  return QStringLiteral( "qgis" );
+}
+
 QString Qgs3DAlgorithms::name() const
 {
   return tr( "QGIS (3D)" );

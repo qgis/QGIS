@@ -35,11 +35,6 @@ QString QgsTransformAlgorithm::outputName() const
   return QObject::tr( "Reprojected" );
 }
 
-QgsProcessingAlgorithm::Flags QgsTransformAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsTransformAlgorithm::name() const
 {
   return QStringLiteral( "reprojectlayer" );
@@ -84,7 +79,7 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   return true;
 }
 
-QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature feature = f;
   if ( !mCreatedTransform )
@@ -105,7 +100,7 @@ QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProces
       feature.clearGeometry();
     }
   }
-  return feature;
+  return QgsFeatureList() << feature;
 }
 
 ///@endcond

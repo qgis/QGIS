@@ -36,7 +36,9 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
-from processing.script.ScriptUtils import ScriptUtils
+from PyQt5.QtCore import QCoreApplication
+
+from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
 
@@ -63,7 +65,7 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtractSpecificNodes import ExtractSpecificNodes
+from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
@@ -80,13 +82,13 @@ from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -153,6 +155,7 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
+    fieldMappingParameterName = QCoreApplication.translate('Processing', 'Fields Mapper')
 
     def __init__(self):
         super().__init__()
@@ -183,7 +186,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtractSpecificNodes(),
+                ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),
@@ -200,13 +203,13 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
-                PointOnSurface(),
                 PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
@@ -288,11 +291,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                          VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:
-            script.allowEdit = False
-        algs.extend(scripts)
+        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        #scripts = ScriptUtils.loadFromFolder(folder)
+        #for script in scripts:
+        #    script.allowEdit = False
+        #algs.extend(scripts)
 
         return algs
 
@@ -314,6 +317,20 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
         for a in self.externalAlgs:
             self.addAlgorithm(a)
+
+    def load(self):
+        success = super().load()
+
+        if success:
+            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
+            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
+
+        return success
+
+    def unload(self):
+        super().unload()
+
+        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

@@ -101,9 +101,11 @@ SET(QGIS_CORE_SRCS
 
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
+  processing/qgsprocessingcontext.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
+  processing/qgsprocessingparametertype.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -296,6 +298,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
+  qgsvirtuallayertask.cpp
   qgsvectorlayerfeaturecounter.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
@@ -473,6 +476,7 @@ SET(QGIS_CORE_SRCS
   3d/qgs3drendererregistry.cpp
   3d/qgsabstract3drenderer.cpp
 
+  fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -576,6 +580,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgsdatasourceuri.h
   qgsdbfilterproxymodel.h
   qgsfeature.h
   qgsfeedback.h
@@ -620,6 +625,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgssnappingconfig.h
   qgssnappingutils.h
   qgstaskmanager.h
+  qgstolerance.h
   qgstracer.h
   qgstrackedvectorlayertools.h
   qgstransaction.h
@@ -631,10 +637,13 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
+  qgsvirtuallayertask.h
   qgsvectorlayerexporter.h
   qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h
+  qgsvectorlayerrenderer.h
   qgsvectorlayertools.h
+  qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
@@ -665,7 +674,10 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterdataprovider.h
   raster/qgsrasterinterface.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterprojector.h
 
+  geometry/qgsabstractgeometry.h
+  geometry/qgsgeometry.h
   geometry/qgspoint.h
 
   geocms/geonode/qgsgeonoderequest.h
@@ -804,7 +816,6 @@ SET(QGIS_CORE_HDRS
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
-  qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
   qgsdbfilterproxymodel.h
@@ -904,7 +915,6 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
-  qgstolerance.h
   qgstracer.h
 
   qgsvectordataprovider.h
@@ -917,11 +927,9 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerlabeling.h
-  qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
-  qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
@@ -989,6 +997,8 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingcontext.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertype.h
+  processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingutils.h
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
@@ -1024,7 +1034,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
-  raster/qgsrasterprojector.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
@@ -1076,7 +1085,6 @@ SET(QGIS_CORE_HDRS
 
   locator/qgslocatorcontext.h
 
-  geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircularstring.h
   geometry/qgscircle.h
@@ -1088,7 +1096,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometryeditutils.h
   geometry/qgsgeometryengine.h
   geometry/qgsgeometryfactory.h
-  geometry/qgsgeometry.h
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
@@ -1110,6 +1117,7 @@ SET(QGIS_CORE_HDRS
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h
 
+  fieldformatter/qgsrangefieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
@@ -1211,7 +1219,7 @@ GENERATE_EXPORT_HEADER(
 SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 IF(ENABLE_MODELTEST)
-  TARGET_LINK_LIBRARIES(qgis_core ${QT_QTTEST_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
 
 IF(NOT APPLE)
@@ -1252,7 +1260,7 @@ ADD_DEPENDENCIES(qgis_core version)
 # because of htonl
 IF (WIN32)
   FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
-  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} DbgHelp)
+  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp)
 ENDIF (WIN32)
 
 IF (APPLE)
@@ -1268,13 +1276,16 @@ IF (QT_MOBILITY_LOCATION_FOUND)
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 TARGET_LINK_LIBRARIES(qgis_core
-  ${QT_QTXML_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
-  ${QT_QTNETWORK_LIBRARY}
-  ${QT_QTSVG_LIBRARY}
+  ${Qt5Xml_LIBRARIES}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5PrintSupport_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
-  ${QT_QTSQL_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
   ${PROJ_LIBRARY}

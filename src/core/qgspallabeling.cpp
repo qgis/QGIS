@@ -2186,6 +2186,17 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
         }
         return false;
       }
+      case DDSizeF:
+      {
+        QString ptstr = exprVal.toString().trimmed();
+
+        if ( !ptstr.isEmpty() )
+        {
+          dataDefinedValues.insert( p, QVariant( QgsSymbolLayerUtils::decodeSize( ptstr ) ) );
+          return true;
+        }
+        return false;
+      }
     }
   }
   return false;
@@ -2566,8 +2577,8 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     QgsDebugMsgLevel( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
 
     // '' empty paths are allowed
-    svgPath = svgfile;
-    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgfile ) );
+    svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
+    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgPath ) );
   }
 
   // data defined shape size type?
@@ -2671,7 +2682,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeOffsetUnits, exprVal, context.expressionContext() );
 
   // data defined shape radii?
-  dataDefinedValEval( DDPointF, QgsPalLayerSettings::ShapeRadii, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeSize( background.radii() ) );
+  dataDefinedValEval( DDSizeF, QgsPalLayerSettings::ShapeRadii, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeSize( background.radii() ) );
 
   // data defined shape radii units?
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeRadiiUnits, exprVal, context.expressionContext() );
@@ -2920,12 +2931,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
-    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-    if ( bufferGeom.isNull() )
+    QgsGeometry validGeom = geom.makeValid();
+    if ( validGeom.isNull() )
     {
+      QgsDebugMsg( QString( "Could not repair geometry: %1" ).arg( validGeom.lastError() ) );
       return QgsGeometry();
     }
-    geom = bufferGeom;
+    geom = validGeom;
   }
 
   if ( !clipGeometry.isNull() &&

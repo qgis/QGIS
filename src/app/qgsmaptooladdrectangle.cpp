@@ -84,7 +84,7 @@ void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
 QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOriented ) const
 {
   std::unique_ptr<QgsLineString> ext( new QgsLineString() );
-  if ( mRectangle.isEmpty() )
+  if ( mRectangle.toRectangle().isEmpty() )
   {
     return ext.release();
   }
@@ -105,11 +105,31 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
     x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() );
     x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() );
   }
+
   ext->addVertex( x0 );
   ext->addVertex( x1 );
   ext->addVertex( x2 );
   ext->addVertex( x3 );
   ext->addVertex( x0 );
+
+  // keep z value from the first snapped point
+  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  {
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) )
+    {
+      if ( point.z() != defaultZValue() )
+      {
+        ext->dropZValue();
+        ext->addZValue( point.z() );
+        break;
+      }
+      else
+      {
+        ext->dropZValue();
+        ext->addZValue( defaultZValue() );
+      }
+    }
+  }
 
   return ext.release();
 }
@@ -117,7 +137,7 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
 QgsPolygon *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) const
 {
   std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
-  if ( mRectangle.isEmpty() )
+  if ( mRectangle.toRectangle().isEmpty() )
   {
     return polygon.release();
   }
@@ -129,7 +149,7 @@ QgsPolygon *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) 
 
 void QgsMapToolAddRectangle::deactivate( const bool isOriented )
 {
-  if ( !mParentTool || mRectangle.isEmpty() )
+  if ( !mParentTool || mRectangle.toRectangle().isEmpty() )
   {
     return;
   }
@@ -162,5 +182,5 @@ void QgsMapToolAddRectangle::clean()
     mParentTool->deleteTempRubberBand();
   }
 
-  mRectangle = QgsRectangle();
+  mRectangle = QgsBox3d();
 }

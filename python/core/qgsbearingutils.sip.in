@@ -24,6 +24,7 @@ Utilities for calculating bearings and directions.
   public:
 
     static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
+                                    const QgsCoordinateTransformContext  &transformContext,
                                     const QgsPointXY &point );
 %Docstring
 Returns the direction to true north from a specified point and for a specified

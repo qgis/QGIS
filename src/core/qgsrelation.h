@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRelation
      * Set a strength for this relation
      * \since QGIS 3.0
      */
-    void setStrength( const RelationStrength &strength );
+    void setStrength( RelationStrength strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.

@@ -93,7 +93,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        QgsMessageBar::CRITICAL, messageTimeout() );
+        Qgis::Critical, messageTimeout() );
 #endif
     return;
   }
@@ -111,7 +111,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        QgsMessageBar::CRITICAL, messageTimeout() );
+        Qgis::Critical, messageTimeout() );
 #endif
     return;
   }
@@ -137,7 +137,7 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
 }
 
@@ -177,7 +177,7 @@ QList<QAction *> QgsWfsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -240,7 +240,7 @@ QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
   lst.append( actionNew );
 

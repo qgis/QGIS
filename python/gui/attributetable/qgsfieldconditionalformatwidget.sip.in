@@ -8,8 +8,6 @@
 
 
 
-
-
 class QgsFieldConditionalFormatWidget : QWidget
 {
 %Docstring

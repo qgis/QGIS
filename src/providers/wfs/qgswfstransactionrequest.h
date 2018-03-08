@@ -22,7 +22,7 @@ class QgsWFSTransactionRequest : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSTransactionRequest( const QString &uri );
+    explicit QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri );
 
     //! Send the transaction document and return the server response
     bool send( const QDomDocument &doc, QDomDocument &serverResponse );

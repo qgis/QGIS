@@ -133,6 +133,8 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set list of layers for map rendering. The layers must be registered in QgsProject.
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \note Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
@@ -287,6 +289,24 @@ class CORE_EXPORT QgsMapSettings
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see setPathResolver()
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see pathResolver()
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
+
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
@@ -423,6 +443,9 @@ class CORE_EXPORT QgsMapSettings
     QgsMapToPixel mMapToPixel;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsPathResolver mPathResolver;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif

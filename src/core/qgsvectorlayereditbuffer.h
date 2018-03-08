@@ -66,6 +66,13 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /**
+     * Changes values of attributes (but does not commit it).
+     * \returns true if attributes are well updated, false otherwise
+     * \since QGIS 3.0
+     */
+    virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
+
+    /**
      * Add an attribute field (but does not commit it)
         returns true if the field was added */
     virtual bool addAttribute( const QgsField &field );
@@ -265,6 +272,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     friend class QgsVectorLayerUndoPassthroughCommandDeleteFeatures;
     friend class QgsVectorLayerUndoPassthroughCommandChangeGeometry;
     friend class QgsVectorLayerUndoPassthroughCommandChangeAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandChangeAttributes;
     friend class QgsVectorLayerUndoPassthroughCommandAddAttribute;
     friend class QgsVectorLayerUndoPassthroughCommandDeleteAttribute;
     friend class QgsVectorLayerUndoPassthroughCommandRenameAttribute;

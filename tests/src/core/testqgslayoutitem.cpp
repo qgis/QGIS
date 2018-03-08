@@ -54,9 +54,9 @@ class TestItem : public QgsLayoutItem
     bool forceResize = false;
 
   protected:
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
+    void draw( QgsLayoutItemRenderContext &context ) override
     {
-      QPainter *painter = context.painter();
+      QPainter *painter = context.renderContext().painter();
       painter->save();
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->setPen( Qt::NoPen );
@@ -177,7 +177,7 @@ class TestQgsLayoutItem: public QObject
 
     bool renderCheck( QString testName, QImage &image, int mismatchCount );
 
-    QgsLayoutItem *createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
+    std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
 
 };
 
@@ -248,7 +248,7 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutItem*
+  auto create = []( QgsLayout * layout )->QgsLayoutItem *
   {
     return new TestItem( layout );
   };
@@ -1386,6 +1386,16 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->page(), 2 );
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 38, QgsUnitTypes::LayoutCentimeters ) );
+
+  // non-top-left reference
+  item->setReferencePoint( QgsLayoutItem::Middle );
+  item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 0 );
+  QCOMPARE( item->pagePos(), QPointF( 5, 6 ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6 ) );
+  item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 1 );
+  QCOMPARE( item->page(), 1 );
+  QCOMPARE( item->pagePos(), QPointF( 5, 6 ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
 }
 
 void TestQgsLayoutItem::itemVariablesFunction()
@@ -1525,6 +1535,24 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item2->pos().x(), 7.0 );
   QCOMPARE( item2->pos().y(), 16.0 );
 
+  // test that refresh rotation doesn't move item (#18037)
+  item2 = qgis::make_unique< TestItem >( &l );
+  item2->setReferencePoint( QgsLayoutItem::Middle );
+  item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
+  item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
+  item2->setItemRotation( 45 );
+  QCOMPARE( item2->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 8.0 );
+  QGSCOMPARENEAR( item2->pos().x(), 3.58, 0.01 );
+  QGSCOMPARENEAR( item2->pos().y(), 2.343146, 0.01 );
+  QCOMPARE( item2->rotation(), 45.0 );
+  item2->refresh();
+  QCOMPARE( item2->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 8.0 );
+  QGSCOMPARENEAR( item2->pos().x(), 3.58, 0.01 );
+  QGSCOMPARENEAR( item2->pos().y(), 2.343146, 0.01 );
+  QCOMPARE( item2->rotation(), 45.0 );
+
 
   //TODO also changing size?
 
@@ -1647,7 +1675,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
 
   original->dataDefinedProperties().setProperty( QgsLayoutObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
 
-  original->setReferencePoint( QgsLayoutItem::Middle );
+  original->setReferencePoint( QgsLayoutItem::MiddleRight );
   original->attemptResize( QgsLayoutSize( 6, 8, QgsUnitTypes::LayoutCentimeters ) );
   original->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   original->setItemRotation( 45.0 );
@@ -1665,7 +1693,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setExcludeFromExports( true );
   original->setItemOpacity( 0.75 );
 
-  QgsLayoutItem *copy = createCopyViaXml( &l, original );
+  std::unique_ptr< QgsLayoutItem > copy = createCopyViaXml( &l, original );
 
   QCOMPARE( copy->uuid(), original->uuid() );
   QCOMPARE( copy->id(), original->id() );
@@ -1675,8 +1703,12 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( copy->referencePoint(), original->referencePoint() );
   QCOMPARE( copy->sizeWithUnits(), original->sizeWithUnits() );
-  QCOMPARE( copy->positionWithUnits(), original->positionWithUnits() );
+  QGSCOMPARENEAR( copy->positionWithUnits().x(), original->positionWithUnits().x(), 0.001 );
+  QGSCOMPARENEAR( copy->positionWithUnits().y(), original->positionWithUnits().y(), 0.001 );
+  QCOMPARE( copy->positionWithUnits().units(), original->positionWithUnits().units() );
   QCOMPARE( copy->itemRotation(), original->itemRotation() );
+  QGSCOMPARENEAR( copy->pos().x(), original->pos().x(), 0.001 );
+  QGSCOMPARENEAR( copy->pos().y(), original->pos().y(), 0.001 );
   QVERIFY( copy->isLocked() );
   QCOMPARE( copy->zValue(), 55.0 );
   QVERIFY( !copy->isVisible() );
@@ -1689,8 +1721,6 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
   QVERIFY( copy->excludeFromExports( ) );
   QCOMPARE( copy->itemOpacity(), 0.75 );
-
-  delete copy;
   delete original;
 }
 
@@ -1875,6 +1905,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1887,6 +1918,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 
@@ -1924,6 +1956,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1936,6 +1969,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 
@@ -1985,7 +2019,7 @@ void TestQgsLayoutItem::excludeFromExports()
   QVERIFY( checker.testLayout( mReport ) );
 }
 
-QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
+std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
 {
   //save original item to xml
   QDomImplementation DomImplementation;
@@ -1998,10 +2032,10 @@ QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayout
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  TestItem *copy = new TestItem( layout );
+  std::unique_ptr< TestItem > copy = qgis::make_unique< TestItem >( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
-  return copy;
+  return std::move( copy );
 }
 
 QGSTEST_MAIN( TestQgsLayoutItem )

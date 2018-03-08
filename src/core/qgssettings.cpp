@@ -189,7 +189,7 @@ QString QgsSettings::fileName() const
 
 void QgsSettings::sync()
 {
-  return mUserSettings->sync();
+  mUserSettings->sync();
 }
 
 void QgsSettings::remove( const QString &key, const QgsSettings::Section section )

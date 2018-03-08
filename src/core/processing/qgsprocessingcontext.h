@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProcessingContext
      * Sets \a flags for the context.
      * \see flags()
      */
-    void setFlags( const QgsProcessingContext::Flags &flags ) { mFlags = flags; }
+    void setFlags( QgsProcessingContext::Flags flags ) { mFlags = flags; }
 
     /**
      * Returns the project in which the algorithm is being executed.
@@ -220,37 +220,7 @@ class CORE_EXPORT QgsProcessingContext
      * reset the invalidGeometryCallback() to a default implementation.
      * \see invalidGeometryCheck()
      */
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check )
-    {
-      mInvalidGeometryCheck = check;
-
-      switch ( mInvalidGeometryCheck )
-      {
-        case  QgsFeatureRequest::GeometryAbortOnInvalid:
-        {
-          auto callback = []( const QgsFeature & feature )
-          {
-            throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
-          };
-          mInvalidGeometryCallback = callback;
-          break;
-        }
-
-        case QgsFeatureRequest::GeometrySkipInvalid:
-        {
-          auto callback = [ = ]( const QgsFeature & feature )
-          {
-            if ( mFeedback )
-              mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
-          };
-          mInvalidGeometryCallback = callback;
-          break;
-        }
-
-        default:
-          break;
-      }
-    }
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
@@ -260,7 +230,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see invalidGeometryCallback()
      */
 #ifndef SIP_RUN
-    void setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback ) { mInvalidGeometryCallback = callback; }
+    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; }
 #else
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -294,7 +264,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see transformErrorCallback()
      */
 #ifndef SIP_RUN
-    void setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback ) { mTransformErrorCallback = callback; }
+    void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
 #else
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -374,28 +344,29 @@ class CORE_EXPORT QgsProcessingContext
      * This is only safe to call when both this context and the other \a context share the same
      * thread() affinity, and that thread is the current thread.
      */
-    void takeResultsFrom( QgsProcessingContext &context )
-    {
-      QMap< QString, LayerDetails > loadOnCompletion = context.layersToLoadOnCompletion();
-      QMap< QString, LayerDetails >::const_iterator llIt = loadOnCompletion.constBegin();
-      for ( ; llIt != loadOnCompletion.constEnd(); ++llIt )
-      {
-        mLayersToLoadOnCompletion.insert( llIt.key(), llIt.value() );
-      }
-      context.setLayersToLoadOnCompletion( QMap< QString, LayerDetails >() );
-      tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
-    }
+    void takeResultsFrom( QgsProcessingContext &context );
+
+    /**
+     * Returns a map layer from the context with a matching \a identifier.
+     * This method considers layer IDs, names and sources when matching
+     * the \a identifier (see QgsProcessingUtils::mapLayerFromString()
+     * for details).
+     *
+     * Ownership is not transferred and remains with the context.
+     *
+     * \see takeResultLayer()
+     */
+    QgsMapLayer *getMapLayer( const QString &identifier );
 
     /**
      * Takes the result map layer with matching \a id from the context and
      * transfers ownership of it back to the caller. This method can be used
      * to remove temporary layers which are not required for further processing
      * from a context.
+     *
+     * \see getMapLayer()
      */
-    QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK
-    {
-      return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
-    }
+    QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK;
 
   private:
 

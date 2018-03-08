@@ -23,7 +23,7 @@ void QgsAfsSharedData::clearCache()
   mCache.clear();
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
 {
   QMutexLocker locker( &mMutex );
 
@@ -35,12 +35,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
   }
 
-  // Determine attributes to fetch
-  /*QStringList fetchAttribNames;
-  foreach ( int idx, fetchAttributes )
-    fetchAttribNames.append( mFields.at( idx ).name() );
-  */
-
   // When fetching from server, fetch all attributes and geometry by default so that we can cache them
   QStringList fetchAttribNames;
   QList<int> fetchAttribIdx;
@@ -50,7 +44,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     fetchAttribNames.append( mFields.at( idx ).name() );
     fetchAttribIdx.append( idx );
   }
-  fetchGeometry = true;
 
   // Fetch 100 features at the time
   int startId = ( id / 100 ) * 100;
@@ -59,16 +52,26 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
   {
-    objectIds.append( mObjectIds[i] );
+    if ( i >= 0 && i < mObjectIds.count() )
+      objectIds.append( mObjectIds[i] );
   }
 
+  if ( objectIds.empty() )
+  {
+    QgsDebugMsg( "No valid features IDs to fetch" );
+    return false;
+  }
+
+  // don't lock while doing the fetch
+  locker.unlock();
 
   // Query
   QString errorTitle, errorMessage;
-  QVariantMap queryData = QgsArcGisRestUtils::getObjects(
-                            mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), fetchGeometry,
-                            fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                            filterRect, errorTitle, errorMessage );
+  const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
+                                  mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
+                                  fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
+                                  filterRect, errorTitle, errorMessage, feedback );
+
   if ( queryData.isEmpty() )
   {
 //    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
@@ -76,27 +79,36 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     return false;
   }
 
-  QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
+  // but re-lock while updating cache
+  locker.relock();
+  const QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
   if ( featuresData.isEmpty() )
   {
-    QgsDebugMsg( "Query returned no features" );
+    QgsDebugMsgLevel( "Query returned no features", 3 );
     return false;
   }
   for ( int i = 0, n = featuresData.size(); i < n; ++i )
   {
-    QVariantMap featureData = featuresData[i].toMap();
+    const QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
     int featureId = startId + i;
 
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )
     {
-      QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
+      const QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
       feature.setFields( mFields );
       QgsAttributes attributes( mFields.size() );
       foreach ( int idx, fetchAttribIdx )
       {
-        attributes[idx] = attributesData[mFields.at( idx ).name()];
+        QVariant attribute = attributesData[mFields.at( idx ).name()];
+        if ( attribute.isNull() )
+        {
+          // ensure that null values are mapped correctly for PyQGIS
+          attribute = QVariant( QVariant::Int );
+        }
+        mFields.at( idx ).convertCompatible( attribute );
+        attributes[idx] = attribute;
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
         {
           featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
@@ -109,14 +121,12 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     feature.setId( featureId );
 
     // Set geometry
-    if ( fetchGeometry )
-    {
-      QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-                                      QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
-      // Above might return 0, which is OK since in theory empty geometries are allowed
-      feature.setGeometry( QgsGeometry( geometry ) );
-    }
+    const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
+    std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
+    // Above might return 0, which is OK since in theory empty geometries are allowed
+    if ( geometry )
+      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
@@ -130,4 +140,29 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   }
 
   return false;
+}
+
+QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
+{
+  QString errorTitle;
+  QString errorText;
+
+
+  const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
+                                        mObjectIdFieldName,
+                                        extent, errorTitle, errorText, feedback );
+
+  QgsFeatureIds ids;
+  for ( quint32 id : featuresInRect )
+  {
+    int featureId = mObjectIds.indexOf( id );
+    if ( featureId >= 0 )
+      ids.insert( featureId );
+  }
+  return ids;
+}
+
+bool QgsAfsSharedData::hasCachedAllFeatures() const
+{
+  return mCache.count() == mObjectIds.count();
 }

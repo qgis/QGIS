@@ -168,7 +168,7 @@ class MultipleInputDialog(BASE, WIDGET):
         settings = QgsSettings()
         path = str(settings.value('/Processing/LastInputPath'))
 
-        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select file(s)'),
+        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select File(s)'),
                                                             path, filter)
         if ret:
             files = list(ret)

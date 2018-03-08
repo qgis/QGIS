@@ -34,7 +34,6 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_FLAGS( QgsMapLayerProxyModel::Filters )
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
     Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )

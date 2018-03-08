@@ -97,20 +97,20 @@ QString QgsLayoutItemPolygon::displayName() const
   return tr( "<Polygon>" );
 }
 
-void QgsLayoutItemPolygon::_draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
 
   QList<QPolygonF> rings; //empty
   QPainterPath polygonPath;
   polygonPath.addPolygon( mPolygon );
 
-  mPolygonStyleSymbol->startRender( context );
+  mPolygonStyleSymbol->startRender( context.renderContext() );
   mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings,
-                                      nullptr, context );
-  mPolygonStyleSymbol->stopRender( context );
+                                      nullptr, context.renderContext() );
+  mPolygonStyleSymbol->stopRender( context.renderContext() );
 }
 
 void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )

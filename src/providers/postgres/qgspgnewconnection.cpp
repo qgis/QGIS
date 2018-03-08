@@ -70,7 +70,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
-    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceUri::SslPrefer ).toInt() ) );
+    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
@@ -115,7 +115,7 @@ void QgsPgNewConnection::accept()
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),
-                              trUtf8( "WARNING: You have opted to save your password. It will be stored in unsecured plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
+                              tr( "WARNING: You have opted to save your password. It will be stored in unsecured plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
@@ -202,7 +202,7 @@ void QgsPgNewConnection::testConnection()
   {
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+                      Qgis::Info );
 
     // free pg connection resources
     conn->unref();
@@ -210,7 +210,7 @@ void QgsPgNewConnection::testConnection()
   else
   {
     bar->pushMessage( tr( "Connection failed - consult message log for details." ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
   }
 }
 

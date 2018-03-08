@@ -10,7 +10,7 @@ for %%g in (@grassversions@) do (
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe"
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.vars"
 	textreplace -std -t bin\@package@-g%%g.bat
-	"%OSGEO4W_ROOT%\bin\@package@-g%%g.bat" --exit
+	call "%OSGEO4W_ROOT%\bin\@package@-g%%g.bat" --postinstall
 
 	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
 	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
@@ -34,3 +34,4 @@ set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
 "%OSGEO4W_ROOT%\apps\@package@\crssync"
 
 del /s /q "%OSGEO4W_ROOT%\apps\@package@\*.pyc"
+exit /b 0

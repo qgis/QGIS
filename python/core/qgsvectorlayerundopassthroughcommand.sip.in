@@ -154,7 +154,7 @@ class QgsVectorLayerUndoPassthroughCommandChangeGeometry : QgsVectorLayerUndoPas
 %End
   public:
 
-    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsFeatureId &fid, const QgsGeometry &geom );
+    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsGeometry &geom );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
 
@@ -192,6 +192,37 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
 :param fid: feature ID of feature
 :param field:
 :param newValue:
+%End
+
+    virtual void undo();
+
+    virtual void redo();
+
+
+};
+
+
+class QgsVectorLayerUndoPassthroughCommandChangeAttributes: QgsVectorLayerUndoPassthroughCommand
+{
+%Docstring
+ Undo command for changing attributes' values from a vector layer in transaction group.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerundopassthroughcommand.h"
+%End
+  public:
+
+    QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+%Docstring
+Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttributes
+
+:param buffer: associated edit buffer
+:param fid: feature ID of feature
+:param newValues: New values for attributes
+:param oldValues: Old values for attributes
 %End
 
     virtual void undo();

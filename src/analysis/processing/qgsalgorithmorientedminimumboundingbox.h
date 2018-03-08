@@ -34,7 +34,6 @@ class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedA
   public:
 
     QgsOrientedMinimumBoundingBoxAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -47,7 +46,7 @@ class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedA
     QString outputName() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

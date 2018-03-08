@@ -159,8 +159,20 @@ ENDIF (WIN32)
 
 IF (UNIX)
   IF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71 /usr/lib64/grass72 /usr/lib/grass72)
-  ENDIF ()
+    IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (VERSION_MINOR 0 1 2 3 4 5 6)
+            FOREACH (VERSION_BUILD 0 1 2 3 4 5 6)
+                LIST (APPEND GRASS_PATHS /usr/local/grass-${GRASS_FIND_VERSION}.${VERSION_MINOR}.${VERSION_BUILD})
+            ENDFOREACH (VERSION_BUILD)
+        ENDFOREACH(VERSION_MINOR)
+    ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (PATH /usr/lib64 /usr/lib)
+            FOREACH (VERSION grass70, grass72, grass74)
+                LIST(APPEND GRASS_PATHS "${PATH}/${VERSION}")
+            ENDFOREACH (VERSION)
+        ENDFOREACH (PATH)
+    ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+   ENDIF (GRASS_FIND_VERSION EQUAL 7)
 ENDIF (UNIX)
 
 IF (APPLE)
@@ -169,6 +181,7 @@ IF (APPLE)
       /Applications/GRASS-7.0.app/Contents/MacOS
       /Applications/GRASS-7.1.app/Contents/MacOS
       /Applications/GRASS-7.2.app/Contents/MacOS
+      /Applications/GRASS-7.4.app/Contents/MacOS
     )
   ENDIF ()
   LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)

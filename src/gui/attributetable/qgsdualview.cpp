@@ -487,7 +487,7 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
   if ( !mFeatureList->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( expression ) ) )
   {
     QMessageBox::warning( this,
-                          tr( "Could not set preview column" ),
+                          tr( "Column Preview" ),
                           tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
                           .arg( previewAction->text(), mFeatureList->parserErrorString() )
                         );
@@ -571,6 +571,9 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( !action.runable() )
         continue;
 
+      if ( !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
       menu->addAction( action.name(), a, SLOT( execute() ) );
@@ -625,7 +628,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( hide, &QAction::triggered, this, &QgsDualView::hideColumn );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
-  QAction *setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
+  QAction *setWidth = new QAction( tr( "&Set width…" ), mHorizontalHeaderMenu );
   connect( setWidth, &QAction::triggered, this, &QgsDualView::resizeColumn );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
@@ -635,10 +638,10 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu->addAction( optimizeWidth );
 
   mHorizontalHeaderMenu->addSeparator();
-  QAction *organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
+  QAction *organize = new QAction( tr( "&Organize columns…" ), mHorizontalHeaderMenu );
   connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
   mHorizontalHeaderMenu->addAction( organize );
-  QAction *sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
+  QAction *sort = new QAction( tr( "&Sort…" ), mHorizontalHeaderMenu );
   connect( sort, &QAction::triggered, this, &QgsDualView::modifySort );
   mHorizontalHeaderMenu->addAction( sort );
 
@@ -932,7 +935,7 @@ void QgsDualView::progress( int i, bool &cancel )
 {
   if ( !mProgressDlg )
   {
-    mProgressDlg = new QProgressDialog( tr( "Loading features..." ), tr( "Abort" ), 0, 0, this );
+    mProgressDlg = new QProgressDialog( tr( "Loading features…" ), tr( "Abort" ), 0, 0, this );
     mProgressDlg->setWindowTitle( tr( "Attribute Table" ) );
     mProgressDlg->setWindowModality( Qt::WindowModal );
     mProgressDlg->show();

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use File::Basename;
@@ -192,6 +192,9 @@ sub processDoxygenLine {
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return "\n.. versionadded:: $1\n";
     }
+    if ( $line =~ m/\\deprecated (.*)/i ) {
+        return "\n.. deprecated:: $1\n";
+    }
 
     # create links in see also
     if ( $line =~ m/\\see +(\w+(\.\w+)*)(\([^()]*\))?/ ) {
@@ -343,9 +346,9 @@ sub fix_annotations {
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/3
+    # https://regex101.com/r/uvCt4M/4
     do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
@@ -405,9 +408,9 @@ sub detect_comment_block{
 }
 
 # Detect if line is a non method member declaration
-# https://regex101.com/r/gUBZUk/10
+# https://regex101.com/r/gUBZUk/13
 sub detect_non_method_member{
-  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/;
+  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|((QMap|QList)<[^()]+>\(\))|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/;
   return 0;
 }
 
@@ -596,7 +599,7 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP)).*?$/){
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
 
@@ -847,6 +850,9 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
         $LINE =~ s/\s*\bextern \b//;
+        $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
+        $LINE =~ s/\s*\bNODISCARD \b//;
+        $LINE =~ s/\s*\bQ_DECL_DEPRECATED\b//;
         $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;

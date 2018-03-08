@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setToolTip( const QString &msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
-    // deleteLater() items anc clear the vector
+    // deleteLater() items and clear the vector
     static void deleteLater( QVector<QgsDataItem *> &items );
 
     //! Move object and all its descendants to thread
@@ -470,13 +470,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * Returns the string representation of the given \a layerType
      * \since QGIS 3
      */
-    static QString layerTypeAsString( const LayerType &layerType );
+    static QString layerTypeAsString( LayerType layerType );
 
     /**
      * Returns the icon name of the given \a layerType
      * \since QGIS 3
      */
-    static QString iconName( const LayerType &layerType );
+    static QString iconName( LayerType layerType );
 
   protected:
 

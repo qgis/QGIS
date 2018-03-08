@@ -246,7 +246,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       if ( layer->dataProvider()->dataSourceUri().startsWith( ui.lineEditOutputDirectory->text() ) )
       {
-        QMessageBox::critical( this, tr( "Invalid Output Directory" ), tr( "The chosen output directory contains one or more input layers." ) );
+        QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The chosen output directory contains one or more input layers." ) );
         return;
       }
     }
@@ -255,7 +255,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
   if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
   {
-    QMessageBox::critical( this, tr( "Error" ), tr( "The test layer set contains a layer selected for a topology check." ) );
+    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The test layer set contains a layer selected for a topology check." ) );
     return;
   }
 
@@ -263,7 +263,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   {
     if ( layer->isEditable() )
     {
-      QMessageBox::critical( this, tr( "Editable Input Layer" ), tr( "Input layer '%1' is not allowed to be in editing mode." ).arg( layer->name() ) );
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "Input layer '%1' is not allowed to be in editing mode." ).arg( layer->name() ) );
       return;
     }
   }
@@ -285,7 +285,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     QgsVectorFileWriter::MetaData metadata;
     if ( !QgsVectorFileWriter::driverMetadata( outputDriverName, metadata ) )
     {
-      QMessageBox::critical( this, tr( "Unknown Output Format" ), tr( "The specified output format cannot be recognized." ) );
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The specified output format cannot be recognized." ) );
       mRunButton->setEnabled( true );
       ui.labelStatus->hide();
       unsetCursor();
@@ -355,7 +355,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     // Error if an output layer could not be created
     if ( !createErrors.isEmpty() )
     {
-      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create one or more output layers:\n%1" ).arg( createErrors.join( "\n" ) ) );
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "Failed to create one or more output layers:\n%1" ).arg( createErrors.join( "\n" ) ) );
       mRunButton->setEnabled( true );
       ui.labelStatus->hide();
       unsetCursor();
@@ -369,7 +369,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   // Check if output layers are editable
   QList<QgsVectorLayer *> nonEditableLayers;
-  for ( QgsVectorLayer *layer : processLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
     if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
@@ -383,11 +383,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       nonEditableLayerNames.append( layer->name() );
     }
-    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Non-editable Output Layers" ), tr( "The following output layers are in a format that does not support editing features:\n%1\n\nThe geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ).arg( nonEditableLayerNames.join( "\n" ) ), QMessageBox::Yes, QMessageBox::No ) )
+    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Check Geometries" ), tr( "The following output layers are in a format that does not support editing features:\n%1\n\nThe geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ).arg( nonEditableLayerNames.join( "\n" ) ), QMessageBox::Yes, QMessageBox::No ) )
     {
       if ( ui.radioButtonOutputNew->isChecked() )
       {
-        for ( QgsVectorLayer *layer : processLayers )
+        for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
         {
           QString layerPath = layer->dataProvider()->dataSourceUri();
           delete layer;
@@ -412,7 +412,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QMap<QString, QgsFeaturePool *> featurePools;
-  for ( QgsVectorLayer *layer : processLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
     QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
@@ -446,7 +446,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QList<QgsMapLayer *> addLayers;
-    for ( QgsVectorLayer *layer : processLayers )
+    for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
     {
       addLayers.append( layer );
     }

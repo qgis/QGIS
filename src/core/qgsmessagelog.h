@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /**
  * \ingroup core
@@ -40,32 +41,22 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
   public:
 
-    enum MessageLevel
-    {
-      ALL = 0,
-      INFO = 0,
-      WARNING = 1,
-      CRITICAL = 2,
-      NONE = 3
-    };
-    Q_ENUM( MessageLevel );
-
     /**
      * Constructor for QgsMessageLog.
      */
     QgsMessageLog() = default;
 
     //! add a message to the instance (and create it if necessary)
-    static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning );
 
   signals:
-    void messageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
     void messageReceived( bool received );
 
   private:
 
-    void emitMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
 };
 
@@ -84,7 +75,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     QgsMessageLogConsole();
 
   public slots:
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
 
 #endif

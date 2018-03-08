@@ -170,6 +170,10 @@
      <addaction name="separator"/>
      <addaction name="mActionAddFeature"/>
      <addaction name="mActionDeleteSelected"/>
+     <addaction name="mActionCutSelectedRows"/>
+     <addaction name="mActionCopySelectedRows"/>
+     <addaction name="mActionPasteFeatures"/>
+     <addaction name="separator"/>
      <addaction name="mActionExpressionSelect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
@@ -178,9 +182,6 @@
      <addaction name="mActionSelectedToTop"/>
      <addaction name="mActionPanMapToSelectedRows"/>
      <addaction name="mActionZoomMapToSelectedRows"/>
-     <addaction name="separator"/>
-     <addaction name="mActionCopySelectedRows"/>
-     <addaction name="mActionPasteFeatures"/>
      <addaction name="separator"/>
      <addaction name="mActionAddAttribute"/>
      <addaction name="mActionRemoveAttribute"/>
@@ -528,13 +529,28 @@
     <string>Ctrl+J</string>
    </property>
   </action>
+  <action name="mActionCutSelectedRows">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCut.svg</normaloff>:/images/themes/default/mActionEditCut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cut selected rows to clipboard</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut selected rows to clipboard (Ctrl+X)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
   <action name="mActionCopySelectedRows">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
-    <string>Copy selected rows to clipboard (Ctrl+C)</string>
+    <string>Copy selected rows to clipboard</string>
    </property>
    <property name="toolTip">
     <string>Copy selected rows to clipboard (Ctrl+C)</string>

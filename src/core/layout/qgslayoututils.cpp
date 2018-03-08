@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
+#include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <cmath>
 
@@ -379,6 +380,19 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
   }
   ok = false;
   return QgsLayoutItemPage::Landscape; // default to landscape
+}
+
+double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
+{
+  // workaround Qt bug 66185
+
+  // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
+  // style given to QGraphicsItem::paint incorrectly uses the shear parameter of the matrix (m12)
+  // to store the current view scale, instead of the horizontal scale parameter (m11) which
+  // is used in all other cases
+
+  // TODO - ifdef this out if Qt fixes upstream
+  return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
 }
 
 double QgsLayoutUtils::pointsToMM( const double pointSize )

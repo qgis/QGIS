@@ -59,7 +59,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   setupUi( this );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
-  btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
+  btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   mCopyAction = new QAction( tr( "Copy" ), this );
@@ -584,6 +584,8 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
 {
   setupUi( this );
 
+  mElseRadio->setChecked( mRule->isElse() );
+  mFilterRadio->setChecked( !mRule->isElse() );
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
   editDescription->setText( mRule->description() );
@@ -626,6 +628,8 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()
@@ -641,10 +645,13 @@ void QgsLabelingRulePropsWidget::setDockMode( bool dockMode )
 
 void QgsLabelingRulePropsWidget::testFilter()
 {
+  if ( !mFilterRadio->isChecked() )
+    return;
+
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Error" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
@@ -652,7 +659,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
   if ( !filter.prepare( &context ) )
   {
-    QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ), filter.evalErrorString() );
     return;
   }
 
@@ -675,7 +682,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
   QApplication::restoreOverrideCursor();
 
-  QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
+  QMessageBox::information( this, tr( "Test Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
 
@@ -691,7 +698,8 @@ void QgsLabelingRulePropsWidget::buildExpression()
 
 void QgsLabelingRulePropsWidget::apply()
 {
-  mRule->setFilterExpression( editFilter->text() );
+  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );
   mRule->setMaximumScale( groupScale->isChecked() ? mScaleRangeWidget->maximumScale() : 0 );

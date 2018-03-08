@@ -41,7 +41,7 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
       QObject::tr( "To select features, choose a vector layer in the legend" ),
-      QgsMessageBar::INFO,
+      Qgis::Info,
       QgisApp::instance()->messageTimeout() );
   }
   return vlayer;
@@ -219,7 +219,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      QgsMessageBar::WARNING,
+      Qgis::Warning,
       QgisApp::instance()->messageTimeout() );
     return newSelectedFeatures;
   }

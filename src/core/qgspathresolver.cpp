@@ -72,7 +72,7 @@ QString QgsPathResolver::readPath( const QString &filename ) const
     // from the filename.
 
     QFileInfo pfi( mBaseFileName );
-    QString home = pfi.absoluteFilePath();
+    QString home = pfi.absolutePath();
     if ( home.isEmpty() )
       return vsiPrefix + src;
 
@@ -146,8 +146,14 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  QFileInfo pfi( mBaseFileName );
-  QString projPath = pfi.absoluteFilePath();
+  // Get projPath even if project has not been created yet
+  QFileInfo pfi( QFileInfo( mBaseFileName ).path() );
+  QString projPath = pfi.canonicalFilePath();
+
+  // If project directory doesn't exit, fallback to absoluteFilePath : symbolic
+  // links won't be handled correctly, but that's OK as the path is "virtual".
+  if ( projPath.isEmpty() )
+    projPath = pfi.absoluteFilePath();
 
   if ( projPath.isEmpty() )
   {
@@ -185,11 +191,8 @@ QString QgsPathResolver::writePath( const QString &src ) const
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList projElems = mBaseFileName.split( '/', QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
-
-  // remove project file element
-  projElems.removeLast();
 
   projElems.removeAll( QStringLiteral( "." ) );
   srcElems.removeAll( QStringLiteral( "." ) );
@@ -207,7 +210,7 @@ QString QgsPathResolver::writePath( const QString &src ) const
 
   if ( n == 0 )
   {
-    // no common parts; might not even by a file
+    // no common parts; might not even be a file
     return src;
   }
 

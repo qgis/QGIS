@@ -48,7 +48,7 @@ QgsProcessingParameterRasterDestination|RF_OLI10|Reflectance Band 10
 QgsProcessingParameterRasterDestination|RF_OLI11|Reflectance Band 11
 QgsProcessingParameterRasterLayer|DN_PAN08|DN Band 8|None|True
 QgsProcessingParameterRasterDestination|RF_PAN08|Reflectance Band 8
-QgsProcessingParameterFile|METAFILE|Metadata File|False|None|False
+QgsProcessingParameterFile|METAFILE|Metadata File|QgsProcessingParameterFile.File|None|False
 QgsProcessingParameterEnum|SENSOR|Spacecraft Sensor|[0] Landsat-1 MSS;[1] Landsat-2 MSS;[2] Landsat-3 MSS;[3] Landsat-4 MSS;[4] Landsat-5 MSS;[5] Landsat-4 TM;[6] Landsat-5 TM;[7] Landsat-7 ETM+;[8] Landsat-8 OLI/TIRS|False|7
 QgsProcessingParameterString|DATE_ACQU|Image Acquisition Date
 QgsProcessingParameterString|DATE_PROD|Image Creation Date

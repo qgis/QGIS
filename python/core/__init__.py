@@ -139,7 +139,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
             msg = QCoreApplication.translate("UserExpressions",
                                              "The user expression {0} already exists and could not be unregistered.").format(
                 name)
-            QgsMessageLog.logMessage(msg + "\n", msgtitle, QgsMessageLog.WARNING)
+            QgsMessageLog.logMessage(msg + "\n", msgtitle, Qgis.Warning)
             return None
 
     function.__name__ = name
@@ -209,6 +209,29 @@ class edit(object):
         else:
             self.layer.rollBack()
             return False
+
+# Python class to mimic QgsReadWriteContextCategoryPopper C++ class
+
+
+class ReadWriteContextEnterCategory():
+
+    def __init__(self, context, category_name, details=None):
+        self.context = context
+        self.category_name = category_name
+        self.details = details
+        self.popper = None
+
+    def __enter__(self):
+        self.popper = self.context._enterCategory(self.category_name, self.details)
+        return self.context
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        del self.popper
+        return True
+
+
+# Inject the context manager into QgsReadWriteContext class as a member
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 
 
 class QgsTaskWrapper(QgsTask):

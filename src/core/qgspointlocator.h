@@ -229,6 +229,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
+     * Find nearest area to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     * This will first perform a pointInPolygon and return first result.
+     * If no match is found and tolerance is not 0, it will return nearestEdge.
+     * \since QGIS 3.0
+     */
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
      * Find edges within a specified recangle
      * Optional filter may discard unwanted matches.
      */

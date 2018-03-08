@@ -448,7 +448,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
-    QAction *actionNodeTool() { return mActionNodeTool; }
+    QAction *actionVertexTool() { return mActionVertexTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
@@ -584,6 +584,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
     QToolBar *digitizeToolBar() { return mDigitizeToolBar; }
     QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
+    QToolBar *shapeDigitizeToolBar() { return mShapeDigitizeToolBar; }
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
@@ -603,7 +604,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
-    void showLayerProperties( QgsMapLayer *ml );
+    void showLayerProperties( QgsMapLayer *mapLayer );
 
     //! returns pointer to map legend
     QgsLayerTreeView *layerTreeView();
@@ -683,6 +684,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * \since 3.0
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+
+    //! Get map of bookmarks
+    QMap<QString, QModelIndex> getBookmarkIndexMap();
+    //! Zoom to a bookmark
+    void zoomToBookmarkIndex( const QModelIndex & );
 
   public slots:
     //! save current vector layer
@@ -821,7 +827,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadGDALSublayers( const QString &uri, const QStringList &list );
 
     //! Deletes the selected attributes for the currently selected vector layer
-    void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool promptConfirmation = false );
+    void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool checkFeaturesVisible = false );
 
     //! project was written
     void writeProject( QDomDocument & );
@@ -924,6 +930,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
+
+    void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
     //! set the active layer
     bool setActiveLayer( QgsMapLayer * );
@@ -1220,11 +1228,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a project
     void fileOpen();
     //! Create a new project
-    void fileNew();
+    bool fileNew();
     //! Create a new blank project (no template)
-    void fileNewBlank();
+    bool fileNewBlank();
+
+    /**
+     * Close the current open project and show the welcome screen again.
+     */
+    void fileClose();
+
     //! As above but allows forcing without prompt and forcing blank project
-    void fileNew( bool promptToSaveFlag, bool forceBlank = false );
+    bool fileNew( bool promptToSaveFlag, bool forceBlank = false );
     //! What type of project to open after launch
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
@@ -1307,7 +1321,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void projectPropertiesProjections();
     /*  void urlData(); */
     //! Show the spatial bookmarks dialog
-    void showBookmarks();
+    void showBookmarks( bool show );
     //! Create a new spatial bookmark
     void newBookmark();
     //! activates the add feature tool
@@ -1343,7 +1357,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Modifies the attributes of selected features via feature form
     void modifyAttributesOfSelectedFeatures();
     //! provides operations with nodes
-    void nodeTool();
+    void vertexTool();
     //! activates the rotate points tool
     void rotatePointSymbols();
     //! activates the offset point symbol tool
@@ -1427,8 +1441,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
-    void displayMapToolMessage( const QString &message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
-    void displayMessage( const QString &title, const QString &message, QgsMessageBar::MessageLevel level );
+    void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void displayMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
     //    void debugHook();
@@ -1587,7 +1601,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Shows the statistical summary dock widget and brings it to the foreground
      */
-    void showStatisticsDockWidget();
+    void showStatisticsDockWidget( bool show );
 
     //! Pushes a layer error to the message bar
     void onLayerError( const QString &msg );
@@ -1751,10 +1765,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Paste features from clipboard into a new memory layer.
-     *  If no features are in clipboard an empty layer is returned.
-     *  \returns pointer to a new layer or 0 if failed
+     * If no features are in clipboard an empty layer is returned.
+     * Returns a new memory layer or a nullptr if the operation failed.
      */
-    QgsVectorLayer *pasteToNewMemoryVector();
+    std::unique_ptr< QgsVectorLayer > pasteToNewMemoryVector();
 
     //! Returns all annotation items in the canvas
     QList<QgsMapCanvasAnnotationItem *> annotationItems();
@@ -1939,7 +1953,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mSimplifyFeature = nullptr;
         QgsMapTool *mDeleteRing = nullptr;
         QgsMapTool *mDeletePart = nullptr;
-        QgsMapTool *mNodeTool = nullptr;
+        QgsMapTool *mVertexTool = nullptr;
         QgsMapTool *mRotatePointSymbolsTool = nullptr;
         QgsMapTool *mOffsetPointSymbolTool = nullptr;
         QgsMapTool *mAnnotation = nullptr;

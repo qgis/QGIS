@@ -148,7 +148,7 @@ Handler for widget resizing
 
   protected slots:
 
-    void showContextMenu( const QPoint &pos );
+    void showContextMenu( QPoint pos );
 %Docstring
 Display context menu which allows selecting/deselecting
 all items at once.

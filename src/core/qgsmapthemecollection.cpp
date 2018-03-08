@@ -103,7 +103,11 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
   MapThemeLayerRecord layerRec;
   bool isVisible = findRecordForLayer( nodeLayer->layer(), rec, layerRec );
 
-  nodeLayer->setItemVisibilityChecked( isVisible );
+  // Make sure the whole tree is visible
+  if ( isVisible )
+    nodeLayer->setItemVisibilityCheckedParentRecursive( isVisible );
+  else
+    nodeLayer->setItemVisibilityChecked( isVisible );
 
   if ( !isVisible )
     return;

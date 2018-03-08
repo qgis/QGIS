@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsinbuiltlocatorfilters.cpp
-                         ----------------------------
-    begin                : May 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+                        qgsinbuiltlocatorfilters.cpp
+                        ----------------------------
+   begin                : May 2017
+   copyright            : (C) 2017 by Nyall Dawson
+   email                : nyall dot dawson at gmail dot com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -26,24 +26,26 @@
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include <QToolButton>
+#include <QClipboard>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {}
 
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
+{
+  return new QgsLayerTreeLocatorFilter();
+}
+
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
-  QList<QgsLayerTreeLayer *> layers = tree->findLayers();
-  Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
+  const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
+  for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( feedback->isCanceled() )
-      return;
-
     if ( layer->layer() && stringMatches( layer->layer()->name(), string ) )
     {
       QgsLocatorResult result;
-      result.filter = this;
       result.displayString = layer->layer()->name();
       result.userData = layer->layerId();
       result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
@@ -68,18 +70,19 @@ QgsLayoutLocatorFilter::QgsLayoutLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {}
 
-void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
+{
+  return new QgsLayoutLocatorFilter();
+}
+
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( feedback->isCanceled() )
-      return;
-
     if ( layout && stringMatches( layout->name(), string ) )
     {
       QgsLocatorResult result;
-      result.filter = this;
       result.displayString = layout->name();
       result.userData = layout->name();
       //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
@@ -109,15 +112,20 @@ QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentOb
   setUseWithoutPrefix( false );
 }
 
-void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+QgsActionLocatorFilter *QgsActionLocatorFilter::clone() const
 {
+  return new QgsActionLocatorFilter( mActionParents );
+}
+
+void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+{
+  // collect results in main thread, since this method is inexpensive and
+  // accessing the gui actions is not thread safe
+
   QList<QAction *> found;
 
-  Q_FOREACH ( QWidget *object, mActionParents )
+  for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
-    if ( feedback->isCanceled() )
-      return;
-
     searchActions( string,  object, found );
   }
 }
@@ -131,8 +139,8 @@ void QgsActionLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
 void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *parent, QList<QAction *> &found )
 {
-  QList< QWidget *> children = parent->findChildren<QWidget *>();
-  Q_FOREACH ( QWidget *widget, children )
+  const QList< QWidget *> children = parent->findChildren<QWidget *>();
+  for ( QWidget *widget : children )
   {
     searchActions( string, widget, found );
   }
@@ -154,7 +162,6 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     if ( stringMatches( searchText, string ) )
     {
       QgsLocatorResult result;
-      result.filter = this;
       result.displayString = searchText;
       result.userData = QVariant::fromValue( action );
       result.icon = action->icon();
@@ -171,7 +178,12 @@ QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObjec
   setUseWithoutPrefix( false );
 }
 
-void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone() const
+{
+  return new QgsActiveLayerFeaturesLocatorFilter();
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
 {
   if ( string.length() < 3 )
     return;
@@ -183,11 +195,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   if ( !layer )
     return;
 
-  int found = 0;
-  QgsExpression dispExpression( layer->displayExpression() );
-  QgsExpressionContext context;
-  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  dispExpression.prepare( &context );
+  mDispExpression = QgsExpression( layer->displayExpression() );
+  mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  mDispExpression.prepare( &mContext );
 
   // build up request expression
   QStringList expressionParts;
@@ -211,17 +221,25 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
   req.setLimit( 30 );
+  mIterator = layer->getFeatures( req );
+
+  mLayerId = layer->id();
+  mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  int found = 0;
   QgsFeature f;
-  QgsFeatureIterator it = layer->getFeatures( req );
-  while ( it.nextFeature( f ) )
+
+  while ( mIterator.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return;
 
     QgsLocatorResult result;
-    result.filter = this;
 
-    context.setFeature( f );
+    mContext.setFeature( f );
 
     // find matching field content
     Q_FOREACH ( const QVariant &var, f.attributes() )
@@ -236,10 +254,10 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     if ( result.displayString.isEmpty() )
       continue; //not sure how this result slipped through...
 
-    result.description = dispExpression.evaluate( &context ).toString();
+    result.description = mDispExpression.evaluate( &mContext ).toString();
 
-    result.userData = QVariantList() << f.id() << layer->id();
-    result.icon = QgsMapLayerModel::iconForLayer( layer );
+    result.userData = QVariantList() << f.id() << mLayerId;
+    result.icon = mLayerIcon;
     result.score = static_cast< double >( string.length() ) / result.displayString.size();
     emit resultFetched( result );
 
@@ -259,4 +277,93 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
     return;
 
   QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+}
+
+//
+// QgsExpressionCalculatorLocatorFilter
+//
+QgsExpressionCalculatorLocatorFilter::QgsExpressionCalculatorLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{
+  setUseWithoutPrefix( false );
+}
+
+QgsExpressionCalculatorLocatorFilter *QgsExpressionCalculatorLocatorFilter::clone() const
+{
+  return new QgsExpressionCalculatorLocatorFilter();
+}
+
+void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  QString error;
+  if ( QgsExpression::checkExpression( string, &context, error ) )
+  {
+    QgsExpression exp( string );
+    QString resultString = exp.evaluate( &context ).toString();
+    if ( !resultString.isEmpty() )
+    {
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Copy “%1” to clipboard" ).arg( resultString );
+      result.userData = resultString;
+      result.score = 1;
+      emit resultFetched( result );
+    }
+  }
+}
+
+void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QApplication::clipboard()->setText( result.userData.toString() );
+}
+// QgBookmarkLocatorFilter
+//
+
+QgsBookmarkLocatorFilter::QgsBookmarkLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsBookmarkLocatorFilter *QgsBookmarkLocatorFilter::clone() const
+{
+  return new QgsBookmarkLocatorFilter();
+}
+
+void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
+
+  QMapIterator<QString, QModelIndex> i( bookmarkMap );
+
+  while ( i.hasNext() )
+  {
+    i.next();
+    if ( feedback->isCanceled() )
+      return;
+
+    QString name = i.key();
+
+    if ( stringMatches( name, string ) )
+    {
+      QModelIndex index = i.value();
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = name;
+      result.userData = index;
+      //TODO Create svg for "Bookmark"?
+      //result.icon = TBD
+      result.score = static_cast< double >( string.length() ) / name.length();
+      emit resultFetched( result );
+    }
+  }
+
+}
+
+void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
+  QgisApp::instance()->zoomToBookmarkIndex( index );
 }

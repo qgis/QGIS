@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
+  qgslayertreeviewfilterindicator.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -106,10 +107,10 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsselectedfeature.cpp
-  nodetool/qgsvertexentry.cpp
-  nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool.cpp
+  vertextool/qgsselectedfeature.cpp
+  vertextool/qgsvertexentry.cpp
+  vertextool/qgsvertexeditor.cpp
+  vertextool/qgsvertextool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -263,6 +264,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
+  qgslayertreeviewfilterindicator.h
   qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
@@ -337,9 +339,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
 
-  nodetool/qgsselectedfeature.h
-  nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool.h
+  vertextool/qgsselectedfeature.h
+  vertextool/qgsvertexeditor.h
+  vertextool/qgsvertextool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
@@ -497,6 +499,10 @@ IF (POSTGRES_FOUND)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
 
+IF (PROJ_HAS_INFO)
+  ADD_DEFINITIONS(-DPROJ_HAS_INFO)
+ENDIF (PROJ_HAS_INFO)
+
 SET(IMAGE_RCCS ../../images/images.qrc)
 
 QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
@@ -522,17 +528,22 @@ IF (WIN32)
 
     IF (NOT WINDRES)
       FIND_PROGRAM(WINDRES windres)
-      IF (NOT WINDRES)
+      IF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
         MESSAGE(FATAL_ERROR "windres not found - aborting")
-      ENDIF (NOT WINDRES)
+      ENDIF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
     ENDIF (NOT WINDRES)
-    #############################################################
-    # application icon
-    # resource compilation for MinGW
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
-      -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-    SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+
+    IF (WINDRES)
+        #############################################################
+        # application icon
+        # resource compilation for MinGW
+        ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
+          COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
+          -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
+        SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+    ELSE (WINDRES)
+        # MXE
+    ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
   SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
@@ -556,7 +567,7 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 IF(MSVC)
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
 SET_SOURCE_FILES_PROPERTIES(
   qgisapp.cpp
   main.cpp
@@ -707,8 +718,8 @@ ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDR
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5UiTools_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
@@ -720,6 +731,10 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_app ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF (WITH_3D)
   TARGET_LINK_LIBRARIES(qgis_app
@@ -768,8 +783,8 @@ ENDIF (ANDROID)
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   ADD_DEFINITIONS(-DQSCINTILLA_DLL)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
-  TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} dbghelp)
+  TARGET_LINK_LIBRARIES(qgis_app dbghelp Qt5::WinExtras)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)

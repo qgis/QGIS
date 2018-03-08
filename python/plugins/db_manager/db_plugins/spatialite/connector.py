@@ -59,6 +59,12 @@ class SpatiaLiteDBConnector(DBConnector):
     def _connectionInfo(self):
         return str(self.dbname)
 
+    def cancel(self):
+        # https://www.sqlite.org/c3ref/interrupt.html
+        # This function causes any pending database operation to abort and return at its earliest opportunity.
+        if self.connection:
+            self.connection.interrupt()
+
     @classmethod
     def isValidDatabase(self, path):
         if not QFile.exists(path):
@@ -555,7 +561,11 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def runVacuum(self):
         """ run vacuum on the db """
-        self._execute_and_commit("VACUUM")
+        # Workaround http://bugs.python.org/issue28518
+        self.connection.isolation_level = None
+        c = self._get_cursor()
+        c.execute('VACUUM')
+        self.connection.isolation_level = '' # reset to default isolation
 
     def addTableColumn(self, table, field_def):
         """ add a column to table """

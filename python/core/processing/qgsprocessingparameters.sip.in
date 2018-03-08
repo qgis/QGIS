@@ -251,7 +251,7 @@ Returns any flags associated with the parameter.
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( const Flags &flags );
+    void setFlags( Flags flags );
 %Docstring
 Sets the ``flags`` associated with the parameter.
 
@@ -956,7 +956,7 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 {
 %Docstring
-An table (matrix) parameter for processing algorithms.
+A table (matrix) parameter for processing algorithms.
 
 .. versionadded:: 3.0
 %End
@@ -1205,7 +1205,7 @@ Returns the acceptable data type for the parameter.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const Type &type );
+    void setDataType( Type type );
 %Docstring
 Sets the acceptable data ``type`` for the parameter.
 
@@ -1264,7 +1264,7 @@ Returns the acceptable data type for the range.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+    void setDataType( QgsProcessingParameterNumber::Type dataType );
 %Docstring
 Sets the acceptable data ``type`` for the range.
 
@@ -1663,7 +1663,7 @@ Returns the acceptable data type for the field.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const DataType &type );
+    void setDataType( DataType type );
 %Docstring
 Sets the acceptable data ``type`` for the field.
 
@@ -1775,20 +1775,20 @@ Returns a new QgsProcessingOutputDefinition corresponding to the definition of t
 parameter.
 %End
 
-    bool supportsNonFileBasedOutputs() const;
+    bool supportsNonFileBasedOutput() const;
 %Docstring
 Returns true if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`setSupportsNonFileBasedOutputs`
+.. seealso:: :py:func:`setSupportsNonFileBasedOutput`
 %End
 
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs );
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput );
 %Docstring
 Sets whether the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`supportsNonFileBasedOutputs`
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
 %End
 
     virtual QString defaultFileExtension() const = 0;

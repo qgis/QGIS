@@ -78,6 +78,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Add a project
     bool addProject( const QString &projectName ) override;
+
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
 
@@ -371,6 +372,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *mapNavToolToolBar() override;
     QToolBar *digitizeToolBar() override;
     QToolBar *advancedDigitizeToolBar() override;
+    QToolBar *shapeDigitizeToolBar() override;
     QToolBar *attributesToolBar() override;
     QToolBar *pluginToolBar() override;
     QToolBar *helpToolBar() override;
@@ -404,7 +406,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionSimplifyFeature() override;
     QAction *actionDeleteRing() override;
     QAction *actionDeletePart() override;
-    QAction *actionNodeTool() override;
+    QAction *actionVertexTool() override;
 
     //! View menu actions
     QAction *actionPan() override;

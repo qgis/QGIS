@@ -57,6 +57,8 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const
   double axis_a = dist / 2.0;
   double axis_b = std::sqrt( std::pow( axis_a, 2.0 ) - std::pow( dist_p1p2 / 2.0, 2.0 ) );
 
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2 << pt3, center );
+
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
 
@@ -67,6 +69,8 @@ QgsEllipse QgsEllipse::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
   double axis_b = std::fabs( pt2.y() - pt1.y() ) / 2.0;
   double azimuth = 90.0;
 
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, center );
+
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
 
@@ -76,7 +80,10 @@ QgsEllipse QgsEllipse::fromCenterPoint( const QgsPoint &center, const QgsPoint &
   double axis_b = std::fabs( pt1.y() - center.y() );
   double azimuth = 90.0;
 
-  return QgsEllipse( center, axis_a, axis_b, azimuth );
+  QgsPoint centerPt( center );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1, centerPt );
+
+  return QgsEllipse( centerPt, axis_a, axis_b, azimuth );
 }
 
 QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint &pt1, const QgsPoint &pt2 )
@@ -88,7 +95,10 @@ QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint
   QgsPoint pp = center.project( length, 90 + azimuth );
   double axis_b = center.distance( pp );
 
-  return QgsEllipse( center, axis_a, axis_b, azimuth );
+  QgsPoint centerPt( center );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1 << pt2, centerPt );
+
+  return QgsEllipse( centerPt, axis_a, axis_b, azimuth );
 }
 
 bool QgsEllipse::operator ==( const QgsEllipse &elp ) const

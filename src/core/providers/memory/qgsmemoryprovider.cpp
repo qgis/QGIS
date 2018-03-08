@@ -343,14 +343,49 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 
 bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 {
+  bool result = true;
   // whether or not to update the layer extent on the fly as we add features
   bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
 
-  // TODO: sanity checks of fields and geometries
+  int fieldCount = mFields.count();
+
+  // TODO: sanity checks of fields
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
+    if ( it->attributes().count() < fieldCount )
+    {
+      // ensure features have the correct number of attributes by padding
+      // them with null attributes for missing values
+      QgsAttributes attributes = it->attributes();
+      for ( int i = it->attributes().count(); i < mFields.count(); ++i )
+      {
+        attributes.append( QVariant( mFields.at( i ).type() ) );
+      }
+      it->setAttributes( attributes );
+    }
+    else if ( it->attributes().count() > fieldCount )
+    {
+      // too many attributes
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fieldCount ).arg( it->attributes().count() ) );
+      QgsAttributes attributes = it->attributes();
+      attributes.resize( mFields.count() );
+      it->setAttributes( attributes );
+    }
+
+    if ( it->hasGeometry() && mWkbType == QgsWkbTypes::NoGeometry )
+    {
+      it->clearGeometry();
+    }
+    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
+              QgsWkbTypes::geometryType( mWkbType ) )
+    {
+      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
+                 QgsWkbTypes::displayString( mWkbType ) ) );
+      result = false;
+      continue;
+    }
 
     mFeatures.insert( mNextFeatureId, *it );
 
@@ -367,7 +402,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     mNextFeatureId++;
   }
 
-  return true;
+  return result;
 }
 
 bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )

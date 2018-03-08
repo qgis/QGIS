@@ -1043,7 +1043,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       msg += " " + tr( "Zoom in to fetch all data." );
     else
       msg += " " + tr( "You may want to check the 'Only request features overlapping the view extent' option to be able to zoom in to fetch all data." );
-    QgsMessageLog::logMessage( msg, QStringLiteral( "WFS" ) );
+    QgsMessageLog::logMessage( msg, tr( "WFS" ) );
   }
 }
 
@@ -1170,15 +1170,14 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser()
 
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri )
 {
 }
 
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
@@ -1232,14 +1231,13 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
+  : QgsWfsRequest( shared->mURI ), mShared( shared )
 {
 }
 
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
@@ -1251,7 +1249,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
 
   if ( !sendGET( getFeatureUrl, true ) )
-    return -1;
+    return QgsRectangle();
 
   const QByteArray &buffer = response();
 

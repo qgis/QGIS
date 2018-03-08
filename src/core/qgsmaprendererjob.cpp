@@ -167,11 +167,11 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
                                       QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
+        QgsDebugMsgLevel( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
 
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsg( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ) );
+        QgsDebugMsgLevel( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
 
         if ( ll.x() > ur.x() )
         {
@@ -343,7 +343,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( hasStyleOverride )
       ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
+    QTime layerTime;
+    layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
+    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
 
     if ( hasStyleOverride )
       ml->styleManager()->restoreOverrideStyle();

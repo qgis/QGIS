@@ -308,13 +308,13 @@ void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>
 void QgsMapToolIdentifyAction::activate()
 {
   resultsDialog()->activate();
-  QgsMapTool::activate();
+  QgsMapToolIdentify::activate();
 }
 
 void QgsMapToolIdentifyAction::deactivate()
 {
   resultsDialog()->deactivate();
-  QgsMapTool::deactivate();
+  QgsMapToolIdentify::deactivate();
 }
 
 QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const

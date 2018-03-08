@@ -174,6 +174,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     void populateStyles();
     void editSymbol( QComboBox *cbo );
 
@@ -217,7 +219,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     static const char *GEO_NONE_DESC;
 
-    void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
+    void updateGuiForMapUnits();
 
     void showHelp();
 };

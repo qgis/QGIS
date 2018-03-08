@@ -77,7 +77,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   db.setDatabaseName( QgsApplication::qgisUserDatabaseFilePath() );
   if ( ! db.open() )
   {
-    QMessageBox::warning( this, tr( "Error" ),
+    QMessageBox::warning( this, tr( "Spatial Bookmarks" ),
                           tr( "Unable to open bookmarks database.\nDatabase: %1\nDriver: %2\nDatabase: %3" )
                           .arg( QgsApplication::qgisUserDatabaseFilePath(),
                                 db.lastError().driverText(),
@@ -190,7 +190,7 @@ void QgsBookmarks::addClicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
+    QMessageBox::warning( this, tr( "Add Bookmark" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                           .arg( mQgisModel->database().lastError().driverText(),
                                 mQgisModel->database().lastError().databaseText() ) );
   }
@@ -210,9 +210,9 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Delete Bookmarks" ),
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
        tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
-       QMessageBox::Ok | QMessageBox::Cancel ) )
+       QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
@@ -236,7 +236,11 @@ void QgsBookmarks::zoomToBookmark()
   QModelIndex index = lstBookmarks->currentIndex();
   if ( !index.isValid() )
     return;
+  zoomToBookmarkIndex( index );
+}
 
+void  QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
+{
   double xmin = index.sibling( index.row(), 3 ).data().toDouble();
   double ymin = index.sibling( index.row(), 4 ).data().toDouble();
   double xmax = index.sibling( index.row(), 5 ).data().toDouble();
@@ -329,7 +333,7 @@ void QgsBookmarks::importFromXml()
     }
     if ( !query.exec( queryTxt ) )
     {
-      QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
+      QMessageBox::warning( this, tr( "Import Bookmarks" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                             .arg( query.lastError().driverText(),
                                   query.lastError().databaseText() ) );
     }
@@ -338,6 +342,30 @@ void QgsBookmarks::importFromXml()
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
   mProxyModel->_resetModel();
+}
+
+QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
+{
+  QMap<QString, QModelIndex> map;
+  int rowCount = mMergedModel->rowCount();
+
+  for ( int i = 0; i < rowCount; ++i )
+  {
+    QModelIndex idx = mMergedModel->index( i, 1 ); //Name col
+    if ( idx.isValid() )
+    {
+      QString name = idx.data( Qt::DisplayRole ).toString();
+      QString project = idx.sibling( idx.row(), 2 ).data().toString();
+      if ( !project.isEmpty() )
+      {
+        name = name + " (" + project + ")";
+      }
+      map.insert( name, idx ); //Duplicate name/project pairs are overwritten by subsequent bookmarks
+    }
+  }
+
+  return map;
+
 }
 
 void QgsBookmarks::exportToXml()
@@ -727,7 +755,7 @@ bool QgsMergedBookmarksTableModel::projectAvailable() const
 
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
-  emit beginResetModel();
+  beginResetModel();
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
   if ( !qgisModel )
   {
@@ -765,7 +793,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
     qgisModel->select();
     modelFrom.removeRows( row, 1 );
   }
-  emit endResetModel();
+  endResetModel();
   emit layoutChanged();
 }
 

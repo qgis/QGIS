@@ -30,7 +30,8 @@ from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsRasterFileWriter,
                        QgsProcessing,
                        QgsProcessingException,
@@ -61,7 +62,7 @@ class Heatmap(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
+        return QgsApplication.getThemeIcon("/heatmap.svg")
 
     def tags(self):
         return self.tr('heatmap,kde,hotspot').split(',')

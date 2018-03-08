@@ -798,6 +798,8 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
@@ -809,7 +811,7 @@ int main( int argc, char *argv[] )
 
   if ( globalsettingsfile.isEmpty() )
   {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    QString default_globalsettingsfile = QgsApplication::resolvePkgPath() + "/resources/qgis_global_settings.ini";
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;
@@ -820,11 +822,11 @@ int main( int argc, char *argv[] )
   {
     if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
   }
 
@@ -862,12 +864,12 @@ int main( int argc, char *argv[] )
   // Should be cleaned up in future to make this cleaner.
   QgsSettings settings;
 
-  QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
+  QgsDebugMsgLevel( QStringLiteral( "User profile details:" ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+  myApp.init( profileFolder );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
@@ -1357,7 +1359,7 @@ int main( int argc, char *argv[] )
     dxfExport.setExtent( dxfExtent );
 
     QStringList layerIds;
-    QList< QPair<QgsVectorLayer *, int > > layers;
+    QList< QgsDxfExport::DxfLayer > layers;
     if ( !dxfMapTheme.isEmpty() )
     {
       Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
@@ -1365,7 +1367,7 @@ int main( int argc, char *argv[] )
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }
@@ -1376,7 +1378,7 @@ int main( int argc, char *argv[] )
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }

@@ -290,8 +290,11 @@ of the curve.
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
-  protected:
+
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
+
+
+  protected:
 
     virtual QgsRectangle calculateBoundingBox() const;
 

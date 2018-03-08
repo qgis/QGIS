@@ -143,6 +143,13 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
    be reverted to 'default'.
 %End
 
+    static QString resolvePkgPath( );
+%Docstring
+Calculate the application pkg path
+
+:return: the resolved pkg path
+%End
+
     static QString themeName();
 %Docstring
 Set the active theme to the specified theme.
@@ -335,7 +342,7 @@ default theme if the active theme does not have the required icon.
       Sampler,
     };
 
-    static QCursor getThemeCursor( const Cursor &cursor );
+    static QCursor getThemeCursor( Cursor cursor );
 %Docstring
 Helper to get a theme cursor. It will fall back to the
 default theme if the active theme does not have the required icon.

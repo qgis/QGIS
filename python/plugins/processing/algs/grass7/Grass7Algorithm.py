@@ -33,7 +33,8 @@ import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
-from qgis.core import (QgsRasterLayer,
+from qgis.core import (Qgis,
+                       QgsRasterLayer,
                        QgsApplication,
                        QgsMapLayer,
                        QgsProcessingUtils,
@@ -58,10 +59,6 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
-                       QgsProcessingOutputFolder,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputHtml,
                        QgsProcessingUtils)
 from qgis.utils import iface
 
@@ -151,6 +148,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
+    def flags(self):
+        # TODO - maybe it's safe to background thread this?
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__
@@ -173,10 +174,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for p in self.params:
             # We use createOutput argument for automatic output creation
             res = self.addParameter(p, True)
-            # File destinations are not automatically added as outputs
-            if (isinstance(p, QgsProcessingParameterFileDestination)
-                    and p.defaultFileExtension().lower() == 'html'):
-                self.addOutput(QgsProcessingOutputHtml(p.name(), p.description()))
 
     def defineCharacteristicsFromFile(self):
         """
@@ -228,7 +225,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             hasRasterOutput = True
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), Qgis.Critical)
                     raise e
 
         param = QgsProcessingParameterExtent(
@@ -378,7 +375,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), Qgis.Info)
 
         Grass7Utils.executeGrass(self.commands, feedback, self.outputCommands)
 
@@ -474,7 +471,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Add the default parameters commands
         self.commands.append(command)
 
-        QgsMessageLog.logMessage('processInputs end. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
     def processCommand(self, parameters, context, delOutputs=False):
         """
@@ -556,7 +553,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     value = '"{}"'.format(
                         self.parameterAsString(parameters, paramName, context)
                     )
-            # For numbers and points, we translate as a string
+            elif isinstance(param, QgsProcessingParameterPoint):
+                if self.parameterAsString(parameters, paramName, context):
+                    # parameter specified, evaluate as point
+                    # TODO - handle CRS transform
+                    point = self.parameterAsPoint(parameters, paramName, context)
+                    value = '{},{}'.format(point.x(), point.y())
+            # For numbers, we translate as a string
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
                 value = self.parameterAsString(parameters, paramName, context)
@@ -606,7 +609,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        QgsMessageLog.logMessage('processCommands end. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
     def vectorOutputType(self, parameters, context):
         """Determine vector output types for outputs"""

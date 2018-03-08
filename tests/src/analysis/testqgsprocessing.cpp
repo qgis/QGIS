@@ -20,6 +20,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
 #include <QObject>
@@ -83,7 +84,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingParameterBoolean *p2 = new QgsProcessingParameterBoolean( "p1" );
       QVERIFY( !addParameter( p2 ) );
-      delete p2;
       QCOMPARE( parameterDefinitions().count(), 1 );
 
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
@@ -147,6 +147,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
       addParameter( rasterParam );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
+
+      // should allow parameters with same name but different case (required for grass provider)
+      QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
+      QVERIFY( addParameter( p1C ) );
+      QCOMPARE( parameterDefinitions().count(), 8 );
+
+      // parameterDefinition should be case insensitive, but prioritize correct case matches
+      QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
+      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
     }
 
     void runParameterChecks2()
@@ -180,7 +189,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingOutputVectorLayer *p2 = new QgsProcessingOutputVectorLayer( "p1" );
       QVERIFY( !addOutput( p2 ) );
-      delete p2;
       QCOMPARE( outputDefinitions().count(), 1 );
 
       QCOMPARE( outputDefinition( "p1" ), outputDefinitions().at( 0 ) );
@@ -275,6 +283,16 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a','p2':'b'})" ) );
     }
 
+    void addDestParams()
+    {
+      QgsProcessingParameterFeatureSink *sinkParam1 = new QgsProcessingParameterFeatureSink( "supports" );
+      sinkParam1->setSupportsNonFileBasedOutput( true );
+      addParameter( sinkParam1 );
+      QgsProcessingParameterFeatureSink *sinkParam2 = new QgsProcessingParameterFeatureSink( "non_supports" );
+      sinkParam2->setSupportsNonFileBasedOutput( false );
+      addParameter( sinkParam2 );
+    }
+
 };
 
 //dummy provider for testing
@@ -300,7 +318,13 @@ class DummyProvider : public QgsProcessingProvider
       return "pcx"; // next-gen raster storage
     }
 
+    bool supportsNonFileBasedOutput() const override
+    {
+      return supportsNonFileOutputs;
+    }
+
     bool *unloaded = nullptr;
+    bool supportsNonFileOutputs = false;
 
   protected:
 
@@ -355,6 +379,33 @@ class DummyProvider3 : public QgsProcessingProvider
 
     void loadAlgorithms() override {}
 
+};
+
+class DummyParameterType : public QgsProcessingParameterType
+{
+
+
+    // QgsProcessingParameterType interface
+  public:
+    QgsProcessingParameterDefinition *create( const QString &name ) const
+    {
+      return new QgsProcessingParameterString( name );
+    }
+
+    QString description() const
+    {
+      return QStringLiteral( "Description" );
+    }
+
+    QString name() const
+    {
+      return QStringLiteral( "ParamType" );
+    }
+
+    QString id() const
+    {
+      return QStringLiteral( "paramType" );
+    }
 };
 
 class TestQgsProcessing: public QObject
@@ -426,6 +477,11 @@ class TestQgsProcessing: public QObject
     void combineFields();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
+    void supportsNonFileBasedOutput();
+    void addParameterType();
+    void removeParameterType();
+    void parameterTypes();
+    void parameterType();
 
   private:
 
@@ -490,14 +546,12 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( p3 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p3;
 
   // test that adding a provider which does not load means it is not added to registry
   DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
   QVERIFY( !r.addProvider( p4 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p4;
 }
 
 void TestQgsProcessing::providerById()
@@ -660,7 +714,7 @@ void TestQgsProcessing::compatibleLayers()
 void TestQgsProcessing::normalizeLayerSource()
 {
   QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers\\test.shp" ), QString( "data/layers/test.shp" ) );
-  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers 'new'/test.shp" ) );
+  QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers \"new\"/test.shp" ) );
 }
 
 void TestQgsProcessing::context()
@@ -859,36 +913,53 @@ void TestQgsProcessing::mapLayerFromString()
 
   // no project set yet
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QVERIFY( !c.getMapLayer( QString() ) );
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QStringLiteral( "v1" ), c ) );
+  QVERIFY( !c.getMapLayer( QStringLiteral( "v1" ) ) );
 
   c.setProject( &p );
 
   // layers from current project
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QVERIFY( !c.getMapLayer( QString() ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c ), r1 );
+  QCOMPARE( c.getMapLayer( raster1 ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster2, c ), r2 );
+  QCOMPARE( c.getMapLayer( raster2 ), r2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "R1", c ), r1 );
+  QCOMPARE( c.getMapLayer( "R1" ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "ar2", c ), r2 );
+  QCOMPARE( c.getMapLayer( "ar2" ), r2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c ), v1 );
+  QCOMPARE( c.getMapLayer( "V4" ), v1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v1", c ), v2 );
+  QCOMPARE( c.getMapLayer( "v1" ), v2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( r1->id(), c ), r1 );
+  QCOMPARE( c.getMapLayer( r1->id() ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v1->id(), c ), v1 );
+  QCOMPARE( c.getMapLayer( v1->id() ), v1 );
 
   // check that layers in context temporary store are used
   QgsVectorLayer *v5 = new QgsVectorLayer( "Polygon", "V5", "memory" );
   QgsVectorLayer *v6 = new QgsVectorLayer( "Point", "v6", "memory" );
   c.temporaryLayerStore()->addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
+  QCOMPARE( c.getMapLayer( "V5" ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
+  QCOMPARE( c.getMapLayer( "v6" ), v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
+  QCOMPARE( c.getMapLayer( v5->id() ), v5 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v6->id(), c ), v6 );
+  QCOMPARE( c.getMapLayer( v6->id() ), v6 );
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
+  QVERIFY( !c.getMapLayer( "aaaa" ) );
 
   // if specified, check that layers can be loaded
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
   QString newRaster = testDataDir + "requires_warped_vrt.tif";
   // don't allow loading
   QVERIFY( ! QgsProcessingUtils::mapLayerFromString( newRaster, c, false ) );
+  QVERIFY( !c.getMapLayer( newRaster ) );
   // allow loading
   QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
   QVERIFY( loadedLayer->isValid() );
@@ -898,6 +969,7 @@ void TestQgsProcessing::mapLayerFromString()
 
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
+  QCOMPARE( c.getMapLayer( newRaster ), loadedLayer );
 }
 
 void TestQgsProcessing::algorithm()
@@ -1586,7 +1658,7 @@ void TestQgsProcessing::parameters()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:28356" ) );
   sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
-  QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( sink.get() );
+  QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( dynamic_cast< QgsProcessingFeatureSink * >( sink.get() )->destinationSink() );
   QVERIFY( writer );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
@@ -3973,7 +4045,7 @@ void TestQgsProcessing::parameterFeatureSink()
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
   QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
-  def->setSupportsNonFileBasedOutputs( false );
+  def->setSupportsNonFileBasedOutput( false );
   QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".shp" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
@@ -3985,7 +4057,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFeatureSink *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFeatureSink *>( def.get() ) );
 
@@ -4203,7 +4275,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterRasterDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterRasterDestination *>( def.get() ) );
 
@@ -4323,7 +4395,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFileDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFileDestination *>( def.get() ) );
 
@@ -4358,6 +4430,16 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // outputs definitio test
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "HTML files" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "Text files (*.htm)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString( "Text files (*.txt)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString(), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
 }
 
 void TestQgsProcessing::parameterFolderOut()
@@ -4396,7 +4478,7 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFolderDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFolderDestination *>( def.get() ) );
 
@@ -5054,6 +5136,34 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+
+  QgsProcessingModelChildAlgorithm c9b;
+  c9b.setChildId( "c9b" );
+  c9b.addParameterSources( "x", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "c9", "x" ) );
+  alg3.addChildAlgorithm( c9b );
+
+  QCOMPARE( alg3.dependentChildAlgorithms( "c9" ).count(), 1 );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c8" ).count(), 2 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).contains( "c9" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).contains( "c9b" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7" ).count(), 3 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c9" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c9b" ) );
+
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c9b" ).count(), 3 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c7" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c8" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c9" ) );
+
+  alg3.removeChildAlgorithm( "c9b" );
+
 
   // (de)activate child algorithm
   alg3.deactivateChildAlgorithm( "c9" );
@@ -5719,6 +5829,11 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile1 != tempFile2 );
   QVERIFY( tempFile2.endsWith( "test.txt" ) );
   QVERIFY( tempFile2.startsWith( tempFolder ) );
+
+  // invalid characters
+  QString tempFile3 = QgsProcessingUtils::generateTempFilename( "mybad:file.txt" );
+  QVERIFY( tempFile3.endsWith( "mybad_file.txt" ) );
+  QVERIFY( tempFile3.startsWith( tempFolder ) );
 }
 
 void TestQgsProcessing::convertCompatible()
@@ -5866,6 +5981,77 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+}
+
+void TestQgsProcessing::supportsNonFileBasedOutput()
+{
+  DummyAlgorithm alg( QStringLiteral( "test" ) );
+  DummyProvider p( QStringLiteral( "test_provider" ) );
+  alg.addDestParams();
+  // provider has no support for file based outputs, so both output parameters should deny support
+  alg.setProvider( &p );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
+
+  DummyAlgorithm alg2( QStringLiteral( "test" ) );
+  DummyProvider p2( QStringLiteral( "test_provider" ) );
+  p2.supportsNonFileOutputs = true;
+  alg2.addDestParams();
+  // provider has support for file based outputs, but only first output parameter should indicate support (since the second has support explicitly denied)
+  alg2.setProvider( &p2 );
+  QVERIFY( static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
+}
+
+void TestQgsProcessing::addParameterType()
+{
+  QgsProcessingRegistry reg;
+  QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeAdded );
+  DummyParameterType *dpt = new DummyParameterType();
+  QVERIFY( reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( new DummyParameterType() ) );
+  QCOMPARE( spy.count(), 1 );
+}
+
+void TestQgsProcessing::removeParameterType()
+{
+  QgsProcessingRegistry reg;
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeRemoved );
+  reg.removeParameterType( paramType );
+  QCOMPARE( spy.count(), 1 );
+}
+
+void TestQgsProcessing::parameterTypes()
+{
+  QgsProcessingRegistry reg;
+  int coreParamCount = reg.parameterTypes().count();
+  QVERIFY( coreParamCount > 5 );
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QCOMPARE( reg.parameterTypes().count(), coreParamCount + 1 );
+  QVERIFY( reg.parameterTypes().contains( paramType ) );
+}
+
+void TestQgsProcessing::parameterType()
+{
+  QgsProcessingRegistry reg;
+
+  QVERIFY( reg.parameterType( QStringLiteral( "string" ) ) );
+  QVERIFY( !reg.parameterType( QStringLiteral( "borken" ) ) );
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QCOMPARE( reg.parameterType( QStringLiteral( "paramType" ) ), paramType );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

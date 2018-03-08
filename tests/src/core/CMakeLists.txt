@@ -51,10 +51,10 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
   SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -165,6 +165,7 @@ SET(TESTS
  testqgsrectangle.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
  testqgssnappingutils.cpp

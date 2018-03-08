@@ -42,6 +42,7 @@ Constructor
 
     virtual void setExpression( const QString &value );
 
+    virtual bool eventFilter( QObject *watched, QEvent *event );
 
 };
 

@@ -19,16 +19,15 @@
 
 ///@cond PRIVATE
 
-
-QgsProcessingAlgorithm::Flags QgsSubdivideAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
-                256, false, 8, 100000 ) );
+  std::unique_ptr< QgsProcessingParameterNumber> nodes = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
+      256, false, 8, 100000 );
+  nodes->setIsDynamic( true );
+  nodes->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsPropertyDefinition::Integer ) );
+  nodes->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+
+  addParameter( nodes.release() );
 }
 
 QString QgsSubdivideAlgorithm::name() const
@@ -81,23 +80,31 @@ QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputW
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
-    feature.setGeometry( feature.geometry().subdivide( mMaxNodes ) );
+    int maxNodes = mMaxNodes;
+    if ( mDynamicMaxNodes )
+      maxNodes = mMaxNodesProperty.valueAsDouble( context.expressionContext(), maxNodes );
+
+    feature.setGeometry( feature.geometry().subdivide( maxNodes ) );
     if ( !feature.geometry() )
     {
       feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );
     }
   }
-  return feature;
+  return QgsFeatureList() << feature;
 }
 
 bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mMaxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
+  mDynamicMaxNodes = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX_NODES" ) );
+  if ( mDynamicMaxNodes )
+    mMaxNodesProperty = parameters.value( QStringLiteral( "MAX_NODES" ) ).value< QgsProperty >();
+
   return true;
 }
 

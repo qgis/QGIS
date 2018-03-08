@@ -5,7 +5,7 @@ debian/build.*/
 debian/build*/
 debian/.*/usr/
 i18n/
-external/astyle
+external/*
 ms-windows/osgeo4w/
 python/ext-libs/
 python/plugins/processing/algs/saga/

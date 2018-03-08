@@ -26,13 +26,13 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaptoolemitpoint.h"
 #include "qgis_app.h"
 
 class QgsPointXY;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
-class QgsMapToolEmitPoint;
 class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
@@ -91,7 +91,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     //void on_btnResetNull_clicked();
 
-    void pixelSelected( const QgsPointXY & );
+    void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
   private slots:
     void mRenderTypeComboBox_currentIndexChanged( int index );
@@ -103,6 +103,9 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
+    //! Restore dialog modality and focus, usually after a pixel clicked to pick transparency color
+    void restoreWindowModality();
+
 
     //! Load a saved metadata file.
     void loadMetadata();
@@ -206,7 +209,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientWidth;
 
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsMapToolEmitPoint *mPixelSelectorTool = nullptr;
+    std::unique_ptr<QgsMapToolEmitPoint> mPixelSelectorTool;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 

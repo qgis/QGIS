@@ -9,5 +9,5 @@ QgsProcessingParameterNumber|gauss|Sigma (in cells) for Gaussian filter|QgsProce
 QgsProcessingParameterString|quantile|Quantile to calculate for method=quantile|None|False|True
 QgsProcessingParameterBoolean|-c|Use circular neighborhood|False
 *QgsProcessingParameterBoolean|-a|Do not align output with the input|False
-*QgsProcessingParameterFile|weight|File containing weights|0|txt|None|True
+*QgsProcessingParameterFile|weight|File containing weights|QgsProcessingParameterFile.File|txt|None|True
 QgsProcessingParameterRasterDestination|output|Neighbors

@@ -31,7 +31,8 @@ import subprocess
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -168,7 +169,7 @@ def executeSaga(feedback):
     else:
         os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
                  stat.S_IREAD | stat.S_IWRITE)
-        command = [sagaBatchJobFilename()]
+        command = ["'" + sagaBatchJobFilename() + "'"]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
     with subprocess.Popen(
@@ -196,4 +197,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

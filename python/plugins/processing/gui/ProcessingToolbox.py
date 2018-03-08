@@ -30,21 +30,19 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QToolButton, QToolBar, QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
+from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm)
 from qgis.gui import QgsDockWidget
 
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
@@ -70,8 +68,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.tipWasClosed = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
@@ -89,13 +89,15 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.setPlaceholderText(QCoreApplication.translate('ProcessingToolbox', 'Search…'))
 
         self.fillTree()
 
         # connect to existing providers
         for p in QgsApplication.processingRegistry().providers():
             p.algorithmsLoaded.connect(self.updateProvider)
+            if p.isActive():
+                self.addProviderActions(p)
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
@@ -135,6 +137,12 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
             if showTip:
                 self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
+
+            if self.algorithmTree.currentItem() is None or self.algorithmTree.currentItem().isHidden():
+                # if previously selected item was hidden, auto select the first visible algorithm
+                first_visible = self._findFirstVisibleAlgorithm(self.algorithmTree.invisibleRootItem())
+                if first_visible is not None:
+                    self.algorithmTree.setCurrentItem(first_visible)
         else:
             self.algorithmTree.collapseAll()
             self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
@@ -165,6 +173,45 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             item.setHidden(True)
             return False
 
+    def _findFirstVisibleAlgorithm(self, item):
+        """
+        Returns the first visible algorithm in the tree widget
+        """
+        if item is None:
+            return None
+        if item.childCount() > 0:
+            for i in range(item.childCount()):
+                child = item.child(i)
+                first_visible = self._findFirstVisibleAlgorithm(child)
+                if first_visible is not None:
+                    return first_visible
+            return None
+        elif isinstance(item, TreeAlgorithmItem):
+            if not item.isHidden():
+                return item
+            else:
+                return None
+        else:
+            return None
+
+    def addProviderActions(self, provider):
+        if provider.id() in ProviderActions.actions:
+            toolbarButton = QToolButton()
+            toolbarButton.setObjectName('provideraction_' + provider.id())
+            toolbarButton.setIcon(provider.icon())
+            toolbarButton.setToolTip(provider.name())
+            toolbarButton.setPopupMode(QToolButton.InstantPopup)
+
+            actions = ProviderActions.actions[provider.id()]
+            menu = QMenu(provider.name(), self)
+            for action in actions:
+                action.setData(self)
+                act = QAction(action.name, menu)
+                act.triggered.connect(action.execute)
+                menu.addAction(act)
+            toolbarButton.setMenu(menu)
+            self.processingToolbar.addWidget(toolbarButton)
+
     def activateProvider(self, id):
         provider = QgsApplication.processingRegistry().providerById(id)
         if not provider.canBeActivated():
@@ -175,6 +222,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         try:
             # not part of the base class - only some providers have a setActive member
             provider.setActive(True)
+            self.addProviderActions(provider)
             self.fillTree()
             self.textChanged()
             self.showDisabled()
@@ -196,6 +244,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         item = self._providerItem(provider_id)
         if item is not None:
             self.algorithmTree.invisibleRootItem().removeChild(item)
+        button = self.findChild(QToolButton, 'provideraction-' + provider_id)
+        if button:
+            self.processingToolbar.removeChild(button)
 
     def _providerItem(self, provider_id):
         for i in range(self.algorithmTree.invisibleRootItem().childCount()):
@@ -209,19 +260,19 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         popupmenu = QMenu()
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg
-            executeAction = QAction(self.tr('Execute'), self.algorithmTree)
+            executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
             if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 executeBatchAction = QAction(
-                    self.tr('Execute as batch process'),
+                    QCoreApplication.translate('ProcessingToolbox', 'Execute as Batch Process…'),
                     self.algorithmTree)
                 executeBatchAction.triggered.connect(
                     self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
             editRenderingStylesAction = QAction(
-                self.tr('Edit rendering styles for outputs'),
+                QCoreApplication.translate('ProcessingToolbox', 'Edit Rendering Styles for Outputs…'),
                 self.algorithmTree)
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)
@@ -245,6 +296,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
+
+    def activateCurrent(self):
+        self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
         item = self.algorithmTree.currentItem()
@@ -415,20 +469,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 algItem.setForeground(0, Qt.darkGray)
             groupItem.addChild(algItem)
             count += 1
-
-        if provider.id() in ProviderActions.actions:
-            actions = ProviderActions.actions[provider.id()]
-            toolbarButton = QToolButton()
-            toolbarButton.setIcon(provider.icon())
-            toolbarButton.setToolTip(provider.name())
-            toolbarButton.setPopupMode(QToolButton.InstantPopup)
-            menu = QMenu(provider.name(), self)
-            for action in actions:
-                act = QAction(action.name, menu)
-                act.triggered.connect(action.execute)
-                menu.addAction(act)
-            toolbarButton.setMenu(menu)
-            self.processingToolbar.addWidget(toolbarButton)
 
         text = provider.name()
 

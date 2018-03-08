@@ -33,8 +33,6 @@ Constructor for QgsConfigureShortcutsDialog.
 singleton QgsShortcutsManager instance.
 %End
 
-    ~QgsConfigureShortcutsDialog();
-
   protected:
     virtual void keyPressEvent( QKeyEvent *event );
 

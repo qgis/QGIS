@@ -363,7 +363,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see size()
      * \see setSizeType()
      */
-    void setSize( const QSizeF &size );
+    void setSize( QSizeF size );
 
     /**
      * Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
@@ -445,7 +445,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see offset()
      * \see setOffsetUnit()
      */
-    void setOffset( const QPointF &offset );
+    void setOffset( QPointF offset );
 
     /**
      * Returns the units used for the shape's offset.
@@ -495,7 +495,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see radii()
      * \see setRadiiUnit()
      */
-    void setRadii( const QSizeF &radii );
+    void setRadii( QSizeF radii );
 
     /**
      * Returns the units used for the shape's radii.
@@ -1332,7 +1332,7 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawText( const QPointF &point, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 
@@ -1370,7 +1370,7 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawPart( const QPointF &origin, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 

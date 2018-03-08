@@ -32,7 +32,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
-#include "qgsalgorithmextractnodes.h"
+#include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -44,15 +44,20 @@
 #include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
+#include "qgsalgorithmmultiringconstantbuffer.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
 #include "qgsalgorithmpackage.h"
+#include "qgsalgorithmpointonsurface.h"
+#include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
-#include "qgsalgorithmremoveduplicatenodes.h"
+#include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
+#include "qgsalgorithmrotate.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
+#include "qgsalgorithmsegmentize.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
 #include "qgsalgorithmsnaptogrid.h"
@@ -86,6 +91,11 @@ QString QgsNativeAlgorithms::id() const
   return QStringLiteral( "native" );
 }
 
+QString QgsNativeAlgorithms::helpId() const
+{
+  return QStringLiteral( "qgis" );
+}
+
 QString QgsNativeAlgorithms::name() const
 {
   return tr( "QGIS (native c++)" );
@@ -116,7 +126,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
-  addAlgorithm( new QgsExtractNodesAlgorithm() );
+  addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
@@ -128,15 +138,21 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMergeVectorAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
+  addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
+  addAlgorithm( new QgsPointOnSurfaceAlgorithm() );
+  addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
-  addAlgorithm( new QgsAlgorithmRemoveDuplicateNodes() );
+  addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
+  addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
+  addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
+  addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );

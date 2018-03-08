@@ -45,11 +45,6 @@ QString QgsJoinWithLinesAlgorithm::groupId() const
   return QStringLiteral( "vectoranalysis" );
 }
 
-QgsProcessingAlgorithm::Flags QgsJoinWithLinesAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "HUBS" ),

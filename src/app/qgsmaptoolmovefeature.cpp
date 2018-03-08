@@ -26,6 +26,7 @@
 #include "qgsvectorlayertools.h"
 
 
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
@@ -128,9 +129,31 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
+      bool allFeaturesInView = true;
+      QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );
+
       while ( it.nextFeature( feat ) )
       {
         mRubberBand->addGeometry( feat.geometry(), vlayer );
+
+        if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
+          allFeaturesInView = false;
+      }
+
+      if ( !allFeaturesInView )
+      {
+        // for extra safety to make sure we are not modifying geometries by accident
+
+        int res = QMessageBox::warning( mCanvas, tr( "Move features" ),
+                                        tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
+                                        QMessageBox::Yes | QMessageBox::No );
+        if ( res != QMessageBox::Yes )
+        {
+          mMovedFeatures.clear();
+          delete mRubberBand;
+          mRubberBand = nullptr;
+          return;
+        }
       }
     }
 
@@ -177,7 +200,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QString *errorMsg = new QString();
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg ) )
         {
-          emit messageEmitted( *errorMsg, QgsMessageBar::CRITICAL );
+          emit messageEmitted( *errorMsg, Qgis::Critical );
           delete mRubberBand;
           mRubberBand = nullptr;
         }

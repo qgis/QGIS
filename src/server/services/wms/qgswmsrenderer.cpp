@@ -68,6 +68,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemlegend.h"
+#include "qgsserverexception.h"
 
 #include <QImage>
 #include <QPainter>
@@ -379,11 +380,11 @@ namespace QgsWms
     configurePrintLayout( layout.get(), mapSettings );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
     if ( !tempOutputFile.open() )
     {
-      // let the caller handle this
-      return nullptr;
+      throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
+
     }
 
     if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
@@ -767,7 +768,7 @@ namespace QgsWms
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *mProject );
 
     // get dxf layers
-    QList< QPair<QgsVectorLayer *, int > > dxfLayers;
+    QList< QgsDxfExport::DxfLayer > dxfLayers;
     int layerIdx = -1;
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
@@ -801,7 +802,7 @@ namespace QgsWms
         layerAttribute = vlayer->fields().indexFromName( layerAttributes.at( layerIdx ) );
       }
 
-      dxfLayers.append( qMakePair( vlayer, layerAttribute ) );
+      dxfLayers.append( QgsDxfExport::DxfLayer( vlayer, layerAttribute ) );
     }
 
     // add layers to dxf
@@ -1046,7 +1047,7 @@ namespace QgsWms
     double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
     int dpm = 1 / OGC_PX_M;
     if ( !mWmsParameters.dpi().isEmpty() )
-      dpm = mWmsParameters.dpiAsInt() / 0.0254;
+      dpm = mWmsParameters.dpiAsDouble() / 0.0254;
 
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
@@ -1357,6 +1358,16 @@ namespace QgsWms
       return false;
     }
 
+    QgsFeatureRequest fReq;
+
+    // Transform filter geometry to layer CRS
+    std::unique_ptr<QgsGeometry> layerFilterGeom;
+    if ( filterGeom )
+    {
+      layerFilterGeom.reset( new QgsGeometry( *filterGeom ) );
+      layerFilterGeom->transform( QgsCoordinateTransform( mapSettings.destinationCrs(), layer->crs(), fReq.transformContext() ) );
+    }
+
     //we need a selection rect (0.01 of map width)
     QgsRectangle mapRect = mapSettings.extent();
     QgsRectangle layerRect = mapSettings.mapToLayerCoordinates( layer, mapRect );
@@ -1369,9 +1380,9 @@ namespace QgsWms
     {
       searchRect = featureInfoSearchRect( layer, mapSettings, renderContext, *infoPoint );
     }
-    else if ( filterGeom )
+    else if ( layerFilterGeom )
     {
-      searchRect = filterGeom->boundingBox();
+      searchRect = layerFilterGeom->boundingBox();
     }
     else if ( mParameters.contains( QStringLiteral( "BBOX" ) ) )
     {
@@ -1389,8 +1400,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
-    QgsFeatureRequest fReq;
-    bool hasGeometry = addWktGeometry || featureBBox || filterGeom;
+    bool hasGeometry = addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
@@ -1402,9 +1412,10 @@ namespace QgsWms
       fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
     }
 
-    if ( filterGeom )
+
+    if ( layerFilterGeom )
     {
-      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->asWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -2443,7 +2454,7 @@ namespace QgsWms
       renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
       if ( !renderer )
       {
-        QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::INFO );
+        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Info );
         continue;
       }
 
@@ -2612,7 +2623,7 @@ namespace QgsWms
                 {
                   layer->readSld( namedElem, err );
                   layer->setCustomProperty( "readSLD", true );
-                  layers.append( layer );
+                  layers.insert( 0, layer );
                 }
               }
             }
@@ -2676,7 +2687,7 @@ namespace QgsWms
                 throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
               }
             }
-            layers.append( layer );
+            layers.insert( 0, layer );
           }
         }
       }

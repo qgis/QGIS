@@ -266,7 +266,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     };
 
     // Dataset cache
-    static QMap< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+    static QHash< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
 
     // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
     static int mgDatasetCacheSize;

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfileutils.cpp
+    ---------------------
+    begin                : November 2017
+    copyright            : (C) 2017 by Etienne Trimaille
+    email                : etienne.trimaille at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfileutils.h"
 #include <QObject>
 #include <QRegularExpression>
@@ -72,7 +86,7 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
 
 QString QgsFileUtils::stringToSafeFilename( const QString &string )
 {
-  QRegularExpression rx( "[^\\w\\-. ]" );
+  QRegularExpression rx( "[/\\\\\\?%\\*\\:\\|\"<>]" );
   QString s = string;
   s.replace( rx, QStringLiteral( "_" ) );
   return s;

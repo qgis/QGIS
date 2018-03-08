@@ -20,10 +20,10 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
-from qgis.core import QgsProject, QgsMessageLog
+from qgis.core import Qgis, QgsProject, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from .db_model import DBModel, PluginItem
@@ -125,12 +125,12 @@ class DBTree(QTreeView):
         menu = QMenu(self)
 
         if isinstance(item, (Table, Schema)):
-            menu.addAction(self.tr("Rename"), self.rename)
-            menu.addAction(self.tr("Delete"), self.delete)
+            menu.addAction(QCoreApplication.translate("DBTree", "Rename…"), self.rename)
+            menu.addAction(QCoreApplication.translate("DBTree", "Delete…"), self.delete)
 
             if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
-                menu.addAction(self.tr("Add to canvas"), self.addLayer)
+                menu.addAction(self.tr("Add to Canvas"), self.addLayer)
 
         elif isinstance(item, DBPlugin):
             if item.database() is not None:
@@ -138,7 +138,7 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Remove"), self.delete)
 
         elif not index.parent().isValid() and item.typeName() in ("spatialite", "gpkg"):
-            menu.addAction(self.tr("New Connection..."), self.newConnection)
+            menu.addAction(QCoreApplication.translate("DBTree", "New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())
@@ -171,7 +171,7 @@ class DBTree(QTreeView):
                 msgLabel.setWordWrap(True)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
-                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, QgsMessageBar.WARNING))
+                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.Warning))
 
     def reconnect(self):
         db = self.currentDatabase()

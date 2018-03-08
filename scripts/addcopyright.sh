@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    addcopyright.sh
 #    ---------------------
@@ -215,6 +215,21 @@ for i in $FILES; do
 	"Nyall Dawson")
 		authorname="Nyall Dawson"
 		authoremail="nyall dot dawson at gmail dot com"
+		;;
+
+	"David")
+		authorname="David Signer"
+		authoremail="david at opengis dot ch"
+		;;
+
+	"Etienne Trimaille")
+		authorname="Etienne Trimaille"
+		authoremail="etienne dot trimaille at gmail dot com"
+		;;
+
+	"David Marteau")
+		authorname="David Marteau"
+		authoremail="david at innophi dot com"
 		;;
 
 	*)

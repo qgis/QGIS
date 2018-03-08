@@ -44,7 +44,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
-                      tr( "Save as image..." ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
+                      tr( "Save as image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
                       tr( "Configure" ), this, &Qgs3DMapCanvasDockWidget::configure );
 
@@ -114,6 +114,8 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
+  dlg.setWindowTitle( tr( "3D Configuration" ) );
+
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );

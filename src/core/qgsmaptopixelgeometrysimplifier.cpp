@@ -91,25 +91,12 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
   // Write the generalized geometry
   if ( geometryType == QgsWkbTypes::LineString )
   {
-    QgsLineString *lineString = new QgsLineString();
-    lineString->addVertex( QgsPoint( x1, y1 ) );
-    lineString->addVertex( QgsPoint( x2, y2 ) );
-    return QgsGeometry( lineString );
+    return QgsGeometry( qgis::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 ) );
   }
   else
   {
     return QgsGeometry::fromRect( envelope );
   }
-}
-
-template<class T>
-static T *createEmptySameTypeGeom( const T &geom )
-{
-  // TODO - this is inefficient - we clone the geometry's content only to throw it away immediately
-  T *output( qgsgeometry_cast<T *>( geom.clone() ) );
-  Q_ASSERT( output );
-  output->clear();
-  return output;
 }
 
 QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
@@ -138,12 +125,27 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   if ( flatType == QgsWkbTypes::LineString || flatType == QgsWkbTypes::CircularString )
   {
     const QgsCurve &srcCurve = dynamic_cast<const QgsCurve &>( geometry );
-    std::unique_ptr<QgsCurve> output( createEmptySameTypeGeom( srcCurve ) );
+    const int numPoints = srcCurve.numPoints();
+
+    std::unique_ptr<QgsCurve> output;
+
+    QVector< double > lineStringX;
+    QVector< double > lineStringY;
+    if ( flatType == QgsWkbTypes::LineString )
+    {
+      // if we are making a linestring, we do it in an optimised way by directly constructing
+      // the final x/y vectors, which avoids calling the slower insertVertex method
+      lineStringX.reserve( numPoints );
+      lineStringY.reserve( numPoints );
+    }
+    else
+    {
+      output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.createEmptyWithSameType() ) );
+    }
+
     double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
     QgsRectangle r;
     r.setMinimal();
-
-    const int numPoints = srcCurve.numPoints();
 
     if ( numPoints <= ( isaLinearRing ? 4 : 2 ) )
       isGeneralizable = false;
@@ -179,7 +181,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            else
+            {
+              lineStringX.append( x );
+              lineStringY.append( y );
+            }
             lastX = x;
             lastY = y;
           }
@@ -202,7 +210,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
         {
           if ( ea.res_arealist[ i ] > map2pixelTol )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
+            else
+            {
+              lineStringX.append( ea.inpts.at( i ).x() );
+              lineStringY.append( ea.inpts.at( i ).y() );
+            }
           }
         }
         break;
@@ -224,7 +238,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            else
+            {
+              lineStringX.append( x );
+              lineStringY.append( y );
+            }
             lastX = x;
             lastY = y;
 
@@ -236,6 +256,10 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
       }
     }
 
+    if ( !output )
+    {
+      output = qgis::make_unique< QgsLineString >( lineStringX, lineStringY );
+    }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {
       // we simplified the geometry too much!
@@ -280,7 +304,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   else if ( QgsWkbTypes::isMultiType( flatType ) )
   {
     const QgsGeometryCollection &srcCollection = dynamic_cast<const QgsGeometryCollection &>( geometry );
-    std::unique_ptr<QgsGeometryCollection> collection( createEmptySameTypeGeom( srcCollection ) );
+    std::unique_ptr<QgsGeometryCollection> collection( srcCollection.createEmptyWithSameType() );
     const int numGeoms = srcCollection.numGeometries();
     for ( int i = 0; i < numGeoms; ++i )
     {

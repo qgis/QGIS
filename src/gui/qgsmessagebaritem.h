@@ -37,16 +37,16 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     Q_OBJECT
   public:
     //! make out a widget containing a message to be displayed on the bar
-    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsMessageBarItem( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing title and message to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing title, message and widget to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing a widget to be displayed on the bar
-    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QgsMessageBarItem *setText( const QString &text );
 
@@ -62,12 +62,12 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      */
     QString title() const;
 
-    QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
+    QgsMessageBarItem *setLevel( Qgis::MessageLevel level );
 
     /**
      * Returns the message level for the message.
      */
-    QgsMessageBar::MessageLevel level() const;
+    Qgis::MessageLevel level() const;
 
     QgsMessageBarItem *setWidget( QWidget *widget );
 
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
     QString mTitle;
     QString mText;
-    QgsMessageBar::MessageLevel mLevel;
+    Qgis::MessageLevel mLevel;
     int mDuration;
     QWidget *mWidget = nullptr;
     QIcon mUserIcon;

@@ -97,13 +97,13 @@ QIcon QgsLayoutItemLabel::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLabel.svg" ) );
 }
 
-void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
@@ -441,7 +441,7 @@ QString QgsLayoutItemLabel::displayName() const
       }
       if ( text.length() > 25 )
       {
-        return QString( tr( "%1..." ) ).arg( text.left( 25 ).simplified() );
+        return QString( tr( "%1…" ) ).arg( text.left( 25 ).simplified() );
       }
       else
       {

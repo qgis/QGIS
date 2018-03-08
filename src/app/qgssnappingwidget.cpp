@@ -92,7 +92,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnabledAction = new QAction( tr( "Toggle snapping" ), this );
   mEnabledAction->setCheckable( true );
   mEnabledAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) ) );
-  mEnabledAction->setToolTip( tr( "toggle snapping (S)" ) );
+  mEnabledAction->setToolTip( tr( "Enable Snapping (S)" ) );
   mEnabledAction->setShortcut( tr( "S", "Keyboard shortcut: toggle snapping" ) );
   mEnabledAction->setObjectName( QStringLiteral( "EnableSnappingAction" ) );
   connect( mEnabledAction, &QAction::toggled, this, &QgsSnappingWidget::enableSnapping );
@@ -214,7 +214,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     advConfigWidgetAction->setDefaultWidget( mLayerTreeView );
     advConfigMenu->addAction( advConfigWidgetAction );
     advConfigButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) ) );
-    advConfigButton->setToolTip( tr( "Edit avdanced configuration" ) );
+    advConfigButton->setToolTip( tr( "Edit advanced configuration" ) );
     advConfigButton->setObjectName( QStringLiteral( "EditAdvancedConfigurationButton" ) );
     advConfigButton->setMenu( advConfigMenu );
     mEditAdvancedConfigAction = tb->addWidget( advConfigButton );

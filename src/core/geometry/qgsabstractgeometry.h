@@ -52,6 +52,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+    Q_GADGET
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -101,6 +102,7 @@ class CORE_EXPORT QgsAbstractGeometry
        * curve and closest point on its approximation. */
       MaximumDifference
     };
+    Q_ENUM( SegmentationToleranceType )
 
     /**
      * Constructor for QgsAbstractGeometry.
@@ -617,8 +619,6 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     QgsVertexIterator vertices() const;
 
-  protected:
-
     /**
      * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
      * To create it, the geometry is default constructed and then the WKB is changed.
@@ -627,6 +627,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note Not available in Python bindings
      */
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
+
+  protected:
 
     /**
      * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)

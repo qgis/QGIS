@@ -341,7 +341,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktRowId:
       case PktFidMap:
       {
-        QList<QVariant> primaryKeyVals;
+        QVariantList primaryKeyVals;
 
         if ( mSource->mPrimaryKeyType == PktFidMap )
         {
@@ -365,7 +365,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           primaryKeyVals << mQry.value( col++ );
         }
 
-        fid = mSource->mShared->lookupFid( QVariant( primaryKeyVals ) );
+        fid = mSource->mShared->lookupFid( primaryKeyVals );
       }
       break;
 

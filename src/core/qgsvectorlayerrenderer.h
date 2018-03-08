@@ -39,6 +39,7 @@ typedef QList<int> QgsAttributeList;
 #include "qgsfeature.h"  // QgsFeatureIds
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsfeedback.h"
 
 #include "qgsmaplayerrenderer.h"
 
@@ -50,14 +51,17 @@ class QgsVectorLayerDiagramProvider;
  * Interruption checker used by QgsVectorLayerRenderer::render()
  * \note not available in Python bindings
  */
-class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
+class QgsVectorLayerRendererInterruptionChecker: public QgsFeedback
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext &context );
-    bool mustStop() const override;
+
   private:
     const QgsRenderContext &mContext;
+    QTimer *mTimer = nullptr;
 };
 
 /**

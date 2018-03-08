@@ -1374,14 +1374,14 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
           }
           else
           {
-            QList<QVariant> primaryKeyVals;
+            QVariantList primaryKeyVals;
 
             Q_FOREACH ( int idx, mPrimaryKeyAttrs )
             {
               primaryKeyVals << attributevec[ idx ];
             }
 
-            features->setId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+            features->setId( mShared->lookupFid( primaryKeyVals ) );
           }
           QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
         }
@@ -3193,11 +3193,11 @@ QgsOracleSharedData::QgsOracleSharedData()
 {
 }
 
-QgsFeatureId QgsOracleSharedData::lookupFid( const QVariant &v )
+QgsFeatureId QgsOracleSharedData::lookupFid( const QVariantList &v )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.find( v );
+  QMap<QVariantList, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
 
   if ( it != mKeyToFid.constEnd() )
   {
@@ -3214,13 +3214,13 @@ QVariant QgsOracleSharedData::removeFid( QgsFeatureId fid )
 {
   QMutexLocker locker( &mMutex );
 
-  QVariant v = mFidToKey[ fid ];
+  QVariantList v = mFidToKey[ fid ];
   mFidToKey.remove( fid );
   mKeyToFid.remove( v );
   return v;
 }
 
-void QgsOracleSharedData::insertFid( QgsFeatureId fid, const QVariant &k )
+void QgsOracleSharedData::insertFid( QgsFeatureId fid, const QVariantList &k )
 {
   QMutexLocker locker( &mMutex );
 
@@ -3228,14 +3228,14 @@ void QgsOracleSharedData::insertFid( QgsFeatureId fid, const QVariant &k )
   mKeyToFid.insert( k, fid );
 }
 
-QVariant QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
+QVariantList QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.find( featureId );
+  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.find( featureId );
   if ( it != mFidToKey.constEnd() )
     return it.value();
-  return QVariant();
+  return QVariantList();
 }
 
 QGISEXTERN bool saveStyle( const QString &uri,

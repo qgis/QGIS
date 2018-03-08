@@ -32,6 +32,7 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 
+
 QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   : mXmin( xMin )
   , mYmin( yMin )

@@ -69,9 +69,9 @@
 #else
 #include <winsock.h>
 #include <windows.h>
-#include <Lmcons.h>
+#include <lmcons.h>
 #define SECURITY_WIN32
-#include <Security.h>
+#include <security.h>
 #pragma comment( lib, "Secur32.lib" )
 #endif
 
@@ -91,9 +91,13 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QString ABISYM( QgsApplication::mUIThemeName );
+QString ABISYM( QgsApplication::mProfilePath );
+
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
 QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
+
+bool ABISYM( QgsApplication::mInitialized ) = false;
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
 #ifdef _MSC_VER
@@ -121,7 +125,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
   mApplicationMembers = new ApplicationMembers();
 
-  init( profileFolder ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
+  ABISYM( mProfilePath ) = profileFolder;
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -146,12 +150,14 @@ void QgsApplication::init( QString profileFolder )
     delete profile;
   }
 
+  ABISYM( mProfilePath ) = profileFolder;
+
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
   qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
+  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
@@ -214,7 +220,12 @@ void QgsApplication::init( QString profileFolder )
       setPrefixPath( myPrefix, true );
 #else
       QDir myDir( applicationDirPath() );
-      myDir.cdUp();
+      // Fix for server which is one level deeper in /usr/lib/cgi-bin
+      if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+      {
+        myDir.cdUp();
+      }
+      myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
       QString myPrefix = myDir.absolutePath();
       setPrefixPath( myPrefix, true );
 #endif
@@ -259,6 +270,8 @@ void QgsApplication::init( QString profileFolder )
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
   ABISYM( mMaxThreads ) = -1;
+
+  ABISYM( mInitialized ) = true;
 }
 
 QgsApplication::~QgsApplication()
@@ -491,7 +504,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   return icon;
 }
 
-QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
+QCursor QgsApplication::getThemeCursor( Cursor cursor )
 {
   QgsApplication *app = instance();
   if ( app && app->mCursorCache.contains( cursor ) )
@@ -548,6 +561,13 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   {
     // Apply scaling
     float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
+#ifdef Q_OS_MACX
+    if ( app->devicePixelRatio() >= 2 )
+    {
+      scale *= app->devicePixelRatio();
+      activeX = activeY = 5;
+    }
+#endif
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
@@ -575,6 +595,36 @@ QPixmap QgsApplication::getThemePixmap( const QString &name )
 void QgsApplication::setThemeName( const QString &themeName )
 {
   ABISYM( mThemeName ) = themeName;
+}
+
+QString QgsApplication::resolvePkgPath()
+{
+#if defined(ANDROID)
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QDir::homePath() );
+#else
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+#endif
+  QFile f;
+  // "/../../.." is for Mac bundled app in build directory
+  const QStringList pathPrefixes = QStringList() << "" << "/.." << "/bin" << "/../../..";
+  for ( const QString &path : pathPrefixes )
+  {
+    f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
+    QgsDebugMsg( f.fileName() );
+    if ( f.exists() )
+      break;
+  }
+
+  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( "Running from build dir!" );
+    return f.readLine().trimmed();
+  }
+  else
+  {
+    return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
+  }
+
 }
 
 QString QgsApplication::themeName()
@@ -951,6 +1001,11 @@ QgsApplication::endian_t QgsApplication::endian()
 
 void QgsApplication::initQgis()
 {
+  if ( !ABISYM( mInitialized ) && QgsApplication::instance() )
+  {
+    init( ABISYM( mProfilePath ) );
+  }
+
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 
@@ -1338,25 +1393,12 @@ QVariantMap QgsApplication::customVariables()
   QVariantMap variables;
 
   //check if settings contains any variables
-  if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
+  settings.beginGroup( "variables" );
+  QStringList childKeys = settings.childKeys();
+  for ( QStringList::const_iterator it = childKeys.constBegin(); it != childKeys.constEnd(); ++it )
   {
-    QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "variables/values" ) ).toList();
-    QList< QVariant > customVariableNames = settings.value( QStringLiteral( "variables/names" ) ).toList();
-    int variableIndex = 0;
-    for ( QList< QVariant >::const_iterator it = customVariableVariants.constBegin();
-          it != customVariableVariants.constEnd(); ++it )
-    {
-      if ( variableIndex >= customVariableNames.length() )
-      {
-        break;
-      }
-
-      QVariant value = ( *it );
-      QString name = customVariableNames.at( variableIndex ).toString();
-
-      variables.insert( name, value );
-      variableIndex++;
-    }
+    QString name = *it;
+    variables.insert( name, settings.value( name ) );
   }
 
   return variables;
@@ -1366,18 +1408,13 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
 {
   QgsSettings settings;
 
-  QList< QVariant > customVariableValues;
-  QList< QVariant > customVariableNames;
-
   QVariantMap::const_iterator it = variables.constBegin();
+  settings.beginGroup( "variables" );
+  settings.remove( "" );
   for ( ; it != variables.constEnd(); ++it )
   {
-    customVariableNames << it.key();
-    customVariableValues << it.value();
+    settings.setValue( it.key(), it.value() );
   }
-
-  settings.setValue( QStringLiteral( "variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "variables/values" ), customVariableValues );
 
   emit instance()->customVariablesChanged();
 }
@@ -1387,14 +1424,7 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   // save variable to settings
   QgsSettings settings;
 
-  QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "variables/values" ) ).toList();
-  QList< QVariant > customVariableNames = settings.value( QStringLiteral( "variables/names" ) ).toList();
-
-  customVariableVariants << value;
-  customVariableNames << name;
-
-  settings.setValue( QStringLiteral( "variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "variables/values" ), customVariableVariants );
+  settings.setValue( QStringLiteral( "variables/" ) + name, value );
 
   emit instance()->customVariablesChanged();
 }

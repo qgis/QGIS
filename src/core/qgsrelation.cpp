@@ -132,7 +132,7 @@ void QgsRelation::setName( const QString &name )
 }
 
 
-void QgsRelation::setStrength( const RelationStrength &strength )
+void QgsRelation::setStrength( RelationStrength strength )
 {
   mRelationStrength = strength;
 }

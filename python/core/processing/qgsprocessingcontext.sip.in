@@ -52,7 +52,7 @@ Returns any flags set in the context.
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( const QgsProcessingContext::Flags &flags );
+    void setFlags( QgsProcessingContext::Flags flags );
 %Docstring
 Sets ``flags`` for the context.
 
@@ -161,7 +161,7 @@ Returns the behavior used for checking invalid geometries in input layers.
 .. seealso:: :py:func:`setInvalidGeometryCheck`
 %End
 
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
 Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
@@ -275,12 +275,26 @@ This is only safe to call when both this context and the other ``context`` share
 thread() affinity, and that thread is the current thread.
 %End
 
+    QgsMapLayer *getMapLayer( const QString &identifier );
+%Docstring
+Returns a map layer from the context with a matching ``identifier``.
+This method considers layer IDs, names and sources when matching
+the ``identifier`` (see :py:func:`QgsProcessingUtils.mapLayerFromString()`
+for details).
+
+Ownership is not transferred and remains with the context.
+
+.. seealso:: :py:func:`takeResultLayer`
+%End
+
     QgsMapLayer *takeResultLayer( const QString &id ) /TransferBack/;
 %Docstring
 Takes the result map layer with matching ``id`` from the context and
 transfers ownership of it back to the caller. This method can be used
 to remove temporary layers which are not required for further processing
 from a context.
+
+.. seealso:: :py:func:`getMapLayer`
 %End
 
   private:

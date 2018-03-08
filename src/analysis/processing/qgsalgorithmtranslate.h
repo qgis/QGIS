@@ -34,7 +34,6 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsTranslateAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -47,15 +46,26 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
 
   private:
 
     double mDeltaX = 0.0;
+    bool mDynamicDeltaX = false;
+    QgsProperty mDeltaXProperty;
+
     double mDeltaY = 0.0;
+    bool mDynamicDeltaY = false;
+    QgsProperty mDeltaYProperty;
+
     double mDeltaZ = 0.0;
+    bool mDynamicDeltaZ = false;
+    QgsProperty mDeltaZProperty;
+
     double mDeltaM = 0.0;
+    bool mDynamicDeltaM = false;
+    QgsProperty mDeltaMProperty;
 
 };
 

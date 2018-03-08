@@ -465,11 +465,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   QMenu *advMenu = new QMenu;
 
   advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
-  advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Match to symbols from file…" ), this, SLOT( matchToSymbolsFromXml() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mCategorizedSymbol->type() == QgsSymbol::Marker )
   {
-    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend );
   }
@@ -658,8 +658,8 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // ask to abort if too many classes
   if ( unique_vals.size() >= 1000 )
   {
-    int res = QMessageBox::warning( nullptr, tr( "High number of classes!" ),
-                                    tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
+    int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ),
+                                    tr( "High number of classes. Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
@@ -683,7 +683,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
        !mRenderer->categories().isEmpty() )
   {
     int res = QMessageBox::question( this,
-                                     tr( "Confirm Delete" ),
+                                     tr( "Delete Classification" ),
                                      tr( "The classification field was changed from '%1' to '%2'.\n"
                                          "Should the existing classes be deleted before classification?" )
                                      .arg( mOldClassificationAttribute, attrName ),
@@ -910,7 +910,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   QgsSettings settings;
   QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
 
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to Symbols from File" ), openFileDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -923,7 +923,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
   {
-    QMessageBox::warning( this, tr( "Matching Error" ),
+    QMessageBox::warning( this, tr( "Match to Symbols from File" ),
                           tr( "An error occurred while reading file:\n%1" ).arg( importedStyle.errorString() ) );
     return;
   }
@@ -931,12 +931,12 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   int matched = matchToSymbols( &importedStyle );
   if ( matched > 0 )
   {
-    QMessageBox::information( this, tr( "Matched Symbols" ),
+    QMessageBox::information( this, tr( "Match to Symbols from File" ),
                               tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Matched Symbols" ),
+    QMessageBox::warning( this, tr( "Match to Symbols from File" ),
                           tr( "No categories could be matched to symbols in file." ) );
   }
 }

@@ -82,7 +82,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
   public:
     QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 
-    QIcon icon() override { return QgsDataItem::icon(); }
+    QIcon icon() override;
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI

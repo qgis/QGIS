@@ -150,6 +150,31 @@ Get the name of the field with unique identifiers
 Set the name of the field with unique identifiers
 %End
 
+    void setLazy( bool lazy );
+%Docstring
+Sets the lazy mode. If ``lazy`` is true, then the loading is
+delayed until an explicit reloading of the layer.
+
+:param lazy: True to delay the loading, false otherwise
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`QgsDataProvider.reloadData`
+
+.. seealso:: :py:func:`isLazy`
+%End
+
+    bool isLazy() const;
+%Docstring
+Returns the lazy mode.
+
+:return: True if the loading is delayed, false otherwise.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`setLazy`
+%End
+
     QString geometryField() const;
 %Docstring
 Get the name of the geometry field. Empty if no geometry field

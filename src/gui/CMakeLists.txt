@@ -159,6 +159,8 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
+  layertree/qgslayertreeviewindicator.cpp
+  layertree/qgslayertreeviewitemdelegate.cpp
 
   layout/qgslayoutcustomdrophandler.cpp
   layout/qgslayoutitemguiregistry.cpp
@@ -314,6 +316,8 @@ SET(QGIS_GUI_SRCS
   qgsnewgeopackagelayerdialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
+  qgsoptionsdialoghighlightwidget.cpp
+  qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
   qgspanelwidget.cpp
@@ -479,6 +483,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewgeopackagelayerdialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
+  qgsoptionsdialoghighlightwidget.h
+  qgsoptionsdialoghighlightwidgetsimpl.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
@@ -521,6 +527,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputwidget.h
   qgsvariableeditorwidget.h
+  qgsvscrollarea.h
   qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
@@ -672,6 +679,8 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
+  layertree/qgslayertreeviewindicator.h
+  layertree/qgslayertreeviewitemdelegate.h
 
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
@@ -743,7 +752,6 @@ SET(QGIS_GUI_HDRS
   qgswidgetstatehelper_p.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
-  qgsvscrollarea.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
@@ -964,10 +972,14 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   qgis_native
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5UiTools_LIBRARIES}
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

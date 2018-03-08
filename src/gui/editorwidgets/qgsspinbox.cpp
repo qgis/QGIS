@@ -30,7 +30,6 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
-
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
@@ -131,6 +130,11 @@ int QgsSpinBox::clearValue() const
     return maximum();
   else
     return mCustomClearValue;
+}
+
+void QgsSpinBox::setLineEditAlignment( Qt::Alignment alignment )
+{
+  mLineEdit->setAlignment( alignment );
 }
 
 int QgsSpinBox::valueFromText( const QString &text ) const

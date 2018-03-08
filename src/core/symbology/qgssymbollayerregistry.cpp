@@ -52,7 +52,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "ShapeburstFill" ), QObject::tr( "Shapeburst fill" ), QgsSymbol::Fill,
                       QgsShapeburstFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterFill" ), QObject::tr( "Raster image fill" ), QgsSymbol::Fill,
-                      QgsRasterFillSymbolLayer::create ) );
+                      QgsRasterFillSymbolLayer::create, nullptr, QgsRasterFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SVGFill" ), QObject::tr( "SVG fill" ), QgsSymbol::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld, QgsSVGFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "CentroidFill" ), QObject::tr( "Centroid fill" ), QgsSymbol::Fill,

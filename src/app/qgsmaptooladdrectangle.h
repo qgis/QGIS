@@ -17,12 +17,13 @@
 #define QGSMAPTOOLADDRECTANGLE_H
 
 #include "qgspolygon.h"
-#include "qgsrectangle.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsbox3d.h"
+#include "qgis_app.h"
 
 class QgsPolygon;
 
-class QgsMapToolAddRectangle: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 {
     Q_OBJECT
 
@@ -51,7 +52,7 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     //! The rubberband to show the rectangle currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Rectangle
-    QgsRectangle mRectangle;
+    QgsBox3d mRectangle;
 
     //! Convenient method to export a QgsRectangle to a LineString
     QgsLineString *rectangleToLinestring( const bool isOriented = false ) const;

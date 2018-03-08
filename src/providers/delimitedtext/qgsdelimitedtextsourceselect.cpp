@@ -92,6 +92,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   connect( cbxPointIsComma, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxXyDms, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
+  connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
   mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
   mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
@@ -152,6 +154,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
+  bool haveGeom = true;
   if ( geomTypeXY->isChecked() )
   {
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
@@ -176,7 +179,17 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   }
   else
   {
+    haveGeom = false;
     url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+  }
+  if ( haveGeom )
+  {
+    QgsCoordinateReferenceSystem crs = crsGeometry->crs();
+    if ( crs.isValid() )
+    {
+      url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+    }
+
   }
 
   if ( ! geomTypeNone->isChecked() ) url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? "yes" : "no" );
@@ -190,6 +203,12 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   // add the layer to the map
   emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
+
+  // clear the file and layer name show something has happened, ready for another file
+
+  mFileWidget->setFilePath( QString() );
+  txtLayerName->setText( QString() );
+
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
@@ -280,6 +299,12 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
     else geomTypeNone->setChecked( true );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
     swGeomType->setCurrentIndex( bgGeomType->checkedId() );
+    QString authid = settings.value( key + "/crs", "" ).toString();
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
+    if ( crs.isValid() )
+    {
+      crsGeometry->setCrs( crs );
+    }
   }
 
 }
@@ -317,6 +342,10 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
     if ( geomTypeWKT->isChecked() ) geomColumnType = QStringLiteral( "wkt" );
     settings.setValue( key + "/geomColumnType", geomColumnType );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
+    if ( crsGeometry->crs().isValid() )
+    {
+      settings.setValue( key + "/crs", crsGeometry->crs().authid() );
+    }
   }
 
 }
@@ -539,11 +568,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   bool haveFields = fieldNo > 0;
 
-  bool isXY = cmbWktField->currentIndex() < 0 ||
-              ( geomTypeXY->isChecked() &&
-                ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
-  geomTypeXY->setChecked( isXY );
-  geomTypeWKT->setChecked( ! isXY );
+  if ( !geomTypeNone->isChecked() )
+  {
+    bool isXY = cmbWktField->currentIndex() < 0 ||
+                ( geomTypeXY->isChecked() &&
+                  ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
+    geomTypeXY->setChecked( isXY );
+    geomTypeWKT->setChecked( ! isXY );
+  }
   swGeomType->setCurrentIndex( bgGeomType->checkedId() );
 
   if ( haveFields )
@@ -699,6 +731,10 @@ bool QgsDelimitedTextSourceSelect::validate()
   else if ( geomTypeWKT->isChecked() && cmbWktField->currentText().isEmpty() )
   {
     message = tr( "The WKT field name must be selected" );
+  }
+  else if ( ! geomTypeNone->isChecked() && ! crsGeometry->crs().isValid() )
+  {
+    message = tr( "The CRS must be selected" );
   }
   else
   {

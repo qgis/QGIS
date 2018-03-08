@@ -457,13 +457,15 @@ static GEOSGeometry *LWGEOM_GEOS_nodeLines( const GEOSGeometry *lines )
   if ( ! point )
     return nullptr;
 
-  GEOSGeometry *noded = GEOSUnion_r( handle, lines, point );
-  if ( !noded )
+  GEOSGeometry *noded = nullptr;
+  try
   {
-    GEOSGeom_destroy_r( handle, point );
-    return nullptr;
+    noded = GEOSUnion_r( handle, lines, point );
   }
-
+  catch ( GEOSException & )
+  {
+    // no need to do anything here - we'll return nullptr anyway
+  }
   GEOSGeom_destroy_r( handle, point );
   return noded;
 }
@@ -716,7 +718,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
   int ngeoms = GEOSGetNumGeometries_r( handle, gin );
   uint32_t nlines_alloc = ngeoms;
   QVector<GEOSGeometry *> lines;
-  QVector<GEOSGeometry *> points( ngeoms );
+  QVector<GEOSGeometry *> points;
   lines.reserve( nlines_alloc );
   points.reserve( ngeoms );
 

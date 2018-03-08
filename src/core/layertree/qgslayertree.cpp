@@ -81,7 +81,8 @@ QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
   else
   {
     QList<QgsMapLayer *> layers;
-    for ( const auto &treeLayer : findLayers() )
+    const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
+    for ( const auto &treeLayer : foundLayers )
     {
       QgsMapLayer *layer = treeLayer->layer();
       if ( !layer || !layer->isSpatial() )
@@ -212,7 +213,8 @@ void QgsLayerTree::addMissingLayers()
 {
   bool changed = false;
 
-  for ( const auto layer : findLayers() )
+  const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
+  for ( const auto layer : foundLayers )
   {
     if ( !mCustomLayerOrder.contains( layer->layer() ) &&
          layer->layer() && layer->layer()->isSpatial() )

@@ -111,7 +111,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   QgsSettings settings;
   mDatabase->setStorageMode( QgsFileWidget::SaveFile );
   mDatabase->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
-  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File..." ) );
+  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File…" ) );
   mDatabase->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   mDatabase->setConfirmOverwrite( false );
   connect( mDatabase, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
@@ -198,7 +198,7 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
     QString myName = mFieldNameEdit->text();
     if ( myName == mFeatureIdColumnEdit->text() )
     {
-      QMessageBox::critical( this, tr( "Invalid field name" ), tr( "The field cannot have the same name as the feature identifier" ) );
+      QMessageBox::critical( this, tr( "Add Field" ), tr( "The field cannot have the same name as the feature identifier." ) );
       return;
     }
 
@@ -259,8 +259,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The File Already Exists." ) );
-        msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
+        msgBox.setWindowTitle( tr( "New GeoPackage Layer" ) );
+        msgBox.setText( tr( "The File already exists. Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
         QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
         QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
         msgBox.setStandardButtons( QMessageBox::Cancel );
@@ -311,8 +311,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
   if ( !hGpkgDriver )
   {
     if ( !property( "hideDialogs" ).toBool() )
-      QMessageBox::critical( this, tr( "Layer creation failed" ),
-                             tr( "GeoPackage driver not found" ) );
+      QMessageBox::critical( this, tr( "New GeoPackage Layer" ),
+                             tr( "Layer creation failed. GeoPackage driver not found." ) );
     return false;
   }
 
@@ -324,7 +324,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     {
       QString msg( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       if ( !property( "hideDialogs" ).toBool() )
-        QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
+        QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
       return false;
     }
   }
@@ -336,14 +336,14 @@ bool QgsNewGeoPackageLayerDialog::apply()
     {
       QString msg( tr( "Opening of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       if ( !property( "hideDialogs" ).toBool() )
-        QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
+        QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
       return false;
     }
     if ( hDriver != hGpkgDriver )
     {
-      QString msg( tr( "Opening of file succeeded, but this is not a GeoPackage database" ) );
+      QString msg( tr( "Opening of file succeeded, but this is not a GeoPackage database." ) );
       if ( !property( "hideDialogs" ).toBool() )
-        QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
+        QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
       return false;
     }
   }
@@ -357,7 +357,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     {
       overwriteTable = property( "question_existing_layer_answer_overwrite" ).toBool();
     }
-    else if ( QMessageBox::question( this, tr( "Existing layer" ),
+    else if ( QMessageBox::question( this, tr( "New GeoPackage Layer" ),
                                      tr( "A table with the same name already exists. Do you want to overwrite it?" ),
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
     {
@@ -421,7 +421,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   {
     QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
-      QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
+      QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
     return false;
   }
 
@@ -455,7 +455,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     {
       if ( !property( "hideDialogs" ).toBool() )
       {
-        QMessageBox::critical( this, tr( "Layer creation failed" ),
+        QMessageBox::critical( this, tr( "New GeoPackage Layer" ),
                                tr( "Creation of field %1 failed (OGR error: %2)" )
                                .arg( fieldName, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       }
@@ -473,7 +473,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   {
     QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
-      QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
+      QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
     return false;
   }
   hDS.reset();
@@ -494,7 +494,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   else
   {
     if ( !property( "hideDialogs" ).toBool() )
-      QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( tableName ) );
+      QMessageBox::critical( this, tr( "New GeoPackage Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( tableName ) );
     delete layer;
   }
 

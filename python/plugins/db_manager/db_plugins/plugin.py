@@ -27,7 +27,7 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -175,7 +175,7 @@ class DBPlugin(QObject):
     def removeActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
         try:
-            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
+            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really remove connection to {0}?").format(item.connectionName()),
                                        QMessageBox.Yes | QMessageBox.No)
@@ -256,6 +256,11 @@ class Database(DbItemObject):
 
         return SqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import SqlResultModelAsync
+
+        return SqlResultModelAsync(self, sql, parent)
+
     def columnUniqueValuesModel(self, col, table, limit=10):
         l = ""
         if limit is not None:
@@ -308,34 +313,34 @@ class Database(DbItemObject):
                                   self.reconnectActionSlot)
 
         if self.schemas() is not None:
-            action = QAction(QApplication.translate("DBManagerPlugin", "&Create schema"), self)
+            action = QAction(QApplication.translate("DBManagerPlugin", "&Create Schema…"), self)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Schema"),
                                       self.createSchemaActionSlot)
-            action = QAction(QApplication.translate("DBManagerPlugin", "&Delete (empty) schema"), self)
+            action = QAction(QApplication.translate("DBManagerPlugin", "&Delete (Empty) Schema"), self)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Schema"),
                                       self.deleteSchemaActionSlot)
 
-        action = QAction(QApplication.translate("DBManagerPlugin", "Delete selected item"), self)
+        action = QAction(QApplication.translate("DBManagerPlugin", "Delete Selected Item"), self)
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
         action = QAction(QIcon(":/db_manager/actions/create_table"),
-                         QApplication.translate("DBManagerPlugin", "&Create table"), self)
+                         QApplication.translate("DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.createTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/edit_table"),
-                         QApplication.translate("DBManagerPlugin", "&Edit table"), self)
+                         QApplication.translate("DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"), self.editTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/del_table"),
-                         QApplication.translate("DBManagerPlugin", "&Delete table/view"), self)
+                         QApplication.translate("DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.deleteTableActionSlot)
-        action = QAction(QApplication.translate("DBManagerPlugin", "&Empty table"), self)
+        action = QAction(QApplication.translate("DBManagerPlugin", "&Empty Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.emptyTableActionSlot)
 
         if self.schemas() is not None:
-            action = QAction(QApplication.translate("DBManagerPlugin", "&Move to schema"), self)
+            action = QAction(QApplication.translate("DBManagerPlugin", "&Move to Schema"), self)
             action.setMenu(QMenu(mainWindow))
 
             def invoke_callback():
@@ -357,7 +362,7 @@ class Database(DbItemObject):
         else:
             QApplication.restoreOverrideCursor()
             parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
-                                       QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                       Qgis.Info, parent.iface.messageTimeout())
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
     def createSchemaActionSlot(self, item, action, parent):
@@ -366,7 +371,7 @@ class Database(DbItemObject):
             if not isinstance(item, (DBPlugin, Schema, Table)) or item.database() is None:
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
             (schema, ok) = QInputDialog.getText(parent, QApplication.translate("DBManagerPlugin", "New schema"),
                                                 QApplication.translate("DBManagerPlugin", "Enter new schema name"))
@@ -383,9 +388,9 @@ class Database(DbItemObject):
             if not isinstance(item, Schema):
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "Select an empty schema for deletion."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
-            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
+            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete schema {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
@@ -414,7 +419,7 @@ class Database(DbItemObject):
         if not hasattr(item, 'database') or item.database() is None:
             parent.infoBar.pushMessage(
                 QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
-                QgsMessageBar.INFO, parent.iface.messageTimeout())
+                Qgis.Info, parent.iface.messageTimeout())
             return
         from ..dlg_create_table import DlgCreateTable
 
@@ -426,7 +431,7 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table) or item.isView:
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
             from ..dlg_table_properties import DlgTableProperties
 
@@ -440,9 +445,9 @@ class Database(DbItemObject):
             if not isinstance(item, Table):
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "Select a table/view for deletion."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
-            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
+            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete table/view {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
@@ -458,9 +463,9 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table) or item.isView:
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to empty it."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
-            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
+            res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete all items from table {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
@@ -485,7 +490,7 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table):
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table/view."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
         finally:
             QApplication.setOverrideCursor(Qt.WaitCursor)

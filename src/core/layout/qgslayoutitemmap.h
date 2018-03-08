@@ -419,7 +419,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
@@ -485,6 +485,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void mapThemeChanged( const QString &theme );
 
+    //! Create cache image
+    void recreateCachedImageInBackground();
+
   private:
 
 
@@ -526,6 +529,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true
     bool mDrawing = false;
+
+    QTimer *mBackgroundUpdateTimer = nullptr;
+    double mPreviewScaleFactor = 0;
+
+    bool mDrawingPreview = false;
 
     //! Offset in x direction for showing map cache image
     double mXOffset = 0.0;
@@ -577,10 +585,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      *  \param dpi scene dpi
      */
     void drawMap( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi );
-
-
-    //! Create cache image
-    void recreateCachedImageInBackground( double viewScaleFactor );
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();

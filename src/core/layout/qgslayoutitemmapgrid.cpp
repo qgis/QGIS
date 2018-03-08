@@ -1458,10 +1458,10 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   switch ( coord )
   {
     case Longitude:
-      return QgsCoordinateFormatter::formatX( value, format, flags );
+      return QgsCoordinateFormatter::formatX( value, format, mGridAnnotationPrecision, flags );
 
     case Latitude:
-      return QgsCoordinateFormatter::formatY( value, format, flags );
+      return QgsCoordinateFormatter::formatY( value, format, mGridAnnotationPrecision, flags );
   }
 
   return QString(); // no warnings
@@ -2329,8 +2329,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
 
-    inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mMap->crs() );
+    inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );
   }
   catch ( QgsCsException &cse )
   {

@@ -140,13 +140,13 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )
     {
       QString value( cb->currentText() );
-      model->setData( index, value.isEmpty() ? tr( "Select..." ) : value );
+      model->setData( index, value.isEmpty() ? tr( "Select…" ) : value );
       model->setData( index, !value.isEmpty(), Qt::UserRole + 2 );
     }
   }
@@ -158,7 +158,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 
     if ( index.column() == QgsOracleTableModel::DbtmSrid && value.isEmpty() )
     {
-      value = tr( "Enter..." );
+      value = tr( "Enter…" );
     }
 
     model->setData( index, value );

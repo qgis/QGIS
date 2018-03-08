@@ -26,7 +26,10 @@ Examples are storing a layer extent or the current view extent of a map
 #include "qgsrectangle.h"
 %End
   public:
-    QgsRectangle( double xMin = 0, double yMin = 0, double xMax = 0, double yMax = 0 );
+
+    QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
+
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 );
 %Docstring
 Constructor
 %End

@@ -79,7 +79,8 @@ struct QgsPostgresLayerProperty
   unsigned int                  nSpCols;
   QString                       sql;
   QString                       relKind;
-  bool                          isView;
+  bool                          isView = false;
+  bool                          isMaterializedView = false;
   QString                       tableComment;
 
 
@@ -110,6 +111,7 @@ struct QgsPostgresLayerProperty
     property.sql             = sql;
     property.relKind         = relKind;
     property.isView          = isView;
+    property.isMaterializedView = isMaterializedView;
     property.tableComment    = tableComment;
 
     return property;

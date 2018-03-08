@@ -18,6 +18,8 @@
 #define QGSSETTINGS_H
 
 #include <QSettings>
+#include <QMetaEnum>
+
 #include "qgis_core.h"
 #include "qgis.h"
 
@@ -214,6 +216,41 @@ class CORE_EXPORT QgsSettings : public QObject
 
     sipIsErr = !sipRes;
     % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Return the setting value for a setting based on an enum.
+     * This forces the output to be a valid and existing entry of the enum.
+     * Hence if the setting value is incorrect, the given default value is returned.
+     * If \a flag is true, the value is checked for a flag definition.
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     */
+    template <class T>
+    T enumValue( const QString &key, const T &defaultValue,
+                 const Section section = NoSection, bool flag = false ) const
+    {
+      T v;
+      if ( !flag )
+        v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt() );
+      else
+        v = T( value( key, static_cast<int>( defaultValue ), section ).toInt() );
+
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      if ( metaEnum.isValid() )
+      {
+        if ( !flag && !metaEnum.valueToKey( static_cast<int>( v ) ) )
+        {
+          v = defaultValue;
+        }
+        else if ( flag && !metaEnum.valueToKeys( static_cast<int>( v ) ).size() )
+        {
+          v = defaultValue;
+        }
+      }
+      return v;
+    }
 #endif
 
     /**

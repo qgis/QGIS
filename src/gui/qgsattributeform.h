@@ -55,6 +55,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
+      IdentifyMode //!< Identify the feature \since QGIS 3.0
     };
 
     //! Filter types
@@ -364,6 +365,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    bool mValuesInitialized = false;
+    bool mDirty = false;
 
     struct ContainerInformation
     {

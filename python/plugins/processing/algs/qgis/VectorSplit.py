@@ -33,6 +33,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
+                       QgsProcessingOutputMultipleLayers,
                        QgsExpression,
                        QgsFeatureRequest)
 
@@ -47,6 +48,7 @@ class VectorSplit(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
+    OUTPUT_LAYERS = 'OUTPUT_LAYERS'
 
     def group(self):
         return self.tr('Vector general')
@@ -66,8 +68,7 @@ class VectorSplit(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
-
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
+        self.addOutput(QgsProcessingOutputMultipleLayers(self.OUTPUT_LAYERS, self.tr('Output layers')))
 
     def name(self):
         return 'splitvectorlayer'
@@ -91,6 +92,7 @@ class VectorSplit(QgisAlgorithm):
         geomType = source.wkbType()
 
         total = 100.0 / len(uniqueValues) if uniqueValues else 1
+        output_layers = []
 
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
@@ -110,8 +112,9 @@ class VectorSplit(QgisAlgorithm):
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
                 count += 1
             feedback.pushInfo(self.tr('Added {} features to layer').format(count))
+            output_layers.append(fName)
             del sink
 
             feedback.setProgress(int(current * total))
 
-        return {self.OUTPUT: directory}
+        return {self.OUTPUT: directory, self.OUTPUT_LAYERS: output_layers}

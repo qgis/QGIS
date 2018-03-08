@@ -49,7 +49,7 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
 
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
+  int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
@@ -105,6 +105,7 @@ void QgsFontButton::showSettingsDialog()
 
   // reactivate button's window
   activateWindow();
+  raise();
 }
 
 QgsMapCanvas *QgsFontButton::mapCanvas() const
@@ -581,7 +582,7 @@ void QgsFontButton::prepareMenu()
   }
   mMenu->addMenu( recentFontMenu );
 
-  QAction *configureAction = new QAction( tr( "Configure format..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure format…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsFontButton::showSettingsDialog );
 
@@ -697,7 +698,7 @@ QgsFontButton::Mode QgsFontButton::mode() const
   return mMode;
 }
 
-void QgsFontButton::setMode( const Mode &mode )
+void QgsFontButton::setMode( Mode mode )
 {
   mMode = mode;
   updatePreview();

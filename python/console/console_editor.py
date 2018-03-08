@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, Q
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from qgis.utils import OverrideCursor
 import sys
@@ -346,7 +346,7 @@ class Editor(QsciScintilla):
                                             self.objectListEditor)
         menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Options..."),
+                       QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
@@ -432,7 +432,7 @@ class Editor(QsciScintilla):
         getCmd = []
         for strLine in listText:
             getCmd.append(strLine)
-        pasteText = u"\n".join(getCmd)
+        pasteText = "\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang': 'Python',
                   'code': pasteText,
@@ -591,7 +591,7 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand(u"exec(open(u'{0}'.encode('{1}')).read())"
+            self.parent.pc.shell.runCommand("exec(open('{0}'.encode('{1}')).read())"
                                             .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
     def runSelectedCode(self):  # spellok
@@ -626,9 +626,9 @@ class Editor(QsciScintilla):
             if not filename:
                 filename = self.parent.tw.currentWidget().path
             # source = open(filename, 'r').read() + '\n'
-            if isinstance(source, type(u"")):
+            if isinstance(source, type("")):
                 source = source.encode('utf-8')
-            if isinstance(filename, type(u"")):
+            if isinstance(filename, type("")):
                 filename = filename.encode('utf-8')
             if filename:
                 compile(source, filename, 'exec')
@@ -1265,7 +1265,7 @@ class EditorTabWidget(QTabWidget):
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
     def widgetMessageBar(self, iface, text, level, timed=True):
-        messageLevel = [QgsMessageBar.INFO, QgsMessageBar.WARNING, QgsMessageBar.CRITICAL]
+        messageLevel = [Qgis.Info, Qgis.Warning, Qgis.Critical]
         if timed:
             timeout = iface.messageTimeout()
         else:

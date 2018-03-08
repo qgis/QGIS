@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsDropGeometryAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsDropGeometryAlgorithm::name() const
 {
   return QStringLiteral( "dropgeometries" );
@@ -79,11 +74,11 @@ QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
   return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
 }
 
-QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   f.clearGeometry();
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

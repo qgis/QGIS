@@ -99,7 +99,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
 
     }
 
@@ -414,6 +414,7 @@ bool QgsProject::isDirty() const
 void QgsProject::setDirty( bool b )
 {
   mDirty = b;
+  emit isDirtyChanged( mDirty );
 }
 
 void QgsProject::setFileName( const QString &name )
@@ -716,6 +717,11 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       {
         returnStatus = false;
       }
+      const auto messages = context.takeMessages();
+      if ( messages.count() )
+      {
+        emit loadingLayerMessageReceived( tr( "Loading layer %1" ).arg( name ), messages );
+      }
     }
     emit layerLoaded( i + 1, nl.count() );
     i++;
@@ -724,7 +730,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -830,7 +836,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     // want to make this class as GUI independent as possible; so commented out
 #if 0
-    QMessageBox::critical( 0, tr( "Project File Read Error" ),
+    QMessageBox::critical( 0, tr( "Read Project File" ),
                            tr( "%1 at line %2 column %3" ).arg( errorMsg ).arg( line ).arg( column ) );
 #endif
 
@@ -905,21 +911,25 @@ bool QgsProject::readProjectFile( const QString &filename )
 
     if ( !projectCrs.isValid() )
     {
-      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
-      // whereas the srsid can vary (e.g. for custom projections)
       QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
-      if ( !projCrsString.isEmpty() )
+      long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+
+      // try the CRS
+      if ( currentCRS >= 0 )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      }
+
+      // if that didn't produce a match, try the proj.4 string
+      if ( !projCrsString.isEmpty() && ( !projectCrs.isValid() || projectCrs.toProj4() != projCrsString ) )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
       }
-      // last try using crs id - most fragile
+
+      // last just take the given id
       if ( !projectCrs.isValid() )
       {
-        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
-        {
-          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-        }
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       }
     }
   }
@@ -2291,7 +2301,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   bool addToLegend,
   bool takeOwnership )
 {
-  QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
+  const QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
   if ( !myResultList.isEmpty() )
   {
     if ( addToLegend )
@@ -2410,12 +2420,13 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
-  for ( QgsMapLayer *l : mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( l->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayer::VectorLayer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();

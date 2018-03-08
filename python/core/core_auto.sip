@@ -28,7 +28,6 @@
 %Include qgsdatadefinedsizelegend.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
-%Include qgsdatasourceuri.sip
 %Include qgsdatetimestatisticalsummary.sip
 %Include qgsdatumtransform.sip
 %Include qgsdbfilterproxymodel.sip
@@ -115,7 +114,6 @@
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip
 %Include qgstextrenderer.sip
-%Include qgstolerance.sip
 %Include qgstracer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorlayercache.sip
@@ -128,7 +126,6 @@
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerundopassthroughcommand.sip
 %Include qgsvectorlayerutils.sip
-%Include qgsvectorsimplifymethod.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
@@ -180,6 +177,7 @@
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingoutputs.sip
 %Include processing/qgsprocessingparameters.sip
+%Include processing/qgsprocessingparametertype.sip
 %Include processing/qgsprocessingutils.sip
 %Include processing/models/qgsprocessingmodelalgorithm.sip
 %Include processing/models/qgsprocessingmodelchildalgorithm.sip
@@ -212,7 +210,6 @@
 %Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
-%Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
 %Include raster/qgsrasterrange.sip
 %Include raster/qgsrasterrenderer.sip
@@ -259,7 +256,6 @@
 %Include symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include layertree/qgslayertreeutils.sip
 %Include locator/qgslocatorcontext.sip
-%Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsbox3d.sip
 %Include geometry/qgscircularstring.sip
 %Include geometry/qgscircle.sip
@@ -269,7 +265,6 @@
 %Include geometry/qgsellipse.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
-%Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometryutils.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
@@ -287,6 +282,7 @@
 %Include geometry/qgswkbtypes.sip
 %Include ./3d/qgs3drendererregistry.sip
 %Include ./3d/qgsabstract3drenderer.sip
+%Include fieldformatter/qgsrangefieldformatter.sip
 %Include fieldformatter/qgsdatetimefieldformatter.sip
 %Include fieldformatter/qgsfallbackfieldformatter.sip
 %Include fieldformatter/qgskeyvaluefieldformatter.sip
@@ -306,6 +302,7 @@
 %Include qgscredentials.sip
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
+%Include qgsdatasourceuri.sip
 %Include qgsfeature.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
@@ -342,6 +339,7 @@
 %Include qgsrunprocess.sip
 %Include qgssnappingconfig.sip
 %Include qgstaskmanager.sip
+%Include qgstolerance.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
@@ -350,9 +348,11 @@
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayer.sip
+%Include qgsvirtuallayertask.sip
 %Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayertools.sip
+%Include qgsvectorsimplifymethod.sip
 %Include qgssettings.sip
 %Include annotations/qgsannotation.sip
 %Include annotations/qgsannotationmanager.sip
@@ -370,6 +370,9 @@
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
+%Include raster/qgsrasterprojector.sip
+%Include geometry/qgsabstractgeometry.sip
+%Include geometry/qgsgeometry.sip
 %Include geometry/qgspoint.sip
 %Include geocms/geonode/qgsgeonoderequest.sip
 %Include gps/qgsgpsconnection.sip
