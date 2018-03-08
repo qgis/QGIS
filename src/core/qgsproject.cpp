@@ -66,6 +66,12 @@
 #include <utime.h>
 #endif
 
+static QString generateUuid()
+{
+  QString uuid = QUuid::createUuid().toString();
+  return uuid.mid( 1, uuid.length() - 3 );
+}
+
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
@@ -405,6 +411,31 @@ QString QgsProject::title() const
   return mTitle;
 }
 
+QString QgsProject::id() const
+{
+  return mId;
+}
+
+QString QgsProject::saveId() const
+{
+  return mSaveId;
+}
+
+int QgsProject::saveCounter() const
+{
+  return mSaveCounter;
+}
+
+QString QgsProject::saveUser() const
+{
+  return mSaveUser;
+}
+
+QString QgsProject::saveUserFullname() const
+{
+  return mSaveUserFull;
+}
+
 
 bool QgsProject::isDirty() const
 {
@@ -488,6 +519,11 @@ void QgsProject::clear()
   mFile.setFileName( QString() );
   mProperties.clearKeys();
   mTitle.clear();
+  mId.clear();
+  mSaveId.clear();
+  mSaveCounter = 0;
+  mSaveUser.clear();
+  mSaveUserFull.clear();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -631,6 +667,32 @@ static void _getTitle( const QDomDocument &doc, QString &title )
   title = titleText.data();
 
 }
+
+static void getProjectMetadata( const QDomDocument &doc, QString &stableId,
+                                QString &saveId, int &saveCounter, QString &lastUser, QString &lastUserFull )
+{
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+
+  if ( !nl.count() )
+  {
+    QgsDebugMsg( "unable to find qgis element" );
+    return;
+  }
+
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
+
+  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+  QString uuid = generateUuid();
+  stableId = qgisElement.attribute( QStringLiteral( "id" ), uuid );
+  if ( stableId.isEmpty() )
+    stableId = uuid;
+
+  saveId = qgisElement.attribute( QStringLiteral( "save-id" ), QString() );
+  saveCounter = qgisElement.attribute( QStringLiteral( "save-counter" ), 0 ).toInt();
+  lastUser = qgisElement.attribute( QStringLiteral( "save-user" ), QString() );
+  lastUserFull = qgisElement.attribute( QStringLiteral( "save-user-full" ), QString() );
+}
+
 
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
@@ -856,7 +918,6 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
-  QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
@@ -894,6 +955,8 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // now get project title
   _getTitle( *doc, mTitle );
+
+  getProjectMetadata( *doc, mId, mSaveId, mSaveCounter, mSaveUser, mSaveUserFull );
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
@@ -1082,6 +1145,13 @@ bool QgsProject::readProjectFile( const QString &filename )
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+
+  QgsDebugMsg( "Project title: " + mTitle );
+  QgsDebugMsg( "Project id: " + mId );
+  QgsDebugMsg( "Project save id: " + mSaveId );
+  QgsDebugMsg( QString( "Project save counter: %1" ).arg( mSaveCounter ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
 
   return true;
 }
@@ -1367,6 +1437,15 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::QGIS_VERSION ) );
+  qgisNode.setAttribute( QStringLiteral( "id" ), id() );
+  QString newSaveId = generateUuid();
+  int newSaveCounter = saveCounter() + 1;
+  QString newSaveUser = QgsApplication::userLoginName();
+  QString newSaveUserFull = QgsApplication::userFullName();
+  qgisNode.setAttribute( QStringLiteral( "save-id" ), newSaveId );
+  qgisNode.setAttribute( QStringLiteral( "save-counter" ), newSaveCounter );
+  qgisNode.setAttribute( QStringLiteral( "save-user" ), newSaveUser );
+  qgisNode.setAttribute( QStringLiteral( "save-user-full" ), newSaveUserFull );
 
   doc->appendChild( qgisNode );
 
@@ -1563,6 +1642,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   setDirty( false );               // reset to pristine state
 
   emit projectSaved();
+
+  mSaveId = newSaveId;
+  mSaveCounter = newSaveCounter;
+  mSaveUser = newSaveUser;
+  mSaveUserFull = newSaveUserFull;
 
   return true;
 }
