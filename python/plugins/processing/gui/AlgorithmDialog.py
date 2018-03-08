@@ -240,7 +240,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         feedback.pushCommandInfo(pformat(results))
                     else:
                         feedback.reportError(
-                            self.tr('Execution failed after {0:0.2f} seconds').format(time.time() - start_time)))
+                            self.tr('Execution failed after {0:0.2f} seconds').format(time.time() - start_time))
                     feedback.pushInfo('')
 
                     if self.feedback_dialog is not None:
