@@ -30,7 +30,6 @@
 #include "qgis_sip.h"
 #include "qgsproject.h"
 
-class QgsAccessControl;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
