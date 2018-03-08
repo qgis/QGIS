@@ -393,7 +393,11 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
 
+#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
 
       return flags;
     }
@@ -435,7 +439,11 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
 
+#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
 
       return flags;
     }
@@ -478,7 +486,11 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
 
+#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
 
       return flags;
     }
@@ -520,7 +532,11 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
 
+#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
 
       return flags;
     }
