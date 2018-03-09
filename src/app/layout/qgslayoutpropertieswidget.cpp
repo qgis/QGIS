@@ -79,10 +79,10 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::dpiChanged );
-  connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
   mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
+  connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   connect( mLayout, &QgsLayout::changed, this, &QgsLayoutPropertiesWidget::updateGui );
 
