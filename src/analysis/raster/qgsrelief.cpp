@@ -450,7 +450,7 @@ gdal::dataset_unique_ptr QgsRelief::openOutputFile( GDALDatasetH inputDataset, G
   //use PACKBITS compression for tiffs by default
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "PACKBITS" );
 
-  //create three band raster (reg, green, blue)
+  //create three band raster (red, green, blue)
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 3, GDT_Byte, papszOptions ) );
   if ( !outputDataset )
   {
