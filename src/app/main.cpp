@@ -1413,6 +1413,9 @@ int main( int argc, char *argv[] )
     return res;
   }
 
+  // make sure we don't have a dirty blank project after launch
+  QgsProject::instance()->setDirty( false );
+
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
