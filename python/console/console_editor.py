@@ -110,7 +110,7 @@ class Editor(QsciScintilla):
         self.setCaretLineVisible(True)
         self.setCaretWidth(2)
 
-        self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.png"),
+        self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.svg"),
                           self.MARKER_NUM)
 
         self.setMinimumHeight(120)
@@ -283,14 +283,14 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
-        iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
-        iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
-        iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
-        iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
-        iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
-        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.svg")
+        iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.svg")
+        iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+        iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
+        iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg")
+        iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg")
+        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg")
         iconCut = QgsApplication.getThemeIcon("mActionEditCut.svg")
         iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.svg")
         iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.svg")
@@ -883,7 +883,7 @@ class EditorTabWidget(QTabWidget):
         toolTipRestore = QCoreApplication.translate("PythonConsole",
                                                     "Restore tabs")
         self.restoreTabsButton.setToolTip(toolTipRestore)
-        self.restoreTabsButton.setIcon(QgsApplication.getThemeIcon("console/iconRestoreTabsConsole.png"))
+        self.restoreTabsButton.setIcon(QgsApplication.getThemeIcon("console/iconRestoreTabsConsole.svg"))
         self.restoreTabsButton.setIconSize(QSize(24, 24))
         self.restoreTabsButton.setAutoRaise(True)
         self.restoreTabsButton.setCursor(Qt.PointingHandCursor)
@@ -928,7 +928,7 @@ class EditorTabWidget(QTabWidget):
         txtToolTipMenuFile = QCoreApplication.translate("PythonConsole",
                                                         "List all tabs")
         self.fileTabButton.setToolTip(txtToolTipMenuFile)
-        self.fileTabButton.setIcon(QgsApplication.getThemeIcon("console/iconFileTabsMenuConsole.png"))
+        self.fileTabButton.setIcon(QgsApplication.getThemeIcon("console/iconFileTabsMenuConsole.svg"))
         self.fileTabButton.setIconSize(QSize(24, 24))
         self.fileTabButton.setAutoRaise(True)
         self.fileTabButton.setPopupMode(QToolButton.InstantPopup)
@@ -943,7 +943,7 @@ class EditorTabWidget(QTabWidget):
                                                       "New Editor")
         self.newTabButton.setToolTip(txtToolTipNewTab)
         self.newTabButton.setAutoRaise(True)
-        self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
+        self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg"))
         self.newTabButton.setIconSize(QSize(24, 24))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.newTabButton.clicked.connect(self.newTabEditor)
@@ -1042,7 +1042,7 @@ class EditorTabWidget(QTabWidget):
         if not tabName:
             tabName = QCoreApplication.translate('PythonConsole', 'Untitled-{0}').format(nr)
         self.tab = EditorTab(self, self.parent, filename, readOnly)
-        self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
+        self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.svg')
         self.addTab(self.tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
         self.setCurrentWidget(self.tab)
         if filename:
@@ -1200,7 +1200,7 @@ class EditorTabWidget(QTabWidget):
                             if sys.platform.startswith('win'):
                                 classItem.setSizeHint(0, QSize(18, 18))
                             classItem.setText(1, str(class_data.lineno))
-                            iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
+                            iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.svg")
                             classItem.setIcon(0, iconClass)
                             dictObject[name] = class_data.lineno
                             for meth, lineno in sorted(list(class_data.methods.items()), key=itemgetter(1)):
@@ -1208,7 +1208,7 @@ class EditorTabWidget(QTabWidget):
                                 methodItem.setText(0, meth + ' ')
                                 methodItem.setText(1, str(lineno))
                                 methodItem.setToolTip(0, meth)
-                                iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
+                                iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.svg")
                                 methodItem.setIcon(0, iconMeth)
                                 if sys.platform.startswith('win'):
                                     methodItem.setSizeHint(0, QSize(18, 18))
@@ -1222,7 +1222,7 @@ class EditorTabWidget(QTabWidget):
                             funcItem.setText(0, func_name + ' ')
                             funcItem.setText(1, str(data.lineno))
                             funcItem.setToolTip(0, func_name)
-                            iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
+                            iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.svg")
                             funcItem.setIcon(0, iconFunc)
                             if sys.platform.startswith('win'):
                                 funcItem.setSizeHint(0, QSize(18, 18))
@@ -1234,7 +1234,7 @@ class EditorTabWidget(QTabWidget):
                     msgItem = QTreeWidgetItem()
                     msgItem.setText(0, QCoreApplication.translate("PythonConsole", "Check Syntax"))
                     msgItem.setText(1, 'syntaxError')
-                    iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
+                    iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
                     # s = traceback.format_exc()
