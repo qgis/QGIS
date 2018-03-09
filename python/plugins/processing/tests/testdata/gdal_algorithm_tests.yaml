@@ -86,7 +86,7 @@ tests:
         hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
         type: rasterhash
 
-- algorithm: gdal:colorrelief
+  - algorithm: gdal:colorrelief
     name: Color relief (gdaldem)
     params:
       BAND: 1
