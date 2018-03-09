@@ -91,7 +91,7 @@ class ParametersPanel(BASE, WIDGET):
     def formatParameterTooltip(self, parameter):
         return '<p><b>{}</b></p><p>{}</p>'.format(
             parameter.description(),
-            QCoreApplication.translate('ParametersPanel', 'Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
+            self.tr('Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
         )
 
     def initWidgets(self):
