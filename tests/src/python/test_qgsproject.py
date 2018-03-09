@@ -19,6 +19,7 @@ import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
@@ -929,6 +930,78 @@ class TestQgsProject(unittest.TestCase):
 
         scope = QgsExpressionContextUtils.projectScope(p)
         self.assertEqual(scope.variable('project_home'), '../home')
+
+    def testDirtyBlocker(self):
+        # first test manual QgsProjectDirtyBlocker construction
+        p = QgsProject()
+
+        dirty_spy = QSignalSpy(p.isDirtyChanged)
+        # ^ will do *whatever* it takes to discover the enemy's secret plans!
+
+        # simple checks
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        self.assertEqual(dirty_spy[-1], [True])
+        p.setDirty(True) # already dirty
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 2)
+        self.assertEqual(dirty_spy[-1], [False])
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 3)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # with a blocker
+        blocker = QgsProjectDirtyBlocker(p)
+        # blockers will allow cleaning projects
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # but not dirtying!
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # nested block
+        blocker2 = QgsProjectDirtyBlocker(p)
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker2
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 5)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # using python context manager
+        with QgsProject.blockDirtying(p):
+            # cleaning allowed
+            p.setDirty(False)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+            # but not dirtying!
+            p.setDirty(True)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+
+        # unblocked
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 7)
+        self.assertEqual(dirty_spy[-1], [True])
 
 
 if __name__ == '__main__':
