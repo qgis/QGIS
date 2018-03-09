@@ -80,7 +80,7 @@ tests:
         name: dem.tif
         type: raster
       MATCH_MODE: 1
-      OPTIONS: ''
+      OPTIONS: '-exact_color_entry'
     results:
       OUTPUT:
         hash: 3d1b5ddaf0e9763164b7865e5e4ac2d55c4993aa52de2705f2ba4232
