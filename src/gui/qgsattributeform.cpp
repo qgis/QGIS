@@ -707,10 +707,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
     case IdentifyMode:
     case AddFeatureMode:
     {
-      emit attributeChanged( eww->field().name(), value );
-
       updateJoinedFields( *eww );
-
       break;
     }
     case MultiEditMode:
