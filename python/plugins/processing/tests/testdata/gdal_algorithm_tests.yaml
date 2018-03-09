@@ -80,7 +80,25 @@ tests:
         name: dem.tif
         type: raster
       MATCH_MODE: 1
-      OPTIONS: '-exact_color_entry'
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        type: rasterhash
+
+- algorithm: gdal:colorrelief
+    name: Color relief (gdaldem)
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: 1
+      OPTIONS: '-nearest_color_entry'
     results:
       OUTPUT:
         hash: 3d1b5ddaf0e9763164b7865e5e4ac2d55c4993aa52de2705f2ba4232
