@@ -461,8 +461,8 @@ static void setTitleBarText_( QWidget &qgisApp )
   {
     if ( QgsProject::instance()->fileName().isEmpty() )
     {
-      // no project title nor file name, so just leave caption with
-      // application name and version
+      // new project
+      caption = QgisApp::tr( "Untitled Project" );
     }
     else
     {
@@ -486,6 +486,13 @@ static void setTitleBarText_( QWidget &qgisApp )
   if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
   {
     caption += QStringLiteral( " %1" ).arg( Qgis::QGIS_DEV_VERSION );
+  }
+
+  if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
+  {
+    // add current profile
+    QgsUserProfile *profile = QgisApp::instance()->userProfileManager()->userProfile();
+    caption += QStringLiteral( " [%1]" ).arg( profile->name() );
   }
 
   qgisApp.setWindowTitle( caption );
@@ -5110,7 +5117,6 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
   prj->setEllipsoid( srs.ellipsoidAcronym() );
-  prj->setDirty( false );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -5133,6 +5139,8 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+
+  prj->setDirty( false );
   return true;
 }
 
