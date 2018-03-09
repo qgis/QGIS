@@ -234,6 +234,38 @@ class ReadWriteContextEnterCategory():
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 
 
+# Python class to extend QgsProjectDirtyBlocker C++ class
+
+
+class ProjectDirtyBlocker():
+    """
+    Context manager used to block project setDirty calls.
+
+    Example:
+      project = QgsProject.instance()
+      with QgsProject.blockDirtying(project):
+        # do something
+
+    .. versionadded:: 3.2
+    """
+
+    def __init__(self, project):
+        self.project = project
+        self.blocker = None
+
+    def __enter__(self):
+        self.blocker = QgsProjectDirtyBlocker(self.project)
+        return self.project
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        del self.blocker
+        return True
+
+
+# Inject the context manager into QgsProject class as a member
+QgsProject.blockDirtying = ProjectDirtyBlocker
+
+
 class QgsTaskWrapper(QgsTask):
 
     def __init__(self, description, flags, function, on_finished, *args, **kwargs):

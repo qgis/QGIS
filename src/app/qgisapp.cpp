@@ -5066,6 +5066,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   QgsSettings settings;
 
+  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
@@ -5472,7 +5473,7 @@ void QgisApp::fileOpen()
     // open the selected project
     addProject( fullPath );
   }
-} // QgisApp::fileOpen
+}
 
 void QgisApp::enableProjectMacros()
 {
@@ -5488,6 +5489,8 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
+  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+
   // close the previous opened project if any
   closeProject();
 

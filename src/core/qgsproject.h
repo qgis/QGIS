@@ -1136,6 +1136,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
+    // TODO QGIS 4.0 - rename b to dirty
+
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.
@@ -1262,9 +1264,57 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
+    int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    friend class QgsProjectDirtyBlocker;
+};
+
+/**
+ * Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+ *
+ * QgsProjectDirtyBlocker supports "stacked" blocking, so two QgsProjectDirtyBlockers created
+ * for the same project will both need to be destroyed before the project can be dirtied again.
+ *
+ * Note that QgsProjectDirtyBlocker only blocks calls which set the project as dirty - calls
+ * which set the project as clean are not blocked.
+ *
+ * Python scripts should not use QgsProjectDirtyBlocker directly. Instead, use QgsProject.blockDirtying()
+ * \code{.py}
+ *   project = QgsProject.instance()
+ *   with QgsProject.blockDirtying(project):
+ *     # do something
+ * \endcode
+ *
+ * \see QgsProject::setDirty()
+ *
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProjectDirtyBlocker
+{
+  public:
+
+    /**
+     * Constructor for QgsProjectDirtyBlocker.
+     *
+     * This will block dirtying the specified \a project for the lifetime of this object.
+     */
+    QgsProjectDirtyBlocker( QgsProject *project )
+      : mProject( project )
+    {
+      mProject->mDirtyBlockCount++;
+    }
+
+    ~QgsProjectDirtyBlocker()
+    {
+      mProject->mDirtyBlockCount--;
+    }
+
+  private:
+    QgsProject *mProject = nullptr;
 };
 
 /**

@@ -411,9 +411,15 @@ bool QgsProject::isDirty() const
   return mDirty;
 }
 
-void QgsProject::setDirty( bool b )
+void QgsProject::setDirty( const bool dirty )
 {
-  mDirty = b;
+  if ( dirty && mDirtyBlockCount > 0 )
+    return;
+
+  if ( mDirty == dirty )
+    return;
+
+  mDirty = dirty;
   emit isDirtyChanged( mDirty );
 }
 
