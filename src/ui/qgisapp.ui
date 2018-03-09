@@ -46,6 +46,7 @@
     <addaction name="mActionOpenProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
+    <addaction name="mActionRevertProject"/>
     <addaction name="mActionCloseProject"/>
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
@@ -2966,6 +2967,14 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Close Project</string>
+   </property>
+  </action>
+  <action name="mActionRevertProject">
+   <property name="text">
+    <string>Revert Project…</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert Project to Saved version</string>
    </property>
   </action>
  </widget>

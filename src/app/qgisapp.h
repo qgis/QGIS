@@ -1227,6 +1227,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveMapAsPdf();
     //! Open a project
     void fileOpen();
+    //! Revert unsaved changes to a project
+    void fileRevert();
     //! Create a new project
     bool fileNew();
     //! Create a new blank project (no template)
