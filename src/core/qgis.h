@@ -169,44 +169,6 @@ class CORE_EXPORT Qgis
 // QLibrary
 #define cast_to_fptr(f) f
 
-
-/**
- * \ingroup core
- * RAII signal blocking class. Used for temporarily blocking signals from a QObject
- * for the lifetime of QgsSignalBlocker object.
- * \see whileBlocking()
- * \since QGIS 2.16
- * \note not available in Python bindings
- */
-// based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
-{
-  public:
-
-    /**
-     * Constructor for QgsSignalBlocker
-     * \param object QObject to block signals from
-     */
-    explicit QgsSignalBlocker( Object *object )
-      : mObject( object )
-      , mPreviousState( object->blockSignals( true ) )
-    {}
-
-    ~QgsSignalBlocker()
-    {
-      mObject->blockSignals( mPreviousState );
-    }
-
-    //! Returns pointer to blocked QObject
-    Object *operator->() { return mObject; }
-
-  private:
-
-    Object *mObject = nullptr;
-    bool mPreviousState;
-
-};
-
 /**
  * Temporarily blocks signals from a QObject while calling a single method from the object.
  *
@@ -217,13 +179,12 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  * No signals will be emitted when calling these methods.
  *
  * \since QGIS 2.16
- * \see QgsSignalBlocker
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
+template<class Object> inline QSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
 {
-  return QgsSignalBlocker<Object>( object );
+  return QSignalBlocker<Object>( object );
 }
 
 //! Hash for QVariant
