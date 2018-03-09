@@ -91,7 +91,7 @@ class ParametersPanel(BASE, WIDGET):
     def formatParameterTooltip(self, parameter):
         return '<p><b>{}</b></p><p>{}</p>'.format(
             parameter.description(),
-            QCoreApplication.translate('ParametersPanel', 'Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
+            self.tr('Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
         )
 
     def initWidgets(self):
@@ -204,3 +204,9 @@ class ParametersPanel(BASE, WIDGET):
             for button in list(self.iterateButtons.values()):
                 if button is not sender:
                     button.setChecked(False)
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'ParametersPanel'
+        return QCoreApplication.translate(context, string)
