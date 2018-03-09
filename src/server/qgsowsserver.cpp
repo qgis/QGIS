@@ -85,7 +85,13 @@ QString QgsOWSServer::featureGmlId( const QgsFeature* f, const QgsAttributeList&
     {
       pkId.append( pkSeparator() );
     }
-    pkId.append( f->attribute( *it ).toString() );
+
+    QVariant pkAttribute = f->attribute( *it );
+    if ( !pkAttribute.isValid() )
+    {
+      return QString::number( f->id() );
+    }
+    pkId.append( pkAttribute.toString() );
   }
   return pkId;
 }
