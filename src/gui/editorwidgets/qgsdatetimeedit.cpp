@@ -100,6 +100,8 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     {
       QStyleOptionComboBox optCombo;
       optCombo.init( this );
+      optCombo.editable = true;
+      optCombo.subControls = QStyle::SC_All;
       control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
 
       if ( control == QStyle::SC_ComboBoxArrow && calendarWidget() )
