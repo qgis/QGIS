@@ -1455,6 +1455,30 @@ tests:
         name: expected/add_geometry_pointz.gml
         type: vector
 
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export line info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_line_info.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multiline info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_multiline_info.gml
+        type: vector
+
   - algorithm: qgis:texttofloat
     name: Text to float
     params:
