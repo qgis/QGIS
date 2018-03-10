@@ -186,6 +186,26 @@ Returns the y-coordinate of the specified node in the line string.
 Returns a QPolygonF representing the points.
 %End
 
+    double straightDistance2d() const;
+%Docstring
+Returns the straight distance of the curve, i.e. the direct/euclidean distance
+between the first and last vertex of the curve. (Also known as
+"as the crow flies" distance).
+
+.. versionadded:: 3.2
+%End
+
+    double sinuosity() const;
+%Docstring
+Returns the curve sinuosity, which is the ratio of the curve length() to curve
+straightDistance2d(). Larger numbers indicate a more "sinuous" curve (i.e. more
+"bendy"). The minimum value returned of 1.0 indicates a perfectly straight curve.
+
+If a curve isClosed(), it has infinite sinuosity and will return NaN.
+
+.. versionadded:: 3.2
+%End
+
 
 
   protected:
