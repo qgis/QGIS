@@ -27,6 +27,7 @@
 #include "qgsmapcanvas.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
 #include <QToolButton>
 #include <QUrl>
 #include <QMap>
@@ -391,19 +392,29 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( feedback->isCanceled() )
     return;
 
-  QgsLocatorResult result;
-  result.filter = this;
-  result.displayString = tr( "Go to %1" ).arg( string );
-  result.userData = string;
-  result.score = 1.0;
-  emit resultFetched( result );
-}
+  QgsCoordinateReferenceSystem currentCrs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
+  double currentScale = QgisApp::instance()->mapCanvas()->mapSettings().scale();
+  double scale( 0 );
+  double posX( 0 );
+  double posY( 0 );
 
-void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
-{
-  QString data = result.userData.toString();
+  // Coordinates 106.8468,-6.3804
+  QStringList coordinates = string.split( ',' );
+  if ( coordinates.size() == 2 )
+  {
+    posX = coordinates.at( 0 ).toDouble();
+    posY = coordinates.at( 1 ).toDouble();
+    QgsPointXY center( posX, posY );
 
-  // Better way to get the scale?
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = tr( "Go to %1:%2 (%3)" ).arg( QString::number( center.x() ), QString::number( center.y() ), currentCrs.authid() );
+//    result.userData = ;
+    result.score = 1.0;
+    emit resultFetched( result );
+  }
+
+  // Better way to get scales from OSM?
   QMap<int, double> scales;
   scales[0] = 739571909;
   scales[1] = 369785954;
@@ -427,29 +438,9 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   scales[19] = 1500;
   scales[20] = 1000;
 
-  double posX( 0 );
-  double posY( 0 );
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
-  bool needPan( false );
-
-  double scale( 0 );
-  bool needZoom( false );
-
-  // Coordinates 106.8468,-6.3804
-  QStringList coordinates = data.split( ',' );
-  if ( coordinates.size() == 2 )
-  {
-    posX = coordinates.at( 0 ).toDouble();
-    posY = coordinates.at( 1 ).toDouble();
-    crs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
-    needPan = true;
-  }
-
-  QUrl url( data );
-
-  // URL from a Leaflet or OpenLayers
-  // http://www.openstreetmap.org/#map=6/46.423/4.746
-  // https://openlayers.org/en/latest/examples/permalink.html#map=16/46.423/4.746/0
+  QUrl url( string );
+  // Leaflet: http://www.openstreetmap.org/#map=6/46.423/4.746
+  // OpenLayers: https://openlayers.org/en/latest/examples/permalink.html#map=16/46.423/4.746/0
   if ( url.hasFragment() )
   {
     QStringList fragments = url.fragment().split( '&' );
@@ -464,29 +455,85 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
           if ( params.size() >= 3 )
           {
             if ( scales.contains( params.at( 0 ).toDouble() ) )
-            {
               scale = scales.value( params.at( 0 ).toDouble() );
-              needZoom = true;
-            }
+            else
+              scale = scales.last();
             posX = params.at( 2 ).toDouble();
             posY = params.at( 1 ).toDouble();
-            needPan = true;
+            QgsPointXY center( posX, posY );
+            QString coordinates = QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), center, currentCrs, 3 );
+
+            QgsLocatorResult result;
+            result.filter = this;
+            result.displayString = tr( "Go to %1 scale %2" ).arg( coordinates, QString::number( scale ) );
+//            result.userData = ;
+            result.score = 1.0;
+            emit resultFetched( result );
           }
         }
       }
     }
   }
+}
 
-  if ( needZoom )
-    QgisApp::instance()->mapCanvas()->zoomScale( scale );
+void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+//  QString data = result.userData.toString();
 
-  if ( needPan )
-  {
-    QgsCoordinateTransform transform( crs, QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
-    QgsPointXY pt = transform.transform( QgsPointXY( posX, posY ) );
-    QgisApp::instance()->mapCanvas()->setCenter( pt );
-  }
 
-  if ( needPan || needZoom )
-    QgisApp::instance()->mapCanvas()->refresh();
+
+//  double posX( 0 );
+//  double posY( 0 );
+//  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
+//  bool needPan( false );
+
+//  double scale( 0 );
+//  bool needZoom( false );
+
+
+
+//  QUrl url( data );
+
+//  // URL from a Leaflet or OpenLayers
+//  // http://www.openstreetmap.org/#map=6/46.423/4.746
+//  // https://openlayers.org/en/latest/examples/permalink.html#map=16/46.423/4.746/0
+//  if ( url.hasFragment() )
+//  {
+//    QStringList fragments = url.fragment().split( '&' );
+//    for ( const QString &f : fragments )
+//    {
+//      if ( f.startsWith( QStringLiteral( "map=" ) ) )
+//      {
+//        QStringList map = f.split( '=' );
+//        if ( map.size() == 2 )
+//        {
+//          QStringList params = map.at( 1 ).split( '/' );
+//          if ( params.size() >= 3 )
+//          {
+//            if ( scales.contains( params.at( 0 ).toDouble() ) )
+//            {
+//              scale = scales.value( params.at( 0 ).toDouble() );
+//              needZoom = true;
+//            }
+//            posX = params.at( 2 ).toDouble();
+//            posY = params.at( 1 ).toDouble();
+//            needPan = true;
+//          }
+//        }
+//      }
+//    }
+//  }
+
+//  if ( needZoom )
+//    QgisApp::instance()->mapCanvas()->zoomScale( scale );
+
+//  if ( needPan )
+//  {
+//    QgsCoordinateTransform transform( crs, QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+//    QgsPointXY pt = transform.transform( QgsPointXY( posX, posY ) );
+//    QgisApp::instance()->mapCanvas()->setCenter( pt );
+//  }
+
+//  if ( needPan || needZoom )
+//    QgisApp::instance()->mapCanvas()->refresh();
 }

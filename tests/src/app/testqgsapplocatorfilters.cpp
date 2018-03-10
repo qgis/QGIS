@@ -16,6 +16,7 @@
 #include "qgisapp.h"
 #include "qgslocatorfilter.h"
 #include "qgslocator.h"
+#include "qgsmapcanvas.h"
 #include "locator/qgsinbuiltlocatorfilters.h"
 #include <QSignalSpy>
 #include <QClipboard>
@@ -32,9 +33,11 @@ class TestQgsAppLocatorFilters : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void testCalculator();
+    void testGoto();
 
   private:
     QgisApp *mQgisApp = nullptr;
+    QgsMapCanvas *canvas = nullptr;
 
     QList< QgsLocatorResult > gatherResults( QgsLocatorFilter *filter, const QString &string, const QgsLocatorContext &context );
 };
@@ -46,6 +49,8 @@ void TestQgsAppLocatorFilters::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
+  canvas  = mQgisApp->mapCanvas();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( 4326 ) );
 }
 
 //runs after all tests
@@ -70,6 +75,22 @@ void TestQgsAppLocatorFilters::testCalculator()
   // invalid expression
   results = gatherResults( &filter, QStringLiteral( "1+" ), QgsLocatorContext() );
   QVERIFY( results.empty() );
+
+}
+
+void TestQgsAppLocatorFilters::testGoto()
+{
+  QgsGotoLocatorFilter filter;
+
+  // goto X,Y
+  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "4,5" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QString( "Go to 4:5 (EPSG:4326)" ) );
+
+  // Leaflet and OpenLayers
+  results = gatherResults( &filter, QStringLiteral( "https://www.openstreetmap.org/#map=15/44.5546/6.4936" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QString( "Go to 6.494,44.555 scale 22569" ) );
 
 }
 

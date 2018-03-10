@@ -59,10 +59,14 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
   if ( !filter->prefix().isEmpty() )
   {
-    if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
-         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
-         || filter->name() == QStringLiteral( "features" ) || filter->name() == QStringLiteral( "calculator" )
-         || filter->name() == QStringLiteral( "bookmarks" ) || filter->name() == QStringLiteral( "goto" ) )
+    if ( filter->name() == QStringLiteral( "actions" ) ||
+         filter->name() == QStringLiteral( "bookmarks" ) ||
+         filter->name() == QStringLiteral( "calculator" ) ||
+         filter->name() == QStringLiteral( "features" ) ||
+         filter->name() == QStringLiteral( "goto" ) ||
+         filter->name() == QStringLiteral( "layertree" ) ||
+         filter->name() == QStringLiteral( "layouts" ) ||
+         filter->name() == QStringLiteral( "processing_alg" ) )
     {
       //inbuilt filter, no prefix check
       mPrefixedFilters.insert( filter->prefix(), filter );

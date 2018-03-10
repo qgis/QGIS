@@ -137,6 +137,7 @@ class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
 
   public:
 
+
     QgsGotoLocatorFilter( QObject *parent = nullptr );
     QgsGotoLocatorFilter *clone() const override;
     virtual QString name() const override { return QStringLiteral( "goto" ); }
