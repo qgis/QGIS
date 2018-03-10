@@ -9,7 +9,7 @@ QgsProcessingParameterEnum|OVERLAP|Overlapping Areas|[0] first;[1] last;[2] mini
 QgsProcessingParameterNumber|BLEND_DIST|Blending Distance|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
 QgsProcessingParameterEnum|MATCH|Match|[0] none;[1] regression|False|0
 Hardcoded|-TARGET_DEFINITION 0
-Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Grid
