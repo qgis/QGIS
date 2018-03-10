@@ -490,9 +490,10 @@ static void setTitleBarText_( QWidget &qgisApp )
 
   if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
   {
-    // add current profile
+    // add current profile (if it's not the default one)
     QgsUserProfile *profile = QgisApp::instance()->userProfileManager()->userProfile();
-    caption += QStringLiteral( " [%1]" ).arg( profile->name() );
+    if ( profile->name() != QLatin1String( "default" ) )
+      caption += QStringLiteral( " [%1]" ).arg( profile->name() );
   }
 
   qgisApp.setWindowTitle( caption );
