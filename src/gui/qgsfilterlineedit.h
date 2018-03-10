@@ -213,6 +213,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setSelectOnFocus( bool selectOnFocus );
 
+
+    /**
+     * Reimplemented to enable/disable the clear action
+     * depending on read-only status
+     *
+     * \since QGIS 3.0.1
+     */
+    virtual bool event( QEvent *event ) override;
+
   public slots:
 
     /**
