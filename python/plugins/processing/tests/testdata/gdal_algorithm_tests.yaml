@@ -79,7 +79,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      MATCH_MODE: 0
+      MATCH_MODE: 2
       OPTIONS: ''
     results:
       OUTPUT:
@@ -97,7 +97,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      MATCH_MODE: 2
+      MATCH_MODE: 1
       OPTIONS: ''
     results:
       OUTPUT:
