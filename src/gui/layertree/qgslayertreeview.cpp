@@ -355,6 +355,12 @@ QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNod
   return mIndicators.value( node );
 }
 
+///@cond PRIVATE
+QStringList QgsLayerTreeView::viewOnlyCustomProperties()
+{
+  return QStringList() << QStringLiteral( "expandedLegendNodes" );
+}
+///@endcond
 
 void QgsLayerTreeView::refreshLayerSymbology( const QString &layerId )
 {

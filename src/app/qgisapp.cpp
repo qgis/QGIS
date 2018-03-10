@@ -3238,7 +3238,12 @@ void QgisApp::setupConnections()
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::visibilityChanged,
            this, &QgisApp::markDirty );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged,
-           this, &QgisApp::markDirty );
+           this, [ = ]( QgsLayerTreeNode *, const QString & key )
+  {
+    // only mark dirty for non-view only changes
+    if ( !QgsLayerTreeView::viewOnlyCustomProperties().contains( key ) )
+      QgisApp::markDirty();
+  } );
 
   // connect map layer registry
   connect( QgsProject::instance(), &QgsProject::layersAdded,
