@@ -133,7 +133,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 popupmenu = QMenu()
-                createTestAction = QAction(self.tr('Create Test…'), self.tree)
+                createTestAction = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
                 popupmenu.exec_(self.tree.mapToGlobal(point))
