@@ -178,3 +178,11 @@ bool QgsFilterLineEdit::shouldShowClear() const
   }
   return false; //avoid warnings
 }
+
+bool QgsFilterLineEdit::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ReadOnlyChange )
+    updateClearIcon();
+
+  return QLineEdit::event( event );;
+}
