@@ -32,6 +32,8 @@ using "builder" design patter.
 %End
   public:
 
+    ~QgsGraphDirector();
+
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,
                             QVector< QgsPointXY > &snappedPoints /Out/,
