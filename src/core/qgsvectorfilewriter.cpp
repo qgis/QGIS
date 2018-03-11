@@ -2223,7 +2223,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     }
     else
     {
-      OGR_F_SetGeometry( poFeature.get(), createEmptyGeometry( mWkbType ) );
+      OGR_F_SetGeometryDirectly( poFeature.get(), createEmptyGeometry( mWkbType ) );
     }
   }
   return poFeature;
