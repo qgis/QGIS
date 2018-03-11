@@ -40,7 +40,12 @@ namespace QgsVirtualLayerQueryParser
     {
       char *errMsg = nullptr;
       int r = sqlite3_exec( db.get(), query.toUtf8().constData(), nullptr, nullptr, &errMsg );
-      QString err = QString::fromUtf8( errMsg );
+      QString err;
+      if ( r != SQLITE_OK )
+      {
+        err = QString::fromUtf8( errMsg );
+        sqlite3_free( errMsg );
+      }
       if ( r && err.startsWith( noSuchError ) )
       {
         QString tableName = err.mid( noSuchError.size() );
