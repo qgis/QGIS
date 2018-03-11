@@ -54,7 +54,8 @@ class ColorRelief(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.modes = ((self.tr('Use strict color matching'), '-exact_color_entry'),
-                      (self.tr('Use closest RGBA quadruplet'), '-nearest_color_entry'))
+                      (self.tr('Use closest RGBA quadruplet'), '-nearest_color_entry'),
+                      (self.tr('Use smoothly blended colors'), ''))
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
@@ -69,7 +70,7 @@ class ColorRelief(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.MATCH_MODE,
                                                      self.tr('Matching mode'),
                                                      options=[i[0] for i in self.modes],
-                                                     defaultValue=0))
+                                                     defaultValue=2))
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
                                                      defaultValue='',
