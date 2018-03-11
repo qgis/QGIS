@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful bionic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial yakkety zesty artful bionic"))
 	DISTRIBUTION := sid
 endif
 
@@ -98,11 +98,11 @@ ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful bionic sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"artful bionic buster sid"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
@@ -124,7 +124,7 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
