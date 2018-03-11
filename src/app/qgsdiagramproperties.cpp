@@ -258,7 +258,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        radAroundCentroid->setChecked( true );
+        radOverCentroid->setChecked( true );
         break;
 
       case QgsWkbTypes::UnknownGeometry:
