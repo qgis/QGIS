@@ -1407,7 +1407,10 @@ QgisApp::~QgisApp()
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
 
+#ifdef WITH_BINDINGS
   delete mPythonUtils;
+#endif
+
   delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
