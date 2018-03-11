@@ -242,7 +242,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
-#include "qgspythonutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
@@ -1432,7 +1431,10 @@ QgisApp::~QgisApp()
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
 
+#ifdef WITH_BINDINGS
   delete mPythonUtils;
+#endif
+
   delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
