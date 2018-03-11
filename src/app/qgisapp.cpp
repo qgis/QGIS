@@ -2041,6 +2041,7 @@ void QgisApp::createActions()
 
   connect( mActionToggleFullScreen, &QAction::triggered, this, &QgisApp::toggleFullScreen );
   connect( mActionTogglePanelsVisibility, &QAction::triggered, this, &QgisApp::togglePanelsVisibility );
+  connect( mActionToggleMapOnly, &QAction::triggered, this, &QgisApp::toggleMapOnly );
   connect( mActionProjectProperties, &QAction::triggered, this, &QgisApp::projectProperties );
   connect( mActionOptions, &QAction::triggered, this, &QgisApp::options );
   connect( mActionCustomProjection, &QAction::triggered, this, &QgisApp::customProjection );
@@ -2299,6 +2300,7 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
     mViewMenu->addAction( mActionTogglePanelsVisibility );
+    mViewMenu->addAction( mActionToggleMapOnly );
   }
   else
   {
@@ -2308,6 +2310,7 @@ void QgisApp::createMenus()
     mSettingsMenu->insertMenu( before, mToolbarMenu );
     mSettingsMenu->insertAction( before, mActionToggleFullScreen );
     mSettingsMenu->insertAction( before, mActionTogglePanelsVisibility );
+    mSettingsMenu->insertAction( before, mActionToggleMapOnly );
     mSettingsMenu->insertSeparator( before );
   }
 
@@ -6205,21 +6208,55 @@ void QgisApp::toggleFullScreen()
 
 void QgisApp::togglePanelsVisibility()
 {
+  toggleReducedView( false );
+}
+
+void QgisApp::toggleMapOnly()
+{
+  toggleReducedView( true );
+}
+
+void QgisApp::toggleReducedView( bool viewMapOnly )
+{
   QgsSettings settings;
 
   QStringList docksTitle = settings.value( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() ).toStringList();
   QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() ).toStringList();
+  QStringList toolBarsActive = settings.value( QStringLiteral( "UI/hiddenToolBarsActive" ), QStringList() ).toStringList();
 
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  QList<QToolBar *> toolBars = findChildren<QToolBar *>();
 
-  if ( docksTitle.isEmpty() )
+  bool allWidgetsVisible = settings.value( QStringLiteral( "UI/allWidgetsVisible" ), true ).toBool();
+
+  if ( allWidgetsVisible )  // that is: currently nothing is hidden
   {
+
+    if ( viewMapOnly )  //
+    {
+      // hide also statusbar and menubar and all toolbars
+      Q_FOREACH ( QToolBar *toolBar, toolBars )
+      {
+        if ( toolBar->isVisible() && !toolBar->isFloating() )
+        {
+          // remember the active toolbars
+          toolBarsActive << toolBar->windowTitle();
+          toolBar->setVisible( false );
+        }
+      }
+
+      //this->menuBar()->setVisible( false );
+      this->statusBar()->setVisible( false );
+
+      settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
+    }
 
     Q_FOREACH ( QDockWidget *dock, docks )
     {
       if ( dock->isVisible() && !dock->isFloating() )
       {
+        // remember the active docs
         docksTitle << dock->windowTitle();
         dock->setVisible( false );
       }
@@ -6227,13 +6264,16 @@ void QgisApp::togglePanelsVisibility()
 
     Q_FOREACH ( QTabBar *tabBar, tabBars )
     {
+      // remember the active tab from the docks
       docksActive << tabBar->tabText( tabBar->currentIndex() );
     }
 
     settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), docksTitle );
     settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), docksActive );
+
+    settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), false );
   }
-  else
+  else  // currently panels or other widgets are hidden: show ALL based on 'remembered UI settings'
   {
     Q_FOREACH ( QDockWidget *dock, docks )
     {
@@ -6254,9 +6294,19 @@ void QgisApp::togglePanelsVisibility()
       }
     }
 
-    settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() );
-    settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() );
+    Q_FOREACH ( QToolBar *toolBar, toolBars )
+    {
+      if ( toolBarsActive.contains( toolBar->windowTitle() ) )
+      {
+        toolBar->setVisible( true );
+      }
+    }
+    //this->menuBar()->setVisible( true ); // not working as no QMenuBar visible?
+    this->statusBar()->setVisible( true );
+
+    settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), true );
   }
+
 }
 
 void QgisApp::showActiveWindowMinimized()
