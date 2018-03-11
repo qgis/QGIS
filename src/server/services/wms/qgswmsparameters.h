@@ -334,6 +334,12 @@ namespace QgsWms
       QString infoFormatAsString() const;
 
       /**
+       * Check if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
+       * \returns true if the INFO_FORMAT is an image format
+       */
+      bool infoFormatIsImage() const;
+
+      /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
        *  default value is text/plain.
        * \returns infoFormat

@@ -115,45 +115,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'info_format=InvalidFormat',
                                  'wms_getfeatureinfo-invalid-format')
 
-        # Regression for #8656
-        # Mind the gap! (the space in the FILTER expression)
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'INFO_FORMAT=text%2Fxml&' +
-                                 'width=600&height=400&srs=EPSG%3A3857&' +
-                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
-                                 'wms_getfeatureinfo_filter')
-
-        # Test a filter with NO condition results
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'INFO_FORMAT=text%2Fxml&' +
-                                 'width=600&height=400&srs=EPSG%3A3857&' +
-                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' AND "utf8nameè" = \'no-results\''),
-                                 'wms_getfeatureinfo_filter_no_results')
-
-        # Test a filter with OR condition results
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'INFO_FORMAT=text%2Fxml&' +
-                                 'width=600&height=400&srs=EPSG%3A3857&' +
-                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "NAME" = \'three\''),
-                                 'wms_getfeatureinfo_filter_or')
-
-        # Test a filter with OR condition and UTF results
-        # Note that the layer name that contains utf-8 chars cannot be
-        # to upper case.
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'INFO_FORMAT=text%2Fxml&' +
-                                 'width=600&height=400&srs=EPSG%3A3857&' +
-                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
-                                 'wms_getfeatureinfo_filter_or_utf8')
-
         # Test feature info request with filter geometry
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
@@ -205,6 +166,57 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=layer0,layer1&X=235&Y=243',
                                  'wms_getfeatureinfo_notvisible',
                                  'test_project_scalevisibility.qgs')
+
+    def testGetFeatureInfoFilter(self):
+        # Test getfeatureinfo response xml
+
+        # Regression for #8656
+        # Mind the gap! (the space in the FILTER expression)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter')
+
+        # Test a filter with NO condition results
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' AND "utf8nameè" = \'no-results\''),
+                                 'wms_getfeatureinfo_filter_no_results')
+
+        # Test a filter with OR condition results
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "NAME" = \'three\''),
+                                 'wms_getfeatureinfo_filter_or')
+
+        # Test a filter with OR condition and UTF results
+        # Note that the layer name that contains utf-8 chars cannot be
+        # to upper case.
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
+                                 'wms_getfeatureinfo_filter_or_utf8')
+
+        # Regression #18292 Server GetFeatureInfo FILTER search fails when WIDTH, HEIGHT are not specified
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter_no_width')
 
 
 if __name__ == '__main__':
