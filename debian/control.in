@@ -21,10 +21,10 @@ Build-Depends:
  libqt4-opengl-dev,
  libqca2-dev,
  libqtwebkit-dev,
-#    jessie         trusty                                   # libgsl0-dev, libqca2-plugin-ossl,
-#sid        stretch        xenial yakkety zesty artful bionic# libgsl-dev, libqca2-plugins,
-#    jessie stretch                                          # libqwt-dev,
-#sid                trusty xenial yakkety zesty artful bionic# libqwt5-qt4-dev,
+#           jessie         trusty                                   # libgsl0-dev, libqca2-plugin-ossl,
+#           jessie stretch                                          # libqwt-dev,
+#sid buster        stretch        xenial yakkety zesty artful bionic# libgsl-dev, libqca2-plugins,
+#sid buster                trusty xenial yakkety zesty artful bionic# libqwt5-qt4-dev,
  libqjson-dev,
  libspatialite-dev,
  libsqlite3-dev,
@@ -37,13 +37,13 @@ Build-Depends:
  python-qt4-sql,
  python-yaml, python-mock,
  python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~), python-pyspatialite,
-#sid        stretch        xenial yakkety zesty artful bionic# python-future,
-#sid jessie stretch        xenial yakkety zesty artful bionic# pyqt4.qsci-dev, python-nose2,
+#sid buster        stretch        xenial yakkety zesty artful bionic# python-future,
+#sid buster jessie stretch        xenial yakkety zesty artful bionic# pyqt4.qsci-dev, python-nose2,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
-#    jessie stretch trusty xenial yakkety zesty artful bionic# libqscintilla2-dev,
-#sid                                                         # libqscintilla2-qt4-dev,
+#           jessie stretch trusty xenial yakkety zesty artful bionic# libqscintilla2-dev,
+#sid buster                                                         # libqscintilla2-qt4-dev,
  git,
  doxygen,
  graphviz,
@@ -55,10 +55,10 @@ Build-Depends:
  qt4-dev-tools,
  libqt4-sql-sqlite, python-psycopg2, ca-certificates
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch xenial yakkety zesty artful bionic#Standards-Version: 3.9.7
+#sid buster stretch xenial yakkety zesty artful bionic#Standards-Version: 3.9.7
 #jessie#Standards-Version: 3.9.6
 #trusty#Standards-Version: 3.8.4
-#sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
+#sid buster stretch jessie#X-Python-Version: >= 2.7, << 2.8
 #trusty xenial yakkety zesty artful bionic#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
@@ -234,8 +234,8 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.10.1-0~),
  libgeos-dev (>= 3.0.0),
-#    jessie         trusty                                   # libgsl0-dev,
-#sid        stretch        xenial yakkety zesty artful bionic# libgsl-dev,
+#           jessie         trusty                                   # libgsl0-dev,
+#sid buster        stretch        xenial yakkety zesty artful bionic# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),

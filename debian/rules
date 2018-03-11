@@ -34,7 +34,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful bionic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"sid buster jessie stretch trusty xenial yakkety zesty artful bionic"))
 	DISTRIBUTION := sid
 endif
 
@@ -132,19 +132,19 @@ ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch yakkety zesty artful bionic"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch yakkety zesty artful bionic"))
 	CMAKE_OPTS += -DWITH_INTERNAL_WEBKIT_BINDINGS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful bionic sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch jessie trusty xenial yakkety zesty artful bionic"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -164,11 +164,11 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DFCGI_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libfcgi.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch jessie"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -186,7 +186,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster jessie stretch trusty"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
