@@ -366,7 +366,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a Tiles XYZ connections exchange file." ) );
+                                    tr( "The file is not a XYZ Tiles connections exchange file." ) );
           return false;
         }
         break;
@@ -1278,7 +1278,7 @@ void QgsManageConnectionsDialog::loadXYZTilesConnections( const QDomDocument &do
   if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading Connections" ),
-                              tr( "The file is not a Tiles XYZ connections exchange file." ) );
+                              tr( "The file is not a XYZ Tiles connections exchange file." ) );
     return;
   }
 
