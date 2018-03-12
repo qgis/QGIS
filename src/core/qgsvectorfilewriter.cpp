@@ -1896,6 +1896,7 @@ class QgsVectorFileWriterMetadataContainer
     QMap<QString,  QgsVectorFileWriter::MetaData> driverMetadata;
 
 };
+///@endcond
 
 bool QgsVectorFileWriter::driverMetadata( const QString &driverName, QgsVectorFileWriter::MetaData &driverMetadata )
 {
