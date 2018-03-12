@@ -21,6 +21,8 @@
 
 #include <QSettings>
 
+QString QgsValueRelationFieldFormatter::FORM_SCOPE_FUNCTIONS_RE = QStringLiteral( "%1\\s*\\(\\s*'([^']+)'\\s*\\)" );
+
 bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
   return qgsVariantLessThan( p1.key, p2.key );
@@ -99,7 +101,7 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature )
 {
   ValueRelationCache cache;
 
@@ -116,11 +118,19 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
-  if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
+
+  const QString expression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
+
+  // Skip the filter and build a full cache if the form scope is required and the feature
+  // is not valid or the attributes required for the filter have no valid value
+  if ( ! expression.isEmpty() && ( ! expressionRequiresFormScope( expression )
+                                   || expressionIsUsable( expression, formFeature ) ) )
   {
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    if ( formFeature.isValid( ) )
+      context.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
     request.setExpressionContext( context );
-    request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
+    request.setFilterExpression( expression );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -161,4 +171,59 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     }
   }
   return checkList;
+}
+
+
+QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QString &expression )
+{
+  const QStringList formVariables( QgsExpressionContextUtils::formScope()->variableNames() );
+  QSet<QString> variables;
+
+  for ( auto it = formVariables.constBegin(); it != formVariables.constEnd(); it++ )
+  {
+    if ( expression.contains( *it ) )
+    {
+      variables.insert( *it );
+    }
+  }
+  return variables;
+}
+
+bool QgsValueRelationFieldFormatter::expressionRequiresFormScope( const QString &expression )
+{
+  return !( expressionFormAttributes( expression ).isEmpty() && expressionFormVariables( expression ).isEmpty() );
+}
+
+QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QString &expression )
+{
+  QSet<QString> attributes;
+  const QStringList formFunctions( QgsExpressionContextUtils::formScope()->functionNames() );
+  QRegularExpression re;
+  for ( const auto &fname : formFunctions )
+  {
+    if ( QgsExpressionContextUtils::formScope()->function( fname )->parameters().count( ) != 0 )
+    {
+      re.setPattern( QgsValueRelationFieldFormatter::FORM_SCOPE_FUNCTIONS_RE.arg( fname ) );
+      QRegularExpressionMatchIterator i = re.globalMatch( expression );
+      while ( i.hasNext() )
+      {
+        QRegularExpressionMatch match = i.next();
+        attributes.insert( match.captured( 1 ) );
+      }
+    }
+  }
+  return attributes;
+}
+
+bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression, const QgsFeature &feature )
+{
+  const QSet<QString> attrs = expressionFormAttributes( expression );
+  for ( auto it = attrs.constBegin() ; it != attrs.constEnd(); it++ )
+  {
+    if ( ! feature.attribute( *it ).isValid() )
+      return false;
+  }
+  if ( ! expressionFormVariables( expression ).isEmpty() && feature.geometry().isEmpty( ) )
+    return false;
+  return true;
 }

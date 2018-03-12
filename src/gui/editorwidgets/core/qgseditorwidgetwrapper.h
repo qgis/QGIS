@@ -277,6 +277,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void updateConstraintWidgetStatus();
 
+  protected:
+
+    /**
+     * mFieldIdx the widget feature field id
+     */
+    int mFieldIdx;
+
+    /**
+     * mFeature the current feature
+     */
+    QgsFeature mFeature;
+
   private:
 
     /**
@@ -296,8 +308,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     //! The current constraint result
     bool mConstraintResultVisible = false;
 
-    int mFieldIdx;
-    QgsFeature mFeature;
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
 
 };

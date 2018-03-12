@@ -279,6 +279,10 @@ change the visual cue.
 .. versionadded:: 2.16
 %End
 
+  protected:
+
+
+
 };
 
 

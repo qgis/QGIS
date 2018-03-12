@@ -765,6 +765,14 @@ For instance, QGIS version numbers and variables specified through QGIS options.
 .. seealso:: :py:func:`setGlobalVariable`
 %End
 
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ) ) /Factory/;
+%Docstring
+Creates a new scope which contains functions and variables from the current attribute form/table feature.
+The variables and values in this scope will reflect the current state of the form/row being edited.
+
+.. versionadded:: 3.2
+%End
+
     static void setGlobalVariable( const QString &name, const QVariant &value );
 %Docstring
 Sets a global context variable. This variable will be contained within scopes retrieved via
