@@ -68,7 +68,7 @@ This release has following new features:
 - Symbology: Add Points  and Inches to available symbol units
 - Symbology: New color ramp button widget
 - Symbology: Style management re-work and upgrade
-- Symbology: Show an alpha slider in color button drop down menu
+- Symbology: Show an alpha slider in color button drop-down menu
 - Symbology: Support setting of color and transparency on multiple items for raster renderers
 - Symbology: raster auto-stretching when updating canvas
 - Symbology: Raster stretch toolbar actions support for pseudocolor renderer
@@ -76,19 +76,19 @@ This release has following new features:
 - Symbology: Control over annotation contents margins
 - Symbology: Annotations can be styled using fill symbol styles
 - Symbology: Point cluster renderer
-- Labelling: Allow label font size in mm/pixels
-- Labelling: Custom labelling toolbar is now always enabled
+- Labeling: Allow label font size in mm/pixels
+- Labeling: Custom labelling toolbar is now always enabled
 - Diagrams: Data definable properties
 - Rendering: Grid renderer for points displacement
 - Rendering: Live layer support
 - Rendering: Cache labeling result to avoid unnecessary redraws     when refreshing canvas
-- Digitising: add functionnality to copy/move feature to move feature map tool
-- Digitising: Range vertex selection in node tool
-- Digitising: Add default Z value option
-- Digitising: Move feature now benefits from Advanced Digitizing
-- Digitising: Tracing with offset
+- Digitizing: add functionality to copy/move feature to move feature map tool
+- Digitizing: Range vertex selection in node tool
+- Digitizing: Add default Z value option
+- Digitizing: Move feature now benefits from Advanced Digitizing
+- Digitizing: Tracing with offset
 - Data Management: Metadata overhaul
-- Data Management: Auxilliary Storage Support
+- Data Management: Auxiliary Storage Support
 - Data Management: Pan to current feature in attribute table
 - Data Management: Map of CRS-extent in Project properties
 - Data Management: Unified data source manager dialog
@@ -139,7 +139,7 @@ This release has following new features:
 - Processing: New 'drop geometries' algorithm
 - Processing: New universal 'basic stats for field' algorithm
 - Processing: Port heatmap plugin to processing algorithm
-- Processing: New algorithm to orthagonalize geometries
+- Processing: New algorithm to orthogonalize geometries
 - Processing: Network analysis algorithms
 - Processing: Export processing models as PDF/SVG
 - Processing: New algorithm to truncate tables
@@ -557,7 +557,7 @@ This is a minor release increment with the following new features:
 - HTML item improvements
 - Composer map grid improvements
 - Processing now has an online collection of models and scripts
-- Processing graphical modeller completely rewritten
+- Processing graphical modeler completely rewritten
 - API changes for QGIS widgets
 - Enhancements of searching with GetFeatureInfo request
 - Add a precision setting for GetFeatureInfo geometry attributes
