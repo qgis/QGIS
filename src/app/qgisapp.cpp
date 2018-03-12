@@ -5690,7 +5690,7 @@ bool QgisApp::fileSave()
       if ( QMessageBox::warning( this,
                                  tr( "Saving project with dev version build." ),
                                  message,
-                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+                                 QMessageBox::Save | QMessageBox::Cancel ) == QMessageBox::Save )
       {
         QString filename = QgsProject::instance()->fileName();
         QFileInfo info( filename );
