@@ -49,7 +49,7 @@ template <TYPE>
     QVector<TYPE> *t = new QVector<TYPE>(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qvector_type, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qvector_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -126,7 +126,7 @@ template <TYPE>
     QVector<QVector<TYPE> > *t = new QVector<QVector<TYPE> >(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qvector_type, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qvector_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -202,7 +202,7 @@ template <TYPE>
     QList<TYPE> *t = new QList<TYPE>(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qlist_type, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qlist_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -470,7 +470,7 @@ template<TYPE>
     QMap<int, TYPE> *t = new QMap<int, TYPE>(*it);
 
     PyObject *kobj = PyLong_FromLongLong(it.key());
-    PyObject *tobj = sipConvertFromMappedType(t, qmap2, sipTransferObj);
+    PyObject *tobj = sipConvertFromNewType(t, qmap2, sipTransferObj);
 
     if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
     {
