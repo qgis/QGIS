@@ -873,6 +873,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsAuxiliaryStorage *auxiliaryStorage();
 
+    QgsError backup( const QString &fileName, const QString &suffix ) const;
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );

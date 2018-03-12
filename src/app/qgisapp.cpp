@@ -5678,17 +5678,33 @@ bool QgisApp::fileSave()
 
     QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
-    if ( thisVersion > QgsProject::instance()->version() )
+    // If we find master the QGIS version but not in the project file we should warn the user.
+    // Users should really only use copies of projects in dev builds.
+    if ( thisVersion.text().toLower().contains( QStringLiteral( "master" ) ) &&
+         !QgsProject::instance()->version().text().toLower().contains( QStringLiteral( "master" ) ) )
     {
+      QString message = tr( "You are saving a non dev project using dev build of QGIS.\n"
+                            "Changes to project files in dev builds might not correctly open in release versions."
+                            "\n"
+                            "Saving the project will create a new -dev version of the project.\n" );
       if ( QMessageBox::warning( this,
-                                 tr( "Saving older project version." ),
-                                 tr( "Saving a project that was saved with an older "
-                                     "version of qgis (saved in " + QgsProject.instance()->version().text() +
-                                     ", new save version " + Qgis::QGIS_VERSION +
-                                     "). Problems may occur." ),
-                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-        return false;
+                                 tr( "Saving project with dev version build." ),
+                                 message,
+                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+      {
+        QString filename = QgsProject::instance()->fileName();
+        QFileInfo info( filename );
+        const QString baseName = info.completeBaseName();
+        const QString suffix = info.suffix();
+        const QString path = info.absolutePath();
 
+        QString newFileName = path + QDir::separator() + baseName + QStringLiteral( "-dev." ) + suffix;
+        QgsProject::instance()->setFileName( newFileName );
+      }
+      else
+      {
+        return false;
+      }
     }
 
     QFileInfo fi( QgsProject::instance()->fileName() );

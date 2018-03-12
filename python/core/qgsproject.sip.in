@@ -888,6 +888,8 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+    QgsError backup( const QString &fileName, const QString &suffix ) const;
+
   signals:
     void readProject( const QDomDocument & );
 %Docstring
