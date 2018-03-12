@@ -2269,7 +2269,13 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
       // DMD_EXTENSION; so let's check for them here and handle
       // them appropriately
 
-      if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
+      if ( myGdalDriverDescription.startsWith( QLatin1String( "AIG" ) ) )
+      {
+        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
+        wildcards << QStringLiteral( "hdr.adf" );
+      }
+#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
+      else if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
       {
         // Fixed in GDAL 2.3
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.bil" ) );
@@ -2277,14 +2283,11 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
       }
       else if ( myGdalDriverDescription == QLatin1String( "ERS" ) )
       {
+        // Fixed in GDAL 2.3
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.ers" ) );
         extensions << QStringLiteral( "ers" );
       }
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "AIG" ) ) )
-      {
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
-        wildcards << QStringLiteral( "hdr.adf" );
-      }
+#endif
       else
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
