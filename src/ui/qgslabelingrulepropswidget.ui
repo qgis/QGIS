@@ -88,7 +88,7 @@
          <item row="2" column="1">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Catch all for other features</string>
+            <string>Catch-all for other features</string>
            </property>
           </widget>
          </item>
