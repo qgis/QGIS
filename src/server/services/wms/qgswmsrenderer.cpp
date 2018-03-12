@@ -882,6 +882,13 @@ namespace QgsWms
                                     QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
     }
 
+    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
+    if ( infoFormat == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
+                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+    }
+
     // get layers parameters
     QList<QgsMapLayer *> layers;
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
@@ -908,8 +915,18 @@ namespace QgsWms
     }
 
     // create the mapSettings and the output image
+    int imageWidth = mWmsParameters.widthAsInt();
+    int imageHeight = mWmsParameters.heightAsInt();
+
+    // Provide default image width/height values if format is not image
+    if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
+    {
+      imageWidth = 10;
+      imageHeight = 10;
+    }
+
     QgsMapSettings mapSettings;
-    std::unique_ptr<QImage> outputImage( createImage() );
+    std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( outputImage.get(), mapSettings );
@@ -953,14 +970,7 @@ namespace QgsWms
 
     QByteArray ba;
 
-    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
-
-    if ( infoFormat == QgsWmsParameters::Format::NONE )
-    {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
-    }
-    else if ( infoFormat == QgsWmsParameters::Format::TEXT )
+    if ( infoFormat == QgsWmsParameters::Format::TEXT )
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
