@@ -456,6 +456,11 @@ QString QgsProject::fileName() const
   return mFile.fileName();
 }
 
+QgsProjectVersion QgsProject::version() const
+{
+  return mProjectVersion;
+}
+
 QFileInfo QgsProject::fileInfo() const
 {
   return QFileInfo( mFile );
@@ -878,6 +883,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
+  mProjectVersion = fileVersion;
   QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )

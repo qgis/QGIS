@@ -5675,6 +5675,22 @@ bool QgisApp::fileSave()
   }
   else
   {
+
+    QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+
+    if ( thisVersion > QgsProject::instance()->version() )
+    {
+      if ( QMessageBox::warning( this,
+                                 tr( "Saving older project version." ),
+                                 tr( "Saving a project that was saved with an older "
+                                     "version of qgis (saved in " + QgsProject.instance()->version().text() +
+                                     ", new save version " + Qgis::QGIS_VERSION +
+                                     "). Problems may occur." ),
+                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+        return false;
+
+    }
+
     QFileInfo fi( QgsProject::instance()->fileName() );
     fullPath = fi.absoluteFilePath();
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )

@@ -141,6 +141,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString fileName() const;
 
+    QgsProjectVersion version() const;
+
     /**
      * Returns QFileInfo object for the project's associated file.
      * \see fileName()
@@ -1252,6 +1254,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
+    QgsProjectVersion mProjectVersion;
 
     /**
      * Manual override for project home path - if empty, home path is automatically

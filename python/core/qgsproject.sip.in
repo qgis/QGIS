@@ -89,6 +89,8 @@ representation.
 .. seealso:: :py:func:`fileInfo`
 %End
 
+    QgsProjectVersion version() const;
+
     QFileInfo fileInfo() const;
 %Docstring
 Returns QFileInfo object for the project's associated file.
