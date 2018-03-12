@@ -44,21 +44,7 @@
 #include "qgslogger.h"
 #include "qgsproperty.h"
 #include "qgslayertree.h"
-
-
-struct CursorOverride
-{
-  CursorOverride()
-  {
-    QApplication::setOverrideCursor( Qt::BusyCursor );
-  }
-
-  ~CursorOverride()
-  {
-    QApplication::restoreOverrideCursor();
-  }
-};
-
+#include "qgsguiutils.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -163,7 +149,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   if ( !QFileInfo::exists( leDatabase->text() ) )
     return;
 
-  CursorOverride waitCursor;
+  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   bool lblVisible = false;
 
@@ -261,7 +247,7 @@ void QgsDwgImportDialog::pbBrowseDrawing_clicked()
 
 void QgsDwgImportDialog::pbImportDrawing_clicked()
 {
-  CursorOverride waitCursor;
+  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   QgsDwgImporter importer( leDatabase->text(), mCrsSelector->crs() );
 
@@ -457,7 +443,7 @@ void QgsDwgImportDialog::pbDeselectAll_clicked()
 
 void QgsDwgImportDialog::buttonBox_accepted()
 {
-  CursorOverride waitCursor;
+  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   QMap<QString, bool> layers;
   bool allLayers = true;
