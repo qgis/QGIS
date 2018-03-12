@@ -896,7 +896,10 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
   }
 
   for ( i = 0; i < testedGeometries.size(); ++i )
+  {
     newGeometries << QgsGeometry( fromGeos( testedGeometries[i] ) );
+    GEOSGeom_destroy_r( geosinit.ctxt, testedGeometries[i] );
+  }
 
   return Success;
 }
