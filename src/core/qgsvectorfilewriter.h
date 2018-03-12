@@ -743,7 +743,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     bool mUsingTransaction = false;
 
-    static QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
