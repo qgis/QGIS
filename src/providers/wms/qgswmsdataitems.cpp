@@ -27,12 +27,14 @@
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
 #include "qgsxyzconnectiondialog.h"
+#include "qgsmanageconnectionsdialog.h"
 #endif
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
 #include "qgssettings.h"
 
 #include <QInputDialog>
+#include <QFileDialog>
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
@@ -474,9 +476,20 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
+  QList<QAction *> lst;
+
   QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+  QAction *saveXYZTilesServers = new QAction( tr( "Save Connections…" ), parent );
+  connect( saveXYZTilesServers, &QAction::triggered, this, &QgsXyzTileRootItem::saveXYZTilesServers );
+  QAction *loadXYZTilesServers = new QAction( tr( "Load Connections…" ), parent );
+  connect( loadXYZTilesServers, &QAction::triggered, this, &QgsXyzTileRootItem::loadXYZTilesServers );
+
+  lst.append( actionNew );
+  lst.append( saveXYZTilesServers );
+  lst.append( loadXYZTilesServers );
+
+  return lst;
 }
 
 void QgsXyzTileRootItem::newConnection()
@@ -486,6 +499,26 @@ void QgsXyzTileRootItem::newConnection()
     return;
 
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
+  refreshConnections();
+}
+
+void QgsXyzTileRootItem::saveXYZTilesServers()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XYZTiles );
+  dlg.exec();
+}
+
+void QgsXyzTileRootItem::loadXYZTilesServers()
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XYZTiles, fileName );
+  dlg.exec();
   refreshConnections();
 }
 #endif
