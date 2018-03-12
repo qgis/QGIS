@@ -37,7 +37,7 @@ class QToolBar;
 
 /**
 * \class QgsGrassPlugin
-* \brief OpenModeller plugin for QGIS
+* \brief OpenModeller plugin for QGIS  //#spellok
 *
 */
 class QgsGrassPlugin : public QObject, public QgisPlugin
