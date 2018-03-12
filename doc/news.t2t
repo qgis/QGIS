@@ -77,7 +77,7 @@ This release has following new features:
 - Symbology: Annotations can be styled using fill symbol styles
 - Symbology: Point cluster renderer
 - Labeling: Allow label font size in mm/pixels
-- Labeling: Custom labelling toolbar is now always enabled
+- Labeling: Custom labeling toolbar is now always enabled
 - Diagrams: Data definable properties
 - Rendering: Grid renderer for points displacement
 - Rendering: Live layer support
