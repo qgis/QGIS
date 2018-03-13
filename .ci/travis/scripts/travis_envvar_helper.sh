@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-func create_qgis_image(){
+function create_qgis_image {
 
-if [[ $TRAVIS_REPO_SLUG !~ qgis/QGIS ]]; then
-  return false
+if [[ ! $TRAVIS_REPO_SLUG =~ qgis/QGIS ]]; then
+  return 0
 fi
 if [[ $TRAVIS_EVENT_TYPE =~ cron ]] || [[ -n $TRAVIS_TAG ]]; then
-  return true;
+  return 1;
 fi
-return false;
+return 0;
 }
