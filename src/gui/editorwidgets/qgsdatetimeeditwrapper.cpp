@@ -126,15 +126,22 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
       emit valueChanged( dateTime.time() );
       break;
     default:
-      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-      if ( fieldIsoFormat )
+      if ( !dateTime.isValid() || dateTime.isNull() )
       {
-        emit valueChanged( dateTime.toString( Qt::ISODate ) );
+        emit valueChanged( QVariant( field().type() ) );
       }
       else
       {
-        emit valueChanged( dateTime.toString( fieldFormat ) );
+        const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+        const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+        if ( fieldIsoFormat )
+        {
+          emit valueChanged( dateTime.toString( Qt::ISODate ) );
+        }
+        else
+        {
+          emit valueChanged( dateTime.toString( fieldFormat ) );
+        }
       }
       break;
   }

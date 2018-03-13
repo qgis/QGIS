@@ -51,7 +51,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
 
   // Get layer info
   QString errorTitle, errorMessage;
-  QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -74,7 +74,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       mSharedData->mExtent = QgsRectangle();
   }
 
-  QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
+  const QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
   QgsRectangle originalExtent;
   originalExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
@@ -208,6 +208,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     mLayerMetadata.setRights( QStringList() << copyright );
   mLayerMetadata.addLink( QgsLayerMetadata::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
 
+  // renderer
+  mRendererDataMap = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "renderer" ) ).toMap();
+
   mValid = true;
 }
 
@@ -243,7 +246,12 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
 
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
-  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  if ( !mRendererDataMap.empty() )
+  {
+    c = c | QgsVectorDataProvider::CreateRenderer;
+  }
+  return c;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
@@ -280,6 +288,11 @@ QString QgsAfsProvider::dataComment() const
 void QgsAfsProvider::reloadData()
 {
   mSharedData->clearCache();
+}
+
+QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
+{
+  return QgsArcGisRestUtils::parseEsriRenderer( mRendererDataMap );
 }
 
 

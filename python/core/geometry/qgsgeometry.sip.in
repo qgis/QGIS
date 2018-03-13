@@ -100,9 +100,9 @@ This is much faster then calling the non-const get() method.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`primitive`
-
 .. seealso:: :py:func:`set`
+
+.. seealso:: :py:func:`get`
 %End
 
     QgsAbstractGeometry *get();
@@ -1423,9 +1423,12 @@ An empty geometry will be returned in the case of errors.
 .. versionadded:: 3.0
 %End
 
-    void convertToStraightSegment();
+    void convertToStraightSegment( double tolerance = M_PI / 180., QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle );
 %Docstring
 Converts the geometry to straight line segments, if it is a curved geometry type.
+
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 
 .. versionadded:: 2.10
 

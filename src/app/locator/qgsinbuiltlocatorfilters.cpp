@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsinbuiltlocatorfilters.cpp
-                         ----------------------------
-    begin                : May 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+                        qgsinbuiltlocatorfilters.cpp
+                        ----------------------------
+   begin                : May 2017
+   copyright            : (C) 2017 by Nyall Dawson
+   email                : nyall dot dawson at gmail dot com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -319,4 +319,51 @@ void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, 
 void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QApplication::clipboard()->setText( result.userData.toString() );
+}
+// QgBookmarkLocatorFilter
+//
+
+QgsBookmarkLocatorFilter::QgsBookmarkLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsBookmarkLocatorFilter *QgsBookmarkLocatorFilter::clone() const
+{
+  return new QgsBookmarkLocatorFilter();
+}
+
+void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
+
+  QMapIterator<QString, QModelIndex> i( bookmarkMap );
+
+  while ( i.hasNext() )
+  {
+    i.next();
+    if ( feedback->isCanceled() )
+      return;
+
+    QString name = i.key();
+
+    if ( stringMatches( name, string ) )
+    {
+      QModelIndex index = i.value();
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = name;
+      result.userData = index;
+      //TODO Create svg for "Bookmark"?
+      //result.icon = TBD
+      result.score = static_cast< double >( string.length() ) / name.length();
+      emit resultFetched( result );
+    }
+  }
+
+}
+
+void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
+  QgisApp::instance()->zoomToBookmarkIndex( index );
 }

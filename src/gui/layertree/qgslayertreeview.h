@@ -135,6 +135,20 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
 
+///@cond PRIVATE
+
+    /**
+     * Returns a list of custom property keys which are considered as related to view operations
+     * only. E.g. node expanded state.
+     *
+     * Changes to these keys will not mark a project as "dirty" and trigger unsaved changes
+     * warnings.
+     *
+     * \since QGIS 3.2
+     */
+    static QStringList viewOnlyCustomProperties() SIP_SKIP;
+///@endcond
+
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );

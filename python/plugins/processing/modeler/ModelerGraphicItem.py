@@ -61,7 +61,11 @@ class ModelerGraphicItem(QGraphicsItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             self.pixmap = None
-            self.text = self.model.parameterDefinition(element.parameterName()).description()
+            paramDef = self.model.parameterDefinition(element.parameterName())
+            if paramDef:
+                self.text = paramDef.description()
+            else:
+                self.text = 'Error ({})'.format(element.parameterName())
         elif isinstance(element, QgsProcessingModelOutput):
             # Output name
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
@@ -204,12 +208,11 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelChildAlgorithm):
             dlg = None
-            try:
-                dlg = self.element.algorithm().getCustomModelerParametersDialog(self.model, self.element.childId())
-            except:
-                pass
+            elemAlg = self.element.algorithm()
+            if hasattr(elemAlg, 'getCustomModelerParametersDialog'):
+                dlg = elemAlg.getCustomModelerParametersDialog(self.model, self.element.childId())
             if not dlg:
-                dlg = ModelerParametersDialog(self.element.algorithm(), self.model, self.element.childId())
+                dlg = ModelerParametersDialog(elemAlg, self.model, self.element.childId())
             if dlg.exec_():
                 alg = dlg.createAlgorithm()
                 alg.setChildId(self.element.childId())

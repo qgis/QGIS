@@ -52,6 +52,7 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
+                       QgsProcessingParameterType
                        )
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -155,11 +156,11 @@ class ModelerDialog(BASE, WIDGET):
 
         def _dropEvent(event):
             if event.mimeData().hasText():
-                text = event.mimeData().text()
-                if text in ModelerParameterDefinitionDialog.paramTypes:
-                    self.addInputOfType(text, event.pos())
+                itemId = event.mimeData().text()
+                if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
+                    self.addInputOfType(itemId, event.pos())
                 else:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(text)
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(itemId)
                     if alg is not None:
                         self._addAlgorithm(alg, event.pos())
                 event.accept()
@@ -225,7 +226,7 @@ class ModelerDialog(BASE, WIDGET):
 
         def _mimeDataInput(items):
             mimeData = QMimeData()
-            text = items[0].text(0)
+            text = items[0].data(0, Qt.UserRole)
             mimeData.setText(text)
             return mimeData
 
@@ -327,7 +328,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def runModel(self):
         if len(self.model.childAlgorithms()) == 0:
-            self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=Qgis.Warning, duration=5)
+            self.bar.pushMessage("", self.tr("Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning, duration=5)
             return
 
         dlg = AlgorithmDialog(self.model)
@@ -398,7 +399,7 @@ class ModelerDialog(BASE, WIDGET):
 
         img.save(filename)
 
-        self.bar.pushMessage("", "Model was correctly exported as image", level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Model was correctly exported as image"), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPdf(self):
@@ -426,7 +427,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, printerRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", "Model was correctly exported as PDF", level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Model was correctly exported as PDF"), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsSvg(self):
@@ -454,7 +455,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, svgRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", "Model was correctly exported as SVG", level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Model was correctly exported as SVG"), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPython(self):
@@ -471,7 +472,7 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 
-        self.bar.pushMessage("", "Model was correctly exported as python script", level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Model was correctly exported as python script"), level=Qgis.Success, duration=5)
 
     def saveModel(self, saveAs):
         if str(self.textGroup.text()).strip() == '' \
@@ -505,7 +506,7 @@ class ModelerDialog(BASE, WIDGET):
                     )
                 return
             self.update_model.emit()
-            self.bar.pushMessage("", "Model was correctly saved", level=Qgis.Success, duration=5)
+            self.bar.pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
             self.hasChanged = False
 
@@ -545,25 +546,24 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInput(self):
         item = self.inputsTree.currentItem()
-        paramType = str(item.text(0))
-        self.addInputOfType(paramType)
+        param = item.data(0, Qt.UserRole)
+        self.addInputOfType(param)
 
     def addInputOfType(self, paramType, pos=None):
-        if paramType in ModelerParameterDefinitionDialog.paramTypes:
-            dlg = ModelerParameterDefinitionDialog(self.model, paramType)
-            dlg.exec_()
-            if dlg.param is not None:
-                if pos is None:
-                    pos = self.getPositionForParameterItem()
-                if isinstance(pos, QPoint):
-                    pos = QPointF(pos)
-                component = QgsProcessingModelParameter(dlg.param.name())
-                component.setDescription(dlg.param.name())
-                component.setPosition(pos)
-                self.model.addModelParameter(dlg.param, component)
-                self.repaintModel()
-                # self.view.ensureVisible(self.scene.getLastParameterItem())
-                self.hasChanged = True
+        dlg = ModelerParameterDefinitionDialog(self.model, paramType)
+        dlg.exec_()
+        if dlg.param is not None:
+            if pos is None:
+                pos = self.getPositionForParameterItem()
+            if isinstance(pos, QPoint):
+                pos = QPointF(pos)
+            component = QgsProcessingModelParameter(dlg.param.name())
+            component.setDescription(dlg.param.name())
+            component.setPosition(pos)
+            self.model.addModelParameter(dlg.param, component)
+            self.repaintModel()
+            # self.view.ensureVisible(self.scene.getLastParameterItem())
+            self.hasChanged = True
 
     def getPositionForParameterItem(self):
         MARGIN = 20
@@ -623,13 +623,16 @@ class ModelerDialog(BASE, WIDGET):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
-        for paramType in sorted(ModelerParameterDefinitionDialog.paramTypes):
-            paramItem = QTreeWidgetItem()
-            paramItem.setText(0, paramType)
-            paramItem.setIcon(0, icon)
-            paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-            paramItem.setToolTip(0, ModelerParameterDefinitionDialog.inputTooltip(paramType))
-            parametersItem.addChild(paramItem)
+        sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.name())
+        for param in sortedParams:
+            if param.flags() & QgsProcessingParameterType.ExposeToModeler:
+                paramItem = QTreeWidgetItem()
+                paramItem.setText(0, param.name())
+                paramItem.setData(0, Qt.UserRole, param.id())
+                paramItem.setIcon(0, icon)
+                paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+                paramItem.setToolTip(0, param.description())
+                parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
 

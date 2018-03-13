@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputD
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsApplication, QgsTask
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -56,9 +56,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
+        self.mainWindow = parent
         self.iface = iface
         self.db = db
         self.filter = ""
+        self.modelAsync = None
         self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
@@ -76,6 +78,16 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+
+        self.btnCancel.setText(self.tr("Cancel (ESC)"))
+        self.btnCancel.setEnabled(False)
+        self.btnCancel.clicked.connect(self.executeSqlCanceled)
+        self.btnCancel.setShortcut(QKeySequence.Cancel)
+        self.progressBar.setEnabled(False)
+        self.progressBar.setRange(0, 100)
+        self.progressBar.setValue(0)
+        self.progressBar.setFormat("")
+        self.progressBar.setAlignment(Qt.AlignCenter)
 
         # allow copying results
         copyAction = QAction("copy", self)
@@ -177,40 +189,88 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setFocus()
         self.filter = ""
 
-    def executeSql(self):
+    def updateUiWhileSqlExecution(self, status):
+        if status:
+            for i in range(0, self.mainWindow.tabs.count()):
+                if i != self.mainWindow.tabs.currentIndex():
+                    self.mainWindow.tabs.setTabEnabled(i, False)
 
-        sql = self._getSqlQuery()
-        if sql == "":
-            return
+            self.mainWindow.menuBar.setEnabled(False)
+            self.mainWindow.toolBar.setEnabled(False)
+            self.mainWindow.tree.setEnabled(False)
+
+            for w in self.findChildren(QWidget):
+                w.setEnabled(False)
+
+            self.btnCancel.setEnabled(True)
+            self.progressBar.setEnabled(True)
+            self.progressBar.setRange(0, 0)
+        else:
+            for i in range(0, self.mainWindow.tabs.count()):
+                if i != self.mainWindow.tabs.currentIndex():
+                    self.mainWindow.tabs.setTabEnabled(i, True)
+
+            self.mainWindow.refreshTabs()
+            self.mainWindow.menuBar.setEnabled(True)
+            self.mainWindow.toolBar.setEnabled(True)
+            self.mainWindow.tree.setEnabled(True)
+
+            for w in self.findChildren(QWidget):
+                w.setEnabled(True)
+
+            self.btnCancel.setEnabled(False)
+            self.progressBar.setRange(0, 100)
+            self.progressBar.setEnabled(False)
+
+    def executeSqlCanceled(self):
+        self.btnCancel.setEnabled(False)
+        self.modelAsync.cancel()
+
+    def executeSqlCompleted(self):
+        self.updateUiWhileSqlExecution(False)
 
         with OverrideCursor(Qt.WaitCursor):
-            # delete the old model
-            old_model = self.viewResult.model()
-            self.viewResult.setModel(None)
-            if old_model:
-                old_model.deleteLater()
+            if self.modelAsync.task.status() == QgsTask.Complete:
+                model = self.modelAsync.model
+                cols = []
+                quotedCols = []
 
-            cols = []
-            quotedCols = []
-
-            try:
-                # set the new model
-                model = self.db.sqlResultModel(sql, self)
                 self.viewResult.setModel(model)
                 self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
                 for col in cols:
                     quotedCols.append(self.db.connector.quoteId(col))
 
-            except BaseError as e:
-                DlgDbError.showError(e, self)
+                self.setColumnCombos(cols, quotedCols)
+                self.update()
+            elif not self.modelAsync.canceled:
+                DlgDbError.showError(self.modelAsync.error, self)
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
-                return
+                pass
 
-            self.setColumnCombos(cols, quotedCols)
+    def executeSql(self):
 
-            self.update()
+        sql = self._getSqlQuery()
+        if sql == "":
+            return
+
+        # delete the old model
+        old_model = self.viewResult.model()
+        self.viewResult.setModel(None)
+        if old_model:
+            old_model.deleteLater()
+
+        try:
+            self.modelAsync = self.db.sqlResultModelAsync(sql, self)
+            self.modelAsync.done.connect(self.executeSqlCompleted)
+            self.updateUiWhileSqlExecution(True)
+            QgsApplication.taskManager().addTask(self.modelAsync.task)
+        except Exception as e:
+            DlgDbError.showError(e, self)
+            self.uniqueModel.clear()
+            self.geomCombo.clear()
+            return
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked

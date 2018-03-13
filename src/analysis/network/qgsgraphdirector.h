@@ -56,6 +56,11 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
 
+    ~QgsGraphDirector()
+    {
+      qDeleteAll( mStrategies );
+    }
+
     /**
      * Make a graph using QgsGraphBuilder
      *

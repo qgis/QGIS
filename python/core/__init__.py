@@ -214,6 +214,7 @@ class edit(object):
 
 
 class ReadWriteContextEnterCategory():
+
     def __init__(self, context, category_name, details=None):
         self.context = context
         self.category_name = category_name
@@ -231,6 +232,38 @@ class ReadWriteContextEnterCategory():
 
 # Inject the context manager into QgsReadWriteContext class as a member
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+
+
+# Python class to extend QgsProjectDirtyBlocker C++ class
+
+
+class ProjectDirtyBlocker():
+    """
+    Context manager used to block project setDirty calls.
+
+    Example:
+      project = QgsProject.instance()
+      with QgsProject.blockDirtying(project):
+        # do something
+
+    .. versionadded:: 3.2
+    """
+
+    def __init__(self, project):
+        self.project = project
+        self.blocker = None
+
+    def __enter__(self):
+        self.blocker = QgsProjectDirtyBlocker(self.project)
+        return self.project
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        del self.blocker
+        return True
+
+
+# Inject the context manager into QgsProject class as a member
+QgsProject.blockDirtying = ProjectDirtyBlocker
 
 
 class QgsTaskWrapper(QgsTask):

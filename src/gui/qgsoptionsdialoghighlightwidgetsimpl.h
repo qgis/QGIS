@@ -51,7 +51,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
     virtual bool highlightText( const QString &text ) override;
     virtual void reset() override;
     QPointer<QLabel> mLabel;
-    QString mStyleSheet = QStringLiteral( /*!search!*/"QLabel { background-color: yellow; color: blue;}/*!search!*/" );
+    QString mStyleSheet;
 };
 
 /**
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
     virtual bool highlightText( const QString &text ) override;
     virtual void reset() override;
     QPointer<QCheckBox> mCheckBox;
-    QString mStyleSheet = QStringLiteral( "/*!search!*/QCheckBox { background-color: yellow; color: blue;}/*!search!*/" );
+    QString mStyleSheet;
 };
 
 /**
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
     virtual bool highlightText( const QString &text ) override;
     virtual void reset() override;
     QPointer<QAbstractButton> mButton;
-    QString mStyleSheet = QStringLiteral( "/*!search!*/QAbstractButton { background-color: yellow; color: blue;}/*!search!*/" );
+    QString mStyleSheet;
 };
 
 /**
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
     virtual bool highlightText( const QString &text ) override;
     virtual void reset() override;
     QPointer<QGroupBox> mGroupBox;
-    QString mStyleSheet = QStringLiteral( "/*!search!*/QGroupBox::title { background-color: yellow; color: blue;}/*!search!*/" );
+    QString mStyleSheet;
 };
 
 /**

@@ -41,12 +41,14 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
+                       QgsProcessingParameterExpression,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
@@ -55,9 +57,35 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
+
+from PyQt5.QtCore import QCoreApplication
+
+PARAMETER_NUMBER = 'number'
+PARAMETER_RASTER = 'raster'
+PARAMETER_TABLE = 'vector'
+PARAMETER_VECTOR = 'source'
+PARAMETER_STRING = 'string'
+PARAMETER_EXPRESSION = 'expression'
+PARAMETER_BOOLEAN = 'boolean'
+PARAMETER_TABLE_FIELD = 'field'
+PARAMETER_EXTENT = 'extent'
+PARAMETER_FILE = 'file'
+PARAMETER_POINT = 'point'
+PARAMETER_CRS = 'crs'
+PARAMETER_MULTIPLE = 'multilayer'
+PARAMETER_BAND = 'band'
+PARAMETER_MAP_LAYER = 'Map Layer'
+PARAMETER_RANGE = 'range'
+PARAMETER_ENUM = 'enum'
+PARAMETER_MATRIX = 'matrix'
+PARAMETER_VECTOR_DESTINATION = 'vectorDestination'
+PARAMETER_FILE_DESTINATION = 'fileDestination'
+PARAMETER_FOLDER_DESTINATION = 'folderDestination'
+PARAMETER_RASTER_DESTINATION = 'rasterDestination'
 
 
 def getParameterFromString(s):

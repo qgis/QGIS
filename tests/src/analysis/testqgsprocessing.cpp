@@ -20,6 +20,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
 #include <QObject>
@@ -380,6 +381,33 @@ class DummyProvider3 : public QgsProcessingProvider
 
 };
 
+class DummyParameterType : public QgsProcessingParameterType
+{
+
+
+    // QgsProcessingParameterType interface
+  public:
+    QgsProcessingParameterDefinition *create( const QString &name ) const
+    {
+      return new QgsProcessingParameterString( name );
+    }
+
+    QString description() const
+    {
+      return QStringLiteral( "Description" );
+    }
+
+    QString name() const
+    {
+      return QStringLiteral( "ParamType" );
+    }
+
+    QString id() const
+    {
+      return QStringLiteral( "paramType" );
+    }
+};
+
 class TestQgsProcessing: public QObject
 {
     Q_OBJECT
@@ -450,6 +478,10 @@ class TestQgsProcessing: public QObject
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
     void supportsNonFileBasedOutput();
+    void addParameterType();
+    void removeParameterType();
+    void parameterTypes();
+    void parameterType();
 
   private:
 
@@ -4398,6 +4430,16 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // outputs definitio test
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "HTML files" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "Text files (*.htm)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString( "Text files (*.txt)" ), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
+  def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString(), QString(), false ) );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
 }
 
 void TestQgsProcessing::parameterFolderOut()
@@ -5787,6 +5829,11 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile1 != tempFile2 );
   QVERIFY( tempFile2.endsWith( "test.txt" ) );
   QVERIFY( tempFile2.startsWith( tempFolder ) );
+
+  // invalid characters
+  QString tempFile3 = QgsProcessingUtils::generateTempFilename( "mybad:file.txt" );
+  QVERIFY( tempFile3.endsWith( "mybad_file.txt" ) );
+  QVERIFY( tempFile3.startsWith( tempFolder ) );
 }
 
 void TestQgsProcessing::convertCompatible()
@@ -5954,6 +6001,57 @@ void TestQgsProcessing::supportsNonFileBasedOutput()
   alg2.setProvider( &p2 );
   QVERIFY( static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
   QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
+}
+
+void TestQgsProcessing::addParameterType()
+{
+  QgsProcessingRegistry reg;
+  QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeAdded );
+  DummyParameterType *dpt = new DummyParameterType();
+  QVERIFY( reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( dpt ) );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( !reg.addParameterType( new DummyParameterType() ) );
+  QCOMPARE( spy.count(), 1 );
+}
+
+void TestQgsProcessing::removeParameterType()
+{
+  QgsProcessingRegistry reg;
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeRemoved );
+  reg.removeParameterType( paramType );
+  QCOMPARE( spy.count(), 1 );
+}
+
+void TestQgsProcessing::parameterTypes()
+{
+  QgsProcessingRegistry reg;
+  int coreParamCount = reg.parameterTypes().count();
+  QVERIFY( coreParamCount > 5 );
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QCOMPARE( reg.parameterTypes().count(), coreParamCount + 1 );
+  QVERIFY( reg.parameterTypes().contains( paramType ) );
+}
+
+void TestQgsProcessing::parameterType()
+{
+  QgsProcessingRegistry reg;
+
+  QVERIFY( reg.parameterType( QStringLiteral( "string" ) ) );
+  QVERIFY( !reg.parameterType( QStringLiteral( "borken" ) ) );
+
+  auto paramType = new DummyParameterType();
+
+  reg.addParameterType( paramType );
+  QCOMPARE( reg.parameterType( QStringLiteral( "paramType" ) ), paramType );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -395,6 +395,27 @@ double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem 
   return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
 }
 
+QgsMapLayer *QgsLayoutUtils::mapLayerFromString( const QString &string, QgsProject *project )
+{
+  // Maybe it's a layer id?
+  if ( QgsMapLayer *ml = project->mapLayer( string ) )
+    return ml;
+
+  // Still nothing? Check for layer name
+  if ( QgsMapLayer *ml = project->mapLayersByName( string ).value( 0 ) )
+    return ml;
+
+  // Still nothing? Check for layer name, case-insensitive
+  const auto layers = project->mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    if ( it.value()->name().compare( string, Qt::CaseInsensitive ) == 0 )
+      return it.value();
+  }
+
+  return nullptr;
+}
+
 double QgsLayoutUtils::pointsToMM( const double pointSize )
 {
   //conversion to mm based on 1 point = 1/72 inch

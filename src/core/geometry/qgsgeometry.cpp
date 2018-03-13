@@ -2312,14 +2312,14 @@ QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
   return result;
 }
 
-void QgsGeometry::convertToStraightSegment()
+void QgsGeometry::convertToStraightSegment( double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType )
 {
   if ( !d->geometry || !requiresConversionToStraightSegments() )
   {
     return;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > straightGeom( d->geometry->segmentize() );
+  std::unique_ptr< QgsAbstractGeometry > straightGeom( d->geometry->segmentize( tolerance, toleranceType ) );
   reset( std::move( straightGeom ) );
 }
 

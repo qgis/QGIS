@@ -846,3 +846,8 @@ double PointSet::length() const
     return -1;
   }
 }
+
+bool PointSet::isClosed() const
+{
+  return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] );
+}

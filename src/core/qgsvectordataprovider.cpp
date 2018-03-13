@@ -681,6 +681,11 @@ bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
   return false;
 }
 
+QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const SIP_FACTORY
+{
+  return nullptr;
+}
+
 void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QgsDebugMsg( msg );
@@ -802,6 +807,11 @@ void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes
 QTextCodec *QgsVectorDataProvider::textEncoding() const
 {
   return mEncoding;
+}
+
+bool QgsVectorDataProvider::cancelReload()
+{
+  return false;
 }
 
 QStringList QgsVectorDataProvider::sEncodings;

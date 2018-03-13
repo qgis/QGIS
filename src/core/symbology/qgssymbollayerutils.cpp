@@ -3693,7 +3693,7 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
       svgPath.chop( 1 );
     }
 
-    QgsDebugMsg( "SvgPath: " + svgPath );
+    QgsDebugMsgLevel( "SvgPath: " + svgPath, 3 );
     // Not sure why to lowest dir was used instead of full relative path, it was causing #8664
     //QFileInfo myInfo( name );
     //QString myFileName = myInfo.fileName(); // foo.svg
@@ -3701,10 +3701,10 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
     //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : '/' + myLowestDir ) + '/' + myFileName;
     QString myLocalPath = svgPath + QDir::separator() + name;
 
-    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+    QgsDebugMsgLevel( "Alternative svg path: " + myLocalPath, 3 );
     if ( QFile( myLocalPath ).exists() )
     {
-      QgsDebugMsg( "Svg found in alternative path" );
+      QgsDebugMsgLevel( "Svg found in alternative path", 3 );
       return QFileInfo( myLocalPath ).canonicalFilePath();
     }
   }

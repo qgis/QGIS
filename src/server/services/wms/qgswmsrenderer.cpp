@@ -68,6 +68,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemlegend.h"
+#include "qgsserverexception.h"
 
 #include <QImage>
 #include <QPainter>
@@ -379,11 +380,11 @@ namespace QgsWms
     configurePrintLayout( layout.get(), mapSettings );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
     if ( !tempOutputFile.open() )
     {
-      // let the caller handle this
-      return nullptr;
+      throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
+
     }
 
     if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
@@ -881,6 +882,13 @@ namespace QgsWms
                                     QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
     }
 
+    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
+    if ( infoFormat == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
+                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+    }
+
     // get layers parameters
     QList<QgsMapLayer *> layers;
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
@@ -907,8 +915,18 @@ namespace QgsWms
     }
 
     // create the mapSettings and the output image
+    int imageWidth = mWmsParameters.widthAsInt();
+    int imageHeight = mWmsParameters.heightAsInt();
+
+    // Provide default image width/height values if format is not image
+    if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
+    {
+      imageWidth = 10;
+      imageHeight = 10;
+    }
+
     QgsMapSettings mapSettings;
-    std::unique_ptr<QImage> outputImage( createImage() );
+    std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( outputImage.get(), mapSettings );
@@ -952,14 +970,7 @@ namespace QgsWms
 
     QByteArray ba;
 
-    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
-
-    if ( infoFormat == QgsWmsParameters::Format::NONE )
-    {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
-    }
-    else if ( infoFormat == QgsWmsParameters::Format::TEXT )
+    if ( infoFormat == QgsWmsParameters::Format::TEXT )
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
@@ -1357,6 +1368,16 @@ namespace QgsWms
       return false;
     }
 
+    QgsFeatureRequest fReq;
+
+    // Transform filter geometry to layer CRS
+    std::unique_ptr<QgsGeometry> layerFilterGeom;
+    if ( filterGeom )
+    {
+      layerFilterGeom.reset( new QgsGeometry( *filterGeom ) );
+      layerFilterGeom->transform( QgsCoordinateTransform( mapSettings.destinationCrs(), layer->crs(), fReq.transformContext() ) );
+    }
+
     //we need a selection rect (0.01 of map width)
     QgsRectangle mapRect = mapSettings.extent();
     QgsRectangle layerRect = mapSettings.mapToLayerCoordinates( layer, mapRect );
@@ -1369,9 +1390,9 @@ namespace QgsWms
     {
       searchRect = featureInfoSearchRect( layer, mapSettings, renderContext, *infoPoint );
     }
-    else if ( filterGeom )
+    else if ( layerFilterGeom )
     {
-      searchRect = filterGeom->boundingBox();
+      searchRect = layerFilterGeom->boundingBox();
     }
     else if ( mParameters.contains( QStringLiteral( "BBOX" ) ) )
     {
@@ -1389,8 +1410,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
-    QgsFeatureRequest fReq;
-    bool hasGeometry = addWktGeometry || featureBBox || filterGeom;
+    bool hasGeometry = addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
@@ -1402,9 +1422,10 @@ namespace QgsWms
       fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
     }
 
-    if ( filterGeom )
+
+    if ( layerFilterGeom )
     {
-      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->asWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

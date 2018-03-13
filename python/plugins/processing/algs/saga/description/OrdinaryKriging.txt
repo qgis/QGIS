@@ -11,7 +11,7 @@ QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingPara
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False|1|None
 QgsProcessingParameterString|VAR_MODEL|Variogram Model|a + b * x
 Hardcoded|-TARGET_DEFINITION 0
-Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterDestination|PREDICTION|Prediction

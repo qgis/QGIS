@@ -40,6 +40,7 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 class QgsFeatureIterator;
 class QgsTransaction;
 class QgsFeedback;
+class QgsFeatureRenderer;
 
 #include "qgsfeaturerequest.h"
 
@@ -90,6 +91,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
       ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
       WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+      CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
+      CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -247,6 +250,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \see deleteFeatures()
      */
     virtual bool truncate();
+
+    /**
+     * Cancels the current reloading of data.
+     * \returns true if the reloading has been correctly interrupted, false otherwise
+     * \since QGIS 3.2
+     * \see reloadData()
+     */
+    virtual bool cancelReload();
 
     /**
      * Adds new \a attributes to the provider. Returns true in case of success and false in case of failure.
@@ -469,6 +480,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Must be implemented by providers that support delete styles from db returning true
      */
     virtual bool isDeleteStyleFromDatabaseSupported() const;
+
+    /**
+     * Creates a new vector layer feature renderer, using provider backend specific information.
+     *
+     * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
+     * allow customisation of the returned renderer. Support and format of \a configuration varies by provider.
+     *
+     * When called with an empty \a configuration map the provider's default renderer will be returned.
+     *
+     * This method returns a new renderer and the caller takes ownership of the returned object.
+     *
+     * Only providers which report the CreateRenderer capability will return a feature renderer. Other
+     * providers will return nullptr.
+     *
+     * \since QGIS 3.2
+     */
+    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const;
 
     static QVariant convertValue( QVariant::Type type, const QString &value );
 

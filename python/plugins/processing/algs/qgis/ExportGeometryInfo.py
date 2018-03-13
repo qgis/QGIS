@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
@@ -35,6 +36,7 @@ from qgis.core import (NULL,
                        QgsField,
                        QgsFields,
                        QgsWkbTypes,
+                       QgsPointXY,
                        QgsFeatureSink,
                        QgsDistanceArea,
                        QgsProcessingUtils,
@@ -58,7 +60,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
     def tags(self):
-        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
@@ -101,6 +103,9 @@ class ExportGeometryInfo(QgisAlgorithm):
             new_fields.append(QgsField('perimeter', QVariant.Double))
         elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.LineGeometry:
             new_fields.append(QgsField('length', QVariant.Double))
+            if not QgsWkbTypes.isMultiType(source.wkbType()):
+                new_fields.append(QgsField('straightdis', QVariant.Double))
+                new_fields.append(QgsField('sinuosity', QVariant.Double))
         else:
             new_fields.append(QgsField('xcoord', QVariant.Double))
             new_fields.append(QgsField('ycoord', QVariant.Double))
@@ -181,7 +186,17 @@ class ExportGeometryInfo(QgisAlgorithm):
         return attrs
 
     def line_attributes(self, geometry):
-        return [self.distance_area.measureLength(geometry)]
+        if geometry.isMultipart():
+            return [self.distance_area.measureLength(geometry)]
+        else:
+            curve = geometry.constGet()
+            p1 = curve.startPoint()
+            p2 = curve.endPoint()
+            straight_distance = self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
+            sinuosity = curve.sinuosity()
+            if math.isnan(sinuosity):
+                sinuosity = NULL
+            return [self.distance_area.measureLength(geometry), straight_distance, sinuosity]
 
     def polygon_attributes(self, geometry):
         area = self.distance_area.measureArea(geometry)

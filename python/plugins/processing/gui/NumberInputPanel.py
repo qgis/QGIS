@@ -51,10 +51,10 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class ModellerNumberInputPanel(BASE, WIDGET):
+class ModelerNumberInputPanel(BASE, WIDGET):
 
     """
-    Number input panel for use inside the modeller - this input panel
+    Number input panel for use inside the modeler - this input panel
     is based off the base input panel and includes a text based line input
     for entering values. This allows expressions and other non-numeric
     values to be set, which are later evalauted to numbers when the model
@@ -64,7 +64,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self, param, modelParametersDialog):
-        super(ModellerNumberInputPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.param = param
@@ -126,7 +126,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     """
-    Number input panel for use outside the modeller - this input panel
+    Number input panel for use outside the modeler - this input panel
     contains a user friendly spin box for entering values.
     """
 

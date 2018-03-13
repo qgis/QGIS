@@ -19,12 +19,14 @@ import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
                        QgsRasterLayer,
-                       QgsMapLayer)
+                       QgsMapLayer,
+                       QgsExpressionContextUtils)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -810,6 +812,196 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
 
         del project
+
+    def testSymbolicLinkInProjectPath(self):
+        """
+        Test whether paths to layer sources relative to the project are stored correctly
+        when project'name contains a symbolic link.
+        In other words, test if project's and layers' names are correctly resolved.
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shp"), os.path.join(tmpDir.path(), "lines.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.dbf"), os.path.join(tmpDir.path(), "lines.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shx"), os.path.join(tmpDir.path(), "lines.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(tmpDir.path(), "lines.shp"), "lines", "ogr")
+        l2 = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l0.isValid())
+        self.assertTrue(l1.isValid())
+        self.assertTrue(l2.isValid())
+        self.assertTrue(project.addMapLayers([l0, l1, l2]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        # Create symbolic link to previous project
+        tmpDir2 = QTemporaryDir()
+        symlinkDir = os.path.join(tmpDir2.path(), "dir")
+        os.symlink(tmpDir.path(), symlinkDir)
+        tmpFile = "{}/project.qgs".format(symlinkDir)
+
+        # Open project from symmlink and force re-save.
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        with open(tmpFile, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="./lines.shp"' in content)
+            self.assertTrue('source="./points.shp"' in content)
+            self.assertTrue('source="./landsat_4326.tif"' in content)
+
+    def testHomePath(self):
+        p = QgsProject()
+        path_changed_spy = QSignalSpy(p.homePathChanged)
+        self.assertFalse(p.homePath())
+        self.assertFalse(p.presetHomePath())
+
+        # simulate save file
+        tmp_dir = QTemporaryDir()
+        tmp_file = "{}/project.qgs".format(tmp_dir.path())
+        with open(tmp_file, 'w') as f:
+            pass
+        p.setFileName(tmp_file)
+
+        # home path should be file path
+        self.assertEqual(p.homePath(), tmp_dir.path())
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 1)
+
+        # manually override home path
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+        # check project scope
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
+
+        # no extra signal if path is unchanged
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        # setting file name should not affect home path is manually set
+        tmp_file_2 = "{}/project/project2.qgs".format(tmp_dir.path())
+        os.mkdir(tmp_dir.path() + '/project')
+        with open(tmp_file_2, 'w') as f:
+            pass
+        p.setFileName(tmp_file_2)
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
+
+        # clear manual path
+        p.setPresetHomePath('')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/project')
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 3)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/project')
+
+        # relative path
+        p.setPresetHomePath('../home')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/home')
+        self.assertEqual(p.presetHomePath(), '../home')
+        self.assertEqual(len(path_changed_spy), 4)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/home')
+
+        # relative path, no filename
+        p.setFileName('')
+        self.assertEqual(p.homePath(), '../home')
+        self.assertEqual(p.presetHomePath(), '../home')
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '../home')
+
+    def testDirtyBlocker(self):
+        # first test manual QgsProjectDirtyBlocker construction
+        p = QgsProject()
+
+        dirty_spy = QSignalSpy(p.isDirtyChanged)
+        # ^ will do *whatever* it takes to discover the enemy's secret plans!
+
+        # simple checks
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        self.assertEqual(dirty_spy[-1], [True])
+        p.setDirty(True) # already dirty
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 2)
+        self.assertEqual(dirty_spy[-1], [False])
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 3)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # with a blocker
+        blocker = QgsProjectDirtyBlocker(p)
+        # blockers will allow cleaning projects
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # but not dirtying!
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # nested block
+        blocker2 = QgsProjectDirtyBlocker(p)
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker2
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 5)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # using python context manager
+        with QgsProject.blockDirtying(p):
+            # cleaning allowed
+            p.setDirty(False)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+            # but not dirtying!
+            p.setDirty(True)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+
+        # unblocked
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 7)
+        self.assertEqual(dirty_spy[-1], [True])
 
 
 if __name__ == '__main__':

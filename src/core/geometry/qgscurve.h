@@ -168,6 +168,26 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     QPolygonF asQPolygonF() const;
 
+    /**
+     * Returns the straight distance of the curve, i.e. the direct/euclidean distance
+     * between the first and last vertex of the curve. (Also known as
+     * "as the crow flies" distance).
+     *
+     * \since QGIS 3.2
+     */
+    double straightDistance2d() const;
+
+    /**
+     * Returns the curve sinuosity, which is the ratio of the curve length() to curve
+     * straightDistance2d(). Larger numbers indicate a more "sinuous" curve (i.e. more
+     * "bendy"). The minimum value returned of 1.0 indicates a perfectly straight curve.
+     *
+     * If a curve isClosed(), it has infinite sinuosity and will return NaN.
+     *
+     * \since QGIS 3.2
+     */
+    double sinuosity() const;
+
 #ifndef SIP_RUN
 
     /**

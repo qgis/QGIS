@@ -795,6 +795,26 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         QgsProject.instance().removeMapLayer(l1.id())
 
+    def test_lazy(self):
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from "françéà"')
+        df.setLazy(True)
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        vl.reload()
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 4)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
     def test_joined_layers_conversion(self):
         v1 = QgsVectorLayer("Point?field=id:integer&field=b_id:integer&field=c_id:integer&field=name:string", "A", "memory")
         self.assertEqual(v1.isValid(), True)

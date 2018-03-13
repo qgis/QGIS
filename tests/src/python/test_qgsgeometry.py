@@ -1509,6 +1509,22 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+        # test adding a part to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)))')
+        g2 = QgsGeometry.fromWkt('CurvePolygon ((0 0,0 1,1 1,0 0))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a multisurface to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((20 0,20 1,21 1,20 0)))')
+        g2 = QgsGeometry.fromWkt('MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((20 0, 20 1, 21 1, 20 0)),Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
         # Test adding parts to empty geometry, should become first part
         empty = QgsGeometry()
         # if not default type specified, addPart should fail
@@ -3508,6 +3524,30 @@ class TestQgsGeometry(unittest.TestCase):
         result = geom.mergeLines().asWkt()
         exp = 'MultiLineString((0 0, 10 10),(12 2, 14 4))'
         self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testCurveSinuosity(self):
+        """
+        Test curve straightDistance2d() and sinuosity()
+        """
+        linestring = QgsGeometry.fromWkt('LineString()')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 0.0)
+        self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 10.0)
+        self.assertEqual(linestring.constGet().sinuosity(), 1.0)
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 10, 5 0)')
+        self.assertAlmostEqual(linestring.constGet().straightDistance2d(), 5.0, 4)
+        self.assertAlmostEqual(linestring.constGet().sinuosity(), 5.06449510, 4)
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10, 0 0)')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 0.0)
+        self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
+
+        curve = QgsGeometry.fromWkt('CircularString (20 30, 50 30, 50 90)')
+        self.assertAlmostEqual(curve.constGet().straightDistance2d(), 67.08203932, 4)
+        self.assertAlmostEqual(curve.constGet().sinuosity(), 1.57079632, 4)
+        curve = QgsGeometry.fromWkt('CircularString (20 30, 50 30, 20 30)')
+        self.assertAlmostEqual(curve.constGet().straightDistance2d(), 0.0, 4)
+        self.assertTrue(math.isnan(curve.constGet().sinuosity()))
 
     def testLineLocatePoint(self):
         """ test QgsGeometry.lineLocatePoint() """

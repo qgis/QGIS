@@ -754,13 +754,90 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mButtonImportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showImportColorsDialog );
   connect( mButtonExportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showExportColorsDialog );
 
+  connect( mActionImportPalette, &QAction::triggered, this, [ = ]
+  {
+    if ( QgsCompoundColorWidget::importUserPaletteFromFile( this ) )
+    {
+      //refresh combobox
+      refreshSchemeComboBox();
+      mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->count() - 1 );
+    }
+  } );
+  connect( mActionRemovePalette, &QAction::triggered, this, [ = ]
+  {
+    //get current scheme
+    QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+    int prevIndex = mColorSchemesComboBox->currentIndex();
+    if ( prevIndex >= schemeList.length() )
+    {
+      return;
+    }
+
+    //make user scheme is a user removable scheme
+    QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
+    if ( !userScheme )
+    {
+      return;
+    }
+
+    if ( QgsCompoundColorWidget::removeUserPalette( userScheme, this ) )
+    {
+      refreshSchemeComboBox();
+      prevIndex = std::max( std::min( prevIndex, mColorSchemesComboBox->count() - 1 ), 0 );
+      mColorSchemesComboBox->setCurrentIndex( prevIndex );
+    }
+  } );
+  connect( mActionNewPalette, &QAction::triggered, this, [ = ]
+  {
+    if ( QgsCompoundColorWidget::createNewUserPalette( this ) )
+    {
+      //refresh combobox
+      refreshSchemeComboBox();
+      mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->count() - 1 );
+    }
+  } );
+
+  connect( mActionShowInButtons, &QAction::toggled, this, [ = ]( bool state )
+  {
+    QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mTreeCustomColors->scheme() );
+    if ( scheme )
+    {
+      scheme->setShowSchemeInMenu( state );
+    }
+  } );
+
+  QMenu *schemeMenu = new QMenu( mSchemeToolButton );
+  schemeMenu->addAction( mActionNewPalette );
+  schemeMenu->addAction( mActionImportPalette );
+  schemeMenu->addAction( mActionRemovePalette );
+  schemeMenu->addSeparator();
+  schemeMenu->addAction( mActionShowInButtons );
+  mSchemeToolButton->setMenu( schemeMenu );
+
   //find custom color scheme from registry
+  refreshSchemeComboBox();
   QList<QgsCustomColorScheme *> customSchemes;
   QgsApplication::colorSchemeRegistry()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
     mTreeCustomColors->setScheme( customSchemes.at( 0 ) );
+    mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->findText( customSchemes.at( 0 )->schemeName() ) );
+    updateActionsForCurrentColorScheme( customSchemes.at( 0 ) );
   }
+  connect( mColorSchemesComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    //save changes to scheme
+    if ( mTreeCustomColors->isDirty() )
+    {
+      mTreeCustomColors->saveColorsToScheme();
+    }
+
+    QgsColorScheme *scheme = QgsApplication::colorSchemeRegistry()->schemes().value( index );
+    if ( scheme )
+      mTreeCustomColors->setScheme( scheme );
+
+    updateActionsForCurrentColorScheme( scheme );
+  } );
 
   //
   // Layout settings
@@ -2242,6 +2319,40 @@ void QgsOptions::addScaleToScaleList( QListWidgetItem *newItem )
   newItem->setData( Qt::UserRole, newItem->text() );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   mListGlobalScales->insertItem( i, newItem );
+}
+
+void QgsOptions::refreshSchemeComboBox()
+{
+  mColorSchemesComboBox->blockSignals( true );
+  mColorSchemesComboBox->clear();
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
+  {
+    mColorSchemesComboBox->addItem( ( *schemeIt )->schemeName() );
+  }
+  mColorSchemesComboBox->blockSignals( false );
+}
+
+void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
+{
+  mButtonImportColors->setEnabled( scheme->isEditable() );
+  mButtonPasteColors->setEnabled( scheme->isEditable() );
+  mButtonAddColor->setEnabled( scheme->isEditable() );
+  mButtonRemoveColor->setEnabled( scheme->isEditable() );
+
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
+  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) && userScheme->isEditable() );
+  if ( userScheme )
+  {
+    mActionShowInButtons->setEnabled( true );
+    whileBlocking( mActionShowInButtons )->setChecked( userScheme->flags() & QgsColorScheme::ShowInColorButtonMenu );
+  }
+  else
+  {
+    whileBlocking( mActionShowInButtons )->setChecked( false );
+    mActionShowInButtons->setEnabled( false );
+  }
 }
 
 void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )

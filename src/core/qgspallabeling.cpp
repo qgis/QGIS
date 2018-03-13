@@ -2931,12 +2931,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
-    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-    if ( bufferGeom.isNull() )
+    QgsGeometry validGeom = geom.makeValid();
+    if ( validGeom.isNull() )
     {
+      QgsDebugMsg( QString( "Could not repair geometry: %1" ).arg( validGeom.lastError() ) );
       return QgsGeometry();
     }
-    geom = bufferGeom;
+    geom = validGeom;
   }
 
   if ( !clipGeometry.isNull() &&

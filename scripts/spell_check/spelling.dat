@@ -466,6 +466,7 @@ amung:among
 amunition:ammunition
 an other:another
 analagous:analogous
+analise:analyze
 analitic:analytic
 analogeous:analogous
 analysator:analyzer
@@ -1880,6 +1881,7 @@ curcumstance:circumstance
 curcumstances:circumstances
 curently:currently
 currenly:currently
+currnt:current
 curriculem:curriculum
 cxan:cyan
 cyclinder:cylinder
@@ -1956,6 +1958,7 @@ defenition:definition
 defenitions:definitions
 defered:deferred
 deffensively:defensively
+defferent:different
 deffine:define
 deffined:defined
 defiend:defined
@@ -3168,6 +3171,7 @@ genreating:generating
 genric:generic
 geographich:geographic
 geographicial:geographical
+geoemtry:geometry
 geometrician:geometer
 geometricians:geometers
 geomtry:geometry
@@ -3366,6 +3370,7 @@ highligt:highlight
 highligted:highlighted
 highligting:highlighting
 highligts:highlights
+hight:height
 hightlight:highlight
 hightlighted:highlighted
 hightlighting:highlighting
@@ -4475,6 +4480,7 @@ mkaes:makes
 mkaing:making
 mkea:make
 mmnemonic:mnemonic
+modeller:modeler
 moderm:modem
 modfied:modified
 modfies:modifies
@@ -6632,6 +6638,7 @@ succedes:succeeds
 succeding:succeeding
 succeds:succeeds
 succeedes:succeeds
+succes:success:*
 succesful:successful
 succesfull:successful
 succesfully:successfully
@@ -7573,6 +7580,7 @@ woudn't:wouldn't
 would'nt:wouldn't
 would't:wouldn't
 wouldnt:wouldn't
+wraper:wrapper
 wresters:wrestlers
 wriet:write
 writeable:writable

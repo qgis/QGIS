@@ -27,6 +27,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsfileutils.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -539,7 +540,7 @@ QString QgsProcessingUtils::generateTempFilename( const QString &basename )
     QDir tmpDir;
     tmpDir.mkdir( path );
   }
-  return path + '/' + basename;
+  return path + '/' + QgsFileUtils::stringToSafeFilename( basename );
 }
 
 QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm )

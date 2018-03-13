@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1030</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -46,6 +46,8 @@
     <addaction name="mActionOpenProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
+    <addaction name="mActionRevertProject"/>
+    <addaction name="mActionCloseProject"/>
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
@@ -2957,6 +2959,22 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>New Report</string>
+   </property>
+  </action>
+  <action name="mActionCloseProject">
+   <property name="text">
+    <string>Close Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Close Project</string>
+   </property>
+  </action>
+  <action name="mActionRevertProject">
+   <property name="text">
+    <string>Revert Project…</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert Project to Saved version</string>
    </property>
   </action>
  </widget>

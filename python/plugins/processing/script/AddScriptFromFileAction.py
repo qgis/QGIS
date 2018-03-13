@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QFileDialog
 
 from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsSettings
@@ -40,7 +41,7 @@ from processing.script import ScriptUtils
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr("Add Script from File…")
+        self.name = QCoreApplication.translate("AddScriptFromFileAction", "Add Script from File…")
         self.group = self.tr("Tools")
 
     def execute(self):

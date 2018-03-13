@@ -42,8 +42,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -81,7 +80,6 @@ class UniqueValues(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=''))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('HTML report'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('HTML report')))
         self.addOutput(QgsProcessingOutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(QgsProcessingOutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 

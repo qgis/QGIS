@@ -211,6 +211,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
       QAction *actionRename = new QAction( tr( "Rename Favorite…" ), this );
       connect( actionRename, &QAction::triggered, this, &QgsBrowserDockWidget::renameFavorite );
       menu->addAction( actionRename );
+      menu->addSeparator();
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
       menu->addSeparator();
     }

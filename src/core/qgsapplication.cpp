@@ -220,7 +220,12 @@ void QgsApplication::init( QString profileFolder )
       setPrefixPath( myPrefix, true );
 #else
       QDir myDir( applicationDirPath() );
-      myDir.cdUp();
+      // Fix for server which is one level deeper in /usr/lib/cgi-bin
+      if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+      {
+        myDir.cdUp();
+      }
+      myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
       QString myPrefix = myDir.absolutePath();
       setPrefixPath( myPrefix, true );
 #endif
@@ -265,6 +270,9 @@ void QgsApplication::init( QString profileFolder )
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
   ABISYM( mMaxThreads ) = -1;
+
+  colorSchemeRegistry()->addDefaultSchemes();
+  colorSchemeRegistry()->initStyleScheme();
 
   ABISYM( mInitialized ) = true;
 }
@@ -1713,7 +1721,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
-  mColorSchemeRegistry->addDefaultSchemes();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
   mRendererRegistry = new QgsRendererRegistry();

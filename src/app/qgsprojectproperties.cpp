@@ -204,6 +204,41 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
   mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
+  mProjectHomeLineEdit->setShowClearButton( true );
+  mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
+  connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]
+  {
+    auto getAbsoluteHome = [this]()->QString
+    {
+      QString currentHome = QDir::fromNativeSeparators( mProjectHomeLineEdit->text() );
+      if ( !currentHome.isEmpty() )
+      {
+        QFileInfo homeInfo( currentHome );
+        if ( !homeInfo.isRelative() )
+          return currentHome;
+      }
+
+      QFileInfo pfi( QgsProject::instance()->fileName() );
+      if ( !pfi.exists() )
+        return QDir::homePath();
+
+      if ( !currentHome.isEmpty() )
+      {
+        // path is relative to project file
+        return QDir::cleanPath( pfi.path() + '/' + currentHome );
+      }
+      else
+      {
+        return pfi.canonicalPath();
+      }
+    };
+
+    QString newDir = QFileDialog::getExistingDirectory( this, tr( "Select Project Home Path" ), getAbsoluteHome() );
+    if ( ! newDir.isNull() )
+    {
+      mProjectHomeLineEdit->setText( QDir::toNativeSeparators( newDir ) );
+    }
+  } );
 
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
@@ -833,6 +868,7 @@ void QgsProjectProperties::apply()
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
+  QgsProject::instance()->setPresetHomePath( QDir::fromNativeSeparators( mProjectHomeLineEdit->text() ) );
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );

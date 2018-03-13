@@ -39,6 +39,7 @@
 #include "qgspolygon.h"
 #include "qgsclipper.h"
 #include "qgsproperty.h"
+#include "qgscolorschemeregistry.h"
 
 #include <QColor>
 #include <QImage>
@@ -125,6 +126,13 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
     ct.transformPolygon( pts );
   }
 
+  // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+  pts.erase( std::remove_if( pts.begin(), pts.end(),
+                             []( const QPointF point )
+  {
+    return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+  } ), pts.end() );
+
   QPointF *ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )
   {
@@ -160,6 +168,13 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   {
     ct.transformPolygon( poly );
   }
+
+  // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+  poly.erase( std::remove_if( poly.begin(), poly.end(),
+                              []( const QPointF point )
+  {
+    return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+  } ), poly.end() );
 
   QPointF *ptr = poly.data();
   for ( int i = 0; i < poly.size(); ++i, ++ptr )
@@ -308,13 +323,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
-    // Make sure we use get uniquely seeded random numbers, and not the same sequence of numbers
-    std::random_device rd;
-    std::mt19937 mt( rd() );
-    std::uniform_int_distribution<int> hueDist( 0, 359 );
-    std::uniform_int_distribution<int> satDist( 64, 255 );
-    std::uniform_int_distribution<int> valueDist( 128, 255 );
-    s->setColor( QColor::fromHsv( hueDist( mt ), satDist( mt ), valueDist( mt ) ) );
+    s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
   return s;

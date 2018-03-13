@@ -76,15 +76,9 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   {
     mDefinition = QgsVirtualLayerDefinition::fromUrl( url );
 
-    if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
+    if ( !mDefinition.isLazy() )
     {
-      // open the file
-      mValid = openIt();
-    }
-    else
-    {
-      // create the file
-      mValid = createIt();
+      reloadData();
     }
   }
   catch ( std::runtime_error &e )
@@ -97,6 +91,20 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   if ( mDefinition.geometrySrid() != -1 )
   {
     mCrs = QgsCoordinateReferenceSystem( mDefinition.geometrySrid() );
+  }
+}
+
+void QgsVirtualLayerProvider::reloadData()
+{
+  if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
+  {
+    // open the file
+    mValid = openIt();
+  }
+  else
+  {
+    // create the file
+    mValid = createIt();
   }
 }
 
@@ -447,6 +455,11 @@ bool QgsVirtualLayerProvider::createIt()
   return true;
 }
 
+bool QgsVirtualLayerProvider::cancelReload()
+{
+  return mSqlite.interrupt();
+}
+
 void QgsVirtualLayerProvider::resetSqlite()
 {
   bool hasSpatialrefsys = false;
@@ -563,11 +576,14 @@ bool QgsVirtualLayerProvider::isValid() const
 
 QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
 {
+  QgsVectorDataProvider::Capabilities capabilities = CancelSupport;
+
   if ( !mDefinition.uid().isNull() )
   {
-    return SelectAtId;
+    capabilities |= SelectAtId;
   }
-  return nullptr;
+
+  return capabilities;
 }
 
 QString QgsVirtualLayerProvider::name() const

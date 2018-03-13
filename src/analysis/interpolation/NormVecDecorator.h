@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is true, a re-estimation of the normals will be done
     void eliminateHorizontalTriangles() override;
-    //! Estimates the first derivative a point. Return true in case of succes and false otherwise
+    //! Estimates the first derivative a point. Return true in case of success and false otherwise
     bool estimateFirstDerivative( int pointno );
     //! This method adds the functionality of estimating normals at the data points. Return true in the case of success and false otherwise
     bool estimateFirstDerivatives( QgsFeedback *feedback = nullptr );

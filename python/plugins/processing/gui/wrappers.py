@@ -102,7 +102,7 @@ from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 
-from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
+from processing.gui.NumberInputPanel import NumberInputPanel, ModelerNumberInputPanel
 from processing.gui.RangePanel import RangePanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
@@ -706,7 +706,7 @@ class NumberWidgetWrapper(WidgetWrapper):
             widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
-            return ModellerNumberInputPanel(self.param, self.dialog)
+            return ModelerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
         if value is None or value == NULL:
@@ -737,7 +737,7 @@ class RangeWidgetWrapper(WidgetWrapper):
             widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         #else:
-        #    return ModellerNumberInputPanel(self.param, self.dialog)
+        #    return ModelerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
         if value is None or value == NULL:

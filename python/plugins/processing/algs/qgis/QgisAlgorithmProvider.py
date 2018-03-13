@@ -36,6 +36,8 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
+from PyQt5.QtCore import QCoreApplication
+
 from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
@@ -53,7 +55,6 @@ from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
@@ -87,7 +88,6 @@ from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -154,6 +154,7 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
+    fieldMappingParameterName = QCoreApplication.translate('Processing', 'Fields Mapper')
 
     def __init__(self):
         super().__init__()
@@ -174,7 +175,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
-                DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
                 Difference(),
@@ -208,7 +208,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
-                PointOnSurface(),
                 PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
@@ -316,6 +315,20 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
         for a in self.externalAlgs:
             self.addAlgorithm(a)
+
+    def load(self):
+        success = super().load()
+
+        if success:
+            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
+            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
+
+        return success
+
+    def unload(self):
+        super().unload()
+
+        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

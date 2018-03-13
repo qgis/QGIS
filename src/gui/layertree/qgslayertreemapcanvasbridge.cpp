@@ -49,6 +49,9 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       QgsLayerTreeLayer *nodeLayer = mRoot->findLayer( layer->id() );
       if ( nodeLayer )
       {
+        if ( !nodeLayer->layer()->isSpatial() )
+          continue;
+
         allLayerOrder << nodeLayer->layer();
         if ( nodeLayer->isVisible() )
           canvasLayers << nodeLayer->layer();
@@ -106,11 +109,14 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
   if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-    allLayers << nodeLayer->layer();
-    if ( nodeLayer->isVisible() )
-      canvasLayers << nodeLayer->layer();
-    if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
-      overviewLayers << nodeLayer->layer();
+    if ( nodeLayer->layer() && nodeLayer->layer()->isSpatial() )
+    {
+      allLayers << nodeLayer->layer();
+      if ( nodeLayer->isVisible() )
+        canvasLayers << nodeLayer->layer();
+      if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
+        overviewLayers << nodeLayer->layer();
+    }
   }
 
   Q_FOREACH ( QgsLayerTreeNode *child, node->children() )

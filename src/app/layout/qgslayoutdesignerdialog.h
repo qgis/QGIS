@@ -348,6 +348,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Populate layouts menu from main app's
     void populateLayoutsMenu();
 
+    void updateWindowTitle();
+
   private:
 
     static bool sInitializedRegistry;
@@ -499,7 +501,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QPrinter *printer();
     QString reportTypeString();
     void updateActionNames( QgsMasterLayoutInterface::Type type );
-    void updateWindowTitle();
+
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

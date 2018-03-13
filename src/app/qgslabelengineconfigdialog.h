@@ -31,6 +31,10 @@ class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLab
     void onOK();
     void setDefaults();
 
+
+  private slots:
+    void showHelp();
+
   protected:
 };
 

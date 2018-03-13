@@ -186,6 +186,10 @@ class PostGisDBConnector(DBConnector):
             self.has_raster_columns_access = self.getTablePrivileges('raster_columns')[0]
         return self.has_raster_columns
 
+    def cancel(self):
+        if self.connection:
+            self.connection.cancel()
+
     def getInfo(self):
         c = self._execute(None, u"SELECT version()")
         res = self._fetchone(c)
