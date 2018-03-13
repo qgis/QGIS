@@ -133,8 +133,8 @@ void QgsManageConnectionsDialog::doExportImport()
       case GeoNode:
         doc = saveGeonodeConnections( items );
         break;
-      case XYZTiles:
-        doc = saveXYZTilesConnections( items );
+      case XyzTiles:
+        doc = saveXyzTilesConnections( items );
         break;
     }
 
@@ -204,8 +204,8 @@ void QgsManageConnectionsDialog::doExportImport()
       case GeoNode:
         loadGeonodeConnections( doc, items );
         break;
-      case XYZTiles:
-        loadXYZTilesConnections( doc, items );
+      case XyzTiles:
+        loadXyzTilesConnections( doc, items );
         break;
     }
     // clear connections list and close window
@@ -248,7 +248,7 @@ bool QgsManageConnectionsDialog::populateConnections()
       case GeoNode:
         settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
         break;
-      case XYZTiles:
+      case XyzTiles:
         settings.beginGroup( QStringLiteral( "/qgis/connections-xyz" ) );
         break;
     }
@@ -362,7 +362,7 @@ bool QgsManageConnectionsDialog::populateConnections()
           return false;
         }
         break;
-      case XYZTiles:
+      case XyzTiles:
         if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
@@ -639,7 +639,7 @@ QDomDocument QgsManageConnectionsDialog::saveGeonodeConnections( const QStringLi
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveXYZTilesConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringList &connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsXYZTilesConnections" ) );
@@ -1272,7 +1272,7 @@ void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc
   }
 }
 
-void QgsManageConnectionsDialog::loadXYZTilesConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
