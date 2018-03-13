@@ -14,7 +14,7 @@ QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNum
 QgsProcessingParameterEnum|SEARCH_DIRECTION|Search Mode|[0] all directions;[1] quadrants
 QgsProcessingParameterEnum|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points
 QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum Number of Points|QgsProcessingParameterNumber.Integer|10|False|None|None
-Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
