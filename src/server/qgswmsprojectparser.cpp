@@ -251,7 +251,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
         {
           if ( pLegendGroupIt->attribute( "name" ) == lName )
           {
-            addLayersFromGroup( *pLegendGroupIt, layers, useCache );
+            p->addLayersFromGroup( *pLegendGroupIt, layers, useCache );
             break;
           }
         }
