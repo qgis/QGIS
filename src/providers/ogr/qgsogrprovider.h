@@ -211,7 +211,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool commitTransaction();
 
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
-    bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true );
+    bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
     void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
 
