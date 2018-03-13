@@ -141,7 +141,7 @@ class QgsBookmarkLocatorFilter : public QgsLocatorFilter
     QgsBookmarkLocatorFilter( QObject *parent = nullptr );
     QgsBookmarkLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "bookmarks" ); }
-    QString displayName() const override { return tr( "Spatial bookmarks" ); }
+    QString displayName() const override { return tr( "Spatial Bookmarks" ); }
     Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "b" ); }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
@@ -150,6 +150,32 @@ class QgsBookmarkLocatorFilter : public QgsLocatorFilter
     void triggerResult( const QgsLocatorResult &result ) override;
 
 };
+
+class QgsSettingsLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSettingsLocatorFilter( QObject *parent = nullptr );
+    QgsSettingsLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "optionpages" ); }
+    QString displayName() const override { return tr( "Settings" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "s" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+    struct SettingsHandle
+    {
+      QString type;
+      QString page;
+    };
+};
+
+Q_DECLARE_METATYPE( QgsSettingsLocatorFilter::SettingsHandle )
 
 #endif // QGSINBUILTLOCATORFILTERS_H
 

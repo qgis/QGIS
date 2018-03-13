@@ -731,6 +731,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QgsSettings settings;
 
+
   startProfile( QStringLiteral( "Building style sheet" ) );
   // set up stylesheet builder and apply saved or default style options
   mStyleSheetBuilder = new QgisAppStyleSheet( this );
@@ -1449,6 +1450,11 @@ QgisApp::~QgisApp()
   delete mVectorLayerTools;
   delete mWelcomePage;
 
+  delete mOptionsPagesMap;
+  delete mProjectPropertiesPagesMap;
+  delete mSettingPagesMap;
+
+
   deleteLayoutDesigners();
   removeAnnotationItems();
 
@@ -2096,7 +2102,7 @@ void QgisApp::createActions()
   connect( mActionToggleFullScreen, &QAction::triggered, this, &QgisApp::toggleFullScreen );
   connect( mActionTogglePanelsVisibility, &QAction::triggered, this, &QgisApp::togglePanelsVisibility );
   connect( mActionToggleMapOnly, &QAction::triggered, this, &QgisApp::toggleMapOnly );
-  connect( mActionProjectProperties, &QAction::triggered, this, &QgisApp::projectProperties );
+  connect( mActionProjectProperties, &QAction::triggered, this, [ = ] {projectProperties( QString() );} );
   connect( mActionOptions, &QAction::triggered, this, &QgisApp::options );
   connect( mActionCustomProjection, &QAction::triggered, this, &QgisApp::customProjection );
   connect( mActionConfigureShortcuts, &QAction::triggered, this, &QgisApp::configureShortcuts );
@@ -3012,6 +3018,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsActiveLayerFeaturesLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsExpressionCalculatorLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
 }
 
 void QgisApp::setIconSizes( int size )
@@ -9960,6 +9967,71 @@ void QgisApp::options()
   showOptionsDialog( this );
 }
 
+QMap< QString, QString > *QgisApp::getProjectPropertiesPagesMap()
+{
+  if ( mProjectPropertiesPagesMap == nullptr )
+  {
+    QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this );
+    mProjectPropertiesPagesMap = pp->createPageWidgetNameMap();
+  }
+  return mProjectPropertiesPagesMap;
+}
+
+void QgisApp::showProjectProperties( const QString &page )
+{
+  projectProperties( page );
+}
+
+QMap< QString, QString > *QgisApp::getSettingPagesMap()
+{
+  if ( mSettingPagesMap == nullptr )
+  {
+    mSettingPagesMap = new QMap< QString, QString >();
+    mSettingPagesMap->insert( tr( "Style Manager" ), "stylemanager" );
+    mSettingPagesMap->insert( tr( "Keyboard Shortcuts" ), "shortcuts" );
+    mSettingPagesMap->insert( tr( "Custom Projections" ), "customprojection" );
+    mSettingPagesMap->insert( tr( "Interface Customization" ), "customize" );
+  }
+  return mSettingPagesMap;
+}
+
+void QgisApp::showSettings( const QString &page )
+{
+  if ( page == "stylemanager" )
+  {
+    showStyleManager();
+  }
+  else if ( page == "shortcuts" )
+  {
+    configureShortcuts();
+  }
+  else if ( page == "customprojection" )
+  {
+    customProjection();
+  }
+  else if ( page == "customize" )
+  {
+    customize();
+  }
+}
+
+QMap< QString, QString > *QgisApp::getOptionsPagesMap()
+{
+  if ( mOptionsPagesMap == nullptr )
+  {
+    QList< QgsOptionsWidgetFactory * > factories;
+    Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
+    {
+      // remove any deleted factories
+      if ( f )
+        factories << f;
+    }
+    std::unique_ptr< QgsOptions > f( new QgsOptions( this, QgsGuiUtils::ModalDialogFlags, factories ) );
+    mOptionsPagesMap = f->createPageWidgetNameMap();
+  }
+  return mOptionsPagesMap;
+}
+
 void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 {
   QgsSettings mySettings;
@@ -10238,11 +10310,23 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
 void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories << factory;
+  //Nullify mOptionsPagesMap forcing it to be repopulated next time getOptionsPagesMap() is called
+  if ( mOptionsPagesMap != nullptr )
+  {
+    delete mOptionsPagesMap;
+    mOptionsPagesMap = nullptr;
+  }
 }
 
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
+  //Nullify mOptionsPagesMap forcing it to be repopulated next time getOptionsPagesMap() is called
+  if ( mOptionsPagesMap != nullptr )
+  {
+    delete mOptionsPagesMap;
+    mOptionsPagesMap = nullptr;
+  }
 }
 
 QgsMapLayer *QgisApp::activeLayer()
@@ -11545,7 +11629,7 @@ void QgisApp::projectPropertiesProjections()
   projectProperties();
 }
 
-void QgisApp::projectProperties()
+void QgisApp::projectProperties( const QString &currentPage )
 {
   /* Display the property sheet for the Project */
   // set wait cursor since construction of the project properties
@@ -11569,6 +11653,10 @@ void QgisApp::projectProperties()
            &QgsStatusBarScaleWidget::updateScales );
   QApplication::restoreOverrideCursor();
 
+  if ( !currentPage.isEmpty() )
+  {
+    pp->setCurrentPage( currentPage );
+  }
   // Display the modal dialog box.
   pp->exec();
 

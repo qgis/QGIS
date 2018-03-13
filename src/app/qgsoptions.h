@@ -61,6 +61,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     void setCurrentPage( const QString &pageWidgetName );
 
+    QMap<QString, QString> *createPageWidgetNameMap();
+
+
   public slots:
     void cbxProjectDefaultNew_toggled( bool checked );
     void setCurrentProjectDefault();

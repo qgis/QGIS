@@ -932,6 +932,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
+    /**
+     * Settings pages section
+     */
+    //! Get map of option pages
+    QMap< QString, QString > *getOptionsPagesMap();
+    //! Get map of project property pages
+    QMap< QString, QString > *getProjectPropertiesPagesMap();
+    //! Get map of setting pages
+    QMap< QString, QString > *getSettingPagesMap();
+
+    void showProjectProperties( const QString  &page = QString() );
+    void showSettings( const QString &page );
+    // End Settings pages section
+
     //! Opens the options dialog
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() );
 
@@ -1333,8 +1347,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void options();
     //! Whats-this help slot
     void whatsThis();
-    //! Set project properties, including map untis
-    void projectProperties();
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */
@@ -1786,6 +1798,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
 
+    //! Set project properties, including map untis
+    void projectProperties( const QString  &currentPage = QString() );
+
     /**
      * Paste features from clipboard into a new memory layer.
      * If no features are in clipboard an empty layer is returned.
@@ -2212,6 +2227,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
     QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
+
+    //! Internal vars supporting Settings Pages function
+    QMap< QString, QString > *mOptionsPagesMap = nullptr;
+    QMap< QString, QString > *mProjectPropertiesPagesMap = nullptr;
+    QMap< QString, QString > *mSettingPagesMap = nullptr;
 
     friend class TestQgisAppPython;
 };

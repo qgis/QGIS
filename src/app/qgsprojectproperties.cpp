@@ -2158,4 +2158,32 @@ void QgsProjectProperties::applyRequiredLayers()
     }
   }
   QgsProject::instance()->setRequiredLayers( requiredLayers );
+
+QMap< QString, QString > *QgsProjectProperties::createPageWidgetNameMap()
+{
+  QMap< QString, QString > *pageNames = new QMap< QString, QString >();
+  for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    QListWidgetItem *item = mOptionsListWidget->item( idx );
+    QString title = item->text();
+    QString name = currentPage->objectName();
+    pageNames->insert( title, name );
+  }
+  return pageNames;
+}
+
+void QgsProjectProperties::setCurrentPage( const QString &pageWidgetName )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == pageWidgetName )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }

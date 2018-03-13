@@ -339,6 +339,106 @@ void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult
 {
   QApplication::clipboard()->setText( result.userData.toString() );
 }
+
+// SettingsLocatorFilter
+//
+QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsSettingsLocatorFilter *QgsSettingsLocatorFilter::clone() const
+{
+  return new QgsSettingsLocatorFilter();
+}
+
+void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  QMap<QString, SettingsHandle> filteredSettingHandlesMap;
+  QMap<QString, QString> *optionsPagesMap = QgisApp::instance()->getOptionsPagesMap();
+
+  for ( QString op : optionsPagesMap->keys() )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    if ( stringMatches( op, string ) )
+    {
+      SettingsHandle sh;
+      sh.type = "optionpage";
+      sh.page = optionsPagesMap->value( op );
+      filteredSettingHandlesMap.insert( op + " (" + tr( "Options" ) + ")", sh );
+    }
+  }
+
+  QMap<QString, QString> *projectPropertyPagesMap = QgisApp::instance()->getProjectPropertiesPagesMap();
+
+  for ( QString pp : projectPropertyPagesMap->keys() )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    if ( stringMatches( pp, string ) )
+    {
+      SettingsHandle sh;
+      sh.type = "projectpropertypage";
+      sh.page = projectPropertyPagesMap->value( pp );
+      filteredSettingHandlesMap.insert( pp + " (" + tr( "Project Properties" ) + ")", sh );
+    }
+  }
+
+  QMap<QString, QString> *settingPagesMap = QgisApp::instance()->getSettingPagesMap();
+
+  for ( QString sp : settingPagesMap->keys() )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    if ( stringMatches( sp, string ) )
+    {
+      SettingsHandle sh;
+      sh.type = "settingspage";
+      sh.page = settingPagesMap->value( sp );
+      filteredSettingHandlesMap.insert( sp, sh );
+    }
+  }
+
+  for ( QString shk : filteredSettingHandlesMap.keys() )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    QString title = shk;
+    SettingsHandle sh = filteredSettingHandlesMap.value( shk );
+
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = title;
+    result.userData.setValue( sh );
+    result.score = static_cast< double >( string.length() ) / title.length();
+    emit resultFetched( result );
+  }
+
+}
+
+void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+
+  SettingsHandle sh = qvariant_cast<SettingsHandle>( result.userData );
+  if ( sh.type == "optionpage" )
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), sh.page );
+  }
+  else if ( sh.type == "projectpropertypage" )
+  {
+    QgisApp::instance()->showProjectProperties( sh.page );
+  }
+  else if ( sh.type == "settingspage" )
+  {
+    QgisApp::instance()->showSettings( sh.page );
+  }
+}
+
+
 // QgBookmarkLocatorFilter
 //
 
