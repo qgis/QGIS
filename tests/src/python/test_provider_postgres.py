@@ -37,6 +37,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsDefaultValue,
+    QgsCoordinateReferenceSystem,
     QgsProject,
     QgsWkbTypes,
     QgsGeometry
@@ -196,6 +197,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_table(self.dbconn, 'mls3d', 'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
         test_table(self.dbconn, 'pt4d', 'PointZM (1 2 3 4)')
+
+    def testMetadata(self):
+        """ Test that metadata is correctly acquired from provider """
+        metadata = self.vl.metadata()
+        self.assertEqual(metadata.crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+        self.assertEqual(metadata.type(), 'dataset')
+        self.assertEqual(metadata.abstract(), 'QGIS Test Table')
 
     def testGetFeaturesUniqueId(self):
         """
