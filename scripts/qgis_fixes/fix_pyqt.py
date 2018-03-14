@@ -7,7 +7,7 @@
 from lib2to3.fixes.fix_imports import alternates, FixImports
 from lib2to3 import fixer_base
 from lib2to3.fixer_util import (Name, Comma, FromImport, Newline,
-                                find_indentation, Node, syms)
+                                find_indentation, Node, syms, Leaf)
 
 MAPPING = {
     "PyQt4.QtGui": [
@@ -382,6 +382,15 @@ MAPPING = {
 }
 
 
+new_mappings = {}
+for key, value in MAPPING.items():
+    match_str = key.replace('PyQt4', '')
+    match_str = '{}{}'.format('qgis.PyQt', match_str)
+    new_mappings[match_str] = value
+
+MAPPING.update(new_mappings)
+
+
 def build_pattern():
     bare = set()
     for old_module, changes in list(MAPPING.items()):
@@ -391,10 +400,14 @@ def build_pattern():
 
             if '.' not in old_module:
                 from_name = "%r" % old_module
+
             else:
                 dotted = old_module.split('.')
-                assert len(dotted) == 2
-                from_name = "dotted_name<%r '.' %r>" % (dotted[0], dotted[1])
+                if len(dotted) == 3:
+                    from_name = "dotted_name<%r '.' %r '.' %r>" % (dotted[0], dotted[1], dotted[2])
+                else:
+                    assert len(dotted) == 2
+                    from_name = "dotted_name<%r '.' %r>" % (dotted[0], dotted[1])
 
             yield """import_name< 'import' (module=%s
                                   | dotted_as_names< any* module=%s any* >) >
