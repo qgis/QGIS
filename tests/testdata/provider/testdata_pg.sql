@@ -43,6 +43,8 @@ CREATE TABLE qgis_test."someData" (
     geom public.geometry(Point,4326)
 );
 
+COMMENT ON TABLE qgis_test."someData" IS 'QGIS Test Table';
+
 CREATE TABLE qgis_test."some_poly_data" (
     pk SERIAL NOT NULL,
     geom public.geometry(Polygon,4326)
