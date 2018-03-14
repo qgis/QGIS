@@ -38,9 +38,9 @@ void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text 
   emit progressTextChanged( text );
 }
 
-void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error )
+void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bool fatalError )
 {
-  emit errorReported( error );
+  emit errorReported( error, fatalError );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
@@ -316,10 +316,11 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
   close();
 }
 
-void QgsProcessingAlgorithmDialogBase::reportError( const QString &error )
+void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool fatalError )
 {
   setInfo( error, true );
-  resetGui();
+  if ( fatalError )
+    resetGui();
   showLog();
   processEvents();
 }
@@ -476,7 +477,7 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
 {
   if ( isError )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span><br />" ).arg( message ) );
+    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( message ) );
   else if ( escapeHtml )
     txtLog->append( message.toHtmlEscaped() );
   else
