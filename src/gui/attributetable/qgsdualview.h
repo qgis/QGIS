@@ -327,7 +327,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Will forward this signal to the feature list to visually represent
      * that there has been an edit event.
      */
-    void featureFormAttributeChanged();
+    void featureFormAttributeChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
