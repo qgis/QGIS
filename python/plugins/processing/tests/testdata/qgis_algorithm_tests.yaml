@@ -4892,3 +4892,18 @@ tests:
       OUTPUT:
         name: expected/rotate_around_point.gml
         type: vector
+
+  - algorithm: native:importphotos
+    name: Import photos
+    params:
+      FOLDER:
+        name: custom/photos
+        type: file
+      RECURSIVE: false
+    results:
+      INVALID:
+        name: expected/import_photos_invalid.gml
+        type: vector
+      OUTPUT:
+        name: expected/import_photos.gml
+        type: vector

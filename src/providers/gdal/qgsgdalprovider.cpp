@@ -504,7 +504,7 @@ QString QgsGdalProvider::htmlMetadata()
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
     if ( GDALmetadata )
     {
-      QStringList metadata = cStringList2Q_( GDALmetadata );
+      QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
       myMetadata += QgsHtmlUtils::buildBulletList( metadata );
     }
 
@@ -512,7 +512,7 @@ QString QgsGdalProvider::htmlMetadata()
 
     if ( GDALcategories )
     {
-      QStringList categories = cStringList2Q_( GDALcategories );
+      QStringList categories = QgsOgrUtils::cStringListToQStringList( GDALcategories );
       myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
     myMetadata += QStringLiteral( "</td></tr>" );
@@ -529,7 +529,7 @@ QString QgsGdalProvider::htmlMetadata()
   char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
   if ( GDALmetadata )
   {
-    QStringList metadata = cStringList2Q_( GDALmetadata );
+    QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
     myMetadata += QgsHtmlUtils::buildBulletList( metadata );
   }
 
@@ -1112,7 +1112,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
     if ( GDALmetadata )
     {
-      QStringList metadata = cStringList2Q_( GDALmetadata );
+      QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
       QStringList dimExtraValues;
       QMap< QString, QString > unitsMap;
       for ( QStringList::const_iterator i = metadata.constBegin();
@@ -1141,7 +1141,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
         if ( GDALmetadata )
         {
-          metadata = cStringList2Q_( GDALmetadata );
+          metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
           for ( QStringList::const_iterator i = metadata.constBegin();
                 i != metadata.constEnd(); ++i )
           {
