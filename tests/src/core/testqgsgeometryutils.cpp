@@ -57,6 +57,7 @@ class TestQgsGeometryUtils: public QObject
     void testCoefficients();
     void testPerpendicularSegment();
     void testClosestPoint();
+    void testlinesIntersection3D();
     void testSegmentIntersection();
     void testLineCircleIntersection();
     void testCircleCircleIntersection();
@@ -666,6 +667,44 @@ void TestQgsGeometryUtils::testClosestPoint()
   QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
   QGSCOMPARENEAR( pt4.m(), 1, 0.0001 );
+}
+
+void TestQgsGeometryUtils::testlinesIntersection3D()
+{
+  QVector3D x;
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 2, 3, 10 ), x ) );
+  QVERIFY( x == QVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 2, 0, 10 ), x ) );
+  QVERIFY( x == QVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 0, 1, 10 ), QVector3D( 0, 3, 10 ), x ) );
+  QVERIFY( x == QVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 0, 1, 10 ), QVector3D( 0, 0, 10 ), x ) );
+  QVERIFY( x == QVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 5, 1, 10 ), QVector3D( 5, 3, 10 ), x ) );
+  QVERIFY( x == QVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 5, 1, 10 ), QVector3D( 5, 0, 10 ), x ) );
+  QVERIFY( x == QVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 1, 1, 10 ), QVector3D( 2, 2, 10 ), QVector3D( 3, 1, 10 ), QVector3D( 3, 2, 10 ), x ) );
+  QVERIFY( x == QVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 1, 1, 10 ), QVector3D( 2, 2, 10 ), QVector3D( 3, 2, 10 ), QVector3D( 3, 1, 10 ), x ) );
+  QVERIFY( x == QVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 5, 5, 5 ), QVector3D( 0, 0, 0 ), QVector3D( 0, 5, 5 ), QVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 0, 5, 0 ), QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 5, 0, 0 ), QVector3D( 0, 5, 5 ), QVector3D( 5, 5, 5 ), x ) );
+  QVERIFY( x == QVector3D( 0.0, 5.0, 5.0 ) );
+
 }
 
 void TestQgsGeometryUtils::testSegmentIntersection()
