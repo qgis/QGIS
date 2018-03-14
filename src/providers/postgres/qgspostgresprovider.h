@@ -98,6 +98,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem crs() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
+    QgsLayerMetadata layerMetadata() const override;
 
     /**
      * Return the number of layers for the current data source
@@ -446,6 +447,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QHash<int, QString> mDefaultValues;
 
     bool mCheckPrimaryKeyUnicity = true;
+
+    QgsLayerMetadata mLayerMetadata;
 
     std::unique_ptr< QgsPostgresListener > mListener;
 };
