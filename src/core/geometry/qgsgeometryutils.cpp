@@ -311,6 +311,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
 
   double lambdaw = QgsVector( intersectionPoint.x() - q1.x(), intersectionPoint.y() - q1.y() ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
+
 }
 
 bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const double radius,
@@ -1328,6 +1329,131 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
     resultAngle = a1 - counterClockwiseDiff / 2.0;
   }
   return normalizedAngle( resultAngle );
+}
+
+double QgsGeometryUtils::skewLinesDistance( const QVector3D &P1, const QVector3D &P12,
+    const QVector3D &P2, const QVector3D &P22 )
+{
+  QVector3D u1 = P12 - P1;
+  QVector3D u2 = P22 - P2;
+  QVector3D u3 = QVector3D::crossProduct( u1, u2 );
+  if ( u3.length() == 0 ) return 1;
+  u3.normalize();
+  QVector3D dir = P1 - P2;
+  return std::fabs( ( QVector3D::dotProduct( dir, u3 ) ) ); // u3 is already normalized
+}
+
+bool QgsGeometryUtils::skewLinesProjection( const QVector3D &P1, const QVector3D &P12,
+    const QVector3D &P2, const QVector3D &P22,
+    QVector3D &X1, double epsilon )
+{
+  QVector3D d = P2 - P1;
+  QVector3D u1 = P12 - P1;
+  u1.normalize();
+  QVector3D u2 = P22 - P2;
+  u2.normalize();
+  QVector3D u3 = QVector3D::crossProduct( u1, u2 );
+
+  if ( std::fabs( u3.x() ) <= epsilon &&
+       std::fabs( u3.y() ) <= epsilon &&
+       std::fabs( u3.z() ) <= epsilon )
+  {
+    // The rays are almost parallel.
+    return false;
+  }
+
+  // X1 and X2 are the closest points on lines
+  // we want to find X1 (lies on u1)
+  // solving the linear equation in r1 and r2: Xi = Pi + ri*ui
+  // we are only interested in X1 so we only solve for r1.
+  float a1 = QVector3D::dotProduct( u1, u1 ), b1 = QVector3D::dotProduct( u1, u2 ), c1 = QVector3D::dotProduct( u1, d );
+  float a2 = QVector3D::dotProduct( u1, u2 ), b2 = QVector3D::dotProduct( u2, u2 ), c2 = QVector3D::dotProduct( u2, d );
+  if ( !( std::fabs( b1 ) > epsilon ) )
+  {
+    // Denominator is close to zero.
+    return false;
+  }
+  if ( !( a2 != -1 && a2 != 1 ) )
+  {
+    // Lines are parallel
+    return false;
+  }
+
+  double r1 = ( c2 - b2 * c1 / b1 ) / ( a2 - b2 * a1 / b1 );
+  X1 = P1 + u1 * r1;
+
+  return true;
+}
+
+bool QgsGeometryUtils::linesIntersection3D( const QVector3D &La1, const QVector3D &La2,
+    const QVector3D &Lb1, const QVector3D &Lb2,
+    QVector3D &intersection )
+{
+
+  // if all Vector are on the same plane (have the same Z), use the 2D intersection
+  // else return a false result
+  if ( qgsDoubleNear( La1.z(), La2.z() ) && qgsDoubleNear( La1.z(), Lb1.z() ) && qgsDoubleNear( La1.z(), Lb2.z() ) )
+  {
+    QgsPoint ptInter;
+    bool isIntersection;
+    segmentIntersection( QgsPoint( La1.x(), La1.y() ),
+                         QgsPoint( La2.x(), La2.y() ),
+                         QgsPoint( Lb1.x(), Lb1.y() ),
+                         QgsPoint( Lb2.x(), Lb2.y() ),
+                         ptInter,
+                         isIntersection,
+                         1e-8,
+                         true );
+    intersection.setX( ptInter.x() );
+    intersection.setY( ptInter.y() );
+    intersection.setZ( La1.z() );
+    return true;
+  }
+
+  // first check if lines have an exact intersection point
+  // do it by checking if the shortest distance is exactly 0
+  float distance = skewLinesDistance( La1, La2, Lb1, Lb2 );
+  if ( qgsDoubleNear( distance, 0.0 ) )
+  {
+    // 3d lines have exact intersection point.
+    QVector3D C = La2;
+    QVector3D D = Lb2;
+    QVector3D e = La1 - La2;
+    QVector3D f = Lb1 - Lb2;
+    QVector3D g = D - C;
+    if ( qgsDoubleNear( ( QVector3D::crossProduct( f, g ) ).length(), 0.0 ) || qgsDoubleNear( ( QVector3D::crossProduct( f, e ) ).length(), 0.0 ) )
+    {
+      // Lines have no intersection, are they parallel?
+      return false;
+    }
+
+    QVector3D fgn = QVector3D::crossProduct( f, g );
+    fgn.normalize();
+
+    QVector3D fen = QVector3D::crossProduct( f, e );
+    fen.normalize();
+
+    int di = -1;
+    if ( fgn == fen ) // same direction?
+      di *= -1;
+
+    intersection = C + e * di * ( QVector3D::crossProduct( f, g ).length() / QVector3D::crossProduct( f, e ).length() );
+    return true;
+  }
+
+  // try to calculate the approximate intersection point
+  QVector3D X1, X2;
+  bool firstIsDone = skewLinesProjection( La1, La2, Lb1, Lb2, X1 );
+  bool secondIsDone = skewLinesProjection( Lb1, Lb2, La1, La2, X2 );
+
+  if ( !firstIsDone || !secondIsDone )
+  {
+    // Could not obtain projection point.
+    return false;
+  }
+
+  intersection = ( X1 + X2 ) / 2.0;
+  return true;
 }
 
 bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
