@@ -440,7 +440,6 @@ Copy member variables from other raster data provider. Useful for implementation
 
 
 
-
 };
 
 QFlags<QgsRasterDataProvider::ProviderCapability> operator|(QgsRasterDataProvider::ProviderCapability f1, QFlags<QgsRasterDataProvider::ProviderCapability> f2);
