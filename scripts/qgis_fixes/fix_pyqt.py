@@ -437,11 +437,14 @@ class FixPyqt(FixImports):
 
         names = []
 
-        # create a Node list of the replacement modules
-        for name in MAPPING[import_mod.value][:-1]:
-            names.extend([Name(name[0], prefix=pref), Comma()])
-        names.append(Name(MAPPING[import_mod.value][-1][0], prefix=pref))
-        import_mod.replace(names)
+        if isinstance(import_mod, Leaf):
+            # create a Node list of the replacement modules
+            for name in MAPPING[import_mod.value][:-1]:
+                names.extend([Name(name[0], prefix=pref), Comma()])
+            names.append(Name(MAPPING[import_mod.value][-1][0], prefix=pref))
+            import_mod.replace(names)
+        else:
+            self.cannot_convert(node, "imports like PyQt4.QtGui or import qgis.PyQt.QtGui are not supported")
 
     def transform_member(self, node, results):
         """Transform for imports of specific module elements. Replaces
