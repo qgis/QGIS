@@ -125,6 +125,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     static int sFormCounter;
     static QString sSettingsPath;
 
+    void saveGeometry();
+    void restoreGeometry();
 };
 
 #endif
