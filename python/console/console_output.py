@@ -79,6 +79,7 @@ class writeOut(object):
 
     def flush(self):
         pass
+    
     def isatty(self):
         return False
 
