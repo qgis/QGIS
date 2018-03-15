@@ -54,7 +54,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
   if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
-    QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
+    QStringList keyList = valueToStringList( value );
     QStringList valueList;
 
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
@@ -141,4 +141,24 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   }
 
   return cache;
+}
+
+QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
+{
+  QStringList checkList;
+  if ( value.type() == QVariant::StringList )
+    checkList = value.toStringList();
+  else if ( value.type() == QVariant::String )
+    checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
+  else if ( value.type() == QVariant::List )
+  {
+    QVariantList valuesList( value.toList( ) );
+    for ( const QVariant &listItem : qgis::as_const( valuesList ) )
+    {
+      QString v( listItem.toString( ) );
+      if ( ! v.isEmpty() )
+        checkList.append( v );
+    }
+  }
+  return checkList;
 }
