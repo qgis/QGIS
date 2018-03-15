@@ -117,6 +117,8 @@ algorithm execution.
 {
 %Docstring
 Details for layers to load into projects.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
