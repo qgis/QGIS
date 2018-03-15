@@ -372,14 +372,14 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         self.assertTrue(al.isValid())
         vl.setAuxiliaryLayer(al)
 
-        self.assetFalse(vl.auxiliaryLayer(), None)
+        self.assertIsNotNone(vl.auxiliaryLayer())
 
         # Clear auxiliary layer
         al.clear()
         # Remove auxiliary layer
         vl.setAuxiliaryLayer()
 
-        self.assetTrue(vl.auxiliaryLayer(), None)
+        self.assertIsNone(vl.auxiliaryLayer())
 
     def testCreateProperty(self):
         s = QgsAuxiliaryStorage()
