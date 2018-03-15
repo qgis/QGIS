@@ -81,9 +81,6 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         rendered_layers = [layer]
         self.mapsettings.setLayers(rendered_layers)
 
-    def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
-
     def testElse(self):
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
