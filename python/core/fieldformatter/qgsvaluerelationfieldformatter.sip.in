@@ -64,6 +64,17 @@ if doing multiple lookups in a loop.
 
 .. versionadded:: 3.0
 %End
+
+    static QStringList valueToStringList( const QVariant &value );
+%Docstring
+Utility to convert an array or a string representation of and array ``value`` to a string list
+
+:param value: The value to be converted
+
+:return: A string list
+
+.. versionadded:: 3.2
+%End
 };
 
 
