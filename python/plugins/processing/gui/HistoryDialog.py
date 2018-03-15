@@ -106,6 +106,7 @@ class HistoryDialog(BASE, WIDGET):
             item.setIcon(0, self.keyIcon)
             groupItem.insertChild(0, item)
         self.tree.addTopLevelItem(groupItem)
+        groupItem.setExpanded(True)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()
