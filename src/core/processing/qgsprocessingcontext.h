@@ -157,7 +157,11 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
-    //! Details for layers to load into projects.
+    /**
+     * Details for layers to load into projects.
+     * \ingroup core
+     * \since QGIS 3.0
+     */
     class LayerDetails
     {
       public:
