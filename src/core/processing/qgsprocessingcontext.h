@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProcessingContext
      * \ingroup core
      * \since QGIS 3.0
      */
-    class LayerDetails
+    class CORE_EXPORT LayerDetails
     {
       public:
 
