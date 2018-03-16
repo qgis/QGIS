@@ -207,11 +207,11 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  QPoint point;
+  QgsPointXY point;
   bool isSingleClick = mSelectionGeometry.type() == QgsWkbTypes::PointGeometry;
   if ( isSingleClick )
   {
-    point = mSelectionGeometry.asPoint().toQPointF().toPoint();
+    point = mSelectionGeometry.asPoint();
 
     commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
     commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
@@ -229,7 +229,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsRectangle r;
     if ( isSingleClick )
     {
-      int boxSize = ( int ) round( searchRadiusMU( mCanvas ) );
+      double sr = searchRadiusMU( mCanvas );/*
       QRect selectRect = QRect();
       selectRect.setLeft( point.x() - boxSize );
       selectRect.setRight( point.x() + boxSize );
@@ -240,6 +240,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
       QPoint point2 = selectRect.bottomRight();
 
       r = QgsRectangle( point1.x(), point1.y(), point2.x(), point2.y() );;
+      */
+      r = QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr );
     }
     else
     {
@@ -250,7 +252,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if ( mSelectionGeometry.intersects( f.geometry() ) )
+      if (mSelectionGeometry.type() == QgsWkbTypes::PointGeometry || mSelectionGeometry.type() == QgsWkbTypes::Polygon || mSelectionGeometry.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }

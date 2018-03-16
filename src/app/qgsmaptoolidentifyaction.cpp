@@ -251,7 +251,7 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
       initRubberBand();
       mInitDragPos = e -> pos();
       break;
-    case QgsMapToolIdentifyAction::SeutilslectPolygon:
+    case QgsMapToolIdentifyAction::SelectPolygon:
       break;
     case QgsMapToolIdentifyAction::SelectFreehand:
       break;

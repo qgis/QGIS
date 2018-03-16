@@ -314,15 +314,15 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 
 void QgsIdentifyResultsDialog::initSelectionModes()
 {
-  selectModeBtn = new QToolButton( mIdentifyToolbar );
-  selectModeBtn->setPopupMode( QToolButton::MenuButtonPopup );
+  mSelectModeButton = new QToolButton( mIdentifyToolbar );
+  mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction *> selectActions;
   selectActions << mActionSelectFeatures << mActionSelectPolygon
                 << mActionSelectFreehand << mActionSelectRadius;
-  selectModeBtn->addActions( selectActions );
-  selectModeBtn->setDefaultAction( mActionSelectFeatures );
+  mSelectModeButton->addActions( selectActions );
+  mSelectModeButton->setDefaultAction( mActionSelectFeatures );
 
-  mIdentifyToolbar->addWidget( selectModeBtn );
+  mIdentifyToolbar->addWidget( mSelectModeButton );
 
   connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
@@ -2019,22 +2019,22 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   QObject *obj = sender();
   if ( obj == mActionSelectFeatures )
   {
-    selectModeBtn->setDefaultAction( mActionSelectFeatures );
+    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
     mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
   }
   else if ( obj == mActionSelectPolygon )
   {
-    selectModeBtn->setDefaultAction( mActionSelectPolygon );
+    mSelectModeButton->setDefaultAction( mActionSelectPolygon );
     mSelectionMode = QgsMapToolIdentifyAction::SelectPolygon;
   }
   else if ( obj == mActionSelectFreehand )
   {
-    selectModeBtn->setDefaultAction( mActionSelectFreehand );
+    mSelectModeButton->setDefaultAction( mActionSelectFreehand );
     mSelectionMode = QgsMapToolIdentifyAction::SelectFreehand;
   }
   else if ( obj == mActionSelectRadius )
   {
-    selectModeBtn->setDefaultAction( mActionSelectRadius );
+    mSelectModeButton->setDefaultAction( mActionSelectRadius );
     mSelectionMode = QgsMapToolIdentifyAction::SelectRadius;
   }
 }
@@ -2043,7 +2043,6 @@ QgsMapToolIdentifyAction::IdentifySelection QgsIdentifyResultsDialog::selectionM
 {
   return mSelectionMode;
 }
-
 
 void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionContextScope &scope )
 {

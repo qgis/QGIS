@@ -136,7 +136,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void keyReleaseEvent( QKeyEvent *e );
 
-
     friend class TestQgsMapToolIdentifyAction;
 };
 
