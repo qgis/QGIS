@@ -522,6 +522,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           QStringList::const_iterator alstIt;
           QList<int> idxList;
           QgsFields fields = layer->pendingFields();
+          // build corresponding propertyname
+          QList<QString> propertynames;
+          for ( int idx = 0; idx < fields.count(); ++idx )
+          {
+            propertynames.append( fields[idx].name().replace( " ", "_" ) );
+          }
           QString fieldName;
           QDomElement propertyElem;
           for ( int q = 0; q < queryChildNodes.size(); q++ )
@@ -534,7 +540,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 fieldName = fieldName.section( ":", 1, 1 );
               }
-              int fieldNameIdx = fields.fieldNameIndex( fieldName );
+              int fieldNameIdx = propertynames.indexOf( fieldName );
               if ( fieldNameIdx > -1 )
               {
                 idxList.append( fieldNameIdx );
@@ -2047,7 +2053,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
       continue;
     }
 
-    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ) );
     QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
@@ -2129,7 +2135,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
       continue;
     }
 
-    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ) );
     QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
