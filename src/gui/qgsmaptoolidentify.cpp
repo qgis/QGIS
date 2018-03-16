@@ -184,7 +184,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ));
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ) );
   }
   else
   {
@@ -192,121 +192,122 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer)
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer )
 {
 
-    if ( !layer || !layer->isSpatial() )
-      return false;
-    if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
+  if ( !layer || !layer->isSpatial() )
+    return false;
+  if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
+  {
+    QgsDebugMsg( "Out of scale limits" );
+    return false;
+  }
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  QMap< QString, QString > commonDerivedAttributes;
+
+  QPoint point;
+  bool isSingleClick = mSelectionGeometry.type() == QgsWkbTypes::PointGeometry;
+  if ( isSingleClick )
+  {
+    point = mSelectionGeometry.asPoint().toQPointF().toPoint();
+
+    commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
+    commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+  }
+
+  int featureCount = 0;
+
+  QgsFeatureList featureList;
+
+  // toLayerCoordinates will throw an exception for an 'invalid' point.
+  // For example, if you project a world map onto a globe using EPSG 2163
+  // and then click somewhere off the globe, an exception will be thrown.
+  try
+  {
+    QgsRectangle r;
+    if ( isSingleClick )
     {
-      QgsDebugMsg( "Out of scale limits" );
-      return false;
+      int boxSize = ( int ) round( searchRadiusMU( mCanvas ) );
+      QRect selectRect = QRect();
+      selectRect.setLeft( point.x() - boxSize );
+      selectRect.setRight( point.x() + boxSize );
+      selectRect.setTop( point.y() - boxSize );
+      selectRect.setBottom( point.y() + boxSize );
+
+      QPoint point1 = selectRect.topLeft();
+      QPoint point2 = selectRect.bottomRight();
+
+      r = QgsRectangle( point1.x(), point1.y(), point2.x(), point2.y() );;
+    }
+    else
+    {
+      r = toLayerCoordinates( layer, mSelectionGeometry.boundingBox() );
     }
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    QMap< QString, QString > commonDerivedAttributes;
-
-    QPoint point;
-    bool isSingleClick = mSelectionGeometry.type() == QgsWkbTypes::PointGeometry;
-    if (isSingleClick)
+    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
     {
-        point = mSelectionGeometry.asPoint().toQPointF().toPoint();
-
-        commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
-        commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+      if ( mSelectionGeometry.intersects( f.geometry() ) )
+        featureList << QgsFeature( f );
     }
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    // catch exception for 'invalid' point and proceed with no features found
+    QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+  }
 
-    int featureCount = 0;
+  QgsFeatureList::iterator f_it = featureList.begin();
 
-    QgsFeatureList featureList;
+  bool filter = false;
 
-    // toLayerCoordinates will throw an exception for an 'invalid' point.
-    // For example, if you project a world map onto a globe using EPSG 2163
-    // and then click somewhere off the globe, an exception will be thrown.
-    try
-    {
-        QgsRectangle r;
-        if (isSingleClick)
-        {
-            int boxSize = (int) round(searchRadiusMU( mCanvas ));
-            QRect selectRect = QRect();
-            selectRect.setLeft( point.x() - boxSize);
-            selectRect.setRight( point.x() + boxSize );
-            selectRect.setTop( point.y() - boxSize );
-            selectRect.setBottom( point.y() + boxSize );
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+  std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
+  if ( renderer )
+  {
+    // setup scale for scale dependent visibility (rule based)
+    renderer->startRender( context, layer->fields() );
+    filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+  }
 
-            QPoint point1 = selectRect.topLeft();
-            QPoint point2 = selectRect.bottomRight();
+  for ( ; f_it != featureList.end(); ++f_it )
+  {
+    QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
-            r = QgsRectangle(point1.x(), point1.y(), point2.x(), point2.y());;
-        } else {
-            r = toLayerCoordinates( layer, mSelectionGeometry.boundingBox());
-        }
+    QgsFeatureId fid = f_it->id();
+    context.expressionContext().setFeature( *f_it );
 
-        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-        QgsFeature f;
-      while ( fit.nextFeature( f ) )
-      {
+    if ( filter && !renderer->willRenderFeature( *f_it, context ) )
+      continue;
 
-          if (mSelectionGeometry.intersects(f.geometry()))
-            featureList << QgsFeature( f );
-      }
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      // catch exception for 'invalid' point and proceed with no features found
-      QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
-    }
+    featureCount++;
+    if ( isSingleClick )
+      derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
+    derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
-    QgsFeatureList::iterator f_it = featureList.begin();
+    results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
+  }
 
-    bool filter = false;
+  if ( renderer )
+  {
+    renderer->stopRender( context );
+  }
 
-    QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
-    context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
-    std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
-    if ( renderer )
-    {
-      // setup scale for scale dependent visibility (rule based)
-      renderer->startRender( context, layer->fields() );
-      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
-    }
+  QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
 
-    for ( ; f_it != featureList.end(); ++f_it )
-    {
-      QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
-
-      QgsFeatureId fid = f_it->id();
-      context.expressionContext().setFeature( *f_it );
-
-      if ( filter && !renderer->willRenderFeature( *f_it, context ) )
-        continue;
-
-      featureCount++;
-      if (isSingleClick)
-        derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
-      derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
-
-      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
-    }
-
-    if ( renderer )
-    {
-      renderer->stopRender( context );
-    }
-
-    QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
-
-    QApplication::restoreOverrideCursor();
-    return featureCount > 0;
+  QApplication::restoreOverrideCursor();
+  return featureCount > 0;
 }
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
-{ 
-    mSelectionGeometry = QgsGeometry::fromPointXY(point);
-    return identifyVectorLayer(results, layer);
+{
+  mSelectionGeometry = QgsGeometry::fromPointXY( point );
+  return identifyVectorLayer( results, layer );
 }
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
