@@ -3706,9 +3706,9 @@ void QgisApp::initLayerTreeView()
   btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
   // filter legend action
-  mActionFilterLegend = new QAction( tr( "Filter Legend By Map Content" ), this );
+  mActionFilterLegend = new QAction( tr( "Filter Legend by Map Content" ), this );
   mActionFilterLegend->setCheckable( true );
-  mActionFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
+  mActionFilterLegend->setToolTip( tr( "Filter Legend by Map Content" ) );
   mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
   connect( mActionFilterLegend, &QAction::toggled, this, &QgisApp::updateFilterLegend );
 

@@ -1776,10 +1776,10 @@
      <normaloff>:/images/themes/default/mActionMoveLabel.svg</normaloff>:/images/themes/default/mActionMoveLabel.svg</iconset>
    </property>
    <property name="text">
-    <string>Move Label And Diagram</string>
+    <string>Move Label and Diagram</string>
    </property>
    <property name="toolTip">
-    <string>Move Label And Diagram</string>
+    <string>Move Label and Diagram</string>
    </property>
   </action>
   <action name="mActionRotateLabel">
@@ -1990,7 +1990,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
-    <string>Copy style</string>
+    <string>Copy Style</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy Style</string>
    </property>
   </action>
   <action name="mActionPasteStyle">
@@ -1999,7 +2002,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
    </property>
    <property name="text">
-    <string>Paste style</string>
+    <string>Paste Style</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste Style</string>
    </property>
   </action>
   <action name="mActionAddWcsLayer">
@@ -2035,10 +2041,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionPinLabels.svg</normaloff>:/images/themes/default/mActionPinLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Pin/Unpin Labels And Diagrams</string>
+    <string>Pin/Unpin Labels and Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Pin/Unpin Labels And Diagrams
+    <string>Pin/Unpin Labels and Diagrams
 Click or marquee on label/diagram to pin
 Shift unpins, Ctrl (Cmd) toggles state
 Acts on all editable layers</string>
@@ -2053,10 +2059,10 @@ Acts on all editable layers</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels And Diagrams</string>
+    <string>Highlight Pinned Labels and Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels And Diagrams</string>
+    <string>Highlight Pinned Labels and Diagrams</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2104,7 +2110,7 @@ Acts on all editable layers</string>
      <normaloff>:/images/themes/default/mActionShowHideLabels.svg</normaloff>:/images/themes/default/mActionShowHideLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Show/Hide Labels And Diagrams</string>
+    <string>Show/Hide Labels and Diagrams</string>
    </property>
    <property name="toolTip">
     <string>Show/Hide Labels And Diagrams
@@ -2638,7 +2644,7 @@ Acts on currently active editable layer</string>
     <string>Select Features by Value...</string>
    </property>
    <property name="toolTip">
-    <string>Select Features By Value</string>
+    <string>Select Features by Value</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
@@ -2725,7 +2731,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Add Circle by a center point and another point</string>
+    <string>&amp;Add Circle by a Center Point and Another Point</string>
    </property>
    <property name="toolTip">
     <string>Add Circle by a center point and another point</string>
@@ -2800,7 +2806,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangleExtent.svg</normaloff>:/images/themes/default/mActionRectangleExtent.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Add Rectangle From Extent</string>
+    <string>&amp;Add Rectangle from Extent</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from extent</string>
@@ -2815,7 +2821,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangleCenter.svg</normaloff>:/images/themes/default/mActionRectangleCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Add &amp;Rectangle From Center and a Point</string>
+    <string>Add &amp;Rectangle from Center and a Point</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from center and a point</string>
@@ -2830,7 +2836,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Add Regular Polygon From Center and a Point</string>
+    <string>&amp;Add Regular Polygon from Center and a Point</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from center and a point</string>
@@ -2845,7 +2851,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</iconset>
    </property>
    <property name="text">
-    <string>Add &amp;Regular Polygon From 2 Points</string>
+    <string>Add &amp;Regular Polygon from 2 Points</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from 2 points</string>
@@ -2875,7 +2881,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle &amp;From 3 Points</string>
+    <string>Add Rectangle &amp;from 3 Points</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from 3 points</string>
@@ -2890,7 +2896,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Circle &amp;from 2 Tangents and a point</string>
+    <string>Add Circle &amp;from 2 Tangents and a Point</string>
    </property>
    <property name="toolTip">
     <string>Add circle from 2 tangents and a point</string>
@@ -2905,7 +2911,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Regular &amp;Polygon From Center and a Corner</string>
+    <string>Add Regular &amp;Polygon from Center and a Corner</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from center and a corner</string>
