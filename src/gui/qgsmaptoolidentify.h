@@ -60,6 +60,20 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     };
     Q_ENUM( IdentifyMode )
 
+    //! Select features to identify by:
+    enum IdentifySelection
+    {
+      //! SelectSimple - single click or drawing a rectangle
+      SelectSimple,
+      //! SelectPolygon - drawing a polygon
+      SelectPolygon,
+      //! SelectFreehand - free hand selection
+      SelectFreehand,
+      //! SelectRadius - a circle selection
+      SelectRadius
+    };
+    Q_ENUM( IdentifySelection )
+
     enum Type
     {
       VectorLayer = 1,
@@ -159,7 +173,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer);
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, IdentifySelection selectionMode = IdentifySelection::SelectSimple);
 
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;

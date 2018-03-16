@@ -44,20 +44,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   public:
 
-    //! Select features to identify by:
-    enum IdentifySelection
-    {
-      //! SelectSimple - single click or drawing a rectangle
-      SelectSimple,
-      //! SelectPolygon - drawing a polygon
-      SelectPolygon,
-      //! SelectFreehand - free hand selection
-      SelectFreehand,
-      //! SelectRadius - a circle selection
-      SelectRadius
-    };
-    Q_ENUM( IdentifySelection )
-
     QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
     ~QgsMapToolIdentifyAction() override;

@@ -2039,7 +2039,7 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   }
 }
 
-QgsMapToolIdentifyAction::IdentifySelection QgsIdentifyResultsDialog::selectionMode()
+QgsMapToolIdentify::IdentifySelection QgsIdentifyResultsDialog::selectionMode()
 {
   return mSelectionMode;
 }

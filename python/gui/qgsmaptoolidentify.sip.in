@@ -35,6 +35,18 @@ after selecting a point, performs the identification:
       LayerSelection
     };
 
+    enum IdentifySelection
+    {
+      //! SelectSimple
+      SelectSimple,
+      //! SelectPolygon
+      SelectPolygon,
+      //! SelectFreehand
+      SelectFreehand,
+      //! SelectRadius
+      SelectRadius
+    };
+
     enum Type
     {
       VectorLayer,
@@ -108,7 +120,6 @@ this has been made private and two publics methods are offered
 :return: a list of IdentifyResult*
 %End
 
-
     QgsIdentifyMenu *identifyMenu();
 %Docstring
 return a pointer to the identify menu which will be used in layer selection mode
@@ -148,7 +159,7 @@ Call the right method depending on layer type
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer);
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, IdentifySelection selectionMode = IdentifySelection::SelectSimple);
 
 
 };

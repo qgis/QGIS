@@ -192,7 +192,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, IdentifySelection selectionMode )
 {
 
   if ( !layer || !layer->isSpatial() )
@@ -241,7 +241,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if ( mSelectionGeometry.type() == QgsWkbTypes::PointGeometry || mSelectionGeometry.type() == QgsWkbTypes::Polygon || mSelectionGeometry.intersects( f.geometry() ) )
+      if ( selectionMode == IdentifySelection::SelectSimple || mSelectionGeometry.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }
@@ -298,7 +298,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
   mSelectionGeometry = QgsGeometry::fromPointXY( point );
-  return identifyVectorLayer( results, layer );
+  return identifyVectorLayer( results, layer, IdentifySelection::SelectSimple );
 }
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
