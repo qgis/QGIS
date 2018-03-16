@@ -87,8 +87,6 @@ class ModelerParametersDialog(QDialog):
         super(ModelerParametersDialog, self).closeEvent(event)
 
     def setupUi(self):
-        self.labels = {}
-        self.widgets = {}
         self.checkBoxes = {}
         self.showAdvanced = False
         self.wrappers = {}
@@ -136,15 +134,6 @@ class ModelerParametersDialog(QDialog):
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            desc = param.description()
-            if isinstance(param, QgsProcessingParameterExtent):
-                desc += self.tr('(xmin, xmax, ymin, ymax)')
-            if isinstance(param, QgsProcessingParameterPoint):
-                desc += self.tr('(x, y)')
-            if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                desc += self.tr(' [optional]')
-            label = QLabel(desc)
-            self.labels[param.name()] = label
 
             wrapper = WidgetWrapperFactory.create_wrapper(param, self)
             self.wrappers[param.name()] = wrapper
@@ -153,14 +142,11 @@ class ModelerParametersDialog(QDialog):
             if widget is not None:
                 self.valueItems[param.name()] = widget
                 tooltip = param.description()
-                label.setToolTip(tooltip)
                 widget.setToolTip(tooltip)
                 if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                    label.setVisible(self.showAdvanced)
+                    wrapper.label.setVisible(self.showAdvanced)
                     widget.setVisible(self.showAdvanced)
-                    self.widgets[param.name()] = widget
-
-                self.verticalLayout.addWidget(label)
+                self.verticalLayout.addWidget(wrapper.label)
                 self.verticalLayout.addWidget(widget)
 
         for dest in self._alg.destinationParameterDefinitions():
@@ -230,8 +216,8 @@ class ModelerParametersDialog(QDialog):
             self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.labels[param.name()].setVisible(self.showAdvanced)
-                self.widgets[param.name()].setVisible(self.showAdvanced)
+                self.wrappers[param.name()].widget.setVisible(self.showAdvanced)
+                self.wrappers[param.name()].label.setVisible(self.showAdvanced)
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         # upgrade paramType to list
