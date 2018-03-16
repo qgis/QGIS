@@ -1150,11 +1150,11 @@ QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
   switch ( errenum )
   {
     case QSslError::UnableToGetIssuerCertificate:
-      return QObject::tr( "Unable To Get Issuer Certificate" );
+      return QObject::tr( "Unable to Get Issuer Certificate" );
     case QSslError::UnableToDecryptCertificateSignature:
-      return QObject::tr( "Unable To Decrypt Certificate Signature" );
+      return QObject::tr( "Unable to Decrypt Certificate Signature" );
     case QSslError::UnableToDecodeIssuerPublicKey:
-      return QObject::tr( "Unable To Decode Issuer Public Key" );
+      return QObject::tr( "Unable to Decode Issuer Public Key" );
     case QSslError::CertificateSignatureFailed:
       return QObject::tr( "Certificate Signature Failed" );
     case QSslError::CertificateNotYetValid:
@@ -1170,9 +1170,9 @@ QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
     case QSslError::SelfSignedCertificateInChain:
       return QObject::tr( "Self-signed Certificate In Chain" );
     case QSslError::UnableToGetLocalIssuerCertificate:
-      return QObject::tr( "Unable To Get Local Issuer Certificate" );
+      return QObject::tr( "Unable to Get Local Issuer Certificate" );
     case QSslError::UnableToVerifyFirstCertificate:
-      return QObject::tr( "Unable To Verify First Certificate" );
+      return QObject::tr( "Unable to Verify First Certificate" );
     case QSslError::CertificateRevoked:
       return QObject::tr( "Certificate Revoked" );
     case QSslError::InvalidCaCertificate:
