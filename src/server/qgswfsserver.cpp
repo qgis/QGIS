@@ -548,7 +548,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
             }
           }
-          attrIndexes = idxList;
+          if ( !idxList.isEmpty() )
+          {
+            attrIndexes = idxList;
+          }
         }
         if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
         {
