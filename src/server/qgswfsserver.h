@@ -26,6 +26,7 @@
 #include "qgsowsserver.h"
 #include "qgsvectorlayer.h"
 #include "qgswfsprojectparser.h"
+#include "qgsjsonutils.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsComposerLayerItem;
@@ -45,6 +46,7 @@ class QgsRectangle;
 class QgsGeometry;
 class QgsSymbol;
 class QgsRequestHandler;
+class QgsJSONExporter;
 class QFile;
 class QFont;
 class QImage;
@@ -107,12 +109,15 @@ class QgsWFSServer: public QgsOWSServer
     /* Error messages */
     QStringList mErrors;
 
+    /* GeoJSON Exporter */
+    QgsJSONExporter mJsonExporter;
+    /* WFS configParser */
     QgsWFSProjectParser* mConfigParser;
 
   protected:
 
     void startGetFeature( QgsRequestHandler& request, const QString& format, int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
-    void setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+    void setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
                         const QgsAttributeList& pkAttributes = QgsAttributeList() );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
@@ -120,15 +125,15 @@ class QgsWFSServer: public QgsOWSServer
     QgsFeatureIds getFeatureIdsFromFilter( const QDomElement& filter, QgsVectorLayer* layer );
 
     //methods to write GeoJSON
-    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
                                   const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
 
     //methods to write GML2
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
                                    const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
 
     //methods to write GML3
-    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
+    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
                                    const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
 
     void addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message );
