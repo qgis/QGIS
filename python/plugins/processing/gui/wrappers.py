@@ -77,6 +77,7 @@ from qgis.core import (
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QLabel,
     QDialog,
     QFileDialog,
     QHBoxLayout,
@@ -150,6 +151,7 @@ class WidgetWrapper(QObject):
         self.col = col
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, DIALOG_STANDARD)
         self.widget = self.createWidget(**kwargs)
+        self.label = self.createLabel()
         if param.defaultValue() is not None:
             self.setValue(param.defaultValue())
 
@@ -171,6 +173,21 @@ class WidgetWrapper(QObject):
 
     def createWidget(self, **kwargs):
         pass
+
+    def createLabel(self):
+        if self.dialogType == DIALOG_BATCH:
+            return None
+        desc = self.param.description()
+        if isinstance(self.param, QgsProcessingParameterExtent):
+            desc += self.tr(' (xmin, xmax, ymin, ymax)')
+        if isinstance(self.param, QgsProcessingParameterPoint):
+            desc += self.tr(' (x, y)')
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            desc += self.tr(' [optional]')
+
+        label = QLabel(desc)
+        label.setToolTip(self.param.name())
+        return label
 
     def setValue(self, value):
         pass
@@ -239,6 +256,12 @@ class BasicWidgetWrapper(WidgetWrapper):
 
 
 class BooleanWidgetWrapper(WidgetWrapper):
+
+    def createLabel(self):
+        if self.dialogType == DIALOG_STANDARD:
+            return None
+        else:
+            return super().createLabel()
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
