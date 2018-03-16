@@ -4904,6 +4904,15 @@ tests:
       INVALID:
         name: expected/import_photos_invalid.gml
         type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
       OUTPUT:
         name: expected/import_photos.gml
         type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
