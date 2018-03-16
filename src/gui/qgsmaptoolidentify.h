@@ -124,17 +124,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
-//    /**
-//     * Performs the identification.
-//    To avoid being forced to specify IdentifyMode with a list of layers
-//    this has been made private and two publics methods are offered
-//    \param x x coordinates of mouseEvent
-//    \param y y coordinates of mouseEvent
-//    \param mode Identification mode. Can use Qgis default settings or a defined mode.
-//    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-//    \returns a list of IdentifyResult*/
-//    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType, IdentifySelection selectionMode = SelectFeatures );
-
     /**
      * return a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized

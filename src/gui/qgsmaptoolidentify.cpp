@@ -229,18 +229,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsRectangle r;
     if ( isSingleClick )
     {
-      double sr = searchRadiusMU( mCanvas );/*
-      QRect selectRect = QRect();
-      selectRect.setLeft( point.x() - boxSize );
-      selectRect.setRight( point.x() + boxSize );
-      selectRect.setTop( point.y() - boxSize );
-      selectRect.setBottom( point.y() + boxSize );
-
-      QPoint point1 = selectRect.topLeft();
-      QPoint point2 = selectRect.bottomRight();
-
-      r = QgsRectangle( point1.x(), point1.y(), point2.x(), point2.y() );;
-      */
+      double sr = searchRadiusMU( mCanvas );
       r = QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr );
     }
     else
@@ -252,7 +241,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if (mSelectionGeometry.type() == QgsWkbTypes::PointGeometry || mSelectionGeometry.type() == QgsWkbTypes::Polygon || mSelectionGeometry.intersects( f.geometry() ) )
+      if ( mSelectionGeometry.type() == QgsWkbTypes::PointGeometry || mSelectionGeometry.type() == QgsWkbTypes::Polygon || mSelectionGeometry.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }
