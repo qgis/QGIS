@@ -940,11 +940,17 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           QStringList::const_iterator alstIt;
           QList<int> idxList;
           QgsFields fields = layer->pendingFields();
+          // build corresponding propertyname
+          QList<QString> propertynames;
+          for ( int idx = 0; idx < fields.count(); ++idx )
+          {
+            propertynames.append( fields[idx].name().replace( " ", "_" ) );
+          }
           QString fieldName;
           for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
           {
             fieldName = *alstIt;
-            int fieldNameIdx = fields.fieldNameIndex( fieldName );
+            int fieldNameIdx = propertynames.indexOf( fieldName );
             if ( fieldNameIdx > -1 )
             {
               idxList.append( fieldNameIdx );
