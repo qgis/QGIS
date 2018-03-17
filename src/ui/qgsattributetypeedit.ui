@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
      <property name="title">
       <string>General</string>
      </property>
@@ -75,7 +75,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
      <property name="title">
       <string>Widget Type</string>
      </property>
@@ -180,55 +180,64 @@
     </widget>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="title">
-        <string>Defaults</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Default value</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="mDefaultPreviewLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Preview</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
-          <property name="toolTip">
-           <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
-          </property>
-          <property name="text">
-           <string>Apply default value on update</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Defaults</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Default value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="mDefaultPreviewLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Preview</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
+        <property name="toolTip">
+         <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Apply default value on update</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -253,8 +262,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mExpressionWidget</tabstop>
-  <tabstop>groupBox</tabstop>
+  <tabstop>leAlias</tabstop>
+  <tabstop>isFieldEditableCheckBox</tabstop>
+  <tabstop>labelOnTopCheckBox</tabstop>
+  <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
   <tabstop>mCheckBoxEnforceNotNull</tabstop>
   <tabstop>mUniqueCheckBox</tabstop>
@@ -262,6 +273,8 @@
   <tabstop>constraintExpressionWidget</tabstop>
   <tabstop>leConstraintExpressionDescription</tabstop>
   <tabstop>mCheckBoxEnforceExpression</tabstop>
+  <tabstop>mExpressionWidget</tabstop>
+  <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
