@@ -48,6 +48,11 @@ class QDomDocument;
 class QKeyEvent;
 class QPainter;
 
+/*
+ * Constants used to describe copy-paste MIME types
+ */
+#define QGSCLIPBOARD_MAPLAYER_MIME "application/qgis.layer"
+
 /**
  * \ingroup core
  * Base class for all map layer types.
