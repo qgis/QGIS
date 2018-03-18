@@ -217,6 +217,13 @@ Sets the current ``task`` running in the dialog. The task will automatically be 
 by the dialog. Ownership of ``task`` is transferred to the dialog.
 %End
 
+    static QString formatStringForLog( const QString &string );
+%Docstring
+Formats an input ``string`` for display in the log tab.
+
+.. versionadded:: 3.0.1
+%End
+
   protected slots:
 
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
