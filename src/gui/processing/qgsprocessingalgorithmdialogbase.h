@@ -260,6 +260,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void setCurrentTask( QgsProcessingAlgRunnerTask *task SIP_TRANSFER );
 
+    /**
+     * Formats an input \a string for display in the log tab.
+     *
+     * \since QGIS 3.0.1
+     */
+    static QString formatStringForLog( const QString &string );
+
   protected slots:
 
     /**
