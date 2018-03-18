@@ -241,10 +241,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
           duplicateLayersAction->setEnabled( false );
 
-        // save as vector file
-        menu->addAction( tr( "Save as…" ), QgisApp::instance(), SLOT( saveAsFile() ) );
-        menu->addAction( tr( "Save as Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
-
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
@@ -254,11 +250,24 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionShowFeatureCount( menu ) );
 
         menu->addSeparator();
+
+        // save as vector file
+        QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
+        menuExportVector->addAction( tr( "Save as…" ), QgisApp::instance(), SLOT( saveAsFile() ) );
+        menuExportVector->addAction( tr( "Save as Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        if ( vlayer->isSpatial() )
+            menuExportVector->addAction( tr( "QGIS Layer Style File…" ), QgisApp::instance(), SLOT( saveStyleFile() ) );
+        menu->addMenu( menuExportVector );
       }
       else if ( rlayer )
       {
-        menu->addAction( tr( "Save As…" ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
-        menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
+        menuExportRaster->addAction( tr( "Save As…" ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+        menuExportRaster->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        menuExportRaster->addAction( tr( "QGIS Layer Style File…" ), QgisApp::instance(), SLOT( saveStyleFile() ) );
+        menu->addMenu( menuExportRaster );
+
+        menu->addSeparator();
       }
       else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
       {

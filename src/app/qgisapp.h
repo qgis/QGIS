@@ -693,6 +693,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr );
+    //! save qml style for the current layer
+    void saveStyleFile( QgsMapLayer *layer = nullptr );
 
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
