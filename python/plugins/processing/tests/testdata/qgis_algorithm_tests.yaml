@@ -4721,3 +4721,31 @@ tests:
       OUTPUT:
         name: expected/biggest_parts.gml
         type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.3)
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_03.gml
+        type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.7)
+    params:
+      ALPHA: 0.7
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_07.gml
+        type: vector
