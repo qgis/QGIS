@@ -51,7 +51,7 @@ class QPainter;
 /*
  * Constants used to describe copy-paste MIME types
  */
-#define QGSCLIPBOARD_MAPLAYER_MIME "application/qgis.layer"
+#define QGSCLIPBOARD_MAPLAYER_MIME "application/qgis.maplayer"
 
 /**
  * \ingroup core
