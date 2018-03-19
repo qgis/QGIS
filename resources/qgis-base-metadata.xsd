@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+###############################################################################
+#
+# Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+###############################################################################
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rm="http://qgis.org/base-metadata/1.0" targetNamespace="http://qgis.org/base-metadata/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:element name="BaseMetadata" type="rm:BaseMetadataType">
+		<xs:annotation>
+			<xs:appinfo>QGIS Base Metadata Schema</xs:appinfo>
+			<xs:documentation>Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)</xs:documentation>
+			<xs:documentation>Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="BaseMetadataType">
+		<xs:sequence>
+			<xs:element name="identifier" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Reference, URI, URL or some other mechanism to identify a given resource. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parentidentifier" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference, URI, URL or some other mechanism that that a given resource is a part of (child).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="language" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human language associated with a given resource.  While a formal vocabulary is not imposed, it is advised to use ISO 3166/ISO 639.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Nature of a given resource.  While a formal vocabulary is not imposed, it is advised to use the ISO 19115 MD_ScopeCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human readable name of a given resource typically displayed in search results.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="abstract" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Description of a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="keywords" type="rm:keywordsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Set of descriptive keywords associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contact" type="rm:contactType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Contact person/entity associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="links" type="rm:linksType">
+				<xs:annotation>
+					<xs:documentation>Set of online resources associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+      <xs:element name="history" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+    	    <xs:documentation>Freeform description of the history or lineage of the resource.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" use="required" fixed="1.0">
+			<xs:annotation>
+				<xs:documentation>Version of QGIS Base Metadata schema used. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="keywordsType">
+		<xs:sequence>
+			<xs:element name="keyword" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Descriptive keyword associated with a resource.  While a formal vocabulary is not imposed, it is advised to use rm:keywords/@vocabulary to identify a codelist or applicable vocabulary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="vocabulary" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Reference (URI/URL preferred) to a codelist or vocabulary associated with keyword list.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="contactType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of contact.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="organization" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Organization contact belongs to/represents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="position" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Position/title of contact.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contactAddress" type="rm:addressType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Address associated with a given contact.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="voice" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Voice telephone.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fax" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Facsimile telephone.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="email" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Electronic mail address (note, do not include mailto: protocol as part of the email address).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="role" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Role of contact. While no vocabulary is imposed, it is advised to use ISO 19115 CI_RoleCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="addressType">
+		<xs:sequence>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Type of address (e.g. 'postal').</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="address" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Physical address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="city" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>City.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="administrativearea" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Administrative area (state, province/territory, etc.).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="postalcode" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Postal code.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="country" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Country.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="linksType">
+		<xs:sequence>
+			<xs:element name="link" type="rm:linkType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Online resource associated with a given resource.  Attribute definitions:
+						* name: short name (like WMS layer name)
+						* type: link type.  Strongly suggested to use values from the 'identifier' column in https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
+						* description: abstract text about link
+						* url: endpoint.  If the URL is an OWS server, specify the *base* URL only without parameters like service=xxx.....
+						* format: format specification of online resource.  Strongly suggested to use GDAL/OGR format values
+						* mimeType: MIME type representative of the online resource response (image/png, application/json, etc.)
+						* size: estimated size (in bytes) of the online resource response
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="linkType">
+		<xs:attributeGroup ref="rm:linkAttrs"/>
+	</xs:complexType>
+	<xs:attributeGroup name="linkAttrs">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="url" type="xs:anyURI" use="required"/>
+    <xs:attribute name="description" type="xs:string" use="optional"/>
+    <xs:attribute name="format" type="xs:string" use="optional"/>
+		<xs:attribute name="mimeType" type="xs:string" use="optional"/>
+		<xs:attribute name="size" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+</xs:schema>

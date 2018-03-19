@@ -41,7 +41,7 @@ class QDomDocument;
  * metadata formats to QgsAbstractMetadataBase may result in a loss of information.
  *
  * This class is designed to follow the specifications detailed in
- * the schema definition available at resources/qgis-resource-metadata.xsd
+ * the schema definition available at resources/qgis-base-metadata.xsd
  * within the QGIS source code.
  *
  * Metadata can be validated through the use of QgsAbstractMetadataBaseValidator

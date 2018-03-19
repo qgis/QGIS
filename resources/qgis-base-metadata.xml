@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ResourceMetadata xmlns="http://qgis.org/base-metadata/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://qgis.org/base-metadata/1.0 qgis-base-metadata.xsd">
+    <identifier>1234</identifier>
+    <parentidentifier>xyz</parentidentifier>
+    <language>en-CA</language>
+    <type>dataset</type>
+    <title>roads</title>
+    <abstract>my roads</abstract>
+    <keywords vocabulary="gmd:topicCategory">
+        <keyword>natural</keyword>
+    </keywords>
+    <keywords vocabulary="GEMET">
+        <keyword>kw1</keyword>
+        <keyword>kw2</keyword>
+    </keywords>
+    <contact>
+        <name>John Smith</name>
+        <organization>ACME</organization>
+        <position>staff</position>
+        <contactAddress>
+            <type>postal</type>
+            <address>123 Main Street</address>
+            <city>anycity</city>
+            <administrativearea>anyprovince</administrativearea>
+            <postalcode>90210</postalcode>
+            <country>Canada</country>
+        </contactAddress>
+        <voice>xx.xxx.xxx.xxxx</voice>
+        <fax>xx.xxx.xxx.xxxx</fax>
+        <email>foo@example.org</email>
+        <role>pointOfContact</role>
+    </contact>
+    <links>
+        <link name="geonode:roads" type="OGC:WMS" description="my GeoNode road layer" url="http://example.org/wms"/>
+        <link name="geonode:roads" type="OGC:WFS" description="my GeoNode road layer" url="http://example.org/wfs"/>
+        <link name="roads" type="WWW:LINK" description="full dataset download" url="http://example.org/roads.tgz" format="ESRI Shapefile" mimeType="application/gzip" size="283676"/>
+    </links>
+    <history>Buffering</history>
+    <history>Reprojecting</history>
+</ResourceMetadata>
