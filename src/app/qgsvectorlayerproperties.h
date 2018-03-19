@@ -43,7 +43,7 @@ class QgsAttributesFormProperties;
 class QgsRendererPropertiesDialog;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
-class QgsMetadataWidget;
+class QgsAbstractMetadataBaseWidget;
 class QgsPanelWidget;
 class QgsVectorLayer3DRendererWidget;
 
@@ -244,7 +244,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void showHelp();
 
-    QgsMetadataWidget *mMetadataWidget = nullptr;
+    QgsAbstractMetadataBaseWidget *mMetadataWidget = nullptr;
 
     QAction *mAuxiliaryLayerActionNew = nullptr;
     QAction *mAuxiliaryLayerActionClear = nullptr;

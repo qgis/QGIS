@@ -19,7 +19,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsProjectMetadata,
-                       QgsMetadataBase,
+                       QgsAbstractMetadataBase,
                        QgsProject,
                        QgsNativeProjectMetadataValidator)
 from qgis.PyQt.QtCore import (QDate,
@@ -87,7 +87,7 @@ class TestQgsProjectMetadata(unittest.TestCase):
             'gmd:topicCategory': ['natural'],
         })
 
-        c = QgsMetadataBase.Contact()
+        c = QgsAbstractMetadataBase.Contact()
         c.name = 'John Smith'
         c.organization = 'ACME'
         c.position = 'staff'
@@ -95,7 +95,7 @@ class TestQgsProjectMetadata(unittest.TestCase):
         c.fax = 'xx.xxx.xxx.xxxx'
         c.email = 'foo@example.org'
         c.role = 'pointOfContact'
-        address = QgsMetadataBase.Address()
+        address = QgsAbstractMetadataBase.Address()
         address.type = 'postal'
         address.address = '123 Main Street'
         address.city = 'anycity'
@@ -105,19 +105,19 @@ class TestQgsProjectMetadata(unittest.TestCase):
         c.addresses = [address]
         m.setContacts([c])
 
-        l = QgsMetadataBase.Link()
+        l = QgsAbstractMetadataBase.Link()
         l.name = 'geonode:roads'
         l.type = 'OGC:WMS'
         l.description = 'my GeoNode road layer'
         l.url = 'http://example.org/wms'
 
-        l2 = QgsMetadataBase.Link()
+        l2 = QgsAbstractMetadataBase.Link()
         l2.name = 'geonode:roads'
         l2.type = 'OGC:WFS'
         l2.description = 'my GeoNode road layer'
         l2.url = 'http://example.org/wfs'
 
-        l3 = QgsMetadataBase.Link()
+        l3 = QgsAbstractMetadataBase.Link()
         l3.name = 'roads'
         l3.type = 'WWW:LINK'
         l3.description = 'full dataset download'

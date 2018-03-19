@@ -20,7 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include "qgsmetadatabase.h"
+#include "qgsabstractmetadatabase.h"
 
 /**
  * \ingroup core
@@ -48,7 +48,7 @@
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProjectMetadata : public QgsMetadataBase
+class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 {
   public:
 
@@ -81,22 +81,8 @@ class CORE_EXPORT QgsProjectMetadata : public QgsMetadataBase
      */
     void setCreationDateTime( const QDateTime &creationDateTime );
 
-    /**
-     * Sets state from DOM document
-     * \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
-     *
-     * \returns true if successful
-     */
-    bool readMetadataXml( const QDomElement &metadataElement );
-
-    /**
-     * Stores state in DOM node
-     * \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
-     * \param document is a the dom document being written
-     *
-     * \returns true if successful
-     */
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    bool readMetadataXml( const QDomElement &metadataElement ) override;
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const override;
 
     bool operator==( const QgsProjectMetadata &metadataOther ) const;
 

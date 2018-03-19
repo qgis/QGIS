@@ -23,7 +23,7 @@
 // QgsNativeMetadataBaseValidator
 //
 
-bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, QList<QgsMetadataValidator::ValidationResult> &results ) const
+bool QgsNativeMetadataBaseValidator::validate( const QgsAbstractMetadataBase *metadata, QList<QgsAbstractMetadataBaseValidator::ValidationResult> &results ) const
 {
   results.clear();
   if ( !metadata )
@@ -74,8 +74,8 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, 
   }
 
   // validate keywords
-  QgsMetadataBase::KeywordMap keywords = metadata->keywords();
-  QgsMetadataBase::KeywordMap::const_iterator keywordIt = keywords.constBegin();
+  QgsAbstractMetadataBase::KeywordMap keywords = metadata->keywords();
+  QgsAbstractMetadataBase::KeywordMap::const_iterator keywordIt = keywords.constBegin();
   index = 0;
   for ( ; keywordIt != keywords.constEnd(); ++keywordIt )
   {
@@ -94,7 +94,7 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, 
 
   // validate contacts
   index = 0;
-  Q_FOREACH ( const QgsMetadataBase::Contact &contact, metadata->contacts() )
+  Q_FOREACH ( const QgsAbstractMetadataBase::Contact &contact, metadata->contacts() )
   {
     if ( contact.name.isEmpty() )
     {
@@ -106,7 +106,7 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, 
 
   // validate links
   index = 0;
-  Q_FOREACH ( const QgsMetadataBase::Link &link, metadata->links() )
+  Q_FOREACH ( const QgsAbstractMetadataBase::Link &link, metadata->links() )
   {
     if ( link.name.isEmpty() )
     {
@@ -133,7 +133,7 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, 
 // QgsNativeMetadataValidator
 //
 
-bool QgsNativeMetadataValidator::validate( const QgsMetadataBase *baseMetadata, QList<ValidationResult> &results ) const
+bool QgsNativeMetadataValidator::validate( const QgsAbstractMetadataBase *baseMetadata, QList<ValidationResult> &results ) const
 {
   results.clear();
 
@@ -182,7 +182,7 @@ bool QgsNativeMetadataValidator::validate( const QgsMetadataBase *baseMetadata, 
 // QgsNativeProjectMetadataValidator
 //
 
-bool QgsNativeProjectMetadataValidator::validate( const QgsMetadataBase *baseMetadata, QList<QgsMetadataValidator::ValidationResult> &results ) const
+bool QgsNativeProjectMetadataValidator::validate( const QgsAbstractMetadataBase *baseMetadata, QList<QgsAbstractMetadataBaseValidator::ValidationResult> &results ) const
 {
   results.clear();
 

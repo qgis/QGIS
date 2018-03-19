@@ -18,7 +18,7 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsMetadataBase,
+from qgis.core import (QgsAbstractMetadataBase,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
                        QgsNativeMetadataBaseValidator,
@@ -32,10 +32,14 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
+class TestMetadata(QgsAbstractMetadataBase):
+    pass
+
+
 class TestQgsMetadataBase(unittest.TestCase):
 
     def testGettersSetters(self):
-        m = QgsMetadataBase()
+        m = TestMetadata()
 
         m.setIdentifier('identifier')
         self.assertEqual(m.identifier(), 'identifier')
@@ -66,34 +70,34 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(m.history(), ['accidentally deleted some features', 'panicked and deleted more'])
 
     def testEquality(self):
-        a = QgsMetadataBase.Address()
+        a = QgsAbstractMetadataBase.Address()
         a.type = 'postal'
         a.address = '13 north rd'
         a.city = 'huxleys haven'
         a.administrativeArea = 'land of the queens'
         a.postalCode = '4123'
         a.country = 'straya!'
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         self.assertEqual(a, a2)
         a2.type = 'postal2'
         self.assertNotEqual(a, a2)
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         a2.address = 'address2'
         self.assertNotEqual(a, a2)
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         a2.city = 'city'
         self.assertNotEqual(a, a2)
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         a2.administrativeArea = 'area2'
         self.assertNotEqual(a, a2)
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         a2.postalCode = 'postal2'
         self.assertNotEqual(a, a2)
-        a2 = QgsMetadataBase.Address(a)
+        a2 = QgsAbstractMetadataBase.Address(a)
         a2.country = 'country2'
         self.assertNotEqual(a, a2)
 
-        c = QgsMetadataBase.Contact()
+        c = QgsAbstractMetadataBase.Contact()
         c.name = 'name'
         c.organization = 'org'
         c.position = 'pos'
@@ -101,39 +105,39 @@ class TestQgsMetadataBase(unittest.TestCase):
         c.fax = 'fax'
         c.email = 'email'
         c.role = 'role'
-        a = QgsMetadataBase.Address()
+        a = QgsAbstractMetadataBase.Address()
         a.type = 'postal'
-        a2 = QgsMetadataBase.Address()
+        a2 = QgsAbstractMetadataBase.Address()
         a2.type = 'street'
         c.addresses = [a, a2]
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         self.assertEqual(c, c2)
         c2.name = 'name2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.organization = 'org2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.position = 'pos2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.voice = 'voice2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.fax = 'fax2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.email = 'email2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.role = 'role2'
         self.assertNotEqual(c, c2)
-        c2 = QgsMetadataBase.Contact(c)
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.addresses = [a2]
         self.assertNotEqual(c, c2)
 
         # link
-        l = QgsMetadataBase.Link()
+        l = QgsAbstractMetadataBase.Link()
         l.name = 'name'
         l.type = 'type'
         l.description = 'desc'
@@ -141,32 +145,32 @@ class TestQgsMetadataBase(unittest.TestCase):
         l.format = 'format'
         l.mimeType = 'mime'
         l.size = '112'
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         self.assertEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.name = 'name2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.type = 'type2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.description = 'desc2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.url = 'url2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.format = 'format2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.mimeType = 'mime2'
         self.assertNotEqual(l, l2)
-        l2 = QgsMetadataBase.Link(l)
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.size = '113'
         self.assertNotEqual(l, l2)
 
     def testKeywords(self):
-        m = QgsMetadataBase()
+        m = TestMetadata()
 
         m.setKeywords({'gmd:topicCategory': ['natural']})
         self.assertEqual(m.keywords(), {'gmd:topicCategory': ['natural']})
@@ -197,7 +201,7 @@ class TestQgsMetadataBase(unittest.TestCase):
                                         'y': ['y']})
 
     def testAddress(self):
-        a = QgsMetadataBase.Address()
+        a = QgsAbstractMetadataBase.Address()
         a.type = 'postal'
         a.address = '13 north rd'
         a.city = 'huxleys haven'
@@ -212,7 +216,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(a.country, 'straya!')
 
     def testContact(self):
-        c = QgsMetadataBase.Contact()
+        c = QgsAbstractMetadataBase.Contact()
         c.name = 'Prince Gristle'
         c.organization = 'Bergen co'
         c.position = 'prince'
@@ -220,9 +224,9 @@ class TestQgsMetadataBase(unittest.TestCase):
         c.fax = 'who the f*** still uses fax?'
         c.email = 'limpbiskitrulez69@hotmail.com'
         c.role = 'person to blame when all goes wrong'
-        a = QgsMetadataBase.Address()
+        a = QgsAbstractMetadataBase.Address()
         a.type = 'postal'
-        a2 = QgsMetadataBase.Address()
+        a2 = QgsAbstractMetadataBase.Address()
         a2.type = 'street'
         c.addresses = [a, a2]
         self.assertEqual(c.name, 'Prince Gristle')
@@ -235,8 +239,8 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(c.addresses[0].type, 'postal')
         self.assertEqual(c.addresses[1].type, 'street')
 
-        m = QgsMetadataBase()
-        c2 = QgsMetadataBase.Contact(c)
+        m = TestMetadata()
+        c2 = QgsAbstractMetadataBase.Contact(c)
         c2.name = 'Bridgette'
 
         m.setContacts([c, c2])
@@ -244,14 +248,14 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(m.contacts()[1].name, 'Bridgette')
 
         # add contact
-        c3 = QgsMetadataBase.Contact(c)
+        c3 = QgsAbstractMetadataBase.Contact(c)
         c3.name = 'Princess Poppy'
         m.addContact(c3)
         self.assertEqual(len(m.contacts()), 3)
         self.assertEqual(m.contacts()[2].name, 'Princess Poppy')
 
     def testLinks(self):
-        l = QgsMetadataBase.Link()
+        l = QgsAbstractMetadataBase.Link()
         l.name = 'Trashbat'
         l.type = 'fashion'
         l.description = 'registered in the cook islands!'
@@ -267,8 +271,8 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(l.mimeType, 'text/string')
         self.assertEqual(l.size, '112')
 
-        m = QgsMetadataBase()
-        l2 = QgsMetadataBase.Link(l)
+        m = TestMetadata()
+        l2 = QgsAbstractMetadataBase.Link(l)
         l2.name = 'Trashbat2'
 
         m.setLinks([l, l2])
@@ -276,7 +280,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(m.links()[1].name, 'Trashbat2')
 
         # add link
-        l3 = QgsMetadataBase.Link(l)
+        l3 = QgsAbstractMetadataBase.Link(l)
         l3.name = 'Trashbat3'
         m.addLink(l3)
         self.assertEqual(len(m.links()), 3)
@@ -286,7 +290,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         """
         Returns a standard metadata which can be tested with checkExpectedMetadata
         """
-        m = QgsMetadataBase()
+        m = TestMetadata()
         m.setIdentifier('1234')
         m.setParentIdentifier('xyz')
         m.setLanguage('en-CA')
@@ -299,7 +303,7 @@ class TestQgsMetadataBase(unittest.TestCase):
             'gmd:topicCategory': ['natural'],
         })
 
-        c = QgsMetadataBase.Contact()
+        c = QgsAbstractMetadataBase.Contact()
         c.name = 'John Smith'
         c.organization = 'ACME'
         c.position = 'staff'
@@ -307,7 +311,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         c.fax = 'xx.xxx.xxx.xxxx'
         c.email = 'foo@example.org'
         c.role = 'pointOfContact'
-        address = QgsMetadataBase.Address()
+        address = QgsAbstractMetadataBase.Address()
         address.type = 'postal'
         address.address = '123 Main Street'
         address.city = 'anycity'
@@ -317,19 +321,19 @@ class TestQgsMetadataBase(unittest.TestCase):
         c.addresses = [address]
         m.setContacts([c])
 
-        l = QgsMetadataBase.Link()
+        l = QgsAbstractMetadataBase.Link()
         l.name = 'geonode:roads'
         l.type = 'OGC:WMS'
         l.description = 'my GeoNode road layer'
         l.url = 'http://example.org/wms'
 
-        l2 = QgsMetadataBase.Link()
+        l2 = QgsAbstractMetadataBase.Link()
         l2.name = 'geonode:roads'
         l2.type = 'OGC:WFS'
         l2.description = 'my GeoNode road layer'
         l2.url = 'http://example.org/wfs'
 
-        l3 = QgsMetadataBase.Link()
+        l3 = QgsAbstractMetadataBase.Link()
         l3.name = 'roads'
         l3.type = 'WWW:LINK'
         l3.description = 'full dataset download'
@@ -402,7 +406,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertTrue(m.writeMetadataXml(elem, doc))
 
         # read back from XML and check result
-        m2 = QgsMetadataBase()
+        m2 = TestMetadata()
         m2.readMetadataXml(elem)
         self.checkExpectedMetadata(m2)
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsmetadatabase.cpp
+                             QgsAbstractMetadataBase.cpp
                              --------------------
     begin                : March 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,105 +15,105 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmetadatabase.h"
+#include "qgsabstractmetadatabase.h"
 #include "qgsmaplayer.h"
 
-QString QgsMetadataBase::identifier() const
+QString QgsAbstractMetadataBase::identifier() const
 {
   return mIdentifier;
 }
 
-void QgsMetadataBase::setIdentifier( const QString &identifier )
+void QgsAbstractMetadataBase::setIdentifier( const QString &identifier )
 {
   mIdentifier = identifier;
 }
 
-QString QgsMetadataBase::parentIdentifier() const
+QString QgsAbstractMetadataBase::parentIdentifier() const
 {
   return mParentIdentifier;
 }
 
-void QgsMetadataBase::setParentIdentifier( const QString &parentIdentifier )
+void QgsAbstractMetadataBase::setParentIdentifier( const QString &parentIdentifier )
 {
   mParentIdentifier = parentIdentifier;
 }
 
-QString QgsMetadataBase::type() const
+QString QgsAbstractMetadataBase::type() const
 {
   return mType;
 }
 
-void QgsMetadataBase::setType( const QString &type )
+void QgsAbstractMetadataBase::setType( const QString &type )
 {
   mType = type;
 }
 
-QString QgsMetadataBase::title() const
+QString QgsAbstractMetadataBase::title() const
 {
   return mTitle;
 }
 
-void QgsMetadataBase::setTitle( const QString &title )
+void QgsAbstractMetadataBase::setTitle( const QString &title )
 {
   mTitle = title;
 }
 
-QString QgsMetadataBase::abstract() const
+QString QgsAbstractMetadataBase::abstract() const
 {
   return mAbstract;
 }
 
-void QgsMetadataBase::setAbstract( const QString &abstract )
+void QgsAbstractMetadataBase::setAbstract( const QString &abstract )
 {
   mAbstract = abstract;
 }
 
-QStringList QgsMetadataBase::history() const
+QStringList QgsAbstractMetadataBase::history() const
 {
   return mHistory;
 }
 
-void QgsMetadataBase::setHistory( const QStringList &history )
+void QgsAbstractMetadataBase::setHistory( const QStringList &history )
 {
   mHistory = history;
 }
 
-void QgsMetadataBase::addHistoryItem( const QString &text )
+void QgsAbstractMetadataBase::addHistoryItem( const QString &text )
 {
   mHistory << text;
 }
 
-QMap<QString, QStringList> QgsMetadataBase::keywords() const
+QMap<QString, QStringList> QgsAbstractMetadataBase::keywords() const
 {
   return mKeywords;
 }
 
-void QgsMetadataBase::setKeywords( const QMap<QString, QStringList> &keywords )
+void QgsAbstractMetadataBase::setKeywords( const QMap<QString, QStringList> &keywords )
 {
   mKeywords = keywords;
 }
 
-void QgsMetadataBase::addKeywords( const QString &vocabulary, const QStringList &keywords )
+void QgsAbstractMetadataBase::addKeywords( const QString &vocabulary, const QStringList &keywords )
 {
   mKeywords.insert( vocabulary, keywords );
 }
 
-bool QgsMetadataBase::removeKeywords( const QString &vocabulary )
+bool QgsAbstractMetadataBase::removeKeywords( const QString &vocabulary )
 {
   return mKeywords.remove( vocabulary );
 }
 
-QStringList QgsMetadataBase::keywordVocabularies() const
+QStringList QgsAbstractMetadataBase::keywordVocabularies() const
 {
   return mKeywords.keys();
 }
 
-QStringList QgsMetadataBase::keywords( const QString &vocabulary ) const
+QStringList QgsAbstractMetadataBase::keywords( const QString &vocabulary ) const
 {
   return mKeywords.value( vocabulary );
 }
 
-QStringList QgsMetadataBase::categories() const
+QStringList QgsAbstractMetadataBase::categories() const
 {
   if ( mKeywords.contains( QStringLiteral( "gmd:topicCategory" ) ) )
   {
@@ -125,52 +125,52 @@ QStringList QgsMetadataBase::categories() const
   }
 }
 
-void QgsMetadataBase::setCategories( const QStringList &category )
+void QgsAbstractMetadataBase::setCategories( const QStringList &category )
 {
   mKeywords.insert( QStringLiteral( "gmd:topicCategory" ), category );
 }
 
-QList<QgsMetadataBase::Contact> QgsMetadataBase::contacts() const
+QList<QgsAbstractMetadataBase::Contact> QgsAbstractMetadataBase::contacts() const
 {
   return mContacts;
 }
 
-void QgsMetadataBase::setContacts( const QList<Contact> &contacts )
+void QgsAbstractMetadataBase::setContacts( const QList<QgsAbstractMetadataBase::Contact> &contacts )
 {
   mContacts = contacts;
 }
 
-void QgsMetadataBase::addContact( const QgsMetadataBase::Contact &contact )
+void QgsAbstractMetadataBase::addContact( const QgsAbstractMetadataBase::Contact &contact )
 {
   mContacts << contact;
 }
 
-QList<QgsMetadataBase::Link> QgsMetadataBase::links() const
+QList<QgsAbstractMetadataBase::Link> QgsAbstractMetadataBase::links() const
 {
   return mLinks;
 }
 
-void QgsMetadataBase::setLinks( const QList<QgsMetadataBase::Link> &links )
+void QgsAbstractMetadataBase::setLinks( const QList<QgsAbstractMetadataBase::Link> &links )
 {
   mLinks = links;
 }
 
-void QgsMetadataBase::addLink( const QgsMetadataBase::Link &link )
+void QgsAbstractMetadataBase::addLink( const QgsAbstractMetadataBase::Link &link )
 {
   mLinks << link;
 }
 
-QString QgsMetadataBase::language() const
+QString QgsAbstractMetadataBase::language() const
 {
   return mLanguage;
 }
 
-void QgsMetadataBase::setLanguage( const QString &language )
+void QgsAbstractMetadataBase::setLanguage( const QString &language )
 {
   mLanguage = language;
 }
 
-bool QgsMetadataBase::readMetadataXml( const QDomElement &metadataElement )
+bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElement )
 {
   QDomNode mnl;
   QDomElement mne;
@@ -224,7 +224,7 @@ bool QgsMetadataBase::readMetadataXml( const QDomElement &metadataElement )
     mnl = contactsList.at( i );
     mne = mnl.toElement();
 
-    QgsMetadataBase::Contact oneContact;
+    QgsAbstractMetadataBase::Contact oneContact;
     oneContact.name = mne.namedItem( QStringLiteral( "name" ) ).toElement().text();
     oneContact.organization = mne.namedItem( QStringLiteral( "organization" ) ).toElement().text();
     oneContact.position = mne.namedItem( QStringLiteral( "position" ) ).toElement().text();
@@ -233,12 +233,12 @@ bool QgsMetadataBase::readMetadataXml( const QDomElement &metadataElement )
     oneContact.email = mne.namedItem( QStringLiteral( "email" ) ).toElement().text();
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
-    QList< QgsMetadataBase::Address > addresses;
+    QList< QgsAbstractMetadataBase::Address > addresses;
     QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
       QDomElement addressElement = addressList.at( j ).toElement();
-      QgsMetadataBase::Address oneAddress;
+      QgsAbstractMetadataBase::Address oneAddress;
       oneAddress.address = addressElement.namedItem( QStringLiteral( "address" ) ).toElement().text();
       oneAddress.administrativeArea = addressElement.namedItem( QStringLiteral( "administrativearea" ) ).toElement().text();
       oneAddress.city = addressElement.namedItem( QStringLiteral( "city" ) ).toElement().text();
@@ -259,7 +259,7 @@ bool QgsMetadataBase::readMetadataXml( const QDomElement &metadataElement )
   for ( int i = 0; i < el.size(); i++ )
   {
     mne = el.at( i ).toElement();
-    QgsMetadataBase::Link oneLink;
+    QgsAbstractMetadataBase::Link oneLink;
     oneLink.name = mne.attribute( QStringLiteral( "name" ) );
     oneLink.type = mne.attribute( QStringLiteral( "type" ) );
     oneLink.url = mne.attribute( QStringLiteral( "url" ) );
@@ -284,7 +284,7 @@ bool QgsMetadataBase::readMetadataXml( const QDomElement &metadataElement )
   return true;
 }
 
-bool QgsMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
+bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
 {
   // identifier
   QDomElement identifier = document.createElement( QStringLiteral( "identifier" ) );
@@ -341,7 +341,7 @@ bool QgsMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocume
   }
 
   // contact
-  for ( const QgsMetadataBase::Contact &contact : mContacts )
+  for ( const QgsAbstractMetadataBase::Contact &contact : mContacts )
   {
     QDomElement contactElement = document.createElement( QStringLiteral( "contact" ) );
     QDomElement nameElement = document.createElement( QStringLiteral( "name" ) );
@@ -360,7 +360,7 @@ bool QgsMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocume
     QDomText emailText = document.createTextNode( contact.email );
     QDomText roleText = document.createTextNode( contact.role );
 
-    for ( const QgsMetadataBase::Address &oneAddress : contact.addresses )
+    for ( const QgsAbstractMetadataBase::Address &oneAddress : contact.addresses )
     {
       QDomElement addressElement = document.createElement( QStringLiteral( "contactAddress" ) );
       QDomElement typeElement = document.createElement( QStringLiteral( "type" ) );
@@ -406,7 +406,7 @@ bool QgsMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocume
 
   // links
   QDomElement links = document.createElement( QStringLiteral( "links" ) );
-  for ( const QgsMetadataBase::Link &link : mLinks )
+  for ( const QgsAbstractMetadataBase::Link &link : mLinks )
   {
     QDomElement linkElement = document.createElement( QStringLiteral( "link" ) );
     linkElement.setAttribute( QStringLiteral( "name" ), link.name );
@@ -432,7 +432,7 @@ bool QgsMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocume
   return true;
 }
 
-bool QgsMetadataBase::operator==( const QgsMetadataBase &metadataOther )  const
+bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther )  const
 {
   return ( ( mIdentifier == metadataOther.mIdentifier ) &&
            ( mParentIdentifier == metadataOther.mParentIdentifier ) &&
@@ -446,7 +446,8 @@ bool QgsMetadataBase::operator==( const QgsMetadataBase &metadataOther )  const
            ( mLinks == metadataOther.mLinks ) );
 }
 
-bool QgsMetadataBase::Contact::operator==( const QgsMetadataBase::Contact &other ) const
+
+bool QgsAbstractMetadataBase::Contact::operator==( const QgsAbstractMetadataBase::Contact &other ) const
 {
   return name == other.name &&
          organization == other.organization &&
@@ -458,7 +459,7 @@ bool QgsMetadataBase::Contact::operator==( const QgsMetadataBase::Contact &other
          role == other.role;
 }
 
-bool QgsMetadataBase::Link::operator==( const QgsMetadataBase::Link &other ) const
+bool QgsAbstractMetadataBase::Link::operator==( const QgsAbstractMetadataBase::Link &other ) const
 {
   return name == other.name &&
          type == other.type &&
@@ -469,7 +470,7 @@ bool QgsMetadataBase::Link::operator==( const QgsMetadataBase::Link &other ) con
          size == other.size;
 }
 
-bool QgsMetadataBase::Address::operator==( const QgsMetadataBase::Address &other ) const
+bool QgsAbstractMetadataBase::Address::operator==( const QgsAbstractMetadataBase::Address &other ) const
 {
   return type == other.type &&
          address == other.address &&

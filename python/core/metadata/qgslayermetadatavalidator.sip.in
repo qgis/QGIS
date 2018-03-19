@@ -11,7 +11,7 @@
 
 
 
-class QgsMetadataValidator
+class QgsAbstractMetadataBaseValidator
 {
 %Docstring
  Abstract base class for metadata validators.
@@ -39,9 +39,9 @@ Constructor for ValidationResult.
       QString note;
     };
 
-    virtual ~QgsMetadataValidator();
+    virtual ~QgsAbstractMetadataBaseValidator();
 
-    virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const = 0;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const = 0;
 %Docstring
 Validates a ``metadata`` object, and returns true if the
 metadata is considered valid.
@@ -53,7 +53,7 @@ to fix the metadata.
 };
 
 
-class QgsNativeMetadataBaseValidator : QgsMetadataValidator
+class QgsNativeMetadataBaseValidator : QgsAbstractMetadataBaseValidator
 {
 %Docstring
  A validator for the native base QGIS metadata schema definition.
@@ -71,7 +71,7 @@ class QgsNativeMetadataBaseValidator : QgsMetadataValidator
 Constructor for QgsNativeMetadataBaseValidator.
 %End
 
-    virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };
@@ -96,7 +96,7 @@ class QgsNativeMetadataValidator : QgsNativeMetadataBaseValidator
 Constructor for QgsNativeMetadataValidator.
 %End
 
-    virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };
@@ -120,7 +120,7 @@ class QgsNativeProjectMetadataValidator : QgsNativeMetadataBaseValidator
 Constructor for QgsNativeProjectMetadataValidator.
 %End
 
-    virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };

@@ -240,7 +240,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
   metadataLayout->setMargin( 0 );
-  mMetadataWidget = new QgsMetadataWidget( this, mLayer );
+  mMetadataWidget = new QgsAbstractMetadataBaseWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
   mMetadataWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   metadataLayout->addWidget( mMetadataWidget );

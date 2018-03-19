@@ -72,10 +72,10 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreeutils.cpp
   layertree/qgslayertree.cpp
 
+  metadata/qgsabstractmetadatabase.cpp
   metadata/qgslayermetadata.cpp
   metadata/qgslayermetadatavalidator.cpp
   metadata/qgslayermetadataformatter.cpp
-  metadata/qgsmetadatabase.cpp
   metadata/qgsprojectmetadata.cpp
 
   auth/qgsauthcertutils.cpp
@@ -990,10 +990,10 @@ SET(QGIS_CORE_HDRS
   layout/qgsreportsectionlayout.h
   layout/qgscompositionconverter.h
 
+  metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
   metadata/qgslayermetadataformatter.h
-  metadata/qgsmetadatabase.h
   metadata/qgsprojectmetadata.h
 
   processing/qgsprocessing.h

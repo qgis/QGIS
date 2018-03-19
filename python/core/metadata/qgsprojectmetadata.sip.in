@@ -9,7 +9,7 @@
 
 
 
-class QgsProjectMetadata : QgsMetadataBase
+class QgsProjectMetadata : QgsAbstractMetadataBase
 {
 %Docstring
  A structured metadata store for a map layer.
@@ -74,24 +74,10 @@ Sets the project's creation date/timestamp.
 .. seealso:: :py:func:`creationDateTime`
 %End
 
-    bool readMetadataXml( const QDomElement &metadataElement );
-%Docstring
-Sets state from DOM document
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
 
-:param metadataElement: The Dom element corresponding to ``resourceMetadata'' tag
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
-:return: true if successful
-%End
-
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
-%Docstring
-Stores state in DOM node
-
-:param metadataElement: is a Dom element corresponding to ``resourceMetadata'' tag
-:param document: is a the dom document being written
-
-:return: true if successful
-%End
 
     bool operator==( const QgsProjectMetadata &metadataOther ) const;
 

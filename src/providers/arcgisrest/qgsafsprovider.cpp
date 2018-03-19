@@ -206,7 +206,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   QString copyright = layerData[QStringLiteral( "copyrightText" )].toString();
   if ( !copyright.isEmpty() )
     mLayerMetadata.setRights( QStringList() << copyright );
-  mLayerMetadata.addLink( QgsMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
+  mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
 
   // renderer
   mRendererDataMap = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "renderer" ) ).toMap();

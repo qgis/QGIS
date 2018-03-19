@@ -253,7 +253,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
   layout->setMargin( 0 );
-  mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
+  mMetadataWidget = new QgsAbstractMetadataBaseWidget( this, mRasterLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
   mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
