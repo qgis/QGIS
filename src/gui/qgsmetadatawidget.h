@@ -29,13 +29,13 @@
 
 /**
  * \ingroup gui
- * \class QgsAbstractMetadataBaseWidget
+ * \class QgsMetadataWidget
  * \brief A wizard to edit metadata on a map layer.
  *
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsAbstractMetadataBaseWidget
+class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidgetBase
 {
     Q_OBJECT
 
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsAbstractMeta
     /**
      * Sets the \a metadata to display in the widget.
      *
-     * This method can be called after constructing a QgsAbstractMetadataBaseWidget in order
+     * This method can be called after constructing a QgsMetadataWidget in order
      * to set the displayed metadata to custom, non-layer based metadata.
      *
      * Calling this method will automatically setMode() to the correct mode corresponding

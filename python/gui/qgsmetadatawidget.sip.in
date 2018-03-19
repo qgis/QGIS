@@ -61,7 +61,7 @@ Returns the widget's current mode.
 %Docstring
 Sets the ``metadata`` to display in the widget.
 
-This method can be called after constructing a QgsAbstractMetadataBaseWidget in order
+This method can be called after constructing a QgsMetadataWidget in order
 to set the displayed metadata to custom, non-layer based metadata.
 
 Calling this method will automatically setMode() to the correct mode corresponding
