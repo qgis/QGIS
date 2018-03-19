@@ -83,12 +83,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   return identify( x, y, mode, layerList, AllLayers );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
 {
-  return identify( x, y, mode, QList<QgsMapLayer *>(), layerType );
+  return identify( x, y, mode, QList<QgsMapLayer *>(), layerType, selectionMode );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode)
 {
   QList<IdentifyResult> results;
 
@@ -105,7 +105,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == LayerSelection )
   {
-    QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType );
+    QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType, selectionMode );
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
     return mIdentifyMenu->exec( results, globalPos );
   }
@@ -120,7 +120,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     }
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
+    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType, selectionMode );
   }
   else
   {
@@ -150,7 +150,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
-      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
+      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType, selectionMode ) )
       {
         if ( mode == TopDownStopAtFirst )
           break;
@@ -176,7 +176,7 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType )
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode)
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
@@ -184,7 +184,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ) );
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), selectionMode );
   }
   else
   {
@@ -192,7 +192,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, IdentifySelection selectionMode )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolIdentify::IdentifySelection selectionMode )
 {
 
   if ( !layer || !layer->isSpatial() )
@@ -241,7 +241,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if ( selectionMode == IdentifySelection::SelectSimple || mSelectionGeometry.intersects( f.geometry() ) )
+      if ( selectionMode == QgsMapToolIdentify::IdentifySelection::SelectSimple || mSelectionGeometry.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }
