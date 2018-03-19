@@ -75,6 +75,7 @@ SET(QGIS_CORE_SRCS
   metadata/qgslayermetadata.cpp
   metadata/qgslayermetadatavalidator.cpp
   metadata/qgslayermetadataformatter.cpp
+  metadata/qgsmetadatabase.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -991,6 +992,7 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
   metadata/qgslayermetadataformatter.h
+  metadata/qgsmetadatabase.h
 
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h

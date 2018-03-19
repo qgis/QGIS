@@ -49,7 +49,7 @@ QString QgsLayerMetadataFormatter::accessSectionHtml() const
 
 QString QgsLayerMetadataFormatter::contactsSectionHtml() const
 {
-  const QList<QgsLayerMetadata::Contact> &contacts = mMetadata.contacts();
+  const QList<QgsMetadataBase::Contact> &contacts = mMetadata.contacts();
   QString myMetadata;
   if ( contacts.isEmpty() )
   {
@@ -60,14 +60,14 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
     myMetadata = QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
     myMetadata += "<tr><th>" + QObject::tr( "ID" ) + "</th><th>" + QObject::tr( "Name" ) + "</th><th>" + QObject::tr( "Position" ) + "</th><th>" + QObject::tr( "Organization" ) + "</th><th>" + QObject::tr( "Role" ) + "</th><th>" + QObject::tr( "Email" ) + "</th><th>" + QObject::tr( "Voice" ) + "</th><th>" + QObject::tr( "Fax" ) + "</th><th>" + QObject::tr( "Addresses" ) + "</th></tr>\n";
     int i = 1;
-    for ( const QgsLayerMetadata::Contact &contact : contacts )
+    for ( const QgsMetadataBase::Contact &contact : contacts )
     {
       QString rowClass;
       if ( i % 2 )
         rowClass = QStringLiteral( "class=\"odd-row\"" );
       myMetadata += "<tr " + rowClass + "><td>" + QString::number( i ) + "</td><td>" + contact.name + "</td><td>" + contact.position + "</td><td>" + contact.organization + "</td><td>" + contact.role + "</td><td>" + contact.email + "</td><td>" + contact.voice + "</td><td>" + contact.fax + "</td><td>";
       bool notFirstRow = false;
-      for ( const QgsLayerMetadata::Address &oneAddress : contact.addresses )
+      for ( const QgsMetadataBase::Address &oneAddress : contact.addresses )
       {
         if ( notFirstRow )
         {
@@ -254,7 +254,7 @@ QString QgsLayerMetadataFormatter::historySectionHtml() const
 QString QgsLayerMetadataFormatter::linksSectionHtml() const
 {
   QString myMetadata;
-  const QList<QgsLayerMetadata::Link> &links = mMetadata.links();
+  const QList<QgsMetadataBase::Link> &links = mMetadata.links();
   if ( links.isEmpty() )
   {
     myMetadata += QStringLiteral( "<p>" ) + QObject::tr( "No links yet." ) + QStringLiteral( "</p>\n" );
@@ -264,7 +264,7 @@ QString QgsLayerMetadataFormatter::linksSectionHtml() const
     myMetadata = QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
     myMetadata += "<tr><th>" + QObject::tr( "ID" ) + "</th><th>" + QObject::tr( "Name" ) + "</th><th>" + QObject::tr( "Type" ) + "</th><th>" + QObject::tr( "URL" ) + "</th><th>" + QObject::tr( "Description" ) + "</th><th>" + QObject::tr( "Format" ) + "</th><th>" + QObject::tr( "MIME Type" ) + "</th><th>" + QObject::tr( "Size" ) + "</th></tr>\n";
     int i = 1;
-    for ( const QgsLayerMetadata::Link &link : links )
+    for ( const QgsMetadataBase::Link &link : links )
     {
       QString rowClass;
       if ( i % 2 )
