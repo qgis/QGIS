@@ -100,7 +100,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      */
     void projectRead();
     /*
-     * Updates Rule combobox to mach first layer
+     * Updates Rule combobox to match first layer
      * \param layerId layer ID
      */
     void updateRuleItems( const QString &layerName );

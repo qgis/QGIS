@@ -191,7 +191,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
-     * from the the specified \a sourceCrs to the specified \a destinationCrs.
+     * from the specified \a sourceCrs to the specified \a destinationCrs.
      *
      * If either \a sourceTransformId or \a destinationTransformId is -1, then no datum transform is
      * required for transformations for that source or destination.
