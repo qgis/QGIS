@@ -248,11 +248,17 @@ namespace QgsWfs
         QStringList::const_iterator plstIt;
         QList<int> idxList;
         QgsFields fields = vlayer->fields();
+        // build corresponding propertyname
+        QList<QString> propertynames;
+        for ( int idx = 0; idx < fields.count(); ++idx )
+        {
+          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ) );
+        }
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
         {
           fieldName = *plstIt;
-          int fieldNameIdx = fields.lookupField( fieldName );
+          int fieldNameIdx = propertynames.indexOf( fieldName );
           if ( fieldNameIdx > -1 )
           {
             idxList.append( fieldNameIdx );
