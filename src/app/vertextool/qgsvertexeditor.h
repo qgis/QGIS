@@ -75,6 +75,7 @@ class QgsVertexEditor : public QgsDockWidget
                      QgsMapCanvas *canvas );
 
   public:
+    void updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature );
     QgsVectorLayer *mLayer = nullptr;
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;

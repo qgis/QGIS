@@ -277,18 +277,12 @@ QgsVertexEditor::QgsVertexEditor(
   QgsVectorLayer *layer,
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
-  : mUpdatingTableSelection( false )
+  : mCanvas( canvas )
+  , mUpdatingTableSelection( false )
   , mUpdatingVertexSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
-
-  mLayer = layer;
-  mSelectedFeature = selectedFeature;
-  mCanvas = canvas;
-
   mTableView = new QTableView( this );
-  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mVertexModel );
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
@@ -300,8 +294,26 @@ QgsVertexEditor::QgsVertexEditor(
 
   setWidget( mTableView );
 
-  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+
+  updateEditor( layer, selectedFeature );
+}
+
+void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature )
+{
+  if ( mVertexModel )
+  {
+    delete mVertexModel;
+  }
+
+  mLayer = layer;
+  mSelectedFeature = selectedFeature;
+
+  // TOOD We really should just update the model itself.
+  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+  mTableView->setModel( mVertexModel );
+
+  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
 
 void QgsVertexEditor::updateTableSelection()
