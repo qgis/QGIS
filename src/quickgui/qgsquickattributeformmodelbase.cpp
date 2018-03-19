@@ -222,16 +222,15 @@ void QgsQuickAttributeFormModelBase::updateAttributeValue( QStandardItem *item )
   }
 }
 
-void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *container, QStandardItem *parent, const QString &visibilityExpressions, QVector<QStandardItem *> &items )
+void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *container, QStandardItem *parent, const QString &parentVisibilityExpressions, QVector<QStandardItem *> &items )
 {
-  QString visibilityExpression = visibilityExpressions;
-
   Q_FOREACH ( QgsAttributeEditorElement *element, container->children() )
   {
     switch ( element->type() )
     {
       case QgsAttributeEditorElement::AeTypeContainer:
       {
+        QString visibilityExpression = parentVisibilityExpressions;
         QgsAttributeEditorContainer *container = static_cast<QgsAttributeEditorContainer *>( element );
         if ( container->visibilityExpression().enabled() )
         {
