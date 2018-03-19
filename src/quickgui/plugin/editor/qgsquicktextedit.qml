@@ -39,7 +39,7 @@ Item {
 
     text: value || ''
 
-    inputMethodHints: field.isNumeric || widget == 'Range' ? Qt.ImhFormattedNumbersOnly : Qt.ImhNone
+    inputMethodHints: field.isNumeric || widget == 'Range' ? field.precision === 0 ? Qt.ImhDigitsOnly : Qt.ImhFormattedNumbersOnly : Qt.ImhNone
 
     // Make sure we do not input more characters than allowed for strings
     states: [
