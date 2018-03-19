@@ -2865,7 +2865,6 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, mMagnifierWidget, &QgsStatusBarMagnifierWidget::updateMagnification );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::magnificationChanged, mMapCanvas, &QgsMapCanvas::setMagnificationFactor );
   mMagnifierWidget->updateMagnification( QSettings().value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble() );
-  mStatusBar->addPermanentWidget( mMagnifierWidget, 0 );
 
   // add a widget to show/set current rotation
   mRotationLabel = new QLabel( QString(), mStatusBar );
@@ -2895,7 +2894,6 @@ void QgisApp::createStatusBar()
                                    "in degrees. It also allows editing to set "
                                    "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
-  mStatusBar->addPermanentWidget( mRotationEdit, 0 );
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgisApp::userRotation );
 
   showRotation();
@@ -2910,7 +2908,51 @@ void QgisApp::createStatusBar()
                                         "events. When not checked, no rendering is done. This allows you "
                                         "to add a large number of layers and symbolize them before rendering." ) );
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
-  mStatusBar->addPermanentWidget( mRenderSuppressionCBox, 0 );
+
+  QWidget *rotationWidget = new QWidget( this );
+  QHBoxLayout *menuLayout = new QHBoxLayout( this );
+  menuLayout->setMargin( 0 );
+  menuLayout->addStretch( 1 );
+  menuLayout->addWidget( mRotationLabel );
+  menuLayout->addWidget( mRotationEdit );
+  rotationWidget->setLayout( menuLayout );
+
+  QMenu *widgetActionsMenu = new QMenu( this );
+  QWidgetAction *widgetMagnifierAction = new QWidgetAction( this );
+  widgetMagnifierAction->setDefaultWidget( mMagnifierWidget );
+  widgetActionsMenu->addAction( widgetMagnifierAction );
+  QWidgetAction *widgetRotationAction = new QWidgetAction( this );
+  widgetRotationAction->setDefaultWidget( rotationWidget );
+  widgetActionsMenu->addAction( widgetRotationAction );
+  widgetActionsMenu->addSeparator();
+  QWidgetAction *widgetRenderAction = new QWidgetAction( this );
+  widgetRenderAction->setDefaultWidget( mRenderSuppressionCBox );
+  widgetActionsMenu->addAction( widgetRenderAction );
+
+  QToolButton *mMenuButton = new QToolButton( mStatusBar );
+  mMenuButton->setAutoRaise( true );
+  QString toolTip = QString( "<b>%1:</b> %2°<br><b>%3:</b> %4" )
+                    .arg( tr( "Rotation" ) ).arg( mRotationEdit->value() )
+                    .arg( tr( "Render" ) ).arg( mRenderSuppressionCBox->isChecked() ? tr( "Enabled" ) : tr( "Disabled" ) );
+  mMenuButton->setToolTip( toolTip );
+  mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMagnifierRotationMenu.svg" ) ) );
+  mMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mMenuButton->setMenu( widgetActionsMenu );
+
+  connect( widgetActionsMenu, &QMenu::aboutToHide, this, [ = ]
+  {
+    if ( !mRenderSuppressionCBox->isChecked() || mRotationEdit->value() != 0.0 )
+      mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMagnifierRotationMenuOn.svg" ) ) );
+    else
+      mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMagnifierRotationMenu.svg" ) ) );
+    QString toolTip = QString( "<b>%1:</b> %2°<br><b>%3:</b> %4" )
+    .arg( tr( "Rotation" ) ).arg( mRotationEdit->value() )
+    .arg( tr( "Render" ) ).arg( mRenderSuppressionCBox->isChecked() ? tr( "Enabled" ) : tr( "Disabled" ) );
+    mMenuButton->setToolTip( toolTip );
+  } );
+
+  mStatusBar->addPermanentWidget( mMenuButton, 0 );
+
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
