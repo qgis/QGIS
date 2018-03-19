@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (QgsVectorLayer,
+                       QgsMapSettings,
                        QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
@@ -42,7 +43,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsRendererRange
                        )
 from qgis.testing import start_app, unittest
-from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -54,7 +54,6 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def setUp(self):
-        self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         QgsProject.instance().addMapLayer(layer)
@@ -68,23 +67,19 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.r2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')
         self.r3 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, 'ELSE')
 
-        self.rootrule = QgsRuleBasedRenderer.Rule(None)
-        self.rootrule.appendChild(self.r1)
-        self.rootrule.appendChild(self.r2)
-        self.rootrule.appendChild(self.r3)
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.r1)
+        rootrule.appendChild(self.r2)
+        rootrule.appendChild(self.r3)
 
-        self.renderer = QgsRuleBasedRenderer(self.rootrule)
-        layer.setRenderer(self.renderer)
-        self.mapsettings = self.iface.mapCanvas().mapSettings()
+        layer.setRenderer(QgsRuleBasedRenderer(rootrule))
+        self.mapsettings = QgsMapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-163, 22, -70, 52))
 
         rendered_layers = [layer]
         self.mapsettings.setLayers(rendered_layers)
-
-    def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
 
     def testElse(self):
         # Setup rendering check

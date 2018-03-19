@@ -424,3 +424,16 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
   return fields;
 }
 
+QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
+{
+  QStringList strings;
+
+  // presume null terminated string list
+  for ( qgssize i = 0; stringList[i]; ++i )
+  {
+    strings.append( QString::fromUtf8( stringList[i] ) );
+  }
+
+  return strings;
+}
+

@@ -28,6 +28,7 @@
 #include <QVector>
 #include <QStyle>
 #include <QDesktopServices>
+#include <QFileDialog>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
@@ -40,6 +41,7 @@
 #include "qgsconfig.h"
 #include "qgssettings.h"
 #include "qgsanimatedicon.h"
+#include "qgsproject.h"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -1612,6 +1614,28 @@ QIcon QgsProjectHomeItem::icon()
 QVariant QgsProjectHomeItem::sortKey() const
 {
   return QStringLiteral( " 1" );
+}
+
+QList<QAction *> QgsProjectHomeItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst = QgsDirectoryItem::actions( parent );
+  QAction *separator = new QAction( parent );
+  separator->setSeparator( true );
+  lst.append( separator );
+
+  QAction *setHome = new QAction( tr( "Set Project Home…" ), parent );
+  connect( setHome, &QAction::triggered, this, [ = ]
+  {
+    QString oldHome = QgsProject::instance()->homePath();
+    QString newPath = QFileDialog::getExistingDirectory( parent, tr( "Select Project Home Directory" ), oldHome );
+    if ( !newPath.isEmpty() )
+    {
+      QgsProject::instance()->setPresetHomePath( newPath );
+    }
+  } );
+  lst << setHome;
+
+  return lst;
 }
 
 QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path )

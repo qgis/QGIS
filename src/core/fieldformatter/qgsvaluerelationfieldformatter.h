@@ -70,6 +70,15 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      * \since QGIS 3.0
      */
     static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
+
+    /**
+     * Utility to convert an array or a string representation of and array \a value to a string list
+     *
+     * \param value The value to be converted
+     * \return A string list
+     * \since QGIS 3.2
+     */
+    static QStringList valueToStringList( const QVariant &value );
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

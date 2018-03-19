@@ -106,6 +106,7 @@ class HistoryDialog(BASE, WIDGET):
             item.setIcon(0, self.keyIcon)
             groupItem.insertChild(0, item)
         self.tree.addTopLevelItem(groupItem)
+        groupItem.setExpanded(True)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()
@@ -133,7 +134,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 popupmenu = QMenu()
-                createTestAction = QAction(self.tr('Create Test…'), self.tree)
+                createTestAction = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
                 popupmenu.exec_(self.tree.mapToGlobal(point))

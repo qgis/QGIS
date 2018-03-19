@@ -80,6 +80,9 @@ class writeOut(object):
     def flush(self):
         pass
 
+    def isatty(self):
+        return False
+
 
 class ShellOutputScintilla(QsciScintilla):
 
@@ -207,9 +210,9 @@ class ShellOutputScintilla(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
-        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
+        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
         menu.addAction(iconHideTool,
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)

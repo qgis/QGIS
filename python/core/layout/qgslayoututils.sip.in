@@ -225,6 +225,17 @@ If the string was correctly decoded, ``ok`` will be set to true.
 Extracts the scale factor from an item ``style``.
 %End
 
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
+%Docstring
+Resolves a ``string`` into a map layer from a given ``project``. Attempts different
+forms of layer matching such as matching by layer id or layer name.
+
+Layer names are matched using a case-insensitive check, ONLY if an exact case
+match was not found.
+
+.. versionadded:: 3.2
+%End
+
 };
 
 /************************************************************************

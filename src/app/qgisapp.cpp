@@ -242,7 +242,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
-#include "qgspythonutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
@@ -461,8 +460,8 @@ static void setTitleBarText_( QWidget &qgisApp )
   {
     if ( QgsProject::instance()->fileName().isEmpty() )
     {
-      // no project title nor file name, so just leave caption with
-      // application name and version
+      // new project
+      caption = QgisApp::tr( "Untitled Project" );
     }
     else
     {
@@ -486,6 +485,14 @@ static void setTitleBarText_( QWidget &qgisApp )
   if ( Qgis::QGIS_VERSION.endsWith( QLatin1String( "Master" ) ) )
   {
     caption += QStringLiteral( " %1" ).arg( Qgis::QGIS_DEV_VERSION );
+  }
+
+  if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
+  {
+    // add current profile (if it's not the default one)
+    QgsUserProfile *profile = QgisApp::instance()->userProfileManager()->userProfile();
+    if ( profile->name() != QLatin1String( "default" ) )
+      caption += QStringLiteral( " [%1]" ).arg( profile->name() );
   }
 
   qgisApp.setWindowTitle( caption );
@@ -1316,6 +1323,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+  auto toggleRevert = [ = ]
+  {
+    mActionRevertProject->setEnabled( QgsProject::instance()->isDirty() &&!QgsProject::instance()->fileName().isEmpty() );
+  };
+  connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
+  connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
+
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1424,7 +1438,10 @@ QgisApp::~QgisApp()
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
 
+#ifdef WITH_BINDINGS
   delete mPythonUtils;
+#endif
+
   delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
@@ -1870,6 +1887,7 @@ void QgisApp::createActions()
   connect( mActionNewProject, &QAction::triggered, this, [ = ] { fileNew(); } );
   connect( mActionNewBlankProject, &QAction::triggered, this, &QgisApp::fileNewBlank );
   connect( mActionOpenProject, &QAction::triggered, this, &QgisApp::fileOpen );
+  connect( mActionRevertProject, &QAction::triggered, this, &QgisApp::fileRevert );
   connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
   connect( mActionCloseProject, &QAction::triggered, this, &QgisApp::fileClose );
   connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
@@ -3168,7 +3186,6 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgisApp::updateMouseCoordinatePrecision );
   connect( mMapCanvas, &QgsMapCanvas::mapToolSet, this, &QgisApp::mapToolChanged );
   connect( mMapCanvas, &QgsMapCanvas::selectionChanged, this, &QgisApp::selectionChanged );
-  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgisApp::markDirty );
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::markDirty );
 
   connect( mMapCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
@@ -3221,7 +3238,12 @@ void QgisApp::setupConnections()
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::visibilityChanged,
            this, &QgisApp::markDirty );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged,
-           this, &QgisApp::markDirty );
+           this, [ = ]( QgsLayerTreeNode *, const QString & key )
+  {
+    // only mark dirty for non-view only changes
+    if ( !QgsLayerTreeView::viewOnlyCustomProperties().contains( key ) )
+      QgisApp::markDirty();
+  } );
 
   // connect map layer registry
   connect( QgsProject::instance(), &QgsProject::layersAdded,
@@ -3684,9 +3706,9 @@ void QgisApp::initLayerTreeView()
   btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
   // filter legend action
-  mActionFilterLegend = new QAction( tr( "Filter Legend By Map Content" ), this );
+  mActionFilterLegend = new QAction( tr( "Filter Legend by Map Content" ), this );
   mActionFilterLegend->setCheckable( true );
-  mActionFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
+  mActionFilterLegend->setToolTip( tr( "Filter Legend by Map Content" ) );
   mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
   connect( mActionFilterLegend, &QAction::toggled, this, &QgisApp::updateFilterLegend );
 
@@ -5059,6 +5081,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   QgsSettings settings;
 
+  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
@@ -5110,7 +5133,6 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
   prj->setEllipsoid( srs.ellipsoidAcronym() );
-  prj->setDirty( false );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -5133,6 +5155,8 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+
+  prj->setDirty( false );
   return true;
 }
 
@@ -5464,7 +5488,18 @@ void QgisApp::fileOpen()
     // open the selected project
     addProject( fullPath );
   }
-} // QgisApp::fileOpen
+}
+
+void QgisApp::fileRevert()
+{
+  if ( QMessageBox::question( this, tr( "Revert Project" ),
+                              tr( "Are you sure you want to discard all unsaved changes the current project?" ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    return;
+
+  // re-open the current project
+  addProject( QgsProject::instance()->fileInfo().filePath() );
+}
 
 void QgisApp::enableProjectMacros()
 {
@@ -5480,6 +5515,8 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
+  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+
   // close the previous opened project if any
   closeProject();
 
@@ -9194,10 +9231,11 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
   freezeCanvases();
   QgsMapLayer *dupLayer = nullptr;
+  QgsMapLayer *newSelection = nullptr;
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
-  Q_FOREACH ( QgsMapLayer *selectedLyr, selectedLyrs )
+  for ( QgsMapLayer *selectedLyr : selectedLyrs )
   {
     dupLayer = nullptr;
     unSppType.clear();
@@ -9261,6 +9299,8 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       continue;
     }
 
+    dupLayer->setName( layerDupName );
+
     // add layer to layer registry and legend
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
@@ -9288,14 +9328,21 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       messageBar()->pushMessage( errMsg,
                                  tr( "Cannot copy style to duplicated layer." ),
                                  Qgis::Critical, messageTimeout() );
+
+    if ( !newSelection )
+      newSelection = dupLayer;
   }
 
   dupLayer = nullptr;
 
+  // auto select first new duplicate layer
+  if ( newSelection )
+    setActiveLayer( newSelection );
+
   freezeCanvases( false );
 
   // display errors in message bar after duplication of layers
-  Q_FOREACH ( QgsMessageBarItem *msgBar, msgBars )
+  for ( QgsMessageBarItem *msgBar : qgis::as_const( msgBars ) )
   {
     mInfoBar->pushItem( msgBar );
   }

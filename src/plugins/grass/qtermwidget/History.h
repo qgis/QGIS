@@ -71,7 +71,7 @@ private:
   //pointer to start of mmap'ed file data, or 0 if the file is not mmap'ed
   char* fileMap;
 
-  //incremented whenver 'add' is called and decremented whenever
+  //incremented whenever 'add' is called and decremented whenever
   //'get' is called.
   //this is used to detect when a large number of lines are being read and processed from the history
   //and automatically mmap the file for better performance (saves the overhead of many lseek-read calls).

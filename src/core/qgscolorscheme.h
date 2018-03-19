@@ -186,7 +186,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     QgsUserColorScheme *clone() const override SIP_FACTORY;
 
-    bool isEditable() const override { return true; }
+    bool isEditable() const override { return mEditable; }
 
     QgsColorScheme::SchemeFlags flags() const override;
 
@@ -214,6 +214,8 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     QString mName;
 
     QString mFilename;
+
+    bool mEditable = false;
 
     QString gplFilePath() override;
 

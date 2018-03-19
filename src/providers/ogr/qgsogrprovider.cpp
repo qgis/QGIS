@@ -1686,7 +1686,7 @@ bool QgsOgrProvider::commitTransaction()
   return true;
 }
 
-bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities )
+bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities, bool hasExistingRef )
 {
   QgsCPLErrorHandler handler;
 
@@ -1745,9 +1745,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   if ( uri != dataSourceUri() )
   {
-    QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
+    if ( hasExistingRef )
+      QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
     setDataSourceUri( uri );
-    QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
+    if ( hasExistingRef )
+      QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   }
 
   mOgrLayer->ResetReading();
@@ -3992,10 +3994,15 @@ void QgsOgrProvider::open( OpenMode mode )
     // Ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to mSubsetString, which is the case when reloading the dataset)
     QString origSubsetString = mSubsetString;
     mSubsetString.clear();
-    // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
+    // Block signals to avoid endless recursion reloadData -> emit dataChanged -> reloadData
     blockSignals( true );
+
     // Do not update capabilities: it will be done later
-    mValid = _setSubsetString( origSubsetString, true, false );
+
+    // WARNING if this is the initial open - we don't already have a connection ref, and will be creating one later. So we *mustn't* grab an extra connection ref
+    // while setting the subset string, or we'll be left with an extra reference which is never cleared.
+    mValid = _setSubsetString( origSubsetString, true, false, mode != OpenModeInitial );
+
     blockSignals( false );
     if ( mValid )
     {

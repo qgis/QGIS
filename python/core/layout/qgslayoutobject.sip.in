@@ -71,6 +71,8 @@ A base class for objects which belong to a layout.
       ScalebarFillColor2,
       ScalebarLineColor,
       ScalebarLineWidth,
+      //table
+      AttributeTableSourceLayer,
     };
 
     enum PropertyValueType

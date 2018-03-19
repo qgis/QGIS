@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingContext
 {
 %Docstring
@@ -38,6 +39,8 @@ expression context.
 Constructor for QgsProcessingContext.
 %End
 
+
+    ~QgsProcessingContext();
 
     void copyThreadSafeSettings( const QgsProcessingContext &other );
 %Docstring
@@ -110,19 +113,54 @@ Returns a reference to the layer store used for storing temporary layers during
 algorithm execution.
 %End
 
-    struct LayerDetails
-    {
+    class LayerDetails
+{
+%Docstring
+Details for layers to load into projects.
 
-      LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString() );
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingcontext.h"
+%End
+      public:
+
+        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString() );
 %Docstring
 Constructor for LayerDetails.
 %End
 
-      QString name;
+        LayerDetails();
+%Docstring
+Default constructor
+%End
 
-      QString outputName;
+        QString name;
 
-      QgsProject *project;
+        QString outputName;
+
+        QgsProcessingLayerPostProcessorInterface *postProcessor() const;
+%Docstring
+Layer post-processor. May be None if no post-processing is required.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`setPostProcessor`
+%End
+
+        void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor /Transfer/ );
+%Docstring
+Sets the layer post-processor. May be None if no post-processing is required.
+
+Ownership of ``processor`` is transferred.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`postProcessor`
+%End
+
+        QgsProject *project;
 
     };
 
@@ -133,6 +171,26 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
 
 .. seealso:: :py:func:`addLayerToLoadOnCompletion`
+
+.. seealso:: :py:func:`willLoadLayerOnCompletion`
+
+.. seealso:: :py:func:`layerToLoadOnCompletionDetails`
+%End
+
+    bool willLoadLayerOnCompletion( const QString &layer ) const;
+%Docstring
+Returns true if the given ``layer`` (by ID or datasource) will be loaded into the current project
+upon completion of the algorithm or model.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`layersToLoadOnCompletion`
+
+.. seealso:: :py:func:`setLayersToLoadOnCompletion`
+
+.. seealso:: :py:func:`addLayerToLoadOnCompletion`
+
+.. seealso:: :py:func:`layerToLoadOnCompletionDetails`
 %End
 
     void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers );
@@ -142,12 +200,41 @@ Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into t
 .. seealso:: :py:func:`addLayerToLoadOnCompletion`
 
 .. seealso:: :py:func:`layersToLoadOnCompletion`
+
+.. seealso:: :py:func:`willLoadLayerOnCompletion`
+
+.. seealso:: :py:func:`layerToLoadOnCompletionDetails`
 %End
 
     void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details );
 %Docstring
 Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
 The ``details`` parameter dictates the LayerDetails.
+
+.. seealso:: :py:func:`setLayersToLoadOnCompletion`
+
+.. seealso:: :py:func:`layersToLoadOnCompletion`
+
+.. seealso:: :py:func:`willLoadLayerOnCompletion`
+
+.. seealso:: :py:func:`layerToLoadOnCompletionDetails`
+%End
+
+    QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer );
+%Docstring
+Returns a reference to the details for a given ``layer`` which is loaded on completion of the
+algorithm or model.
+
+.. warning::
+
+   First check willLoadLayerOnCompletion(), or calling this method will incorrectly
+   add ``layer`` as a layer to load on completion.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`willLoadLayerOnCompletion`
+
+.. seealso:: :py:func:`addLayerToLoadOnCompletion`
 
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
 
@@ -302,6 +389,47 @@ from a context.
 };
 
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
+
+
+
+class QgsProcessingLayerPostProcessorInterface
+{
+%Docstring
+An interface for layer post-processing handlers for execution following a processing algorithm operation.
+
+Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
+on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`
+
+Algorithms that wish to set post-processing steps for generated layers should implement this interface
+in a separate class (NOT the algorithm class itself!).
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingcontext.h"
+%End
+  public:
+
+    virtual ~QgsProcessingLayerPostProcessorInterface();
+
+    virtual void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+%Docstring
+Post-processes the specified ``layer``, following successful execution of a processing algorithm. This method
+always runs in the main thread and can be used to setup renderers, editor widgets, metadata, etc for
+the given layer.
+
+Post-processing classes can utilize settings from the algorithm's ``context`` and report logging messages
+or errors via the given ``feedback`` object.
+
+In the case of an algorithm run as part of a larger model, the post-processing occurs following the completed
+execution of the entire model.
+
+Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
+on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`
+%End
+
+};
 
 
 

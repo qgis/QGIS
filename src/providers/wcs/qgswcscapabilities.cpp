@@ -224,8 +224,8 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
   }
   else
   {
-    // We prefer 1.0 because 1.1 has many issues, each server implements it in defferent
-    // way with various particularities
+    // We prefer 1.0 because 1.1 has many issues, each server implements it in
+    // a different way with various particularities.
     // It may happen that server supports 1.1.0 but gives error for 1.1
     versions << QStringLiteral( "1.0.0" ) << QStringLiteral( "1.1.0,1.0.0" );
   }
@@ -822,7 +822,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QList<int> high = parseInts( domElementText( gridElement, QStringLiteral( "limits.GridEnvelope.high" ) ) );
     if ( low.size() == 2 && high.size() == 2 )
     {
-      // low/high are indexes in grid -> size is hight - low + 1
+      // low/high are indexes in grid -> size is height - low + 1
       double width = high[0] - low[0] + 1;
       double height = high[1] - low[1] + 1;
       if ( width > 0 && height > 0 )

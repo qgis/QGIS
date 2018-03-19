@@ -18,6 +18,7 @@
 
 #define SIP_NO_FILE
 
+#include "qgis.h"
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -34,7 +35,7 @@
 
 /**
  * \ingroup core
- * Template that stores data related to one server.
+ * Template that stores data related to a connection to a single server or datasource.
  *
  * It is assumed that following functions exist:
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
@@ -74,7 +75,7 @@ class QgsConnectionPoolGroup
 
     ~QgsConnectionPoolGroup()
     {
-      Q_FOREACH ( Item item, conns )
+      for ( const Item &item : qgis::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( item.c );
       }
@@ -180,12 +181,12 @@ class QgsConnectionPoolGroup
     void invalidateConnections()
     {
       connMutex.lock();
-      Q_FOREACH ( Item i, conns )
+      for ( const Item &i : qgis::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( i.c );
       }
       conns.clear();
-      Q_FOREACH ( T c, acquiredConns )
+      for ( T c : qgis::as_const( acquiredConns ) )
         qgsConnectionPool_InvalidateConnection( c );
       connMutex.unlock();
     }
@@ -269,7 +270,7 @@ class QgsConnectionPool
     virtual ~QgsConnectionPool()
     {
       mMutex.lock();
-      Q_FOREACH ( T_Group *group, mGroups )
+      for ( T_Group *group : qgis::as_const( mGroups ) )
       {
         delete group;
       }

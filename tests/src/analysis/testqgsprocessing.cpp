@@ -717,6 +717,28 @@ void TestQgsProcessing::normalizeLayerSource()
   QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers \"new\"/test.shp" ) );
 }
 
+
+class TestPostProcessor : public QgsProcessingLayerPostProcessorInterface
+{
+  public:
+
+    TestPostProcessor( bool *deleted )
+      : deleted( deleted )
+    {}
+
+    ~TestPostProcessor()
+    {
+      *deleted = true;
+    }
+
+    bool *deleted = nullptr;
+
+    void postProcessLayer( QgsMapLayer *, QgsProcessingContext &, QgsProcessingFeedback * ) override
+    {
+    }
+};
+
+
 void TestQgsProcessing::context()
 {
   QgsProcessingContext context;
@@ -752,18 +774,34 @@ void TestQgsProcessing::context()
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
   QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
+  QVERIFY( !context.willLoadLayerOnCompletion( v1->id() ) );
+  QVERIFY( !context.willLoadLayerOnCompletion( v2->id() ) );
   QMap< QString, QgsProcessingContext::LayerDetails > layers;
-  layers.insert( v1->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v1" ), &p ) );
+  QgsProcessingContext::LayerDetails details( QStringLiteral( "v1" ), &p );
+  bool ppDeleted = false;
+  TestPostProcessor *pp = new TestPostProcessor( &ppDeleted );
+  details.setPostProcessor( pp );
+  layers.insert( v1->id(), details );
   context.setLayersToLoadOnCompletion( layers );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).postProcessor(), pp );
+  QVERIFY( context.willLoadLayerOnCompletion( v1->id() ) );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).name, QStringLiteral( "v1" ) );
+  QVERIFY( !context.willLoadLayerOnCompletion( v2->id() ) );
   context.addLayerToLoadOnCompletion( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).postProcessor(), pp );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ).name, QStringLiteral( "v2" ) );
+  QVERIFY( !context.layersToLoadOnCompletion().values().at( 1 ).postProcessor() );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).name, QStringLiteral( "v1" ) );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v2->id() ).name, QStringLiteral( "v2" ) );
+  QVERIFY( context.willLoadLayerOnCompletion( v1->id() ) );
+  QVERIFY( context.willLoadLayerOnCompletion( v2->id() ) );
 
   // ensure that copyThreadSafeSettings doesn't copy layersToLoadOnCompletion()
   context2.copyThreadSafeSettings( context );
@@ -772,6 +810,8 @@ void TestQgsProcessing::context()
   layers.clear();
   layers.insert( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   context.setLayersToLoadOnCompletion( layers );
+  QVERIFY( ppDeleted );
+
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v2->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v2" ) );
@@ -793,6 +833,41 @@ void TestQgsProcessing::context()
   QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  // make sure postprocessor is correctly deleted
+  ppDeleted = false;
+  pp = new TestPostProcessor( &ppDeleted );
+  details = QgsProcessingContext::LayerDetails( QStringLiteral( "v1" ), &p );
+  details.setPostProcessor( pp );
+  layers.insert( v1->id(), details );
+  context.setLayersToLoadOnCompletion( layers );
+  // overwrite with existing
+  context.setLayersToLoadOnCompletion( layers );
+  QVERIFY( !ppDeleted );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).postProcessor(), pp );
+  bool pp2Deleted = false;
+  TestPostProcessor *pp2 = new TestPostProcessor( &pp2Deleted );
+  details = QgsProcessingContext::LayerDetails( QStringLiteral( "v1" ), &p );
+  details.setPostProcessor( pp2 );
+  layers.insert( v1->id(), details );
+  context.setLayersToLoadOnCompletion( layers );
+  QVERIFY( ppDeleted );
+  QVERIFY( !pp2Deleted );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).postProcessor(), pp2 );
+  ppDeleted = false;
+  pp = new TestPostProcessor( &ppDeleted );
+  details = QgsProcessingContext::LayerDetails( QStringLiteral( "v1" ), &p );
+  details.setPostProcessor( pp );
+  context.addLayerToLoadOnCompletion( v1->id(), details );
+  QVERIFY( !ppDeleted );
+  QVERIFY( pp2Deleted );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).postProcessor(), pp );
+  pp2Deleted = false;
+  pp2 = new TestPostProcessor( &pp2Deleted );
+  context.layerToLoadOnCompletionDetails( v1->id() ).setPostProcessor( pp2 );
+  QVERIFY( ppDeleted );
+  QVERIFY( !pp2Deleted );
+  QCOMPARE( context.layerToLoadOnCompletionDetails( v1->id() ).postProcessor(), pp2 );
 
   // take result layer
   QgsMapLayer *result = context2.takeResultLayer( v1->id() );
@@ -4433,13 +4508,17 @@ void TestQgsProcessing::parameterFileOut()
 
   // outputs definitio test
   def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "HTML files" ), QString(), false ) );
-  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  std::unique_ptr< QgsProcessingOutputDefinition > outputDef( def->toOutputDefinition() );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( outputDef.get() ) );
   def.reset( new QgsProcessingParameterFileDestination( "html", QString(), QString( "Text files (*.htm)" ), QString(), false ) );
-  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( def->toOutputDefinition() ) );
+  outputDef.reset( def->toOutputDefinition() );
+  QVERIFY( dynamic_cast< QgsProcessingOutputHtml *>( outputDef.get() ) );
   def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString( "Text files (*.txt)" ), QString(), false ) );
-  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
+  outputDef.reset( def->toOutputDefinition() );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( outputDef.get() ) );
   def.reset( new QgsProcessingParameterFileDestination( "file", QString(), QString(), QString(), false ) );
-  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( def->toOutputDefinition() ) );
+  outputDef.reset( def->toOutputDefinition() );
+  QVERIFY( dynamic_cast< QgsProcessingOutputFile *>( outputDef.get() ) );
 }
 
 void TestQgsProcessing::parameterFolderOut()

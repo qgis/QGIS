@@ -211,6 +211,17 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );
 
+    /**
+     * Resolves a \a string into a map layer from a given \a project. Attempts different
+     * forms of layer matching such as matching by layer id or layer name.
+     *
+     * Layer names are matched using a case-insensitive check, ONLY if an exact case
+     * match was not found.
+     *
+     * \since QGIS 3.2
+     */
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
+
   private:
 
     //! Scale factor for upscaling fontsize and downscaling painter

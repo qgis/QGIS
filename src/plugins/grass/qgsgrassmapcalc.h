@@ -117,7 +117,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     //! Reset tool actions togles
     void setToolActionsOff( void );
 
-    //! Set currnt tool and toggle menu
+    //! Set current tool and toggle menu
     void setTool( int );
 
     //! Map selection changed

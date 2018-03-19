@@ -215,7 +215,7 @@ tests:
         type: vector
 
   - name: Delete Holes
-    algorithm: qgis:deleteholes
+    algorithm: native:deleteholes
     params:
     - name: polys.gml
       type: vector
@@ -1455,6 +1455,30 @@ tests:
         name: expected/add_geometry_pointz.gml
         type: vector
 
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export line info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_line_info.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multiline info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_multiline_info.gml
+        type: vector
+
   - algorithm: qgis:texttofloat
     name: Text to float
     params:
@@ -2321,7 +2345,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:deleteholes
+  - algorithm: native:deleteholes
     name: Delete holes (no min)
     params:
       INPUT:
@@ -2333,7 +2357,7 @@ tests:
         name: expected/removed_holes.gml
         type: vector
 
-  - algorithm: qgis:deleteholes
+  - algorithm: native:deleteholes
     name: Delete holes (with min)
     params:
       INPUT:
@@ -4867,4 +4891,56 @@ tests:
     results:
       OUTPUT:
         name: expected/rotate_around_point.gml
+        type: vector
+
+  - algorithm: native:importphotos
+    name: Import photos
+    params:
+      FOLDER:
+        name: custom/photos
+        type: file
+      RECURSIVE: false
+    results:
+      INVALID:
+        name: expected/import_photos_invalid.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+      OUTPUT:
+        name: expected/import_photos.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.3)
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_03.gml
+        type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.7)
+    params:
+      ALPHA: 0.7
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_07.gml
         type: vector

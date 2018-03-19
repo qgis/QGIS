@@ -200,6 +200,20 @@ QPolygonF QgsCurve::asQPolygonF() const
   return points;
 }
 
+double QgsCurve::straightDistance2d() const
+{
+  return startPoint().distance( endPoint() );
+}
+
+double QgsCurve::sinuosity() const
+{
+  double d = straightDistance2d();
+  if ( qgsDoubleNear( d, 0.0 ) )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  return length() / d;
+}
+
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();

@@ -40,6 +40,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
+  processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
@@ -56,6 +57,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
+  processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmrotate.cpp
@@ -201,6 +203,8 @@ QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  processing/qgsalgorithmimportphotos.h
+
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h

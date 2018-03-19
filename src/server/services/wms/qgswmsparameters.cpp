@@ -1209,6 +1209,11 @@ namespace QgsWms
     return value( ParameterName::INFO_FORMAT ).toString();
   }
 
+  bool QgsWmsParameters::infoFormatIsImage() const
+  {
+    return infoFormat() == Format::PNG || infoFormat() == Format::JPG;
+  }
+
   QgsWmsParameters::Format QgsWmsParameters::infoFormat() const
   {
     QString fStr = infoFormatAsString();

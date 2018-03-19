@@ -148,11 +148,6 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     self.params.append(getParameterFromString(line))
                 elif line.startswith('AllowUnmatching'):
                     self.allow_nonmatching_grid_extents = True
-                elif line.startswith('Extent'):
-                    # An extent parameter that wraps 4 SAGA numerical parameters
-                    self.extentParamNames = line[6:].strip().split(' ')
-                    self.params.append(QgsProcessingParameterExtent(self.OUTPUT_EXTENT,
-                                                                    'Output extent'))
                 else:
                     pass # TODO
                     #self.addOutput(getOutputFromString(line))
@@ -289,7 +284,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 values.append(rect.yMaximum())
 
                 for i in range(4):
-                    command += ' -{} {}'.format(self.extentParamNames[i], float(values[i]) + offset[i])
+                    command += ' -{} {}'.format(param.name().split(' ')[i], float(values[i]) + offset[i])
             elif isinstance(param, QgsProcessingParameterNumber):
                 if param.dataType() == QgsProcessingParameterNumber.Integer:
                     command += ' -{} {}'.format(param.name(), self.parameterAsInt(parameters, param.name(), context))

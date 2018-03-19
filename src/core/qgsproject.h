@@ -85,7 +85,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
-    Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
+    Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
     Q_PROPERTY( QString ellipsoid READ ellipsoid WRITE setEllipsoid NOTIFY ellipsoidChanged )
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
@@ -423,9 +423,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /**
-     * Return project's home path
-      \returns home path of project (or null QString if not set) */
+     * Returns the project's home path. This will either be a manually set home path
+     * (see presetHomePath()) or the path containing the project file itself.
+     *
+     * This method always returns the absolute path to the project's home. See
+     * presetHomePath() to retrieve any manual project home path override (e.g.
+     * relative home paths).
+     *
+     * \see setPresetHomePath()
+     * \see presetHomePath()
+     * \see homePathChanged()
+    */
     QString homePath() const;
+
+    /**
+     * Returns any manual project home path setting, or an empty string if not set.
+     *
+     * This path may be a relative path. See homePath() to retrieve a path which is always
+     * an absolute path.
+     *
+     * \see homePath()
+     * \see setPresetHomePath()
+     * \see homePathChanged()
+     *
+     * \since QGIS 3.2
+    */
+    QString presetHomePath() const;
 
     QgsRelationManager *relationManager() const;
 
@@ -905,7 +928,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Emitted when the file name of the project changes
     void fileNameChanged();
 
-    //! Emitted when the home path of the project changes
+    /**
+     * Emitted when the home path of the project changes.
+     * \see setPresetHomePath()
+     * \see homePath()
+     * \see presetHomePath()
+     */
     void homePathChanged();
 
     //! emitted whenever the configuration for snapping has changed
@@ -1108,6 +1136,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
+    // TODO QGIS 4.0 - rename b to dirty
+
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.
@@ -1116,6 +1146,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );
+
+    /**
+     * Sets the project's home \a path. If an empty path is specified than the
+     * home path will be automatically determined from the project's file path.
+     * \since QGIS 3.2
+     * \see presetHomePath()
+     * \see homePath()
+     * \see homePathChanged()
+    */
+    void setPresetHomePath( const QString &path );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -1212,15 +1252,69 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
+
+    /**
+     * Manual override for project home path - if empty, home path is automatically
+     * created based on file name.
+     */
+    QString mHomePath;
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
+    int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    friend class QgsProjectDirtyBlocker;
+};
+
+/**
+ * Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+ *
+ * QgsProjectDirtyBlocker supports "stacked" blocking, so two QgsProjectDirtyBlockers created
+ * for the same project will both need to be destroyed before the project can be dirtied again.
+ *
+ * Note that QgsProjectDirtyBlocker only blocks calls which set the project as dirty - calls
+ * which set the project as clean are not blocked.
+ *
+ * Python scripts should not use QgsProjectDirtyBlocker directly. Instead, use QgsProject.blockDirtying()
+ * \code{.py}
+ *   project = QgsProject.instance()
+ *   with QgsProject.blockDirtying(project):
+ *     # do something
+ * \endcode
+ *
+ * \see QgsProject::setDirty()
+ *
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProjectDirtyBlocker
+{
+  public:
+
+    /**
+     * Constructor for QgsProjectDirtyBlocker.
+     *
+     * This will block dirtying the specified \a project for the lifetime of this object.
+     */
+    QgsProjectDirtyBlocker( QgsProject *project )
+      : mProject( project )
+    {
+      mProject->mDirtyBlockCount++;
+    }
+
+    ~QgsProjectDirtyBlocker()
+    {
+      mProject->mDirtyBlockCount--;
+    }
+
+  private:
+    QgsProject *mProject = nullptr;
 };
 
 /**

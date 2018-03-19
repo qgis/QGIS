@@ -295,6 +295,9 @@ be replaced by a line break.
     virtual void finalizeRestoreFromXml();
 
 
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+
   protected:
 
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

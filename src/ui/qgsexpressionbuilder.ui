@@ -545,7 +545,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
                </property>
                <property name="icon">
                 <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/console/iconTabEditorConsole.png</normaloff>:/images/themes/default/console/iconTabEditorConsole.png</iconset>
+                 <normaloff>:/images/themes/default/console/iconTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconTabEditorConsole.svg</iconset>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -615,7 +615,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                </property>
                <property name="icon">
                 <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/console/iconRunScriptConsole.png</normaloff>:/images/themes/default/console/iconRunScriptConsole.png</iconset>
+                 <normaloff>:/images/themes/default/console/iconRunScriptConsole.svg</normaloff>:/images/themes/default/console/iconRunScriptConsole.svg</iconset>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>

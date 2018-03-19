@@ -18,8 +18,9 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsproxystyle.h"
 #include <QStandardItem>
-#include <QProxyStyle>
+
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
@@ -70,12 +71,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
  * \ingroup gui
  * View style which shows drop indicator line between items
  */
-class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
+class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
   public:
-    explicit QgsCategorizedSymbolRendererViewStyle( QStyle *style = nullptr );
+    explicit QgsCategorizedSymbolRendererViewStyle( QWidget *parent );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };

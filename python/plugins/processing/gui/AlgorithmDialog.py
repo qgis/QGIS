@@ -221,7 +221,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 if executeIterating(self.algorithm(), parameters, self.iterateParam, context, feedback):
                     feedback.pushInfo(
-                        self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                        self.tr('Execution completed in {0:0.2f} seconds').format(time.time() - start_time))
                     self.cancelButton().setEnabled(False)
                     self.finish(True, parameters, context, feedback)
                 else:
@@ -235,12 +235,12 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                 def on_complete(ok, results):
                     if ok:
-                        feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                        feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds').format(time.time() - start_time))
                         feedback.pushInfo(self.tr('Results:'))
                         feedback.pushCommandInfo(pformat(results))
                     else:
                         feedback.reportError(
-                            self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
+                            self.tr('Execution failed after {0:0.2f} seconds').format(time.time() - start_time))
                     feedback.pushInfo('')
 
                     if self.feedback_dialog is not None:

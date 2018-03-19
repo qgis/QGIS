@@ -407,7 +407,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ); return false; }
 
     //! Writes into the provider datasource
-    // TODO: add data type (may be defferent from band type)
+    // TODO: add data type (may be different from band type)
     virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset )
     {
       Q_UNUSED( data );
@@ -526,9 +526,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     //! Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses
     void copyBaseSettings( const QgsRasterDataProvider &other );
-
-    //! \note not available in Python bindings
-    static QStringList cStringList2Q_( char **stringList ) SIP_SKIP;
 
     /**
      * Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore

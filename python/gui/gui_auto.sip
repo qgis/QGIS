@@ -177,6 +177,7 @@
 %Include qgsprojectionselectiontreewidget.sip
 %Include qgspropertyassistantwidget.sip
 %Include qgspropertyoverridebutton.sip
+%Include qgsproxystyle.sip
 %Include qgsquerybuilder.sip
 %Include qgsrasterformatsaveoptionswidget.sip
 %Include qgsrasterlayersaveasdialog.sip

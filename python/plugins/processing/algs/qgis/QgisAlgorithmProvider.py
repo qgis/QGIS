@@ -55,7 +55,6 @@ from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
@@ -176,7 +175,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
-                DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
                 Difference(),

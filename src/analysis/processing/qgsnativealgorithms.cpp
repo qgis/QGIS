@@ -37,6 +37,7 @@
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
+#include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmlineintersection.h"
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
@@ -53,6 +54,7 @@
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmremoveduplicatevertices.h"
+#include "qgsalgorithmremoveholes.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmrotate.h"
@@ -129,6 +131,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
@@ -147,6 +150,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
+  addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );

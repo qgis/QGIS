@@ -88,6 +88,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool mAllowNull = true;
     bool mIsNull = false;
     bool mIsEmpty = false;
+    bool mCurrentPressEvent = false;
 
     QString mOriginalStyleSheet = QString();
     QAction *mClearAction;

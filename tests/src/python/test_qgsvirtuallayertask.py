@@ -35,9 +35,12 @@ class TestQgsVirtualLayerTask(unittest.TestCase):
         self.testDataDir = unitTestDataPath()
         self.success = False
         self.fail = False
+        self.ids = None
+        self.task = None
 
     def onSuccess(self):
         self.success = True
+        self.ids = [f.id() for f in self.task.layer().getFeatures()]
 
     def onFail(self):
         self.fail = True
@@ -49,23 +52,22 @@ class TestQgsVirtualLayerTask(unittest.TestCase):
 
         df = QgsVirtualLayerDefinition()
         df.setQuery('select * from "françéà"')
-        task = QgsVirtualLayerTask(df)
+        self.task = QgsVirtualLayerTask(df)
 
-        ids = [f.id() for f in task.layer().getFeatures()]
+        ids = [f.id() for f in self.task.layer().getFeatures()]
         self.assertEqual(len(ids), 0)
 
-        task.taskCompleted.connect(self.onSuccess)
-        task.taskTerminated.connect(self.onFail)
+        self.task.taskCompleted.connect(self.onSuccess)
+        self.task.taskTerminated.connect(self.onFail)
 
-        QgsApplication.taskManager().addTask(task)
+        QgsApplication.taskManager().addTask(self.task)
         while not self.success and not self.fail:
             QCoreApplication.processEvents()
 
         self.assertTrue(self.success)
         self.assertFalse(self.fail)
 
-        ids = [f.id() for f in task.layer().getFeatures()]
-        self.assertEqual(len(ids), 4)
+        self.assertEqual(len(self.ids), 4)
 
 
 if __name__ == '__main__':

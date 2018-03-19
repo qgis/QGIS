@@ -148,6 +148,8 @@ Returns list of indicators associated with a particular layer tree node.
 .. versionadded:: 3.2
 %End
 
+
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring

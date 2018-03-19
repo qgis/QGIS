@@ -170,7 +170,6 @@ class SqlResultModelAsync(QObject):
             self.status = self.task.status
             self.model = self.task.model
             self.error = self.task.error
-        self.task = None
 
         self.done.emit()
 
