@@ -58,7 +58,7 @@ class QgsNativeMetadataBaseValidator : QgsMetadataValidator
 %Docstring
  A validator for the native base QGIS metadata schema definition.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
@@ -81,7 +81,7 @@ Constructor for QgsNativeMetadataBaseValidator.
 class QgsNativeMetadataValidator : QgsNativeMetadataBaseValidator
 {
 %Docstring
- A validator for the native QGIS metadata schema definition.
+ A validator for the native QGIS layer metadata schema definition.
 
 .. versionadded:: 3.0
 %End
@@ -94,6 +94,30 @@ class QgsNativeMetadataValidator : QgsNativeMetadataBaseValidator
     QgsNativeMetadataValidator();
 %Docstring
 Constructor for QgsNativeMetadataValidator.
+%End
+
+    virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;
+
+
+};
+
+
+class QgsNativeProjectMetadataValidator : QgsNativeMetadataBaseValidator
+{
+%Docstring
+ A validator for the native QGIS project metadata schema definition.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadatavalidator.h"
+%End
+  public:
+
+    QgsNativeProjectMetadataValidator();
+%Docstring
+Constructor for QgsNativeProjectMetadataValidator.
 %End
 
     virtual bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;

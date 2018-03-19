@@ -173,6 +173,7 @@
 %Include metadata/qgslayermetadatavalidator.sip
 %Include metadata/qgslayermetadataformatter.sip
 %Include metadata/qgsmetadatabase.sip
+%Include metadata/qgsprojectmetadata.sip
 %Include processing/qgsprocessing.sip
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip

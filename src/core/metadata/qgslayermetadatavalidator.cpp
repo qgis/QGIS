@@ -17,7 +17,11 @@
 
 #include "qgslayermetadatavalidator.h"
 #include "qgslayermetadata.h"
+#include "qgsprojectmetadata.h"
 
+//
+// QgsNativeMetadataBaseValidator
+//
 
 bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, QList<QgsMetadataValidator::ValidationResult> &results ) const
 {
@@ -125,6 +129,10 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, 
   return result;
 }
 
+//
+// QgsNativeMetadataValidator
+//
+
 bool QgsNativeMetadataValidator::validate( const QgsMetadataBase *baseMetadata, QList<ValidationResult> &results ) const
 {
   results.clear();
@@ -169,3 +177,34 @@ bool QgsNativeMetadataValidator::validate( const QgsMetadataBase *baseMetadata, 
   return result;
 }
 
+
+//
+// QgsNativeProjectMetadataValidator
+//
+
+bool QgsNativeProjectMetadataValidator::validate( const QgsMetadataBase *baseMetadata, QList<QgsMetadataValidator::ValidationResult> &results ) const
+{
+  results.clear();
+
+  const QgsProjectMetadata *metadata = dynamic_cast< const QgsProjectMetadata * >( baseMetadata );
+  if ( !metadata )
+    return false;
+
+  bool result = true;
+  if ( !QgsNativeMetadataBaseValidator::validate( metadata, results ) )
+    result = false;
+
+  if ( metadata->author().isEmpty() )
+  {
+    result = false;
+    results << ValidationResult( QObject::tr( "author" ), QObject::tr( "A project author is required." ) );
+  }
+
+  if ( !metadata->creationDateTime().isValid() )
+  {
+    result = false;
+    results << ValidationResult( QObject::tr( "creation" ), QObject::tr( "The project creation date/time is required." ) );
+  }
+
+  return result;
+}
