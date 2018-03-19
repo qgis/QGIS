@@ -33,7 +33,7 @@ class QgsPointXY;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
-class QgsAbstractMetadataBaseWidget;
+class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
@@ -181,7 +181,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //bool mRasterLayerIsInternal;
 
     QgsRasterRendererWidget *mRendererWidget = nullptr;
-    QgsAbstractMetadataBaseWidget *mMetadataWidget = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool rasterIsMultiBandColor();
 

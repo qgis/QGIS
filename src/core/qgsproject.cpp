@@ -510,6 +510,7 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
+  mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
   emit metadataChanged();
 
   QgsCoordinateTransformContext context;

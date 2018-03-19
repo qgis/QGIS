@@ -115,6 +115,9 @@ Constructor for Constraint.
 Constructor for QgsLayerMetadata.
 %End
 
+    virtual QgsLayerMetadata *clone() const /Factory/;
+
+
     QString fees() const;
 %Docstring
 Returns any fees associated with using the resource.

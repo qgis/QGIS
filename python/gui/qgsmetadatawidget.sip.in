@@ -10,7 +10,7 @@
 
 
 
-class QgsAbstractMetadataBaseWidget : QWidget
+class QgsMetadataWidget : QWidget
 {
 %Docstring
  A wizard to edit metadata on a map layer.
@@ -23,7 +23,13 @@ class QgsAbstractMetadataBaseWidget : QWidget
 %End
   public:
 
-    QgsAbstractMetadataBaseWidget( QWidget *parent, QgsMapLayer *layer = 0 );
+    enum Mode
+    {
+      LayerMetadata,
+      ProjectMetadata,
+    };
+
+    QgsMetadataWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for the wizard.
 
@@ -33,26 +39,49 @@ the layer's metadata..
 .. seealso:: :py:func:`setMetadata`
 %End
 
-    void setMetadata( const QgsLayerMetadata &metadata );
+    void setMode( Mode mode );
+%Docstring
+Sets the widget's current ``mode``.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`mode`
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the widget's current mode.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setMetadata( const QgsAbstractMetadataBase *metadata );
 %Docstring
 Sets the ``metadata`` to display in the widget.
 
 This method can be called after constructing a QgsAbstractMetadataBaseWidget in order
 to set the displayed metadata to custom, non-layer based metadata.
 
+Calling this method will automatically setMode() to the correct mode corresponding
+to the specified ``metadata`` object.
+
 .. seealso:: :py:func:`metadata`
 %End
 
-    QgsLayerMetadata metadata();
+    QgsAbstractMetadataBase *metadata() /Factory/;
 %Docstring
-Returns a QgsLayerMetadata object representing the current state of the widget.
+Returns a QgsAbstractMetadataBase object representing the current state of the widget.
+
+Caller takes ownership of the returned object.
 
 .. seealso:: :py:func:`saveMetadata`
 %End
 
-    void saveMetadata( QgsLayerMetadata &layerMetadata );
+    void saveMetadata( QgsAbstractMetadataBase *metadata );
 %Docstring
-Save all fields in a QgsLayerMetadata object.
+Save all fields in a metadata object.
 
 .. seealso:: :py:func:`metadata`
 

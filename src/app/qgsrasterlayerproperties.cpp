@@ -253,7 +253,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
   layout->setMargin( 0 );
-  mMetadataWidget = new QgsAbstractMetadataBaseWidget( this, mRasterLayer );
+  mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
   mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
@@ -1903,7 +1903,7 @@ void QgsRasterLayerProperties::loadMetadata()
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mRasterLayer->metadata() );
+    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
   }
   else
   {
@@ -1965,7 +1965,7 @@ void QgsRasterLayerProperties::loadDefaultMetadata()
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mRasterLayer->metadata() );
+    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
   }
   else
   {

@@ -240,7 +240,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
   metadataLayout->setMargin( 0 );
-  mMetadataWidget = new QgsAbstractMetadataBaseWidget( this, mLayer );
+  mMetadataWidget = new QgsMetadataWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
   mMetadataWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   metadataLayout->addWidget( mMetadataWidget );
@@ -560,7 +560,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mVector3DWidget->setLayer( mLayer );
 #endif
 
-  mMetadataWidget->setMetadata( mLayer->metadata() );
+  mMetadataWidget->setMetadata( &mLayer->metadata() );
 
 } // syncToLayer()
 
@@ -1017,7 +1017,7 @@ void QgsVectorLayerProperties::loadMetadata()
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {
@@ -1092,7 +1092,7 @@ void QgsVectorLayerProperties::loadDefaultMetadata()
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {

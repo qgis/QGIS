@@ -46,6 +46,9 @@ using QgsNativeProjectMetadataValidator.
 Constructor for QgsProjectMetadata.
 %End
 
+    virtual QgsProjectMetadata *clone() const /Factory/;
+
+
     QString author() const;
 %Docstring
 Returns the project author string.

@@ -169,6 +169,8 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      */
     QgsLayerMetadata() = default;
 
+    QgsLayerMetadata *clone() const override SIP_FACTORY;
+
     /**
      * Returns any fees associated with using the resource.
      * An empty string will be returned if no fees are set.

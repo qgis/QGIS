@@ -18,6 +18,11 @@
 #include "qgslayermetadata.h"
 #include "qgsmaplayer.h"
 
+QgsLayerMetadata *QgsLayerMetadata::clone() const
+{
+  return new QgsLayerMetadata( *this );
+}
+
 QString QgsLayerMetadata::fees() const
 {
   return mFees;
