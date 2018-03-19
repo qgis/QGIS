@@ -172,7 +172,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * they forgot their password.
      * The created schedule timer will emit a request to gain access to the user,
      * through the given application, to prompt the erase operation (e.g. via a dialog);
-     * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
+     * if no access to user interaction occurs within 90 seconds, it cancels the schedule.
      * \note not available in Python bindings
      */
     void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;

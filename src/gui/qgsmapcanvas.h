@@ -371,7 +371,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool renderFlag() const { return mRenderFlag; }
 
     /**
-     * Convience function for returning the current canvas map units. The map units
+     * Convenience function for returning the current canvas map units. The map units
      * are dictated by the canvas' destinationCrs() map units.
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
