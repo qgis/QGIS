@@ -230,7 +230,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     if ( isSingleClick )
     {
       double sr = searchRadiusMU( mCanvas );
-      r = QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr );
+      r = toLayerCoordinates(layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ));
     }
     else
     {

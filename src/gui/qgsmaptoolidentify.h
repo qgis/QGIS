@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! Select features to identify by:
     enum IdentifySelection
     {
-      //! SelectSimple - single click or drawing a rectangle
+      //! SelectSimple - single click or drawing a rectangle, default option
       SelectSimple,
       //! SelectPolygon - drawing a polygon
       SelectPolygon,
@@ -135,6 +135,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param y y coordinates of mouseEvent
     \param mode Identification mode. Can use Qgis default settings or a defined mode.
     \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+    \param selectionMode IdentifySelection. Defines which selection mode has been used for identification.
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple);
 
@@ -163,6 +164,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param mode Identification mode. Can use Qgis default settings or a defined mode.
     \param layerList Performs the identification within the given list of layers.
     \param layerType Only performs identification in a certain type of layers (raster, vector).
+    \param selectionMode IdentifySelection. Defines which selection mode has been used for identification.
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple);
 
