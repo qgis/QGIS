@@ -320,11 +320,11 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   selectActions << mActionSelectFeatures << mActionSelectPolygon
                 << mActionSelectFreehand << mActionSelectRadius;
 
-  QActionGroup* group = new QActionGroup(this);
-  group->addAction(mActionSelectFeatures);
-  group->addAction(mActionSelectPolygon);
-  group->addAction(mActionSelectFreehand);
-  group->addAction(mActionSelectRadius);
+  QActionGroup *group = new QActionGroup( this );
+  group->addAction( mActionSelectFeatures );
+  group->addAction( mActionSelectPolygon );
+  group->addAction( mActionSelectFreehand );
+  group->addAction( mActionSelectRadius );
 
   mSelectModeButton->addActions( selectActions );
   mSelectModeButton->setDefaultAction( mActionSelectFeatures );

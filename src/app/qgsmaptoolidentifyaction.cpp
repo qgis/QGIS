@@ -347,9 +347,11 @@ void QgsMapToolIdentifyAction::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
   if ( !mSelectionActive )
   {
     mSelectionActive = true;
-    rect = QRect(e->pos(), e->pos());
-  } else {
-    rect = QRect(e->pos(), mInitDragPos);
+    rect = QRect( e->pos(), e->pos() );
+  }
+  else
+  {
+    rect = QRect( e->pos(), mInitDragPos );
   }
   QgsMapToolSelectUtils::setRubberBand( mCanvas, rect, mSelectionRubberBand.get() );
 }
@@ -398,7 +400,7 @@ void QgsMapToolIdentifyAction::selectPolygonReleaseEvent( QgsMapMouseEvent *e )
     if ( mSelectionRubberBand->numberOfVertices() > 2 )
     {
       mSelectionGeometry = mSelectionRubberBand->asGeometry();
-     }
+    }
     mSelectionRubberBand.reset();
     mJustFinishedSelection = true;
   }
