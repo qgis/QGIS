@@ -362,9 +362,7 @@ void QgsQuickMapCanvasMap::stopRendering()
     disconnect( mJob, &QgsMapRendererJob::renderingLayersFinished, this, &QgsQuickMapCanvasMap::renderJobUpdated );
     disconnect( mJob, &QgsMapRendererJob::finished, this, &QgsQuickMapCanvasMap::renderJobFinished );
 
-    // Destroy job in separate worker thread, killing an iterator may take some time
-    // and reduce responsiveness
-    mZombieJobs.addFuture( QtConcurrent::run( this, &QgsQuickMapCanvasMap::destroyJob, mJob ) );
+    mJob->cancelWithoutBlocking();
     mJob = nullptr;
   }
 }
