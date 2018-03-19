@@ -141,6 +141,43 @@ Returns a list of types available by default in the wizard.
 Sets a map ``canvas`` associated with the widget.
 %End
 
+    QString title() const;
+%Docstring
+Returns the current title field for the metadata.
+
+.. seealso:: :py:func:`setTitle`
+
+.. seealso:: :py:func:`titleChanged`
+
+.. versionadded:: 3.2
+%End
+
+  public slots:
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the ``title`` field for the metadata.
+
+.. seealso:: :py:func:`title`
+
+.. seealso:: :py:func:`titleChanged`
+
+.. versionadded:: 3.2
+%End
+
+  signals:
+
+    void titleChanged( const QString &title );
+%Docstring
+Emitted when the ``title`` field is changed.
+
+.. seealso:: :py:func:`title`
+
+.. seealso:: :py:func:`setTitle`
+
+.. versionadded:: 3.2
+%End
+
 };
 
 /************************************************************************

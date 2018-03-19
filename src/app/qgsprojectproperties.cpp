@@ -826,6 +826,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mMetadataWidget->setMode( QgsMetadataWidget::ProjectMetadata );
   mMetadataWidget->setMetadata( &QgsProject::instance()->metadata() );
 
+  // sync metadata title and project title fields
+  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
+  connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
+
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
