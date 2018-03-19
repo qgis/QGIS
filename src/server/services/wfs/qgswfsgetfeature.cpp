@@ -536,6 +536,7 @@ namespace QgsWfs
 
         query.featureRequest = featureRequest;
         request.queries.append( query );
+        fidsMapIt++;
       }
       return request;
     }
