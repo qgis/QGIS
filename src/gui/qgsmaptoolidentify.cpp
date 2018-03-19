@@ -88,7 +88,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   return identify( x, y, mode, QList<QgsMapLayer *>(), layerType, selectionMode );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode)
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
 {
   QList<IdentifyResult> results;
 
@@ -176,7 +176,7 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode)
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
@@ -230,7 +230,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     if ( isSingleClick )
     {
       double sr = searchRadiusMU( mCanvas );
-      r = toLayerCoordinates(layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ));
+      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
     }
     else
     {
@@ -239,9 +239,15 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
+    QgsGeometry selectionGeom = QgsGeometry( mSelectionGeometry );
+
+    QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(),  layer->crs() );
+    if ( ct.isValid() )
+      selectionGeom.transform( ct );
+
     while ( fit.nextFeature( f ) )
     {
-      if ( selectionMode == QgsMapToolIdentify::IdentifySelection::SelectSimple || mSelectionGeometry.intersects( f.geometry() ) )
+      if ( selectionMode == QgsMapToolIdentify::IdentifySelection::SelectSimple || selectionGeom.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }
