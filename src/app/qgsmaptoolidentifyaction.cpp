@@ -262,7 +262,14 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  mSelectionMode = mResultsDialog->selectionMode();
+  if ( mResultsDialog )
+  {
+    mSelectionMode = mResultsDialog->selectionMode();
+  }
+  else
+  {
+    mSelectionMode = QgsMapToolIdentify::SelectSimple;
+  }
   switch ( mSelectionMode )
   {
     case QgsMapToolIdentifyAction::SelectSimple:
