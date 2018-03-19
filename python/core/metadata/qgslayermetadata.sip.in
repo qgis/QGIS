@@ -133,8 +133,6 @@ Constructor for Constraint.
 Constructor for QgsLayerMetadata.
 %End
 
-    virtual ~QgsLayerMetadata();
-
     QString fees() const;
 %Docstring
 Returns any fees associated with using the resource.

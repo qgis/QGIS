@@ -217,8 +217,6 @@ class CORE_EXPORT QgsLayerMetadata : public QgsMetadataBase
      */
     QgsLayerMetadata() = default;
 
-    virtual ~QgsLayerMetadata() = default;
-
     /**
      * Returns any fees associated with using the resource.
      * An empty string will be returned if no fees are set.

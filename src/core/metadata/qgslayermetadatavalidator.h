@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMetadataValidator
  * \ingroup core
  * \class QgsNativeMetadataBaseValidator
  * \brief A validator for the native base QGIS metadata schema definition.
- * \since QGIS 3.20
+ * \since QGIS 3.2
  */
 
 class CORE_EXPORT QgsNativeMetadataBaseValidator : public QgsMetadataValidator
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsNativeMetadataBaseValidator : public QgsMetadataValidator
 /**
  * \ingroup core
  * \class QgsNativeMetadataValidator
- * \brief A validator for the native QGIS metadata schema definition.
+ * \brief A validator for the native QGIS layer metadata schema definition.
  * \since QGIS 3.0
  */
 
@@ -118,6 +118,27 @@ class CORE_EXPORT QgsNativeMetadataValidator : public QgsNativeMetadataBaseValid
      * Constructor for QgsNativeMetadataValidator.
      */
     QgsNativeMetadataValidator() = default;
+
+    bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results SIP_OUT ) const override;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsNativeProjectMetadataValidator
+ * \brief A validator for the native QGIS project metadata schema definition.
+ * \since QGIS 3.2
+ */
+
+class CORE_EXPORT QgsNativeProjectMetadataValidator : public QgsNativeMetadataBaseValidator
+{
+
+  public:
+
+    /**
+     * Constructor for QgsNativeProjectMetadataValidator.
+     */
+    QgsNativeProjectMetadataValidator() = default;
 
     bool validate( const QgsMetadataBase *metadata, QList< QgsMetadataValidator::ValidationResult > &results SIP_OUT ) const override;
 
