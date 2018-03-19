@@ -2931,7 +2931,8 @@ void QgisApp::createStatusBar()
 
   QToolButton *mMenuButton = new QToolButton( mStatusBar );
   mMenuButton->setAutoRaise( true );
-  QString toolTip = QString( "<b>%1:</b> %2°<br><b>%3:</b> %4" )
+  QString toolTip = QString( "<b>%1:</b> %2%<br><b>%3:</b> %4°<br><b>%5:</b> %6" )
+                    .arg( tr( "Magnification" ) ).arg( mMagnifierWidget->magnification() )
                     .arg( tr( "Rotation" ) ).arg( mRotationEdit->value() )
                     .arg( tr( "Render" ) ).arg( mRenderSuppressionCBox->isChecked() ? tr( "Enabled" ) : tr( "Disabled" ) );
   mMenuButton->setToolTip( toolTip );
@@ -2941,11 +2942,13 @@ void QgisApp::createStatusBar()
 
   connect( widgetActionsMenu, &QMenu::aboutToHide, this, [ = ]
   {
-    if ( !mRenderSuppressionCBox->isChecked() || mRotationEdit->value() != 0.0 )
+    if ( !mRenderSuppressionCBox->isChecked() || mRotationEdit->value() != 0.0
+         || mMagnifierWidget->magnification() != 100 )
       mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMagnifierRotationMenuOn.svg" ) ) );
     else
       mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMagnifierRotationMenu.svg" ) ) );
-    QString toolTip = QString( "<b>%1:</b> %2°<br><b>%3:</b> %4" )
+    QString toolTip = QString( "<b>%1:</b> %2%<br><b>%3:</b> %4°<br><b>%5:</b> %6" )
+    .arg( tr( "Magnification" ) ).arg( mMagnifierWidget->magnification() )
     .arg( tr( "Rotation" ) ).arg( mRotationEdit->value() )
     .arg( tr( "Render" ) ).arg( mRenderSuppressionCBox->isChecked() ? tr( "Enabled" ) : tr( "Disabled" ) );
     mMenuButton->setToolTip( toolTip );
