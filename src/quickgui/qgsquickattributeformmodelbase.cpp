@@ -325,16 +325,13 @@ void QgsQuickAttributeFormModelBase::updateVisibility( int fieldIndex )
   for ( ; constraintIterator != mConstraints.constEnd(); ++constraintIterator )
   {
     QStandardItem *item = constraintIterator.key();
-    if ( item->data( QgsQuickAttributeFormModel::FieldIndex ) == fieldIndex || fieldIndex == -1 )
-    {
-      QgsExpression exp = constraintIterator.value();
-      exp.prepare( &mExpressionContext );
-      bool constraintSatisfied = exp.evaluate( &mExpressionContext ).toBool();
+    QgsExpression exp = constraintIterator.value();
+    exp.prepare( &mExpressionContext );
+    bool constraintSatisfied = exp.evaluate( &mExpressionContext ).toBool();
 
-      if ( constraintSatisfied != item->data( QgsQuickAttributeFormModel::ConstraintValid ).toBool() )
-      {
-        item->setData( constraintSatisfied, QgsQuickAttributeFormModel::ConstraintValid );
-      }
+    if ( constraintSatisfied != item->data( QgsQuickAttributeFormModel::ConstraintValid ).toBool() )
+    {
+      item->setData( constraintSatisfied, QgsQuickAttributeFormModel::ConstraintValid );
     }
 
     if ( !item->data( QgsQuickAttributeFormModel::ConstraintValid ).toBool() )
