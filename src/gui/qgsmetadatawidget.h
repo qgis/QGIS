@@ -38,6 +38,7 @@
 class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidgetBase
 {
     Q_OBJECT
+    Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
 
   public:
 
@@ -152,6 +153,40 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Sets a map \a canvas associated with the widget.
      */
     void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the current title field for the metadata.
+     *
+     * \see setTitle()
+     * \see titleChanged()
+     *
+     * \since QGIS 3.2
+     */
+    QString title() const;
+
+  public slots:
+
+    /**
+     * Sets the \a title field for the metadata.
+     *
+     * \see title()
+     * \see titleChanged()
+     *
+     * \since QGIS 3.2
+     */
+    void setTitle( const QString &title );
+
+  signals:
+
+    /**
+     * Emitted when the \a title field is changed.
+     *
+     * \see title()
+     * \see setTitle()
+     *
+     * \since QGIS 3.2
+     */
+    void titleChanged( const QString &title );
 
   private slots:
     void removeSelectedCategories();

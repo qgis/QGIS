@@ -121,6 +121,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
     setMode( LayerMetadata );
     setUiFromMetadata();
   }
+
+  connect( lineEditTitle, &QLineEdit::textChanged, this, &QgsMetadataWidget::titleChanged );
 }
 
 void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
@@ -462,7 +464,7 @@ void QgsMetadataWidget::setUiFromMetadata()
   // Title
   if ( ! mMetadata->title().isEmpty() )
   {
-    lineEditTitle->setText( mMetadata->title() );
+    whileBlocking( lineEditTitle )->setText( mMetadata->title() );
   }
 
   // Type
@@ -947,6 +949,20 @@ void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   if ( canvas )
     spatialExtentSelector->setCurrentExtent( canvas->extent(), canvas->mapSettings().destinationCrs() );
+}
+
+QString QgsMetadataWidget::title() const
+{
+  return lineEditTitle->text();
+}
+
+void QgsMetadataWidget::setTitle( const QString &title )
+{
+  if ( title != lineEditTitle->text() )
+  {
+    whileBlocking( lineEditTitle )->setText( title );
+    emit titleChanged( title );
+  }
 }
 
 void QgsMetadataWidget::acceptMetadata()
