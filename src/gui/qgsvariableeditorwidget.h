@@ -167,7 +167,7 @@ class QgsVariableEditorTree : public QTreeWidget
 
   public:
 
-    enum VaribleRoles
+    enum VariableRoles
     {
       ContextIndex = Qt::UserRole,
       RowBaseColor
