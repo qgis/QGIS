@@ -511,6 +511,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
   mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
+  mMetadata.setAuthor( QgsApplication::userFullName() );
   emit metadataChanged();
 
   QgsCoordinateTransformContext context;
