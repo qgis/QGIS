@@ -161,9 +161,9 @@ void QgsMetadataWidget::setMetadata( const QgsAbstractMetadataBase *metadata )
   if ( !metadata )
     return;
 
-  if ( dynamic_cast< const QgsLayerMetadata * >( metadata ) )
+  if ( dynamic_cast< const QgsLayerMetadata * >( metadata ) && mMode != LayerMetadata )
     setMode( LayerMetadata );
-  else if ( dynamic_cast< const QgsProjectMetadata * >( metadata ) )
+  else if ( dynamic_cast< const QgsProjectMetadata * >( metadata ) && mMode != ProjectMetadata )
     setMode( ProjectMetadata );
 
   mMetadata.reset( metadata->clone() );

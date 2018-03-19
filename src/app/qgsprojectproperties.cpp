@@ -55,7 +55,7 @@
 #include "qgstablewidgetitem.h"
 #include "qgslayertree.h"
 #include "qgsprintlayout.h"
-
+#include "qgsmetadatawidget.h"
 #include "qgsmessagelog.h"
 
 //qt includes
@@ -75,6 +75,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   , mEllipsoidIndex( 0 )
 {
   setupUi( this );
+
+  mMetadataWidget = new QgsMetadataWidget();
+  mMetadataPage->layout()->addWidget( mMetadataWidget );
+
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
   connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );
@@ -818,6 +822,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 1 );
 
+  // metadata
+  mMetadataWidget->setMode( QgsMetadataWidget::ProjectMetadata );
+  mMetadataWidget->setMetadata( &QgsProject::instance()->metadata() );
+
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
@@ -865,6 +873,8 @@ void QgsProjectProperties::apply()
 
   QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
   QgsProject::instance()->setTransformContext( transformContext );
+
+  mMetadataWidget->acceptMetadata();
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
