@@ -391,20 +391,19 @@ QgsProject *QgsProject::instance()
 
 void QgsProject::setTitle( const QString &title )
 {
-  if ( title == mTitle )
+  if ( title == mMetadata.title() )
     return;
 
-  mTitle = title;
+  mMetadata.setTitle( title );
+  emit metadataChanged();
 
   setDirty( true );
 }
 
-
 QString QgsProject::title() const
 {
-  return mTitle;
+  return mMetadata.title();
 }
-
 
 bool QgsProject::isDirty() const
 {
@@ -504,7 +503,6 @@ void QgsProject::clear()
 {
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mTitle.clear();
   mHomePath.clear();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
@@ -876,7 +874,6 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
-  QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
@@ -912,8 +909,9 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   dump_( mProperties );
 
-  // now get project title
-  _getTitle( *doc, mTitle );
+  // get older style project title
+  QString oldTitle;
+  _getTitle( *doc, oldTitle );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -980,6 +978,11 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     QDomElement metadataElement = nl.at( 0 ).toElement();
     mMetadata.readMetadataXml( metadataElement );
+  }
+  if ( mMetadata.title().isEmpty() && !oldTitle.isEmpty() )
+  {
+    // upgrade older title storage to storing within project metadata.
+    mMetadata.setTitle( oldTitle );
   }
   emit metadataChanged();
 

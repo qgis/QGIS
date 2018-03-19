@@ -112,6 +112,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's title.
      * \param title new title
      * \since QGIS 2.4
+     *
+     * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+     *
      * \see title()
      */
     void setTitle( const QString &title );
@@ -119,6 +122,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's title.
      * \see setTitle()
+     *
+     * \note Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
     */
     QString title() const;
 
@@ -1285,7 +1290,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QString mHomePath;
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
-    QString mTitle;              // project title
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;

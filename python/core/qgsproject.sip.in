@@ -54,6 +54,10 @@ Sets the project's title.
 
 .. versionadded:: 2.4
 
+.. note::
+
+   Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+
 .. seealso:: :py:func:`title`
 %End
 
@@ -62,6 +66,10 @@ Sets the project's title.
 Returns the project's title.
 
 .. seealso:: :py:func:`setTitle`
+
+.. note::
+
+   Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
 %End
 
     bool isDirty() const;
