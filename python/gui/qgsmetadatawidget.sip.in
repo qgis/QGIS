@@ -10,7 +10,7 @@
 
 
 
-class QgsMetadataWidget : QWidget
+class QgsAbstractMetadataBaseWidget : QWidget
 {
 %Docstring
  A wizard to edit metadata on a map layer.
@@ -23,7 +23,7 @@ class QgsMetadataWidget : QWidget
 %End
   public:
 
-    QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = 0 );
+    QgsAbstractMetadataBaseWidget( QWidget *parent, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for the wizard.
 
@@ -37,7 +37,7 @@ the layer's metadata..
 %Docstring
 Sets the ``metadata`` to display in the widget.
 
-This method can be called after constructing a QgsMetadataWidget in order
+This method can be called after constructing a QgsAbstractMetadataBaseWidget in order
 to set the displayed metadata to custom, non-layer based metadata.
 
 .. seealso:: :py:func:`metadata`

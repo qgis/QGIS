@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsmetadatabase.h
+                             QgsAbstractMetadataBase.h
                              -------------------
     begin                : March 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,45 +15,47 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMETADATABASE_H
-#define QGSMETADATABASE_H
+#ifndef QGSABSTRACTMETADATABASE_H
+#define QGSABSTRACTMETADATABASE_H
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsbox3d.h"
-#include "qgsrange.h"
 
+class QDomElement;
+class QDomDocument;
 
 /**
  * \ingroup core
- * \class QgsMetadataBase
- * \brief A base class for metadata stores.
+ * \class QgsAbstractMetadataBase
+ * \brief An abstract base class for metadata stores.
  *
- * QgsMetadataBase is the base class for handling storage and management of the metadata
+ * QgsAbstractMetadataBase is the base class for handling storage and management of the metadata
  * for various map related assets. This class is an internal QGIS format with a common
  * metadata structure. It is subclassed by layer and project specific metadata classes,
- * QgsLayerMetadata and QgsProjectMetadata.
+ * such as QgsLayerMetadata and QgsProjectMetadata.
  *
  * The metadata store is designed to be compatible with the Dublin Core metadata
  * specifications, and will be expanded to allow compatibility with ISO specifications
  * in future releases. However, the QGIS internal schema does not represent a superset
  * of all existing metadata schemas and accordingly conversion from specific
- * metadata formats to QgsMetadataBase may result in a loss of information.
+ * metadata formats to QgsAbstractMetadataBase may result in a loss of information.
  *
  * This class is designed to follow the specifications detailed in
  * the schema definition available at resources/qgis-resource-metadata.xsd
  * within the QGIS source code.
  *
- * Metadata can be validated through the use of QgsMetadataBaseValidator
+ * Metadata can be validated through the use of QgsAbstractMetadataBaseValidator
  * subclasses. E.g. validating against the native QGIS metadata schema can be performed
  * using QgsNativeMetadataValidator.
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMetadataBase
+class CORE_EXPORT QgsAbstractMetadataBase
 {
   public:
+
+    // NOTE - these really belong in a separate namespace, but SIP says no, I want to make you waste more time
+    // TODO: dump sip
 
     /**
      * Map of vocabulary string to keyword list.
@@ -62,6 +64,8 @@ class CORE_EXPORT QgsMetadataBase
 
     /**
      * Metadata address structure.
+     * \ingroup core
+     * \since QGIS 3.2
      */
     struct CORE_EXPORT Address
     {
@@ -108,11 +112,13 @@ class CORE_EXPORT QgsMetadataBase
        */
       QString country;
 
-      bool operator==( const QgsMetadataBase::Address &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
     /**
      * Metadata contact structure.
+     * \ingroup core
+     * \since QGIS 3.2
      */
     struct CORE_EXPORT Contact
     {
@@ -142,7 +148,7 @@ class CORE_EXPORT QgsMetadataBase
       /**
        * List of addresses associated with this contact.
        */
-      QList< QgsMetadataBase::Address > addresses;
+      QList< QgsAbstractMetadataBase::Address > addresses;
 
       /**
        * Voice telephone.
@@ -167,17 +173,21 @@ class CORE_EXPORT QgsMetadataBase
        */
       QString role;
 
-      bool operator==( const QgsMetadataBase::Contact &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
     /**
      * A list of contacts.
+     * \ingroup core
+     * \since QGIS 3.2
      */
-    typedef QList< QgsMetadataBase::Contact > ContactList;
+    typedef QList< QgsAbstractMetadataBase::Contact > ContactList;
 
 
     /**
      * Metadata link structure.
+     * \ingroup core
+     * \since QGIS 3.2
      */
     struct CORE_EXPORT Link
     {
@@ -227,20 +237,17 @@ class CORE_EXPORT QgsMetadataBase
        */
       QString size;
 
-      bool operator==( const QgsMetadataBase::Link &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 
     /**
      * A list of links.
+     * \ingroup core
+     * \since QGIS 3.2
      */
-    typedef QList< QgsMetadataBase::Link > LinkList;
+    typedef QList< QgsAbstractMetadataBase::Link > LinkList;
 
-    /**
-     * Constructor for QgsMetadataBase.
-     */
-    QgsMetadataBase() = default;
-
-    virtual ~QgsMetadataBase() = default;
+    virtual ~QgsAbstractMetadataBase() = default;
 
     /**
      * A reference, URI, URL or some other mechanism to identify the resource.
@@ -355,7 +362,7 @@ class CORE_EXPORT QgsMetadataBase
      * \see setKeywords()
      * \see keywordVocabularies()
      */
-    KeywordMap keywords() const;
+    QgsAbstractMetadataBase::KeywordMap keywords() const;
 
     /**
      * Sets the \a keywords map, which is a set of descriptive keywords associated with the resource.
@@ -369,7 +376,7 @@ class CORE_EXPORT QgsMetadataBase
      * \see keywords()
      * \see addKeywords()
      */
-    void setKeywords( const KeywordMap &keywords );
+    void setKeywords( const QgsAbstractMetadataBase::KeywordMap &keywords );
 
     /**
      * Adds a list of descriptive \a keywords for a specified \a vocabulary. Any existing
@@ -433,7 +440,7 @@ class CORE_EXPORT QgsMetadataBase
      * Returns a list of contact persons or entities associated with the resource.
      * \see setContacts()
      */
-    QgsMetadataBase::ContactList contacts() const;
+    QgsAbstractMetadataBase::ContactList contacts() const;
 
     /**
      * Sets the list of \a contacts or entities associated with the resource. Any existing contacts
@@ -441,20 +448,20 @@ class CORE_EXPORT QgsMetadataBase
      * \see contacts()
      * \see addContact()
      */
-    void setContacts( const QgsMetadataBase::ContactList &contacts );
+    void setContacts( const QgsAbstractMetadataBase::ContactList &contacts );
 
     /**
      * Adds an individual \a contact to the existing contacts.
      * \see contacts()
      * \see setContacts()
      */
-    void addContact( const QgsMetadataBase::Contact &contact );
+    void addContact( const QgsAbstractMetadataBase::Contact &contact );
 
     /**
      * Returns a list of online resources associated with the resource.
      * \see setLinks()
      */
-    QgsMetadataBase::LinkList links() const;
+    QgsAbstractMetadataBase::LinkList links() const;
 
     /**
      * Sets the list of online resources associated with the resource. Any existing links
@@ -462,35 +469,48 @@ class CORE_EXPORT QgsMetadataBase
      * \see links()
      * \see addLink()
      */
-    void setLinks( const QgsMetadataBase::LinkList &links );
+    void setLinks( const QgsAbstractMetadataBase::LinkList &links );
 
     /**
      * Adds an individual \a link to the existing links.
      * \see links()
      * \see setLinks()
      */
-    void addLink( const QgsMetadataBase::Link &link );
+    void addLink( const QgsAbstractMetadataBase::Link &link );
 
     /**
-     * Sets state from Dom document
-     * \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
+     * Sets state from DOM document.
+     *
+     * \param metadataElement The DOM element corresponding to ``resourceMetadata'' tag
      *
      * \returns true if successful
+     *
+     * Subclasses which override this method should take care to also call the base
+     * class method in order to read common metadata properties.
      */
-    bool readMetadataXml( const QDomElement &metadataElement );
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
 
     /**
-     * Stores state in Dom node
-     * \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
-     * \param document is a the dom document being written
+     * Stores state in a DOM node.
+     *
+     * \param metadataElement is a DOM element corresponding to ``resourceMetadata'' tag
+     * \param document is a the DOM document being written
      *
      * \returns true if successful
+     *
+     * Subclasses which override this method should take care to also call the base
+     * class method in order to write common metadata properties.
      */
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
-
-    bool operator==( const QgsMetadataBase &metadataOther ) const;
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
   protected:
+
+    /**
+     * Constructor for QgsAbstractMetadataBase.
+     *
+     * QgsAbstractMetadataBase cannot be instantiated directly, it must be subclassed.
+     */
+    QgsAbstractMetadataBase() = default;
 
     /*
      * IMPORTANT!!!!!!
@@ -513,11 +533,11 @@ class CORE_EXPORT QgsMetadataBase
     /**
      * Keywords map. Key is the vocabulary, value is a list of keywords for that vocabulary.
      */
-    KeywordMap mKeywords;
+    QgsAbstractMetadataBase::KeywordMap mKeywords;
 
-    ContactList mContacts;
+    QgsAbstractMetadataBase::ContactList mContacts;
 
-    LinkList mLinks;
+    QgsAbstractMetadataBase::LinkList mLinks;
 
     /*
      * IMPORTANT!!!!!!
@@ -527,10 +547,21 @@ class CORE_EXPORT QgsMetadataBase
      *
      */
 
+
+    /**
+     * Tests whether the common metadata fields in this object are equal to \a other.
+     *
+     * Subclasses should utilise this method from their equality operators to test
+     * equality of base class members.
+     *
+     * \since QGIS 3.2
+     */
+    bool equals( const QgsAbstractMetadataBase &other ) const;
+
 };
 
-Q_DECLARE_METATYPE( QgsMetadataBase::KeywordMap )
-Q_DECLARE_METATYPE( QgsMetadataBase::ContactList )
-Q_DECLARE_METATYPE( QgsMetadataBase::LinkList )
+Q_DECLARE_METATYPE( QgsAbstractMetadataBase::KeywordMap )
+Q_DECLARE_METATYPE( QgsAbstractMetadataBase::ContactList )
+Q_DECLARE_METATYPE( QgsAbstractMetadataBase::LinkList )
 
-#endif // QGSMETADATABASE_H
+#endif // QGSABSTRACTMETADATABASE_H

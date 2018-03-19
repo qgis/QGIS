@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmetadatawidget.h  -  description
+                          QgsAbstractMetadataBasewidget.h  -  description
                              -------------------
     begin                : 17/05/2017
     copyright            : (C) 2017 by Etienne Trimaille
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMETADATAWIDGET_H
-#define QGSMETADATAWIDGET_H
+#ifndef QgsAbstractMetadataBaseWIDGET_H
+#define QgsAbstractMetadataBaseWIDGET_H
 
 #include "QStandardItemModel"
 #include "QStyledItemDelegate"
@@ -29,13 +29,13 @@
 
 /**
  * \ingroup gui
- * \class QgsMetadataWidget
+ * \class QgsAbstractMetadataBaseWidget
  * \brief A wizard to edit metadata on a map layer.
  *
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidget
+class GUI_EXPORT QgsAbstractMetadataBaseWidget : public QWidget, private Ui::QgsAbstractMetadataBaseWidget
 {
     Q_OBJECT
 
@@ -49,12 +49,12 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
      * \see setMetadata()
      */
-    QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
+    QgsAbstractMetadataBaseWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
      * Sets the \a metadata to display in the widget.
      *
-     * This method can be called after constructing a QgsMetadataWidget in order
+     * This method can be called after constructing a QgsAbstractMetadataBaseWidget in order
      * to set the displayed metadata to custom, non-layer based metadata.
      *
      * \see metadata()

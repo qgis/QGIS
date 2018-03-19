@@ -23,7 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsbox3d.h"
 #include "qgsrange.h"
-#include "qgsmetadatabase.h"
+#include "qgsabstractmetadatabase.h"
 
 class QgsMapLayer;
 
@@ -53,17 +53,9 @@ class QgsMapLayer;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayerMetadata : public QgsMetadataBase
+class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
 {
   public:
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * Map of vocabulary string to keyword list.
-     * \deprecated Use QgsMetadataBase::KeywordMap instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::KeywordMap KeywordMap;
 
     /**
      * Metadata spatial extent structure.
@@ -171,46 +163,6 @@ class CORE_EXPORT QgsLayerMetadata : public QgsMetadataBase
      * A list of constraints.
      */
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * Metadata address structure.
-     * \deprecated Use QgsMetadataBase::Address instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::Address Address;
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * Metadata contact structure.
-     * \deprecated use QgsMetadataBase::Contact instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::Contact Contact;
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * A list of contacts.
-     * \deprecated use QgsMetadataBase::ContactList instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::ContactList ContactList;
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * Metadata link structure.
-     * \deprecated use QgsMetadataBase::Link instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::Link Link;
-
-    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
-
-    /**
-     * A list of links.
-     * \deprecated use QgsMetadataBase::LinkList instead.
-     */
-    Q_DECL_DEPRECATED typedef QgsMetadataBase::LinkList LinkList;
 
     /**
      * Constructor for QgsLayerMetadata.
@@ -359,22 +311,8 @@ class CORE_EXPORT QgsLayerMetadata : public QgsMetadataBase
      */
     void readFromLayer( const QgsMapLayer *layer );
 
-    /**
-     * Sets state from Dom document
-     * \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
-     *
-     * \returns true if successful
-     */
-    bool readMetadataXml( const QDomElement &metadataElement );
-
-    /**
-     * Stores state in Dom node
-     * \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
-     * \param document is a the dom document being written
-     *
-     * \returns true if successful
-     */
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    bool readMetadataXml( const QDomElement &metadataElement ) override;
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const override;
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;
 

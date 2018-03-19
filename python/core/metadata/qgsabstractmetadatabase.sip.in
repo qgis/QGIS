@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/metadata/qgsmetadatabase.h                                  *
+ * src/core/metadata/qgsabstractmetadatabase.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,27 +10,27 @@
 
 
 
-class QgsMetadataBase
+class QgsAbstractMetadataBase
 {
 %Docstring
- A base class for metadata stores.
+ An abstract base class for metadata stores.
 
-QgsMetadataBase is the base class for handling storage and management of the metadata
+QgsAbstractMetadataBase is the base class for handling storage and management of the metadata
 for various map related assets. This class is an internal QGIS format with a common
 metadata structure. It is subclassed by layer and project specific metadata classes,
-QgsLayerMetadata and QgsProjectMetadata.
+such as QgsLayerMetadata and QgsProjectMetadata.
 
 The metadata store is designed to be compatible with the Dublin Core metadata
 specifications, and will be expanded to allow compatibility with ISO specifications
 in future releases. However, the QGIS internal schema does not represent a superset
 of all existing metadata schemas and accordingly conversion from specific
-metadata formats to QgsMetadataBase may result in a loss of information.
+metadata formats to QgsAbstractMetadataBase may result in a loss of information.
 
 This class is designed to follow the specifications detailed in
 the schema definition available at resources/qgis-resource-metadata.xsd
 within the QGIS source code.
 
-Metadata can be validated through the use of QgsMetadataBaseValidator
+Metadata can be validated through the use of QgsAbstractMetadataBaseValidator
 subclasses. E.g. validating against the native QGIS metadata schema can be performed
 using QgsNativeMetadataValidator.
 
@@ -38,9 +38,10 @@ using QgsNativeMetadataValidator.
 %End
 
 %TypeHeaderCode
-#include "qgsmetadatabase.h"
+#include "qgsabstractmetadatabase.h"
 %End
   public:
+
 
     typedef QMap< QString, QStringList > KeywordMap;
 
@@ -64,7 +65,7 @@ Constructor for Address.
 
       QString country;
 
-      bool operator==( const QgsMetadataBase::Address &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
     struct Contact
@@ -81,7 +82,7 @@ Constructor for Contact.
 
       QString position;
 
-      QList< QgsMetadataBase::Address > addresses;
+      QList< QgsAbstractMetadataBase::Address > addresses;
 
       QString voice;
 
@@ -91,10 +92,10 @@ Constructor for Contact.
 
       QString role;
 
-      bool operator==( const QgsMetadataBase::Contact &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
-    typedef QList< QgsMetadataBase::Contact > ContactList;
+    typedef QList< QgsAbstractMetadataBase::Contact > ContactList;
 
 
     struct Link
@@ -119,17 +120,12 @@ Constructor for Link.
 
       QString size;
 
-      bool operator==( const QgsMetadataBase::Link &other ) const;
+      bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 
-    typedef QList< QgsMetadataBase::Link > LinkList;
+    typedef QList< QgsAbstractMetadataBase::Link > LinkList;
 
-    QgsMetadataBase();
-%Docstring
-Constructor for QgsMetadataBase.
-%End
-
-    virtual ~QgsMetadataBase();
+    virtual ~QgsAbstractMetadataBase();
 
     QString identifier() const;
 %Docstring
@@ -250,7 +246,7 @@ Adds a single history ``text`` to the end of the existing history list.
 .. seealso:: :py:func:`setHistory`
 %End
 
-    KeywordMap keywords() const;
+    QgsAbstractMetadataBase::KeywordMap keywords() const;
 %Docstring
 Returns the keywords map, which is a set of descriptive keywords associated with the resource.
 
@@ -264,7 +260,7 @@ associated with keyword list.
 .. seealso:: :py:func:`keywordVocabularies`
 %End
 
-    void setKeywords( const KeywordMap &keywords );
+    void setKeywords( const QgsAbstractMetadataBase::KeywordMap &keywords );
 %Docstring
 Sets the ``keywords`` map, which is a set of descriptive keywords associated with the resource.
 
@@ -338,14 +334,14 @@ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords
 .. seealso:: :py:func:`keywords`
 %End
 
-    QgsMetadataBase::ContactList contacts() const;
+    QgsAbstractMetadataBase::ContactList contacts() const;
 %Docstring
 Returns a list of contact persons or entities associated with the resource.
 
 .. seealso:: :py:func:`setContacts`
 %End
 
-    void setContacts( const QgsMetadataBase::ContactList &contacts );
+    void setContacts( const QgsAbstractMetadataBase::ContactList &contacts );
 %Docstring
 Sets the list of ``contacts`` or entities associated with the resource. Any existing contacts
 will be replaced.
@@ -355,7 +351,7 @@ will be replaced.
 .. seealso:: :py:func:`addContact`
 %End
 
-    void addContact( const QgsMetadataBase::Contact &contact );
+    void addContact( const QgsAbstractMetadataBase::Contact &contact );
 %Docstring
 Adds an individual ``contact`` to the existing contacts.
 
@@ -364,14 +360,14 @@ Adds an individual ``contact`` to the existing contacts.
 .. seealso:: :py:func:`setContacts`
 %End
 
-    QgsMetadataBase::LinkList links() const;
+    QgsAbstractMetadataBase::LinkList links() const;
 %Docstring
 Returns a list of online resources associated with the resource.
 
 .. seealso:: :py:func:`setLinks`
 %End
 
-    void setLinks( const QgsMetadataBase::LinkList &links );
+    void setLinks( const QgsAbstractMetadataBase::LinkList &links );
 %Docstring
 Sets the list of online resources associated with the resource. Any existing links
 will be replaced.
@@ -381,7 +377,7 @@ will be replaced.
 .. seealso:: :py:func:`addLink`
 %End
 
-    void addLink( const QgsMetadataBase::Link &link );
+    void addLink( const QgsAbstractMetadataBase::Link &link );
 %Docstring
 Adds an individual ``link`` to the existing links.
 
@@ -390,35 +386,57 @@ Adds an individual ``link`` to the existing links.
 .. seealso:: :py:func:`setLinks`
 %End
 
-    bool readMetadataXml( const QDomElement &metadataElement );
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
 %Docstring
-Sets state from Dom document
+Sets state from DOM document.
 
-:param metadataElement: The Dom element corresponding to ``resourceMetadata'' tag
+:param metadataElement: The DOM element corresponding to ``resourceMetadata'' tag
 
 :return: true if successful
+
+Subclasses which override this method should take care to also call the base
+class method in order to read common metadata properties.
 %End
 
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 %Docstring
-Stores state in Dom node
+Stores state in a DOM node.
 
-:param metadataElement: is a Dom element corresponding to ``resourceMetadata'' tag
-:param document: is a the dom document being written
+:param metadataElement: is a DOM element corresponding to ``resourceMetadata'' tag
+:param document: is a the DOM document being written
 
 :return: true if successful
-%End
 
-    bool operator==( const QgsMetadataBase &metadataOther ) const;
+Subclasses which override this method should take care to also call the base
+class method in order to write common metadata properties.
+%End
 
   protected:
 
+    QgsAbstractMetadataBase();
+%Docstring
+Constructor for QgsAbstractMetadataBase.
+
+QgsAbstractMetadataBase cannot be instantiated directly, it must be subclassed.
+%End
 
 
 
 
 
 
+
+
+
+    bool equals( const QgsAbstractMetadataBase &other ) const;
+%Docstring
+Tests whether the common metadata fields in this object are equal to ``other``.
+
+Subclasses should utilise this method from their equality operators to test
+equality of base class members.
+
+.. versionadded:: 3.2
+%End
 
 };
 
@@ -426,7 +444,7 @@ Stores state in Dom node
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/metadata/qgsmetadatabase.h                                  *
+ * src/core/metadata/qgsabstractmetadatabase.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

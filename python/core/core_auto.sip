@@ -169,10 +169,10 @@
 %Include layout/qgslayoututils.sip
 %Include layout/qgsreportsectionfieldgroup.sip
 %Include layout/qgsreportsectionlayout.sip
+%Include metadata/qgsabstractmetadatabase.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include metadata/qgslayermetadataformatter.sip
-%Include metadata/qgsmetadatabase.sip
 %Include metadata/qgsprojectmetadata.sip
 %Include processing/qgsprocessing.sip
 %Include processing/qgsprocessingalgorithm.sip

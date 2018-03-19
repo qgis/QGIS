@@ -10,7 +10,7 @@
 
 
 
-class QgsLayerMetadata : QgsMetadataBase
+class QgsLayerMetadata : QgsAbstractMetadataBase
 {
 %Docstring
  A structured metadata store for a map layer.
@@ -41,9 +41,6 @@ using QgsNativeMetadataValidator.
 #include "qgslayermetadata.h"
 %End
   public:
-
-
- typedef QgsMetadataBase::KeywordMap KeywordMap;
 
     struct SpatialExtent
     {
@@ -112,21 +109,6 @@ Constructor for Constraint.
     };
 
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
-
-
- typedef QgsMetadataBase::Address Address;
-
-
- typedef QgsMetadataBase::Contact Contact;
-
-
- typedef QgsMetadataBase::ContactList ContactList;
-
-
- typedef QgsMetadataBase::Link Link;
-
-
- typedef QgsMetadataBase::LinkList LinkList;
 
     QgsLayerMetadata();
 %Docstring
@@ -286,24 +268,10 @@ Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.c
 .. seealso:: :py:func:`saveToLayer`
 %End
 
-    bool readMetadataXml( const QDomElement &metadataElement );
-%Docstring
-Sets state from Dom document
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
 
-:param metadataElement: The Dom element corresponding to ``resourceMetadata'' tag
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
-:return: true if successful
-%End
-
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
-%Docstring
-Stores state in Dom node
-
-:param metadataElement: is a Dom element corresponding to ``resourceMetadata'' tag
-:param document: is a the dom document being written
-
-:return: true if successful
-%End
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;
 
