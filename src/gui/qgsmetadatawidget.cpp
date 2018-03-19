@@ -118,6 +118,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   if ( mLayer )
   {
     mMetadata.reset( mLayer->metadata().clone() );
+    setMode( LayerMetadata );
     setUiFromMetadata();
   }
 }
@@ -504,6 +505,8 @@ void QgsMetadataWidget::setUiFromMetadata()
 
   if ( QgsLayerMetadata *layerMetadata = dynamic_cast< QgsLayerMetadata * >( mMetadata.get() ) )
   {
+    // Encoding
+    comboEncoding->setCurrentText( layerMetadata->encoding() );
 
     // Fees
     lineEditFees->setText( layerMetadata->fees() );
@@ -662,6 +665,9 @@ void QgsMetadataWidget::saveMetadata( QgsAbstractMetadataBase *metadata )
 
       // Rights
       layerMetadata->setRights( mRightsModel->stringList() );
+
+      // Encoding
+      layerMetadata->setEncoding( comboEncoding->currentText() );
 
       // Constraints
       QList<QgsLayerMetadata::Constraint> constraints;
