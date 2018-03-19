@@ -179,6 +179,6 @@ class AggregatesPanel(FieldsMappingPanel):
 
 class AggregatesWidgetWrapper(FieldsMappingWidgetWrapper):
 
-    def createWidget(self, parentLayerParameterName='INPUT'):
+    def createPanel(self, parentLayerParameterName='INPUT'):
         self._parentLayerParameter = parentLayerParameterName
         return AggregatesPanel()

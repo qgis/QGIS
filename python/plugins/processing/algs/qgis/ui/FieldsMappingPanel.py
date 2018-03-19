@@ -479,8 +479,11 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
         super(FieldsMappingWidgetWrapper, self).__init__(*args, **kwargs)
         self._layer = None
 
+    def createPanel(self):
+        return FieldsMappingPanel()
+
     def createWidget(self):
-        self.panel = FieldsMappingPanel()
+        self.panel = self.createPanel()
         self.panel.dialogType = self.dialogType
 
         if self.dialogType == DIALOG_MODELER:
