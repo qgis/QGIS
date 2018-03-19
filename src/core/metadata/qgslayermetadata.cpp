@@ -18,56 +18,6 @@
 #include "qgslayermetadata.h"
 #include "qgsmaplayer.h"
 
-QString QgsLayerMetadata::identifier() const
-{
-  return mIdentifier;
-}
-
-void QgsLayerMetadata::setIdentifier( const QString &identifier )
-{
-  mIdentifier = identifier;
-}
-
-QString QgsLayerMetadata::parentIdentifier() const
-{
-  return mParentIdentifier;
-}
-
-void QgsLayerMetadata::setParentIdentifier( const QString &parentIdentifier )
-{
-  mParentIdentifier = parentIdentifier;
-}
-
-QString QgsLayerMetadata::type() const
-{
-  return mType;
-}
-
-void QgsLayerMetadata::setType( const QString &type )
-{
-  mType = type;
-}
-
-QString QgsLayerMetadata::title() const
-{
-  return mTitle;
-}
-
-void QgsLayerMetadata::setTitle( const QString &title )
-{
-  mTitle = title;
-}
-
-QString QgsLayerMetadata::abstract() const
-{
-  return mAbstract;
-}
-
-void QgsLayerMetadata::setAbstract( const QString &abstract )
-{
-  mAbstract = abstract;
-}
-
 QString QgsLayerMetadata::fees() const
 {
   return mFees;
@@ -113,21 +63,6 @@ void QgsLayerMetadata::setLicenses( const QStringList &licenses )
   mLicenses = licenses;
 }
 
-QStringList QgsLayerMetadata::history() const
-{
-  return mHistory;
-}
-
-void QgsLayerMetadata::setHistory( const QStringList &history )
-{
-  mHistory = history;
-}
-
-void QgsLayerMetadata::addHistoryItem( const QString &text )
-{
-  mHistory << text;
-}
-
 QString QgsLayerMetadata::encoding() const
 {
   return mEncoding;
@@ -146,93 +81,6 @@ QgsCoordinateReferenceSystem QgsLayerMetadata::crs() const
 void QgsLayerMetadata::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
-}
-
-QMap<QString, QStringList> QgsLayerMetadata::keywords() const
-{
-  return mKeywords;
-}
-
-void QgsLayerMetadata::setKeywords( const QMap<QString, QStringList> &keywords )
-{
-  mKeywords = keywords;
-}
-
-void QgsLayerMetadata::addKeywords( const QString &vocabulary, const QStringList &keywords )
-{
-  mKeywords.insert( vocabulary, keywords );
-}
-
-bool QgsLayerMetadata::removeKeywords( const QString &vocabulary )
-{
-  return mKeywords.remove( vocabulary );
-}
-
-QStringList QgsLayerMetadata::keywordVocabularies() const
-{
-  return mKeywords.keys();
-}
-
-QStringList QgsLayerMetadata::keywords( const QString &vocabulary ) const
-{
-  return mKeywords.value( vocabulary );
-}
-
-QStringList QgsLayerMetadata::categories() const
-{
-  if ( mKeywords.contains( QStringLiteral( "gmd:topicCategory" ) ) )
-  {
-    return mKeywords.value( QStringLiteral( "gmd:topicCategory" ) );
-  }
-  else
-  {
-    return QStringList();
-  }
-}
-
-void QgsLayerMetadata::setCategories( const QStringList &category )
-{
-  mKeywords.insert( QStringLiteral( "gmd:topicCategory" ), category );
-}
-
-QList<QgsLayerMetadata::Contact> QgsLayerMetadata::contacts() const
-{
-  return mContacts;
-}
-
-void QgsLayerMetadata::setContacts( const QList<Contact> &contacts )
-{
-  mContacts = contacts;
-}
-
-void QgsLayerMetadata::addContact( const QgsLayerMetadata::Contact &contact )
-{
-  mContacts << contact;
-}
-
-QList<QgsLayerMetadata::Link> QgsLayerMetadata::links() const
-{
-  return mLinks;
-}
-
-void QgsLayerMetadata::setLinks( const QList<QgsLayerMetadata::Link> &links )
-{
-  mLinks = links;
-}
-
-void QgsLayerMetadata::addLink( const QgsLayerMetadata::Link &link )
-{
-  mLinks << link;
-}
-
-QString QgsLayerMetadata::language() const
-{
-  return mLanguage;
-}
-
-void QgsLayerMetadata::setLanguage( const QString &language )
-{
-  mLanguage = language;
 }
 
 void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
@@ -273,9 +121,9 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
   mExtent = layer->customProperty( QStringLiteral( "metadata/extent" ) ).value<Extent>();
   mConstraints = layer->customProperty( QStringLiteral( "metadata/constraints" ) ).value<ConstraintList>();
-  mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<KeywordMap>();
-  mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<ContactList>();
-  mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<LinkList>();
+  mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<QgsMetadataBase::KeywordMap>();
+  mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<QgsMetadataBase::ContactList>();
+  mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<QgsMetadataBase::LinkList>();
 }
 
 bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
@@ -430,7 +278,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     mnl = contactsList.at( i );
     mne = mnl.toElement();
 
-    QgsLayerMetadata::Contact oneContact;
+    QgsMetadataBase::Contact oneContact;
     oneContact.name = mne.namedItem( QStringLiteral( "name" ) ).toElement().text();
     oneContact.organization = mne.namedItem( QStringLiteral( "organization" ) ).toElement().text();
     oneContact.position = mne.namedItem( QStringLiteral( "position" ) ).toElement().text();
@@ -439,12 +287,12 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     oneContact.email = mne.namedItem( QStringLiteral( "email" ) ).toElement().text();
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
-    QList< QgsLayerMetadata::Address > addresses;
+    QList< QgsMetadataBase::Address > addresses;
     QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
       QDomElement addressElement = addressList.at( j ).toElement();
-      QgsLayerMetadata::Address oneAddress;
+      QgsMetadataBase::Address oneAddress;
       oneAddress.address = addressElement.namedItem( QStringLiteral( "address" ) ).toElement().text();
       oneAddress.administrativeArea = addressElement.namedItem( QStringLiteral( "administrativearea" ) ).toElement().text();
       oneAddress.city = addressElement.namedItem( QStringLiteral( "city" ) ).toElement().text();
@@ -454,7 +302,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
       addresses << oneAddress;
     }
     oneContact.addresses = addresses;
-    addContact( oneContact );
+    QgsMetadataBase::addContact( oneContact );
   }
 
   // links
@@ -465,7 +313,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   for ( int i = 0; i < el.size(); i++ )
   {
     mne = el.at( i ).toElement();
-    QgsLayerMetadata::Link oneLink;
+    QgsMetadataBase::Link oneLink;
     oneLink.name = mne.attribute( QStringLiteral( "name" ) );
     oneLink.type = mne.attribute( QStringLiteral( "type" ) );
     oneLink.url = mne.attribute( QStringLiteral( "url" ) );
@@ -473,7 +321,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     oneLink.format = mne.attribute( QStringLiteral( "format" ) );
     oneLink.mimeType = mne.attribute( QStringLiteral( "mimeType" ) );
     oneLink.size = mne.attribute( QStringLiteral( "size" ) );
-    addLink( oneLink );
+    QgsMetadataBase::addLink( oneLink );
   }
 
   // history
@@ -642,7 +490,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   metadataElement.appendChild( extentElement );
 
   // contact
-  for ( const QgsLayerMetadata::Contact &contact : mContacts )
+  for ( const QgsMetadataBase::Contact &contact : mContacts )
   {
     QDomElement contactElement = document.createElement( QStringLiteral( "contact" ) );
     QDomElement nameElement = document.createElement( QStringLiteral( "name" ) );
@@ -661,7 +509,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
     QDomText emailText = document.createTextNode( contact.email );
     QDomText roleText = document.createTextNode( contact.role );
 
-    for ( const QgsLayerMetadata::Address &oneAddress : contact.addresses )
+    for ( const QgsMetadataBase::Address &oneAddress : contact.addresses )
     {
       QDomElement addressElement = document.createElement( QStringLiteral( "contactAddress" ) );
       QDomElement typeElement = document.createElement( QStringLiteral( "type" ) );
@@ -707,7 +555,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
 
   // links
   QDomElement links = document.createElement( QStringLiteral( "links" ) );
-  for ( const QgsLayerMetadata::Link &link : mLinks )
+  for ( const QgsMetadataBase::Link &link : mLinks )
   {
     QDomElement linkElement = document.createElement( QStringLiteral( "link" ) );
     linkElement.setAttribute( QStringLiteral( "name" ), link.name );
@@ -803,37 +651,4 @@ bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::Spatia
 bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const
 {
   return type == other.type && constraint == other.constraint;
-}
-
-bool QgsLayerMetadata::Contact::operator==( const QgsLayerMetadata::Contact &other ) const
-{
-  return name == other.name &&
-         organization == other.organization &&
-         position == other.position &&
-         addresses == other.addresses &&
-         voice == other.voice &&
-         fax == other.fax &&
-         email == other.email &&
-         role == other.role;
-}
-
-bool QgsLayerMetadata::Link::operator==( const QgsLayerMetadata::Link &other ) const
-{
-  return name == other.name &&
-         type == other.type &&
-         description == other.description &&
-         url == other.url &&
-         format == other.format &&
-         mimeType == other.mimeType &&
-         size == other.size;
-}
-
-bool QgsLayerMetadata::Address::operator==( const QgsLayerMetadata::Address &other ) const
-{
-  return type == other.type &&
-         address == other.address &&
-         city == other.city &&
-         administrativeArea == other.administrativeArea &&
-         postalCode == other.postalCode &&
-         country == other.country;
 }

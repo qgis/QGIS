@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsbox3d.h"
 #include "qgsrange.h"
+#include "qgsmetadatabase.h"
 
 class QgsMapLayer;
 
@@ -52,14 +53,17 @@ class QgsMapLayer;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayerMetadata
+class CORE_EXPORT QgsLayerMetadata : public QgsMetadataBase
 {
   public:
 
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
+
     /**
      * Map of vocabulary string to keyword list.
+     * \deprecated Use QgsMetadataBase::KeywordMap instead.
      */
-    typedef QMap< QString, QStringList > KeywordMap;
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::KeywordMap KeywordMap;
 
     /**
      * Metadata spatial extent structure.
@@ -168,181 +172,45 @@ class CORE_EXPORT QgsLayerMetadata
      */
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
 
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
 
     /**
      * Metadata address structure.
+     * \deprecated Use QgsMetadataBase::Address instead.
      */
-    struct CORE_EXPORT Address
-    {
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::Address Address;
 
-      /**
-       * Constructor for Address.
-       */
-      Address( const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(), const QString &country = QString() )
-        : type( type )
-        , address( address )
-        , city( city )
-        , administrativeArea( administrativeArea )
-        , postalCode( postalCode )
-        , country( country )
-      {}
-
-      /**
-       * Type of address, e.g. 'postal'.
-       */
-      QString type;
-
-      /**
-       * Free-form physical address component, e.g. '221B Baker St' or 'P.O. Box 196'.
-       */
-      QString address;
-
-      /**
-       * City or locality name.
-       */
-      QString city;
-
-      /**
-       * Administrative area (state, province/territory, etc.).
-       */
-      QString administrativeArea;
-
-      /**
-       * Postal (or ZIP) code.
-       */
-      QString postalCode;
-
-      /**
-       * Free-form country string.
-       */
-      QString country;
-
-      bool operator==( const QgsLayerMetadata::Address &other ) const;
-    };
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
 
     /**
      * Metadata contact structure.
+     * \deprecated use QgsMetadataBase::Contact instead.
      */
-    struct CORE_EXPORT Contact
-    {
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::Contact Contact;
 
-      /**
-       * Constructor for Contact.
-       */
-      Contact( const QString &name = QString() )
-        : name( name )
-      {}
-
-      /**
-       * Name of contact.
-       */
-      QString name;
-
-      /**
-       * Organization contact belongs to/represents.
-       */
-      QString organization;
-
-      /**
-       * Position/title of contact.
-       */
-      QString position;
-
-      /**
-       * List of addresses associated with this contact.
-       */
-      QList< QgsLayerMetadata::Address > addresses;
-
-      /**
-       * Voice telephone.
-       */
-      QString voice;
-
-      /**
-       * Facsimile telephone.
-       */
-      QString fax;
-
-      /**
-       * Electronic mail address.
-       * \note Do not include mailto: protocol as part of the email address.
-       */
-      QString email;
-
-      /**
-       * Role of contact. Acceptable values are those from the ISO 19115 CI_RoleCode specifications
-       * (see http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml).
-       * E.g. 'custodian', 'owner', 'distributor', etc.
-       */
-      QString role;
-
-      bool operator==( const QgsLayerMetadata::Contact &other ) const;
-    };
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
 
     /**
      * A list of contacts.
+     * \deprecated use QgsMetadataBase::ContactList instead.
      */
-    typedef QList< QgsLayerMetadata::Contact > ContactList;
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::ContactList ContactList;
 
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
 
     /**
      * Metadata link structure.
+     * \deprecated use QgsMetadataBase::Link instead.
      */
-    struct CORE_EXPORT Link
-    {
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::Link Link;
 
-      /**
-       * Constructor for Link.
-       */
-      Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() )
-        : name( name )
-        , type( type )
-        , url( url )
-      {}
-
-      /**
-       * Short link name. E.g. WMS layer name.
-       */
-      QString name;
-
-      /**
-       * Link type. It is strongly suggested to use values from the 'identifier'
-       * column in https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
-       */
-      QString type;
-
-      /**
-       * Abstract text about link.
-       */
-      QString description;
-
-      /**
-       * Link url.  If the URL is an OWS server, specify the *base* URL only without parameters like service=xxx....
-       */
-      QString url;
-
-      /**
-       * Format specification of online resource. It is strongly suggested to use GDAL/OGR format values.
-       */
-      QString format;
-
-      /**
-       * MIME type representative of the online resource response (image/png, application/json, etc.)
-       */
-      QString mimeType;
-
-      /**
-       * Estimated size (in bytes) of the online resource response.
-       */
-      QString size;
-
-      bool operator==( const QgsLayerMetadata::Link &other ) const;
-    };
+    // TODO QGIS 4.0 - remove and leave just QgsMetadataBase::KeywordMap
 
     /**
      * A list of links.
+     * \deprecated use QgsMetadataBase::LinkList instead.
      */
-    typedef QList< QgsLayerMetadata::Link > LinkList;
+    Q_DECL_DEPRECATED typedef QgsMetadataBase::LinkList LinkList;
 
     /**
      * Constructor for QgsLayerMetadata.
@@ -350,87 +218,6 @@ class CORE_EXPORT QgsLayerMetadata
     QgsLayerMetadata() = default;
 
     virtual ~QgsLayerMetadata() = default;
-
-    /**
-     * A reference, URI, URL or some other mechanism to identify the resource.
-     * \see setIdentifier()
-     */
-    QString identifier() const;
-
-    /**
-     * Sets the reference, URI, URL or some other mechanism to identify the resource.
-     * \see identifier()
-     */
-    void setIdentifier( const QString &identifier );
-
-    /**
-     * A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
-     * Returns an empty string if no parent identifier is set.
-     * \see setParentIdentifier()
-     */
-    QString parentIdentifier() const;
-
-    /**
-     * Sets a reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
-     * Set an empty string if no parent identifier is required.
-     * \see parentIdentifier()
-     */
-    void setParentIdentifier( const QString &parentIdentifier );
-
-    /**
-     * Returns the human language associated with the resource. Usually the returned string
-     * will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA', however
-     * this is not a hard requirement and the caller must account for non compliant
-     * values.
-     * \see setLanguage()
-     */
-    QString language() const;
-
-    /**
-     * Sets the human \a language associated with the resource. While a formal vocabulary is not imposed,
-     * ideally values should be taken from the ISO 639.2 or ISO 3166 specifications,
-     * e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
-     * \see language()
-     */
-    void setLanguage( const QString &language );
-
-    /**
-     * Returns the nature of the resource.  While a formal vocabulary is not imposed, it is advised
-     * to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
-     * \see setType()
-     */
-    QString type() const;
-
-    /**
-     * Sets the \a type (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
-     * to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
-     * \see type()
-     */
-    void setType( const QString &type );
-
-    /**
-     * Returns the human readable name of the resource, typically displayed in search results.
-     * \see setTitle()
-     */
-    QString title() const;
-
-    /**
-     * Sets the human readable \a title (name) of the resource, typically displayed in search results.
-     * \see title()
-     */
-    void setTitle( const QString &title );
-
-    /**
-     * Returns a free-form description of the resource.
-     * \see setAbstract()
-     */
-    QString abstract() const;
-
-    /**
-     * Sets a free-form \a abstract (description) of the resource.
-     * \see abstract()
-     */
-    void setAbstract( const QString &abstract );
 
     /**
      * Returns any fees associated with using the resource.
@@ -489,27 +276,6 @@ class CORE_EXPORT QgsLayerMetadata
      * \see licenses()
      */
     void setLicenses( const QStringList &licenses );
-
-    /**
-     * Returns a freeform description of the history or lineage of the resource.
-     * \see setHistory()
-     */
-    QStringList history() const;
-
-    /**
-     * Sets the freeform description of the \a history or lineage of the resource.
-     * Any existing history items will be overwritten.
-     * \see addHistoryItem()
-     * \see history()
-     */
-    void setHistory( const QStringList &history );
-
-    /**
-     * Adds a single history \a text to the end of the existing history list.
-     * \see history()
-     * \see setHistory()
-     */
-    void addHistoryItem( const QString &text );
 
     /**
      * Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
@@ -584,133 +350,6 @@ class CORE_EXPORT QgsLayerMetadata
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
-     * Returns the keywords map, which is a set of descriptive keywords associated with the resource.
-     *
-     * The map key is the vocabulary string and map value is a list of keywords for that vocabulary.
-     *
-     * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
-     * associated with keyword list.
-     *
-     * \see setKeywords()
-     * \see keywordVocabularies()
-     */
-    KeywordMap keywords() const;
-
-    /**
-     * Sets the \a keywords map, which is a set of descriptive keywords associated with the resource.
-     *
-     * The map key is the vocabulary string and map value is a list of keywords for that vocabulary.
-     * Calling this replaces any existing keyword vocabularies.
-     *
-     * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
-     * associated with keyword list.
-     *
-     * \see keywords()
-     * \see addKeywords()
-     */
-    void setKeywords( const KeywordMap &keywords );
-
-    /**
-     * Adds a list of descriptive \a keywords for a specified \a vocabulary. Any existing
-     * keywords for the same vocabulary will be replaced. Other vocabularies
-     * will not be affected.
-     *
-     * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
-     * associated with keyword list.
-     *
-     * \see setKeywords()
-     */
-    void addKeywords( const QString &vocabulary, const QStringList &keywords );
-
-    /**
-     * Remove a vocabulary from the list.
-     *
-     * \see setKeywords()
-     * \see addKeywords()
-     */
-    bool removeKeywords( const QString &vocabulary );
-
-    /**
-     * Returns a list of keyword vocabularies contained in the metadata.
-     *
-     * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
-     * associated with keyword list.
-     *
-     * \see keywords()
-     */
-    QStringList keywordVocabularies() const;
-
-    /**
-     * Returns a list of keywords for the specified \a vocabulary.
-     * If the vocabulary is not contained in the metadata, an empty
-     * list will be returned.
-     *
-     * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
-     * associated with keyword list.
-     *
-     * \see keywordVocabularies()
-     */
-    QStringList keywords( const QString &vocabulary ) const;
-
-    /**
-     * Returns categories of the resource.
-     * Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
-     *
-     * \see keywords()
-     */
-    QStringList categories() const;
-
-    /**
-     * Sets categories of the resource.
-     * Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
-     *
-     * \see keywords()
-     */
-    void setCategories( const QStringList &categories );
-
-    /**
-     * Returns a list of contact persons or entities associated with the resource.
-     * \see setContacts()
-     */
-    QgsLayerMetadata::ContactList contacts() const;
-
-    /**
-     * Sets the list of \a contacts or entities associated with the resource. Any existing contacts
-     * will be replaced.
-     * \see contacts()
-     * \see addContact()
-     */
-    void setContacts( const QgsLayerMetadata::ContactList &contacts );
-
-    /**
-     * Adds an individual \a contact to the existing contacts.
-     * \see contacts()
-     * \see setContacts()
-     */
-    void addContact( const QgsLayerMetadata::Contact &contact );
-
-    /**
-     * Returns a list of online resources associated with the resource.
-     * \see setLinks()
-     */
-    QgsLayerMetadata::LinkList links() const;
-
-    /**
-     * Sets the list of online resources associated with the resource. Any existing links
-     * will be replaced.
-     * \see links()
-     * \see addLink()
-     */
-    void setLinks( const QgsLayerMetadata::LinkList &links );
-
-    /**
-     * Adds an individual \a link to the existing links.
-     * \see links()
-     * \see setLinks()
-     */
-    void addLink( const QgsLayerMetadata::Link &link );
-
-    /**
      * Saves the metadata to a \a layer's custom properties (see QgsMapLayer::setCustomProperty() ).
      * \see readFromLayer()
      */
@@ -751,17 +390,10 @@ class CORE_EXPORT QgsLayerMetadata
      *
      */
 
-    QString mIdentifier;
-    QString mParentIdentifier;
-    QString mLanguage;
-    QString mType;
-    QString mTitle;
-    QString mAbstract;
     QString mFees;
     ConstraintList mConstraints;
     QStringList mRights;
     QStringList mLicenses;
-    QStringList mHistory;
 
     // IMPORTANT - look up before adding anything here!!
 
@@ -769,15 +401,6 @@ class CORE_EXPORT QgsLayerMetadata
     QgsCoordinateReferenceSystem mCrs;
 
     Extent mExtent;
-
-    /**
-     * Keywords map. Key is the vocabulary, value is a list of keywords for that vocabulary.
-     */
-    KeywordMap mKeywords;
-
-    ContactList mContacts;
-
-    LinkList mLinks;
 
     /*
      * IMPORTANT!!!!!!
@@ -789,10 +412,7 @@ class CORE_EXPORT QgsLayerMetadata
 
 };
 
-Q_DECLARE_METATYPE( QgsLayerMetadata::KeywordMap )
 Q_DECLARE_METATYPE( QgsLayerMetadata::ConstraintList )
-Q_DECLARE_METATYPE( QgsLayerMetadata::ContactList )
-Q_DECLARE_METATYPE( QgsLayerMetadata::LinkList )
 Q_DECLARE_METATYPE( QgsLayerMetadata::Extent )
 
 #endif // QGSLAYERMETADATA_H

@@ -95,8 +95,8 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
   }
 
   // validate keywords
-  QgsLayerMetadata::KeywordMap keywords = metadata.keywords();
-  QgsLayerMetadata::KeywordMap::const_iterator keywordIt = keywords.constBegin();
+  QgsMetadataBase::KeywordMap keywords = metadata.keywords();
+  QgsMetadataBase::KeywordMap::const_iterator keywordIt = keywords.constBegin();
   index = 0;
   for ( ; keywordIt != keywords.constEnd(); ++keywordIt )
   {
@@ -115,7 +115,7 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
 
   // validate contacts
   index = 0;
-  Q_FOREACH ( const QgsLayerMetadata::Contact &contact, metadata.contacts() )
+  Q_FOREACH ( const QgsMetadataBase::Contact &contact, metadata.contacts() )
   {
     if ( contact.name.isEmpty() )
     {
@@ -127,7 +127,7 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
 
   // validate links
   index = 0;
-  Q_FOREACH ( const QgsLayerMetadata::Link &link, metadata.links() )
+  Q_FOREACH ( const QgsMetadataBase::Link &link, metadata.links() )
   {
     if ( link.name.isEmpty() )
     {

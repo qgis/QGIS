@@ -498,11 +498,11 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   }
 
   // Contacts
-  const QList<QgsLayerMetadata::Contact> &contacts = mMetadata.contacts();
+  const QList<QgsMetadataBase::Contact> &contacts = mMetadata.contacts();
   if ( ! contacts.isEmpty() )
   {
     // Only one contact supported in the UI for now
-    const QgsLayerMetadata::Contact &contact = contacts.at( 0 );
+    const QgsMetadataBase::Contact &contact = contacts.at( 0 );
     lineEditContactName->setText( contact.name );
     lineEditContactEmail->setText( contact.email );
     lineEditContactFax->setText( contact.fax );
@@ -515,8 +515,8 @@ void QgsMetadataWidget::setPropertiesFromLayer()
     }
     comboContactRole->setCurrentIndex( comboContactRole->findText( contact.role ) );
     tabAddresses->setRowCount( 0 );
-    const QList<QgsLayerMetadata::Address> &addresses = contact.addresses;
-    for ( const QgsLayerMetadata::Address &address : addresses )
+    const QList<QgsMetadataBase::Address> &addresses = contact.addresses;
+    for ( const QgsMetadataBase::Address &address : addresses )
     {
       int currentRow = tabAddresses->rowCount();
       tabAddresses->setRowCount( currentRow + 1 );
@@ -530,9 +530,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   }
 
   // Links
-  const QList<QgsLayerMetadata::Link> &links = mMetadata.links();
+  const QList<QgsMetadataBase::Link> &links = mMetadata.links();
   mLinksModel->setRowCount( 0 );
-  for ( const QgsLayerMetadata::Link &link : links )
+  for ( const QgsMetadataBase::Link &link : links )
   {
     int row = mLinksModel->rowCount();
     mLinksModel->setItem( row, 0, new QStandardItem( link.name ) );
@@ -614,10 +614,10 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
 
   // Contacts, only one contact supported in the UI for now.
   // We don't want to lost data if more than one contact, so we update only the first one.
-  QList<QgsLayerMetadata::Contact> contacts = mMetadata.contacts();
+  QList<QgsMetadataBase::Contact> contacts = mMetadata.contacts();
   if ( contacts.size() > 0 )
     contacts.removeFirst();
-  struct QgsLayerMetadata::Contact contact = QgsLayerMetadata::Contact();
+  struct QgsMetadataBase::Contact contact = QgsMetadataBase::Contact();
   contact.email = lineEditContactEmail->text();
   contact.position = lineEditContactPosition->text();
   contact.fax = lineEditContactFax->text();
@@ -625,10 +625,10 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
   contact.name = lineEditContactName->text();
   contact.organization = lineEditContactOrganization->text();
   contact.role = comboContactRole->currentText();
-  QList<QgsLayerMetadata::Address> addresses;
+  QList<QgsMetadataBase::Address> addresses;
   for ( int i = 0; i < tabAddresses->rowCount() ; i++ )
   {
-    struct QgsLayerMetadata::Address address = QgsLayerMetadata::Address();
+    struct QgsMetadataBase::Address address = QgsMetadataBase::Address();
     address.type = tabAddresses->item( i, 0 )->text();
     address.address = tabAddresses->item( i, 1 )->text();
     address.postalCode = tabAddresses->item( i, 2 )->text();
@@ -642,10 +642,10 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
   layerMetadata.setContacts( contacts );
 
   // Links
-  QList<QgsLayerMetadata::Link> links;
+  QList<QgsMetadataBase::Link> links;
   for ( int row = 0; row < mLinksModel->rowCount() ; row++ )
   {
-    struct QgsLayerMetadata::Link link = QgsLayerMetadata::Link();
+    struct QgsMetadataBase::Link link = QgsMetadataBase::Link();
     link.name = mLinksModel->item( row, 0 )->text();
     link.type = mLinksModel->item( row, 1 )->text();
     link.url = mLinksModel->item( row, 2 )->text();
