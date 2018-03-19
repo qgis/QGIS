@@ -271,8 +271,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void updateClearIcon();
 
   private:
-    QAction *mClearAction;
-    QAction *mSearchAction;
+    QAction *mClearAction = nullptr;
+    QAction *mSearchAction = nullptr;
     QAction *mBusySpinnerAction = nullptr;
 
     bool mClearButtonVisible = true;
