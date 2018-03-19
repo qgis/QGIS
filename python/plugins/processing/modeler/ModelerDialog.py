@@ -700,12 +700,7 @@ class ModelerDialog(BASE, WIDGET):
             else:
                 providerItem = TreeProviderItem(provider, self.algorithmTree, self)
 
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
                 # insert non-native providers at end of tree, alphabetically
-
                 for i in range(self.algorithmTree.invisibleRootItem().childCount()):
                     child = self.algorithmTree.invisibleRootItem().child(i)
                     if isinstance(child, TreeProviderItem):
@@ -713,6 +708,10 @@ class ModelerDialog(BASE, WIDGET):
                             break
 
                 self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
+
+                if not provider.isActive():
+                    providerItem.setHidden(True)
+                    self.disabledProviderItems[provider.id()] = providerItem
 
     def addAlgorithmsFromProvider(self, provider, parent):
         groups = {}
