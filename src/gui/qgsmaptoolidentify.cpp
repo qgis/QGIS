@@ -241,7 +241,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     QgsFeature f;
     QgsGeometry selectionGeom = QgsGeometry( mSelectionGeometry );
 
-    QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(),  layer->crs() );
+    QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(),  layer->crs(), mCanvas->mapSettings().transformContext() );
     if ( ct.isValid() )
       selectionGeom.transform( ct );
 

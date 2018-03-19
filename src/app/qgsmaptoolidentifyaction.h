@@ -120,7 +120,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
-    void keyReleaseEvent( QKeyEvent *e );
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
     friend class TestQgsMapToolIdentifyAction;
 };

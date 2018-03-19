@@ -175,6 +175,9 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+
+    /**
+     * Identifies features in the given vector layer and saves results to the passed list of results*/
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
 
     //! stores exact selection geometry
