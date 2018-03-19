@@ -886,6 +886,28 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+    const QgsProjectMetadata &metadata() const;
+%Docstring
+Returns a reference to the project's metadata store.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`setMetadata`
+
+.. seealso:: :py:func:`metadataChanged`
+%End
+
+    void setMetadata( const QgsProjectMetadata &metadata );
+%Docstring
+Sets the project's ``metadata`` store.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`metadata`
+
+.. seealso:: :py:func:`metadataChanged`
+%End
+
   signals:
     void readProject( const QDomDocument & );
 %Docstring
@@ -1058,6 +1080,17 @@ map themes being removed.
 Emitted when global configuration of the labeling engine changes.
 
 .. versionadded:: 3.0
+%End
+
+    void metadataChanged();
+%Docstring
+Emitted when the project's metadata is changed.
+
+.. seealso:: :py:func:`setMetadata`
+
+.. seealso:: :py:func:`metadata`
+
+.. versionadded:: 3.2
 %End
 
 

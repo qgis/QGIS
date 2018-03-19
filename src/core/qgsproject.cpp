@@ -511,6 +511,8 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+  mMetadata = QgsProjectMetadata();
+  emit metadataChanged();
 
   QgsCoordinateTransformContext context;
   context.readSettings();
@@ -973,7 +975,15 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
   emit transformContextChanged();
 
-  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
+  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
+  if ( !nl.isEmpty() )
+  {
+    QDomElement metadataElement = nl.at( 0 ).toElement();
+    mMetadata.readMetadataXml( metadataElement );
+  }
+  emit metadataChanged();
+
+  nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
   {
     QDomElement transactionElement = nl.at( 0 ).toElement();
@@ -1514,6 +1524,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mLabelingEngineSettings->writeSettingsToProject( this );
 
   mTransformContext.writeXml( qgisNode, context );
+
+  QDomElement metadataElem = doc->createElement( QStringLiteral( "projectMetadata" ) );
+  mMetadata.writeMetadataXml( metadataElem, *doc );
+  qgisNode.appendChild( metadataElem );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );
@@ -2506,4 +2520,17 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
+}
+
+const QgsProjectMetadata &QgsProject::metadata() const
+{
+  return mMetadata;
+}
+
+void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
+{
+  mMetadata = metadata;
+  emit metadataChanged();
+
+  setDirty( true );
 }

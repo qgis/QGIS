@@ -20,11 +20,13 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsProjectMetadata,
                        QgsMetadataBase,
+                       QgsProject,
                        QgsNativeProjectMetadataValidator)
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
                               QDateTime)
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 
@@ -326,6 +328,19 @@ class TestQgsProjectMetadata(unittest.TestCase):
         res, list = v.validate(m)
         self.assertFalse(res)
         self.assertEqual(list[0].section, 'creation')
+
+    def testProject(self):
+        p = QgsProject()
+        m = self.createTestMetadata()
+
+        metadata_changed_spy = QSignalSpy(p.metadataChanged)
+        p.setMetadata(m)
+        self.assertEqual(len(metadata_changed_spy), 1)
+        self.checkExpectedMetadata(p.metadata())
+
+        p.clear()
+        self.assertEqual(len(metadata_changed_spy), 2)
+        self.assertEqual(p.metadata().author(), '')
 
 
 if __name__ == '__main__':
