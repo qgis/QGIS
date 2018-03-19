@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsLayerMetadata;
-    else if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+    else if ( dynamic_cast< QgsProjectMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsProjectMetadata;
     else
       sipType = NULL;
