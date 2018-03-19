@@ -719,6 +719,8 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
   {
     //edited variable name
     QString newName = lineEdit->text();
+    newName = newName.trimmed();
+    newName = newName.replace( QStringLiteral( " " ), "_" );
 
     //test for validity
     if ( newName == variableName )
