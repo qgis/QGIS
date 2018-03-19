@@ -62,6 +62,11 @@ bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther )  
          mCreationDateTime == metadataOther.mCreationDateTime ;
 }
 
+QgsProjectMetadata *QgsProjectMetadata::clone() const
+{
+  return new QgsProjectMetadata( *this );
+}
+
 QString QgsProjectMetadata::author() const
 {
   return mAuthor;

@@ -52,6 +52,18 @@ class QDomDocument;
  */
 class CORE_EXPORT QgsAbstractMetadataBase
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+      sipType = sipType_QgsLayerMetadata;
+    else if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProjectMetadata;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     // NOTE - these really belong in a separate namespace, but SIP says no, I want to make you waste more time
@@ -248,6 +260,12 @@ class CORE_EXPORT QgsAbstractMetadataBase
     typedef QList< QgsAbstractMetadataBase::Link > LinkList;
 
     virtual ~QgsAbstractMetadataBase() = default;
+
+    /**
+     * Clones the metadata object.
+     * \since QGIS 3.2
+     */
+    virtual QgsAbstractMetadataBase *clone() const = 0 SIP_FACTORY;
 
     /**
      * A reference, URI, URL or some other mechanism to identify the resource.

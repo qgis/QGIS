@@ -57,6 +57,8 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
      */
     QgsProjectMetadata() = default;
 
+    QgsProjectMetadata *clone() const override SIP_FACTORY;
+
     /**
      * Returns the project author string.
      * \see setAuthor()
