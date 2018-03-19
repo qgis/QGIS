@@ -447,7 +447,7 @@ QgsAbstractMetadataBase cannot be instantiated directly, it must be subclassed.
 %Docstring
 Tests whether the common metadata fields in this object are equal to ``other``.
 
-Subclasses should utilise this method from their equality operators to test
+Subclasses should utilize this method from their equality operators to test
 equality of base class members.
 
 .. versionadded:: 3.2

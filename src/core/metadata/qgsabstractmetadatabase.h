@@ -569,7 +569,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     /**
      * Tests whether the common metadata fields in this object are equal to \a other.
      *
-     * Subclasses should utilise this method from their equality operators to test
+     * Subclasses should utilize this method from their equality operators to test
      * equality of base class members.
      *
      * \since QGIS 3.2
