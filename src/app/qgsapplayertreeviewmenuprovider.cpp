@@ -253,18 +253,32 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         // save as vector file
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
-        menuExportVector->addAction( tr( "Save as…" ), QgisApp::instance(), SLOT( saveAsFile() ) );
-        menuExportVector->addAction( tr( "Save as Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportVector );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportVector->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportVector->addAction( actionSaveAsDefinitionLayer );
         if ( vlayer->isSpatial() )
-            menuExportVector->addAction( tr( "QGIS Layer Style File…" ), QgisApp::instance(), SLOT( saveStyleFile() ) );
+        {
+          QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportVector );
+          connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+          menuExportVector->addAction( actionSaveStyle );
+        }
         menu->addMenu( menuExportVector );
       }
       else if ( rlayer )
       {
         QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
-        menuExportRaster->addAction( tr( "Save As…" ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
-        menuExportRaster->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
-        menuExportRaster->addAction( tr( "QGIS Layer Style File…" ), QgisApp::instance(), SLOT( saveStyleFile() ) );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportRaster );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
+        QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportRaster->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportRaster->addAction( actionSaveAsDefinitionLayer );
+        connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+        menuExportRaster->addAction( actionSaveStyle );
         menu->addMenu( menuExportRaster );
 
         menu->addSeparator();

@@ -6995,7 +6995,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
   QString filename = QFileDialog::getSaveFileName( this,
-                     tr( "Save layer properties as style file" ),
+                     tr( "Save as QGIS Layer Style File" ),
                      lastUsedDir,
                      tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( filename.isEmpty() )
