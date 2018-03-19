@@ -9167,7 +9167,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
-  Q_FOREACH ( QgsMapLayer *selectedLyr, selectedLyrs )
+  for ( QgsMapLayer *selectedLyr : selectedLyrs )
   {
     dupLayer = nullptr;
     unSppType.clear();
@@ -9231,6 +9231,8 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       continue;
     }
 
+    dupLayer->setName( layerDupName );
+
     // add layer to layer registry and legend
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
@@ -9265,7 +9267,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
   freezeCanvases( false );
 
   // display errors in message bar after duplication of layers
-  Q_FOREACH ( QgsMessageBarItem *msgBar, msgBars )
+  for ( QgsMessageBarItem *msgBar : qgis::as_const( msgBars ) )
   {
     mInfoBar->pushItem( msgBar );
   }
