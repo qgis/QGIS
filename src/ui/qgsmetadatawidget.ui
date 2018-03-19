@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>8</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -88,7 +88,7 @@
               <string>A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.</string>
              </property>
              <property name="text">
-              <string>Parent Identifier</string>
+              <string>Parent identifier</string>
              </property>
             </widget>
            </item>
@@ -971,7 +971,7 @@
          <item>
           <widget class="QLabel" name="label_32">
            <property name="text">
-            <string>Z Maximum</string>
+            <string>Z maximum</string>
            </property>
           </widget>
          </item>
@@ -985,7 +985,7 @@
          <item>
           <widget class="QLabel" name="label_31">
            <property name="text">
-            <string>Z Minimum</string>
+            <string>Z minimum</string>
            </property>
           </widget>
          </item>
