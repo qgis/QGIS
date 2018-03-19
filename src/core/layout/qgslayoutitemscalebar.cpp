@@ -270,7 +270,7 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
 
         // Start with coarsest "nice" number closest to minUnitsPerSeg resp
         // maxUnitsPerSeg, then proceed to finer numbers as long as neither
-        // lowerNiceUnitsPerSeg nor upperNiceUnitsPerSeg are are in
+        // lowerNiceUnitsPerSeg nor upperNiceUnitsPerSeg are in
         // [minUnitsPerSeg, maxUnitsPerSeg]
         double lowerNiceUnitsPerSeg = nextNiceNumber( minUnitsPerSeg );
         double upperNiceUnitsPerSeg = prevNiceNumber( maxUnitsPerSeg );

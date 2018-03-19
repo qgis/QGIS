@@ -690,7 +690,7 @@ class Plugins(QObject):
         pluginPaths.reverse()
 
         for pluginsPath in pluginPaths:
-            isTheSystemDir = (pluginPaths.index(pluginsPath) == 0)  # The curent dir is the system plugins dir
+            isTheSystemDir = (pluginPaths.index(pluginsPath) == 0)  # The current dir is the system plugins dir
             if isTheSystemDir:
                 # temporarily add the system path as the first element to force loading the readonly plugins, even if masked by user ones.
                 sys.path = [pluginsPath] + sys.path

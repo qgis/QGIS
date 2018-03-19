@@ -1757,10 +1757,10 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
                       <property name="toolTip">
-                       <string>An URL of the data presentation.</string>
+                       <string>A URL of the data presentation.</string>
                       </property>
                       <property name="placeholderText">
-                       <string>An URL of the data presentation.</string>
+                       <string>A URL of the data presentation.</string>
                       </property>
                      </widget>
                     </item>
@@ -2027,10 +2027,10 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
                       <property name="toolTip">
-                       <string>An URL of the legend image.</string>
+                       <string>A URL of the legend image.</string>
                       </property>
                       <property name="placeholderText">
-                       <string>An URL of the legend image.</string>
+                       <string>A URL of the legend image.</string>
                       </property>
                      </widget>
                     </item>

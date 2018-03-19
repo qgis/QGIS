@@ -97,7 +97,7 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     //! Draws selection handles around the item
     void drawSelectionBoxes( QPainter *p ) const;
 
-    //! Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation
+    //! Returns the symbol size scaled in (mapcanvas) pixels. Used for the counting rect calculation
     double scaledSymbolSize() const;
 
     QgsAnnotation *mAnnotation = nullptr;

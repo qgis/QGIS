@@ -177,7 +177,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QgsGrassObject mGrassObject;
     // true if map is open, once the map is closed, valid is set to false and no more used
     bool mValid;
-    // Indicates if map is open, it may be open but invalide
+    // Indicates if map is open, it may be open but invalid
     bool mOpen;
     // Vector temporally disabled. Necessary for GRASS Tools on Windows
     bool mFrozen;
@@ -238,7 +238,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     /**
      * Open map.
      *  \param grassObject
-     *  \returns map, the map may be invalide  */
+     *  \returns map, the map may be invalid  */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:
