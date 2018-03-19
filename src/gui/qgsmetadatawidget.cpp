@@ -667,7 +667,7 @@ bool QgsMetadataWidget::checkMetadata()
   saveMetadata( metadata );
   QgsNativeMetadataValidator validator;
   QList<QgsMetadataValidator::ValidationResult> validationResults;
-  bool results = validator.validate( metadata, validationResults );
+  bool results = validator.validate( &metadata, validationResults );
 
   QString errors;
   if ( !results )

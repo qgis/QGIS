@@ -18,84 +18,59 @@
 #include "qgslayermetadatavalidator.h"
 #include "qgslayermetadata.h"
 
-bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QList<ValidationResult> &results ) const
+
+bool QgsNativeMetadataBaseValidator::validate( const QgsMetadataBase *metadata, QList<QgsMetadataValidator::ValidationResult> &results ) const
 {
   results.clear();
+  if ( !metadata )
+    return false;
 
+  int index = 0;
   bool result = true;
-  if ( metadata.identifier().isEmpty() )
+  if ( metadata->identifier().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "identifier" ), QObject::tr( "Identifier element is required." ) );
   }
 
-  if ( metadata.language().isEmpty() )
+  if ( metadata->language().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "language" ), QObject::tr( "Language element is required." ) );
   }
 
-  if ( metadata.type().isEmpty() )
+  if ( metadata->type().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "type" ), QObject::tr( "Type element is required." ) );
   }
 
-  if ( metadata.title().isEmpty() )
+  if ( metadata->title().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "title" ), QObject::tr( "Title element is required." ) );
   }
 
-  if ( metadata.abstract().isEmpty() )
+  if ( metadata->abstract().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "abstract" ), QObject::tr( "Abstract element is required." ) );
   }
 
-  if ( metadata.licenses().isEmpty() )
-  {
-    result = false;
-    results << ValidationResult( QObject::tr( "license" ), QObject::tr( "At least one license is required." ) );
-  }
-
-  if ( !metadata.crs().isValid() )
-  {
-    result = false;
-    results << ValidationResult( QObject::tr( "crs" ), QObject::tr( "A valid CRS element is required." ) );
-  }
-
-  int index = 0;
-  Q_FOREACH ( const QgsLayerMetadata::SpatialExtent &extent, metadata.extent().spatialExtents() )
-  {
-    if ( !extent.extentCrs.isValid() )
-    {
-      result = false;
-      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid CRS element for the spatial extent is required." ), index );
-    }
-
-    if ( extent.bounds.width() == 0.0 || extent.bounds.height() == 0.0 )
-    {
-      result = false;
-      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid spatial extent is required." ), index );
-    }
-    index++;
-  }
-
-  if ( metadata.contacts().isEmpty() )
+  if ( metadata->contacts().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "contacts" ), QObject::tr( "At least one contact is required." ) );
   }
 
-  if ( metadata.links().isEmpty() )
+  if ( metadata->links().isEmpty() )
   {
     result = false;
     results << ValidationResult( QObject::tr( "links" ), QObject::tr( "At least one link is required." ) );
   }
 
   // validate keywords
-  QgsMetadataBase::KeywordMap keywords = metadata.keywords();
+  QgsMetadataBase::KeywordMap keywords = metadata->keywords();
   QgsMetadataBase::KeywordMap::const_iterator keywordIt = keywords.constBegin();
   index = 0;
   for ( ; keywordIt != keywords.constEnd(); ++keywordIt )
@@ -115,7 +90,7 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
 
   // validate contacts
   index = 0;
-  Q_FOREACH ( const QgsMetadataBase::Contact &contact, metadata.contacts() )
+  Q_FOREACH ( const QgsMetadataBase::Contact &contact, metadata->contacts() )
   {
     if ( contact.name.isEmpty() )
     {
@@ -127,7 +102,7 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
 
   // validate links
   index = 0;
-  Q_FOREACH ( const QgsMetadataBase::Link &link, metadata.links() )
+  Q_FOREACH ( const QgsMetadataBase::Link &link, metadata->links() )
   {
     if ( link.name.isEmpty() )
     {
@@ -149,3 +124,48 @@ bool QgsNativeMetadataValidator::validate( const QgsLayerMetadata &metadata, QLi
 
   return result;
 }
+
+bool QgsNativeMetadataValidator::validate( const QgsMetadataBase *baseMetadata, QList<ValidationResult> &results ) const
+{
+  results.clear();
+
+  const QgsLayerMetadata *metadata = dynamic_cast< const QgsLayerMetadata * >( baseMetadata );
+  if ( !metadata )
+    return false;
+
+  bool result = true;
+  if ( !QgsNativeMetadataBaseValidator::validate( metadata, results ) )
+    result = false;
+
+  if ( metadata->licenses().isEmpty() )
+  {
+    result = false;
+    results << ValidationResult( QObject::tr( "license" ), QObject::tr( "At least one license is required." ) );
+  }
+
+  if ( !metadata->crs().isValid() )
+  {
+    result = false;
+    results << ValidationResult( QObject::tr( "crs" ), QObject::tr( "A valid CRS element is required." ) );
+  }
+
+  int index = 0;
+  Q_FOREACH ( const QgsLayerMetadata::SpatialExtent &extent, metadata->extent().spatialExtents() )
+  {
+    if ( !extent.extentCrs.isValid() )
+    {
+      result = false;
+      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid CRS element for the spatial extent is required." ), index );
+    }
+
+    if ( extent.bounds.width() == 0.0 || extent.bounds.height() == 0.0 )
+    {
+      result = false;
+      results << ValidationResult( QObject::tr( "extent" ), QObject::tr( "A valid spatial extent is required." ), index );
+    }
+    index++;
+  }
+
+  return result;
+}
+

@@ -21,7 +21,7 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsMetadataBase,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
-                       QgsNativeMetadataValidator,
+                       QgsNativeMetadataBaseValidator,
                        QgsBox3d,
                        QgsDateTimeRange)
 from qgis.PyQt.QtCore import (QDate,
@@ -411,7 +411,7 @@ class TestQgsMetadataBase(unittest.TestCase):
         Test validating metadata against QGIS native schema
         """
         m = self.createTestMetadata()
-        v = QgsNativeMetadataValidator()
+        v = QgsNativeMetadataBaseValidator()
 
         res, list = v.validate(m)
         self.assertTrue(res)
