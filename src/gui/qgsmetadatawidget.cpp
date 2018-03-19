@@ -156,6 +156,10 @@ void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
   mLabelContact->setText( tr( "Contact describe the owner of the %1." ).arg( type ) );
   mLabelLinks->setText( tr( "Links describe ancillary resources and information related to this %1." ).arg( type ) );
   mLabelHistory->setText( tr( "History about the %1." ).arg( type ) );
+  labelKeywords->setText( tr( "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "
+                              "the %1. Edits made in the categories tab will update the category entry below. For the concept, we suggest "
+                              "to use a standard based vocabulary such as <a href=\"https://www.eionet.europa.eu/gemet/en/inspire-themes/\">"
+                              "<span style=\" text-decoration: underline; color:#0000ff;\">GEMET.</span></a></p></body></html>" ).arg( type ) );
   btnAutoSource->setText( tr( "Set from %1" ).arg( mMode == LayerMetadata ? tr( "layer" ) : tr( "project" ) ) );
 }
 
