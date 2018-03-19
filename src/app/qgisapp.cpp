@@ -9231,6 +9231,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
   freezeCanvases();
   QgsMapLayer *dupLayer = nullptr;
+  QgsMapLayer *newSelection = nullptr;
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
@@ -9327,9 +9328,16 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       messageBar()->pushMessage( errMsg,
                                  tr( "Cannot copy style to duplicated layer." ),
                                  Qgis::Critical, messageTimeout() );
+
+    if ( !newSelection )
+      newSelection = dupLayer;
   }
 
   dupLayer = nullptr;
+
+  // auto select first new duplicate layer
+  if ( newSelection )
+    setActiveLayer( newSelection );
 
   freezeCanvases( false );
 
