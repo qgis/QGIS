@@ -107,7 +107,7 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
     Q_INVOKABLE bool suppressFeatureForm() const;
 
     //! Reset remembered attributes
-    Q_INVOKABLE void resetAttributes();
+    Q_INVOKABLE virtual void resetAttributes();
 
     //! Get remembered attributes
     QVector<bool> rememberedAttributes() const;
@@ -121,7 +121,7 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
     //! layer changed
     void layerChanged();
 
-  private:
+  protected:
     bool commit();
     bool startEditing();
 

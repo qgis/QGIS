@@ -228,7 +228,15 @@ void QgsQuickFeatureModel::resetAttributes()
       if ( !fields.at( i ).defaultValueDefinition().expression().isEmpty() )
       {
         QgsExpression exp( fields.at( i ).defaultValueDefinition().expression() );
+        exp.prepare( &expressionContext );
+        if ( exp.hasParserError() )
+          QgsMessageLog::logMessage( tr( "Default value expression for %1:%2 has parser error: %3" ).arg( mLayer->name(), fields.at( i ).name(), exp.parserErrorString() ), QStringLiteral( "QgsQuick" ), Qgis::Warning );
+
         QVariant value = exp.evaluate( &expressionContext );
+
+        if ( exp.hasEvalError() )
+          QgsMessageLog::logMessage( tr( "Default value expression for %1:%2 has evaluation error: %3" ).arg( mLayer->name(), fields.at( i ).name(), exp.evalErrorString() ), QStringLiteral( "QgsQuick" ), Qgis::Warning );
+
         mFeature.setAttribute( i, value );
       }
       else
