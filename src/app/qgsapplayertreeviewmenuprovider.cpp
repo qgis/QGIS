@@ -56,11 +56,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
   {
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
-    menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ),
-                     tr( "Paste Layer/Group" ), QgisApp::instance(), SLOT( pasteLayer() ) );
-
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionExpandTree.svg" ) ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addSeparator();
+    if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+    {
+      QAction *actionPasteLayerOrGroup = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ), tr( "Paste Layer/Group" ), menu );
+      connect( actionPasteLayerOrGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::pasteLayer );
+      menu->addAction( actionPasteLayerOrGroup );
+    }
 
     // TODO: update drawing order
   }
@@ -97,7 +101,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( tr( "Copy Group" ), QgisApp::instance(), SLOT( copyLayer() ) );
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
       {
-        menu->addAction( tr( "Paste Layer/Group" ), QgisApp::instance(), SLOT( pasteLayer() ) );
+        QAction *actionPasteLayerOrGroup = new QAction( tr( "Paste Layer/Group" ), menu );
+        connect( actionPasteLayerOrGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::pasteLayer );
+        menu->addAction( actionPasteLayerOrGroup );
       }
 
       menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
@@ -215,7 +221,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       menu->addSeparator();
-      menu->addAction( tr( "Copy Layer" ), QgisApp::instance(), SLOT( copyLayer() ) );
+      QAction *actionCopyLayer = new QAction( tr( "Copy Layer" ), menu );
+      connect( actionCopyLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::copyLayer );
+      menu->addAction( actionCopyLayer );
 
       if ( vlayer )
       {

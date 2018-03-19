@@ -3001,7 +3001,10 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
    </property>
    <property name="text">
-    <string>Paste Layer</string>
+    <string>Paste Layer/Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste Layer/Group</string>
    </property>
   </action>
  </widget>
