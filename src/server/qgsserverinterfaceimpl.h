@@ -66,7 +66,6 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     void setConfigFilePath( const QString &configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;
     void removeConfigCacheEntry( const QString &path ) override;
-    void removeProjectLayers( const QString &path ) override;
 
     QgsServiceRegistry *serviceRegistry() override;
 
