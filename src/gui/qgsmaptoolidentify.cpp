@@ -184,9 +184,9 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    if (mSelectionGeometry.isNull())
+    if ( mSelectionGeometry.isNull() )
     {
-        mSelectionGeometry = QgsGeometry::fromPointXY(point);
+      mSelectionGeometry = QgsGeometry::fromPointXY( point );
     }
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), selectionMode );
   }
