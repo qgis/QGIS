@@ -240,6 +240,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
 
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
+  mIsSettingFeature = true;
   mFeature = feature;
 
   switch ( mMode )
@@ -266,6 +267,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
       break;
     }
   }
+  mIsSettingFeature = false;
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -692,11 +694,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
 
-  const QVariant oldValue = mFeature.attribute( eww->fieldIdx() );
-
-  // Safety check, if we receive the same value again, no reason to do anything
-  if ( oldValue == value && oldValue.isNull() == value.isNull() )
-    return;
+  bool signalEmitted = false;
 
   if ( mValuesInitialized )
     mDirty = true;
@@ -707,7 +705,12 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
     case IdentifyMode:
     case AddFeatureMode:
     {
+      Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
+      Q_NOWARN_DEPRECATED_PUSH
+      emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+
+      signalEmitted = true;
 
       updateJoinedFields( *eww );
 
@@ -739,7 +742,13 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
   updateConstraints( eww );
 
-  emit attributeChanged( eww->field().name(), value );
+  if ( !signalEmitted )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit attributeChanged( eww->field().name(), value );
+    Q_NOWARN_DEPRECATED_PUSH
+    emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+  }
 }
 
 void QgsAttributeForm::updateAllConstraints()

@@ -88,7 +88,7 @@ class ConcaveHull(QgisAlgorithm):
         delaunay_layer = processing.run("qgis:delaunaytriangulation", {'INPUT': parameters[ConcaveHull.INPUT], 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
 
         # Get max edge length from Delaunay triangles
-        feedback.setProgressText(QCoreApplication.translate('Computing edges max length…'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Computing edges max length…'))
 
         features = delaunay_layer.getFeatures()
         count = delaunay_layer.featureCount()

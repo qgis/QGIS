@@ -35,10 +35,11 @@ setProgress() to provide detailed progress reports, such as "Transformed
 .. seealso:: :py:func:`setProgress`
 %End
 
-    virtual void reportError( const QString &error );
+    virtual void reportError( const QString &error, bool fatalError = false );
 %Docstring
-Reports that the algorithm encountered an error which prevented it
-from successfully executing.
+Reports that the algorithm encountered an ``error`` while executing.
+
+If ``fatalError`` is true then the error prevented the algorithm from executing.
 %End
 
     virtual void pushInfo( const QString &info );
@@ -127,7 +128,7 @@ to scale the current progress to account for progress through the overall proces
 
     virtual void setProgressText( const QString &text );
 
-    virtual void reportError( const QString &error );
+    virtual void reportError( const QString &error, bool fatalError );
 
     virtual void pushInfo( const QString &info );
 

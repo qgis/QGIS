@@ -71,7 +71,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A vector layer parameter." );
+      return QCoreApplication::translate( "Processing", "A vector layer parameter, e.g. for algorithms which change layer styles, edit layers in place, or other operations which affect an entire layer." );
     }
 
     virtual QString name() const override
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "An extent defines a rectangle." );
+      return QCoreApplication::translate( "Processing", "A map extent parameter." );
     }
 
     virtual QString name() const override
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A file input parameter." );
+      return QCoreApplication::translate( "Processing", "A file parameter, for use with non-map layer file sources." );
     }
 
     virtual QString name() const override
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
 
     virtual QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Field" );
+      return QCoreApplication::translate( "Processing", "Vector Field" );
     }
 
     virtual QString id() const override
@@ -372,11 +372,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A vector layer destination parameter, "
-                                          "for specifying the destination path for a vector layer "
-                                          "created by the algorithm. "
-                                          "Consider using the more flexible QgsProcessingParameterFeatureSink "
-                                          "wherever possible." );
+      return QCoreApplication::translate( "Processing", "A vector layer destination parameter." );
     }
 
     virtual QString name() const override
@@ -420,9 +416,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A generic file based destination parameter, "
-                                          "for specifying the destination path for a file (non-map layer) "
-                                          "created by the algorithm.." );
+      return QCoreApplication::translate( "Processing", "A generic file based destination parameter." );
     }
 
     virtual QString name() const override
@@ -467,9 +461,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A folder destination parameter, "
-                                          "for specifying the destination path for a folder created "
-                                          "by the algorithm or used for creating new files within the algorithm." );
+      return QCoreApplication::translate( "Processing", "A folder destination parameter." );
     }
 
     virtual QString name() const override
@@ -513,9 +505,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A raster layer destination parameter, "
-                                          "for specifying the destination path for a raster layer "
-                                          "created by the algorithm." );
+      return QCoreApplication::translate( "Processing", "A raster layer destination parameter." );
     }
 
     virtual QString name() const override
@@ -593,7 +583,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
 
     virtual QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Multiple Layers" );
+      return QCoreApplication::translate( "Processing", "Multiple Input" );
     }
 
     virtual QString id() const override
@@ -618,16 +608,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
 
     virtual QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "An input feature source (such as vector layers) "
-                                          "parameter for processing algorithms. "
-                                          "This is the preferred way to pass features into an algorithm. "
-                                          "It can be directly connected to outputs (feature sinks) from "
-                                          "other algorithms and does not necessarily require an intermediate layer." );
+      return QCoreApplication::translate( "Processing", "A vector feature parameter, e.g. for algorithms which operate on the features within a layer." );
     }
 
     virtual QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "Feature Source" );
+      return QCoreApplication::translate( "Processing", "Vector Features" );
     }
 
     virtual QString id() const override

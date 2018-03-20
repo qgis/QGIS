@@ -178,8 +178,19 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
+     * \deprecated since 3.0
      */
-    void attributeChanged( const QString &attribute, const QVariant &value );
+    Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value );
+
+    /**
+     * Notifies about changes of attributes
+     *
+     * \param attribute The name of the attribute that changed.
+     * \param value     The new value of the attribute.
+     * \param attributeChanged If true, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.0.1
+     */
+    void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -367,6 +378,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
     bool mValuesInitialized = false;
     bool mDirty = false;
+    bool mIsSettingFeature = false;
 
     struct ContainerInformation
     {

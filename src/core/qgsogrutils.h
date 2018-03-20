@@ -240,6 +240,13 @@ class CORE_EXPORT QgsOgrUtils
      * \see stringToFeatureList()
      */
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+
+    /**
+     * Converts a c string list to a QStringList. Presumes a null terminated string list.
+     *
+     * \since QGIS 3.2
+     */
+    static QStringList cStringListToQStringList( char **stringList );
 };
 
 #endif // QGSOGRUTILS_H

@@ -383,7 +383,7 @@
             <item>
              <widget class="QToolButton" name="mFilterByMapToolButton">
               <property name="toolTip">
-               <string>Filter Legend By Map Content</string>
+               <string>Filter Legend by Map Content</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">

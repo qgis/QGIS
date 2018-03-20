@@ -226,20 +226,6 @@ QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapab
 //
 /////////////////////////////////////////////////////////
 // convenience function for building metadata() HTML table cells
-// convenience function for creating a string list from a C style string list
-QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
-{
-  QStringList strings;
-
-  // presume null terminated string list
-  for ( qgssize i = 0; stringList[i]; ++i )
-  {
-    strings.append( QString::fromUtf8( stringList[i] ) );
-  }
-
-  return strings;
-
-} // cStringList2Q_
 
 QString QgsRasterDataProvider::htmlMetadata()
 {

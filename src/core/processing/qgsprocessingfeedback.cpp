@@ -36,9 +36,9 @@ void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )
   mFeedback->setProgressText( text );
 }
 
-void QgsProcessingMultiStepFeedback::reportError( const QString &error )
+void QgsProcessingMultiStepFeedback::reportError( const QString &error, bool fatalError )
 {
-  mFeedback->reportError( error );
+  mFeedback->reportError( error, fatalError );
 }
 
 void QgsProcessingMultiStepFeedback::pushInfo( const QString &info )

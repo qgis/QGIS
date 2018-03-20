@@ -4304,7 +4304,8 @@ void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
   }
 
   mAuxiliaryLayer.reset( alayer );
-  mAuxiliaryLayer->setParent( this );
+  if ( mAuxiliaryLayer )
+    mAuxiliaryLayer->setParent( this );
   updateFields();
 }
 

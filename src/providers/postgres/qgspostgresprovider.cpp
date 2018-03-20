@@ -278,6 +278,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   {
     disconnectDb();
   }
+
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setCrs( crs() );
 }
 
 QgsPostgresProvider::~QgsPostgresProvider()
@@ -653,6 +656,11 @@ QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
   return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
 }
 
+QgsLayerMetadata QgsPostgresProvider::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
 QgsField QgsPostgresProvider::field( int index ) const
 {
   if ( index < 0 || index >= mAttributeFields.count() )
@@ -713,7 +721,10 @@ bool QgsPostgresProvider::loadFields()
     sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
     tresult = connectionRO()->PQexec( sql );
     if ( tresult.PQntuples() > 0 )
+    {
       mDataComment = tresult.PQgetvalue( 0, 0 );
+      mLayerMetadata.setAbstract( mDataComment );
+    }
   }
 
   // Populate the field vector for this layer. The field vector contains
@@ -1253,6 +1264,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   // supports circular geometries
   mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+
+  // supports layer metadata
+  mEnabledCapabilities |= QgsVectorDataProvider::ReadLayerMetadata;
 
   if ( ( mEnabledCapabilities & QgsVectorDataProvider::ChangeGeometries ) &&
        ( mEnabledCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) &&

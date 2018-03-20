@@ -37,6 +37,7 @@
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
+#include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmlineintersection.h"
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
@@ -130,6 +131,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );

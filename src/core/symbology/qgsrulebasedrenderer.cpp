@@ -56,8 +56,6 @@ QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scal
 
 QgsRuleBasedRenderer::Rule::~Rule()
 {
-  delete mSymbol;
-  delete mFilter;
   qDeleteAll( mChildren );
   // do NOT delete parent
 }
@@ -67,20 +65,17 @@ void QgsRuleBasedRenderer::Rule::initFilter()
   if ( mFilterExp.trimmed().compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    delete mFilter;
-    mFilter = nullptr;
+    mFilter.reset();
   }
   else if ( mFilterExp.trimmed().isEmpty() )
   {
     mElseRule = false;
-    delete mFilter;
-    mFilter = nullptr;
+    mFilter.reset();
   }
   else
   {
     mElseRule = false;
-    delete mFilter;
-    mFilter = new QgsExpression( mFilterExp );
+    mFilter = qgis::make_unique< QgsExpression >( mFilterExp );
   }
 }
 
@@ -157,8 +152,7 @@ void QgsRuleBasedRenderer::Rule::setIsElse( bool iselse )
 {
   mFilterExp = QStringLiteral( "ELSE" );
   mElseRule = iselse;
-  delete mFilter;
-  mFilter = nullptr;
+  mFilter.reset();
 }
 
 
@@ -215,7 +209,7 @@ QgsSymbolList QgsRuleBasedRenderer::Rule::symbols( const QgsRenderContext &conte
 {
   QgsSymbolList lst;
   if ( mSymbol )
-    lst.append( mSymbol );
+    lst.append( mSymbol.get() );
 
   Q_FOREACH ( Rule *rule, mChildren )
   {
@@ -226,8 +220,7 @@ QgsSymbolList QgsRuleBasedRenderer::Rule::symbols( const QgsRenderContext &conte
 
 void QgsRuleBasedRenderer::Rule::setSymbol( QgsSymbol *sym )
 {
-  delete mSymbol;
-  mSymbol = sym;
+  mSymbol.reset( sym );
 }
 
 void QgsRuleBasedRenderer::Rule::setFilterExpression( const QString &filterExp )
@@ -241,7 +234,7 @@ QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( int currentLe
   QgsLegendSymbolList lst;
   if ( currentLevel != -1 ) // root rule should not be shown
   {
-    lst << QgsLegendSymbolItem( mSymbol, mLabel, mRuleKey, true, mMaximumScale, mMinimumScale, currentLevel, mParent ? mParent->mRuleKey : QString() );
+    lst << QgsLegendSymbolItem( mSymbol.get(), mLabel, mRuleKey, true, mMaximumScale, mMinimumScale, currentLevel, mParent ? mParent->mRuleKey : QString() );
   }
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
@@ -294,7 +287,7 @@ QDomElement QgsRuleBasedRenderer::Rule::save( QDomDocument &doc, QgsSymbolMap &s
   if ( mSymbol )
   {
     int symbolIndex = symbolMap.size();
-    symbolMap[QString::number( symbolIndex )] = mSymbol;
+    symbolMap[QString::number( symbolIndex )] = mSymbol.get();
     ruleElem.setAttribute( QStringLiteral( "symbol" ), symbolIndex );
   }
   if ( !mFilterExp.isEmpty() )
@@ -508,7 +501,7 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     Q_FOREACH ( int normZLevel, mSymbolNormZLevels )
     {
       //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
-      renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
+      renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol.get() ) );
       rendered = true;
     }
   }
@@ -565,7 +558,7 @@ QgsSymbolList QgsRuleBasedRenderer::Rule::symbolsForFeature( QgsFeature &feat, Q
   if ( !isFilterOK( feat, context ) )
     return lst;
   if ( mSymbol )
-    lst.append( mSymbol );
+    lst.append( mSymbol.get() );
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {

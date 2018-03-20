@@ -40,6 +40,7 @@
 #include <netinet/in.h>
 #endif
 
+const int PG_DEFAULT_TIMEOUT = 30;
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -217,6 +218,18 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   QgsDataSourceUri uri( conninfo );
   QString expandedConnectionInfo = uri.connectionInfo( true );
 
+  auto addDefaultTimeout = []( QString & connectString )
+  {
+    if ( !connectString.contains( QStringLiteral( "connect_timeout=" ) ) )
+    {
+      // add default timeout
+      QgsSettings settings;
+      int timeout = settings.value( QStringLiteral( "PostgreSQL/default_timeout" ), PG_DEFAULT_TIMEOUT, QgsSettings::Providers ).toInt();
+      connectString += QStringLiteral( " connect_timeout=%1" ).arg( timeout );
+    }
+  };
+  addDefaultTimeout( expandedConnectionInfo );
+
   mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
   // remove temporary cert/key/CA if they exist
@@ -258,7 +271,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         uri.setPassword( password );
 
       QgsDebugMsg( "Connecting to " + uri.connectionInfo( false ) );
-      mConn = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+      QString connectString = uri.connectionInfo();
+      addDefaultTimeout( connectString );
+      mConn = PQconnectdb( connectString.toLocal8Bit() );
     }
 
     if ( PQstatus() == CONNECTION_OK )

@@ -18,6 +18,32 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 
+QgsProcessingContext::~QgsProcessingContext()
+{
+  for ( auto it = mLayersToLoadOnCompletion.constBegin(); it != mLayersToLoadOnCompletion.constEnd(); ++it )
+  {
+    delete it.value().postProcessor();
+  }
+}
+
+void QgsProcessingContext::setLayersToLoadOnCompletion( const QMap<QString, QgsProcessingContext::LayerDetails> &layers )
+{
+  for ( auto it = mLayersToLoadOnCompletion.constBegin(); it != mLayersToLoadOnCompletion.constEnd(); ++it )
+  {
+    if ( !layers.contains( it.key() ) || layers.value( it.key() ).postProcessor() != it.value().postProcessor() )
+      delete it.value().postProcessor();
+  }
+  mLayersToLoadOnCompletion = layers;
+}
+
+void QgsProcessingContext::addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details )
+{
+  if ( mLayersToLoadOnCompletion.contains( layer ) && mLayersToLoadOnCompletion.value( layer ).postProcessor() != details.postProcessor() )
+    delete mLayersToLoadOnCompletion.value( layer ).postProcessor();
+
+  mLayersToLoadOnCompletion.insert( layer, details );
+}
+
 void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
 {
   mInvalidGeometryCheck = check;
@@ -52,13 +78,8 @@ void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGe
 
 void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )
 {
-  QMap< QString, LayerDetails > loadOnCompletion = context.layersToLoadOnCompletion();
-  QMap< QString, LayerDetails >::const_iterator llIt = loadOnCompletion.constBegin();
-  for ( ; llIt != loadOnCompletion.constEnd(); ++llIt )
-  {
-    mLayersToLoadOnCompletion.insert( llIt.key(), llIt.value() );
-  }
-  context.setLayersToLoadOnCompletion( QMap< QString, LayerDetails >() );
+  setLayersToLoadOnCompletion( context.mLayersToLoadOnCompletion );
+  context.mLayersToLoadOnCompletion.clear();
   tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
 }
 
@@ -70,4 +91,19 @@ QgsMapLayer *QgsProcessingContext::getMapLayer( const QString &identifier )
 QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
 {
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
+}
+
+
+
+QgsProcessingLayerPostProcessorInterface *QgsProcessingContext::LayerDetails::postProcessor() const
+{
+  return mPostProcessor;
+}
+
+void QgsProcessingContext::LayerDetails::setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor )
+{
+  if ( mPostProcessor && mPostProcessor != processor )
+    delete mPostProcessor;
+
+  mPostProcessor = processor;
 }

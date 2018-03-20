@@ -54,7 +54,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
   signals:
 
     void progressTextChanged( const QString &text );
-    void errorReported( const QString &text );
+    void errorReported( const QString &text, bool fatalError );
     void infoPushed( const QString &text );
     void commandInfoPushed( const QString &text );
     void debugInfoPushed( const QString &text );
@@ -63,7 +63,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
   public slots:
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error ) override;
+    void reportError( const QString &error, bool fatalError ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
@@ -150,8 +150,10 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Reports an \a error string to the dialog's log.
+     *
+     * If \a fatalError is true, the error prevented the algorithm from executing.
      */
-    void reportError( const QString &error );
+    void reportError( const QString &error, bool fatalError );
 
     /**
      * Pushes an information string to the dialog's log.
@@ -257,6 +259,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * by the dialog. Ownership of \a task is transferred to the dialog.
      */
     void setCurrentTask( QgsProcessingAlgRunnerTask *task SIP_TRANSFER );
+
+    /**
+     * Formats an input \a string for display in the log tab.
+     *
+     * \since QGIS 3.0.1
+     */
+    static QString formatStringForLog( const QString &string );
 
   protected slots:
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select By Expression</string>
+   <string>Select by Expression</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">

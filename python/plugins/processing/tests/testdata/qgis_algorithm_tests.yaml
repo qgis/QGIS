@@ -4892,3 +4892,55 @@ tests:
       OUTPUT:
         name: expected/rotate_around_point.gml
         type: vector
+
+  - algorithm: native:importphotos
+    name: Import photos
+    params:
+      FOLDER:
+        name: custom/photos
+        type: file
+      RECURSIVE: false
+    results:
+      INVALID:
+        name: expected/import_photos_invalid.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+      OUTPUT:
+        name: expected/import_photos.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.3)
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_03.gml
+        type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.7)
+    params:
+      ALPHA: 0.7
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_07.gml
+        type: vector

@@ -151,11 +151,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mListWidget )
   {
-    QStringList checkList;
-    if ( value.type() == QVariant::StringList )
-      checkList = value.toStringList();
-    else if ( value.type() == QVariant::String )
-      checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
+    QStringList checkList( QgsValueRelationFieldFormatter::valueToStringList( value ) );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {

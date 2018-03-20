@@ -180,6 +180,8 @@ void QgsPgNewConnection::cb_geometryColumnsOnly_clicked()
 
 void QgsPgNewConnection::testConnection()
 {
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+
   QgsDataSourceUri uri;
   if ( !txtService->text().isEmpty() )
   {

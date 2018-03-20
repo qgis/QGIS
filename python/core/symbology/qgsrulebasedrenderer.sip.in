@@ -39,7 +39,12 @@ the rules and draws features with symbols from rules that match.
     struct RenderJob
     {
       RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
+
       QgsRuleBasedRenderer::FeatureToRender &ftr;
+%Docstring
+Feature to render
+%End
+
       QgsSymbol *symbol;
     };
 
@@ -48,6 +53,7 @@ the rules and draws features with symbols from rules that match.
       explicit RenderLevel( int z );
       ~RenderLevel();
       int zIndex;
+
       QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
 
@@ -414,9 +420,6 @@ Check if this rule is an ELSE rule
 
       protected:
         void initFilter();
-
-
-
 
       private:
         Rule( const QgsRuleBasedRenderer::Rule &rh );

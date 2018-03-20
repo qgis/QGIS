@@ -23,6 +23,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
+#include "qgsalgorithmimportphotos.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -36,6 +37,7 @@ class TestQgsProcessingAlgs: public QObject
     void packageAlg();
     void renameLayerAlg();
     void loadLayerAlg();
+    void parseGeoTags();
 
   private:
 
@@ -215,6 +217,140 @@ void TestQgsProcessingAlgs::loadLayerAlg()
   QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).name, QStringLiteral( "my layer" ) );
   QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).project, &p );
   QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).outputName, QStringLiteral( "my layer" ) );
+}
+
+void TestQgsProcessingAlgs::parseGeoTags()
+{
+  // parseCoord
+  QVERIFY( !QgsImportPhotosAlgorithm::parseCoord( "" ).isValid() );
+  QVERIFY( !QgsImportPhotosAlgorithm::parseCoord( "x" ).isValid() );
+  QVERIFY( !QgsImportPhotosAlgorithm::parseCoord( "1 2 3" ).isValid() );
+  QGSCOMPARENEAR( QgsImportPhotosAlgorithm::parseCoord( "(36) (13) (15.21)" ).toDouble(), 36.220892, 0.000001 );
+  QGSCOMPARENEAR( QgsImportPhotosAlgorithm::parseCoord( "(3) (1) (5.21)" ).toDouble(), 3.018114, 0.000001 );
+  QGSCOMPARENEAR( QgsImportPhotosAlgorithm::parseCoord( "(149) (7) (54.76)" ).toDouble(), 149.131878, 0.000001 );
+  QVERIFY( !QgsImportPhotosAlgorithm::parseCoord( "(149) (7) (c)" ).isValid() );
+  QVERIFY( !QgsImportPhotosAlgorithm::parseCoord( "(149) (7) ()" ).isValid() );
+
+  // parseMetadataValue
+  QCOMPARE( QgsImportPhotosAlgorithm::parseMetadataValue( "abc" ).toString(), QStringLiteral( "abc" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::parseMetadataValue( "(abc)" ).toString(), QStringLiteral( "(abc)" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::parseMetadataValue( "abc (123)" ).toString(), QStringLiteral( "abc (123)" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::parseMetadataValue( "(123)" ).toDouble(), 123.0 );
+
+  // parseMetadataList
+  QVariantMap md = QgsImportPhotosAlgorithm::parseMetadataList( QStringList() << "EXIF_Contrast=(1)"
+                   << "EXIF_ExposureTime=(0.008339)"
+                   << "EXIF_Model=Pixel"
+                   << "EXIF_GPSLatitude=(36) (13) (15.21)"
+                   << "EXIF_GPSLongitude=(149) (7) (54.76)" );
+  QCOMPARE( md.count(), 5 );
+  QCOMPARE( md.value( "EXIF_Contrast" ).toInt(), 1 );
+  QCOMPARE( md.value( "EXIF_ExposureTime" ).toDouble(), 0.008339 );
+  QCOMPARE( md.value( "EXIF_Model" ).toString(), QStringLiteral( "Pixel" ) );
+  QGSCOMPARENEAR( md.value( "EXIF_GPSLatitude" ).toDouble(), 36.220892, 0.000001 );
+  QGSCOMPARENEAR( md.value( "EXIF_GPSLongitude" ).toDouble(), 149.131878, 0.000001 );
+
+  // test extractGeoTagFromMetadata
+  md = QVariantMap();
+  QgsPointXY point;
+  QVERIFY( !QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  md.insert( QStringLiteral( "EXIF_GPSLongitude" ), 142.0 );
+  QVERIFY( !QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  md.insert( QStringLiteral( "EXIF_GPSLatitude" ), 37.0 );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitude" ), QStringLiteral( "x" ) );
+  QVERIFY( !QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  md.insert( QStringLiteral( "EXIF_GPSLongitude" ), 142.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitude" ), QStringLiteral( "x" ) );
+  QVERIFY( !QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  md.insert( QStringLiteral( "EXIF_GPSLatitude" ), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QStringLiteral( "E" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QStringLiteral( "W" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), -142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QStringLiteral( "w" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), -142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QStringLiteral( "...W" ) ); // apparently any string ENDING in W is acceptable
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), -142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QString() );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), -1 );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), -142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLongitudeRef" ), QString() );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), QStringLiteral( "N" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), QStringLiteral( "S" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), -37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), QStringLiteral( "s" ) );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), -37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), QStringLiteral( "...S" ) ); // any string ending in s is acceptable
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), -37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), QString() );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), 37.0 );
+  md.insert( QStringLiteral( "EXIF_GPSLatitudeRef" ), -1 );
+  QVERIFY( QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( md, point ) );
+  QCOMPARE( point.x(), 142.0 );
+  QCOMPARE( point.y(), -37.0 );
+
+  // extractAltitudeFromMetadata
+  QVERIFY( !QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_GPSAltitude" ), 10.5 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), 10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), QStringLiteral( "0" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), 10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), QStringLiteral( "00" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), 10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), QStringLiteral( "1" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), -10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), QStringLiteral( "01" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), -10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), 1 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), 10.5 );
+  md.insert( QStringLiteral( "EXIF_GPSAltitudeRef" ), -1 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractAltitudeFromMetadata( md ).toDouble(), -10.5 );
+
+  // extractDirectionFromMetadata
+  QVERIFY( !QgsImportPhotosAlgorithm::extractDirectionFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_GPSImgDirection" ), 15 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractDirectionFromMetadata( md ).toDouble(), 15.0 );
+
+  // extractTimestampFromMetadata
+  QVERIFY( !QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_DateTimeOriginal" ), QStringLiteral( "xx" ) );
+  QVERIFY( !QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_DateTimeOriginal" ), QStringLiteral( "2017:12:27 19:20:52" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).toDateTime(), QDateTime( QDate( 2017, 12, 27 ), QTime( 19, 20, 52 ) ) );
+  md.remove( QStringLiteral( "EXIF_DateTimeOriginal" ) );
+  md.insert( QStringLiteral( "EXIF_DateTimeDigitized" ), QStringLiteral( "2017:12:27 19:20:52" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).toDateTime(), QDateTime( QDate( 2017, 12, 27 ), QTime( 19, 20, 52 ) ) );
+  md.remove( QStringLiteral( "EXIF_DateTimeDigitized" ) );
+  md.insert( QStringLiteral( "EXIF_DateTime" ), QStringLiteral( "2017:12:27 19:20:52" ) );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).toDateTime(), QDateTime( QDate( 2017, 12, 27 ), QTime( 19, 20, 52 ) ) );
+
 }
 
 

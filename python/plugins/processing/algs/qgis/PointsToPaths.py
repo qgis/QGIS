@@ -162,7 +162,7 @@ class PointsToPaths(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            vertices.sort()
+            vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
             attributes = []
             if group_field_index >= 0:

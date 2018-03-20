@@ -39,6 +39,7 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   mClearAction->setCheckable( false );
   addAction( mClearAction, QLineEdit::TrailingPosition );
   connect( mClearAction, &QAction::triggered, this, &QgsFilterLineEdit::clearValue );
+  mClearAction->setVisible( false );
 
   QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
   mSearchAction = new QAction( searchIcon, QString(), this );

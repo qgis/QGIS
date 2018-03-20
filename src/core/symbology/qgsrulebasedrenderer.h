@@ -45,7 +45,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       FeatDrawMarkers = 2
     };
 
-    // feature for rendering: QgsFeature and some flags
+    /**
+     * Feature for rendering by a QgsRuleBasedRenderer. Contains a QgsFeature and some flags.
+     * \ingroup core
+     */
     struct FeatureToRender
     {
       FeatureToRender( QgsFeature &_f, int _flags )
@@ -56,25 +59,35 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       int flags; // selected and/or draw markers
     };
 
-    // rendering job: a feature to be rendered with a particular symbol
-    // (both f, symbol are _not_ owned by this class)
+    /**
+     * A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol.
+     * \ingroup core
+     */
     struct RenderJob
     {
       RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
         : ftr( _ftr )
         , symbol( _s )
       {}
+
+      //! Feature to render
       QgsRuleBasedRenderer::FeatureToRender &ftr;
+
+      //! Symbol to render feature with (not owned by this object).
       QgsSymbol *symbol = nullptr;
     };
 
-    // render level: a list of jobs to be drawn at particular level
-    // (jobs are owned by this class)
+    /**
+     * Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer.
+     * \ingroup core
+     */
     struct RenderLevel
     {
       explicit RenderLevel( int z ): zIndex( z ) {}
       ~RenderLevel() { Q_FOREACH ( RenderJob *j, jobs ) delete j; }
       int zIndex;
+
+      //! List of jobs to render, owned by this object.
       QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
       QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
@@ -100,7 +113,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     };
 
-    // rendering queue: a list of rendering levels
+    //! Rendering queue: a list of rendering levels
     typedef QList<QgsRuleBasedRenderer::RenderLevel> RenderQueue;
 
     class Rule;
@@ -178,7 +191,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool isScaleOK( double scale ) const;
 
-        QgsSymbol *symbol() { return mSymbol; }
+        QgsSymbol *symbol() { return mSymbol.get(); }
         QString label() const { return mLabel; }
         bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
 
@@ -206,7 +219,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QgsExpression *filter() const { return mFilter; }
+        QgsExpression *filter() const { return mFilter.get(); }
 
         /**
          * A filter that will check if this rule applies
@@ -411,28 +424,28 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       protected:
         void initFilter();
 
-        Rule *mParent; // parent rule (NULL only for root rule)
-        QgsSymbol *mSymbol = nullptr;
-        double mMaximumScale = 0;
-        double mMinimumScale = 0;
-        QString mFilterExp, mLabel, mDescription;
-        bool mElseRule;
-        RuleList mChildren;
-        RuleList mElseRules;
-        bool mIsActive; // whether it is enabled or not
-
-        QString mRuleKey; // string used for unique identification of rule within renderer
-
-        // temporary
-        QgsExpression *mFilter = nullptr;
-        // temporary while rendering
-        QSet<int> mSymbolNormZLevels;
-        RuleList mActiveChildren;
-
       private:
 #ifdef SIP_RUN
         Rule( const QgsRuleBasedRenderer::Rule &rh );
 #endif
+
+        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        std::unique_ptr< QgsSymbol > mSymbol;
+        double mMaximumScale = 0;
+        double mMinimumScale = 0;
+        QString mFilterExp, mLabel, mDescription;
+        bool mElseRule = false;
+        RuleList mChildren;
+        RuleList mElseRules;
+        bool mIsActive = true; // whether it is enabled or not
+
+        QString mRuleKey; // string used for unique identification of rule within renderer
+
+        // temporary
+        std::unique_ptr< QgsExpression > mFilter;
+        // temporary while rendering
+        QSet<int> mSymbolNormZLevels;
+        RuleList mActiveChildren;
 
         /**
          * Check which child rules are else rules and update the internal list of else rules

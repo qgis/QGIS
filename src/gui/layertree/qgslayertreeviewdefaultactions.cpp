@@ -366,6 +366,7 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   }
 
   mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
+  mView->edit( mView->layerTreeModel()->node2index( newGroup ) );
 }
 
 void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()

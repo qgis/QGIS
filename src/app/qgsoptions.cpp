@@ -2241,11 +2241,11 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, 
   //add items to the color enhanceContrast combo boxes
   cbox->addItem( tr( "No Stretch" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
-  cbox->addItem( tr( "Stretch To MinMax" ),
+  cbox->addItem( tr( "Stretch to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
-  cbox->addItem( tr( "Stretch And Clip To MinMax" ),
+  cbox->addItem( tr( "Stretch and Clip to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
-  cbox->addItem( tr( "Clip To MinMax" ),
+  cbox->addItem( tr( "Clip to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
 
   QString contrastEnhancement = mSettings->value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();

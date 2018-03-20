@@ -17,6 +17,7 @@
 
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsdockwidget.h"
 
@@ -74,30 +75,37 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   }
 
   QString levelString;
+  QgsSettings settings;
+  QColor color;
   switch ( level )
   {
     case Qgis::Info:
       levelString = QStringLiteral( "INFO" );
+      color = QColor( settings.value( QStringLiteral( "colors/info" ), QStringLiteral( "#000000" ) ).toString() );
       break;
     case Qgis::Warning:
       levelString = QStringLiteral( "WARNING" );
+      color = QColor( settings.value( QStringLiteral( "colors/warning" ), QStringLiteral( "#000000" ) ).toString() );
       break;
     case Qgis::Critical:
       levelString = QStringLiteral( "CRITICAL" );
+      color = QColor( settings.value( QStringLiteral( "colors/critical" ), QStringLiteral( "#000000" ) ).toString() );
       break;
     case Qgis::Success:
       levelString = QStringLiteral( "SUCCESS" );
+      color = QColor( settings.value( QStringLiteral( "colors/success" ), QStringLiteral( "#000000" ) ).toString() );
       break;
     case Qgis::None:
       levelString = QStringLiteral( "NONE" );
+      color = QColor( settings.value( QStringLiteral( "colors/default" ), QStringLiteral( "#000000" ) ).toString() );
       break;
   }
 
-  QString prefix = QStringLiteral( "%1\t%2\t" )
-                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
+  QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
+                   .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message;
-  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) );
-  w->appendPlainText( cleanedMessage );
+  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" ) );
+  w->appendHtml( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 

@@ -103,6 +103,8 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     void deleteRotationWidget();
     void createRotationWidget();
 
+    void createRubberBand();
+
     //! used for storing all of the maps point for the polygon
     std::unique_ptr< QgsRubberBand > mRubberBand;
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

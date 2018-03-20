@@ -939,8 +939,8 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
   double sqrDist = std::numeric_limits<double>::max();
   double leftOfDist = std::numeric_limits<double>::max();
   int prevLeftOf = 0;
-  double prevLeftOfX;
-  double prevLeftOfY;
+  double prevLeftOfX = 0.0;
+  double prevLeftOfY = 0.0;
   double testDist = 0;
   double segmentPtX, segmentPtY;
 

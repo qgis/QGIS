@@ -268,6 +268,10 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_3_feature_3857')
         self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_1_feature_3857')
 
+    def test_getFeatureFeatureId(self):
+        """Test GetFeature with featureid"""
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
+
 
 if __name__ == '__main__':
     unittest.main()

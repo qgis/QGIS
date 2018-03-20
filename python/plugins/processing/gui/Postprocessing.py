@@ -77,7 +77,12 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
                 if style:
                     layer.loadNamedStyle(style)
+
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+
+                if details.postProcessor():
+                    details.postProcessor().postProcessLayer(layer, context, feedback)
+
             else:
                 wrongLayers.append(str(l))
         except Exception:
