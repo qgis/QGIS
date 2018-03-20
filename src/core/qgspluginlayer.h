@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
-
+#include "qgsdataprovider.h"
 
 /**
  * \ingroup core
@@ -55,8 +55,12 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      */
     void setSource( const QString &source );
 
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
+
   protected:
     QString mPluginLayerType;
+    QgsDataProvider *mDataProvider;
 };
 
 #endif // QGSPLUGINLAYER_H
