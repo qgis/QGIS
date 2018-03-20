@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QString>
 #include <QUrl>
+#include <QtPositioning/QGeoCoordinate>
 
 #include "qgis.h"
 #include "qgsfeature.h"
@@ -79,6 +80,11 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Create QgsPoint in QML
       */
     Q_INVOKABLE QgsPoint pointFactory( double x, double y ) const;
+
+    /**
+      * Convert QGeoCoordinate to QgsPoint
+      */
+    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate& coor ) const;
 
     /**
       * Transform point between different crs from QML

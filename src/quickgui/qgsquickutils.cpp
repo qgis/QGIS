@@ -73,6 +73,10 @@ QgsPoint QgsQuickUtils::pointFactory( double x, double y ) const
   return QgsPoint( x, y );
 }
 
+QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate& coor ) const
+{
+  return QgsPoint( coor.longitude(), coor.latitude(), coor.altitude() );
+}
 
 QgsPointXY QgsQuickUtils::transformPoint( const QgsCoordinateReferenceSystem &srcCrs,
     const QgsCoordinateReferenceSystem &destCrs,
