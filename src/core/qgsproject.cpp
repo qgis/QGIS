@@ -501,6 +501,8 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
+  QgsSettings s;
+
   mFile.setFileName( QString() );
   mProperties.clearKeys();
   mHomePath.clear();
@@ -510,8 +512,11 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
-  mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
-  mMetadata.setAuthor( QgsApplication::userFullName() );
+  if ( !s.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  {
+    mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
+    mMetadata.setAuthor( QgsApplication::userFullName() );
+  }
   emit metadataChanged();
 
   QgsCoordinateTransformContext context;
@@ -542,7 +547,6 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  QgsSettings s;
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
