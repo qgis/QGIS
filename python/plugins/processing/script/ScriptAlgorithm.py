@@ -233,9 +233,12 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterExtent(name, descName)
         elif token.lower().strip() == 'point':
             param = ParameterPoint(name, descName)
-        elif token.lower().strip() == 'file':
+        elif token.lower().strip().startswith('file'):
             param = ParameterFile(name, descName, False)
-        elif token.lower().strip() == 'folder':
+            ext = token.strip()[len('file') + 1:]
+            if ext:
+                param.ext = ext
+        elif token.lower().strip().startswith('folder'):
             param = ParameterFile(name, descName, True)
         elif token.lower().strip().startswith('number'):
             default = token.strip()[len('number') + 1:]

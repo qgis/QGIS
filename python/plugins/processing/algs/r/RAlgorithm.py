@@ -254,9 +254,12 @@ class RAlgorithm(GeoAlgorithm):
             param = ParameterExtent(name, desc)
         elif token.lower().strip() == 'point':
             param = ParameterPoint(name, desc)
-        elif token.lower().strip() == 'file':
+        elif token.lower().strip().startswith('file'):
             param = ParameterFile(name, desc, False)
-        elif token.lower().strip() == 'folder':
+            ext = token.strip()[len('file') + 1:]
+            if ext:
+                param.ext = ext
+        elif token.lower().strip().startswith('folder'):
             param = ParameterFile(name, desc, True)
         elif token.lower().strip().startswith('string'):
             default = token.strip()[len('string') + 1:]
@@ -270,7 +273,7 @@ class RAlgorithm(GeoAlgorithm):
                 param = ParameterString(name, desc, default, multiline=True)
             else:
                 param = ParameterString(name, desc, multiline=True)
-        elif token.lower().strip() == 'crs':
+        elif token.lower().strip().startswith('crs'):
             default = token.strip()[len('crs') + 1:]
             if default:
                 param = ParameterCrs(name, desc, default)
