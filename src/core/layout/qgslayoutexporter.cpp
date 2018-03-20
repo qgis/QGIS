@@ -849,7 +849,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
           }
         }
 
-        ExportResult result = renderToLayeredSvg( settings, width, height, i, bounds, fileName, svgLayerId, layerName, svg, svgDocRoot );
+        ExportResult result = renderToLayeredSvg( settings, width, height, i, bounds, fileName, svgLayerId, layerName, svg, svgDocRoot, settings.exportMetadata );
         if ( result != Success )
           return result;
 
@@ -860,6 +860,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
           ++it;
         }
       }
+
+      if ( settings.exportMetadata )
+        appendMetadataToSvg( svg );
 
       QFile out( fileName );
       bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate );
@@ -873,27 +876,59 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
     }
     else
     {
-      QSvgGenerator generator;
-      generator.setTitle( mLayout->project()->title() );
-      generator.setFileName( fileName );
-      generator.setSize( QSize( width, height ) );
-      generator.setViewBox( QRect( 0, 0, width, height ) );
-      generator.setResolution( settings.dpi );
-
-      QPainter p;
-      bool createOk = p.begin( &generator );
-      if ( !createOk )
+      QBuffer svgBuffer;
       {
-        mErrorFileName = fileName;
-        return FileError;
+        QSvgGenerator generator;
+        if ( settings.exportMetadata )
+        {
+          generator.setTitle( mLayout->project()->metadata().title() );
+          generator.setDescription( mLayout->project()->metadata().abstract() );
+        }
+        generator.setOutputDevice( &svgBuffer );
+        generator.setSize( QSize( width, height ) );
+        generator.setViewBox( QRect( 0, 0, width, height ) );
+        generator.setResolution( settings.dpi );
+
+        QPainter p;
+        bool createOk = p.begin( &generator );
+        if ( !createOk )
+        {
+          mErrorFileName = fileName;
+          return FileError;
+        }
+
+        if ( settings.cropToContents )
+          renderRegion( &p, bounds );
+        else
+          renderPage( &p, i );
+
+        p.end();
       }
+      {
+        svgBuffer.close();
+        svgBuffer.open( QIODevice::ReadOnly );
+        QDomDocument svg;
+        QString errorMsg;
+        int errorLine;
+        if ( ! svg.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
+        {
+          mErrorFileName = fileName;
+          return SvgLayerError;
+        }
 
-      if ( settings.cropToContents )
-        renderRegion( &p, bounds );
-      else
-        renderPage( &p, i );
+        if ( settings.exportMetadata )
+          appendMetadataToSvg( svg );
 
-      p.end();
+        QFile out( fileName );
+        bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate );
+        if ( !openOk )
+        {
+          mErrorFileName = fileName;
+          return FileError;
+        }
+
+        out.write( svg.toByteArray() );
+      }
     }
   }
 
@@ -1067,15 +1102,18 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot ) const
+QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
 {
   QBuffer svgBuffer;
   {
     QSvgGenerator generator;
-    if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( mLayout.data() ) )
-      generator.setTitle( l->name() );
-    else if ( mLayout->project() )
-      generator.setTitle( mLayout->project()->title() );
+    if ( includeMetadata )
+    {
+      if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( mLayout.data() ) )
+        generator.setTitle( l->name() );
+      else if ( mLayout->project() )
+        generator.setTitle( mLayout->project()->title() );
+    }
 
     generator.setOutputDevice( &svgBuffer );
     generator.setSize( QSize( width, height ) );
@@ -1120,6 +1158,68 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
     svgDocRoot.appendChild( mainGroup );
   }
   return Success;
+}
+
+void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
+{
+  const QgsProjectMetadata &metadata = mLayout->project()->metadata();
+  QDomElement metadataElement = svg.createElement( QStringLiteral( "metadata" ) );
+  metadataElement.setAttribute( QStringLiteral( "id" ), QStringLiteral( "qgismetadata" ) );
+  QDomElement rdfElement = svg.createElement( QStringLiteral( "rdf:RDF" ) );
+  QDomElement workElement = svg.createElement( QStringLiteral( "cc:Work" ) );
+
+  auto addTextNode = [&workElement, &svg]( const QString & tag, const QString & value )
+  {
+    QDomElement element = svg.createElement( tag );
+    QDomText t = svg.createTextNode( value );
+    element.appendChild( t );
+    workElement.appendChild( element );
+  };
+
+  addTextNode( QStringLiteral( "dc:format" ), QStringLiteral( "image/svg+xml" ) );
+  addTextNode( QStringLiteral( "dc:title" ), metadata.title() );
+  addTextNode( QStringLiteral( "dc:date" ), metadata.creationDateTime().toString( Qt::ISODate ) );
+  addTextNode( QStringLiteral( "dc:identifier" ), metadata.identifier() );
+  addTextNode( QStringLiteral( "dc:description" ), metadata.abstract() );
+
+  auto addAgentNode = [&workElement, &svg]( const QString & tag, const QString & value )
+  {
+    QDomElement element = svg.createElement( tag );
+    QDomElement agentElement = svg.createElement( QStringLiteral( "cc:Agent" ) );
+    QDomElement titleElement = svg.createElement( QStringLiteral( "dc:title" ) );
+    QDomText t = svg.createTextNode( value );
+    titleElement.appendChild( t );
+    agentElement.appendChild( titleElement );
+    element.appendChild( agentElement );
+    workElement.appendChild( element );
+  };
+
+  addAgentNode( QStringLiteral( "dc:creator" ), metadata.author() );
+  addAgentNode( QStringLiteral( "dc:publisher" ), QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION ) );
+
+  // keywords
+  {
+    QDomElement element = svg.createElement( QStringLiteral( "dc:subject" ) );
+    QDomElement bagElement = svg.createElement( QStringLiteral( "rdf:Bag" ) );
+    QgsAbstractMetadataBase::KeywordMap keywords = metadata.keywords();
+    for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
+    {
+      const QStringList words = it.value();
+      for ( const QString &keyword : words )
+      {
+        QDomElement liElement = svg.createElement( QStringLiteral( "rdf:li" ) );
+        QDomText t = svg.createTextNode( keyword );
+        liElement.appendChild( t );
+        bagElement.appendChild( liElement );
+      }
+    }
+    element.appendChild( bagElement );
+    workElement.appendChild( element );
+  }
+
+  rdfElement.appendChild( workElement );
+  metadataElement.appendChild( rdfElement );
+  svg.documentElement().appendChild( metadataElement );
 }
 
 std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const

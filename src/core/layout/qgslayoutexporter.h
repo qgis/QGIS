@@ -385,6 +385,14 @@ class CORE_EXPORT QgsLayoutExporter
       bool exportAsLayers = false;
 
       /**
+       * Indicates whether SVG export should include RDF metadata generated
+       * from the layout's project's metadata.
+       *
+       * \since QGIS 3.2
+       */
+      bool exportMetadata = true;
+
+      /**
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = 0;
@@ -519,7 +527,9 @@ class CORE_EXPORT QgsLayoutExporter
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
                                      const QString &filename, int svgLayerId, const QString &layerName,
-                                     QDomDocument &svg, QDomNode &svgDocRoot ) const;
+                                     QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
+
+    void appendMetadataToSvg( QDomDocument &svg ) const;
 
     friend class TestQgsLayout;
 
