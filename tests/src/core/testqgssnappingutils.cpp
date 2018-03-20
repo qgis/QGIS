@@ -24,7 +24,8 @@
 #include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgssnappingconfig.h"
-
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgssettings.h"
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
@@ -44,6 +45,7 @@ class TestQgsSnappingUtils : public QObject
 
   private:
     QgsVectorLayer *mVL = nullptr;
+    QgsFeature f1, f2;
   private slots:
 
     void initTestCase()
@@ -60,16 +62,29 @@ class TestQgsSnappingUtils : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      QgsFeature ff( 0 );
+      mVL = new QgsVectorLayer( QStringLiteral( "Polygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+      QVERIFY( idx != -1 );
+      f1.initAttributes( 1 );
+      f2.initAttributes( 1 );
+
       QgsPolygonXY polygon;
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
       QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
-      ff.setGeometry( polygonGeom );
+      f1.setGeometry( polygonGeom );
+      f1.setAttribute( idx, QVariant( 2 ) );
+
+      polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
+      polygon << polyline;
+      polygonGeom = QgsGeometry::fromPolygonXY( polygon );
+      f2.setGeometry( polygonGeom );
+      f2.setAttribute( idx, QVariant( 20 ) );
       QgsFeatureList flist;
-      flist << ff;
+      flist << f1 << f2;
+
+
       mVL->dataProvider()->addFeatures( flist );
 
       QgsProject::instance()->addMapLayer( mVL );
@@ -82,6 +97,13 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapModeCurrent()
     {
+      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+      QgsRendererCategory c1( 2, s1, "f1", true );
+      QgsRendererCategory c2( 20, s2, "f2", false );
+      QgsCategoryList cl;
+      cl << c1 << c2;
+
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 100, 100 ) );
       mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
@@ -89,6 +111,7 @@ class TestQgsSnappingUtils : public QObject
 
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
+      u.setEnableSnappingForInvisibleFeature( false );
       u.setCurrentLayer( mVL );
 
       // first try with no snapping enabled
@@ -99,7 +122,7 @@ class TestQgsSnappingUtils : public QObject
       snappingConfig.setMode( QgsSnappingConfig::ActiveLayer );
       u.setConfig( snappingConfig );
 
-      QgsPointLocator::Match m0 = u.snapToMap( QPoint( 100, 100 ) );
+      QgsPointLocator::Match m0 = u.snapToMap( QPoint( 2, 2 ) );
       QVERIFY( !m0.isValid() );
       QVERIFY( !m0.hasVertex() );
 
@@ -108,10 +131,16 @@ class TestQgsSnappingUtils : public QObject
       snappingConfig.setType( QgsSnappingConfig::Vertex );
       u.setConfig( snappingConfig );
 
-      QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QgsPointLocator::Match m = u.snapToMap( QPoint( 11, 11 ) );
+      QVERIFY( !m.isValid() );
+      QVERIFY( !m.hasVertex() );
+
+      u.setEnableSnappingForInvisibleFeature( true );
+      mVL->styleChanged();
+      m = u.snapToMap( QPoint( 2, 2 ) );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
-      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+      QCOMPARE( m.point(), QgsPointXY( 0, 1 ) );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 0, 100 ) );
       QVERIFY( !m2.isValid() );
@@ -127,6 +156,8 @@ class TestQgsSnappingUtils : public QObject
       FilterExcludePoint myFilter( QgsPointXY( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m3.isValid() );
+
+
     }
 
     void testSnapModeAll()
