@@ -3816,6 +3816,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   double rightMargin = 0.0;
   double bottomMargin = 0.0;
   double leftMargin = 0.0;
+  bool includeMetadata = true;
   if ( mLayout )
   {
     mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
@@ -3825,6 +3826,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     rightMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt();
     bottomMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt();
     leftMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt();
+    includeMetadata = mLayout->customProperty( QStringLiteral( "svgIncludeMetadata" ), 1 ).toBool();
   }
 
   // open options dialog
@@ -3839,6 +3841,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mRightMarginSpinBox->setValue( rightMargin );
   options.mBottomMarginSpinBox->setValue( bottomMargin );
   options.mLeftMarginSpinBox->setValue( leftMargin );
+  options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -3849,6 +3852,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   marginRight = options.mRightMarginSpinBox->value();
   marginBottom = options.mBottomMarginSpinBox->value();
   marginLeft = options.mLeftMarginSpinBox->value();
+  includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
 
   if ( mLayout )
   {
@@ -3859,12 +3863,14 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
+    mLayout->setCustomProperty( QStringLiteral( "svgIncludeMetadata" ), includeMetadata ? 1 : 0 );
   }
 
   settings.cropToContents = clipToContent;
   settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
   settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
   settings.exportAsLayers = groupLayers;
+  settings.exportMetadata = includeMetadata;
 
   exportAsText = options.chkTextAsOutline->isChecked();
   return true;
