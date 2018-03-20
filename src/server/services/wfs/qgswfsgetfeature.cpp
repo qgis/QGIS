@@ -51,8 +51,6 @@ namespace QgsWfs
 
       const QgsAttributeList &attributeIndexes;
 
-      const QSet<QString> &excludedAttributes;
-
       const QString &typeName;
 
       bool withGeom;
@@ -82,6 +80,8 @@ namespace QgsWfs
 
     QgsServerRequest::Parameters mRequestParameters;
     QgsWfsParameters mWfsParameters;
+    /* GeoJSON Exporter */
+    QgsJsonExporter mJsonExporter;
   }
 
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
@@ -241,13 +241,13 @@ namespace QgsWfs
 
       //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = vlayer->attributeList();
+      QgsFields fields = vlayer->fields();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
         withGeom = false;
         QStringList::const_iterator plstIt;
         QList<int> idxList;
-        QgsFields fields = vlayer->fields();
         // build corresponding propertyname
         QList<QString> propertynames;
         for ( int idx = 0; idx < fields.count(); ++idx )
@@ -271,6 +271,20 @@ namespace QgsWfs
         if ( !idxList.isEmpty() )
         {
           attrIndexes = idxList;
+        }
+      }
+
+      //excluded attributes for this layer
+      const QSet<QString> &layerExcludedAttributes = vlayer->excludeAttributesWfs();
+      if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
+      {
+        foreach ( const QString &excludedAttribute, layerExcludedAttributes )
+        {
+          int fieldNameIdx = fields.indexOf( excludedAttribute );
+          if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+          {
+            attrIndexes.removeOne( fieldNameIdx );
+          }
         }
       }
 
@@ -325,8 +339,7 @@ namespace QgsWfs
       int layerPrecision = QgsServerProjectUtils::wfsLayerPrecision( *project, vlayer->id() );
       // specific layer crs
       QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
-      //excluded attributes for this layer
-      const QSet<QString> &layerExcludedAttributes = vlayer->excludeAttributesWfs();
+
       // Geometry name
       QString geometryName = aRequest.geometryName;
       if ( !withGeom )
@@ -359,7 +372,6 @@ namespace QgsWfs
         const createFeatureParams cfp = { layerPrecision,
                                           layerCrs,
                                           attrIndexes,
-                                          layerExcludedAttributes,
                                           typeName,
                                           withGeom,
                                           geometryName,
@@ -1145,6 +1157,10 @@ namespace QgsWfs
           fcString += QLatin1String( "  " );
         else
           fcString += QLatin1String( " ," );
+        mJsonExporter.setSourceCrs( params.crs );
+        mJsonExporter.setIncludeGeometry( false );
+        mJsonExporter.setIncludeAttributes( !params.attributeIndexes.isEmpty() );
+        mJsonExporter.setAttributes( params.attributeIndexes );
         fcString += createFeatureGeoJSON( feat, params );
         fcString += QLatin1String( "\n" );
 
@@ -1190,21 +1206,16 @@ namespace QgsWfs
     QString createFeatureGeoJSON( QgsFeature *feat, const createFeatureParams &params )
     {
       QString id = QStringLiteral( "%1.%2" ).arg( params.typeName, FID_TO_STRING( feat->id() ) );
-
-      QgsJsonExporter exporter;
-      exporter.setSourceCrs( params.crs );
       //QgsJsonExporter force transform geometry to ESPG:4326
       //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
       //Q_UNUSED( prec );
-      //exporter.setPrecision( prec );
 
       //copy feature so we can modify its geometry as required
       QgsFeature f( *feat );
       QgsGeometry geom = feat->geometry();
-      exporter.setIncludeGeometry( false );
       if ( !geom.isNull() && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
-        exporter.setIncludeGeometry( true );
+        mJsonExporter.setIncludeGeometry( true );
         if ( params.geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsRectangle box = geom.boundingBox();
@@ -1216,29 +1227,7 @@ namespace QgsWfs
         }
       }
 
-      QgsFields fields = feat->fields();
-      QgsAttributeList attrsToExport;
-      for ( int i = 0; i < params.attributeIndexes.count(); ++i )
-      {
-        int idx = params.attributeIndexes[i];
-        if ( idx >= fields.count() )
-        {
-          continue;
-        }
-        QString attributeName = fields.at( idx ).name();
-        //skip attribute if it is excluded from WFS publication
-        if ( params.excludedAttributes.contains( attributeName ) )
-        {
-          continue;
-        }
-
-        attrsToExport << idx;
-      }
-
-      exporter.setIncludeAttributes( !attrsToExport.isEmpty() );
-      exporter.setAttributes( attrsToExport );
-
-      return exporter.exportFeature( f, QVariantMap(), id );
+      return mJsonExporter.exportFeature( f, QVariantMap(), id );
     }
 
 
@@ -1329,11 +1318,6 @@ namespace QgsWfs
           continue;
         }
         QString attributeName = fields.at( idx ).name();
-        //skip attribute if it is excluded from WFS publication
-        if ( params.excludedAttributes.contains( attributeName ) )
-        {
-          continue;
-        }
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
@@ -1431,11 +1415,6 @@ namespace QgsWfs
           continue;
         }
         QString attributeName = fields.at( idx ).name();
-        //skip attribute if it is excluded from WFS publication
-        if ( params.excludedAttributes.contains( attributeName ) )
-        {
-          continue;
-        }
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
