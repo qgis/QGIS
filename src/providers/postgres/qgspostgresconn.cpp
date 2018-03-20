@@ -244,8 +244,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       fileName.remove( QStringLiteral( "'" ) );
       QFile file( fileName );
       // set minimal permission to allow removing on Win.
-      // On linux and Mac if file is set with QFile::>ReadUser
-      // does not create problem removin certs
+      // On linux and Mac if file is set with QFile::ReadUser
+      // does not create problem removing certs
       if ( !file.setPermissions( QFile::WriteOwner ) )
       {
         QString errorMsg = tr( "Cannot set WriteOwner permission to cert: %0 to allow removing it" ).arg( file.fileName() );
