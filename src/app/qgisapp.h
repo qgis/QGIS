@@ -826,6 +826,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer *destinationLayer = nullptr );
+    //! copies group or layer on the clipboard
+    void copyLayer();
+    //! pastes group or layer from the clipboard to layer tree
+    void pasteLayer();
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );

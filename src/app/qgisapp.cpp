@@ -1913,6 +1913,8 @@ void QgisApp::createActions()
   connect( mActionPasteAsNewMemoryVector, &QAction::triggered, this, [ = ] { pasteAsNewMemoryVector(); } );
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
   connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { pasteStyle(); } );
+  connect( mActionCopyLayer, &QAction::triggered, this, &QgisApp::copyLayer );
+  connect( mActionPasteLayer, &QAction::triggered, this, &QgisApp::pasteLayer );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
   connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringCurvePoint ); } );
   connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
@@ -8539,12 +8541,6 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer )
   }
 }
 
-/**
-   \param destinationLayer  The layer that the clipboard will be pasted to
-                            (defaults to the active layer on the legend)
- */
-
-
 void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
 {
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
@@ -8581,6 +8577,55 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       selectionLayer->triggerRepaint();
+    }
+  }
+}
+
+void QgisApp::copyLayer()
+{
+  QString errorMessage;
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
+
+  bool saved = QgsLayerDefinition::exportLayerDefinition( doc, mLayerTreeView->selectedNodes(), errorMessage, readWriteContext );
+
+  if ( !saved )
+  {
+    messageBar()->pushMessage( tr( "Error copying layer" ), errorMessage, Qgis::Warning );
+  }
+
+  // Copies data in text form as well, so the XML can be pasted into a text editor
+  clipboard()->setData( QGSCLIPBOARD_MAPLAYER_MIME, doc.toByteArray(), doc.toString() );
+  // Enables the paste menu element
+  mActionPasteLayer->setEnabled( true );
+}
+
+void QgisApp::pasteLayer()
+{
+  if ( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+  {
+    QDomDocument doc;
+    QString errorMessage;
+    QgsReadWriteContext readWriteContext;
+    doc.setContent( clipboard()->data( QGSCLIPBOARD_MAPLAYER_MIME ) );
+
+    QgsLayerTreeNode *currentNode = mLayerTreeView->currentNode();
+    QgsLayerTreeGroup *root = nullptr;
+    if ( QgsLayerTree::isGroup( currentNode ) )
+    {
+      root = QgsLayerTree::toGroup( currentNode );
+    }
+    else
+    {
+      root = QgsProject::instance()->layerTreeRoot();
+    }
+
+    bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root,
+                  errorMessage, readWriteContext );
+
+    if ( !loaded )
+    {
+      messageBar()->pushMessage( tr( "Error pasting layer" ), errorMessage, Qgis::Warning );
     }
   }
 }
@@ -11575,6 +11620,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionPasteFeatures->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
+    mActionCopyLayer->setEnabled( false );
+    mActionPasteLayer->setEnabled( false );
 
     mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
@@ -11621,6 +11668,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   mActionCopyStyle->setEnabled( true );
   mActionPasteStyle->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) );
+  mActionCopyLayer->setEnabled( true );
+  mActionPasteLayer->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) );
 
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
