@@ -322,6 +322,12 @@ class DummyProvider : public QgsProcessingProvider
       return supportsNonFileOutputs;
     }
 
+    bool isActive() const override
+    {
+      return active;
+    }
+
+    bool active = true;
     bool *unloaded = nullptr;
     bool supportsNonFileOutputs = false;
 
@@ -971,6 +977,16 @@ void TestQgsProcessing::algorithm()
     p->refreshAlgorithms();
     QCOMPARE( providerRefreshed.count(), 2 + i );
   }
+
+  // inactive provider, should not load algorithms
+  p->active = false;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 3 );
+  QVERIFY( p->algorithms().empty() );
+  p->active = true;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 4 );
+  QVERIFY( !p->algorithms().empty() );
 
   QgsProcessingRegistry r;
   r.addProvider( p );
