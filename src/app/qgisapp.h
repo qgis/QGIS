@@ -693,7 +693,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr );
-
+    //! save qml style for the current layer
+    void saveStyleFile( QgsMapLayer *layer = nullptr );
+    //! save qrl definition for the current layer
+    void saveAsLayerDefinition();
+    //! save current raster layer
+    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
@@ -1502,11 +1507,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! set the CAD dock widget visible
     void setCadDockVisible( bool visible );
-
-    void saveAsLayerDefinition();
-
-    //! save current raster layer
-    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
 
     //! show Python console
     void showPythonDialog();

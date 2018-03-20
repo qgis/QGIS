@@ -6985,6 +6985,28 @@ void QgisApp::saveAsLayerDefinition()
   }
 }
 
+void QgisApp::saveStyleFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = qobject_cast<QgsMapLayer *>( activeLayer() );
+  }
+
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  QString filename = QFileDialog::getSaveFileName( this,
+                     tr( "Save as QGIS Layer Style File" ),
+                     lastUsedDir,
+                     tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( filename.isEmpty() )
+    return;
+
+  bool defaultLoadedFlag;
+  layer->saveNamedStyle( filename, defaultLoadedFlag );
+
+  settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
+}
+
 ///@cond PRIVATE
 
 /**
