@@ -262,15 +262,15 @@ QString QgsCompoundCurve::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QDomElement gml = line->asGml2( doc, precision, ns );
+  QDomElement gml = line->asGml2( doc, precision, ns, axisOrder );
   return gml;
 }
 
-QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
 
@@ -280,7 +280,7 @@ QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QS
   for ( const QgsCurve *curve : mCurves )
   {
     QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
-    QDomElement curveElem = curve->asGml3( doc, precision, ns );
+    QDomElement curveElem = curve->asGml3( doc, precision, ns, axisOrder );
     curveMemberElem.appendChild( curveElem );
     compoundCurveElem.appendChild( curveMemberElem );
   }

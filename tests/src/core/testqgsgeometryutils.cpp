@@ -23,6 +23,9 @@
 class TestQgsGeometryUtils: public QObject
 {
     Q_OBJECT
+  public:
+    QString elemToString( const QDomElement &elem ) const;
+
   private slots:
     void testExtractLinestrings();
     void testCircleClockwise_data();
@@ -56,8 +59,18 @@ class TestQgsGeometryUtils: public QObject
     void testClosestPoint();
     void testSegmentIntersection();
     void testLineCircleIntersection();
+    void testGml();
 };
 
+
+QString TestQgsGeometryUtils::elemToString( const QDomElement &elem ) const
+{
+  QString s;
+  QTextStream stream( &s );
+  elem.save( stream, -1 );
+
+  return s;
+}
 
 void TestQgsGeometryUtils::testExtractLinestrings()
 {
@@ -813,6 +826,25 @@ void TestQgsGeometryUtils::testLineCircleIntersection()
   linePoint2 = QgsPoint( 5, 2 );
   isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
   QVERIFY( !isIntersection );
+}
+
+void TestQgsGeometryUtils::testGml()
+{
+  QgsPoint point = QgsPoint( 1, 2 );
+  QDomDocument doc;
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
+
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
+  QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
