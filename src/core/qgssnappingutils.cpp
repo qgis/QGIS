@@ -19,6 +19,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsrenderer.h"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent )
   : QObject( parent )
@@ -92,6 +93,35 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
   return ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ); // the index - even if it exists - is not suitable
 }
 
+static bool _isMatchAVisibleLayer( const QgsPointLocator::Match &candidateMatch )
+{
+  bool visible = true;
+
+  // segmentIntersection haven't a layer
+  if ( candidateMatch.layer() )
+  {
+    visible = false;
+    QgsFeatureRequest request;
+    QString filterExpression( candidateMatch.layer()->renderer()->filter() );
+    if ( filterExpression.length() > 0 )
+      request.setFilterExpression( filterExpression );
+    else
+      request.setSubsetOfAttributes( QgsAttributeList() );
+
+    QgsFeatureIterator fi = candidateMatch.layer()->getFeatures( request );
+
+    QgsFeature f;
+    while ( fi.nextFeature( f ) )
+    {
+      if ( f.id() == candidateMatch.featureId() )
+      {
+        visible = true;
+        break;
+      }
+    }
+  }
+  return visible;
+}
 
 static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY &pt, const QgsPointLocator::MatchList &segments )
 {
@@ -104,7 +134,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   QVector<QgsGeometry> geoms;
   Q_FOREACH ( const QgsPointLocator::Match &m, segments )
   {
-    if ( m.hasEdge() )
+    if ( m.hasEdge() && _isMatchAVisibleLayer( m ) )
     {
       QgsPolylineXY pl( 2 );
       m.edgePoints( pl[0], pl[1] );
@@ -156,9 +186,9 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   return QgsPointLocator::Match( QgsPointLocator::Vertex, nullptr, 0, std::sqrt( minSqrDist ), minP );
 }
 
-
 static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointLocator::Match &candidateMatch, double maxDistance )
 {
+
   // is candidate match relevant?
   if ( !candidateMatch.isValid() || candidateMatch.distance() > maxDistance )
     return;
@@ -171,9 +201,11 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
   if ( bestMatch.type() == QgsPointLocator::Vertex && candidateMatch.type() == QgsPointLocator::Edge )
     return;
 
+  if ( !_isMatchAVisibleLayer( candidateMatch ) )
+    return;
+
   bestMatch = candidateMatch; // the other match is better!
 }
-
 
 static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, QgsPointLocator::Types type, double tolerance, QgsPointLocator::MatchFilter *filter )
 {
