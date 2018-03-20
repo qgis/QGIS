@@ -340,7 +340,7 @@ class TestQgsProjectMetadata(unittest.TestCase):
 
         p.clear()
         self.assertEqual(len(metadata_changed_spy), 2)
-        self.assertEqual(p.metadata().author(), '')
+        self.assertEqual(p.metadata().title(), '')
 
         # test that the project title is just a shortcut to the metadata title field
         p.setTitle('my title')
