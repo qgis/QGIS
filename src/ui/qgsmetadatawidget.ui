@@ -207,7 +207,7 @@
               <item row="2" column="1">
                <widget class="QDateTimeEdit" name="mCreationDateTimeEdit">
                 <property name="displayFormat">
-                 <string>yyyy-mm-dd HH:mm</string>
+                 <string>yyyy-MM-dd HH:mm:ss</string>
                 </property>
                 <property name="calendarPopup">
                  <bool>true</bool>

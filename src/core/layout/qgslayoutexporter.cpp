@@ -363,15 +363,16 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
       return MemoryError;
     }
 
-    if ( !saveImage( image, outputFilePath, pageDetails.extension ) )
+    if ( !saveImage( image, outputFilePath, pageDetails.extension, settings.exportMetadata ? mLayout->project() : nullptr ) )
     {
       mErrorFileName = outputFilePath;
       return FileError;
     }
 
-    if ( page == worldFilePageNo )
+    const bool shouldGeoreference = ( page == worldFilePageNo );
+    if ( shouldGeoreference )
     {
-      georeferenceOutput( outputFilePath, nullptr, bounds, settings.dpi );
+      georeferenceOutputPrivate( outputFilePath, nullptr, bounds, settings.dpi, shouldGeoreference );
 
       if ( settings.generateWorldFile )
       {
@@ -481,9 +482,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
-  if ( mLayout->pageCollection()->pageCount() == 1 )
+  const bool shouldGeoreference = mLayout->pageCollection()->pageCount() == 1;
+  if ( shouldGeoreference || settings.exportMetadata )
   {
-    georeferenceOutput( filePath, nullptr, QRectF(), settings.dpi );
+    georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldGeoreference, settings.exportMetadata );
   }
   return result;
 }
@@ -1327,21 +1329,26 @@ void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, 
 
 bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMap *map, const QRectF &exportRegion, double dpi ) const
 {
+  return georeferenceOutputPrivate( file, map, exportRegion, dpi, false );
+}
+
+bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *map, const QRectF &exportRegion, double dpi, bool includeGeoreference, bool includeMetadata ) const
+{
   if ( !mLayout )
     return false;
 
-  if ( !map )
+  if ( !map && includeGeoreference )
     map = mLayout->referenceMap();
 
-  if ( !map )
-    return false; // no reference map
+  std::unique_ptr<double[]> t;
 
-  if ( dpi < 0 )
-    dpi = mLayout->renderContext().dpi();
+  if ( map && includeGeoreference )
+  {
+    if ( dpi < 0 )
+      dpi = mLayout->renderContext().dpi();
 
-  std::unique_ptr<double[]> t = computeGeoTransform( map, exportRegion, dpi );
-  if ( !t )
-    return false;
+    t = computeGeoTransform( map, exportRegion, dpi );
+  }
 
   // important - we need to manually specify the DPI in advance, as GDAL will otherwise
   // assume a DPI of 150
@@ -1349,12 +1356,48 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
   gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
   if ( outputDS )
   {
-    GDALSetGeoTransform( outputDS.get(), t.get() );
-#if 0
-    //TODO - metadata can be set here, e.g.:
-    GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
-#endif
-    GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
+    if ( t )
+      GDALSetGeoTransform( outputDS.get(), t.get() );
+
+    if ( includeMetadata )
+    {
+      QString creationDateString;
+      const QDateTime creationDateTime = mLayout->project()->metadata().creationDateTime();
+      if ( creationDateTime.isValid() )
+      {
+        creationDateString = QStringLiteral( "D:%1" ).arg( mLayout->project()->metadata().creationDateTime().toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+        if ( creationDateTime.timeZone().isValid() )
+        {
+          int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
+          creationDateString += ( offsetFromUtc >= 0 ) ? '+' : '-';
+          offsetFromUtc = std::abs( offsetFromUtc );
+          int offsetHours = offsetFromUtc / 3600;
+          int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+          creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+        }
+      }
+      GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
+
+      GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toLocal8Bit().constData(), nullptr );
+      const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "TITLE", mLayout->project()->metadata().title().toLocal8Bit().constData(), nullptr );
+
+      const QgsAbstractMetadataBase::KeywordMap keywords = mLayout->project()->metadata().keywords();
+      QStringList allKeywords;
+      for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
+      {
+        allKeywords.append( it.value() );
+      }
+      allKeywords = allKeywords.toSet().toList();
+      const QString keywordString = allKeywords.join( ',' );
+      GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
+    }
+
+    if ( t )
+      GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
@@ -1504,12 +1547,32 @@ QString QgsLayoutExporter::generateFileName( const PageExportDetails &details ) 
   }
 }
 
-bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat )
+bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata )
 {
   QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
   if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
   {
     w.setCompression( 1 ); //use LZW compression
+  }
+  if ( projectForMetadata )
+  {
+    w.setText( "Author", projectForMetadata->metadata().author() );
+    const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+    w.setText( "Creator", creator );
+    w.setText( "Producer", creator );
+    w.setText( "Subject", projectForMetadata->metadata().abstract() );
+    w.setText( "Created", projectForMetadata->metadata().creationDateTime().toString( Qt::ISODate ) );
+    w.setText( "Title", projectForMetadata->metadata().title() );
+
+    const QgsAbstractMetadataBase::KeywordMap keywords = projectForMetadata->metadata().keywords();
+    QStringList allKeywords;
+    for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
+    {
+      allKeywords.append( it.value() );
+    }
+    allKeywords = allKeywords.toSet().toList();
+    const QString keywordString = allKeywords.join( ',' );
+    w.setText( "Keywords", keywordString );
   }
   return w.write( image );
 }
