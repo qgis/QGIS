@@ -17,7 +17,7 @@ set -e
 
 source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
 
-DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
+DOCKER_QGIS_IMAGE_BUILD_PUSH=create_qgis_image
 
 mkdir -p $CCACHE_DIR
 
