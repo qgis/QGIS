@@ -49,6 +49,10 @@ QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QVector<QgsPoint> &point
   }
 }
 
+QgsQuickHighlightSGNode::~QgsQuickHighlightSGNode()
+{
+}
+
 QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QVector<QgsPoint> &points, qreal width )
 {
   QSGGeometryNode *node = new QSGGeometryNode;

@@ -29,20 +29,23 @@
  *
  * This is used to transform (render) QgsGeometry to node for QtQuick scene graph.
  *
+ * Note: support for multi-part geometries and polygons is not implemented
+ *
  * \note QML Type: not exported
  *
  * \since QGIS 3.2
  */
-class QUICK_NO_EXPORT QgsQuickHighlightSGNode : public QSGNode
+class QUICK_EXPORT QgsQuickHighlightSGNode : public QSGNode
 {
   public:
     //! Create new QT Quick scene node based on geometry
     QgsQuickHighlightSGNode( const QVector<QgsPoint> &points, QgsWkbTypes::GeometryType type, const QColor &color, qreal width );
+    virtual ~QgsQuickHighlightSGNode();
 
-  private:
+  protected:
     QSGGeometryNode *createLineGeometry( const QVector<QgsPoint> &points, qreal width );
     QSGGeometryNode *createPointGeometry( const QgsPoint &point, qreal width );
-    QSGGeometryNode *createPolygonGeometry( const QVector<QgsPoint> &points );
+    virtual QSGGeometryNode *createPolygonGeometry( const QVector<QgsPoint> &points );
 
     QSGFlatColorMaterial mMaterial;
 };
