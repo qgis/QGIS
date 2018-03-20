@@ -60,8 +60,11 @@ void QgsProcessingProvider::refreshAlgorithms()
 {
   qDeleteAll( mAlgorithms );
   mAlgorithms.clear();
-  loadAlgorithms();
-  emit algorithmsLoaded();
+  if ( isActive() )
+  {
+    loadAlgorithms();
+    emit algorithmsLoaded();
+  }
 }
 
 QList<const QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
