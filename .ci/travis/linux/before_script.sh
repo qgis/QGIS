@@ -28,7 +28,7 @@ QGIS_LAST_BUILD_SUCCESS=true # TODO use API to know if last build succeed https:
 
 
 echo "travis_fold:start:travis_env"
-echo "${bold}${endbold}"
+echo "${bold}Travis environment variables${endbold}"
 echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
 echo "TRAVIS_EVENT_TYPE: $TRAVIS_EVENT_TYPE"
 echo "DOCKER_TAG: $DOCKER_TAG"
