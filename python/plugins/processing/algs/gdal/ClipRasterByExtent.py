@@ -132,8 +132,7 @@ class ClipRasterByExtent(GdalAlgorithm):
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append(inLayer.source())
         arguments.append(out)
