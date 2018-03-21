@@ -53,7 +53,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     //! This is the font that will be used for the copyright label
     QFont mQFont;
     //! This is the string that will be used for the copyright label
-    QString mLabelQString;
+    QString mLabelText;
 
     //! This is the color for the copyright label
     QColor mColor;
