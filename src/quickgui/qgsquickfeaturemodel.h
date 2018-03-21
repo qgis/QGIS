@@ -122,7 +122,9 @@ class QUICK_EXPORT QgsQuickFeatureModel : public QAbstractListModel
     void layerChanged();
 
   protected:
+    //! commit model changes
     bool commit();
+    //! start editing model
     bool startEditing();
 
     QgsVectorLayer *mLayer = nullptr;

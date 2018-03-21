@@ -84,7 +84,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     /**
       * Convert QGeoCoordinate to QgsPoint
       */
-    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate& coor ) const;
+    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate &coor ) const;
 
     /**
       * Transform point between different crs from QML
