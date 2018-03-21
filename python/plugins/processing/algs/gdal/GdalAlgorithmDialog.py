@@ -113,7 +113,7 @@ class GdalParametersPanel(ParametersPanel):
                     parameters[output.name()] = self.tr("[temporary file]")
             for p in self.alg.parameterDefinitions():
                 if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
-                        or (not p.checkValueIsAcceptable(parameters[p.name()], context)):
+                        or (not p.checkValueIsAcceptable(parameters[p.name()])):
                     # not ready yet
                     self.text.setPlainText('')
                     return
