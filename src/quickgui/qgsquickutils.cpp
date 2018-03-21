@@ -38,7 +38,7 @@ QgsQuickUtils *QgsQuickUtils::instance()
 {
   if ( !sInstance )
   {
-    QgsDebugMsg( QString( "QgsQuickUtils created: %1" ).arg( long( QThread::currentThreadId() ) ) );
+    QgsDebugMsg( QStringLiteral( "QgsQuickUtils created: %1" ).arg( long( QThread::currentThreadId() ) ) );
     sInstance = new QgsQuickUtils();
   }
   return sInstance;
@@ -134,7 +134,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
 {
   if ( !fileExists( sourcePath ) )
   {
-    QgsDebugMsg( QString( "Source file does not exist! %1" ).arg( sourcePath ) );
+    QgsDebugMsg( QStringLiteral( "Source file does not exist! %1" ).arg( sourcePath ) );
     return;
   }
 
@@ -149,7 +149,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
 
   if ( !QFile( sourcePath ).rename( dir.absoluteFilePath( filename ) ) )
   {
-    QgsDebugMsg( QString( "Couldn't rename file! Trying to copy instead! %1" ).arg( filename ) );
+    QgsDebugMsg( QStringLiteral( "Couldn't rename file! Trying to copy instead! %1" ).arg( filename ) );
     if ( !QFile( sourcePath ).copy( dir.absoluteFilePath( filename ) ) )
     {
       QgsApplication::messageLog()->logMessage( tr( "File %1 could not be copied to folder %2.", "QgsQuick", Qgis::Critical ).arg( sourcePath, targetPath ) );
@@ -179,7 +179,7 @@ QUrl QgsQuickUtils::getThemeIcon( const QString &name )
 {
   QString extension( ".svg" );
   QString path = "qrc:/" + name + extension;
-  QgsDebugMsg( QString( "Using icon %1 from %2" ).arg( name ).arg( path ) );
+  QgsDebugMsg( QStringLiteral( "Using icon %1 from %2" ).arg( name, path ) );
   return QUrl( path );
 }
 

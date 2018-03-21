@@ -64,6 +64,6 @@ void QgsQuickMessageLogModel::onMessageReceived( const QString &message, const Q
 {
   beginInsertRows( QModelIndex(), 0, 0 );
   mMessages.prepend( LogMessage( tag, message, level ) );
-  QgsDebugMsg( QString( "Next message %1 : %2" ).arg( tag ).arg( message ) );
+  QgsDebugMsg( QStringLiteral( "Next message %1 : %2" ).arg( tag, message ) );
   endInsertRows();
 }

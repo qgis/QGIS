@@ -91,7 +91,7 @@ void QgsQuickPositionKit::replacePositionSource( QGeoPositionInfoSource *source 
     connect( mSource, SIGNAL( updateTimeout() ), this, SLOT( onUpdateTimeout() ) );
     mSource->startUpdates();
 
-    QgsDebugMsg( QString( "Position source changed: %1" ).arg( mSource->sourceName() ) );
+    QgsDebugMsg( QStringLiteral( "Position source changed: %1" ).arg( mSource->sourceName() ) );
   }
 }
 

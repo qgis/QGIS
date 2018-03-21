@@ -80,7 +80,7 @@ QList<QgsQuickFeature> QgsQuickIdentifyKit::identify( const QPointF &point )
     }
   }
 
-  QgsDebugMsg( QString( "IdentifyKit identified %1 results" ).arg( results.count() ) );
+  QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results" ).arg( results.count() ) );
   return results;
 }
 
@@ -172,14 +172,14 @@ QgsFeatureList QgsQuickIdentifyKit::identify( QgsVectorLayer *layer, const QPoin
 
   if ( !mMapSettings )
   {
-    qWarning() << "Unable to use IdentifyKit without mapSettings property set.";
+    QgsDebugMsg( QStringLiteral( "Unable to use IdentifyKit without mapSettings property set." ) );
     return results;
   }
   QgsPointXY mapPoint = mMapSettings->mapSettings().mapToPixel().toMapCoordinates( point.toPoint() );
 
   results = identifyVectorLayer( layer, mapPoint );
 
-  QgsDebugMsg( QString( "IdentifyKit identified %1 results for layer %2" ).arg( results.count() ).arg( layer->name() ) );
+  QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results for layer %2" ).arg( results.count() ).arg( layer->name() ) );
   return results;
 }
 
