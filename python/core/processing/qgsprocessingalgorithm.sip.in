@@ -205,6 +205,15 @@ Overridden implementations should also check this base class implementation.
 :return: true if parameters are acceptable for the algorithm.
 %End
 
+    virtual QVariantMap preprocessParameters( const QVariantMap &parameters );
+%Docstring
+Pre-processes a set of ``parameters``, allowing the algorithm to clean their
+values.
+
+This method is automatically called after users enter parameters, e.g. via the algorithm
+dialog. This method should NOT be called manually by algorithms.
+%End
+
     QgsProcessingProvider *provider() const;
 %Docstring
 Returns the provider to which this algorithm belongs.
