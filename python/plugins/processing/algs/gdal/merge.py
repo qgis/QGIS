@@ -36,6 +36,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -53,6 +54,8 @@ class merge(GdalAlgorithm):
     SEPARATE = 'SEPARATE'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
+    NODATA_INPUT = 'NODATA_INPUT'
+    NODATA_OUTPUT = 'NODATA_OUTPUT'
     OUTPUT = 'OUTPUT'
 
     TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
@@ -70,6 +73,22 @@ class merge(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
                                                         self.tr('Place each input file into a separate band'),
                                                         defaultValue=False))
+
+        nodata_param = QgsProcessingParameterNumber(self.NODATA_INPUT,
+                                                    self.tr('Input pixel value to treat as "nodata"'),
+                                                    type=QgsProcessingParameterNumber.Integer,
+                                                    defaultValue=None,
+                                                    optional=True)
+        nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(nodata_param)
+
+        nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
+                                                    self.tr('Assign specified "nodata" value to output'),
+                                                    type=QgsProcessingParameterNumber.Integer,
+                                                    defaultValue=None,
+                                                    optional=True)
+        nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(nodata_out_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
@@ -114,6 +133,16 @@ class merge(GdalAlgorithm):
 
         if self.parameterAsBool(parameters, self.SEPARATE, context):
             arguments.append('-separate')
+
+        if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:
+            nodata_input = self.parameterAsInt(parameters, self.NODATA_INPUT, context)
+            arguments.append('-n')
+            arguments.append(str(nodata_input))
+
+        if self.NODATA_OUTPUT in parameters and parameters[self.NODATA_OUTPUT] is not None:
+            nodata_output = self.parameterAsInt(parameters, self.NODATA_OUTPUT, context)
+            arguments.append('-a_nodata')
+            arguments.append(str(nodata_output))
 
         arguments.append('-ot')
         arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
