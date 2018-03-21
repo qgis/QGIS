@@ -15,6 +15,10 @@
 
 #include <qqml.h>
 
+#include <QObject>
+#include <QQmlEngine>
+#include <QJSEngine>
+
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"

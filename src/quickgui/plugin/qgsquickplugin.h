@@ -17,9 +17,6 @@
 #define QGSQUICKPLUGIN_H
 
 #include <QQmlExtensionPlugin>
-#include <QObject>
-#include <QQmlEngine>
-#include <QJSEngine>
 
 /**
  * \ingroup quick
