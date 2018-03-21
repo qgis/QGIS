@@ -985,6 +985,11 @@ bool QgsProject::readProjectFile( const QString &filename )
     QDomElement metadataElement = nl.at( 0 ).toElement();
     mMetadata.readMetadataXml( metadataElement );
   }
+  else
+  {
+    // older project, no metadata => remove auto generated metadata which is populated on QgsProject::clear()
+    mMetadata = QgsProjectMetadata();
+  }
   if ( mMetadata.title().isEmpty() && !oldTitle.isEmpty() )
   {
     // upgrade older title storage to storing within project metadata.
