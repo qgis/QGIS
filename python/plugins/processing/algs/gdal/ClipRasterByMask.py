@@ -154,8 +154,7 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-dstnodata {}'.format(nodata))
 
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append(inLayer.source())
         arguments.append(out)

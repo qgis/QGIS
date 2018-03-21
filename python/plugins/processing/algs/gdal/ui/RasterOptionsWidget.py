@@ -70,4 +70,4 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
         else:
-            return ' '.join(self.widget.options())
+            return '|'.join(self.widget.options())
