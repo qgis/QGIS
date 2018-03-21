@@ -115,10 +115,11 @@ class buildvrt(GdalAlgorithm):
         # length of the command will be longer then allowed in command prompt
         listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'buildvrtInputFiles.txt')
         with open(listFile, 'w') as f:
-            layers = []
-            for l in self.parameterAsLayerList(parameters, self.INPUT, context):
-                layers.append(l.source())
-            f.write('\n'.join(layers))
+            if executing:
+                layers = []
+                for l in self.parameterAsLayerList(parameters, self.INPUT, context):
+                    layers.append(l.source())
+                f.write('\n'.join(layers))
         arguments.append('-input_file_list')
         arguments.append(listFile)
 
