@@ -24,6 +24,7 @@ Item {
   property int size: 48 * QgsQuick.Utils.dp
 
   property QgsQuick.MapSettings mapSettings // required to be connected from parent!
+  property QgsQuick.PositionKit positionKit: QgsQuick.PositionKit {id: positionKit}
 
   property var simulatePositionLongLatRad // use in debug mode to simulate movement around some GPS location
   // longitude, latitude, and radius, all in degrees WSG84
@@ -35,7 +36,7 @@ Item {
   property alias mapPosition: wgs84toMapCrs.projectedPosition // in map coordinates
   property alias gpsPosition: positionKit.position // in WGS84 coordinates
   property alias gpsAccuracy: positionKit.accuracy // in meters
-  property alias positionKit: positionKit
+
   property var gpsPositionLabel: {
     if (positionKit.hasPosition) {
       QgsQuick.Utils.qgsPointToString(positionKit.position, 3) // e.g -2.243, 45.441
@@ -88,10 +89,6 @@ Item {
     sourcePosition: positionKit.position
     mapSettings: positionMarker.mapSettings
     onProjectedPositionChanged: update_location()
-  }
-
-  QgsQuick.PositionKit {
-    id: positionKit
   }
 
   // GPS accuracy circle-shaped indicator around positionMarker

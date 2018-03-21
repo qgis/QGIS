@@ -20,10 +20,7 @@ Item {
     id: scaleBar
     property alias mapSettings: scaleBarKit.mapSettings
     property alias preferredWidth: scaleBarKit.preferredWidth
-
-    QgsQuick.ScaleBarKit {
-        id: scaleBarKit
-    }
+    property QgsQuick.ScaleBarKit scaleBarKit: QgsQuick.ScaleBarKit {id: scaleBarKit}
 
     property int textWidth: fontMetrics.averageCharacterWidth * 8
     property color barColor: "white"
