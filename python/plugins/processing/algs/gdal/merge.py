@@ -123,8 +123,7 @@ class merge(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append('-o')
         arguments.append(out)

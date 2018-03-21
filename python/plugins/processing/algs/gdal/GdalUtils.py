@@ -389,3 +389,11 @@ class GdalUtils:
         name = ly.GetName()
         ds = None
         return name
+
+    @staticmethod
+    def parseCreationOptions(value):
+        parts = value.split('|')
+        options = []
+        for p in parts:
+            options.extend(['-co', p])
+        return options
