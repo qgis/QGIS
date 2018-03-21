@@ -56,6 +56,9 @@
    <property name="windowTitle">
     <string>Layout Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Layout Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -79,6 +82,9 @@
   </widget>
   <widget class="QToolBar" name="mToolsToolbar">
    <property name="windowTitle">
+    <string>Toolbox</string>
+   </property>
+   <property name="toolTip">
     <string>Toolbox</string>
    </property>
    <attribute name="toolBarArea">
@@ -308,6 +314,9 @@
    <property name="windowTitle">
     <string>Navigation Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Navigation Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -324,6 +333,9 @@
    <property name="windowTitle">
     <string>Actions Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Actions Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -337,6 +349,9 @@
   </widget>
   <widget class="QToolBar" name="mAtlasToolbar">
    <property name="windowTitle">
+    <string>Atlas Toolbar</string>
+   </property>
+   <property name="toolTip">
     <string>Atlas Toolbar</string>
    </property>
    <attribute name="toolBarArea">
@@ -355,6 +370,9 @@
   </widget>
   <widget class="QToolBar" name="mReportToolbar">
    <property name="windowTitle">
+    <string>Report Toolbar</string>
+   </property>
+   <property name="toolTip">
     <string>Report Toolbar</string>
    </property>
    <attribute name="toolBarArea">
