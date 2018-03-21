@@ -233,6 +233,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
                                        QgsProcessingContext &context, QString *message SIP_OUT = nullptr ) const;
 
     /**
+     * Pre-processes a set of \a parameters, allowing the algorithm to clean their
+     * values.
+     *
+     * This method is automatically called after users enter parameters, e.g. via the algorithm
+     * dialog. This method should NOT be called manually by algorithms.
+     */
+    virtual QVariantMap preprocessParameters( const QVariantMap &parameters );
+
+    /**
      * Returns the provider to which this algorithm belongs.
      */
     QgsProcessingProvider *provider() const;
