@@ -109,6 +109,19 @@ class MemoryStorage : public QgsProjectStorage
       return true;
     }
 
+    virtual bool removeProject( const QString &uri ) override
+    {
+      QStringList lst = uri.split( ":" );
+      Q_ASSERT( lst.count() == 2 );
+      QString projectName = lst[1];
+
+      if ( !mProjects.contains( projectName ) )
+        return false;
+
+      mProjects.remove( projectName );
+      return true;
+    }
+
   private:
     QHash<QString, QByteArray> mProjects;
 };
@@ -146,11 +159,22 @@ void TestQgsProjectStorage::testMemoryStorage()
   QCOMPARE( prj2.mapLayers().count(), 1 );
   QCOMPARE( prj2.title(), QString( "best project ever" ) );
 
+  // test access of non-existant project
+
   QgsProject prj3;
   prj3.setFileName( "memory:nooooooooo!" );
   bool readInvalidOk = prj3.read();
-
   QVERIFY( !readInvalidOk );
+
+  // test removal
+
+  bool removeInvalidOk = memStorage->removeProject( "memory:projectXYZ" );
+  QVERIFY( !removeInvalidOk );
+  QCOMPARE( memStorage->listProjects( QString() ).count(), 1 );
+
+  bool removeOk = memStorage->removeProject( "memory:project1" );
+  QVERIFY( removeOk );
+  QCOMPARE( memStorage->listProjects( QString() ).count(), 0 );
 
   QgsApplication::projectStorageRegistry()->unregisterProjectStorage( memStorage );
 }

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProjectStorage
 {
 %Docstring
@@ -52,7 +53,36 @@ and having position at the start of the content when passed to writeProject() so
 can read all data from it until it reaches its end.
 %End
 
+    virtual bool removeProject( const QString &uri ) = 0;
+%Docstring
+Removes and existing project at the given URI. Returns true if the removal
+was successful.
+%End
 
+    virtual bool renameProject( const QString &uri, const QString &uriNew );
+%Docstring
+Rename an existing project at the given URI to a different URI. Returns true if renaming
+was successful.
+%End
+
+    virtual QString visibleName();
+%Docstring
+Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
+indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
+The name may be translatable and ideally unique as well.
+%End
+
+    virtual QString showLoadGui();
+%Docstring
+Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
+Returns project URI if user has picked a project or empty string if the GUI was canceled.
+%End
+
+    virtual QString showSaveGui();
+%Docstring
+Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
+Returns project URI if user has picked a destination or empty string if the GUI was canceled.
+%End
 };
 
 /************************************************************************

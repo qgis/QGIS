@@ -18,8 +18,9 @@
 
 #include "qgis_core.h"
 
+#include <QString>
+
 class QIODevice;
-class QString;
 class QStringList;
 
 class QgsReadWriteContext;
@@ -60,9 +61,36 @@ class CORE_EXPORT QgsProjectStorage
      */
     virtual bool writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
 
-    // TODO: rename / remove ?
+    /**
+     * Removes and existing project at the given URI. Returns true if the removal
+     * was successful.
+     */
+    virtual bool removeProject( const QString &uri ) = 0;
 
-    // TODO: load/save GUI
+    /**
+     * Rename an existing project at the given URI to a different URI. Returns true if renaming
+     * was successful.
+     */
+    virtual bool renameProject( const QString &uri, const QString &uriNew ) { Q_UNUSED( uri ); Q_UNUSED( uriNew ); return false; }
+
+    /**
+     * Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
+     * indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
+     * The name may be translatable and ideally unique as well.
+     */
+    virtual QString visibleName() { return QString(); }
+
+    /**
+     * Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
+     * Returns project URI if user has picked a project or empty string if the GUI was canceled.
+     */
+    virtual QString showLoadGui() { return QString(); }
+
+    /**
+     * Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
+     * Returns project URI if user has picked a destination or empty string if the GUI was canceled.
+     */
+    virtual QString showSaveGui() { return QString(); }
 };
 
 #endif // QGSPROJECTSTORAGE_H
