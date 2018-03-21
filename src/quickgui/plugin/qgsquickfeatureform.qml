@@ -268,7 +268,6 @@ Item {
           property var field: Field
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
-          property var photoCapturePanel: photoPanel
 
           active: widget !== 'Hidden'
           source: 'qgsquick' + widget.toLowerCase() + '.qml'
@@ -468,12 +467,4 @@ Item {
       visible = false
     }
   }
-
-  QgsQuick.PhotoCapture {
-    id: photoPanel
-    height: window.height
-    width: window.width
-    edge: Qt.RightEdge
-  }
-
 }

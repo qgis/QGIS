@@ -32,6 +32,14 @@ Item {
 
   height: Math.max(image.height, button.height)
 
+  QgsQuick.PhotoCapture {
+    id: photoCapturePanel
+    visible: false
+    height: window.height
+    width: window.width
+    edge: Qt.RightEdge
+  }
+
   Image {
     property var currentValue: value
 
