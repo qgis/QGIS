@@ -36,7 +36,8 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterRasterDestination)
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -105,7 +106,6 @@ class merge(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
@@ -129,8 +129,17 @@ class merge(GdalAlgorithm):
         arguments.append('-o')
         arguments.append(out)
 
-        for layer in layers:
-            arguments.append(layer.source())
+        # Always write input files to a text file in case there are many of them and the
+        # length of the command will be longer then allowed in command prompt
+        listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'mergeInputFiles.txt')
+        with open(listFile, 'w') as f:
+            if executing:
+                layers = []
+                for l in self.parameterAsLayerList(parameters, self.INPUT, context):
+                    layers.append('"' + l.source() + '"')
+                f.write('\n'.join(layers))
+        arguments.append('--optfile')
+        arguments.append(listFile)
 
         commands = []
         if isWindows():
