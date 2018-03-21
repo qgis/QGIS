@@ -20,7 +20,6 @@ SET(QGIS_QUICK_GUI_MOC_HDRS
 )
 
 SET(QGIS_QUICK_GUI_HDRS
-  qgis_quick.h
   qgsquickhighlightsgnode.h
 )
 
@@ -107,8 +106,14 @@ TARGET_LINK_LIBRARIES(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt
 IF(CMAKE_SYSTEM_NAME STREQUAL "Android")
   TARGET_LINK_LIBRARIES(qgis_quick Qt5::AndroidExtras)
 ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Android")
-
 TARGET_COMPILE_DEFINITIONS(qgis_quick PRIVATE "-DDQT_NO_FOREACH")
+
+GENERATE_EXPORT_HEADER(
+  qgis_quick
+  BASE_NAME QUICK
+  EXPORT_FILE_NAME qgis_quick.h
+)
+SET(QGIS_CORE_HDRS ${QGIS_QUICK_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 # Installation
 INSTALL(TARGETS qgis_quick
