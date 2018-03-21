@@ -21,7 +21,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgsmslayercache.h"
 #include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
@@ -210,10 +209,6 @@ bool QgsServer::init()
   QgsServerLogger::instance();
   QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
   QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
-
-  // init and configure cache
-  QgsMSLayerCache::instance();
-  QgsMSLayerCache::instance()->setMaxCacheLayers( sSettings.maxCacheLayers() );
 
   // log settings currently used
   sSettings.logSummary();

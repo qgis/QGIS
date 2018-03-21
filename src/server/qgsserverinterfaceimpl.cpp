@@ -19,7 +19,6 @@
 
 #include "qgsserverinterfaceimpl.h"
 #include "qgsconfigcache.h"
-#include "qgsmslayercache.h"
 
 //! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, QgsServiceRegistry *srvRegistry, QgsServerSettings *settings )
@@ -93,11 +92,6 @@ void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )
     mCapabilitiesCache->removeCapabilitiesDocument( path );
   }
   QgsConfigCache::instance()->removeEntry( path );
-}
-
-void QgsServerInterfaceImpl::removeProjectLayers( const QString &path )
-{
-  QgsMSLayerCache::instance()->removeProjectLayers( path );
 }
 
 QgsServiceRegistry *QgsServerInterfaceImpl::serviceRegistry()
