@@ -8,8 +8,8 @@ matrix:
       env:
         - TRAVIS_CONFIG=linux
         - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && ( ( [[ $TRAVIS_EVENT_TYPE =~ pull_request ]] && [[ $TRAVIS_COMMIT_MESSAGE =~ \[dockerdeps\] ]] ) && echo "PR-$TRAVIS_PULL_REQUEST" || echo $TRAVIS_BRANCH | sed 's/master/latest/' ) || echo "latest" )
-        - DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && ( [[ $TRAVIS_EVENT_TYPE =~ push ]] || ( [[ $TRAVIS_EVENT_TYPE =~ pull_request ]] && [[ $TRAVIS_COMMIT_MESSAGE =~ \[dockerdeps\] ]] ) ) && echo "true" || echo "false" )
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE =~ push ]] && echo "true" || echo "false" )
         - DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
         # on cron job, QGIS image is built and push without testing
         - DOCKER_QGIS_IMAGE_BUILD_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE =~ cron ]] && echo "true" || echo "false" )
