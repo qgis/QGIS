@@ -205,7 +205,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             feedback.pushInfo(self.tr('Input parameters:'))
             display_params = []
             for k, v in parameters.items():
-                display_params.append("'" + k + "' : " + self.algorithm().parameterDefinition(k).valueAsPythonString(v, context))
+                if self.algorithm().parameterDefinition(k).isVisible():
+                    display_params.append("'" + k + "' : " + self.algorithm().parameterDefinition(k).valueAsPythonString(v, context))
             feedback.pushCommandInfo('{ ' + ', '.join(display_params) + ' }')
             feedback.pushInfo('')
             start_time = time.time()

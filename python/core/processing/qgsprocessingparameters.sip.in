@@ -185,6 +185,23 @@ Constructor for QgsProcessingParameterDefinition.
 Creates a clone of the parameter definition.
 %End
 
+    bool isVisible();
+%Docstring
+Returns the visiblity of the parameter. This flag can used to show/hide
+this parameter from AlgorithmDialog or exclude from passing to parameter
+processing algorithms.
+
+.. seealso:: :py:func:`setVisible`
+%End
+
+    bool setVisible(bool v);
+%Docstring
+Sets the ``mVisible`` of the parameter. This value is used to flag
+visiblity of parameter
+
+.. seealso:: :py:func:`isVisible`
+%End
+
     virtual QString type() const = 0;
 %Docstring
 Unique parameter type name.
@@ -418,6 +435,7 @@ the dynamic parameter.
 %End
 
   protected:
+
 
 
 
