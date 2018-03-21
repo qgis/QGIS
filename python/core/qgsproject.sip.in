@@ -89,6 +89,8 @@ representation.
 .. seealso:: :py:func:`fileInfo`
 %End
 
+    QgsProjectVersion version() const;
+
     QFileInfo fileInfo() const;
 %Docstring
 Returns QFileInfo object for the project's associated file.
@@ -885,6 +887,8 @@ Returns the current auxiliary storage.
 
 .. versionadded:: 3.0
 %End
+
+    QgsError backup( const QString &fileName, const QString &suffix ) const;
 
   signals:
     void readProject( const QDomDocument & );

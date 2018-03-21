@@ -5700,6 +5700,38 @@ bool QgisApp::fileSave()
   }
   else
   {
+
+    QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+
+    // If we find master the QGIS version but not in the project file we should warn the user.
+    // Users should really only use copies of projects in dev builds.
+    if ( thisVersion.text().toLower().contains( QStringLiteral( "master" ) ) &&
+         !QgsProject::instance()->version().text().toLower().contains( QStringLiteral( "master" ) ) )
+    {
+      QString message = tr( "You are saving a non dev project using dev build of QGIS.\n"
+                            "Changes to project files in dev builds might not correctly open in release versions."
+                            "\n"
+                            "Saving the project will create a new -dev version of the project.\n" );
+      if ( QMessageBox::warning( this,
+                                 tr( "Saving project with dev version build." ),
+                                 message,
+                                 QMessageBox::Save | QMessageBox::Cancel ) == QMessageBox::Save )
+      {
+        QString filename = QgsProject::instance()->fileName();
+        QFileInfo info( filename );
+        const QString baseName = info.completeBaseName();
+        const QString suffix = info.suffix();
+        const QString path = info.absolutePath();
+
+        QString newFileName = path + QDir::separator() + baseName + QStringLiteral( "-dev." ) + suffix;
+        QgsProject::instance()->setFileName( newFileName );
+      }
+      else
+      {
+        return false;
+      }
+    }
+
     QFileInfo fi( QgsProject::instance()->fileName() );
     fullPath = fi.absoluteFilePath();
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )

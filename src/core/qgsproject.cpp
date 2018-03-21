@@ -456,6 +456,11 @@ QString QgsProject::fileName() const
   return mFile.fileName();
 }
 
+QgsProjectVersion QgsProject::version() const
+{
+  return mProjectVersion;
+}
+
 QFileInfo QgsProject::fileInfo() const
 {
   return QFileInfo( mFile );
@@ -878,6 +883,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
+  mProjectVersion = fileVersion;
   QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
@@ -1527,30 +1533,12 @@ bool QgsProject::writeProjectFile( const QString &filename )
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( QStringLiteral( "%1~" ).arg( filename ) );
-    bool ok = true;
-    ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= projectFile.open( QIODevice::ReadOnly );
-
-    QByteArray ba;
-    while ( ok && !projectFile.atEnd() )
+    QgsError backupResult = backup( filename,  "~" );
+    if ( !backupResult.isEmpty() )
     {
-      ba = projectFile.read( 10240 );
-      ok &= backupFile.write( ba ) == ba.size();
-    }
-
-    projectFile.close();
-    backupFile.close();
-
-    if ( !ok )
-    {
-      setError( tr( "Unable to create backup file %1" ).arg( backupFile.fileName() ) );
+      setError( backupResult.messageList().at( 0 ).message() );
       return false;
     }
-
-    QFileInfo fi( fileName() );
-    struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
-    utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
   if ( !projectFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -1596,6 +1584,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   }
 
   setDirty( false );               // reset to pristine state
+
+  mProjectVersion = getVersion( *doc );
 
   emit projectSaved();
 
@@ -2506,4 +2496,34 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
+}
+
+QgsError QgsProject::backup( const QString &fileName, const QString &suffix ) const
+{
+  QgsError errors;
+  QFile projectFile( fileName );
+  QFile backupFile( QStringLiteral( "%1%2" ).arg( projectFile.fileName(), suffix ) );
+  bool ok = true;
+  ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
+  ok &= projectFile.open( QIODevice::ReadOnly );
+
+  QByteArray ba;
+  while ( ok && !projectFile.atEnd() )
+  {
+    ba = projectFile.read( 10240 );
+    ok &= backupFile.write( ba ) == ba.size();
+  }
+
+  projectFile.close();
+  backupFile.close();
+
+  if ( !ok )
+  {
+    errors.append( tr( "Unable to create backup file %1" ).arg( backupFile.fileName() ) );
+  }
+
+  QFileInfo fi( projectFile.fileName() );
+  struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
+  utime( backupFile.fileName().toUtf8().constData(), &tb );
+  return errors;
 }
