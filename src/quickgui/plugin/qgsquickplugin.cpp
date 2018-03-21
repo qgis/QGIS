@@ -16,6 +16,7 @@
 #include <qqml.h>
 
 #include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
 #include "qgspointxy.h"
@@ -50,7 +51,7 @@ static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
 
 void QgisQuickPlugin::registerTypes( const char *uri )
 {
-  qDebug( "REGISTERING QQmlExtensionInterface: QgisQuick" );
+  QgsDebugMsg( QStringLiteral( "REGISTERING QQmlExtensionInterface: QgisQuick" ) );
 
   qRegisterMetaType< QList<QgsMapLayer *> >( "QList<QgsMapLayer*>" );
   qRegisterMetaType< QgsAttributes > ( "QgsAttributes" );
@@ -81,7 +82,5 @@ void QgisQuickPlugin::registerTypes( const char *uri )
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
 
   qmlRegisterUncreatableType< QgsMessageLog >( uri, 0, 1, "QgsMessageLog", "Expose MessageLevel" );
-
-  qDebug( "REGISTERING FINISHED" );
 }
 

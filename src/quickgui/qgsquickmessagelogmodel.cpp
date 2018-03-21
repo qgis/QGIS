@@ -16,6 +16,7 @@
 #include <QDebug>
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 
@@ -63,6 +64,6 @@ void QgsQuickMessageLogModel::onMessageReceived( const QString &message, const Q
 {
   beginInsertRows( QModelIndex(), 0, 0 );
   mMessages.prepend( LogMessage( tag, message, level ) );
-  qDebug() << "Next message " << tag << " : " << message;
+  QgsDebugMsg( QString( "Next message %1 : %2" ).arg( tag ).arg( message ) );
   endInsertRows();
 }

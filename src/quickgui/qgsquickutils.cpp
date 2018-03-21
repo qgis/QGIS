@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsquickmapsettings.h"
@@ -37,7 +38,7 @@ QgsQuickUtils *QgsQuickUtils::instance()
 {
   if ( !sInstance )
   {
-    qDebug() << "QgsQuickUtils created: " << QThread::currentThreadId();
+    QgsDebugMsg( QString( "QgsQuickUtils created: %1" ).arg( long( QThread::currentThreadId() ) ) );
     sInstance = new QgsQuickUtils();
   }
   return sInstance;
@@ -73,7 +74,7 @@ QgsPoint QgsQuickUtils::pointFactory( double x, double y ) const
   return QgsPoint( x, y );
 }
 
-QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate& coor ) const
+QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate &coor ) const
 {
   return QgsPoint( coor.longitude(), coor.latitude(), coor.altitude() );
 }
@@ -133,7 +134,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
 {
   if ( !fileExists( sourcePath ) )
   {
-    qDebug() << "Source file does not exist!" << sourcePath;
+    QgsDebugMsg( QString( "Source file does not exist! %1" ).arg( sourcePath ) );
     return;
   }
 
@@ -148,7 +149,7 @@ void QgsQuickUtils::copyFile( QString sourcePath, QString targetPath )
 
   if ( !QFile( sourcePath ).rename( dir.absoluteFilePath( filename ) ) )
   {
-    qDebug() << "Couldn't rename file! Trying to copy instead";
+    QgsDebugMsg( QString( "Couldn't rename file! Trying to copy instead! %1" ).arg( filename ) );
     if ( !QFile( sourcePath ).copy( dir.absoluteFilePath( filename ) ) )
     {
       QgsApplication::messageLog()->logMessage( tr( "File %1 could not be copied to folder %2.", "QgsQuick", Qgis::Critical ).arg( sourcePath, targetPath ) );
@@ -178,7 +179,7 @@ QUrl QgsQuickUtils::getThemeIcon( const QString &name )
 {
   QString extension( ".svg" );
   QString path = "qrc:/" + name + extension;
-  qDebug() << "Using icon " << name << " from " << path;
+  QgsDebugMsg( QString( "Using icon %1 from %2" ).arg( name ).arg( path ) );
   return QUrl( path );
 }
 

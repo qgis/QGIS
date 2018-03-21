@@ -17,8 +17,8 @@
 #include <QPoint>
 #include <QDebug>
 
-#include "qgspointxy.h"
 #include "qgsdistancearea.h"
+#include "qgspointxy.h"
 
 #include "qgsquickmapsettings.h"
 #include "qgsquickscalebarkit.h"
@@ -113,7 +113,6 @@ void QgsQuickScaleBarKit::updateScaleBar()
 
   mDistance = round_digit * base;
   mWidth = mPreferredWidth * mDistance / dist;
-  //qDebug() << "Scale: " << mWidth << "px -> " << mDistance << " " << mUnits;
 
   emit scaleBarChanged();
 }

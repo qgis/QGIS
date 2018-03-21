@@ -15,6 +15,7 @@
 
 
 #include "qgsproject.h"
+#include "qgslogger.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
@@ -79,7 +80,7 @@ QList<QgsQuickFeature> QgsQuickIdentifyKit::identify( const QPointF &point )
     }
   }
 
-  qDebug() << "IdentifyKit identified " << results.count() << " results";
+  QgsDebugMsg( QString( "IdentifyKit identified %1 results" ).arg( results.count() ) );
   return results;
 }
 
@@ -178,8 +179,7 @@ QgsFeatureList QgsQuickIdentifyKit::identify( QgsVectorLayer *layer, const QPoin
 
   results = identifyVectorLayer( layer, mapPoint );
 
-  qDebug() << "IdentifyKit identified " << results.count() << " results for layer " << layer->name();
-
+  QgsDebugMsg( QString( "IdentifyKit identified %1 results for layer %2" ).arg( results.count() ).arg( layer->name() ) );
   return results;
 }
 

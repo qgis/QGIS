@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include "qgsquickpositionkit.h"
@@ -89,7 +90,8 @@ void QgsQuickPositionKit::replacePositionSource( QGeoPositionInfoSource *source 
              this, SLOT( positionUpdated( QGeoPositionInfo ) ) );
     connect( mSource, SIGNAL( updateTimeout() ), this, SLOT( onUpdateTimeout() ) );
     mSource->startUpdates();
-    qDebug() << "Position source changed: " << mSource->sourceName();
+
+    QgsDebugMsg( QString( "Position source changed: %1" ).arg( mSource->sourceName() ) );
   }
 }
 
