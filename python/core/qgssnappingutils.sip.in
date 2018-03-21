@@ -35,7 +35,7 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
 %End
   public:
 
-    QgsSnappingUtils( QObject *parent /TransferThis/ = 0 );
+    QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
 %Docstring
 Constructor for QgsSnappingUtils
 %End
@@ -139,6 +139,13 @@ Get extra information about the instance
     QgsSnappingConfig config() const;
 %Docstring
 The snapping configuration controls the behavior of this object
+%End
+
+    void setEnableSnappingForInvisibleFeature( bool enableIt );
+%Docstring
+Set if invisible features must be snapped or not.
+
+.. versionadded:: 3.2
 %End
 
   public slots:

@@ -970,6 +970,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mSnappingMarkerColorButton->setColor( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_color" ), QColor( Qt::magenta ) ).value<QColor>() );
   mSnappingTooltipsCheckbox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), false ).toBool() );
+  mEnableSnappingOnInvisibleFeatureCheckbox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() );
 
   //vertex marker
   mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool() );
@@ -1482,6 +1483,7 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_color" ), mSnappingMarkerColorButton->color() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), mSnappingTooltipsCheckbox->isChecked() );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), mEnableSnappingOnInvisibleFeatureCheckbox->isChecked() );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), mMarkersOnlyForSelectedCheckBox->isChecked() );
 

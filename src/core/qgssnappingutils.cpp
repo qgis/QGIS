@@ -21,9 +21,10 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 
-QgsSnappingUtils::QgsSnappingUtils( QObject *parent )
+QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )
   , mSnappingConfig( QgsProject::instance() )
+  , mEnableSnappingForInvisibleFeature( enableSnappingForInvisibleFeature )
 {
 }
 
@@ -93,37 +94,61 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
   return ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ); // the index - even if it exists - is not suitable
 }
 
-static bool _isMatchAVisibleLayer( const QgsPointLocator::Match &candidateMatch )
+static bool _isMatchAVisibleLayer( const QgsPointLocator::Match &candidateMatch, QgsMapSettings mapSettings, bool snapOnInvisibleFeature )
 {
+
   bool visible = true;
-
-  // segmentIntersection haven't a layer
-  if ( candidateMatch.layer() )
+  if ( !snapOnInvisibleFeature )
   {
-    visible = false;
-    QgsFeatureRequest request;
-    QString filterExpression( candidateMatch.layer()->renderer()->filter() );
-    if ( filterExpression.length() > 0 )
-      request.setFilterExpression( filterExpression );
-    else
-      request.setSubsetOfAttributes( QgsAttributeList() );
-
-    QgsFeatureIterator fi = candidateMatch.layer()->getFeatures( request );
-
-    QgsFeature f;
-    while ( fi.nextFeature( f ) )
+    // segmentIntersection haven't a layer
+    if ( candidateMatch.layer() )
     {
-      if ( f.id() == candidateMatch.featureId() )
+      visible = false;
+      QgsFeatureRequest request;
+
+      if ( mapSettings.destinationCrs().isValid() )
       {
-        visible = true;
-        break;
+        QgsCoordinateTransform transform = QgsCoordinateTransform( candidateMatch.layer()->crs(), mapSettings.destinationCrs(), mapSettings.transformContext() );
+        QgsRectangle rect = mapSettings.extent();
+        if ( transform.isValid() )
+        {
+          try
+          {
+            rect = transform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+          }
+          catch ( const QgsException &e )
+          {
+            Q_UNUSED( e );
+            // See https://issues.qgis.org/issues/12634
+            QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+          }
+        }
+        request.setFilterRect( rect );
+      }
+
+      QString filterExpression( candidateMatch.layer()->renderer()->filter() );
+      if ( filterExpression.length() > 0 )
+        request.setFilterExpression( filterExpression );
+      else
+        request.setSubsetOfAttributes( QgsAttributeList() );
+
+      QgsFeatureIterator fi = candidateMatch.layer()->getFeatures( request );
+
+      QgsFeature f;
+      while ( fi.nextFeature( f ) )
+      {
+        if ( f.id() == candidateMatch.featureId() )
+        {
+          visible = true;
+          break;
+        }
       }
     }
   }
   return visible;
 }
 
-static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY &pt, const QgsPointLocator::MatchList &segments )
+static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY &pt, const QgsPointLocator::MatchList &segments, QgsMapSettings mapSettings, bool snapOnInvisibleFeature )
 {
   if ( segments.isEmpty() )
     return QgsPointLocator::Match();
@@ -134,7 +159,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   QVector<QgsGeometry> geoms;
   Q_FOREACH ( const QgsPointLocator::Match &m, segments )
   {
-    if ( m.hasEdge() && _isMatchAVisibleLayer( m ) )
+    if ( m.hasEdge() && _isMatchAVisibleLayer( m, mapSettings, snapOnInvisibleFeature ) )
     {
       QgsPolylineXY pl( 2 );
       m.edgePoints( pl[0], pl[1] );
@@ -186,7 +211,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   return QgsPointLocator::Match( QgsPointLocator::Vertex, nullptr, 0, std::sqrt( minSqrDist ), minP );
 }
 
-static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointLocator::Match &candidateMatch, double maxDistance )
+static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointLocator::Match &candidateMatch, double maxDistance, QgsMapSettings mapSettings, bool snapOnInvisibleFeature )
 {
 
   // is candidate match relevant?
@@ -201,28 +226,28 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
   if ( bestMatch.type() == QgsPointLocator::Vertex && candidateMatch.type() == QgsPointLocator::Edge )
     return;
 
-  if ( !_isMatchAVisibleLayer( candidateMatch ) )
+  if ( !_isMatchAVisibleLayer( candidateMatch, mapSettings, snapOnInvisibleFeature ) )
     return;
 
   bestMatch = candidateMatch; // the other match is better!
 }
 
-static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, QgsPointLocator::Types type, double tolerance, QgsPointLocator::MatchFilter *filter )
+static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, QgsPointLocator::Types type, double tolerance, QgsPointLocator::MatchFilter *filter, QgsMapSettings mapSettings, bool snapOnInvisibleFeature )
 {
   if ( type & QgsPointLocator::Vertex )
   {
-    _replaceIfBetter( bestMatch, loc->nearestVertex( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestVertex( pointMap, tolerance, filter ), tolerance, mapSettings, snapOnInvisibleFeature );
   }
   if ( bestMatch.type() != QgsPointLocator::Vertex && ( type & QgsPointLocator::Edge ) )
   {
-    _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance, mapSettings, snapOnInvisibleFeature );
   }
   if ( bestMatch.type() != QgsPointLocator::Vertex && bestMatch.type() != QgsPointLocator::Edge && ( type & QgsPointLocator::Area ) )
   {
     // if edges were detected, set tolerance to 0 to only do pointInPolygon (and avoid redo nearestEdge)
     if ( type & QgsPointLocator::Edge )
       tolerance = 0;
-    _replaceIfBetter( bestMatch, loc->nearestArea( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestArea( pointMap, tolerance, filter ), tolerance, mapSettings, snapOnInvisibleFeature );
   }
 }
 
@@ -279,13 +304,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       return QgsPointLocator::Match();
 
     QgsPointLocator::Match bestMatch;
-    _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
+    _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, mMapSettings, mEnableSnappingForInvisibleFeature );
 
     if ( mSnappingConfig.intersectionSnapping() )
     {
       QgsPointLocator *locEdges = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
       QgsPointLocator::MatchList edges = locEdges->edgesInRect( pointMap, tolerance );
-      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), tolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges, mMapSettings, mEnableSnappingForInvisibleFeature ), tolerance, mMapSettings, mEnableSnappingForInvisibleFeature );
     }
 
     return bestMatch;
@@ -309,7 +334,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
-        _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter );
+        _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter, mMapSettings, mEnableSnappingForInvisibleFeature );
 
         if ( mSnappingConfig.intersectionSnapping() )
         {
@@ -320,7 +345,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     }
 
     if ( mSnappingConfig.intersectionSnapping() )
-      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges, mMapSettings, mEnableSnappingForInvisibleFeature ), maxSnapIntTolerance, mMapSettings, mEnableSnappingForInvisibleFeature );
 
     return bestMatch;
   }
@@ -345,7 +370,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       QgsVectorLayer *vl = entry.first;
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
       {
-        _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
+        _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, mMapSettings, mEnableSnappingForInvisibleFeature );
 
         if ( mSnappingConfig.intersectionSnapping() )
           edges << loc->edgesInRect( pointMap, tolerance );
@@ -353,7 +378,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     }
 
     if ( mSnappingConfig.intersectionSnapping() )
-      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), tolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges, mMapSettings, mEnableSnappingForInvisibleFeature ), tolerance, mMapSettings, mEnableSnappingForInvisibleFeature );
 
     return bestMatch;
   }
@@ -460,6 +485,11 @@ QgsSnappingConfig QgsSnappingUtils::config() const
   return mSnappingConfig;
 }
 
+void QgsSnappingUtils::setEnableSnappingForInvisibleFeature( bool enableIt )
+{
+  mEnableSnappingForInvisibleFeature = enableIt;
+}
+
 void QgsSnappingUtils::setConfig( const QgsSnappingConfig &config )
 {
   if ( mSnappingConfig == config )
@@ -492,7 +522,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPo
     return QgsPointLocator::Match();
 
   QgsPointLocator::Match bestMatch;
-  _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
+  _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, mMapSettings, mEnableSnappingForInvisibleFeature );
   return bestMatch;
 }
 
