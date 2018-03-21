@@ -18,27 +18,6 @@
 #include "qgsmaplayerrenderer.h"
 
 
-/**
-  A minimal data provider for plugin layers
- */
-///@cond PRIVATE
-class QgsPluginLayerDataProvider : public QgsDataProvider
-{
-  public:
-    QgsPluginLayerDataProvider( const QString &layerType ) : mName( layerType ) {}
-    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
-    virtual QgsCoordinateReferenceSystem crs() const { return QgsCoordinateReferenceSystem(); }
-    virtual QString name() const override { return mName; }
-    QString description() const override { return ""; }
-    virtual QgsRectangle extent() const { return mExtent; }
-    virtual bool isValid() const { return true; }
-
-  private:
-    QString mName;
-    QgsRectangle mExtent;
-};
-///@endcond
-
 QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
   : QgsMapLayer( PluginLayer, layerName )
   , mPluginLayerType( layerType )
@@ -79,3 +58,37 @@ const QgsDataProvider *QgsPluginLayer::dataProvider() const
 {
   return mDataProvider;
 }
+
+//
+// QgsPluginLayerDataProvider
+//
+///@cond PRIVATE
+QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType )
+  : mName( layerType )
+{}
+
+QgsCoordinateReferenceSystem QgsPluginLayerDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QString QgsPluginLayerDataProvider::name() const
+{
+  return mName;
+}
+
+QString QgsPluginLayerDataProvider::description() const
+{
+  return QString();
+}
+
+QgsRectangle QgsPluginLayerDataProvider::extent() const
+{
+  return mExtent;
+}
+
+bool QgsPluginLayerDataProvider::isValid() const
+{
+  return true;
+}
+///@endcond

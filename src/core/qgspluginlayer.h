@@ -63,4 +63,30 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsDataProvider *mDataProvider;
 };
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for plugin layers
+ */
+class QgsPluginLayerDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsPluginLayerDataProvider( const QString &layerType );
+    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
+    virtual QgsCoordinateReferenceSystem crs() const override;
+    virtual QString name() const override;
+    QString description() const override;
+    virtual QgsRectangle extent() const override;
+    virtual bool isValid() const override;
+
+  private:
+    QString mName;
+    QgsRectangle mExtent;
+};
+///@endcond
+#endif
+
 #endif // QGSPLUGINLAYER_H
