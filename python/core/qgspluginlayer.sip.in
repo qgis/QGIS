@@ -59,6 +59,7 @@ Set source string. This is used for example in layer tree to show tooltip.
   protected:
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
