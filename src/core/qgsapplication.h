@@ -30,6 +30,7 @@ class QgsTaskManager;
 class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
+class QgsProjectStorageRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsSymbolLayerRegistry;
@@ -669,6 +670,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry();
 
     /**
+     * Returns registry of available project storage implementations.
+     * \since QGIS 3.2
+     */
+    static QgsProjectStorageRegistry *projectStorageRegistry();
+
+    /**
      * This string is used to represent the value `NULL` throughout QGIS.
      *
      * In general, when passing values around, prefer to use a null QVariant
@@ -799,6 +806,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;

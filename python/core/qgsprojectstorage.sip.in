@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorage.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProjectStorage
+{
+%Docstring
+Abstract interface for project storage - to be implemented by various backends
+and registered in QgsProjectStorageRegistry.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorage.h"
+%End
+  public:
+    virtual ~QgsProjectStorage();
+
+    virtual QString type() = 0;
+%Docstring
+Unique identifier of the project storage type. If type() returns "memory", all project file names
+starting with "memory:" will have read/write redirected through that storage implementation.
+%End
+
+    virtual QStringList listProjects( const QString &uri ) = 0;
+%Docstring
+Returns list of all projects for given URI (specific to each storage backend)
+%End
+
+    virtual bool readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads project file content stored in the backend at the specified URI to the given device
+(could be e.g. a temporary file or a memory buffer). The device is expected to be empty
+when passed to readProject() so that the method can write all data to it and then rewind
+it using seek(0) to make it ready for reading in :py:class:`QgsProject`.
+%End
+
+    virtual bool writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
+%Docstring
+Writes project file content stored in given device (could be e.g. a temporary file or a memory buffer)
+using the backend to the specified URI. The device is expected to contain all project file data
+and having position at the start of the content when passed to writeProject() so that the method
+can read all data from it until it reaches its end.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorage.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

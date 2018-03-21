@@ -56,6 +56,7 @@ class QgsMapLayer;
 class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
+class QgsProjectStorage;
 class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;

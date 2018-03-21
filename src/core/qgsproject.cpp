@@ -29,6 +29,8 @@
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
 #include "qgspathresolver.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
@@ -822,6 +824,26 @@ bool QgsProject::read()
   QString filename = mFile.fileName();
   bool rc;
 
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( filename );
+  if ( storage )
+  {
+    QTemporaryFile inDevice;
+    if ( !inDevice.open() )
+    {
+      setError( tr( "Unable to open %1" ).arg( inDevice.fileName() ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !storage->readProject( filename, &inDevice, context ) )
+    {
+      setError( tr( "Unable to open %1" ).arg( filename ) );
+      return false;
+    }
+
+    return unzip( inDevice.fileName() );  // calls setError() if returning false
+  }
+
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
     rc = unzip( mFile.fileName() );
@@ -1374,6 +1396,39 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+  if ( projectStorage )
+  {
+    // for projects stored in a custom storage, we cannot use relative paths since the storage most likely
+    // will not be in a file system
+    writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+
+    QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+    QString tmpZipFilename( tempPath + QDir::separator() + QUuid::createUuid().toString() );
+
+    if ( !zip( tmpZipFilename ) )
+      return false;  // zip() already calls setError() when returning false
+
+    QFile tmpZipFile( tmpZipFilename );
+    if ( !tmpZipFile.open( QIODevice::ReadOnly ) )
+    {
+      setError( tr( "Unable to read file %1" ).arg( tmpZipFilename ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !projectStorage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
+    {
+      setError( tr( "Unable to save project to storage %1" ).arg( mFile.fileName() ) );
+      return false;
+    }
+
+    tmpZipFile.close();
+    QFile::remove( tmpZipFilename );
+
+    return true;
+  }
+
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
     return zip( mFile.fileName() );
