@@ -116,7 +116,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if value:
                     parameters[param.name()] = value
 
-        return parameters
+        return self.algorithm().preprocessParameters(parameters)
 
     def checkExtentCRS(self):
         unmatchingCRS = False
