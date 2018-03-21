@@ -83,10 +83,10 @@ class merge(GdalAlgorithm):
         self.addParameter(nodata_param)
 
         nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
-                                                    self.tr('Assign specified "nodata" value to output'),
-                                                    type=QgsProcessingParameterNumber.Integer,
-                                                    defaultValue=None,
-                                                    optional=True)
+                                                        self.tr('Assign specified "nodata" value to output'),
+                                                        type=QgsProcessingParameterNumber.Integer,
+                                                        defaultValue=None,
+                                                        optional=True)
         nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(nodata_out_param)
 
@@ -159,15 +159,9 @@ class merge(GdalAlgorithm):
 
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt
-        listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'mergeInputFiles.txt')
-        with open(listFile, 'w') as f:
-            if executing:
-                layers = []
-                for l in self.parameterAsLayerList(parameters, self.INPUT, context):
-                    layers.append('"' + l.source() + '"')
-                f.write('\n'.join(layers))
+        list_file = GdalUtils.writeLayerParameterToTextFile(filename='mergeInputFiles.txt', alg=self, parameters=parameters, parameter_name=self.INPUT, context=context, quote=True, executing=executing)
         arguments.append('--optfile')
-        arguments.append(listFile)
+        arguments.append(list_file)
 
         commands = []
         if isWindows():
