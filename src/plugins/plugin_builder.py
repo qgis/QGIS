@@ -35,7 +35,7 @@ def plugin_file(pluginDir, file):
 # will make will wreak havoc....
 
 myDir = os.getcwd()
-print("Checking that we are in the <qgis dir>/src/plugins/ directory....", end=' ')
+print("Checking that we are in the <qgis dir>/src/plugins/ directory....", end='')
 
 pluginsDirectory = os.path.join('src', 'plugins')
 
