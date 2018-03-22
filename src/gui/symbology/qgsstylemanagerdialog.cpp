@@ -82,10 +82,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
          );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
-  QAction *exportAction = new QAction( tr( "Export symbol(s)…" ), this );
+  QAction *exportAction = new QAction( tr( "Export Symbol(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import symbol(s)…" ), this );
+  QAction *importAction = new QAction( tr( "Import Symbol(s)…" ), this );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   shareMenu->addAction( importAction );
   shareMenu->addSeparator();
@@ -1390,7 +1390,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     mGroupListMenu->addSeparator();
   }
-  a = new QAction( tr( "Create new tag…" ), mGroupListMenu );
+  a = new QAction( tr( "Create New Tag…" ), mGroupListMenu );
   connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
          );
   mGroupListMenu->addAction( a );
