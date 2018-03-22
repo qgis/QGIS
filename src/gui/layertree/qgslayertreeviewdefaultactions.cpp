@@ -51,7 +51,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
   if ( !node )
     return nullptr;
 
-  QAction *a = new QAction( tr( "&Show in Overview" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ), tr( "&Show in Overview" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showInOverview );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
