@@ -433,7 +433,7 @@ void QgsColorButton::prepareMenu()
 
   if ( mShowNull )
   {
-    QAction *nullAction = new QAction( tr( "Clear color" ), this );
+    QAction *nullAction = new QAction( tr( "Clear Color" ), this );
     nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsColorButton::setToNull );
@@ -442,7 +442,7 @@ void QgsColorButton::prepareMenu()
   //show default color option if set
   if ( mDefaultColor.isValid() )
   {
-    QAction *defaultColorAction = new QAction( tr( "Default color" ), this );
+    QAction *defaultColorAction = new QAction( tr( "Default Color" ), this );
     defaultColorAction->setIcon( createMenuIcon( mDefaultColor ) );
     mMenu->addAction( defaultColorAction );
     connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
@@ -494,11 +494,11 @@ void QgsColorButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+  QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
   mMenu->addAction( copyColorAction );
   connect( copyColorAction, &QAction::triggered, this, &QgsColorButton::copyColor );
 
-  QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+  QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QColor clipColor;
@@ -516,11 +516,11 @@ void QgsColorButton::prepareMenu()
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
-  QAction *pickColorAction = new QAction( tr( "Pick color" ), this );
+  QAction *pickColorAction = new QAction( tr( "Pick Color" ), this );
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, &QAction::triggered, this, &QgsColorButton::activatePicker );
 
-  QAction *chooseColorAction = new QAction( tr( "Choose color…" ), this );
+  QAction *chooseColorAction = new QAction( tr( "Choose Color…" ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, &QAction::triggered, this, &QgsColorButton::showColorDialog );
 }

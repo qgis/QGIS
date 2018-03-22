@@ -71,7 +71,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
   mActionDescription = new QAction( tr( "Description…" ), this );
 
-  mActionCreateAuxiliaryField = new QAction( tr( "Store data in the project" ), this );
+  mActionCreateAuxiliaryField = new QAction( tr( "Store Data in the Project" ), this );
   mActionCreateAuxiliaryField->setCheckable( true );
 
   mActionExpDialog = new QAction( tr( "Edit…" ), this );

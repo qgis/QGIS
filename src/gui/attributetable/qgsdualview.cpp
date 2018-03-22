@@ -545,7 +545,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
-  QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
+  QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
   menu->addAction( copyContentAction );
   connect( copyContentAction, &QAction::triggered, this, &QgsDualView::copyCellContent );
@@ -554,16 +554,16 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && vl && vl->geometryType() != QgsWkbTypes::NullGeometry )
   {
-    menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
-    menu->addAction( tr( "Pan to feature" ), this, SLOT( panToCurrentFeature() ) );
-    menu->addAction( tr( "Flash feature" ), this, SLOT( flashCurrentFeature() ) );
+    menu->addAction( tr( "Zoom to Feature" ), this, SLOT( zoomToCurrentFeature() ) );
+    menu->addAction( tr( "Pan to Feature" ), this, SLOT( panToCurrentFeature() ) );
+    menu->addAction( tr( "Flash Feature" ), this, SLOT( flashCurrentFeature() ) );
   }
 
   //add user-defined actions to context menu
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Field" ) );
   if ( !actions.isEmpty() )
   {
-    QAction *a = menu->addAction( tr( "Run layer action" ) );
+    QAction *a = menu->addAction( tr( "Run Layer Action" ) );
     a->setEnabled( false );
 
     Q_FOREACH ( const QgsAction &action, actions )
@@ -602,11 +602,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   }
 
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+  menu->addAction( tr( "Open Form" ), a, SLOT( featureForm() ) );
 #else
-  menu->addAction( tr( "Open form" ), a, &QgsAttributeTableAction::featureForm );
+  menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
 #endif
 }
 
@@ -624,11 +624,11 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   delete mHorizontalHeaderMenu;
   mHorizontalHeaderMenu = new QMenu( this );
 
-  QAction *hide = new QAction( tr( "&Hide column" ), mHorizontalHeaderMenu );
+  QAction *hide = new QAction( tr( "&Hide Column" ), mHorizontalHeaderMenu );
   connect( hide, &QAction::triggered, this, &QgsDualView::hideColumn );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
-  QAction *setWidth = new QAction( tr( "&Set width…" ), mHorizontalHeaderMenu );
+  QAction *setWidth = new QAction( tr( "&Set Width…" ), mHorizontalHeaderMenu );
   connect( setWidth, &QAction::triggered, this, &QgsDualView::resizeColumn );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
@@ -638,7 +638,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu->addAction( optimizeWidth );
 
   mHorizontalHeaderMenu->addSeparator();
-  QAction *organize = new QAction( tr( "&Organize columns…" ), mHorizontalHeaderMenu );
+  QAction *organize = new QAction( tr( "&Organize Columns…" ), mHorizontalHeaderMenu );
   connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
   mHorizontalHeaderMenu->addAction( organize );
   QAction *sort = new QAction( tr( "&Sort…" ), mHorizontalHeaderMenu );
