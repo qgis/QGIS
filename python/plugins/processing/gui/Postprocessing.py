@@ -44,6 +44,7 @@ from processing.gui.SilentProgress import SilentProgress
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
+from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputHTML
 
 from processing.tools import dataobjects
@@ -74,6 +75,15 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                     dataobjects.load(out.value, name, alg.crs,
                                      RenderingStyles.getStyle(alg.commandLineName(),
                                                               out.name))
+            except Exception:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                       "Error loading result layer:\n" + traceback.format_exc())
+                wrongLayers.append(out.description)
+        elif isinstance(out, OutputFile) and out.ext == 'csv':
+            try:
+                dataobjects.load(out.value, name, alg.crs,
+                                 RenderingStyles.getStyle(alg.commandLineName(),
+                                                          out.name))
             except Exception:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                        "Error loading result layer:\n" + traceback.format_exc())
