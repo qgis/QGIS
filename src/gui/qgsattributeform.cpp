@@ -1099,6 +1099,7 @@ void QgsAttributeForm::init()
   vl->addWidget( container );
 
   mFormEditorWidgets.clear();
+  mFormWidgets.clear();
 
   // a bar to warn the user with non-blocking messages
   setContentsMargins( 0, 0, 0, 0 );
