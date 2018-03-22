@@ -159,8 +159,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     QgsSnappingConfig config() const;
 
-    /*
+    /**
      * Set if invisible features must be snapped or not.
+     *
+     * \param enableIt Enable or not this feature
+     *
      * \since QGIS 3.2
      */
     void setEnableSnappingForInvisibleFeature( bool enableIt );

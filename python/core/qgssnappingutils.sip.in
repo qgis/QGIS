@@ -145,6 +145,8 @@ The snapping configuration controls the behavior of this object
 %Docstring
 Set if invisible features must be snapped or not.
 
+:param enableIt: Enable or not this feature
+
 .. versionadded:: 3.2
 %End
 

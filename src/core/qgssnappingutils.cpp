@@ -103,49 +103,32 @@ static bool _isMatchAVisibleLayer( const QgsPointLocator::Match &candidateMatch,
     // segmentIntersection haven't a layer
     if ( candidateMatch.layer() )
     {
-      visible = false;
-      QgsFeatureRequest request;
-
-      if ( mapSettings.destinationCrs().isValid() )
+      bool filter = false;
+      QgsRenderContext context( QgsRenderContext::fromMapSettings( mapSettings ) );
+      context.expressionContext() << QgsExpressionContextUtils::layerScope( candidateMatch.layer() );
+      std::unique_ptr< QgsFeatureRenderer > renderer( candidateMatch.layer()->renderer() ? candidateMatch.layer()->renderer()->clone() : nullptr );
+      if ( renderer )
       {
-        QgsCoordinateTransform transform = QgsCoordinateTransform( candidateMatch.layer()->crs(), mapSettings.destinationCrs(), mapSettings.transformContext() );
-        QgsRectangle rect = mapSettings.extent();
-        if ( transform.isValid() )
-        {
-          try
-          {
-            rect = transform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
-          }
-          catch ( const QgsException &e )
-          {
-            Q_UNUSED( e );
-            // See https://issues.qgis.org/issues/12634
-            QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
-          }
-        }
-        request.setFilterRect( rect );
+        // setup scale for scale dependent visibility (rule based)
+        renderer->startRender( context, candidateMatch.layer()->fields() );
+        filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
       }
 
-      QString filterExpression( candidateMatch.layer()->renderer()->filter() );
-      if ( filterExpression.length() > 0 )
-        request.setFilterExpression( filterExpression );
-      else
-        request.setSubsetOfAttributes( QgsAttributeList() );
+      QgsFeature feat = candidateMatch.layer()->getFeature( candidateMatch.featureId() );
+      context.expressionContext().setFeature( feat );
 
-      QgsFeatureIterator fi = candidateMatch.layer()->getFeatures( request );
+      if ( filter && !renderer->willRenderFeature( feat, context ) )
+        visible = false;
 
-      QgsFeature f;
-      while ( fi.nextFeature( f ) )
+      if ( renderer )
       {
-        if ( f.id() == candidateMatch.featureId() )
-        {
-          visible = true;
-          break;
-        }
+        renderer->stopRender( context );
       }
     }
   }
+
   return visible;
+
 }
 
 static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY &pt, const QgsPointLocator::MatchList &segments, QgsMapSettings mapSettings, bool snapOnInvisibleFeature )
