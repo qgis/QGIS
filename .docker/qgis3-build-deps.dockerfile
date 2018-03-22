@@ -6,11 +6,17 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
+RUN apt-get update
+RUN apt-get install -y \
+    software-properties-common \
+    tzdata
 
-RUN  apt-get update \
-  && apt-get install -y software-properties-common \
-  && apt-get update \
-  && apt-get install -y \
+# configure tzdata maually to avoid the intereactive ask installing postgresql
+RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+ENV TZ=Europe/Berlin
+
+# continue installing packages
+RUN apt-get install -y \
     bison \
     ca-certificates \
     ccache \
@@ -88,6 +94,8 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
+    postgresql-all \
+    postgis \
   && pip3 install \
     psycopg2 \
     numpy \
