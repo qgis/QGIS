@@ -155,6 +155,53 @@ class CORE_EXPORT QgsGeometryUtils
                                         QgsPointXY &intersection SIP_INOUT );
 
     /**
+     * Calculates the intersections points between the circle with center \a center1 and
+     * radius \a radius1 and the circle with center \a center2 and radius \a radius2.
+     *
+     * If found, the intersection points will be stored in \a intersection1 and \a intersection2.
+     *
+     * \returns number of intersection points found.
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleIntersections( QgsPointXY center1, double radius1,
+                                          QgsPointXY center2, double radius2,
+                                          QgsPointXY &intersection1, QgsPointXY &intersection2 );
+
+    /**
+     * Calculates the tangent points between the circle with the specified \a center and \a radius
+     * and the point \a p.
+     *
+     * If found, the tangent points will be stored in \a pt1 and \a pt2.
+     *
+     * \since QGIS 3.2
+     */
+    static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
+                                       const QgsPointXY &p, QgsPointXY &pt1, QgsPointXY &pt2 );
+
+    /**
+     * Calculates the outer tangent points for two circles, centered at \a center1 and
+     * \a center2 and with radii of \a radius1 and \a radius2 respectively.
+     *
+     * The outer tangent points correspond to the points at which the two lines
+     * which are drawn so that they are tangential to both circles touch
+     * the circles.
+     *
+     * The first tangent line is described by the points
+     * stored in \a line1P1 and \a line1P2,
+     * and the second line is described by the points stored in \a line2P1
+     * and \a line2P2.
+     *
+     * Returns the number of tangents (either 0 or 2).
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleOuterTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1, QgsPointXY &line1P2,
+      QgsPointXY &line2P1, QgsPointXY &line2P2 );
+
+    /**
      * \brief Project the point on a segment
      * \param p The point
      * \param s1 The segment start point
