@@ -1770,6 +1770,20 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
   }
 }
 
+QgsGeometry QgsGeometry::taperedBuffer( double startWidth, double endWidth, int segments ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.taperedBuffer( startWidth, endWidth, segments );
+}
+
+QgsGeometry QgsGeometry::variableWidthBufferByM( int segments ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.variableWidthBufferByM( segments );
+}
+
 QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
 {
   if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )

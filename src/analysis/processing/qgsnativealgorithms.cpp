@@ -72,6 +72,7 @@
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmswapxy.h"
 #include "qgsalgorithmsymmetricaldifference.h"
+#include "qgsalgorithmtaperedbuffer.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
@@ -178,10 +179,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsSymmetricalDifferenceAlgorithm() );
+  addAlgorithm( new QgsTaperedBufferAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
+  addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
 }
 

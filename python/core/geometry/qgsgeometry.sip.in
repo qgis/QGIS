@@ -894,6 +894,10 @@ Test for if geometry crosses another (uses GEOS)
 %Docstring
 Returns a buffer region around this geometry having the given width and with a specified number
 of segments used to approximate curves
+
+.. seealso:: :py:func:`singleSidedBuffer`
+
+.. seealso:: :py:func:`taperedBuffer`
 %End
 
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
@@ -907,6 +911,10 @@ Returns a buffer region around the geometry, with additional style options.
 :param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
 .. versionadded:: 2.4
+
+.. seealso:: :py:func:`singleSidedBuffer`
+
+.. seealso:: :py:func:`taperedBuffer`
 %End
 
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
@@ -938,6 +946,51 @@ applied to one side of the line.
 calculated
 
 .. versionadded:: 3.0
+
+.. seealso:: :py:func:`buffer`
+
+.. seealso:: :py:func:`taperedBuffer`
+%End
+
+    QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
+%Docstring
+Calculates a variable width buffer ("tapered buffer") for a (multi)curve geometry.
+
+The buffer begins at a width of ``startWidth`` at the start of each curve, and
+ends at a width of ``endWidth``. Note that unlike buffer() methods, ``startWidth``
+and ``endWidth`` are the diameter of the buffer at these points, not the radius.
+
+The ``segments`` argument specifies the number of segments to approximate quarter-circle
+curves in the buffer.
+
+Non (multi)curve input geometries will return a null output geometry.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`buffer`
+
+.. seealso:: :py:func:`singleSidedBuffer`
+
+.. seealso:: :py:func:`variableWidthBufferByM`
+%End
+
+    QgsGeometry variableWidthBufferByM( int segments ) const;
+%Docstring
+Calculates a variable width buffer for a (multi)linestring geometry, where
+the width at each node is taken from the linestring m values.
+
+The ``segments`` argument specifies the number of segments to approximate quarter-circle
+curves in the buffer.
+
+Non (multi)linestring input geometries will return a null output geometry.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`buffer`
+
+.. seealso:: :py:func:`singleSidedBuffer`
+
+.. seealso:: :py:func:`taperedBuffer`
 %End
 
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
