@@ -75,6 +75,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
+  processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp

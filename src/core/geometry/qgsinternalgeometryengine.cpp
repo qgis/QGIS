@@ -23,8 +23,10 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
-
+#include "qgscircle.h"
+#include "qgslogger.h"
 #include <QTransform>
+#include <functional>
 #include <memory>
 #include <queue>
 
@@ -858,3 +860,177 @@ bool QgsRay2D::intersects( const QgsLineSegment2D &segment, QgsPointXY &intersec
   }
 }
 
+QVector<QgsPointXY> generateSegmentCurve( const QgsPoint &center1, const double radius1, const QgsPoint &center2, const double radius2 )
+{
+  // ensure that first circle is smaller than second
+  if ( radius1 > radius2 )
+    return generateSegmentCurve( center2, radius2, center1, radius1 );
+
+  QgsPointXY t1;
+  QgsPointXY t2;
+  QgsPointXY t3;
+  QgsPointXY t4;
+  QVector<QgsPointXY> points;
+  if ( QgsGeometryUtils::circleCircleOuterTangents( center1, radius1, center2, radius2, t1, t2, t3, t4 ) )
+  {
+    points << t1
+           << t2
+           << t4
+           << t3;
+  }
+  return points;
+}
+
+// partially ported from JTS VariableWidthBuffer,
+// https://github.com/topobyte/jts/blob/master/jts-lab/src/main/java/com/vividsolutions/jts/operation/buffer/VariableWidthBuffer.java
+
+QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const
+{
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  std::vector< std::unique_ptr<QgsLineString > > linesToProcess;
+
+  const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
+  if ( multiCurve )
+  {
+    for ( int i = 0; i < multiCurve->partCount(); ++i )
+    {
+      if ( static_cast< const QgsCurve * >( multiCurve->geometryN( i ) )->nCoordinates() == 0 )
+        continue; // skip 0 length lines
+
+      linesToProcess.emplace_back( static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() ) );
+    }
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( mGeometry );
+  if ( curve )
+  {
+    if ( curve->nCoordinates() > 0 )
+      linesToProcess.emplace_back( static_cast<QgsLineString *>( curve->segmentize() ) );
+  }
+
+  if ( linesToProcess.empty() )
+  {
+    QgsGeometry g;
+    g.mLastError = QStringLiteral( "Input geometry was not a curve type geometry" );
+    return g;
+  }
+
+  QVector<QgsGeometry> bufferedLines;
+
+  for ( std::unique_ptr< QgsLineString > &line : linesToProcess )
+  {
+    QVector<QgsGeometry> parts;
+    QgsPoint prevPoint;
+    double prevRadius = 0;
+    QgsGeometry prevCircle;
+
+    std::unique_ptr< double[] > widths = widthFunction( line.get() ) ;
+    for ( int i = 0; i < line->nCoordinates(); ++i )
+    {
+      QgsPoint thisPoint = line->pointN( i );
+      QgsGeometry thisCircle;
+      double thisRadius = widths[ i ] / 2.0;
+      if ( thisRadius > 0 )
+      {
+        QgsGeometry p = QgsGeometry( thisPoint.clone() );
+
+        QgsCircle circ( thisPoint, thisRadius );
+        thisCircle = QgsGeometry( circ.toPolygon( segments * 4 ) );
+        parts << thisCircle;
+      }
+      else
+      {
+        thisCircle = QgsGeometry( thisPoint.clone() );
+      }
+
+      if ( i > 0 )
+      {
+        if ( prevRadius > 0 || thisRadius > 0 )
+        {
+          QVector< QgsPointXY > points = generateSegmentCurve( prevPoint, prevRadius, thisPoint, thisRadius );
+          if ( !points.empty() )
+          {
+            // snap points to circle vertices
+
+            int atVertex = 0;
+            int beforeVertex = 0;
+            int afterVertex = 0;
+            double sqrDist = 0;
+            double sqrDistPrev = 0;
+            for ( int j = 0; j < points.count(); ++j )
+            {
+              QgsPointXY pA = prevCircle.closestVertex( points.at( j ), atVertex, beforeVertex, afterVertex, sqrDistPrev );
+              QgsPointXY pB = thisCircle.closestVertex( points.at( j ), atVertex, beforeVertex, afterVertex, sqrDist );
+              points[j] = sqrDistPrev < sqrDist ? pA : pB;
+            }
+            // close ring
+            points.append( points.at( 0 ) );
+
+            std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+            poly->setExteriorRing( new QgsLineString( points ) );
+            if ( poly->area() > 0 )
+              parts << QgsGeometry( std::move( poly ) );
+          }
+        }
+      }
+      prevPoint = thisPoint;
+      prevRadius = thisRadius;
+      prevCircle = thisCircle;
+    }
+
+    bufferedLines << QgsGeometry::unaryUnion( parts );
+  }
+
+  return QgsGeometry::collectGeometry( bufferedLines );
+}
+
+QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const
+{
+  start = std::fabs( start );
+  end = std::fabs( end );
+
+  auto interpolateWidths = [ start, end ]( const QgsLineString * line )->std::unique_ptr< double [] >
+  {
+    // ported from JTS VariableWidthBuffer,
+    // https://github.com/topobyte/jts/blob/master/jts-lab/src/main/java/com/vividsolutions/jts/operation/buffer/VariableWidthBuffer.java
+    std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
+    widths[0] = start;
+    widths[line->nCoordinates() - 1] = end;
+
+    double lineLength = line->length();
+    double currentLength = 0;
+    QgsPoint prevPoint = line->pointN( 0 );
+    for ( int i = 1; i < line->nCoordinates() - 1; ++i )
+    {
+      QgsPoint point = line->pointN( i );
+      double segmentLength = point.distance( prevPoint );
+      currentLength += segmentLength;
+      double lengthFraction = lineLength > 0 ? currentLength / lineLength : 1;
+      double delta = lengthFraction * ( end - start );
+      widths[i] = start + delta;
+      prevPoint = point;
+    }
+    return widths;
+  };
+
+  return variableWidthBuffer( segments, interpolateWidths );
+}
+
+QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) const
+{
+  auto widthByM = []( const QgsLineString * line )->std::unique_ptr< double [] >
+  {
+    std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
+    for ( int i = 0; i < line->nCoordinates(); ++i )
+    {
+      widths[ i ] = line->mAt( i );
+    }
+    return widths;
+  };
+
+  return variableWidthBuffer( segments, widthByM );
+}

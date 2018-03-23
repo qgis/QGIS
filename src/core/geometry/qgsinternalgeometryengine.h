@@ -102,6 +102,50 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry densifyByDistance( double distance ) const;
 
+    /**
+     * Calculates a variable width buffer for a (multi)curve geometry.
+     *
+     * The width of the buffer at each node in the input linestrings is calculated by
+     * calling the specified \a widthFunction, which must return an array of the buffer widths
+     * for every node in the line.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const;
+
+    /**
+     * Calculates a tapered width buffer for a (multi)curve geometry.
+     *
+     * The buffer begins at a width of \a startWidth at the start of each curve, and
+     * ends at a width of \a endWidth. Note that unlike QgsGeometry::buffer() methods, \a startWidth
+     * and \a endWidth are the diameter of the buffer at these points, not the radius.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
+
+    /**
+     * Calculates a variable width buffer using the m-values from a (multi)line geometry.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)line input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry variableWidthBufferByM( int segments ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
 };

@@ -5350,4 +5350,45 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (lines)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_line.gml
+        type: vector
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (multiline)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: multilines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_multiline.gml
+        type: vector
+
+  - algorithm: native:bufferbym
+    name: Variable width buffer by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SEGMENTS: 3
+    results:
+      OUTPUT:
+        name: expected/variable_width_buffer_by_m.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format

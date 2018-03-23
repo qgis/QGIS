@@ -24,7 +24,7 @@ class QgsMessageLogConsole;
 
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
+  QgsDebugMsg( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
 
   QgsApplication::messageLog()->emitMessage( message, tag, level );
 }

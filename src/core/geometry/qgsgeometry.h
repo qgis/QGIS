@@ -910,6 +910,9 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
      * of segments used to approximate curves
+     *
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
      */
     QgsGeometry buffer( double distance, int segments ) const;
 
@@ -921,6 +924,9 @@ class CORE_EXPORT QgsGeometry
      * \param joinStyle   join style for corners in geometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
      * \since QGIS 2.4
+     *
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
      */
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
 
@@ -945,10 +951,48 @@ class CORE_EXPORT QgsGeometry
      * \returns buffered geometry, or an empty geometry if buffer could not be
      * calculated
      * \since QGIS 3.0
+     *
+     * \see buffer()
+     * \see taperedBuffer()
      */
     QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
                                    JoinStyle joinStyle = JoinStyleRound,
                                    double miterLimit = 2.0 ) const;
+
+    /**
+     * Calculates a variable width buffer ("tapered buffer") for a (multi)curve geometry.
+     *
+     * The buffer begins at a width of \a startWidth at the start of each curve, and
+     * ends at a width of \a endWidth. Note that unlike buffer() methods, \a startWidth
+     * and \a endWidth are the diameter of the buffer at these points, not the radius.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     * \see buffer()
+     * \see singleSidedBuffer()
+     * \see variableWidthBufferByM()
+     */
+    QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
+
+    /**
+     * Calculates a variable width buffer for a (multi)linestring geometry, where
+     * the width at each node is taken from the linestring m values.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)linestring input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     * \see buffer()
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
+     */
+    QgsGeometry variableWidthBufferByM( int segments ) const;
 
     /**
      * Extends a (multi)line geometry by extrapolating out the start or end of the line
@@ -1783,6 +1827,9 @@ class CORE_EXPORT QgsGeometry
     */
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
+
+
+    friend class QgsInternalGeometryEngine;
 
 }; // class QgsGeometry
 
