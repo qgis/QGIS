@@ -67,7 +67,7 @@ void QgsMultiPoint::clear()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -79,7 +79,7 @@ QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QStri
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
-      elemPointMember.appendChild( geom->asGml2( doc, precision, ns ) );
+      elemPointMember.appendChild( geom->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
   }
@@ -87,7 +87,7 @@ QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -99,7 +99,7 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
-      elemPointMember.appendChild( geom->asGml3( doc, precision, ns ) );
+      elemPointMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
   }

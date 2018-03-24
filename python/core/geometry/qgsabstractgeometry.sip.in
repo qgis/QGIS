@@ -65,6 +65,14 @@ class QgsAbstractGeometry
       MaximumDifference
     };
 
+    enum AxisOrder
+    {
+
+      XY,
+
+      YX
+    };
+
     QgsAbstractGeometry();
 %Docstring
 Constructor for QgsAbstractGeometry.
@@ -195,13 +203,14 @@ Returns a WKT representation of the geometry.
 .. seealso:: :py:func:`asJson`
 %End
 
-    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 %Docstring
 Returns a GML2 representation of the geometry.
 
 :param doc: DOM document
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
+:param axisOrder: Axis order for generated GML
 
 .. seealso:: :py:func:`asWkb`
 
@@ -212,13 +221,14 @@ Returns a GML2 representation of the geometry.
 .. seealso:: :py:func:`asJson`
 %End
 
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 %Docstring
 Returns a GML3 representation of the geometry.
 
 :param doc: DOM document
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
+:param axisOrder: Axis order for generated GML
 
 .. seealso:: :py:func:`asWkb`
 

@@ -66,7 +66,7 @@ Construct a QgsTriangle from three QPointF.
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
