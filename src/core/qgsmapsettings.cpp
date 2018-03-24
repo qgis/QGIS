@@ -388,7 +388,7 @@ void QgsMapSettings::setTransformContext( const QgsCoordinateTransformContext &c
 
 QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
 {
-  if ( !layer )
+  if ( !layer || !layer->isSpatial() )
     return QgsCoordinateTransform();
 
   return QgsCoordinateTransform( layer->crs(), mDestCRS, mTransformContext );
