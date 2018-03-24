@@ -201,6 +201,9 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
 
 Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 {
+  if ( !index.isValid() || !rowCount( index.parent() ) )
+    return Qt::NoItemFlags;
+
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
 
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
