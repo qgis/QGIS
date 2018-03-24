@@ -39,6 +39,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         fieldFormatter = QgsValueMapFieldFormatter()
 
         # Tests with different value types occurring in the value map
+        # old style config (pre 3.0)
         config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
                           'nothing': self.VALUEMAP_NULL_TEXT}}
         self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), 'two')
@@ -48,6 +49,20 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), 'nothing')
         self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), 'nothing')
         self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), 'nothing')
+
+        # new style config (post 3.0)
+        config = {'map': [{'two': '2'},
+                          {'twoandhalf': '2.5'},
+                          {'NULL text': 'NULL'},
+                          {'nothing': self.VALUEMAP_NULL_TEXT}]}
+        self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), 'two')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, config, None, 2.5), 'twoandhalf')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, config, None, 'NULL'), 'NULL text')
+        # Tests with null values of different types, if value map contains null
+        self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), 'nothing')
+
         # Tests with fallback display for different value types
         config = {}
         self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), '(2)')
