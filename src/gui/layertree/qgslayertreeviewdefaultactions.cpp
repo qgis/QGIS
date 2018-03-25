@@ -113,6 +113,13 @@ QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionMoveToTop( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move to &Top" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveToTop );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Group Selected" ), parent );
@@ -352,6 +359,27 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
   }
 }
 
+void QgsLayerTreeViewDefaultActions::moveToTop()
+{
+  QMap <QgsLayerTreeGroup *, int> groupInsertIdx;
+  int insertIdx;
+  Q_FOREACH ( QgsLayerTreeNode *n, mView->selectedNodes() )
+  {
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    QgsLayerTreeNode *clonedNode = n->clone();
+    if ( groupInsertIdx.contains( parentGroup ) )
+    {
+      insertIdx = groupInsertIdx.value( parentGroup );
+    }
+    else
+    {
+      insertIdx = 0;
+    }
+    parentGroup->insertChildNode( insertIdx, clonedNode );
+    parentGroup->removeChildNode( n );
+    groupInsertIdx.insert( parentGroup, insertIdx + 1 );
+  }
+}
 
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {

@@ -118,6 +118,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QAction *actionSaveAsDefinitionGroup = new QAction( tr( "Save as Layer Definition File…" ), menuExportGroup );
       connect( actionSaveAsDefinitionGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
       menuExportGroup->addAction( actionSaveAsDefinitionGroup );
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+        menu->addAction( actions->actionMoveToTop( menu ) );
       menu->addMenu( menuExportGroup );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -292,6 +295,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+        menu->addAction( actions->actionMoveToTop( menu ) );
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );

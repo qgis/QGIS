@@ -53,6 +53,7 @@ Action to check a group and all its parents
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
 
     QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
+    QAction *actionMoveToTop( QObject *parent = 0 ) /Factory/;
     QAction *actionGroupSelected( QObject *parent = 0 ) /Factory/;
 
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
@@ -76,6 +77,7 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
     void zoomToLayer();
     void zoomToGroup();
     void makeTopLevel();
+    void moveToTop();
     void groupSelected();
 
     void mutuallyExclusiveGroup();
