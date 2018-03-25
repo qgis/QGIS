@@ -169,6 +169,16 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   ( void )restorer;
 
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
+
+  if ( imageSize.isValid() && ( !qgsDoubleNear( static_cast< double >( imageSize.width() ) / imageSize.height(),
+                                paperRect.width() / paperRect.height(), 0.008 ) ) )
+  {
+    // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
+    // this can happen e.g. as a result of data defined page sizes
+    // see https://issues.qgis.org/issues/18534
+    imageSize = QSize();
+  }
+
   return renderRegionToImage( paperRect, imageSize, dpi );
 }
 

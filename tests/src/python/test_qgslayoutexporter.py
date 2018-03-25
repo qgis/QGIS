@@ -378,12 +378,21 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
         # image size
         settings.imageSize = QSize(600, 851)
-
         rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagesize.png')
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
         self.assertFalse(os.path.exists(rendered_file_path))
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesize_2.png')
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
+
+        # image size with incorrect aspect ratio
+        # this can happen as a result of data defined page sizes
+        settings.imageSize = QSize(851, 600)
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect.png')
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+
+        page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect_2.png')
+        im = QImage(page2_path)
+        self.assertTrue(self.checkImage('exporttoimagesize_badaspect', 'exporttoimagedpi_page2', page2_path), '{}x{}'.format(im.width(), im.height()))
 
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
