@@ -62,6 +62,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     // TODO: zoom to selected
 
     QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionMoveToTop( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
@@ -84,6 +85,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void zoomToLayer();
     void zoomToGroup();
     void makeTopLevel();
+    void moveToTop();
     void groupSelected();
 
     /**
