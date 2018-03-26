@@ -62,6 +62,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     // TODO: zoom to selected
 
     QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \see moveToTop()
+     * \since QGIS 3.2
+     */
     QAction *actionMoveToTop( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
 
@@ -85,6 +90,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void zoomToLayer();
     void zoomToGroup();
     void makeTopLevel();
+
+    /**
+     * Moves selected layer(s) and/or group(s) to the top of the layer panel
+     * or the top of the group if the layer/group is placed within a group.
+     * \since QGIS 3.2
+     */
     void moveToTop();
     void groupSelected();
 
