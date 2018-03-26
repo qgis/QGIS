@@ -87,12 +87,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
       menu->addAction( actions->actionAddGroup( menu ) );
-      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove…" ), QgisApp::instance(), SLOT( removeLayer() ) );
       menu->addSeparator();
 
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
-                       tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
-      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWmsData() ) );
+                       tr( "&Set Group CRS…" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
+      menu->addAction( tr( "&Set Group WMS Data…" ), QgisApp::instance(), SLOT( legendGroupSetWmsData() ) );
 
       menu->addSeparator();
 
@@ -159,7 +159,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // duplicate layer
       QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
-      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove…" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       menu->addSeparator();
 
@@ -213,6 +213,69 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      menu->addSeparator();
+
+      if ( layer && layer->isSpatial() )
+      {
+        // set layer scale visibility
+        menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+
+        if ( !layer->isInScaleRange( mCanvas->scale() ) )
+          menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
+
+        QMenu *menuSetCRS = new QMenu( tr( "Set CRS" ), menu );
+        // set layer crs
+        QAction *actionSetLayerCrs = new QAction( tr( "Set Layer CRS…" ), menuSetCRS );
+        connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
+        menuSetCRS->addAction( actionSetLayerCrs );
+        // assign layer crs to project
+        QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
+        connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
+        menuSetCRS->addAction( actionSetProjectCrs );
+
+        menu->addMenu( menuSetCRS );
+      }
+
+      menu->addSeparator();
+
+      if ( vlayer )
+      {
+        // save as vector file
+        QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportVector );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportVector->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportVector->addAction( actionSaveAsDefinitionLayer );
+        if ( vlayer->isSpatial() )
+        {
+          QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportVector );
+          connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+          menuExportVector->addAction( actionSaveStyle );
+        }
+        menu->addMenu( menuExportVector );
+      }
+      else if ( rlayer )
+      {
+        QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportRaster );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
+        QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportRaster->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportRaster->addAction( actionSaveAsDefinitionLayer );
+        connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+        menuExportRaster->addAction( actionSaveStyle );
+        menu->addMenu( menuExportRaster );
+      }
+      else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
+      {
+        // disable duplication of plugin layers
+        duplicateLayersAction->setEnabled( false );
       }
 
       menu->addSeparator();
@@ -285,65 +348,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
-        menu->addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
-
-      menu->addSeparator();
-
-      if ( layer && layer->isSpatial() )
-      {
-        // set layer scale visibility
-        menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
-
-        if ( !layer->isInScaleRange( mCanvas->scale() ) )
-          menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
-
-        // set layer crs
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
-
-        // assign layer crs to project
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRS.png" ) ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
-      }
-      menu->addSeparator();
-
-      if ( vlayer )
-      {
-        // save as vector file
-        QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportVector );
-        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
-        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
-        menuExportVector->addAction( actionSaveAs );
-        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
-        menuExportVector->addAction( actionSaveAsDefinitionLayer );
-        if ( vlayer->isSpatial() )
-        {
-          QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportVector );
-          connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
-          menuExportVector->addAction( actionSaveStyle );
-        }
-        menu->addMenu( menuExportVector );
-      }
-      else if ( rlayer )
-      {
-        QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportRaster );
-        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
-        QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
-        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
-        menuExportRaster->addAction( actionSaveAs );
-        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
-        menuExportRaster->addAction( actionSaveAsDefinitionLayer );
-        connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
-        menuExportRaster->addAction( actionSaveStyle );
-        menu->addMenu( menuExportRaster );
-
-        menu->addSeparator();
-      }
-      else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
-      {
-        // disable duplication of plugin layers
-        duplicateLayersAction->setEnabled( false );
-      }
+        menu->addAction( tr( "&Properties…" ), QgisApp::instance(), SLOT( layerProperties() ) );
     }
   }
   else if ( QgsLayerTreeModelLegendNode *node = mView->layerTreeModel()->index2legendNode( idx ) )

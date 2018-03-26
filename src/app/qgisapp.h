@@ -831,6 +831,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! pastes group or layer from the clipboard to layer tree
     void pasteLayer();
 
+    //! Set CRS of a layer
+    void setLayerCrs();
+    //! Assign layer CRS to project
+    void setProjectCrsFromLayer();
+
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );
     void loadGDALSublayers( const QString &uri, const QStringList &list );
@@ -1040,10 +1045,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerScaleVisibility();
     //! Zoom to nearest scale such that current layer is visible
     void zoomToLayerScale();
-    //! Set CRS of a layer
-    void setLayerCrs();
-    //! Assign layer CRS to project
-    void setProjectCrsFromLayer();
 
     /**
      * Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
