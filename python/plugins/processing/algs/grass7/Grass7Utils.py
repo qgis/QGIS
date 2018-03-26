@@ -140,14 +140,12 @@ class Grass7Utils:
             Inline function to search for grass binaries into a folder
             with os.walk
             """
-            command = None
             if os.path.exists(folder):
                 for root, dirs, files in os.walk(folder):
                     for cmd in cmdList:
                         if cmd in files:
-                            command = os.path.join(root, cmd)
-                            break
-            return command
+                            return os.path.join(root, cmd)
+            return None
 
         if Grass7Utils.command:
             return Grass7Utils.command
