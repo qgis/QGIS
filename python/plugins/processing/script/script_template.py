@@ -2,10 +2,10 @@
 
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
-                   QgsFeatureSink,
-                   QgsProcessingAlgorithm,
-                   QgsProcessingParameterFeatureSource,
-                   QgsProcessingParameterFeatureSink)
+                       QgsFeatureSink,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 
 
 class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
