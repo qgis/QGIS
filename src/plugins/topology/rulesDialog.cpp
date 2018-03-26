@@ -26,6 +26,7 @@
 #include "qgisinterface.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgshelp.h"
 #include "rulesDialog.h"
 #include "topolTest.h"
 
@@ -52,7 +53,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   // attempt to add new test when OK clicked
   //connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addTest() ) );
   connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
-
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
+ 
   connect( mLayer1Box, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::updateRuleItems );
   connect( mRuleBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::showControls );
 
@@ -362,4 +364,9 @@ void rulesDialog::clearRules()
   {
     mRulesTable->removeRow( 0 );
   }
+}
+
+void rulesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_topology_checker.html" ) );
 }
