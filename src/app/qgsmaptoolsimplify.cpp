@@ -165,8 +165,10 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
     updateSimplificationPreview();
 }
 
-void QgsMapToolSimplify::setToleranceUnits( const QgsTolerance::UnitType &units )
+void QgsMapToolSimplify::setToleranceUnits( QgsTolerance::UnitType units )
 {
+  mToleranceUnits = units;
+
   QgsSettings settings;
   settings.setValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), units );
 

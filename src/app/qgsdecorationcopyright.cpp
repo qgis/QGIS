@@ -26,6 +26,8 @@ email                : tim@linfiniti.com
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
@@ -57,14 +59,11 @@ void QgsDecorationCopyright::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  QDate now = QDate::currentDate();
-  QString defString = "&copy; QGIS " + now.toString( QStringLiteral( "yyyy" ) );
-
   // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
   //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
 
-  mLabelQString = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), defString );
+  mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
   mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
@@ -75,7 +74,7 @@ void QgsDecorationCopyright::saveToProject()
   QgsDecorationItem::saveToProject();
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/FontName" ), mQFont.family() );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/FontSize" ), mQFont.pointSize() );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelQString );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelText );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
@@ -95,6 +94,8 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   //Large IF statement to enable/disable copyright label
   if ( enabled() )
   {
+    QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
+
     // need width/height of paint device
     int myHeight = context.painter()->device()->height();
     int myWidth = context.painter()->device()->width();
@@ -105,7 +106,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
 
     QString style = "<style type=\"text/css\"> p {color: " +
                     QStringLiteral( "rgba( %1, %2, %3, %4 )" ).arg( mColor.red() ).arg( mColor.green() ).arg( mColor.blue() ).arg( QString::number( mColor.alphaF(), 'f', 2 ) ) + "}</style>";
-    text.setHtml( style + "<p>" + mLabelQString + "</p>" );
+    text.setHtml( style + "<p>" + displayString + "</p>" );
     QSizeF size = text.size();
 
     float myXOffset( 0 ), myYOffset( 0 );

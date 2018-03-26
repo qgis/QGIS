@@ -582,14 +582,14 @@ void QgsFontButton::prepareMenu()
   }
   mMenu->addMenu( recentFontMenu );
 
-  QAction *configureAction = new QAction( tr( "Configure format…" ), this );
+  QAction *configureAction = new QAction( tr( "Configure Format…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsFontButton::showSettingsDialog );
 
-  QAction *copyFormatAction = new QAction( tr( "Copy format" ), this );
+  QAction *copyFormatAction = new QAction( tr( "Copy Format" ), this );
   mMenu->addAction( copyFormatAction );
   connect( copyFormatAction, &QAction::triggered, this, &QgsFontButton::copyFormat );
-  QAction *pasteFormatAction = new QAction( tr( "Paste format" ), this );
+  QAction *pasteFormatAction = new QAction( tr( "Paste Format" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QgsTextFormat tempFormat;
@@ -654,11 +654,11 @@ void QgsFontButton::prepareMenu()
 
     mMenu->addSeparator();
 
-    QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+    QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
     mMenu->addAction( copyColorAction );
     connect( copyColorAction, &QAction::triggered, this, &QgsFontButton::copyColor );
 
-    QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+    QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
     //enable or disable paste action based on current clipboard contents. We always show the paste
     //action, even if it's disabled, to give hint to the user that pasting colors is possible
     QColor clipColor;

@@ -728,8 +728,27 @@ void TestQgsGeometry::point()
   QString expectedGML3prec3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" ) );
   QCOMPARE( elemToString( exportPointFloat.asGml3( doc, 3 ) ), expectedGML3prec3 );
   QgsPoint exportPointZ( 1, 2, 3 );
-  QString expectedGML2Z( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">1 2 3</pos></Point>" ) );
-  QGSCOMPAREGML( elemToString( exportPointZ.asGml3( doc, 3 ) ), expectedGML2Z );
+  QString expectedGML3Z( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">1 2 3</pos></Point>" ) );
+  QGSCOMPAREGML( elemToString( exportPointZ.asGml3( doc, 3 ) ), expectedGML3Z );
+
+  //asGML2 inverted axis
+  QgsPoint exportPointInvertedAxis( 1, 2 );
+  QgsPoint exportPointFloatInvertedAxis( 1 / 3.0, 2 / 3.0 );
+  QDomDocument docInvertedAxis( QStringLiteral( "gml" ) );
+  QString expectedGML2InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates></Point>" ) );
+  QGSCOMPAREGML( elemToString( exportPointInvertedAxis.asGml2( docInvertedAxis, 17, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2InvertedAxis );
+  QString expectedGML2prec3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.333</coordinates></Point>" ) );
+  QGSCOMPAREGML( elemToString( exportPointFloatInvertedAxis.asGml2( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2prec3InvertedAxis );
+
+  //asGML3 inverted axis
+  QString expectedGML3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">2 1</pos></Point>" ) );
+  QCOMPARE( elemToString( exportPointInvertedAxis.asGml3( docInvertedAxis, 17, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3InvertedAxis );
+  QString expectedGML3prec3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.667 0.333</pos></Point>" ) );
+  QCOMPARE( elemToString( exportPointFloatInvertedAxis.asGml3( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3prec3InvertedAxis );
+  QgsPoint exportPointZInvertedAxis( 1, 2, 3 );
+  QString expectedGML3ZInvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">2 1 3</pos></Point>" ) );
+  QGSCOMPAREGML( elemToString( exportPointZInvertedAxis.asGml3( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3ZInvertedAxis );
+
 
   //asJSON
   QString expectedJson( QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [1, 2]}" ) );

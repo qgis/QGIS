@@ -73,7 +73,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! Slot to change display when slidebar is moved
     void setTolerance( double tolerance );
 
-    void setToleranceUnits( const QgsTolerance::UnitType &units );
+    void setToleranceUnits( QgsTolerance::UnitType units );
 
     //! Slot to store feature after simplification
     void storeSimplified();

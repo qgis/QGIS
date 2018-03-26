@@ -13,7 +13,12 @@
 #include "qgsdecorationcopyrightdialog.h"
 #include "qgsdecorationcopyright.h"
 
+#include "qgisapp.h"
+#include "qgsexpression.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontext.h"
 #include "qgshelp.h"
+#include "qgsmapcanvas.h"
 #include "qgssettings.h"
 
 //qt includes
@@ -30,6 +35,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationCopyrightDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationCopyrightDialog::buttonBox_rejected );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked );
   connect( pbnColorChooser, &QgsColorButton::colorChanged, this, &QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
 
@@ -40,8 +46,19 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationCopyrightDialog::apply );
 
   grpEnable->setChecked( mDeco.enabled() );
-  // text
-  txtCopyrightText->setPlainText( mDeco.mLabelQString );
+
+  // label text
+  if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
+  {
+    QDate now = QDate::currentDate();
+    QString defaultString = QString( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
+    txtCopyrightText->setPlainText( defaultString );
+  }
+  else
+  {
+    txtCopyrightText->setPlainText( mDeco.mLabelText );
+  }
+
   // placement
   cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
   cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
@@ -82,6 +99,27 @@ void QgsDecorationCopyrightDialog::buttonBox_rejected()
   reject();
 }
 
+void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
+{
+  QString selText = txtCopyrightText->textCursor().selectedText();
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
+    selText = selText.mid( 2, selText.size() - 4 );
+
+  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
+
+  exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression = exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      txtCopyrightText->insertPlainText( "[%" + expression + "%]" );
+    }
+  }
+}
+
 void QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged( const QColor &c )
 {
   QTextCursor cursor = txtCopyrightText->textCursor();
@@ -93,7 +131,7 @@ void QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged( const QColor &c
 void QgsDecorationCopyrightDialog::apply()
 {
   mDeco.mQFont = txtCopyrightText->currentFont();
-  mDeco.mLabelQString = txtCopyrightText->toPlainText();
+  mDeco.mLabelText = txtCopyrightText->toPlainText();
   mDeco.mColor = pbnColorChooser->color();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();

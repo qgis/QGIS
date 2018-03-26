@@ -391,20 +391,19 @@ QgsProject *QgsProject::instance()
 
 void QgsProject::setTitle( const QString &title )
 {
-  if ( title == mTitle )
+  if ( title == mMetadata.title() )
     return;
 
-  mTitle = title;
+  mMetadata.setTitle( title );
+  emit metadataChanged();
 
   setDirty( true );
 }
 
-
 QString QgsProject::title() const
 {
-  return mTitle;
+  return mMetadata.title();
 }
-
 
 bool QgsProject::isDirty() const
 {
@@ -502,15 +501,23 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
+  QgsSettings s;
+
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mTitle.clear();
   mHomePath.clear();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+  mMetadata = QgsProjectMetadata();
+  if ( !s.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  {
+    mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
+    mMetadata.setAuthor( QgsApplication::userFullName() );
+  }
+  emit metadataChanged();
 
   QgsCoordinateTransformContext context;
   context.readSettings();
@@ -540,7 +547,6 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  QgsSettings s;
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
@@ -874,7 +880,6 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
-  QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
@@ -910,8 +915,9 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   dump_( mProperties );
 
-  // now get project title
-  _getTitle( *doc, mTitle );
+  // get older style project title
+  QString oldTitle;
+  _getTitle( *doc, oldTitle );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -973,7 +979,25 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
   emit transformContextChanged();
 
-  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
+  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
+  if ( !nl.isEmpty() )
+  {
+    QDomElement metadataElement = nl.at( 0 ).toElement();
+    mMetadata.readMetadataXml( metadataElement );
+  }
+  else
+  {
+    // older project, no metadata => remove auto generated metadata which is populated on QgsProject::clear()
+    mMetadata = QgsProjectMetadata();
+  }
+  if ( mMetadata.title().isEmpty() && !oldTitle.isEmpty() )
+  {
+    // upgrade older title storage to storing within project metadata.
+    mMetadata.setTitle( oldTitle );
+  }
+  emit metadataChanged();
+
+  nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
   {
     QDomElement transactionElement = nl.at( 0 ).toElement();
@@ -1514,6 +1538,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mLabelingEngineSettings->writeSettingsToProject( this );
 
   mTransformContext.writeXml( qgisNode, context );
+
+  QDomElement metadataElem = doc->createElement( QStringLiteral( "projectMetadata" ) );
+  mMetadata.writeMetadataXml( metadataElem, *doc );
+  qgisNode.appendChild( metadataElem );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );
@@ -2506,4 +2534,17 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
+}
+
+const QgsProjectMetadata &QgsProject::metadata() const
+{
+  return mMetadata;
+}
+
+void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
+{
+  mMetadata = metadata;
+  emit metadataChanged();
+
+  setDirty( true );
 }

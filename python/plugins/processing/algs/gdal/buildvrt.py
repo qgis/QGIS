@@ -113,14 +113,9 @@ class buildvrt(GdalAlgorithm):
             arguments.append('-allow_projection_difference')
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt
-        listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'buildvrtInputFiles.txt')
-        with open(listFile, 'w') as f:
-            layers = []
-            for l in self.parameterAsLayerList(parameters, self.INPUT, context):
-                layers.append(l.source())
-            f.write('\n'.join(layers))
+        list_file = GdalUtils.writeLayerParameterToTextFile(filename='buildvrtInputFiles.txt', alg=self, parameters=parameters, parameter_name=self.INPUT, context=context, executing=executing, quote=False)
         arguments.append('-input_file_list')
-        arguments.append(listFile)
+        arguments.append(list_file)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)

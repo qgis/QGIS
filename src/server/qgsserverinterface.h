@@ -140,12 +140,6 @@ class SERVER_EXPORT QgsServerInterface
     virtual void removeConfigCacheEntry( const QString &path ) = 0;
 
     /**
-     * Remove entries from layer cache
-     * \param path the path of the project which own the layers to be removed
-     */
-    virtual void removeProjectLayers( const QString &path ) = 0;
-
-    /**
      * Return the service registry
      * \returns QgsServiceResgistry
      */

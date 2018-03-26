@@ -187,8 +187,7 @@ class retile(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         if self.parameterAsBool(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')

@@ -7,7 +7,6 @@
  ************************************************************************/
 
 
-
 class QgsPluginLayer : QgsMapLayer
 {
 %Docstring
@@ -54,8 +53,12 @@ Set source string. This is used for example in layer tree to show tooltip.
 .. versionadded:: 2.16
 %End
 
+    virtual QgsDataProvider *dataProvider();
+
+
   protected:
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

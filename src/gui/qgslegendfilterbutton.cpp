@@ -26,10 +26,10 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
 
 {
   mMenu = new QMenu( this );
-  mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );
+  mSetExpressionAction = new QAction( tr( "Edit Filter Expression…" ), mMenu );
   connect( mSetExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onSetLegendFilterExpression );
 
-  mClearExpressionAction = new QAction( tr( "Clear filter expression" ), mMenu );
+  mClearExpressionAction = new QAction( tr( "Clear Filter Fxpression" ), mMenu );
   connect( mClearExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onClearFilterExpression );
   mClearExpressionAction->setEnabled( false );
 

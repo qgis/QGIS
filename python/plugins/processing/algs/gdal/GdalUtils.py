@@ -389,3 +389,25 @@ class GdalUtils:
         name = ly.GetName()
         ds = None
         return name
+
+    @staticmethod
+    def parseCreationOptions(value):
+        parts = value.split('|')
+        options = []
+        for p in parts:
+            options.extend(['-co', p])
+        return options
+
+    @staticmethod
+    def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
+        listFile = os.path.join(QgsProcessingUtils.tempFolder(), filename)
+        with open(listFile, 'w') as f:
+            if executing:
+                layers = []
+                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                    if quote:
+                        layers.append('"' + l.source() + '"')
+                    else:
+                        layers.append(l.source())
+                f.write('\n'.join(layers))
+        return listFile

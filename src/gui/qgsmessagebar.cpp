@@ -70,7 +70,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
 
   mCloseMenu = new QMenu( this );
   mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
-  mActionCloseAll = new QAction( tr( "Close all" ), this );
+  mActionCloseAll = new QAction( tr( "Close All" ), this );
   mCloseMenu->addAction( mActionCloseAll );
   connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 

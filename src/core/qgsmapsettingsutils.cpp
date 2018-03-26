@@ -87,7 +87,7 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   s[1] = 0;
   s[2] = xOrigin;
   s[3] = 0;
-  s[4] = ms.mapUnitsPerPixel();
+  s[4] = -ms.mapUnitsPerPixel();
   s[5] = yOrigin;
 
   // rotation matrix
@@ -104,7 +104,9 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   double b = r[0] * s[1] + r[1] * s[4];
   double c = r[0] * s[2] + r[1] * s[5] + r[2];
   double d = r[3] * s[0] + r[4] * s[3];
-  double e = r[3] * s[1] + r[4] * s[4];
+  // Pixel YDim - almost always negative
+  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3, https://issues.qgis.org/issues/18491
+  double e =  r[3] * s[1] + r[4] * s[4];
   double f = r[3] * s[2] + r[4] * s[5] + r[5];
 
   QString content;
@@ -113,10 +115,9 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   // Rotation on y axis
   content += qgsDoubleToString( d ) + "\r\n";
   // Rotation on x axis
-  content += qgsDoubleToString( -b ) + "\r\n";
-  // Pixel YDim - almost always negative
-  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3
-  content += "-" + qgsDoubleToString( e ) + "\r\n";
+  content += qgsDoubleToString( b ) + "\r\n";
+  // Pixel YDim
+  content += qgsDoubleToString( e ) + "\r\n";
   // Origin X (center of top left cell)
   content += qgsDoubleToString( c ) + "\r\n";
   // Origin Y (center of top left cell)

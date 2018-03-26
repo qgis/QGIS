@@ -55,7 +55,7 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
   return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
 
@@ -67,7 +67,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
-      elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns ) );
+      elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiLineString.appendChild( elemLineStringMember );
     }
   }
@@ -75,7 +75,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
 
@@ -87,7 +87,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
-      elemCurveMember.appendChild( lineString->asGml3( doc, precision, ns ) );
+      elemCurveMember.appendChild( lineString->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }
   }

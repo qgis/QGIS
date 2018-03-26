@@ -56,9 +56,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
   {
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
-
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionExpandTree.svg" ) ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addSeparator();
+    if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+    {
+      QAction *actionPasteLayerOrGroup = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ), tr( "Paste Layer/Group" ), menu );
+      connect( actionPasteLayerOrGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::pasteLayer );
+      menu->addAction( actionPasteLayerOrGroup );
+    }
 
     // TODO: update drawing order
   }
@@ -90,6 +96,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
       {
         menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
+      }
+
+      menu->addAction( tr( "Copy Group" ), QgisApp::instance(), SLOT( copyLayer() ) );
+      if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+      {
+        QAction *actionPasteLayerOrGroup = new QAction( tr( "Paste Layer/Group" ), menu );
+        connect( actionPasteLayerOrGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::pasteLayer );
+        menu->addAction( actionPasteLayerOrGroup );
       }
 
       menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
@@ -207,6 +221,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       menu->addSeparator();
+      QAction *actionCopyLayer = new QAction( tr( "Copy Layer" ), menu );
+      connect( actionCopyLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::copyLayer );
+      menu->addAction( actionCopyLayer );
 
       if ( vlayer )
       {
@@ -241,10 +258,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
           duplicateLayersAction->setEnabled( false );
 
-        // save as vector file
-        menu->addAction( tr( "Save as…" ), QgisApp::instance(), SLOT( saveAsFile() ) );
-        menu->addAction( tr( "Save as Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
-
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
@@ -254,11 +267,38 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionShowFeatureCount( menu ) );
 
         menu->addSeparator();
+
+        // save as vector file
+        QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportVector );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportVector->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportVector->addAction( actionSaveAsDefinitionLayer );
+        if ( vlayer->isSpatial() )
+        {
+          QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportVector );
+          connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+          menuExportVector->addAction( actionSaveStyle );
+        }
+        menu->addMenu( menuExportVector );
       }
       else if ( rlayer )
       {
-        menu->addAction( tr( "Save As…" ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
-        menu->addAction( tr( "Save As Layer Definition File…" ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+        QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
+        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportRaster );
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
+        QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
+        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        menuExportRaster->addAction( actionSaveAs );
+        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+        menuExportRaster->addAction( actionSaveAsDefinitionLayer );
+        connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+        menuExportRaster->addAction( actionSaveStyle );
+        menu->addMenu( menuExportRaster );
+
+        menu->addSeparator();
       }
       else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
       {

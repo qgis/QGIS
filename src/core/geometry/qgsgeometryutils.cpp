@@ -900,7 +900,7 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
   return wkt;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns )
+QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder )
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
@@ -915,7 +915,10 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   QString strCoordinates;
 
   for ( const QgsPoint &p : points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
+    if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+      strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
+    else
+      strCoordinates += qgsDoubleToString( p.y(), precision ) + cs + qgsDoubleToString( p.x(), precision ) + ts;
 
   if ( strCoordinates.endsWith( ts ) )
     strCoordinates.chop( 1 ); // Remove trailing space
@@ -924,7 +927,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   return elemCoordinates;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D )
+QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder )
 {
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
   elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
@@ -932,7 +935,10 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
   QString strCoordinates;
   for ( const QgsPoint &p : points )
   {
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
+    if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+      strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
+    else
+      strCoordinates += qgsDoubleToString( p.y(), precision ) + ' ' + qgsDoubleToString( p.x(), precision ) + ' ';
     if ( is3D )
       strCoordinates += qgsDoubleToString( p.z(), precision ) + ' ';
   }
