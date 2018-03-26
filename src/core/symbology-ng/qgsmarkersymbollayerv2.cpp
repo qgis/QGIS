@@ -1296,13 +1296,9 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
           break;
       }
     }
+  }
 
-    size = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), size, mSizeUnit, mSizeMapUnitScale );
-  }
-  if ( mSizeUnit == QgsSymbolV2::MM )
-  {
-    size *= mmMapUnitScaleFactor;
-  }
+  size *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
   double halfSize = size / 2.0;
 
   //outlineWidth
@@ -1313,10 +1309,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  if ( mSizeUnit == QgsSymbolV2::MM )
-  {
-    outlineWidth *= mmMapUnitScaleFactor;
-  }
+  outlineWidth *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
 
   //color
   QColor pc = mPen.color();
@@ -1368,10 +1361,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   if ( angle )
     off = _rotatedOffset( off, angle );
 
-  if ( mSizeUnit == QgsSymbolV2::MM )
-  {
-    off *= mmMapUnitScaleFactor;
-  }
+  off *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
 
   QTransform t;
   t.translate( shift.x() + offsetX, shift.y() + offsetY );
