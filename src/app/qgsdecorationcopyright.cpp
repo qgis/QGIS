@@ -59,14 +59,11 @@ void QgsDecorationCopyright::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  QDate now = QDate::currentDate();
-  QString defString = "&copy; QGIS " + now.toString( QStringLiteral( "yyyy" ) );
-
   // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
   //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
 
-  mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), defString );
+  mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
   mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );

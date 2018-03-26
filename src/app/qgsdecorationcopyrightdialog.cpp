@@ -46,8 +46,19 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationCopyrightDialog::apply );
 
   grpEnable->setChecked( mDeco.enabled() );
-  // text
-  txtCopyrightText->setPlainText( mDeco.mLabelText );
+
+  // label text
+  if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
+  {
+    QDate now = QDate::currentDate();
+    QString defaultString = QString( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
+    txtCopyrightText->setPlainText( defaultString );
+  }
+  else
+  {
+    txtCopyrightText->setPlainText( mDeco.mLabelText );
+  }
+
   // placement
   cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
   cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
