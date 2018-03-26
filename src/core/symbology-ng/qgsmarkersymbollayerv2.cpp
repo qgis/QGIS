@@ -1270,6 +1270,8 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
 
 bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext &context, QPointF shift ) const
 {
+  Q_UNUSED( mmMapUnitScaleFactor );
+
   //data defined size?
   double size = mSize;
 
@@ -1364,7 +1366,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   off *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
 
   QTransform t;
-  t.translate( shift.x() + offsetX, shift.y() + offsetY );
+  t.translate( shift.x() + offsetX, shift.y() - offsetY );
 
   if ( !qgsDoubleNear( angle, 0.0 ) )
     t.rotate( angle );
@@ -1388,6 +1390,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
   else if ( shape == Circle )
   {
+    shift += QPointF( off.x(), -off.y() );
     if ( mBrush.style() != Qt::NoBrush )
       e.writeFilledCircle( layerName, bc, QgsPointV2( shift ), halfSize );
     if ( mPen.style() != Qt::NoPen )
