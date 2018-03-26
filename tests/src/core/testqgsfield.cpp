@@ -307,9 +307,21 @@ void TestQgsField::displayString()
   QVariant nullString = QVariant( QVariant::String );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
-  //test int value
+  //test int value in string type
   QgsField intField( QStringLiteral( "int" ), QVariant::String, QStringLiteral( "int" ) );
   QCOMPARE( intField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test int value in int type
+  QgsField intField2( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
+  QCOMPARE( intField2.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField2.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test long type
+  QgsField longField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
+  QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
+
   //test NULL int
   QVariant nullInt = QVariant( QVariant::Int );
   QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
@@ -317,6 +329,11 @@ void TestQgsField::displayString()
   //test double value
   QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
+
   //test NULL double
   QVariant nullDouble = QVariant( QVariant::Double );
   QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );

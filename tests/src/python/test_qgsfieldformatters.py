@@ -18,6 +18,7 @@ from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
                        QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter, QgsSettings)
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -224,19 +225,33 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
 class TestQgsRangeFieldFormatter(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
+        QgsSettings().clear()
+        start_app()
+
     def test_representValue(self):
 
-        layer = QgsVectorLayer("point?field=int:integer&field=double:double",
+        layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long",
                                "layer", "memory")
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayers([layer])
 
         fieldFormatter = QgsRangeFieldFormatter()
 
-        # Precision is ignored for integers
+        # Precision is ignored for integers and longlongs
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, None), 'NULL')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, '123'), '123.0')
@@ -259,6 +274,13 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
 
         QgsSettings().setValue("locale/overrideFlag", True)
         QgsSettings().setValue("locale/userLocale", 'it')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
+                         '9999999')  # no scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000,00')
