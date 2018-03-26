@@ -106,6 +106,7 @@
    <addaction name="actionOpenScript"/>
    <addaction name="actionSaveScript"/>
    <addaction name="actionSaveScriptAs"/>
+   <addaction name="actionLoadFromTemplate"/>
    <addaction name="separator"/>
    <addaction name="separator"/>
    <addaction name="actionRunScript"/>
@@ -153,6 +154,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionLoadFromTemplate">
+   <property name="text">
+    <string>Load script from template...</string>
+   </property>
+   <property name="toolTip">
+    <string>oad script from template...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="actionRunScript">
