@@ -68,14 +68,24 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
       }
     }
   }
-  else if ( field.type() == QVariant::Int &&
+  else if ( ( field.type() == QVariant::Int ) &&
             value.isValid( ) )
   {
     bool ok;
     double val( value.toInt( &ok ) );
     if ( ok )
     {
-      result =  f_locale().toString( val );
+      result =  f_locale().toString( val, 'f', 0 );
+    }
+  }
+  else if ( ( field.type() == QVariant::LongLong ) &&
+            value.isValid( ) )
+  {
+    bool ok;
+    double val( value.toLongLong( &ok ) );
+    if ( ok )
+    {
+      result =  f_locale().toString( val, 'f', 0 );
     }
   }
   else
