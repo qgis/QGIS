@@ -47,6 +47,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
@@ -1189,7 +1190,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   parsedUri.setEncodedUri( uri );
 
   Q_NOWARN_DEPRECATED_PUSH
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ), QgsProject::instance() );
   Q_NOWARN_DEPRECATED_POP
 
   // the whole world is projected to a square:
