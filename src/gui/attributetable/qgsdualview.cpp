@@ -667,7 +667,7 @@ void QgsDualView::tableColumnResized( int column, int width )
 {
   QgsAttributeTableConfig config = mConfig;
   int sourceCol = config.mapVisibleColumnToIndex( column );
-  if ( sourceCol >= 0 )
+  if ( sourceCol >= 0 && config.columnWidth( sourceCol ) != width )
   {
     config.setColumnWidth( sourceCol, width );
     setAttributeTableConfig( config );
@@ -840,9 +840,13 @@ void QgsDualView::previewExpressionChanged( const QString &expression )
 void QgsDualView::onSortColumnChanged()
 {
   QgsAttributeTableConfig cfg = mLayer->attributeTableConfig();
-  cfg.setSortExpression( mFilterModel->sortExpression() );
-  cfg.setSortOrder( mFilterModel->sortOrder() );
-  setAttributeTableConfig( cfg );
+  if ( cfg.sortExpression() != mFilterModel->sortExpression() ||
+       cfg.sortOrder() != mFilterModel->sortOrder() )
+  {
+    cfg.setSortExpression( mFilterModel->sortExpression() );
+    cfg.setSortOrder( mFilterModel->sortOrder() );
+    setAttributeTableConfig( cfg );
+  }
 }
 
 void QgsDualView::sortByPreviewExpression()
