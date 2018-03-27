@@ -97,8 +97,8 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         while not self.success and not self.fail:
             QCoreApplication.processEvents()
 
-        self.assertFalse(self.success)
-        self.assertTrue(self.fail)
+        self.assertTrue(self.success)
+        self.assertFalse(self.fail)
 
     def testNoLayer(self):
         """test that failure (and not crash) occurs when no layer set"""
