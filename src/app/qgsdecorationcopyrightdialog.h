@@ -33,7 +33,6 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
     void buttonBox_rejected();
     void mInsertExpressionButton_clicked();
     void showHelp();
-    void pbnColorChooser_colorChanged( const QColor &c );
     void apply();
 
   protected:

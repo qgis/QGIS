@@ -20,6 +20,7 @@
 #define QGSCOPYRIGHTLABELPLUGIN
 
 #include "qgsdecorationitem.h"
+#include "qgstextrenderer.h"
 
 #include <QColor>
 #include <QFont>
@@ -49,18 +50,31 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     //! render the copyright label
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
+    /**
+     * Returns the text format for extent labels.
+     * \see setTextFormat()
+     * \see labelExtents()
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textFormat() const { return mTextFormat; }
+
+    /**
+     * Sets the text \a format for extent labels.
+     * \see textFormat()
+     * \see setLabelExtents()
+     * \since QGIS 3.2
+     */
+    void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+
   private:
-    //! This is the font that will be used for the copyright label
-    QFont mQFont;
     //! This is the string that will be used for the copyright label
     QString mLabelText;
-
-    //! This is the color for the copyright label
-    QColor mColor;
 
     //! enable or disable use of position percentage for placement
     int mMarginHorizontal = 0;
     int mMarginVertical = 0;
+
+    QgsTextFormat mTextFormat;
 
     friend class QgsDecorationCopyrightDialog;
 };
