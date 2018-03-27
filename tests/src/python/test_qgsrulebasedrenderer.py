@@ -125,6 +125,29 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderer.stopRender(ctx)
         assert rendered == True
 
+    def testFeatureCount(self):
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(2) # 'id' = 3 => ELSE
+        renderer = vl.renderer()
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        counter = vl.countSymbolFeatures()
+        counter.waitForFinished()
+
+        renderer.startRender(ctx, vl.fields())
+
+        elseRule = None
+        for rule in renderer.rootRule().children():
+            if rule.filterExpression() == 'ELSE':
+                elseRule = rule
+
+        assert elseRule != None
+
+        cnt = counter.featureCount(elseRule.ruleKey())
+        assert cnt == 1
+
     def testRefineWithCategories(self):
         # Test refining rule with categories (refs #10815)
 
