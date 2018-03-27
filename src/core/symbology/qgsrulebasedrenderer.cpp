@@ -553,7 +553,9 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
       lst.removeOne( rule );
 
       if ( lst.empty() )
+      {
         return true;
+      }
     }
     else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
     {
@@ -587,7 +589,26 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {
-    lst.unite( rule->legendKeysForFeature( feat, context ) );
+    bool validKey = false;
+    if ( rule->isElse() )
+    {
+      RuleList lst = rulesForFeature( feat, context, false );
+      lst.removeOne( rule );
+
+      if ( lst.empty() )
+      {
+        validKey = true;
+      }
+    }
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    {
+      validKey = true;
+    }
+
+    if ( validKey )
+    {
+      lst.unite( rule->legendKeysForFeature( feat, context ) );
+    }
   }
   return lst;
 }
