@@ -449,14 +449,13 @@ void QgsAttributeTableView::onActionColumnItemPainted( const QModelIndex &index 
 
 void QgsAttributeTableView::recreateActionWidgets()
 {
-  QMap< QModelIndex, QWidget * > newWidgets;
   QMap< QModelIndex, QWidget * >::const_iterator it = mActionWidgets.constBegin();
   for ( ; it != mActionWidgets.constEnd(); ++it )
   {
-    it.value()->deleteLater(); //?
-    QWidget *widget = createActionWidget( mFilterModel->data( it.key(), QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
-    newWidgets.insert( it.key(), widget );
-    setIndexWidget( it.key(), widget );
+    // ownership of widget was transferred by initial call to setIndexWidget - clearing
+    // the index widget will delete the old widget safely
+    // they should then be recreated by onActionColumnItemPainted
+    setIndexWidget( it.key(), nullptr );
   }
-  mActionWidgets = newWidgets;
+  mActionWidgets.clear();
 }
