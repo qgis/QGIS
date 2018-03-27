@@ -285,6 +285,8 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
     return;
   }
 
+  int fieldIdx = mTableWidget->horizontalHeaderItem( col )->data( FieldIndex ).toInt();
+
   //evaluate behavior (feature value or min / max / mean )
   QString mergeBehaviorString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
@@ -304,13 +306,13 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   {
     //an existing feature value
     QgsFeatureId featureId = STRING_TO_FID( mergeBehaviorString.mid( 1 ) );
-    mergeResult = featureAttribute( featureId, col );
+    mergeResult = featureAttribute( featureId, fieldIdx );
   }
   else
   {
     //numerical statistic
     QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic )( comboBox->currentData().toInt() );
-    mergeResult = calcStatistic( col, stat );
+    mergeResult = calcStatistic( fieldIdx, stat );
   }
 
   //insert string into table widget
