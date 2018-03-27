@@ -21,7 +21,9 @@
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeaturesource.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
+#include <QPointer>
 #include <QSet>
 #include <memory>
 
@@ -285,7 +287,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
  * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator
 {
   public:
 
@@ -302,6 +304,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QString sourceName() const override;
+    QgsExpressionContextScope *createExpressionContextScope() const override;
 
 
   private:
@@ -311,6 +314,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
     QgsFeatureIds mSelectedFeatureIds;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QString mName;
+    QPointer< QgsVectorLayer > mLayer;
 
 };
 
