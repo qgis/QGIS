@@ -228,6 +228,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   private:
     QMenu *mMenuActions = nullptr;
+    QToolButton *mActionFeatureActions = nullptr;
 
     QgsDockWidget *mDock = nullptr;
     QgsDistanceArea *myDa = nullptr;
