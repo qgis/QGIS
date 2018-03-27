@@ -171,7 +171,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                     raise QgsProcessingException(
                         self.tr(u'Evaluation error in expression "{}": {}')
                             .format(expression.expression(),
-                                    expression.parserErrorString()))
+                                    expression.evalErrorString()))
                 attributes.append(value)
             else:
                 attributes.append(NULL)
