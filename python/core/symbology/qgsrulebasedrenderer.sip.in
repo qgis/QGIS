@@ -324,7 +324,7 @@ Returns which legend keys match the feature
 .. versionadded:: 2.14
 %End
 
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0, bool withElse = true, bool onlyActive = true );
 %Docstring
 tell which rules will be used to render the feature
 %End
@@ -411,7 +411,7 @@ Sets if this rule is an ELSE rule
 :param iselse: If true, this rule is an ELSE rule
 %End
 
-        bool isElse();
+        bool isElse() const;
 %Docstring
 Check if this rule is an ELSE rule
 
