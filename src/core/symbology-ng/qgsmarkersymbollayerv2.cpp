@@ -1335,6 +1335,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   double offsetX = 0;
   double offsetY = 0;
   markerOffset( context, offsetX, offsetY );
+  offsetX *= context.renderContext().mapToPixel().mapUnitsPerPixel();
+  offsetY *= context.renderContext().mapToPixel().mapUnitsPerPixel();
 
   QPointF off( offsetX, offsetY );
 
@@ -1359,14 +1361,13 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     }
   }
 
-  angle = -angle; //rotation in Qt is counterclockwise
   if ( angle )
     off = _rotatedOffset( off, angle );
 
   off *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
 
   QTransform t;
-  t.translate( shift.x() + offsetX, shift.y() - offsetY );
+  t.translate( shift.x() + off.x(), shift.y() - off.y() );
 
   if ( !qgsDoubleNear( angle, 0.0 ) )
     t.rotate( angle );
