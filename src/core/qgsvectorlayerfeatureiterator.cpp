@@ -1083,6 +1083,7 @@ QgsVectorLayerSelectedFeatureSource::QgsVectorLayerSelectedFeatureSource( QgsVec
   , mSelectedFeatureIds( layer->selectedFeatureIds() )
   , mWkbType( layer->wkbType() )
   , mName( layer->name() )
+  , mLayer( layer )
 {}
 
 QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
@@ -1126,4 +1127,12 @@ long QgsVectorLayerSelectedFeatureSource::featureCount() const
 QString QgsVectorLayerSelectedFeatureSource::sourceName() const
 {
   return mName;
+}
+
+QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpressionContextScope() const
+{
+  if ( mLayer )
+    return mLayer->createExpressionContextScope();
+  else
+    return nullptr;
 }
