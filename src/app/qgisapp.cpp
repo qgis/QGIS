@@ -8015,6 +8015,14 @@ void QgisApp::mergeSelectedFeatures()
         tr( "Could not store value '%1' in field of type %2." ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         Qgis::Warning );
     }
+
+    if ( !isDefaultValue && vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+         vl->dataProvider() && ( !val.isValid() || val.isNull() ) && ( !vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ).isEmpty() ) )
+    {
+      // null field, but provider has a default value clause here -- so use that
+      val = vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) );
+    }
+
     attrs[i] = val;
   }
   newFeature.setAttributes( attrs );
