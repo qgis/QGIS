@@ -27,6 +27,8 @@
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsogrutils.h"
+#include "qgsrenderer.h"
+#include "qgsgeometryengine.h"
 #include <ogr_api.h>
 
 class QgsSymbolLayer;
@@ -729,6 +731,49 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsVectorFileWriter( const QgsVectorFileWriter &rh );
 #endif
 
+    struct PreparedWriterDetails
+    {
+      std::unique_ptr< QgsFeatureRenderer > renderer;
+      QgsCoordinateReferenceSystem sourceCrs;
+      QgsWkbTypes::Type sourceWkbType = QgsWkbTypes::Unknown;
+      QgsFields sourceFields;
+      QString providerType;
+      long featureCount = 0;
+      QgsFeatureIds selectedFeatureIds;
+      QString dataSourceUri;
+      QString storageType;
+      QgsFeatureIterator geometryTypeScanIterator;
+      QgsExpressionContext expressionContext;
+      QSet< int > fieldsToConvertToInt;
+      QgsRenderContext renderContext;
+      bool shallTransform = false;
+      QgsCoordinateReferenceSystem outputCrs;
+      QgsWkbTypes::Type destWkbType = QgsWkbTypes::Unknown;
+      QgsAttributeList attributes;
+      QgsFields outputFields;
+      QgsFeatureIterator sourceFeatureIterator;
+      QgsGeometry filterRectGeometry;
+      std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
+    };
+
+    /**
+     * Prepares a write by populating a PreparedWriterDetails object.
+     * This MUST be called in the main thread.
+     */
+    static QgsVectorFileWriter::WriterError prepareWriteAsVectorFormat( QgsVectorLayer *layer,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        PreparedWriterDetails &details );
+
+    /**
+     * Writes a previously prepared PreparedWriterDetails \a details object.
+     * This is safe to call in a background thread.
+     */
+    static QgsVectorFileWriter::WriterError writeAsVectorFormat( PreparedWriterDetails &details,
+        const QString &fileName,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        QString *newFilename = nullptr,
+        QString *errorMessage SIP_OUT = nullptr );
+
     void init( QString vectorFileName, QString fileEncoding, const QgsFields &fields,
                QgsWkbTypes::Type geometryType, QgsCoordinateReferenceSystem srs,
                const QString &driverName, QStringList datasourceOptions,
@@ -749,19 +794,21 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     //! Writes features considering symbol level order
-    QgsVectorFileWriter::WriterError exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
+    QgsVectorFileWriter::WriterError exportFeaturesSymbolLevels( const PreparedWriterDetails &details, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
     double mmScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
     double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
-    void startRender( QgsVectorLayer *vl );
+    void startRender( QgsFeatureRenderer *sourceRenderer, const QgsFields &fields );
     void stopRender();
-    std::unique_ptr< QgsFeatureRenderer > createSymbologyRenderer( QgsVectorLayer *vl ) const;
+    std::unique_ptr< QgsFeatureRenderer > createSymbologyRenderer( QgsFeatureRenderer *sourceRenderer ) const;
     //! Adds attributes needed for classification
-    void addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList );
+    static void addRendererAttributes( QgsFeatureRenderer *renderer, QgsRenderContext &context, const QgsFields &fields, QgsAttributeList &attList );
     static QMap<QString, MetaData> sDriverMetadata;
 
     //! Concatenates a list of options using their default values
     static QStringList concatenateOptions( const QMap<QString, Option *> &options );
+
+    friend class QgsVectorFileWriterTask;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
