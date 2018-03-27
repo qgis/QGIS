@@ -94,14 +94,14 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="mDeleteTestButton">
+         <property name="text">
+          <string>Delete Rule</string>
+         </property>
+        </widget>
+       </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mDeleteTestButton">
-       <property name="text">
-        <string>Delete Rule</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
