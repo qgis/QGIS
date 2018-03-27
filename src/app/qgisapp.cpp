@@ -5678,7 +5678,7 @@ bool QgisApp::fileSave()
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     qgsExt + ";;" + zipExt, &filter );
+                     zipExt + ";;" + qgsExt, &filter );
     if ( path.isEmpty() )
       return false;
 
@@ -5763,7 +5763,7 @@ void QgisApp::fileSaveAs()
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a File Name to Save the QGIS Project File as" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
-                 qgsExt + ";;" + zipExt, &filter );
+                 zipExt + ";;" + qgsExt, &filter );
   if ( path.isEmpty() )
     return;
 
