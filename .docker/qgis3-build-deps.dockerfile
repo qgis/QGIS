@@ -98,7 +98,7 @@ RUN  apt-get update \
   && apt-get clean
 
 WORKDIR /root
-RUN wget --no-verbose https://www.riverbankcomputing.com/static/Downloads/sip/sip-4.19.9.dev1803171438.tar.gz \
+RUN curl -s -S -O https://www.riverbankcomputing.com/static/Downloads/sip/sip-4.19.9.dev1803171438.tar.gz \
  && tar xzf sip-4.19.9.dev1803171438.tar.gz
 WORKDIR /root/sip-4.19.9.dev1803171438
 RUN python3 configure.py && make && make install
