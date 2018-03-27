@@ -581,7 +581,7 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
   return lst;
 }
 
-QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context )
+QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context, bool withElse, bool onlyActive )
 {
   RuleList lst;
   if ( !isFilterOK( feat, context ) )
@@ -590,9 +590,16 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsF
   if ( mSymbol )
     lst.append( this );
 
-  Q_FOREACH ( Rule *rule, mActiveChildren )
+  RuleList listChildren = children();
+  if ( onlyActive )
+    listChildren = mActiveChildren;
+
+  Q_FOREACH ( Rule *rule, listChildren )
   {
-    lst += rule->rulesForFeature( feat, context );
+    if ( rule->isElse() && !withElse )
+      continue;
+
+    lst += rule->rulesForFeature( feat, context, withElse, onlyActive );
   }
   return lst;
 }
@@ -1141,7 +1148,24 @@ QString QgsRuleBasedRenderer::dump() const
 
 bool QgsRuleBasedRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
-  return mRootRule->willRenderFeature( feat, &context );
+  for ( Rule *rule : mRootRule->children() )
+  {
+    if ( ! rule->active() )
+      continue;
+
+    // a feature already rendered by another rule shouldn't be considered in a
+    // 'else' statement for rendering
+    if ( rule->isElse() && mRootRule->rulesForFeature( feat, &context, false, false ).empty() )
+    {
+      return true;
+    }
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, &context ) )
+    {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )

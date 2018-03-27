@@ -343,7 +343,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
         //! tell which rules will be used to render the feature
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr, bool withElse = true, bool onlyActive = true );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns True if this rule is an else rule
          */
-        bool isElse() { return mElseRule; }
+        bool isElse() const { return mElseRule; }
 
       protected:
         void initFilter();
