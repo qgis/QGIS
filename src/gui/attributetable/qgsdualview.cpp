@@ -916,9 +916,11 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featu
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   mConfig = config;
-  mLayer->setAttributeTableConfig( config );
-  mFilterModel->setAttributeTableConfig( config );
-  mTableView->setAttributeTableConfig( config );
+  if ( mLayer )
+    mConfig.update( mLayer->fields() );
+  mLayer->setAttributeTableConfig( mConfig );
+  mFilterModel->setAttributeTableConfig( mConfig );
+  mTableView->setAttributeTableConfig( mConfig );
 }
 
 void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder )
