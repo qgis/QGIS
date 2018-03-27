@@ -2482,17 +2482,17 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     }
   }
 
-  QgsVectorFileWriter *writer =
-    new QgsVectorFileWriter( fileName,
-                             options.fileEncoding, fields, destWkbType,
-                             outputCRS, options.driverName,
-                             options.datasourceOptions,
-                             options.layerOptions,
-                             newFilename,
-                             options.symbologyExport,
-                             options.fieldValueConverter,
-                             options.layerName,
-                             options.actionOnExistingFile );
+  std::unique_ptr< QgsVectorFileWriter > writer =
+    qgis::make_unique< QgsVectorFileWriter >( fileName,
+        options.fileEncoding, fields, destWkbType,
+        outputCRS, options.driverName,
+        options.datasourceOptions,
+        options.layerOptions,
+        newFilename,
+        options.symbologyExport,
+        options.fieldValueConverter,
+        options.layerName,
+        options.actionOnExistingFile );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
@@ -2506,7 +2506,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   {
     if ( errorMessage )
       *errorMessage = writer->errorMessage();
-    delete writer;
     return err;
   }
 
@@ -2571,7 +2570,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
          && r->usingSymbolLevels() )
     {
       QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, fit, options.ct, errorMessage );
-      delete writer;
       return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
     }
   }
@@ -2598,7 +2596,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   {
     if ( options.feedback && options.feedback->isCanceled() )
     {
-      delete writer;
       return Canceled;
     }
 
@@ -2627,8 +2624,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
       catch ( QgsCsException &e )
       {
-        delete writer;
-
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
                       .arg( fet.id() ).arg( e.what() );
         QgsLogger::warning( msg );
@@ -2675,7 +2670,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   writer->stopRender();
-  delete writer;
 
   if ( errors > 0 && errorMessage && n > 0 )
   {
