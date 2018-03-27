@@ -38,8 +38,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   mQgisIface = qgisIface;
 
   //setHorizontalHeaderItems();
+  mRulesTable->hideColumn( 3 );
   mRulesTable->hideColumn( 4 );
-  mRulesTable->hideColumn( 5 );
 
   mTestConfMap = testMap;
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -69,7 +69,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
 void rulesDialog::setHorizontalHeaderItems()
 {
   QStringList labels;
-  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << tr( "Tolerance" ) << QLatin1String( "" ) << QLatin1String( "" );
+  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << QLatin1String( "" ) << QLatin1String( "" );
   mRulesTable->setHorizontalHeaderLabels( labels );
 }
 
@@ -78,11 +78,9 @@ void rulesDialog::readTest( int index, QgsProject *project )
   QString testName;
   QString layer1Id;
   QString layer2Id;
-  QString tolerance;
   QString postfix = QStringLiteral( "%1" ).arg( index );
 
   testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QLatin1String( "" ) );
-  tolerance = project->readEntry( QStringLiteral( "Topol" ), "/tolerance_" + postfix, QLatin1String( "" ) );
   layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QLatin1String( "" ) );
   layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QLatin1String( "" ) );
 
@@ -127,19 +125,11 @@ void rulesDialog::readTest( int index, QgsProject *project )
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 2, newItem );
 
-  if ( mTestConfMap[testName].useTolerance )
-    newItem = new QTableWidgetItem( tolerance );
-  else
-    newItem = new QTableWidgetItem( tr( "No tolerance" ) );
-
-  newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
-  mRulesTable->setItem( row, 3, newItem );
-
   // add layer ids to hidden columns
   newItem = new QTableWidgetItem( layer1Id );
-  mRulesTable->setItem( row, 4, newItem );
+  mRulesTable->setItem( row, 3, newItem );
   newItem = new QTableWidgetItem( layer2Id );
-  mRulesTable->setItem( row, 5, newItem );
+  mRulesTable->setItem( row, 4, newItem );
 }
 
 void rulesDialog::projectRead()
@@ -197,19 +187,6 @@ void rulesDialog::showControls( const QString &testName )
   {
     mLayer2Box->setVisible( false );
   }
-
-
-  if ( topologyRule.useTolerance )
-  {
-    mToleranceBox->setVisible( true );
-    mToleranceLabel->setVisible( true );
-  }
-  else
-  {
-    mToleranceBox->setVisible( false );
-    mToleranceLabel->setVisible( false );
-  }
-
 }
 
 void rulesDialog::addRule()
@@ -250,13 +227,6 @@ void rulesDialog::addRule()
 
   mRulesTable->setItem( row, 2, newItem );
 
-  if ( mTestConfMap[test].useTolerance )
-    newItem = new QTableWidgetItem( QStringLiteral( "%1" ).arg( mToleranceBox->value() ) );
-  else
-    newItem = new QTableWidgetItem( tr( "No tolerance" ) );
-
-  mRulesTable->setItem( row, 3, newItem );
-
   QString layer1ID, layer2ID;
   // add layer ids to hidden columns
   // -1 for "No layer" string
@@ -269,9 +239,9 @@ void rulesDialog::addRule()
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );
-  mRulesTable->setItem( row, 4, newItem );
+  mRulesTable->setItem( row, 3, newItem );
   newItem = new QTableWidgetItem( layer2ID );
-  mRulesTable->setItem( row, 5, newItem );
+  mRulesTable->setItem( row, 4, newItem );
 
   // save state to the project file.....
   QString postfix = QStringLiteral( "%1" ).arg( row );
@@ -279,7 +249,6 @@ void rulesDialog::addRule()
 
   project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
   project->writeEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, test );
-  project->writeEntry( QStringLiteral( "Topol" ), "/tolerance_" + postfix, QStringLiteral( "%1" ).arg( mToleranceBox->value() ) );
   project->writeEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, layer1ID );
   project->writeEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, layer2ID );
 
@@ -287,7 +256,6 @@ void rulesDialog::addRule()
   mRuleBox->setCurrentIndex( 0 );
   mLayer1Box->setCurrentIndex( 0 );
   mLayer2Box->setCurrentIndex( 0 );
-  mToleranceBox->setValue( 0 );
 }
 
 void rulesDialog::deleteTest()
