@@ -167,11 +167,50 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   verticalHeaderLabels << tr( "Merge" );
   mTableWidget->setVerticalHeaderLabels( verticalHeaderLabels );
 
+  for ( int j = 0; j < mTableWidget->columnCount(); j++ )
+  {
+    QTableWidgetItem *mergedItem = new QTableWidgetItem();
+    mergedItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+    mTableWidget->setItem( mTableWidget->rowCount() - 1, j, mergedItem );
+  }
+
   //insert currently merged values
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
     refreshMergedValue( i );
   }
+
+  //initially set any fields with default values/default value clauses to that value
+  for ( int j = 0; j < mTableWidget->columnCount(); j++ )
+  {
+    int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
+    bool setToManual = false;
+    if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
+    {
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mVectorLayer->dataProvider()->defaultValueClause( idx ) );
+      setToManual = true;
+    }
+    else
+    {
+      QVariant v = mVectorLayer->dataProvider()->defaultValue( idx );
+      if ( v.isValid() )
+      {
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+        setToManual = true;
+      }
+    }
+    if ( setToManual )
+    {
+      QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, j ) );
+      if ( currentComboBox )
+      {
+        currentComboBox->blockSignals( true );
+        currentComboBox->setCurrentIndex( currentComboBox->findData( "manual" ) );
+        currentComboBox->blockSignals( false );
+      }
+    }
+  }
+
 }
 
 QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
