@@ -29,6 +29,8 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 
 #include <limits>
 #include <QComboBox>
@@ -141,8 +143,6 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   QStringList verticalHeaderLabels; //the id column is in the
   verticalHeaderLabels << tr( "Id" );
 
-  QgsAttributeEditorContext context;
-
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
@@ -153,16 +153,13 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     {
       int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
 
-      QTableWidgetItem *attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
+      const QgsEditorWidgetSetup setup = mFields.at( idx ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      QString stringVal = formatter->representValue( mVectorLayer, idx, setup.config(), QVariant(), attrs.at( idx ) );
+
+      QTableWidgetItem *attributeValItem = new QTableWidgetItem( stringVal );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( i + 1, j, attributeValItem );
-      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
-      if ( eww )
-      {
-        eww->setValue( attrs.at( idx ) );
-        mTableWidget->setCellWidget( i + 1, j, eww->widget() );
-        mTableWidget->setCellWidget( i + 1, j, eww->widget() );
-      }
     }
   }
 
@@ -317,14 +314,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
 
   //insert string into table widget
-  QTableWidgetItem *newTotalItem = new QTableWidgetItem();
-  newTotalItem->setData( Qt::DisplayRole, mergeResult );
-  newTotalItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-
-  //block signals to prevent table widget switching combo box to "manual" entry
-  mTableWidget->blockSignals( true );
-  mTableWidget->setItem( mTableWidget->rowCount() - 1, col, newTotalItem );
-  mTableWidget->blockSignals( false );
+  mUpdating = true; // prevent combobox changing to "manual" value
+  QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
+  item->setData( Qt::DisplayRole, mergeResult );
+  mUpdating = false;
 }
 
 QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int col )
@@ -337,9 +330,8 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
 
   if ( i < mFeatureList.size() )
   {
-    QgsEditorWidgetWrapper *wrapper = QgsEditorWidgetWrapper::fromWidget( mTableWidget->cellWidget( i + 1, col ) );
-    if ( wrapper )
-      return wrapper->value();
+    const QgsFeature f = mFeatureList.at( i );
+    return f.attributes().at( fieldIdx );
   }
 
   return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
@@ -498,6 +490,9 @@ void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
 
 void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
 {
+  if ( mUpdating )
+    return;
+
   if ( row < mTableWidget->rowCount() - 1 )
   {
     //only looking for edits in the final row
