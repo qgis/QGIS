@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgslayout.h"
+#include "qgsexpressionutils.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QtTest/QSignalSpy>
@@ -144,6 +145,12 @@ void TestQgsLayoutContext::layer()
   //clear layer
   context.setLayer( nullptr );
   QVERIFY( !context.layer() );
+
+  QgsLayout l( QgsProject::instance() );
+  l.reportContext().setLayer( layer );
+  //test that expression context created for layout contains report context layer scope
+  QgsExpressionContext expContext  = l.createExpressionContext();
+  QCOMPARE( QgsExpressionUtils::getVectorLayer( expContext.variable( "layer" ), nullptr ), layer );
 
   delete layer;
 }

@@ -393,6 +393,9 @@ QgsExpressionContext QgsLayout::createExpressionContext() const
   QgsExpressionContext context = QgsExpressionContext();
   context.appendScope( QgsExpressionContextUtils::globalScope() );
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  if ( mReportContext->layer() )
+    context.appendScope( QgsExpressionContextUtils::layerScope( mReportContext->layer() ) );
+
   context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
   return context;
 }
