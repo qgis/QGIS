@@ -115,12 +115,14 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderer.rootRule().children()[2].setActive(True)
 
         renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
-
         rendered = renderer.willRenderFeature(ft, ctx)
+        renderer.stopRender(ctx)
         renderer.rootRule().children()[0].setActive(True)
         assert rendered == False
 
+        renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
         rendered = renderer.willRenderFeature(ft, ctx)
+        renderer.stopRender(ctx)
         assert rendered == True
 
     def testRefineWithCategories(self):

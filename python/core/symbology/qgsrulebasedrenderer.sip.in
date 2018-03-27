@@ -324,7 +324,7 @@ Returns which legend keys match the feature
 .. versionadded:: 2.14
 %End
 
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0, bool withElse = true, bool onlyActive = true );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0, bool onlyActive = true );
 %Docstring
 tell which rules will be used to render the feature
 %End

@@ -541,13 +541,24 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
 {
   if ( !isFilterOK( feat, context ) )
     return false;
+
   if ( mSymbol )
     return true;
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {
-    if ( rule->willRenderFeature( feat, context ) )
+    if ( rule->isElse() )
+    {
+      RuleList lst = rulesForFeature( feat, context, false );
+      lst.removeOne( rule );
+
+      if ( lst.empty() )
+        return true;
+    }
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    {
       return true;
+    }
   }
   return false;
 }
@@ -581,7 +592,7 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
   return lst;
 }
 
-QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context, bool withElse, bool onlyActive )
+QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context, bool onlyActive )
 {
   RuleList lst;
   if ( !isFilterOK( feat, context ) )
@@ -596,10 +607,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsF
 
   Q_FOREACH ( Rule *rule, listChildren )
   {
-    if ( rule->isElse() && !withElse )
-      continue;
-
-    lst += rule->rulesForFeature( feat, context, withElse, onlyActive );
+    lst += rule->rulesForFeature( feat, context, onlyActive );
   }
   return lst;
 }
@@ -1148,24 +1156,7 @@ QString QgsRuleBasedRenderer::dump() const
 
 bool QgsRuleBasedRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
-  for ( Rule *rule : mRootRule->children() )
-  {
-    if ( ! rule->active() )
-      continue;
-
-    // a feature already rendered by another rule shouldn't be considered in a
-    // 'else' statement for rendering
-    if ( rule->isElse() && mRootRule->rulesForFeature( feat, &context, false, false ).empty() )
-    {
-      return true;
-    }
-    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, &context ) )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return mRootRule->willRenderFeature( feat, &context );
 }
 
 QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
