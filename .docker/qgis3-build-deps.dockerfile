@@ -66,8 +66,6 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
-    python3-sip \
-    python3-sip-dev \
     python3-termcolor \
     python3-yaml \
     qt3d5-dev \
@@ -98,6 +96,12 @@ RUN  apt-get update \
     termcolor \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
+
+WORKDIR /root
+RUN wget --no-verbose https://www.riverbankcomputing.com/static/Downloads/sip/sip-4.19.9.dev1803171438.tar.gz \
+ && tar xzf sip-4.19.9.dev1803171438.tar.gz
+WORKDIR /root/sip-4.19.9.dev1803171438
+RUN python3 configure.py && make && make install
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
