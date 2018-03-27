@@ -187,6 +187,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionVisibleFilter->setIcon( filterIcon );
   mActionEditedFilter->setIcon( filterIcon );
 
+  mActionFeatureActions = new QToolButton();
+  mActionFeatureActions->setAutoRaise( false );
+  mActionFeatureActions->setPopupMode( QToolButton::InstantPopup );
+  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+  mActionFeatureActions->setText( tr( "Actions" ) );
+  mActionFeatureActions->setToolTip( tr( "Actions" ) );
+  mToolbar->addWidget( mActionFeatureActions );
+
   // Connect filter signals
   connect( mActionAdvancedFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterExpressionBuilder );
   connect( mActionShowAllFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterShowAll );
