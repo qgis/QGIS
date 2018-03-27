@@ -916,8 +916,7 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featu
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   mConfig = config;
-  if ( mLayer )
-    mConfig.update( mLayer->fields() );
+  mConfig.update( mLayer->fields() );
   mLayer->setAttributeTableConfig( mConfig );
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
