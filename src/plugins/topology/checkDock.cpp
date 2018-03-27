@@ -324,9 +324,8 @@ void checkDock::runTests( ValidateType type )
   for ( int i = 0; i < mTestTable->rowCount(); ++i )
   {
     QString testName = mTestTable->item( i, 0 )->text();
-    QString toleranceStr = mTestTable->item( i, 3 )->text();
-    QString layer1Str = mTestTable->item( i, 4 )->text();
-    QString layer2Str = mTestTable->item( i, 5 )->text();
+    QString layer1Str = mTestTable->item( i, 3 )->text();
+    QString layer2Str = mTestTable->item( i, 4 )->text();
 
     // test if layer1 is in the registry
     if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
@@ -348,7 +347,7 @@ void checkDock::runTests( ValidateType type )
     connect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     // run the test
 
-    ErrorList errors = mTest->runTest( testName, layer1, layer2, type, toleranceStr.toDouble() );
+    ErrorList errors = mTest->runTest( testName, layer1, layer2, type );
 
     QList<TopolError *>::Iterator it;
 
