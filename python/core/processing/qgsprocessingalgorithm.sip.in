@@ -864,7 +864,7 @@ Returns the source's coordinate reference system. This will only return a valid 
 called from a subclasses' processFeature() implementation.
 %End
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Processes an individual input ``feature`` from the source. Algorithms should implement their
 logic in this method for performing the algorithm's operation (e.g. replacing the feature's
