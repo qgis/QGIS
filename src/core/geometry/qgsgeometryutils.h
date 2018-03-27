@@ -166,7 +166,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static int circleCircleIntersections( QgsPointXY center1, double radius1,
                                           QgsPointXY center2, double radius2,
-                                          QgsPointXY &intersection1, QgsPointXY &intersection2 );
+                                          QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT );
 
     /**
      * Calculates the tangent points between the circle with the specified \a center and \a radius
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.2
      */
     static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
-                                       const QgsPointXY &p, QgsPointXY &pt1, QgsPointXY &pt2 );
+                                       const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT );
 
     /**
      * Calculates the outer tangent points for two circles, centered at \a center1 and
@@ -198,8 +198,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static int circleCircleOuterTangents(
       const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
-      QgsPointXY &line1P1, QgsPointXY &line1P2,
-      QgsPointXY &line2P1, QgsPointXY &line2P2 );
+      QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
 
     /**
      * \brief Project the point on a segment
