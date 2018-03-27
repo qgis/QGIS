@@ -161,10 +161,7 @@
     <string>Load script from template...</string>
    </property>
    <property name="toolTip">
-    <string>oad script from template...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
+    <string>Load script from template...</string>
    </property>
   </action>
   <action name="actionRunScript">
