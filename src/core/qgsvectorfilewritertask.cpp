@@ -47,7 +47,7 @@ void QgsVectorFileWriterTask::cancel()
 
 bool QgsVectorFileWriterTask::run()
 {
-  if ( !mError != QgsVectorFileWriter::NoError )
+  if ( mError != QgsVectorFileWriter::NoError )
     return false;
 
   connect( mOptions.feedback, &QgsFeedback::progressChanged, this, &QgsVectorFileWriterTask::setProgress );
