@@ -1381,8 +1381,9 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
 
     QgsPointSequenceV2 p;
     for ( int i = 0; i < polygon.size(); i++ )
+    {
       p << QgsPointV2( polygon[i] );
-    p << p[0];
+    }
 
     if ( mBrush.style() != Qt::NoBrush )
       e.writePolygon( QgsRingSequenceV2() << p, layerName, "SOLID", bc );
