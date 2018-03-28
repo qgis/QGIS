@@ -1675,6 +1675,10 @@ class CORE_EXPORT QgsGeometry
     /**
      * Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
+     *
+     * If input geometries contain Z or M values, these will also be smoothed and the output
+     * geometry will retain the same dimensionality as the input geometry.
+     *
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
      * \param offset fraction of line to create new vertices along, between 0 and 1.0,

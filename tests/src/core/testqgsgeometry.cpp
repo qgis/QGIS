@@ -15551,6 +15551,24 @@ void TestQgsGeometry::smoothCheck()
                << QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 12.5, 10.0 ) << QgsPointXY( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
+  //linestringM
+  wkt = QStringLiteral( "LineStringM(0 0 1, 10 0 2, 10 10 6, 20 10 4)" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "LineStringM (0 0 1, 7.5 0 1.75, 10 2.5 3, 10 7.5 5, 12.5 10 5.5, 20 10 4)" ) );
+
+  //linestringZ
+  wkt = QStringLiteral( "LineStringZ(0 0 1, 10 0 2, 10 10 6, 20 10 4)" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "LineStringZ (0 0 1, 7.5 0 1.75, 10 2.5 3, 10 7.5 5, 12.5 10 5.5, 20 10 4)" ) );
+
+  //linestringZM
+  wkt = QStringLiteral( "LineStringZM(0 0 1 4, 10 0 2 8, 10 10 6 2, 20 10 4 0)" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "LineStringZM (0 0 1 4, 7.5 0 1.75 7, 10 2.5 3 6.5, 10 7.5 5 3.5, 12.5 10 5.5 1.5, 20 10 4 0)" ) );
+
   //linestring, with min distance
   wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10, 15 10, 15 20)" );
   geom = QgsGeometry::fromWkt( wkt );
@@ -15614,6 +15632,24 @@ void TestQgsGeometry::smoothCheck()
                        << QgsPointXY( 4.0, 3.5 ) << QgsPointXY( 3.5, 4.0 ) << QgsPointXY( 2.5, 4.0 )
                        << QgsPointXY( 2.0, 3.5 ) << QgsPointXY( 2.0, 2.5 ) << QgsPointXY( 2.5, 2.0 ) );
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
+
+  //polygonM
+  wkt = QStringLiteral( "PolygonM ((0 0 1, 10 0 4, 10 10 6, 0 10 8, 0 0 1 ),(2 2 3, 4 2 5, 4 4 7, 2 4 9, 2 2 3))" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "PolygonM ((2.5 0 1.75, 7.5 0 3.25, 10 2.5 4.5, 10 7.5 5.5, 7.5 10 6.5, 2.5 10 7.5, 0 7.5 6.25, 0 2.5 2.75, 2.5 0 1.75),(2.5 2 3.5, 3.5 2 4.5, 4 2.5 5.5, 4 3.5 6.5, 3.5 4 7.5, 2.5 4 8.5, 2 3.5 7.5, 2 2.5 4.5, 2.5 2 3.5))" ) );
+
+  //polygonZ
+  wkt = QStringLiteral( "PolygonZ ((0 0 1, 10 0 4, 10 10 6, 0 10 8, 0 0 1 ),(2 2 3, 4 2 5, 4 4 7, 2 4 9, 2 2 3))" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "PolygonZ ((2.5 0 1.75, 7.5 0 3.25, 10 2.5 4.5, 10 7.5 5.5, 7.5 10 6.5, 2.5 10 7.5, 0 7.5 6.25, 0 2.5 2.75, 2.5 0 1.75),(2.5 2 3.5, 3.5 2 4.5, 4 2.5 5.5, 4 3.5 6.5, 3.5 4 7.5, 2.5 4 8.5, 2 3.5 7.5, 2 2.5 4.5, 2.5 2 3.5))" ) );
+
+  //polygonZM
+  wkt = QStringLiteral( "PolygonZ ((0 0 1 6, 10 0 4 2, 10 10 6 0, 0 10 8 4, 0 0 1 6 ))" );
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "PolygonZM ((2.5 0 1.75 5, 7.5 0 3.25 3, 10 2.5 4.5 1.5, 10 7.5 5.5 0.5, 7.5 10 6.5 1, 2.5 10 7.5 3, 0 7.5 6.25 4.5, 0 2.5 2.75 5.5, 2.5 0 1.75 5))" ) );
 
   //polygon with max angle - should be unchanged
   wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" );
