@@ -60,7 +60,17 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
 
 QAction *QgsLayerTreeViewDefaultActions::actionRenameGroupOrLayer( QObject *parent )
 {
-  QAction *a = new QAction( tr( "Re&name" ), parent );
+  QgsLayerTreeNode *node = mView->currentNode();
+  if ( !node )
+    return nullptr;
+
+  QString text;
+  if ( QgsLayerTree::isGroup( node ) )
+    text = tr( "Re&name Group" );
+  else
+    text = tr( "Re&name Layer" );
+
+  QAction *a = new QAction( text, parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::renameGroupOrLayer );
   return a;
 }
