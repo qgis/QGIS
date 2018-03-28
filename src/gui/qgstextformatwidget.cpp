@@ -29,6 +29,8 @@
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 
+#include <QButtonGroup>
+
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )

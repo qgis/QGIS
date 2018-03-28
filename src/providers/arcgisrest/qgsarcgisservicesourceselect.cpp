@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 
+#include <QButtonGroup>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
