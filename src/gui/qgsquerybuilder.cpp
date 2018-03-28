@@ -134,6 +134,7 @@ void QgsQueryBuilder::setupGuiViews()
   // Colored rows
   lstFields->setAlternatingRowColors( true );
   lstValues->setAlternatingRowColors( true );
+  lstValues->setModel( mProxyValues );
 }
 
 void QgsQueryBuilder::fillValues( int idx, int limit )
@@ -177,14 +178,8 @@ void QgsQueryBuilder::btnSampleValues_clicked()
     mLayer->setSubsetString( QLatin1String( "" ) );
   }
 
-  //delete connection mModelValues and lstValues
-  QStandardItemModel *tmp = new QStandardItemModel();
-  lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
-  lstValues->setModel( mProxyValues );
-  //delete the tmp
-  delete tmp;
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -204,14 +199,8 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
     mLayer->setSubsetString( QLatin1String( "" ) );
   }
 
-  //delete connection mModelValues and lstValues
-  QStandardItemModel *tmp = new QStandardItemModel();
-  lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
-  lstValues->setModel( mProxyValues );
-  //delete the tmp
-  delete tmp;
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
