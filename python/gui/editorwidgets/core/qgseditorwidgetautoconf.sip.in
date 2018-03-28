@@ -21,6 +21,8 @@ Base class for plugins allowing to pick automatically a widget type for editing 
 %End
   public:
 
+    virtual ~QgsEditorWidgetAutoConfPlugin();
+
     virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score /Out/ ) const = 0;
 %Docstring
 Typical scores are:
