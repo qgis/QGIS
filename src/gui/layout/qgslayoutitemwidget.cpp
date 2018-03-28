@@ -21,6 +21,8 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 
+#include <QButtonGroup>
+
 //
 // QgsLayoutConfigObject
 //
