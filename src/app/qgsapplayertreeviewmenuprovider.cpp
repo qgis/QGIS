@@ -220,7 +220,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->isSpatial() )
       {
         // set layer scale visibility
-        menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+        menu->addAction( tr( "&Set Layer Scale Visibility…" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
