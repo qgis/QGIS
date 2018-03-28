@@ -51,7 +51,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
   if ( !node )
     return nullptr;
 
-  QAction *a = new QAction( tr( "&Show in Overview" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ), tr( "&Show in Overview" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showInOverview );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
@@ -129,9 +129,9 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject *par
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
     return nullptr;
 #ifdef Q_OS_MACX
-  QAction *a = new QAction( tr( "Check and all its Children (⌘-click)" ), parent );
+  QAction *a = new QAction( tr( "Check and All its Children (⌘-click)" ), parent );
 #else
-  QAction *a = new QAction( tr( "Check and all its Children (Ctrl-click)" ), parent );
+  QAction *a = new QAction( tr( "Check and All its Children (Ctrl-click)" ), parent );
 #endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllChildren );
   return a;
@@ -143,9 +143,9 @@ QAction *QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject *p
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
     return nullptr;
 #ifdef Q_OS_MACX
-  QAction *a = new QAction( tr( "Uncheck and all its Children (⌘-click)" ), parent );
+  QAction *a = new QAction( tr( "Uncheck and All its Children (⌘-click)" ), parent );
 #else
-  QAction *a = new QAction( tr( "Uncheck and all its Children (Ctrl-click)" ), parent );
+  QAction *a = new QAction( tr( "Uncheck and All its Children (Ctrl-click)" ), parent );
 #endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::uncheckAndAllChildren );
   return a;
@@ -156,7 +156,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject *pare
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
     return nullptr;
-  QAction *a = new QAction( tr( "Check and all its Parents" ), parent );
+  QAction *a = new QAction( tr( "Check and All its Parents" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
   return a;
 }
