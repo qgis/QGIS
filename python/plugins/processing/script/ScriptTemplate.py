@@ -72,6 +72,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         return 'examplescripts'
 
+    def shortHelpString(self):
+        """
+        Returns a localised short helper string for the algorithm. This string
+        should provide a basic description about what the algorithm does and the
+        parameters and outputs associated with it..
+        """
+        return self.tr("Example algorithm short description")
+
     def initAlgorithm(self, config=None):
         """
         Here we define the inputs and output of the algorithm, along
