@@ -5591,6 +5591,12 @@ bool QgisApp::addProject( const QString &projectFile )
 
   mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
 
+  // Select the first layer
+  if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
+  {
+    mLayerTreeView->setCurrentLayer( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().at( 0 )->layer() );
+  }
+
   QgsSettings settings;
 
 #ifdef WITH_BINDINGS
