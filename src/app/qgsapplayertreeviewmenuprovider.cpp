@@ -244,10 +244,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         // save as vector file
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportVector );
-        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
+        QAction *actionSaveAs = new QAction( tr( "Save Features as…" ), menuExportVector );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
         menuExportVector->addAction( actionSaveAs );
+        if ( vlayer->selectedFeatureCount() > 0 )
+        {
+          QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features as…" ), menuExportVector );
+          connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
+          menuExportVector->addAction( actionSaveSelectedFeaturesAs );
+        }
+        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
         connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
         menuExportVector->addAction( actionSaveAsDefinitionLayer );
         if ( vlayer->isSpatial() )

@@ -692,7 +692,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     //! save current vector layer
-    void saveAsFile( QgsMapLayer *layer = nullptr );
+    void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
     //! save qml style for the current layer
     void saveStyleFile( QgsMapLayer *layer = nullptr );
     //! save qrl definition for the current layer
@@ -1768,7 +1768,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
-    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
+    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
 
     /**
      * Paste features from clipboard into a new memory layer.
