@@ -965,6 +965,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the snapping Options
     void snappingOptions();
 
+    //! change layer subset of current vector layer
+    void layerSubsetString();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1418,9 +1421,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Update gui actions/menus when layers are modified
     void updateLayerModifiedActions();
-
-    //! change layer subset of current vector layer
-    void layerSubsetString();
 
     //! map tool changed
     void mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool );
