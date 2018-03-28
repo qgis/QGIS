@@ -158,10 +158,10 @@
   </action>
   <action name="actionLoadFromTemplate">
    <property name="text">
-    <string>Load script from template...</string>
+    <string>Load script from template</string>
    </property>
    <property name="toolTip">
-    <string>Load script from template...</string>
+    <string>Load script from template</string>
    </property>
   </action>
   <action name="actionRunScript">
