@@ -147,6 +147,7 @@ void QgsDecorationScaleBar::setupScaleBar()
     case 3:
       mStyle = qgis::make_unique< QgsSingleBoxScaleBarRenderer >();
       mSettings.setFillColor( mColor );
+      mSettings.setFillColor2( QColor( "transparent" ) );
       mSettings.setLineColor( mOutlineColor );
       mSettings.setFont( mFont );
       mSettings.setFontColor( mColor );
@@ -279,12 +280,18 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       else
         scaleBarUnitLabel = tr( "degrees" );
       break;
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
     case QgsUnitTypes::DistanceUnknownUnit:
+      scaleBarUnitLabel = QgsUnitTypes::toAbbreviatedString( scaleBarUnits );
+      break;
       scaleBarUnitLabel = tr( "unknown" );
-      //intentional fall-through
-      FALLTHROUGH;
-    default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( scaleBarUnits ) );
+      break;
   }
 
   mSettings.setUnits( scaleBarUnits );
@@ -293,7 +300,6 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setUnitLabel( scaleBarUnitLabel );
 
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
-  scaleContext.size = QSizeF( deviceWidth, deviceHeight );
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
   scaleContext.scale = mapSettings.scale();
 
@@ -328,8 +334,11 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originY = ( ( deviceHeight ) / 100. ) * mMarginVertical;
       break;
     }
-
-    default:  // Use default of top left
+    case QgsUnitTypes::RenderMapUnits:
+    case QgsUnitTypes::RenderPoints:
+    case QgsUnitTypes::RenderInches:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderMetersInMapUnits:
       break;
   }
 
@@ -348,8 +357,6 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originX = deviceWidth - originX - size.width();
       originY = deviceHeight - originY - size.height();
       break;
-    default:
-      QgsDebugMsg( "Unable to determine where to put scale bar so defaulting to top left" );
   }
 
   context.painter()->save();
