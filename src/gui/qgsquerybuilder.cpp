@@ -73,6 +73,9 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
   txtSQL->setText( mOrigSubsetString );
 
+  mFilterLineEdit->setPlaceholderText( tr( "Search" ) );
+  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsQueryBuilder::onTextChanged );
+
   populateFields();
 }
 
@@ -118,6 +121,8 @@ void QgsQueryBuilder::setupGuiViews()
   //Initialize the models
   mModelFields = new QStandardItemModel();
   mModelValues = new QStandardItemModel();
+  mProxyValues = new QSortFilterProxyModel();
+  mProxyValues->setSourceModel( mModelValues );
   // Modes
   lstFields->setViewMode( QListView::ListMode );
   lstValues->setViewMode( QListView::ListMode );
@@ -177,7 +182,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
-  lstValues->setModel( mModelValues );
+  lstValues->setModel( mProxyValues );
   //delete the tmp
   delete tmp;
 
@@ -204,7 +209,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
-  lstValues->setModel( mModelValues );
+  lstValues->setModel( mProxyValues );
   //delete the tmp
   delete tmp;
 
@@ -340,6 +345,7 @@ void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
     btnGetAllValues->setEnabled( true );
 
     mModelValues->clear();
+    mFilterLineEdit->clear();
   }
 }
 
@@ -351,7 +357,7 @@ void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
+  QVariant value = index.data( Qt::DisplayRole );
   if ( value.isNull() )
     txtSQL->insertText( QStringLiteral( "NULL" ) );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
@@ -398,6 +404,12 @@ void QgsQueryBuilder::btnOr_clicked()
 {
   txtSQL->insertText( QStringLiteral( " OR " ) );
   txtSQL->setFocus();
+}
+
+void QgsQueryBuilder::onTextChanged( const QString &text )
+{
+  mProxyValues->setFilterCaseSensitivity( Qt::CaseInsensitive );
+  mProxyValues->setFilterWildcard( text );
 }
 
 void QgsQueryBuilder::clear()
