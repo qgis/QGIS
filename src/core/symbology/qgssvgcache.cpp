@@ -455,7 +455,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   if ( !status.isNull() && status.toInt() >= 400 )
   {
     QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2]" ).arg( status.toInt() ).arg( phrase.toString() ), tr( "SVG" ) );
+    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path ), tr( "SVG" ) );
 
     reply->deleteLater();
     return mMissingSvg;
