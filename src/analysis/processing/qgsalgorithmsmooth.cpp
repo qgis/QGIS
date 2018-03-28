@@ -67,7 +67,9 @@ QString QgsSmoothAlgorithm::shortHelpString() const
                       "The maximum angle parameter can be used to prevent smoothing of "
                       "nodes with large angles. Any node where the angle of the segments to either "
                       "side is larger than this will not be smoothed. For example, setting the maximum "
-                      "angle to 90 degrees or lower would preserve right angles in the geometry." );
+                      "angle to 90 degrees or lower would preserve right angles in the geometry.\n\n"
+                      "If input geometries contain Z or M values, these will also be smoothed and the output "
+                      "geometry will retain the same dimensionality as the input geometry." );
 }
 
 QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const

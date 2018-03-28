@@ -2711,9 +2711,12 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
 inline QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double offset )
 {
-  double deltaX = p2.x() - p1.x();
-  double deltaY = p2.y() - p1.y();
-  return QgsPoint( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
+  const double _offset = 1 - offset;
+  return QgsPoint( p1.wkbType(),
+                   p1.x() * _offset + p2.x() * offset,
+                   p1.y() * _offset + p2.y() * offset,
+                   p1.is3D() ? p1.z() * _offset + p2.z() * offset : std::numeric_limits<double>::quiet_NaN(),
+                   p1.isMeasure() ? p1.m() * _offset + p2.m() * offset : std::numeric_limits<double>::quiet_NaN() );
 }
 
 std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const unsigned int iterations,
