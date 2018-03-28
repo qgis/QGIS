@@ -461,10 +461,13 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     return mMissingSvg;
   }
 
+  // we accept both real SVG mime types AND plain text types - because some sites
+  // (notably github) serve up svgs as raw text
   QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-  QgsDebugMsg( "contentType: " + contentType );
-  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive )
+       && !contentType.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
   {
+    QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
     reply->deleteLater();
     return mMissingSvg;
   }
