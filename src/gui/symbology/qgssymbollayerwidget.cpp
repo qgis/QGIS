@@ -43,6 +43,7 @@
 #include "qgsauxiliarystorage.h"
 
 #include <QAbstractButton>
+#include <QButtonGroup>
 #include <QColorDialog>
 #include <QCursor>
 #include <QDir>

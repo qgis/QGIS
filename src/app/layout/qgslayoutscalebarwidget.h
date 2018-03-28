@@ -20,6 +20,8 @@
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
+#include <QButtonGroup>
+
 class QgsLayoutItemScaleBar;
 
 /**

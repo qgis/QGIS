@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 
 #include <QColorDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QPainter>
 #include <QTableWidget>
