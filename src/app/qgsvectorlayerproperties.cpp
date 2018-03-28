@@ -811,8 +811,8 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
     // The datasource for the layer needs to be updated with the new sql since this gets
     // saved to the project file. This should happen at the map layer level...
-
   }
+  pbnClearQueryBuilder->setEnabled( !mLayer->subsetString().isEmpty() );
   // delete the query builder object
   delete qb;
 }
