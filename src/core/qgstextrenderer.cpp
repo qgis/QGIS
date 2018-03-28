@@ -1897,35 +1897,35 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fm )
+double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fontMetrics )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fm )
+  if ( !fontMetrics )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.get();
+    fontMetrics = newFm.get();
   }
 
   double maxWidth = 0;
   Q_FOREACH ( const QString &line, textLines )
   {
-    maxWidth = std::max( maxWidth, fm->width( line ) );
+    maxWidth = std::max( maxWidth, fontMetrics->width( line ) );
   }
   return maxWidth;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fm )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fontMetrics )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fm )
+  if ( !fontMetrics )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.get();
+    fontMetrics = newFm.get();
   }
 
-  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
+  double labelHeight = fontMetrics->ascent() + fontMetrics->descent(); // ignore +1 for baseline
 
   switch ( mode )
   {
@@ -1938,7 +1938,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     case Rect:
     case Point:
       // standard rendering - designed to exactly replicate QPainter's drawText method
-      return labelHeight + ( textLines.size() - 1 ) * fm->lineSpacing() * format.lineHeight();
+      return labelHeight + ( textLines.size() - 1 ) * fontMetrics->lineSpacing() * format.lineHeight();
   }
 
   return 0;
