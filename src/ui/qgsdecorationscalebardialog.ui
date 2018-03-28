@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>565</width>
-    <height>271</height>
+    <height>279</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,7 +124,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="textLabel1_3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -186,7 +186,36 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="textLabel1_3_22">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Font of bar</string>
+        </property>
+       </widget>      
+      </item>
       <item row="4" column="1">
+       <widget class="QgsFontButton" name="mButtonFontStyle">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Font</string>
+        </property>
+       </widget>      
+      </item>
+      <item row="5" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QgsSpinBox" name="spnSize">
@@ -219,7 +248,7 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <layout class="QHBoxLayout" name="hlytMargin" stretch="0,0,0,0,0">
         <property name="spacing">
          <number>10</number>
@@ -336,7 +365,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="1">
+      <item row="7" column="1">
        <widget class="QComboBox" name="cboPlacement">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -346,7 +375,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="lblMargin">
         <property name="minimumSize">
          <size>
@@ -359,7 +388,7 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="lblLocation">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -375,7 +404,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSnapping">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -405,6 +434,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -420,6 +454,7 @@
   <tabstop>grpEnable</tabstop>
   <tabstop>cboStyle</tabstop>
   <tabstop>pbnChangeColor</tabstop>
+  <tabstop>pbnChangeOutlineColor</tabstop>
   <tabstop>spnSize</tabstop>
   <tabstop>chkSnapping</tabstop>
   <tabstop>cboPlacement</tabstop>
