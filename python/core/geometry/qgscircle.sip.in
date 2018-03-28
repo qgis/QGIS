@@ -133,6 +133,63 @@ If the points are colinear an empty circle is returned.
 :param epsilon: Value used to compare point.
 %End
 
+    int intersections( const QgsCircle &other, QgsPoint &intersection1 /Out/, QgsPoint &intersection2 /Out/, bool useZ = false ) const;
+%Docstring
+Calculates the intersections points between this circle and an ``other`` circle.
+
+If found, the intersection points will be stored in ``intersection1`` and ``intersection2``.
+
+By default this method does not consider any z values and instead treats the circles as 2-dimensional.
+If ``useZ`` is set to true, then an intersection will only occur if the z values of both circles are
+equal. In this case the points returned for ``intersection1`` and ``intersection2`` will contain
+the z value of the circle intersections.
+
+:return: number of intersection points found.
+
+.. versionadded:: 3.2
+%End
+
+    bool tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) const;
+%Docstring
+Calculates the tangent points between this circle and the point ``p``.
+
+If found, the tangent points will be stored in ``pt1`` and ``pt2``.
+
+Note that this method is 2D only and does not consider the z-value of the circle.
+
+:return: true if tangent was found.
+
+.. versionadded:: 3.2
+
+
+.. seealso:: :py:func:`outerTangents`
+%End
+
+    int outerTangents( const QgsCircle &other,
+                       QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+                       QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) const;
+%Docstring
+Calculates the outer tangent points between this circle
+and an ``other`` circle.
+
+The outer tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles touch
+the circles.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+Note that this method is 2D only and does not consider the z-value of the circle.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`tangentToPoint`
+%End
+
     virtual double area() const;
 
     virtual double perimeter() const;

@@ -7181,6 +7181,61 @@ void TestQgsGeometry::circle()
   QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
   pc = QgsPoint( 6, 1 );
   QVERIFY( !QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+
+  // intersections
+  QgsCircle ci1( QgsPoint( 0, 0 ), 1 );
+  QgsPoint int1;
+  QgsPoint int2;
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 2, 0 ), 0.5 ), int1, int2 ), 0 );
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 0.5, 0.1 ), 0.2 ), int1, int2 ), 0 );
+  // one intersection
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 3, 0 ), 2 ), int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPoint( 1, 0 ) );
+  QCOMPARE( int2, QgsPoint( 1, 0 ) );
+  // two intersections
+  ci1 = QgsCircle( QgsPoint( 5, 3 ), 2 );
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 7, -1 ), 4 ), int1, int2 ), 2 );
+  QCOMPARE( int1.wkbType(), QgsWkbTypes::Point );
+  QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
+  QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
+  QCOMPARE( int2.wkbType(), QgsWkbTypes::Point );
+  QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
+  QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
+  // with z
+  ci1 = QgsCircle( QgsPoint( 5, 3, 11 ), 2 );
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 7, -1, 5 ), 4 ), int1, int2, true ), 0 );
+  QCOMPARE( ci1.intersections( QgsCircle( QgsPoint( 7, -1, 11 ), 4 ), int1, int2, true ), 2 );
+  QCOMPARE( int1.wkbType(), QgsWkbTypes::PointZ );
+  QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
+  QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
+  QGSCOMPARENEAR( int1.z(), 11.0, 0.001 );
+  QCOMPARE( int2.wkbType(), QgsWkbTypes::PointZ );
+  QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
+  QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
+  QGSCOMPARENEAR( int2.z(), 11.0, 0.001 );
+
+  // tangent to point
+  QgsPointXY t1;
+  QgsPointXY t2;
+  QVERIFY( !QgsCircle( QgsPoint( 1, 2 ), 4 ).tangentToPoint( QgsPointXY( 1, 2 ), t1, t2 ) );
+  QVERIFY( QgsCircle( QgsPoint( 1, 2 ), 4 ).tangentToPoint( QgsPointXY( 8, 4 ), t1, t2 ) );
+  QGSCOMPARENEAR( t1.x(), 4.03, 0.01 );
+  QGSCOMPARENEAR( t1.y(), -0.61, 0.01 );
+  QGSCOMPARENEAR( t2.x(), 2.2, 0.01 );
+  QGSCOMPARENEAR( t2.y(), 5.82, 0.01 );
+
+  // two circle tangents
+  QgsPointXY l1p1, l1p2, l2p1, l2p2;
+  QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 4 ).outerTangents( QgsCircle( QgsPoint( 2, 3 ), 1 ), l1p1, l1p2, l2p1, l2p2 ), 0 );
+  QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 1 ).outerTangents( QgsCircle( QgsPoint( 10, 3 ), 4 ), l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 0.566, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 2.901, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 8.266, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 6.604, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 0.7749, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
 }
 
 void TestQgsGeometry::regularPolygon()
