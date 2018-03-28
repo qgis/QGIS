@@ -172,14 +172,14 @@ class ScriptEditorDialog(BASE, WIDGET):
     def loadFrom(self):
         if self.hasChanged:
             ret = QMessageBox.warning(self,
-                                      self.tr("Unsaved changes"),
+                                      self.tr("Load Script From Template"),
                                       self.tr("There are unsaved changes in the script. Continue?"),
                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if ret == QMessageBox.No:
                 return
 
         templatePath = os.path.join(
-            pluginPath, 'script', 'script_template.py')
+            pluginPath, 'script', 'ScriptTemplate.py')
 
         with codecs.open(templatePath, 'r', encoding='utf-8') as f:
             templateTxt = f.read()
