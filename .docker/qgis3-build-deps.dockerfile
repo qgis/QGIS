@@ -98,9 +98,10 @@ RUN  apt-get update \
   && apt-get clean
 
 WORKDIR /root
-RUN curl -s -S -O https://www.riverbankcomputing.com/static/Downloads/sip/sip-4.19.9.dev1803171438.tar.gz \
- && tar xzf sip-4.19.9.dev1803171438.tar.gz
-WORKDIR /root/sip-4.19.9.dev1803171438
+RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
+ && tar xzf tip.tar.gz
+ && bash -c "mv $(ls sip-*) sip-419"
+WORKDIR /root/sip-419
 RUN python3 configure.py && make && make install
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
