@@ -364,6 +364,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       , mShowUnlinkButton( true )
     {}
 
+
     /**
      * Get the id of the relation which shall be embedded
      *

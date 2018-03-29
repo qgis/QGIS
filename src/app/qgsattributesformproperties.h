@@ -122,6 +122,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         Type mType = Field;
         QString mName;
         QString mDisplayName;
+
         int mColumnCount = 1;
         bool mShowAsGroupBox = false;
         bool mShowLabel = true;
