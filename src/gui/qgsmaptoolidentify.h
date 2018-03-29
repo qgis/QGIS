@@ -22,6 +22,7 @@
 #include "qgspointxy.h"
 #include "qgspolygon.h"
 #include "qgsunittypes.h"
+#include "qgsmaptoolselectionhandler.h"
 
 #include <QObject>
 #include <QPointer>
@@ -182,6 +183,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;
+
+    QgsMapToolSelectionHandler *mSelectionHandler;
 
   private:
 

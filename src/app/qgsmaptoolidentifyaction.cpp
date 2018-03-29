@@ -61,6 +61,8 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   mFillColor = QColor( 254, 178, 76, 63 );
   mStrokeColor = QColor( 254, 58, 29, 100 );
   mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
+
+  mSelectionHandler = new QgsMapToolSelectionHandler(canvas);
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -220,16 +222,20 @@ void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
   switch ( mSelectionMode )
   {
     case QgsMapToolIdentifyAction::SelectSimple:
-      selectFeaturesMoveEvent( e );
+      mSelectionHandler->selectFeaturesMoveEvent( e );
+      //selectFeaturesMoveEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectPolygon:
-      selectPolygonMoveEvent( e );
+      mSelectionHandler->selectPolygonMoveEvent( e );
+      //selectPolygonMoveEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectFreehand:
-      selectFreehandMoveEvent( e );
+      mSelectionHandler->selectFreehandMoveEvent( e );
+      //selectFreehandMoveEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectRadius:
-      selectRadiusMoveEvent( e );
+      mSelectionHandler->selectRadiusMoveEvent( e );
+      //selectRadiusMoveEvent( e );
       break;
   }
 }
@@ -244,12 +250,14 @@ void QgsMapToolIdentifyAction::initRubberBand()
 void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
   mSelectionMode = mResultsDialog->selectionMode();
+
   switch ( mSelectionMode )
   {
     case QgsMapToolIdentifyAction::SelectSimple:
-      mSelectionRubberBand.reset();
-      initRubberBand();
-      mInitDragPos = e -> pos();
+//      mSelectionRubberBand.reset();
+//      initRubberBand();
+//      mInitDragPos = e -> pos();
+      mSelectionHandler->canvasPressEvent(e, QgsMapToolSelectionHandler::SelectSimple);
       break;
     case QgsMapToolIdentifyAction::SelectPolygon:
       break;
@@ -270,19 +278,24 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     mSelectionMode = QgsMapToolIdentify::SelectSimple;
   }
+  mSelectionHandler->canvasReleaseEvent( e );
   switch ( mSelectionMode )
   {
     case QgsMapToolIdentifyAction::SelectSimple:
-      selectFeaturesReleaseEvent( e );
+      mSelectionHandler->selectFeaturesReleaseEvent( e );
+      //selectFeaturesReleaseEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectPolygon:
-      selectPolygonReleaseEvent( e );
+      mSelectionHandler->selectPolygonReleaseEvent( e );
+      //selectPolygonReleaseEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectFreehand:
-      selectFreehandReleaseEvent( e );
+      mSelectionHandler->selectFreehandReleaseEvent( e );
+      //selectFreehandReleaseEvent( e );
       break;
     case QgsMapToolIdentifyAction::SelectRadius:
-      selectRadiusReleaseEvent( e );
+      mSelectionHandler->selectRadiusReleaseEvent( e );
+      //selectRadiusReleaseEvent( e );
       break;
   }
 

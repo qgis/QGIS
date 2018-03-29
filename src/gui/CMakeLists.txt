@@ -299,6 +299,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolidentify.cpp
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
+  qgsmaptoolselectionhandler.cpp
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
   qgsmenuheader.cpp
@@ -467,6 +468,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolidentify.h
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
+  qgsmaptoolselectionhandler.h
   qgsmaptoolzoom.h
   qgsmaplayerconfigwidget.h
   qgsmenuheader.h
