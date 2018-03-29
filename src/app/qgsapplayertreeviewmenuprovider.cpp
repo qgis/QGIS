@@ -247,12 +247,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *actionSaveAs = new QAction( tr( "Save Features as…" ), menuExportVector );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
         menuExportVector->addAction( actionSaveAs );
-        if ( vlayer->selectedFeatureCount() > 0 )
-        {
-          QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features as…" ), menuExportVector );
-          connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
-          menuExportVector->addAction( actionSaveSelectedFeaturesAs );
-        }
+        QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features as…" ), menuExportVector );
+        connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
+        actionSaveSelectedFeaturesAs->setEnabled( vlayer->selectedFeatureCount() > 0 );
+        menuExportVector->addAction( actionSaveSelectedFeaturesAs );
         QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
         connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
         menuExportVector->addAction( actionSaveAsDefinitionLayer );
