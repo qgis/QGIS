@@ -55,6 +55,14 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     void fetchContent( const QUrl &url );
 
     /**
+     * Fetches content using a network \a request and handles redirects. The finished()
+     * signal will be emitted when content has been fetched.
+     *
+     * \since QGIS 3.2
+     */
+    void fetchContent( const QNetworkRequest &request );
+
+    /**
      * Returns a reference to the network reply
      * \returns QNetworkReply for fetched URL content
      */
