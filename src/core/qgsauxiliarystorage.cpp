@@ -647,6 +647,12 @@ QString QgsAuxiliaryStorage::extension()
   return AS_EXTENSION;
 }
 
+bool QgsAuxiliaryStorage::exists( const QgsProject &project )
+{
+  const QFileInfo fileinfo( filenameForProject( project ) );
+  return fileinfo.exists() && fileinfo.isFile();
+}
+
 bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
 {
   bool rc = false;
