@@ -72,8 +72,6 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.actionSaveScriptAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.actionLoadFromTemplate.setIcon(
-            QgsApplication.getThemeIcon('/mActionOpenFromTemplate.svg'))
         self.actionRunScript.setIcon(
             QgsApplication.getThemeIcon('/mActionStart.svg'))
         self.actionCut.setIcon(
@@ -97,7 +95,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionOpenScript.triggered.connect(self.openScript)
         self.actionSaveScript.triggered.connect(self.save)
         self.actionSaveScriptAs.triggered.connect(self.saveAs)
-        self.actionLoadFromTemplate.triggered.connect(self.loadFrom)
         self.actionRunScript.triggered.connect(self.runAlgorithm)
         self.actionCut.triggered.connect(self.editor.cut)
         self.actionCopy.triggered.connect(self.editor.copy)
@@ -168,22 +165,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def saveAs(self):
         self.saveScript(True)
-
-    def loadFrom(self):
-        if self.hasChanged:
-            ret = QMessageBox.warning(self,
-                                      self.tr("Load Script From Template"),
-                                      self.tr("There are unsaved changes in the script. Continue?"),
-                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if ret == QMessageBox.No:
-                return
-
-        templatePath = os.path.join(
-            pluginPath, 'script', 'ScriptTemplate.py')
-
-        with codecs.open(templatePath, 'r', encoding='utf-8') as f:
-            templateTxt = f.read()
-            self.editor.setText(templateTxt)
 
     def saveScript(self, saveAs):
         newPath = None
