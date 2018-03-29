@@ -126,7 +126,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     void mTemplatesUserDirBtn_pressed();
     //! Slot to open help file
     void showHelp();
-    
+
     void createReport();
     void removeClicked();
     void showClicked();
