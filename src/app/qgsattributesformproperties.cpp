@@ -115,7 +115,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   for ( const QgsRelation &relation : relations )
   {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) );
     itemData.setShowLabel( true );
 
     RelationConfig cfg( mLayer, relation.id() );
@@ -374,13 +374,14 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   }
 }
 
-QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationName )
+QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationId )
 {
   QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
   while ( *itemIt )
   {
     QTreeWidgetItem *item = *itemIt;
-    if ( item->data( 0, FieldNameRole ).toString() == relationName )
+
+    if ( item->data( 0, FieldNameRole ).toString() == relationId )
       return item->data( 0, RelationConfigRole ).value<RelationConfig>();
     ++itemIt;
   }
@@ -407,13 +408,12 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     case QgsAttributeEditorElement::AeTypeRelation:
     {
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
-      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, widgetDef->name() );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id());
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
       itemData.setRelationEditorConfiguration( relEdConfig );
-
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -531,7 +531,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     case DnDTreeItemData::Relation:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
-      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
+      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
       widgetDef = relDef;
@@ -811,6 +811,7 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
+
   if ( index < 0 )
     parent->addChild( newItem );
   else
