@@ -342,7 +342,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
-        //! tell which rules will be used to render the feature
+        /**
+         * Returns the list of rules used to render the feature in a specific
+         * context.
+         *
+         * \param feat The feature for which rules have to be find
+         * \param context The rendering context
+         * \param onlyActive True to search for active rules only, false otherwise
+         */
         QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr, bool onlyActive = true );
 
         /**
