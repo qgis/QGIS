@@ -1,0 +1,60 @@
+/***************************************************************************
+                       qgsnetworkcontentfetchertask.cpp
+                             -------------------
+    begin                : March 2018
+    copyright            : (C) 2018 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgsnetworkcontentfetcher.h"
+
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url )
+  : QgsNetworkContentFetcherTask( QNetworkRequest( url ) )
+{
+}
+
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request )
+  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ) )
+  , mRequest( request )
+{
+}
+
+QgsNetworkContentFetcherTask::~QgsNetworkContentFetcherTask()
+{
+  if ( mFetcher )
+    mFetcher->deleteLater();
+}
+
+bool QgsNetworkContentFetcherTask::run()
+{
+  mFetcher = new QgsNetworkContentFetcher();
+  QEventLoop loop;
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
+  connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, this, [ = ]( qint64 bytesReceived, qint64 bytesTotal )
+  {
+    if ( bytesTotal > 0 )
+    {
+      setProgress( ( bytesReceived * 100 ) / bytesTotal );
+    }
+  } );
+  mFetcher->fetchContent( mRequest );
+  loop.exec();
+  emit fetched();
+  return true;
+}
+
+QNetworkReply *QgsNetworkContentFetcherTask::reply()
+{
+  return mFetcher ? mFetcher->reply() : nullptr;
+}

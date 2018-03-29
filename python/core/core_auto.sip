@@ -332,6 +332,7 @@
 %Include qgsmessageoutput.sip
 %Include qgsnetworkaccessmanager.sip
 %Include qgsnetworkcontentfetcher.sip
+%Include qgsnetworkcontentfetchertask.sip
 %Include qgsofflineediting.sip
 %Include qgspluginlayer.sip
 %Include qgspointxy.sip
