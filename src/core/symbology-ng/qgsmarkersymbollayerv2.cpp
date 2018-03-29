@@ -2344,11 +2344,6 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   }
   double offsetX = offset.x();
   double offsetY = offset.y();
-  if ( mSizeUnit == QgsSymbolV2::MM )
-  {
-    offsetX *= mmMapUnitScaleFactor;
-    offsetY *= mmMapUnitScaleFactor;
-  }
 
   QPointF outputOffset( offsetX, offsetY );
 
@@ -2361,6 +2356,8 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   //angle = -angle; //rotation in Qt is counterclockwise
   if ( angle )
     outputOffset = _rotatedOffset( outputOffset, angle );
+
+  outputOffset *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOffsetUnit, e.mapUnits() );
 
   QString path = mPath;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
@@ -2375,7 +2372,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  outlineWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  outlineWidth  *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 
   QColor fillColor = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
@@ -2419,7 +2416,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
     p.rotate( angle );
     p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
   }
-  pd.setShift( shift );
+  pd.setShift( shift + QPointF( outputOffset.x(), -outputOffset.y() ) );
   pd.setOutputSize( QRectF( -halfSize, -halfSize, size, size ) );
   pd.setLayer( layerName );
   r.render( &p );
