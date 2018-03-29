@@ -80,6 +80,7 @@ from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
+from .InsertFeaturesToLayer import InsertFeaturesToLayer
 from .Intersection import Intersection
 from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
@@ -200,6 +201,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
+                InsertFeaturesToLayer(),
                 Intersection(),
                 KeepNBiggestParts(),
                 LinesToPolygons(),
