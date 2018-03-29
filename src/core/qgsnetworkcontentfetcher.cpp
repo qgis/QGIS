@@ -38,10 +38,12 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
 {
-  mContentLoaded = false;
+  fetchContent( QNetworkRequest( url ) );
+}
 
-  //get contents
-  QNetworkRequest request( url );
+void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
+{
+  mContentLoaded = false;
 
   if ( mReply )
   {
