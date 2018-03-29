@@ -83,9 +83,10 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         //do we need that
         DnDTreeItemData() = default;
 
-        DnDTreeItemData( Type type, const QString &name )
+        DnDTreeItemData( Type type, const QString &name, const QString &displayName )
           : mType( type )
           , mName( name )
+          , mDisplayName( displayName )
           , mColumnCount( 1 )
           , mShowAsGroupBox( false )
           , mShowLabel( true )
@@ -93,6 +94,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
         QString name() const { return mName; }
         void setName( const QString &name ) { mName = name; }
+
+        QString displayName() const { return mDisplayName; }
+        void setDisplayName( const QString &displayName ) { mDisplayName = displayName; }
 
         Type type() const { return mType; }
         void setType( Type type ) { mType = type; }
@@ -117,6 +121,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       private:
         Type mType = Field;
         QString mName;
+        QString mDisplayName;
         int mColumnCount = 1;
         bool mShowAsGroupBox = false;
         bool mShowLabel = true;
