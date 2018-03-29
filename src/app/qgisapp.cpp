@@ -6959,7 +6959,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
 }
 
 
-void QgisApp::saveAsFile( QgsMapLayer *layer )
+void QgisApp::saveAsFile( QgsMapLayer *layer, bool onlySelected )
 {
   if ( !layer )
     layer = activeLayer();
@@ -6974,7 +6974,7 @@ void QgisApp::saveAsFile( QgsMapLayer *layer )
   }
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
-    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ) );
+    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected );
   }
 }
 
@@ -7074,7 +7074,7 @@ QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
 
 ///@endcond
 
-void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption )
+void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected )
 {
   if ( !vlayer )
   {
@@ -7096,6 +7096,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
   dialog->setMapCanvas( mMapCanvas );
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
+  dialog->setOnlySelected( onlySelected );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
