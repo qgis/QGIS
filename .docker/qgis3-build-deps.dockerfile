@@ -99,7 +99,7 @@ RUN  apt-get update \
 
 WORKDIR /root
 RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
- && tar xzf tip.tar.gz
+ && tar xzf tip.tar.gz \
  && bash -c "mv $(ls sip-*) sip-419"
 WORKDIR /root/sip-419
 RUN python3 configure.py && make && make install
