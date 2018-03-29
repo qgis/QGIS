@@ -319,7 +319,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    Q_DECL_DEPRECATED QgsAttributeEditorRelation(const QString &name, const QString &relationId, QgsAttributeEditorElement *parent)
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relationId )
       , mShowLinkButton( true )
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    Q_DECL_DEPRECATED QgsAttributeEditorRelation(const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent)
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \param relationId   The id of the relation to embed
      * \param parent       The parent (used as container)
      */
-    QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent)
+    QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, relationId, parent )
       , mRelationId( relationId )
       , mShowLinkButton( true )
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \param relation     The relation to embed
      * \param parent       The parent (used as container)
      */
-    QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent)
+    QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, relation.id(), parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
