@@ -235,6 +235,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkaccessmanager.cpp
   qgsnetworkdiskcache.cpp
   qgsnetworkcontentfetcher.cpp
+  qgsnetworkcontentfetchertask.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
@@ -610,6 +611,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkaccessmanager.h
   qgsnetworkdiskcache.h
   qgsnetworkcontentfetcher.h
+  qgsnetworkcontentfetchertask.h
   qgsnetworkreplyparser.h
   qgsofflineediting.h
   qgsowsconnection.h

@@ -26,14 +26,14 @@
 #include "qgis_core.h"
 
 /**
-  \class QgsNetworkContentFetcher
-  \ingroup core
-  \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
-  and converting the content to standard formats. Url redirects are automatically
-  handled.
-  \since 2.5
+ * \class QgsNetworkContentFetcher
+ * \ingroup core
+ * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
+ * and converting the content to standard formats. Url redirects are automatically
+ * handled.
+ * \since QGIS 2.5
+ * \see QgsNetworkContentFetcherTask
 */
-
 class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
@@ -80,6 +80,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * Emitted when content has loaded
      */
     void finished();
+
+    /**
+     * Emitted when data is received.
+     * \since QGIS 3.2
+     */
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
   private:
 
