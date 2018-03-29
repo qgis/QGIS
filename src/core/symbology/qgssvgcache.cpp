@@ -21,6 +21,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgssymbollayerutils.h"
+#include "qgsnetworkcontentfetchertask.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -80,8 +81,10 @@ int QgsSvgCacheEntry::dataSize() const
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
+  , mMutex( QMutex::Recursive )
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+  mFetchingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>x</text></svg>" ).toLatin1();
 }
 
 QgsSvgCache::~QgsSvgCache()
@@ -406,77 +409,70 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     return mMissingSvg;
   }
 
-  // the url points to a remote resource, download it!
-  QNetworkReply *reply = nullptr;
+  QMutexLocker locker( &mMutex );
 
-  // The following code blocks until the file is downloaded...
-  // TODO: use signals to get reply finished notification, in this moment
-  // it's executed while rendering.
-  while ( true )
+  // already a request in progress for this url
+  if ( mPendingRemoteUrls.contains( path ) )
+    return mFetchingSvg;
+
+  if ( mRemoteContentCache.contains( path ) )
   {
-    QgsDebugMsg( QString( "get svg: %1" ).arg( svgUrl.toString() ) );
-    QNetworkRequest request( svgUrl );
-    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+    // already fetched this content - phew. Just return what we already got.
+    return *mRemoteContentCache[ path ];
+  }
 
-    reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, &QNetworkReply::downloadProgress, this, &QgsSvgCache::downloadProgress );
+  mPendingRemoteUrls.insert( path );
+  //fire up task to fetch image in background
+  QNetworkRequest request( svgUrl );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-    //emit statusChanged( tr( "Downloading svg." ) );
+  QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( request );
+  connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task, path]
+  {
+    QMutexLocker locker( &mMutex );
 
-    // wait until the image download finished
-    // TODO: connect to the reply->finished() signal
-    while ( !reply->isFinished() )
+    QNetworkReply *reply = task->reply();
+    if ( !reply )
     {
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+      // cancelled
+      QMetaObject::invokeMethod( const_cast< QgsSvgCache * >( this ), "onRemoteSvgFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, false ) );
+      return;
     }
 
     if ( reply->error() != QNetworkReply::NoError )
     {
       QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString(), path ), tr( "SVG" ) );
-      reply->deleteLater();
-      return mMissingSvg;
+      return;
     }
 
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( redirect.isNull() )
+    QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
     {
-      // neither network error nor redirection
-      // TODO: cache the image
-      break;
+      QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path ), tr( "SVG" ) );
+      mRemoteContentCache.insert( path, new QByteArray( mMissingSvg ) );
+      return;
     }
 
-    // do a new request to the redirect url
-    svgUrl = redirect.toUrl();
-    reply->deleteLater();
-  }
+    // we accept both real SVG mime types AND plain text types - because some sites
+    // (notably github) serve up svgs as raw text
+    QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive )
+         && !contentType.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+    {
+      QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
+      mRemoteContentCache.insert( path, new QByteArray( mMissingSvg ) );
+      return;
+    }
 
-  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-  if ( !status.isNull() && status.toInt() >= 400 )
-  {
-    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path ), tr( "SVG" ) );
+    // read the image data
+    mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+    QMetaObject::invokeMethod( const_cast< QgsSvgCache * >( this ), "onRemoteSvgFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
+  } );
 
-    reply->deleteLater();
-    return mMissingSvg;
-  }
-
-  // we accept both real SVG mime types AND plain text types - because some sites
-  // (notably github) serve up svgs as raw text
-  QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive )
-       && !contentType.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
-  {
-    QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
-    reply->deleteLater();
-    return mMissingSvg;
-  }
-
-  // read the image data
-  QByteArray ba = reply->readAll();
-  reply->deleteLater();
-
-  return ba;
+  QgsApplication::taskManager()->addTask( task );
+  return mFetchingSvg;
 }
 
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
@@ -997,4 +993,26 @@ void QgsSvgCache::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
   QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsg( msg );
   emit statusChanged( msg );
+}
+
+void QgsSvgCache::onRemoteSvgFetched( const QString &url, bool success )
+{
+  QMutexLocker locker( &mMutex );
+  mPendingRemoteUrls.remove( url );
+
+  QgsSvgCacheEntry *nextEntry = mLeastRecentEntry;
+  while ( QgsSvgCacheEntry *entry = nextEntry )
+  {
+    nextEntry = entry->nextEntry;
+    if ( entry->path == url )
+    {
+      takeEntryFromList( entry );
+      mEntryLookup.remove( entry->path, entry );
+      mTotalSize -= entry->dataSize();
+      delete entry;
+    }
+  }
+
+  if ( success )
+    emit remoteSvgFetched( url );
 }

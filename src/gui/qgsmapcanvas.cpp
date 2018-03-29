@@ -65,6 +65,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgssvgcache.h"
 #include <cmath>
 
 /**
@@ -147,6 +148,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     emit transformContextChanged();
     refresh();
   } );
+
+  // refresh canvas when a remote svg has finished downloading
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::refreshAllLayers );
 
   //segmentation parameters
   QgsSettings settings;
