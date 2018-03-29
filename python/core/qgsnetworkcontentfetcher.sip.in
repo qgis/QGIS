@@ -42,6 +42,14 @@ signal will be emitted when content has been fetched.
 :param url: URL to fetch
 %End
 
+    void fetchContent( const QNetworkRequest &request );
+%Docstring
+Fetches content using a network ``request`` and handles redirects. The finished()
+signal will be emitted when content has been fetched.
+
+.. versionadded:: 3.2
+%End
+
     QNetworkReply *reply();
 %Docstring
 Returns a reference to the network reply
