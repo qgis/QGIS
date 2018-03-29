@@ -55,6 +55,7 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()
