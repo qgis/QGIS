@@ -11,7 +11,6 @@
 
 
 
-
 class QgsNetworkContentFetcher : QObject
 {
 %Docstring
@@ -20,6 +19,8 @@ and converting the content to standard formats. Url redirects are automatically
 handled.
 
 .. versionadded:: 2.5
+
+.. seealso:: :py:class:`QgsNetworkContentFetcherTask`
 %End
 
 %TypeHeaderCode
@@ -69,6 +70,13 @@ Returns the fetched content as a string
     void finished();
 %Docstring
 Emitted when content has loaded
+%End
+
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when data is received.
+
+.. versionadded:: 3.2
 %End
 
 };
