@@ -44,6 +44,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
 void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
 {
   mContentLoaded = false;
+  mIsCanceled = false;
 
   if ( mReply )
   {
@@ -80,6 +81,19 @@ QString QgsNetworkContentFetcher::contentAsString() const
   //correctly encode reply as unicode
   QTextCodec *codec = codecForHtml( array );
   return codec->toUnicode( array );
+}
+
+void QgsNetworkContentFetcher::cancel()
+{
+  mIsCanceled = true;
+
+  if ( mReply )
+  {
+    //cancel any in progress requests
+    mReply->abort();
+    mReply->deleteLater();
+    mReply = nullptr;
+  }
 }
 
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
@@ -124,6 +138,12 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
 {
   Q_UNUSED( ok );
+
+  if ( mIsCanceled )
+  {
+    emit finished();
+    return;
+  }
 
   if ( mReply->error() != QNetworkReply::NoError )
   {

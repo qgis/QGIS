@@ -74,6 +74,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     QString contentAsString() const;
 
+    /**
+     * Cancels any ongoing request.
+     * \since QGIS 3.2
+     */
+    void cancel();
+
   signals:
 
     /**
@@ -92,6 +98,8 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     QNetworkReply *mReply = nullptr;
 
     bool mContentLoaded = false;
+
+    bool mIsCanceled = false;
 
     /**
      * Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.
