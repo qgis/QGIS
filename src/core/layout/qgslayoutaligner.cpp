@@ -102,17 +102,17 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
     QRectF itemBBox = item->sceneBoundingRect();
     switch ( distribution )
     {
-      case AlignLeft:
+      case DistributeLeft:
         return itemBBox.left();
-      case AlignHCenter:
+      case DistributeHCenter:
         return itemBBox.center().x();
-      case AlignRight:
+      case DistributeRight:
         return itemBBox.right();
-      case AlignTop:
+      case DistributeTop:
         return itemBBox.top();
-      case AlignVCenter:
+      case DistributeVCenter:
         return itemBBox.center().y();
-      case AlignBottom:
+      case DistributeBottom:
         return itemBBox.bottom();
     }
     // no warnings
