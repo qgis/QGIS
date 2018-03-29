@@ -363,7 +363,8 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
 {
   QMap <QgsLayerTreeGroup *, int> groupInsertIdx;
   int insertIdx;
-  Q_FOREACH ( QgsLayerTreeNode *n, mView->selectedNodes() )
+  const QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
+  for ( QgsLayerTreeNode *n : selectedNodes )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();
