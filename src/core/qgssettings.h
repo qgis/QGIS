@@ -225,14 +225,14 @@ class CORE_EXPORT QgsSettings : public QObject
      * Return the setting value for a setting based on an enum.
      * This forces the output to be a valid and existing entry of the enum.
      * Hence if the setting value is incorrect, the given default value is returned.
-     * This tries first with setting as a string (as the enum) and then as an integer.
-     * If \a flag is true, the value is checked for a flag definition.
+     * This tries first with setting as a string (as the enum) and then as an integer value.
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \see setEnumValue
+     * \see flagValue
      */
     template <class T>
     T enumValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection, bool flag = false ) const
+                 const Section section = NoSection ) const
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       if ( !metaEnum.isValid() )
@@ -242,68 +242,103 @@ class CORE_EXPORT QgsSettings : public QObject
 
       T v;
       bool ok = false;
-      // simple enum
-      if ( !flag )
+
+      if ( metaEnum.isValid() )
       {
-        if ( metaEnum.isValid() )
+        QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
+      }
+      if ( !ok )
+      {
+        v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+        if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) ) )
         {
-          QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
-          const char *vs = ba.data();
-          v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
-        }
-        if ( !ok )
-        {
-          v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
-          if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) ) )
-          {
-            v = defaultValue;
-          }
+          v = defaultValue;
         }
       }
-      // flags
-      else
-      {
-        if ( metaEnum.isValid() )
-        {
-          QByteArray ba = value( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
-          const char *vs = ba.data();
-          v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
-        }
-        if ( !ok )
-        {
-          v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
-          if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() ) )
-          {
-            v = defaultValue;
-          }
-        }
-      }
+
       return v;
     }
 
     /**
      * Set the value of a setting based on an enum.
      * The setting will be saved as string.
-     * If \a flag is true, the setting is saved as a flag definition.
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \see enumValue
+     * \see setFlagValue
      */
     template <class T>
     void setEnumValue( const QString &key, const T &value,
-                       const Section section = NoSection, bool flag = false )
+                       const Section section = NoSection )
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       if ( metaEnum.isValid() )
       {
-        if ( !flag )
+        setValue( key, metaEnum.valueToKey( value ), section );
+      }
+      else
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+    }
+
+    /**
+     * Return the setting value for a setting based on a flag.
+     * This forces the output to be a valid and existing entry of the flag.
+     * Hence if the setting value is incorrect, the given default value is returned.
+     * This tries first with setting as a string (using a byte array) and then as an integer value.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \see setFlagValue
+     * \see enumValue
+     */
+    template <class T>
+    T flagValue( const QString &key, const T &defaultValue,
+                 const Section section = NoSection ) const
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      if ( !metaEnum.isValid() )
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+
+      T v;
+      bool ok = false;
+
+
+      if ( metaEnum.isValid() )
+      {
+        QByteArray ba = value( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+      }
+      if ( !ok )
+      {
+        v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+        if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() ) )
         {
-          setValue( key, metaEnum.valueToKey( value ), section );
+          v = defaultValue;
         }
-        // for a flag
-        else
-        {
-          setValue( key, metaEnum.valueToKeys( value ), section );
-        }
+      }
+
+      return v;
+    }
+
+    /**
+     * Set the value of a setting based on a flaf.
+     * The setting will be saved as string.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \see flagValue
+     * \see setEnumValue
+     */
+    template <class T>
+    void setFlagValue( const QString &key, const T &value,
+                       const Section section = NoSection )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      if ( metaEnum.isValid() )
+      {
+        setValue( key, metaEnum.valueToKeys( value ), section );
       }
       else
       {
