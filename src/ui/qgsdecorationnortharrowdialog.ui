@@ -167,7 +167,7 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="2" colspan="3">
+      <item row="4" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="labelHorizontal">
@@ -258,20 +258,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="4">
-       <widget class="QSpinBox" name="spinAngle">
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
+      <item row="4" column="1">
        <widget class="QLabel" name="textLabel8">
         <property name="text">
          <string>Placement</string>
@@ -281,7 +268,7 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="lblMargin">
         <property name="minimumSize">
          <size>
@@ -294,42 +281,14 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="2" colspan="3">
+      <item row="5" column="2" colspan="3">
        <widget class="QComboBox" name="cboPlacement">
         <property name="toolTip">
          <string>Placement on screen</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QCheckBox" name="cboxAutomatic">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Set direction automatically</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
+      <item row="6" column="1">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -342,26 +301,71 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="2" colspan="2">
-       <widget class="QSlider" name="sliderRotation">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="pageStep">
-         <number>10</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
+      <item row="3" column="2" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_36">
+        <item>
+         <widget class="QCheckBox" name="cboxAutomatic">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+          <property name="text">
+           <string>Automatic</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliderRotation">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>10</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinAngle">
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="3" column="0" rowspan="4">
+      <item row="0" column="0" rowspan="6">
        <widget class="QLabel" name="pixmapLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
