@@ -72,8 +72,8 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mLayoutListView->setModel( mProxyModel );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
-    connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
-connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
+  connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsLayoutManagerDialog::toggleButtons );
   connect( mLayoutListView, &QListView::doubleClicked, this, &QgsLayoutManagerDialog::itemDoubleClicked );
 
@@ -235,7 +235,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     }
   }
 
-  if ( mTemplate->currentIndex() = 1 ) // if it's an empty report
+  if ( mTemplate->currentIndex() == 1 ) // if it's an empty report
   {
     createReport();
   }
