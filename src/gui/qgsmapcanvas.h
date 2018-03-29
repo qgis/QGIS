@@ -158,12 +158,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearCache();
 
     /**
-     * Reload all layers, clear the cache and refresh the canvas
-     * \since QGIS 2.9
-     */
-    void refreshAllLayers();
-
-    /**
      * Blocks until the rendering job has finished.
      *
      * In almost all cases you do NOT want to call this, as it will hang the UI
@@ -642,6 +636,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Repaints the canvas map
     void refresh();
+
+    /**
+     * Reload all layers, clear the cache and refresh the canvas
+     * \since QGIS 2.9
+     */
+    void refreshAllLayers();
 
     //! Receives signal about selection change, and pass it on with layer info
     void selectionChangedSlot();

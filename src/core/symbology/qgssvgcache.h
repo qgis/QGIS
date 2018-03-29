@@ -31,6 +31,8 @@
 #include <QElapsedTimer>
 #include <QPicture>
 #include <QImage>
+#include <QCache>
+#include <QSet>
 
 #include "qgis_core.h"
 
@@ -226,8 +228,16 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString  &statusQString );
 
+    /**
+     * Emitted when the cache has finished retrieving an SVG file from a remote \a url.
+     * \since QGIS 3.2
+     */
+    void remoteSvgFetched( const QString &url );
+
   private slots:
     void downloadProgress( qint64, qint64 );
+
+    void onRemoteSvgFetched( const QString &url, bool success );
 
   private:
 
@@ -303,11 +313,18 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     QImage imageFromCachedPicture( const QgsSvgCacheEntry &entry ) const;
 
+    QByteArray fetchImageData( const QString &path, bool &ok ) const;
+
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
 
+    QByteArray mFetchingSvg;
+
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
-    QMutex mMutex;
+    mutable QMutex mMutex;
+
+    mutable QCache< QString, QByteArray > mRemoteContentCache;
+    mutable QSet< QString > mPendingRemoteUrls;
 
     friend class TestQgsSvgCache;
 };
