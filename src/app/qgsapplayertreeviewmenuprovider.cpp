@@ -102,6 +102,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+      {
+        menu->addAction( actions->actionMoveToTop( menu ) );
+      }
+
       menu->addSeparator();
 
       if ( mView->selectedNodes( true ).count() >= 2 )
@@ -119,8 +124,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       connect( actionSaveAsDefinitionGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
       menuExportGroup->addAction( actionSaveAsDefinitionGroup );
 
-      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
-        menu->addAction( actions->actionMoveToTop( menu ) );
       menu->addMenu( menuExportGroup );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -168,6 +171,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( node->parent() != mView->layerTreeModel()->rootGroup() )
         menu->addAction( actions->actionMakeTopLevel( menu ) );
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+      {
+        menu->addAction( actions->actionMoveToTop( menu ) );
+      }
 
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
       if ( checkAll )
@@ -296,8 +304,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
 
-      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
-        menu->addAction( actions->actionMoveToTop( menu ) );
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
