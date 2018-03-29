@@ -45,11 +45,16 @@ bool QgsNetworkContentFetcherTask::run()
   {
     if ( bytesTotal > 0 )
     {
-      setProgress( ( bytesReceived * 100 ) / bytesTotal );
+      int progress = ( bytesReceived * 100 ) / bytesTotal;
+      // don't emit 100% progress reports until completely fetched - otherwise we get
+      // intermediate 100% reports from redirects
+      if ( progress < 100 )
+        setProgress( progress );
     }
   } );
   mFetcher->fetchContent( mRequest );
   loop.exec();
+  setProgress( 100 );
   emit fetched();
   return true;
 }
