@@ -43,7 +43,7 @@ bool QgsNetworkContentFetcherTask::run()
   connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
   connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, this, [ = ]( qint64 bytesReceived, qint64 bytesTotal )
   {
-    if ( bytesTotal > 0 )
+    if ( !isCanceled() && bytesTotal > 0 )
     {
       int progress = ( bytesReceived * 100 ) / bytesTotal;
       // don't emit 100% progress reports until completely fetched - otherwise we get
@@ -54,9 +54,18 @@ bool QgsNetworkContentFetcherTask::run()
   } );
   mFetcher->fetchContent( mRequest );
   loop.exec();
-  setProgress( 100 );
+  if ( !isCanceled() )
+    setProgress( 100 );
   emit fetched();
   return true;
+}
+
+void QgsNetworkContentFetcherTask::cancel()
+{
+  if ( mFetcher )
+    mFetcher->cancel();
+
+  QgsTask::cancel();
 }
 
 QNetworkReply *QgsNetworkContentFetcherTask::reply()

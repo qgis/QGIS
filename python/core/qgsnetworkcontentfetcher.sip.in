@@ -65,6 +65,13 @@ Returns the fetched content as a string
 :return: string containing network content
 %End
 
+    void cancel();
+%Docstring
+Cancels any ongoing request.
+
+.. versionadded:: 3.2
+%End
+
   signals:
 
     void finished();

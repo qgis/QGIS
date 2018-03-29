@@ -65,6 +65,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     ~QgsNetworkContentFetcherTask();
 
     bool run() override;
+    void cancel() override;
 
     /**
      * Returns the network reply. Ownership is not transferred.
