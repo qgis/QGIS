@@ -55,25 +55,29 @@ class TestQgsSvgCache(unittest.TestCase):
     def testRemoteSVG(self):
         """Test fetching remote svg."""
         url = 'http://localhost:{}/qgis_local_server/sample_svg.svg'.format(str(TestQgsSvgCache.port))
-        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0), strokeWidth=0.1, widthScaleFactor=1)
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG', 'remote_svg', image))
 
     def testRemoteSvgAsText(self):
         """Test fetching remote svg with text mime format - e.g. github raw svgs"""
         url = 'http://localhost:{}/qgis_local_server/svg_as_text.txt'.format(str(TestQgsSvgCache.port))
-        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0), strokeWidth=0.1, widthScaleFactor=1)
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG as Text', 'remote_svg', image))
 
     def testRemoteSvgBadMime(self):
         """Test fetching remote svg with bad mime type"""
         url = 'http://localhost:{}/qgis_local_server/logo.png'.format(str(TestQgsSvgCache.port))
-        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0), strokeWidth=0.1, widthScaleFactor=1)
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG bad MIME type', 'bad_svg', image))
 
     def testRemoteSvgMissing(self):
         """Test fetching remote svg with bad url"""
         url = 'http://localhost:{}/qgis_local_server/xxx.svg'.format(str(TestQgsSvgCache.port))  # oooo naughty
-        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0), strokeWidth=0.1, widthScaleFactor=1)
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG missing', 'bad_svg', image))
 
     def imageCheck(self, name, reference_image, image):
@@ -90,6 +94,7 @@ class TestQgsSvgCache(unittest.TestCase):
         self.report += checker.report()
         print((self.report))
         return result
+
 
 if __name__ == '__main__':
     unittest.main()
