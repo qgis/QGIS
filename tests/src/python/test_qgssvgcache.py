@@ -19,9 +19,9 @@ import socketserver
 import threading
 import http.server
 from qgis.PyQt.QtCore import QDir
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from qgis.core import (QgsSvgCache, QgsRenderChecker, QgsApplication)
+from qgis.core import (QgsSvgCache, QgsRenderChecker, QgsApplication, QgsMultiRenderChecker)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -84,7 +84,14 @@ class TestQgsSvgCache(unittest.TestCase):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'svg_' + name + ".png"
-        image.save(file_name, "PNG")
+
+        output_image = QImage(image.size(), QImage.Format_RGB32)
+        QgsMultiRenderChecker.drawBackground(output_image)
+        painter = QPainter(output_image)
+        painter.drawImage(0, 0, image)
+        painter.end()
+
+        output_image.save(file_name, "PNG")
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("svg_cache")
         checker.setControlName("expected_" + reference_image)
