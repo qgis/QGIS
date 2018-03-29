@@ -1509,7 +1509,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), ( int )mFormat );
+  settings.setEnumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), mFormat );
 
   updateText();
 }

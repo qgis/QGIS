@@ -155,8 +155,8 @@ void QgsGrassOptions::saveOptions()
   QgsGrass::instance()->setModulesDebug( mModulesDebugCheckBox->isChecked() );
 
   // Browser
-  settings.setValue( mImportSettingsPath + "/crsTransform",
-                     mCrsTransformationComboBox->currentData().toInt() );
+  settings.setEnumValue( mImportSettingsPath + "/crsTransform",
+                         ( QgsRasterProjector::Precision )mCrsTransformationComboBox->currentData().toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 
