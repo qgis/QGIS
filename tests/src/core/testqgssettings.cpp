@@ -40,6 +40,7 @@ void TestQgsSettings::enumValue()
 
   // assign to inexisting value
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), -1 );
+  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units_as_string" ), QStringLiteral( "myString" ) );
   // just to be sure it really doesn't exist
   QVERIFY( static_cast<int>( QgsUnitTypes::LayoutMeters ) != -1 );
 
@@ -50,11 +51,18 @@ void TestQgsSettings::enumValue()
   // enum method returns default value if current setting is incorrect
   QgsUnitTypes::LayoutUnit v2 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v2, QgsUnitTypes::LayoutMeters );
+  QgsUnitTypes::LayoutUnit v2s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units_as_string" ), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( v2s, QgsUnitTypes::LayoutMeters );
 
   // test a different value than default
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
   QgsUnitTypes::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
+  settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
+  QgsUnitTypes::LayoutUnit v3s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
+  QCOMPARE( v3s, QgsUnitTypes::LayoutCentimeters );
+  QString v3ss = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), QStringLiteral( "myDummyValue" ) ).toString();
+  QCOMPARE( v3ss, QStringLiteral( "LayoutCentimeters" ) );
 
   // test for flags
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
@@ -66,6 +74,12 @@ void TestQgsSettings::enumValue()
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), static_cast<int>( pointAndPolygon ) );
   QgsMapLayerProxyModel::Filters v5 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine, QgsSettings::NoSection, true );
   QCOMPARE( v5, pointAndPolygon );
+
+  settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndPolygon, QgsSettings::NoSection, true );
+  QgsMapLayerProxyModel::Filters v5s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndLine, QgsSettings::NoSection, true );
+  QCOMPARE( v5s, pointAndPolygon );
+  QString v5ss = settings.value( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), QStringLiteral( "myDummyString" ), QgsSettings::NoSection ).toString();
+  QCOMPARE( v5ss, QStringLiteral( "PointLayer|PolygonLayer" ) );
 }
 
 
