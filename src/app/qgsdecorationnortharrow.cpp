@@ -231,11 +231,4 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     //unrotate the canvas again
     context.painter()->restore();
   }
-  else
-  {
-    QFont font( QStringLiteral( "time" ), 12, QFont::Bold );
-    context.painter()->setFont( font );
-    context.painter()->setPen( Qt::black );
-    context.painter()->drawText( 10, 20, tr( "North arrow pixmap not found" ) );
-  }
 }

@@ -60,7 +60,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //! The north arrow outline color
     QColor mOutlineColor;
     //! The north arrow size in millimeter
-    double mSize;
+    double mSize = 16.0;
     //! Custom north arrow svg path
     QString mSvgPath;
 
