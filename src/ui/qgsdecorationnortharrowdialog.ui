@@ -31,7 +31,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="1">
-       <widget class="QLabel" name="textLabel1_3_22">
+       <widget class="QLabel" name="sizeLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -48,19 +48,19 @@
         <property name="suffix">
          <string> mm</string>
         </property>
-        <property name="singleStep">
-         <double>0.5</double>
-        </property>
         <property name="minimum">
          <double>0.100000000000000</double>
         </property>
         <property name="maximum">
          <double>9999.000000000000000</double>
         </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLabel" name="textLabel1_3_22">
+       <widget class="QLabel" name="svgLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -99,7 +99,7 @@
        </layout>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="textLabel1_3_2">
+       <widget class="QLabel" name="colorLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -441,4 +441,5 @@
   <tabstop>cboxAutomatic</tabstop>
  </tabstops>
  <resources/>
+ <connections/>
 </ui>
