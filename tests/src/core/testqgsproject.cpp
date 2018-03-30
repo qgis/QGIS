@@ -132,7 +132,7 @@ void TestQgsProject::testPathResolver()
   QgsPathResolver tempRel( tmpName );
   QFileInfo fi( tmpName );
   QFile testFile( fi.path() + QStringLiteral( "/file1.txt" ) );
-  testFile.open( QIODevice::WriteOnly | QIODevice::Text );
+  QVERIFY( testFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   testFile.close();
   QVERIFY( QFile::exists( fi.path() + QStringLiteral( "/file1.txt" ) ) );
   QCOMPARE( tempRel.readPath( "file1.txt" ), fi.path() + QStringLiteral( "/file1.txt" ) );
