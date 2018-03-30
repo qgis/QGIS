@@ -76,6 +76,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
     void zoomToLayer( QgsMapCanvas *canvas );
+
+    /**
+     * \see zoomToSelection()
+     * \since QGIS 3.2
+     */
     void zoomToSelection( QgsMapCanvas *canvas );
     void zoomToGroup( QgsMapCanvas *canvas );
 
