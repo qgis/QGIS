@@ -337,6 +337,9 @@ bool QgsAttributeForm::saveEdits()
       {
         mLayer->beginEditCommand( mEditCommandMessage );
 
+        QgsAttributeMap newValues;
+        QgsAttributeMap oldValues;
+
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
@@ -353,9 +356,13 @@ bool QgsAttributeForm::saveEdits()
           QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
-          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst.at( i ), src.at( i ) );
+          newValues[i] = dst.at( i );
+          oldValues[i] = src.at( i );
+
           n++;
         }
+
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues );
 
         if ( success && n > 0 )
         {

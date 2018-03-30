@@ -109,6 +109,27 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int 
   return false;
 }
 
+bool QgsVectorLayerEditPassthrough::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  Q_UNUSED( oldValues );
+  bool result = false;
+
+  QgsChangedAttributesMap attribMap;
+  attribMap.insert( fid, newValues );
+
+  if ( L->dataProvider()->changeAttributeValues( attribMap ) )
+  {
+    result = true;
+    QgsAttributeMap::const_iterator it;
+    for ( it = newValues.constBegin(); it != newValues.constEnd(); ++it )
+    {
+      emit attributeValueChanged( fid, it.key(), it.value() );
+    }
+  }
+
+  return result;
+}
+
 bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
 {
   if ( L->dataProvider()->addAttributes( QList<QgsField>() << field ) )
