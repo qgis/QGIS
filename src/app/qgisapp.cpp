@@ -676,6 +676,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   profiler->beginGroup( QStringLiteral( "startup" ) );
   startProfile( QStringLiteral( "Setting up UI" ) );
   setupUi( this );
+  // because mActionToggleMapOnly can hide the menu (thereby disabling menu actions),
+  //  we attach the following actions to the MainWindow too (to be able to come back)
+  this->addAction( mActionToggleFullScreen );
+  this->addAction( mActionTogglePanelsVisibility );
+  this->addAction( mActionToggleMapOnly );
   endProfile();
 
 #if QT_VERSION >= 0x050600
@@ -6246,7 +6251,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
         }
       }
 
-      //this->menuBar()->setVisible( false );
+      this->menuBar()->setVisible( false );
       this->statusBar()->setVisible( false );
 
       settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
@@ -6301,7 +6306,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
         toolBar->setVisible( true );
       }
     }
-    //this->menuBar()->setVisible( true ); // not working as no QMenuBar visible?
+    this->menuBar()->setVisible( true );
     this->statusBar()->setVisible( true );
 
     settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), true );
