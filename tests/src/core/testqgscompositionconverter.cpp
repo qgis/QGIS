@@ -566,8 +566,8 @@ void TestQgsCompositionConverter::isCompositionTemplate()
   QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/2x_template.qpt" );
   QDomDocument doc( "mydocument" );
   QFile file( templatePath );
-  file.open( QIODevice::ReadOnly );
-  doc.setContent( &file );
+  QVERIFY( file.open( QIODevice::ReadOnly ) );
+  QVERIFY( doc.setContent( &file ) );
   file.close();
 
   QVERIFY( QgsCompositionConverter::isCompositionTemplate( doc ) );
@@ -579,8 +579,8 @@ void TestQgsCompositionConverter::convertCompositionTemplate()
   QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/2x_template.qpt" );
   QDomDocument doc( "mydocument" );
   QFile file( templatePath );
-  file.open( QIODevice::ReadOnly );
-  doc.setContent( &file );
+  QVERIFY( file.open( QIODevice::ReadOnly ) );
+  QVERIFY( doc.setContent( &file ) );
   file.close();
 
   QgsProject project;
@@ -711,8 +711,8 @@ QDomElement TestQgsCompositionConverter::loadComposer( const QString name )
   QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/" + name );
   QDomDocument doc( "mydocument" );
   QFile file( templatePath );
-  file.open( QIODevice::ReadOnly );
-  doc.setContent( &file );
+  Q_ASSERT( file.open( QIODevice::ReadOnly ) );
+  Q_ASSERT( doc.setContent( &file ) );
   file.close();
   QDomNodeList nodes( doc.elementsByTagName( QStringLiteral( "Composer" ) ) );
   if ( nodes.length() > 0 )
