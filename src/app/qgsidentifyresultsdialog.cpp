@@ -340,7 +340,7 @@ void QgsIdentifyResultsDialog::initSelectionModes()
 QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mCanvas( canvas )
-  , mSelectionMode( QgsMapToolIdentify::SelectSimple )
+  , mSelectionMode( QgsMapToolSelectionHandler::SelectSimple )
 {
   setupUi( this );
   connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
@@ -2027,26 +2027,26 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   if ( obj == mActionSelectFeatures )
   {
     mSelectModeButton->setDefaultAction( mActionSelectFeatures );
-    mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
+    mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
   }
   else if ( obj == mActionSelectPolygon )
   {
     mSelectModeButton->setDefaultAction( mActionSelectPolygon );
-    mSelectionMode = QgsMapToolIdentifyAction::SelectPolygon;
+    mSelectionMode = QgsMapToolSelectionHandler::SelectPolygon;
   }
   else if ( obj == mActionSelectFreehand )
   {
     mSelectModeButton->setDefaultAction( mActionSelectFreehand );
-    mSelectionMode = QgsMapToolIdentifyAction::SelectFreehand;
+    mSelectionMode = QgsMapToolSelectionHandler::SelectFreehand;
   }
   else if ( obj == mActionSelectRadius )
   {
     mSelectModeButton->setDefaultAction( mActionSelectRadius );
-    mSelectionMode = QgsMapToolIdentifyAction::SelectRadius;
+    mSelectionMode = QgsMapToolSelectionHandler::SelectRadius;
   }
 }
 
-QgsMapToolIdentify::IdentifySelection QgsIdentifyResultsDialog::selectionMode()
+QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode()
 {
   return mSelectionMode;
 }

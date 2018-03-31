@@ -54,7 +54,7 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
   , mLastMapUnitsPerPixel( -1.0 )
   , mCoordinatePrecision( 6 )
-  , mSelectionHandler( new QgsMapToolSelectionHandler(mCanvas))
+  , mSelectionHandler( new QgsMapToolSelectionHandler( mCanvas ) )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
@@ -84,12 +84,12 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   return identify( x, y, mode, layerList, AllLayers );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   return identify( x, y, mode, QList<QgsMapLayer *>(), layerType, selectionMode );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   QList<IdentifyResult> results;
 
@@ -177,7 +177,7 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolIdentify::IdentifySelection selectionMode )
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
@@ -187,7 +187,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   {
     if ( mSelectionHandler->selectedGeometry().isNull() )
     {
-      mSelectionHandler->setSelectedGeometry(QgsGeometry::fromPointXY( point ));
+      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
       //mSelectionGeometry = QgsGeometry::fromPointXY( point );
     }
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), selectionMode );
@@ -198,7 +198,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolIdentify::IdentifySelection selectionMode )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
 
   if ( !layer || !layer->isSpatial() )
@@ -254,7 +254,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     while ( fit.nextFeature( f ) )
     {
-      if ( selectionMode == QgsMapToolIdentify::IdentifySelection::SelectSimple || selectionGeom.intersects( f.geometry() ) )
+      if ( selectionMode == QgsMapToolSelectionHandler::SelectionMode::SelectSimple || selectionGeom.intersects( f.geometry() ) )
         featureList << QgsFeature( f );
     }
   }
@@ -311,7 +311,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
   mSelectionGeometry = QgsGeometry::fromPointXY( point );
-  return identifyVectorLayer( results, layer, IdentifySelection::SelectSimple );
+  return identifyVectorLayer( results, layer, QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 }
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )

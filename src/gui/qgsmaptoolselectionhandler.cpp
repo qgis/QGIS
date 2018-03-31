@@ -56,11 +56,11 @@ QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas )
   : QObject()
   , mLastMapUnitsPerPixel( -1.0 )
   , mCoordinatePrecision( 6 )
-  , mCanvas(canvas)
+  , mCanvas( canvas )
   , mSelectionMode( QgsMapToolSelectionHandler::SelectSimple )
 {
-    mFillColor = QColor( 254, 178, 76, 63 );
-    mStrokeColor = QColor( 254, 58, 29, 100 );
+  mFillColor = QColor( 254, 178, 76, 63 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
@@ -90,12 +90,26 @@ void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  switch ( mSelectionMode )
+  {
+    case QgsMapToolSelectionHandler::SelectSimple:
+      selectFeaturesMoveEvent( e );
+      break;
+    case QgsMapToolSelectionHandler::SelectPolygon:
+      selectPolygonMoveEvent( e );
+      break;
+    case QgsMapToolSelectionHandler::SelectFreehand:
+      selectFreehandMoveEvent( e );
+      break;
+    case QgsMapToolSelectionHandler::SelectRadius:
+      selectRadiusMoveEvent( e );
+      break;
+  }
 }
 
-void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e, QgsMapToolSelectionHandler::SelectionMode selectionMode )
+void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  switch ( selectionMode )
+  switch ( mSelectionMode )
   {
     case QgsMapToolSelectionHandler::SelectSimple:
       mSelectionRubberBand.reset();
@@ -175,7 +189,7 @@ void QgsMapToolSelectionHandler::selectPolygonMoveEvent( QgsMapMouseEvent *e )
 
   if ( mSelectionRubberBand->numberOfVertices() > 0 )
   {
-      mSelectionRubberBand->movePoint( this->toMapCoordinates( e->pos() ) );
+    mSelectionRubberBand->movePoint( this->toMapCoordinates( e->pos() ) );
   }
 }
 
@@ -195,9 +209,8 @@ void QgsMapToolSelectionHandler::selectPolygonReleaseEvent( QgsMapMouseEvent *e 
     {
       mSelectionGeometry = mSelectionRubberBand->asGeometry();
     }
-    mSelectionRubberBand.reset();
-    // TODO @vsklencar
-    //mJustFinishedSelection = true;
+    mSelectionRubberBand.reset(); 
+    mJustFinishedSelection = true;
   }
 }
 
@@ -311,12 +324,22 @@ void QgsMapToolSelectionHandler::updateRadiusFromEdge( QgsPointXY &radiusEdge )
 
 QgsGeometry QgsMapToolSelectionHandler::selectedGeometry()
 {
-    return mSelectionGeometry;
+  return mSelectionGeometry;
 }
 
-void QgsMapToolSelectionHandler::setSelectedGeometry(QgsGeometry geometry)
+void QgsMapToolSelectionHandler::setSelectedGeometry( QgsGeometry geometry )
 {
-    mSelectionGeometry = geometry;
+  mSelectionGeometry = geometry;
+}
+
+void QgsMapToolSelectionHandler::setSelectionMode( SelectionMode mode )
+{
+  mSelectionMode = mode;
+}
+
+QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::selectionMode()
+{
+  return mSelectionMode;
 }
 
 void QgsMapToolSelectionHandler::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )

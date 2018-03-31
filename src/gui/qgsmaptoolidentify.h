@@ -61,20 +61,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     };
     Q_ENUM( IdentifyMode )
 
-    //! Select features to identify by:
-    enum IdentifySelection
-    {
-      //! SelectSimple - single click or drawing a rectangle, default option
-      SelectSimple,
-      //! SelectPolygon - drawing a polygon
-      SelectPolygon,
-      //! SelectFreehand - free hand selection
-      SelectFreehand,
-      //! SelectRadius - a circle selection
-      SelectRadius
-    };
-    Q_ENUM( IdentifySelection )
-
     enum Type
     {
       VectorLayer = 1,
@@ -138,7 +124,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
     \param selectionMode IdentifySelection. Defines which selection mode has been used for identification.
     \returns a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     /**
      * return a pointer to the identify menu which will be used in layer selection mode
@@ -167,19 +153,19 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param layerType Only performs identification in a certain type of layers (raster, vector).
     \param selectionMode IdentifySelection. Defines which selection mode has been used for the identification.
     \returns a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
     /**
      * Identifies features in the given vector layer and saves results to the passed list of results*/
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;

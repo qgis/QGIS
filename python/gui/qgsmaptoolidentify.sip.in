@@ -35,18 +35,6 @@ after selecting a point, performs the identification:
       LayerSelection
     };
 
-    enum IdentifySelection
-    {
-      //! SelectSimple
-      SelectSimple,
-      //! SelectPolygon
-      SelectPolygon,
-      //! SelectFreehand
-      SelectFreehand,
-      //! SelectRadius
-      SelectRadius
-    };
-
     enum Type
     {
       VectorLayer,
@@ -106,7 +94,7 @@ Performs the identification.
 :return: a list of IdentifyResult*
 %End
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 Performs the identification.
 To avoid being forced to specify IdentifyMode with a list of layers
@@ -137,7 +125,7 @@ this menu can also be customized
 
   protected:
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 Performs the identification.
 To avoid being forced to specify IdentifyMode with a list of layers
@@ -154,7 +142,7 @@ this has been made private and two publics methods are offered
 %End
 
 
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 Call the right method depending on layer type
 %End
@@ -162,10 +150,11 @@ Call the right method depending on layer type
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolIdentify::IdentifySelection selectionMode = QgsMapToolIdentify::IdentifySelection::SelectSimple );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 Identifies features in the given vector layer and saves results to the passed list of results*
 %End
+
 
 
 };

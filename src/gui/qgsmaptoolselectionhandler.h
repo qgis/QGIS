@@ -39,23 +39,23 @@ class QgsDistanceArea;
  * \ingroup gui
   \brief Map tool for selecting geometry in layers
 */
-class GUI_EXPORT QgsMapToolSelectionHandler:public QObject
+class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 {
     Q_OBJECT
 
-public:
+  public:
 
     //! Select features to identify by:
     enum SelectionMode
     {
-        //! SelectSimple - single click or drawing a rectangle, default option
-        SelectSimple,
-        //! SelectPolygon - drawing a polygon
-        SelectPolygon,
-        //! SelectFreehand - free hand selection
-        SelectFreehand,
-        //! SelectRadius - a circle selection
-        SelectRadius
+      //! SelectSimple - single click or drawing a rectangle, default option
+      SelectSimple,
+      //! SelectPolygon - drawing a polygon
+      SelectPolygon,
+      //! SelectFreehand - free hand selection
+      SelectFreehand,
+      //! SelectRadius - a circle selection
+      SelectRadius
     };
     Q_ENUM( SelectionMode )
 
@@ -65,7 +65,7 @@ public:
     ~QgsMapToolSelectionHandler() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e );
-    void canvasPressEvent( QgsMapMouseEvent *e, QgsMapToolSelectionHandler::SelectionMode selectionMode );
+    void canvasPressEvent( QgsMapMouseEvent *e );
     void canvasReleaseEvent( QgsMapMouseEvent *e );
     //    void activate() override;
     //    void deactivate() override;
@@ -85,15 +85,21 @@ public:
     void initRubberBand();
 
     QgsGeometry selectedGeometry();
-    void setSelectedGeometry(QgsGeometry geometry);
+    void setSelectedGeometry( QgsGeometry geometry );
 
-signals:
+    void setSelectionMode( SelectionMode mode );
+    SelectionMode selectionMode();
+
+    // TODO @vsklencar move to identifyTool only
+    bool mJustFinishedSelection = false;
+
+  signals:
     void selectionGeometryChanged();
-protected:
+  protected:
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;
 
-private:
+  private:
 
     // Last point in canvas CRS
     QgsPointXY mLastPoint;

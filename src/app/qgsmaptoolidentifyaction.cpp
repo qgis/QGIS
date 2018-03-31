@@ -60,9 +60,7 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
 
   mFillColor = QColor( 254, 178, 76, 63 );
   mStrokeColor = QColor( 254, 58, 29, 100 );
-  mSelectionMode = QgsMapToolIdentifyAction::SelectSimple;
-
-  mSelectionHandler = new QgsMapToolSelectionHandler(canvas);
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -119,17 +117,17 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
   bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
-  extendedMenu = extendedMenu && !mJustFinishedSelection;
+  extendedMenu = extendedMenu && !mSelectionHandler->mJustFinishedSelection;
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
 
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode, AllLayers, mSelectionMode );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode, AllLayers, mSelectionHandler->selectionMode() );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  if ( mJustFinishedSelection ) mJustFinishedSelection = false;
+  if ( mSelectionHandler->mJustFinishedSelection ) mSelectionHandler->mJustFinishedSelection = false;
 
   if ( results.isEmpty() )
   {
@@ -218,26 +216,7 @@ void QgsMapToolIdentifyAction::updateRadiusFromEdge( QgsPointXY &radiusEdge )
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-
-  switch ( mSelectionMode )
-  {
-    case QgsMapToolIdentifyAction::SelectSimple:
-      mSelectionHandler->selectFeaturesMoveEvent( e );
-      //selectFeaturesMoveEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectPolygon:
-      mSelectionHandler->selectPolygonMoveEvent( e );
-      //selectPolygonMoveEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectFreehand:
-      mSelectionHandler->selectFreehandMoveEvent( e );
-      //selectFreehandMoveEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectRadius:
-      mSelectionHandler->selectRadiusMoveEvent( e );
-      //selectRadiusMoveEvent( e );
-      break;
-  }
+  mSelectionHandler->canvasMoveEvent( e );
 }
 
 void QgsMapToolIdentifyAction::initRubberBand()
@@ -249,55 +228,21 @@ void QgsMapToolIdentifyAction::initRubberBand()
 
 void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  mSelectionMode = mResultsDialog->selectionMode();
-
-  switch ( mSelectionMode )
-  {
-    case QgsMapToolIdentifyAction::SelectSimple:
-//      mSelectionRubberBand.reset();
-//      initRubberBand();
-//      mInitDragPos = e -> pos();
-      mSelectionHandler->canvasPressEvent(e, QgsMapToolSelectionHandler::SelectSimple);
-      break;
-    case QgsMapToolIdentifyAction::SelectPolygon:
-      break;
-    case QgsMapToolIdentifyAction::SelectFreehand:
-      break;
-    case QgsMapToolIdentifyAction::SelectRadius:
-      break;
-  }
+  mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
+  mSelectionHandler->canvasPressEvent( e );
 }
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( mResultsDialog )
   {
-    mSelectionMode = mResultsDialog->selectionMode();
+    mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
   }
   else
   {
-    mSelectionMode = QgsMapToolIdentify::SelectSimple;
+    mSelectionHandler->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
   }
   mSelectionHandler->canvasReleaseEvent( e );
-  switch ( mSelectionMode )
-  {
-    case QgsMapToolIdentifyAction::SelectSimple:
-      mSelectionHandler->selectFeaturesReleaseEvent( e );
-      //selectFeaturesReleaseEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectPolygon:
-      mSelectionHandler->selectPolygonReleaseEvent( e );
-      //selectPolygonReleaseEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectFreehand:
-      mSelectionHandler->selectFreehandReleaseEvent( e );
-      //selectFreehandReleaseEvent( e );
-      break;
-    case QgsMapToolIdentifyAction::SelectRadius:
-      mSelectionHandler->selectRadiusReleaseEvent( e );
-      //selectRadiusReleaseEvent( e );
-      break;
-  }
 
   handleOnCanvasRelease( e );
 }

@@ -93,8 +93,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QColor mStrokeColor;
 
-    IdentifySelection mSelectionMode;
-
     bool mJustFinishedSelection = false;
 
     //! Center point for the radius
