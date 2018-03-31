@@ -159,6 +159,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // duplicate layer
       QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate Layer" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+      if ( ( layer && layer->type() == QgsMapLayer::PluginLayer ) || static_cast<QgsVectorLayer *>( layer )->storageType() == QLatin1String( "Memory storage" ) )
+        duplicateLayersAction->setEnabled( false );
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       menu->addSeparator();
