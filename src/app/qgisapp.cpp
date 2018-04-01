@@ -242,6 +242,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
+#include "qgspuzzlewidget.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
@@ -1329,6 +1330,19 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   };
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
+
+  // the most important part of the initialization: make sure that people can play puzzle if they need
+  QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
+  mCentralContainer->insertWidget( 2, puzzleWidget );
+  connect( mCoordsEdit, &QgsStatusBarCoordinatesWidget::weAreBored, this, [ this, puzzleWidget ]
+  {
+    puzzleWidget->letsGetThePartyStarted();
+    mCentralContainer->setCurrentIndex( 2 );
+  } );
+  connect( puzzleWidget, &QgsPuzzleWidget::done, this, [ this ]
+  {
+    mCentralContainer->setCurrentIndex( 0 );
+  } );
 
 } // QgisApp ctor
 
