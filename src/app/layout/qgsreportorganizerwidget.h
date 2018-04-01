@@ -47,7 +47,7 @@ class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrga
 
     QgsReport *mReport = nullptr;
     QgsReportSectionModel *mSectionModel = nullptr;
-    QgsMessageBar *mMessageBar;
+    QgsMessageBar *mMessageBar = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
     QWidget *mConfigWidget = nullptr;
 
