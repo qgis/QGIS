@@ -20,7 +20,7 @@
 ///@cond PRIVATE
 ///
 
-static void getFeaturesForProvider( QPair< QgsVectorDataProvider *, QgsFeatureRequest > pair )
+static void getFeaturesForProvider( const QPair< QgsVectorDataProvider *, QgsFeatureRequest > &pair )
 {
   QgsFeatureIterator it = pair.first->getFeatures( pair.second );
   QgsFeature f;
