@@ -1755,7 +1755,7 @@ void QgsLayoutDesignerDialog::print()
 
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
@@ -1795,6 +1795,7 @@ void QgsLayoutDesignerDialog::print()
       {
         message = tr( "Could not create print device." );
       }
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Layout" ),
                             message,
                             QMessageBox::Ok,
@@ -1803,6 +1804,7 @@ void QgsLayoutDesignerDialog::print()
     }
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Memory Allocation Error" ),
                             tr( "Printing the layout "
                                 "resulted in a memory overflow.\n\n"
@@ -1819,7 +1821,6 @@ void QgsLayoutDesignerDialog::print()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::exportToRaster()
@@ -1857,7 +1858,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     return;
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -1881,6 +1882,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::FileError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Image Export Error" ),
                             tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
                             QMessageBox::Ok,
@@ -1888,6 +1890,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Image Export Error" ),
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
@@ -1898,7 +1901,6 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
 
   }
-  QApplication::restoreOverrideCursor();
   mView->setPaintingEnabled( true );
 }
 
@@ -1957,7 +1959,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   settings.setValue( QStringLiteral( "lastSaveAsPdfFile" ), outputFileName, QgsSettings::App );
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
@@ -1979,6 +1981,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     }
 
     case QgsLayoutExporter::FileError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
                             tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
                             QMessageBox::Ok,
@@ -1986,6 +1989,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
       break;
 
     case QgsLayoutExporter::PrintError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
@@ -1994,6 +1998,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to PDF" ),
                             tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
@@ -2009,7 +2014,6 @@ void QgsLayoutDesignerDialog::exportToPdf()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::exportToSvg()
@@ -2068,7 +2072,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -2086,6 +2090,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     }
 
     case QgsLayoutExporter::FileError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
                             QMessageBox::Ok,
@@ -2093,6 +2098,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
       break;
 
     case QgsLayoutExporter::SvgLayerError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Cannot create layered SVG file %1." ).arg( outputFileName ),
                             QMessageBox::Ok,
@@ -2100,6 +2106,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
       break;
 
     case QgsLayoutExporter::PrintError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Could not create print device." ),
                             QMessageBox::Ok,
@@ -2108,6 +2115,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Exporting the SVG "
                                 "resulted in a memory overflow.\n\n"
@@ -2123,7 +2131,6 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
   mView->setPaintingEnabled( true );
   mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::showAtlasSettings( bool checked )
@@ -2309,7 +2316,7 @@ void QgsLayoutDesignerDialog::printAtlas()
   }
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
@@ -2372,6 +2379,7 @@ void QgsLayoutDesignerDialog::printAtlas()
       {
         message = tr( "Could not create print device." );
       }
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Atlas" ),
                             message,
                             QMessageBox::Ok,
@@ -2380,6 +2388,7 @@ void QgsLayoutDesignerDialog::printAtlas()
     }
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Atlas" ),
                             tr( "Printing the layout "
                                 "resulted in a memory overflow.\n\n"
@@ -2388,6 +2397,7 @@ void QgsLayoutDesignerDialog::printAtlas()
       break;
 
     case QgsLayoutExporter::IteratorError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Atlas" ),
                             tr( "Error encountered while printing atlas." ),
                             QMessageBox::Ok,
@@ -2402,7 +2412,6 @@ void QgsLayoutDesignerDialog::printAtlas()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
@@ -2481,7 +2490,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     return;
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2512,7 +2521,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   QString fileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, fileName, fileExt, settings, error, feedback.get() );
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
 
   switch ( result )
   {
@@ -2632,7 +2641,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2664,7 +2673,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QString filename = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, filename, svgSettings, error, feedback.get() );
 
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
   switch ( result )
   {
     case QgsLayoutExporter::Success:
@@ -2832,7 +2841,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   }
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
@@ -2877,6 +2886,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     result = QgsLayoutExporter::exportToPdfs( printAtlas, outputFileName, pdfSettings, error, feedback.get() );
   }
 
+  cursorOverride.release();
   switch ( result )
   {
     case QgsLayoutExporter::Success:
@@ -2935,7 +2945,6 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::exportReportToRaster()
@@ -2962,7 +2971,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     return;
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2995,7 +3004,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QString dir = fi.path();
   QString fileName = dir + '/' + fi.baseName();
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( dynamic_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
 
   switch ( result )
   {
@@ -3077,7 +3086,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   mMasterLayout->layoutProject()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3111,7 +3120,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QString dir = fi.path();
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( dynamic_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
 
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
   switch ( result )
   {
     case QgsLayoutExporter::Success:
@@ -3198,7 +3207,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   settings.setValue( QStringLiteral( "lastSaveAsPdfFile" ), outputFileName, QgsSettings::App );
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   bool rasterize = false;
   bool forceVectorOutput = false;
@@ -3241,6 +3250,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   } );
 
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( dynamic_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
+  cursorOverride.release();
 
   switch ( result )
   {
@@ -3291,7 +3301,6 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::printReport()
@@ -3303,7 +3312,7 @@ void QgsLayoutDesignerDialog::printReport()
   }
 
   mView->setPaintingEnabled( false );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   if ( mLayout )
@@ -3367,6 +3376,7 @@ void QgsLayoutDesignerDialog::printReport()
       {
         message = tr( "Could not create print device." );
       }
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Report" ),
                             message,
                             QMessageBox::Ok,
@@ -3375,6 +3385,7 @@ void QgsLayoutDesignerDialog::printReport()
     }
 
     case QgsLayoutExporter::MemoryError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Report" ),
                             tr( "Printing the report "
                                 "resulted in a memory overflow.\n\n"
@@ -3383,6 +3394,7 @@ void QgsLayoutDesignerDialog::printReport()
       break;
 
     case QgsLayoutExporter::IteratorError:
+      cursorOverride.release();
       QMessageBox::warning( this, tr( "Print Report" ),
                             tr( "Error encountered while printing report." ),
                             QMessageBox::Ok,
@@ -3397,7 +3409,6 @@ void QgsLayoutDesignerDialog::printReport()
   }
 
   mView->setPaintingEnabled( true );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::showReportSettings( bool checked )
