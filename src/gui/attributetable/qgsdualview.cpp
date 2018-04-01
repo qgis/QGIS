@@ -569,7 +569,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( !action.runable() )
         continue;
 
-      if ( !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
+      if ( vl && !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
