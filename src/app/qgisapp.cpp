@@ -7446,8 +7446,10 @@ QgsLayoutDesignerDialog *QgisApp::createNewPrintLayout( const QString &t )
   QgsPrintLayout *layout = new QgsPrintLayout( QgsProject::instance() );
   layout->setName( title );
   layout->initializeDefaults();
-  QgsProject::instance()->layoutManager()->addLayout( layout );
-  return openLayoutDesignerDialog( layout );
+  if ( QgsProject::instance()->layoutManager()->addLayout( layout ) )
+    return openLayoutDesignerDialog( layout );
+  else
+    return nullptr;
 }
 
 QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
