@@ -969,8 +969,8 @@ bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
 
 void QgsProcessingModelAlgorithm::addModelParameter( QgsProcessingParameterDefinition *definition, const QgsProcessingModelParameter &component )
 {
-  addParameter( definition );
-  mParameterComponents.insert( definition->name(), component );
+  if ( addParameter( definition ) )
+    mParameterComponents.insert( definition->name(), component );
 }
 
 void QgsProcessingModelAlgorithm::updateModelParameter( QgsProcessingParameterDefinition *definition )
