@@ -24,6 +24,20 @@ and registered in QgsProjectStorageRegistry.
 #include "qgsprojectstorage.h"
 %End
   public:
+
+    class Metadata
+{
+%Docstring
+Metadata associated with a project
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorage.h"
+%End
+      public:
+        QDateTime lastModified;
+    };
+
     virtual ~QgsProjectStorage();
 
     virtual QString type() = 0;
@@ -63,6 +77,12 @@ was successful.
 %Docstring
 Rename an existing project at the given URI to a different URI. Returns true if renaming
 was successful.
+%End
+
+    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
+%Docstring
+Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
+Returns true if the metadata were read with success.
 %End
 
     virtual QString visibleName();

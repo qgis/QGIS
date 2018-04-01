@@ -28,6 +28,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProject,
 )
+from PyQt5.QtCore import QDateTime
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -100,6 +101,15 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
         self.assertTrue(res)
 
         self.assertEqual(len(prj2.mapLayers()), 1)
+
+        # try to see project's metadata
+
+        res, metadata = prj_storage.readProjectMetadata(project_uri)
+        self.assertTrue(res)
+        time_project = metadata.lastModified
+        time_now = QDateTime.currentDateTime()
+        time_diff = time_now.secsTo(time_project)
+        self.assertTrue(abs(time_diff) < 10)
 
         # try to remove the project
 

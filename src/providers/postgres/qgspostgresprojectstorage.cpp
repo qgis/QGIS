@@ -6,7 +6,31 @@
 #include "qgsreadwritecontext.h"
 
 #include <QIODevice>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QUrl>
+
+
+static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
+{
+  if ( !doc.isObject() )
+    return false;
+
+  QJsonObject docObj = doc.object();
+  metadata.lastModified = QDateTime();
+  if ( docObj.contains( "last_modified_time" ) )
+  {
+    QString lastModifiedTimeStr = docObj["last_modified_time"].toString();
+    if ( !lastModifiedTimeStr.isEmpty() )
+    {
+      QDateTime lastModifiedUtc = QDateTime::fromString( lastModifiedTimeStr, Qt::ISODate );
+      lastModifiedUtc.setTimeSpec( Qt::UTC );
+      metadata.lastModified = lastModifiedUtc.toLocalTime();
+    }
+  }
+  return true;
+}
+
 
 static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaName )
 {
@@ -123,13 +147,18 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadata = "{ \"last_modified\": 123 }";  // TODO: real metadata
+  QString metadataExpr = QStringLiteral( "(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb" ).arg(
+                           QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ),
+                           QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ),
+                           QgsPostgresConn::quotedValue( "\" }" )
+                         );
 
   // TODO: would be useful to have QByteArray version of PQexec() to avoid bytearray -> string -> bytearray conversion
   QString sql( "INSERT INTO %1.qgis_projects VALUES (%2, %3, E'\\\\x" );
   sql = sql.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
                  QgsPostgresConn::quotedValue( projectUri.projectName ),
-                 QgsPostgresConn::quotedValue( metadata ) );
+                 metadataExpr  // no need to quote: already quoted
+               );
   sql += QString::fromAscii( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
@@ -161,6 +190,33 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   return removed;
+}
+
+
+bool QgsPostgresProjectStorage::readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
+{
+  QgsPostgresProjectUri projectUri = parseUri( uri );
+  if ( !projectUri.valid )
+    return false;
+
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+
+  bool ok = false;
+  QString sql( QStringLiteral( "SELECT metadata FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    if ( result.PQntuples() == 1 )
+    {
+      QString metadataStr = result.PQgetvalue( 0, 0 );
+      QJsonDocument doc( QJsonDocument::fromJson( metadataStr.toUtf8() ) );
+      ok = _parseMetadataDocument( doc, metadata );
+    }
+  }
+
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
+
+  return ok;
 }
 
 

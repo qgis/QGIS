@@ -17,7 +17,9 @@
 #define QGSPROJECTSTORAGE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
+#include <QDateTime>
 #include <QString>
 
 class QIODevice;
@@ -34,6 +36,14 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsProjectStorage
 {
   public:
+
+    //! Metadata associated with a project
+    class Metadata
+    {
+      public:
+        QDateTime lastModified;
+    };
+
     virtual ~QgsProjectStorage();
 
     /**
@@ -72,6 +82,12 @@ class CORE_EXPORT QgsProjectStorage
      * was successful.
      */
     virtual bool renameProject( const QString &uri, const QString &uriNew ) { Q_UNUSED( uri ); Q_UNUSED( uriNew ); return false; }
+
+    /**
+     * Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
+     * Returns true if the metadata were read with success.
+     */
+    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT ) { Q_UNUSED( uri ); Q_UNUSED( metadata ); return false; }
 
     /**
      * Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name

@@ -35,6 +35,8 @@ class QgsPostgresProjectStorage : public QgsProjectStorage
 
     virtual bool removeProject( const QString &uri ) override;
 
+    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
+
   private:
     static QgsPostgresProjectUri parseUri( const QString &uri );
 };
