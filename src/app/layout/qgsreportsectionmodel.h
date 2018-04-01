@@ -47,7 +47,6 @@ class QgsReportSectionModel : public QAbstractItemModel
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     void addSection( const QModelIndex &parent, std::unique_ptr< QgsAbstractReportSection > section );
