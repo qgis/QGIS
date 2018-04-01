@@ -35,6 +35,7 @@ QgsWFSProjectParser::QgsWFSProjectParser(
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
+  mCleanTagNameRegExp = QRegExp( "(?![\\w\\d\\.-])." );
 }
 
 QgsWFSProjectParser::~QgsWFSProjectParser()
@@ -464,7 +465,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 
           //xsd:element
           QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
-          attElem.setAttribute( "name", attributeName.replace( " ", "_" ) );
+          attElem.setAttribute( "name", attributeName.replace( " ", "_" ).replace( mCleanTagNameRegExp, "" ) );
           QVariant::Type attributeType = fields[idx].type();
           if ( attributeType == QVariant::Int )
             attElem.setAttribute( "type", "integer" );

@@ -37,6 +37,8 @@ class SERVER_EXPORT QgsWFSProjectParser
     );
     ~QgsWFSProjectParser();
 
+    QRegExp getCleanTagNameRegExp() const { return mCleanTagNameRegExp; }
+
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
     QString serviceUrl() const;
     QString wfsServiceUrl() const;
@@ -56,6 +58,7 @@ class SERVER_EXPORT QgsWFSProjectParser
 
   private:
     QgsServerProjectParser* mProjectParser;
+    QRegExp mCleanTagNameRegExp;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
 #endif
