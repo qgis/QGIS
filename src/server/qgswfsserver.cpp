@@ -524,10 +524,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           QStringList::const_iterator alstIt;
           QList<int> idxList;
           // build corresponding propertyname
+          QList<QString> fieldnames;
           QList<QString> propertynames;
           for ( int idx = 0; idx < fields.count(); ++idx )
           {
-            propertynames.append( fields[idx].name().replace( " ", "_" ) );
+            fieldnames.append( fields[idx].name() );
+            propertynames.append( fields[idx].name().replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
           }
           QString fieldName;
           QDomElement propertyElem;
@@ -542,6 +544,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 fieldName = fieldName.section( ":", 1, 1 );
               }
               int fieldNameIdx = propertynames.indexOf( fieldName );
+              if ( fieldNameIdx == -1 )
+              {
+                fieldNameIdx = fieldnames.indexOf( fieldName );
+              }
               if ( fieldNameIdx > -1 )
               {
                 idxList.append( fieldNameIdx );
@@ -953,16 +959,22 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           QStringList::const_iterator alstIt;
           QList<int> idxList;
           // build corresponding propertyname
+          QList<QString> fieldnames;
           QList<QString> propertynames;
           for ( int idx = 0; idx < fields.count(); ++idx )
           {
-            propertynames.append( fields[idx].name().replace( " ", "_" ) );
+            fieldnames.append( fields[idx].name() );
+            propertynames.append( fields[idx].name().replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
           }
           QString fieldName;
           for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
           {
             fieldName = *alstIt;
             int fieldNameIdx = propertynames.indexOf( fieldName );
+            if ( fieldNameIdx == -1 )
+            {
+              fieldNameIdx = fieldnames.indexOf( fieldName );
+            }
             if ( fieldNameIdx > -1 )
             {
               idxList.append( fieldNameIdx );
@@ -2110,7 +2122,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
       continue;
     }*/
 
-    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ) );
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
     QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
@@ -2194,7 +2206,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
       continue;
     }*/
 
-    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ) );
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
     QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
