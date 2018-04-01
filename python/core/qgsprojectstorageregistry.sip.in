@@ -26,6 +26,11 @@ This is a singleton that should be accessed through :py:func:`QgsApplication.pro
     QgsProjectStorageRegistry();
     ~QgsProjectStorageRegistry();
 
+    QgsProjectStorage *projectStorageFromType( const QString &type );
+%Docstring
+Returns storage implementation if the storage type matches one. Returns null pointer otherwise (it is a normal file)
+%End
+
     QgsProjectStorage *projectStorageFromUri( const QString &uri );
 %Docstring
 Returns storage implementation if the URI matches one. Returns null pointer otherwise (it is a normal file)

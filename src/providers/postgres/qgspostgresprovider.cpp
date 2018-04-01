@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsxmlutils.h"
@@ -36,6 +37,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgspostgreslistener.h"
+#include "qgspostgresprojectstorage.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
@@ -4911,8 +4913,21 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
   return new QgsPostgresTransaction( connString );
 }
 
+
+QgsPostgresProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+QGISEXTERN void initProvider()
+{
+  Q_ASSERT( !gProjectStorage );
+  gProjectStorage = new QgsPostgresProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+}
+
 QGISEXTERN void cleanupProvider()
 {
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
+  gProjectStorage = nullptr;
+
   QgsPostgresConnPool::cleanupInstance();
 }
 

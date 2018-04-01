@@ -27,6 +27,11 @@ QgsProjectStorageRegistry::~QgsProjectStorageRegistry()
   qDeleteAll( mBackends.values() );
 }
 
+QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromType( const QString &type )
+{
+  return mBackends.value( type, nullptr );
+}
+
 QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QString &uri )
 {
   for ( auto it = mBackends.constBegin(); it != mBackends.constEnd(); ++it )

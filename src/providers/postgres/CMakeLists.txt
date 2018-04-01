@@ -7,6 +7,7 @@ SET(PG_SRCS
   qgspostgresconnpool.cpp
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
+  qgspostgresprojectstorage.cpp
   qgspostgrestransaction.cpp
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
