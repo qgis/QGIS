@@ -753,7 +753,7 @@ QString QgsApplication::userStyleV2Path()
 
 QRegExp QgsApplication::shortNameRegExp()
 {
-  return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+  return QRegExp( "^[A-Za-z_][A-Za-z0-9\\._-]*" );
 }
 
 QString QgsApplication::userLoginName()
