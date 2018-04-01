@@ -834,9 +834,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
     QgsColorScheme *scheme = QgsApplication::colorSchemeRegistry()->schemes().value( index );
     if ( scheme )
+    {
       mTreeCustomColors->setScheme( scheme );
-
-    updateActionsForCurrentColorScheme( scheme );
+      updateActionsForCurrentColorScheme( scheme );
+    }
   } );
 
   //
@@ -2336,6 +2337,9 @@ void QgsOptions::refreshSchemeComboBox()
 
 void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
 {
+  if ( !scheme )
+    return;
+
   mButtonImportColors->setEnabled( scheme->isEditable() );
   mButtonPasteColors->setEnabled( scheme->isEditable() );
   mButtonAddColor->setEnabled( scheme->isEditable() );
