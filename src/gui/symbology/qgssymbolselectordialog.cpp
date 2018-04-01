@@ -33,6 +33,7 @@
 #include "qgssettings.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgssvgcache.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -283,6 +284,17 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   layersTree->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Symbol Selector" ) );
+
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, [ = ]
+  {
+    // when a remote svg has been fetched, update the widget's previews
+    // this is required if the symbol utilises remote svgs, and the current previews
+    // have been generated using the temporary "downloading" svg. In this case
+    // we require the preview to be regenerated to use the correct fetched
+    // svg
+    symbolChanged();
+    updatePreview();
+  } );
 }
 
 QMenu *QgsSymbolSelectorWidget::advancedMenu()
