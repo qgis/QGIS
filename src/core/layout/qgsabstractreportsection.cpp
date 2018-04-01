@@ -39,9 +39,6 @@ QgsProject *QgsAbstractReportSection::project()
   QgsAbstractReportSection *current = this;
   while ( QgsAbstractReportSection *parent = current->parentSection() )
   {
-    if ( !parent )
-      return nullptr;
-
     if ( QgsReport *report = dynamic_cast< QgsReport * >( parent ) )
       return report->layoutProject();
 
