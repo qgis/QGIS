@@ -2992,7 +2992,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QFileInfo fi( fileNExt.first );
   QString dir = fi.path();
   QString fileName = dir + '/' + fi.baseName();
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( dynamic_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( static_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
   QApplication::restoreOverrideCursor();
 
   switch ( result )
@@ -3107,7 +3107,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QFileInfo fi( outputFileName );
   QString outFile = fi.path() + '/' + fi.baseName();
   QString dir = fi.path();
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( dynamic_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( static_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
 
   QApplication::restoreOverrideCursor();
   switch ( result )
@@ -3238,7 +3238,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     feedback->cancel();
   } );
 
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( dynamic_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( static_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
 
   switch ( result )
   {
@@ -3335,7 +3335,7 @@ void QgsLayoutDesignerDialog::printReport()
   } );
 
   QString printerName = printer()->printerName();
-  switch ( QgsLayoutExporter::print( dynamic_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() ) )
+  switch ( QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() ) )
   {
     case QgsLayoutExporter::Success:
     {
@@ -3539,6 +3539,9 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
 void QgsLayoutDesignerDialog::createAtlasWidget()
 {
   QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( mMasterLayout );
+  if ( !printLayout )
+    return;
+
   QgsLayoutAtlas *atlas = printLayout->atlas();
   QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mAtlasDock, printLayout );
   atlasWidget->setMessageBar( mMessageBar );
