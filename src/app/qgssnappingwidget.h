@@ -131,26 +131,26 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     QAction *mEnabledAction = nullptr;
     QToolButton *mModeButton = nullptr;
-    QAction *mModeAction; // hide widget does not work on toolbar, action needed
+    QAction *mModeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mAllLayersAction = nullptr;
     QAction *mActiveLayerAction = nullptr;
     QAction *mAdvancedModeAction = nullptr;
     QAction *mEditAdvancedConfigAction = nullptr;
     QToolButton *mTypeButton = nullptr;
-    QAction *mTypeAction; // hide widget does not work on toolbar, action needed
+    QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
     QAction *mSegmentAction = nullptr;
     QAction *mVertexAndSegmentAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
-    QAction *mToleranceAction; // hide widget does not work on toolbar, action needed
+    QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
     QComboBox *mUnitsComboBox = nullptr;
-    QAction *mUnitAction; // hide widget does not work on toolbar, action needed
+    QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
-    QgsFloatingWidget *mAdvancedConfigContainer;
+    QgsFloatingWidget *mAdvancedConfigContainer = nullptr;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };
