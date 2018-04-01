@@ -77,14 +77,14 @@ bool QgsAbstractReportSection::writeXml( QDomElement &parentElement, QDomDocumen
   QDomElement element = doc.createElement( QStringLiteral( "Section" ) );
   element.setAttribute( QStringLiteral( "type" ), type() );
 
-  element.setAttribute( QStringLiteral( "headerEnabled" ), mHeaderEnabled ? "1" : "0" );
+  element.setAttribute( QStringLiteral( "headerEnabled" ), mHeaderEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( mHeader )
   {
     QDomElement headerElement = doc.createElement( QStringLiteral( "header" ) );
     headerElement.appendChild( mHeader->writeXml( doc, context ) );
     element.appendChild( headerElement );
   }
-  element.setAttribute( QStringLiteral( "footerEnabled" ), mFooterEnabled ? "1" : "0" );
+  element.setAttribute( QStringLiteral( "footerEnabled" ), mFooterEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( mFooter )
   {
     QDomElement footerElement = doc.createElement( QStringLiteral( "footer" ) );
@@ -110,8 +110,8 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
     return false;
   }
 
-  mHeaderEnabled = element.attribute( QStringLiteral( "headerEnabled" ), "0" ).toInt();
-  mFooterEnabled = element.attribute( QStringLiteral( "footerEnabled" ), "0" ).toInt();
+  mHeaderEnabled = element.attribute( QStringLiteral( "headerEnabled" ), QStringLiteral( "0" ) ).toInt();
+  mFooterEnabled = element.attribute( QStringLiteral( "footerEnabled" ), QStringLiteral( "0" ) ).toInt();
   const QDomElement headerElement = element.firstChildElement( QStringLiteral( "header" ) );
   if ( !headerElement.isNull() )
   {
