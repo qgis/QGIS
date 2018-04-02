@@ -256,7 +256,7 @@ QString QgsPoint::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
@@ -279,7 +279,7 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );

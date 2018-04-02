@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited (as a polygon): QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
 
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 

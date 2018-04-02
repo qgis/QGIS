@@ -390,7 +390,7 @@ QString QgsGeometryCollection::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
@@ -402,7 +402,7 @@ QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )

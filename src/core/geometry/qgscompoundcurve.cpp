@@ -262,7 +262,7 @@ QString QgsCompoundCurve::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
@@ -270,7 +270,7 @@ QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QS
   return gml;
 }
 
-QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
 
