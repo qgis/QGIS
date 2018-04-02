@@ -296,9 +296,8 @@ void QgsLayerTreeViewDefaultActions::zoomToSelection()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   zoomToSelection( canvas );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
