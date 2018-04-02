@@ -64,6 +64,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
+  searchBox->setShowSearchIcon( true );
   searchBox->setPlaceholderText( tr( "Filter symbols…" ) );
 
   connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
@@ -81,7 +82,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
          );
 
-  QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
+  QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
   QAction *exportAction = new QAction( tr( "Export Symbol(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
@@ -162,7 +163,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupMenu->addAction( actnRemoveFavorite );
   mGroupMenu->addSeparator()->setParent( this );
   mGroupListMenu = new QMenu( mGroupMenu );
-  mGroupListMenu->setTitle( tr( "Add to tag" ) );
+  mGroupListMenu->setTitle( tr( "Add to Tag" ) );
   mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
   actnDetag->setData( 0 );
