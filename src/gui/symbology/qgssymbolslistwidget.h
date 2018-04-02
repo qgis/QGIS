@@ -104,6 +104,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateAssistantSymbol();
     void opacityChanged( double value );
     void createAuxiliaryField();
+    void populateSymbolView();
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -114,7 +115,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
-    void populateSymbolView();
     void populateSymbols( const QStringList &symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
