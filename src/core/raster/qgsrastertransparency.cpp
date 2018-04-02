@@ -93,8 +93,8 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRa
 /**
   Searches through the transparency list, if a match is found, the global transparency value is scaled
   by the stored transparency value.
-  @param value the needle to search for in the transparency hay stack
-  @param globalTransparency  the overal transparency level for the layer
+  \param value the needle to search for in the transparency hay stack
+  \param globalTransparency  the overal transparency level for the layer
 */
 int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
 {
@@ -131,10 +131,10 @@ int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) co
 /**
   Searches through the transparency list, if a match is found, the global transparency value is scaled
   by the stored transparency value.
-  @param redValue the red portion of the needle to search for in the transparency hay stack
-  @param greenValue  the green portion of the needle to search for in the transparency hay stack
-  @param blueValue the green portion of the needle to search for in the transparency hay stack
-  @param globalTransparency  the overal transparency level for the layer
+  \param redValue the red portion of the needle to search for in the transparency hay stack
+  \param greenValue  the green portion of the needle to search for in the transparency hay stack
+  \param blueValue the green portion of the needle to search for in the transparency hay stack
+  \param globalTransparency  the overal transparency level for the layer
 */
 int QgsRasterTransparency::alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency ) const
 {

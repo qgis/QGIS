@@ -80,6 +80,12 @@ class GUI_EXPORT QgsAttributeEditorContext
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
+    /**
+     * Sets distance area object for area/length calculations
+     * \param distanceArea map canvas
+     * \see setDistanceArea
+     * \since QGIS 2.2
+     */
     inline void setDistanceArea( const QgsDistanceArea &distanceArea )
     {
       if ( mLayer )
@@ -91,12 +97,32 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
+    /**
+     * Sets the map canvas (e.g. to zoom to related features)
+     * \param mapCanvas map canvas
+     * \see mapCanvas()
+     * \since QGIS 3.2
+     */
     inline void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
     inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
+    /**
+     * Sets the vector layer tools
+     * \param vlTools vector layer tools
+     * \see vectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
     inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
 
+    /**
+     * Set attribute relation and mode
+     * \param relation relation
+     * \param mode relation mode
+     * \see relation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
     inline const QgsRelation &relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }

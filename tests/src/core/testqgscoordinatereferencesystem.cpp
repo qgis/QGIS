@@ -643,7 +643,7 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 {
 
   /**
-   * @todo implement this test
+   * \todo implement this test
   "QgsCoordinateReferenceSystem myCrs;
   static CUSTOM_CRS_VALIDATION customSrsValidation();
   QVERIFY( myCrs.isValid() );

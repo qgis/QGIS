@@ -485,8 +485,6 @@ Returns the help text for a specified function.
 Returns the help text for a specified variable.
 
 :param variableName: name of variable
-:param showValue: set to true to include current value of variable in help text
-:param value: current value of variable to show in help text
 
 .. seealso:: :py:func:`helpText`
 

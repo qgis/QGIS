@@ -77,7 +77,8 @@ Resets the widget to show no value (ie, an "unknown" state).
     void valueChanged( const QDateTime &date );
 %Docstring
 signal emitted whenever the value changes.
-@param date the new date/time value.
+
+:param date: the new date/time value.
 %End
 
   protected:

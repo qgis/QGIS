@@ -119,7 +119,7 @@ namespace pal
        *
        * \throws PalException::LayerExists
        *
-       * @todo add symbolUnit
+       * \todo add symbolUnit
        */
       Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 

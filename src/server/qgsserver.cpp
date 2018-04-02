@@ -90,7 +90,7 @@ QFileInfo QgsServer::defaultAdminSLD()
 
 
 /**
- * @brief QgsServer::setupNetworkAccessManager
+ * \brief QgsServer::setupNetworkAccessManager
  */
 void QgsServer::setupNetworkAccessManager()
 {
@@ -107,8 +107,8 @@ void QgsServer::setupNetworkAccessManager()
 }
 
 /**
- * @brief QgsServer::defaultProjectFile
- * @return the default project file
+ * \brief QgsServer::defaultProjectFile
+ * \return the default project file
  */
 QFileInfo QgsServer::defaultProjectFile()
 {
@@ -129,9 +129,9 @@ QFileInfo QgsServer::defaultProjectFile()
 }
 
 /**
- * @brief QgsServer::printRequestParameters prints the request parameters
- * @param parameterMap
- * @param logLevel
+ * \brief QgsServer::printRequestParameters prints the request parameters
+ * \param parameterMap
+ * \param logLevel
  */
 void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, Qgis::MessageLevel logLevel )
 {
@@ -148,10 +148,10 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
 }
 
 /**
- * @brief QgsServer::configPath
- * @param defaultConfigPath
- * @param parameters
- * @return config file path
+ * \brief QgsServer::configPath
+ * \param defaultConfigPath
+ * \param parameters
+ * \return config file path
  */
 QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QString, QString> &parameters )
 {
@@ -285,9 +285,9 @@ void QgsServer::putenv( const QString &var, const QString &val )
 }
 
 /**
- * @brief Handles the request
- * @param queryString
- * @return response headers and body
+ * \brief Handles the request
+ * \param queryString
+ * \return response headers and body
  */
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {

@@ -164,7 +164,7 @@ double QgsContrastEnhancement::minimumValuePossible( Qgis::DataType dataType )
 /**
     Public function to generate the enhanced for enhanceContrasted value for a given input.
 
-    @param value The pixel value to enhance
+    \param value The pixel value to enhance
 */
 int QgsContrastEnhancement::enhanceContrast( double value )
 {
@@ -222,7 +222,7 @@ bool QgsContrastEnhancement::generateLookupTable()
 /**
     Determine if a pixel is within in the displayable range.
 
-    @param value The pixel value to examine
+    \param value The pixel value to examine
 */
 bool QgsContrastEnhancement::isValueInDisplayableRange( double value )
 {
@@ -237,8 +237,8 @@ bool QgsContrastEnhancement::isValueInDisplayableRange( double value )
 /**
     Set the contrast enhancement algorithm. The second parameter is optional and is for performance improvements. If you know you are immediately going to set the Minimum or Maximum value, you can elect to not generate the lookup tale. By default it will be generated.
 
-    @param algorithm The new contrast enhancement algorithm
-    @param generateTable Flag to override automatic look up table generation
+    \param algorithm The new contrast enhancement algorithm
+    \param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm algorithm, bool generateTable )
 {
@@ -273,7 +273,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 /**
     A public function that allows the user to set their own custom contrast enhancement function.
 
-    @param function The new contrast enhancement function
+    \param function The new contrast enhancement function
 */
 void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction *function )
 {
@@ -290,8 +290,8 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 /**
     Set the maximum value for the contrast enhancement. The second parameter is option an is for performance improvements. If you know you are immediately going to set the Minimum value or the contrast enhancement algorithm, you can elect to not generate the lookup tale. By default it will be generated.
 
-    @param value The new maximum value for the band
-    @param generateTable Flag to override automatic look up table generation
+    \param value The new maximum value for the band
+    \param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setMaximumValue( double value, bool generateTable )
 {
@@ -322,8 +322,8 @@ void QgsContrastEnhancement::setMaximumValue( double value, bool generateTable )
 /**
     Set the maximum value for the contrast enhancement. The second parameter is option an is for performance improvements. If you know you are immediately going to set the Maximum value or the contrast enhancement algorithm, you can elect to not generate the lookup tale. By default it will be generated.
 
-    @param value The new minimum value for the band
-    @param generateTable Flag to override automatic look up table generation
+    \param value The new minimum value for the band
+    \param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setMinimumValue( double value, bool generateTable )
 {

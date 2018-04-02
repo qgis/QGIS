@@ -107,10 +107,10 @@ class KPty {
      * with it.
      *
      * \param ttmode a pointer to a termios structure.
-     *  Note: when declaring ttmode, @c struct @c ::termios must be used -
+     *  Note: when declaring ttmode, \c struct \c ::termios must be used -
      *  without the '::' some version of HP-UX thinks, this declares
      *  the struct in your class, in your method.
-     * \returns @c true on success, false otherwise
+     * \returns \c true on success, false otherwise
      */
     bool tcGetAttr(struct ::termios * ttmode) const;
 
@@ -120,7 +120,7 @@ class KPty {
      * This function can be used only while the PTY is open.
      *
      * \param ttmode a pointer to a termios structure.
-     * \returns @c true on success, false otherwise. Note that success means
+     * \returns \c true on success, false otherwise. Note that success means
      *  that @em at @em least @em one attribute could be set.
      */
     bool tcSetAttr(struct ::termios * ttmode);
@@ -133,7 +133,7 @@ class KPty {
      *
      * \param lines the number of rows
      * \param columns the number of columns
-     * \returns @c true on success, false otherwise
+     * \returns \c true on success, false otherwise
      */
     bool setWinSize(int lines, int columns);
 
@@ -147,7 +147,7 @@ class KPty {
      * This function can be used only while the PTY is open.
      *
      * \param echo true if input should be echoed.
-     * \returns @c true on success, false otherwise
+     * \returns \c true on success, false otherwise
      */
     bool setEcho(bool echo);
 

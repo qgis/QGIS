@@ -5965,7 +5965,7 @@ void QgisApp::openProject( const QString &fileName )
 /**
   Open a raster or vector file; ignore other files.
   Used to process a commandline argument or OpenDocument AppleEvent.
-  @returns true if the file is successfully opened
+  \returns true if the file is successfully opened
   */
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 {
@@ -10536,7 +10536,7 @@ void QgisApp::setExtent( const QgsRectangle &rect )
 
 /**
   Prompt and save if project has been modified.
-  @return true if saved or discarded, false if canceled
+  \return true if saved or discarded, false if canceled
  */
 bool QgisApp::saveDirty()
 {

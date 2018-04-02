@@ -147,12 +147,14 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
  Compute the intersection of a line and a circle.
 If the intersection has two solutions (points),
 the closest point to the initial ``intersection`` point is returned.
-@param center the center of the circle
-@param radius the radius of the circle
-@param linePoint1 a first point on the line
-@param linePoint2 a second point on the line
-@param intersection the initial point and the returned intersection point
-@return true if an intersection has been found
+
+:param center: the center of the circle
+:param radius: the radius of the circle
+:param linePoint1: a first point on the line
+:param linePoint2: a second point on the line
+:param intersection: the initial point and the returned intersection point
+
+:return: true if an intersection has been found
 %End
 
     static int circleCircleIntersections( QgsPointXY center1, double radius1,

@@ -48,16 +48,55 @@ Constructor for QgsAttributeEditorContext
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode );
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
+%Docstring
+Sets distance area object for area/length calculations
+
+:param distanceArea: map canvas
+
+.. seealso:: :py:func:`setDistanceArea`
+
+.. versionadded:: 2.2
+%End
 
     const QgsDistanceArea &distanceArea() const;
 
     void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets the map canvas (e.g. to zoom to related features)
+
+:param mapCanvas: map canvas
+
+.. seealso:: :py:func:`mapCanvas`
+
+.. versionadded:: 3.2
+%End
     QgsMapCanvas *mapCanvas() const;
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
+%Docstring
+Sets the vector layer tools
+
+:param vlTools: vector layer tools
+
+.. seealso:: :py:func:`vectorLayerTools`
+
+.. versionadded:: 2.2
+%End
     const QgsVectorLayerTools *vectorLayerTools() const;
 
     void setRelation( const QgsRelation &relation, RelationMode mode );
+%Docstring
+Set attribute relation and mode
+
+:param relation: relation
+:param mode: relation mode
+
+.. seealso:: :py:func:`relation`
+
+.. seealso:: :py:func:`relationMode`
+
+.. versionadded:: 2.6
+%End
     const QgsRelation &relation() const;
     RelationMode relationMode() const;
 

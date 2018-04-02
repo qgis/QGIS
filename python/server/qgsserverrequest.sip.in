@@ -94,7 +94,8 @@ Remove a parameter
 Return the header value
 
 :param name: of the header
-@return the header value or an empty string
+
+:return: the header value or an empty string
 %End
 
     void setHeader( const QString &name, const QString &value );
@@ -108,7 +109,8 @@ Set an header
     QMap<QString, QString> headers() const;
 %Docstring
 Return the header map
-@return the headers map
+
+:return: the headers map
 %End
 
     void removeHeader( const QString &name );

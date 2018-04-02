@@ -216,11 +216,6 @@ bool QgsExpressionFunction::allParamsStatic( const QgsExpressionNodeFunction *no
   return true;
 }
 
-
-
-
-
-
 static QVariant fcnGetVariable( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( !context )

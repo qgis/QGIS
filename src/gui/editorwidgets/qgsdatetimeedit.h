@@ -71,7 +71,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     /**
      * signal emitted whenever the value changes.
-     * @param date the new date/time value.
+     * \param date the new date/time value.
      */
     void valueChanged( const QDateTime &date );
 

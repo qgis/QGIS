@@ -113,11 +113,11 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
 /**
    return the property that matches the given key sequence, if any
 
-   @param scope scope of key
-   @param key keyname
-   @param rootProperty is likely to be the top level QgsProjectPropertyKey in QgsProject:e:Imp.
+   \param scope scope of key
+   \param key keyname
+   \param rootProperty is likely to be the top level QgsProjectPropertyKey in QgsProject:e:Imp.
 
-   @return null if not found, otherwise located Property
+   \return null if not found, otherwise located Property
 */
 QgsProjectProperty *findKey_( const QString &scope,
                               const QString &key,
@@ -190,10 +190,10 @@ QgsProjectProperty *findKey_( const QString &scope,
 /**
  * Add the given key and value
 
-@param scope scope of key
-@param key key name
-@param rootProperty is the property from which to start adding
-@param value the value associated with the key
+\param scope scope of key
+\param key key name
+\param rootProperty is the property from which to start adding
+\param value the value associated with the key
 */
 QgsProjectProperty *addKey_( const QString &scope,
                              const QString &key,
@@ -590,8 +590,8 @@ scope.  "layers" is a list containing three string values.
 </properties>
 \endcode
 
-@param doc xml document
-@param project_properties should be the top QgsProjectPropertyKey node.
+\param doc xml document
+\param project_properties should be the top QgsProjectPropertyKey node.
 
 */
 void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_properties )
@@ -620,7 +620,7 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 
 /**
    Get the project title
-   @todo XXX we should go with the attribute xor title, not both.
+   \todo XXX we should go with the attribute xor title, not both.
 */
 static void _getTitle( const QDomDocument &doc, QString &title )
 {

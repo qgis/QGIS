@@ -920,7 +920,7 @@ namespace QgsWms
       /**
        * Return the external WMS uri
        * \param id the id of the external wms
-       * @return uri string or an empty string if the external wms id does not exist
+       * \return uri string or an empty string if the external wms id does not exist
        */
       QString externalWMSUri( const QString &id ) const;
 

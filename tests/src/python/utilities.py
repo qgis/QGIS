@@ -323,8 +323,8 @@ def printImportant(info):
 def waitServer(url, timeout=10):
     """ Wait for a server to be online and to respond
         HTTP errors are ignored
-        @param timeout: in seconds
-        @return: True of False
+        \param timeout: in seconds
+        \return: True of False
     """
     from time import time as now
     end = now() + timeout

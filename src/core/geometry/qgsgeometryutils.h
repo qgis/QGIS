@@ -140,15 +140,15 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
-     * @brief Compute the intersection of a line and a circle.
+     * \brief Compute the intersection of a line and a circle.
      * If the intersection has two solutions (points),
      * the closest point to the initial \a intersection point is returned.
-     * @param center the center of the circle
-     * @param radius the radius of the circle
-     * @param linePoint1 a first point on the line
-     * @param linePoint2 a second point on the line
-     * @param intersection the initial point and the returned intersection point
-     * @return true if an intersection has been found
+     * \param center the center of the circle
+     * \param radius the radius of the circle
+     * \param linePoint1 a first point on the line
+     * \param linePoint2 a second point on the line
+     * \param intersection the initial point and the returned intersection point
+     * \return true if an intersection has been found
      */
     static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,

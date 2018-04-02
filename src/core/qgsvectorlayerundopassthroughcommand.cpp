@@ -26,7 +26,7 @@
 
 #include <QUuid>
 
-//@todo use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
+//\todo use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
 // for the moment a errored command is left on the stack
 
 QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )

@@ -42,8 +42,8 @@ static const QString sPluginIcon = ":/compass.svn";
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
- * @param _qI Pointer to the QGIS interface object
+ * \param qgis Pointer to the QGIS main window
+ * \param _qI Pointer to the QGIS interface object
  */
 QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )

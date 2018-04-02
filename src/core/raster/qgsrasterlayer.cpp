@@ -231,7 +231,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawing
 }
 
 /**
- * @return 0 if not using the data provider model (i.e. directly using GDAL)
+ * \return 0 if not using the data provider model (i.e. directly using GDAL)
  */
 QgsRasterDataProvider *QgsRasterLayer::dataProvider()
 {
@@ -239,7 +239,7 @@ QgsRasterDataProvider *QgsRasterLayer::dataProvider()
 }
 
 /**
- * @return 0 if not using the data provider model (i.e. directly using GDAL)
+ * \return 0 if not using the data provider model (i.e. directly using GDAL)
  */
 const QgsRasterDataProvider *QgsRasterLayer::dataProvider() const
 {
@@ -484,8 +484,8 @@ QString QgsRasterLayer::htmlMetadata() const
 
 
 /**
- * @param bandNumber the number of the band to use for generating a pixmap of the associated palette
- * @return a 100x100 pixel QPixmap of the bands palette
+ * \param bandNumber the number of the band to use for generating a pixmap of the associated palette
+ * \return a 100x100 pixel QPixmap of the bands palette
  */
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
@@ -547,7 +547,7 @@ QString QgsRasterLayer::providerType() const
 }
 
 /**
- * @return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
+ * \return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
  */
 double QgsRasterLayer::rasterUnitsPerPixelX() const
 {
@@ -1301,9 +1301,9 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 //
 /////////////////////////////////////////////////////////
 /*
- * @param QDomNode node that will contain the symbology definition for this layer.
- * @param errorMessage reference to string that will be updated with any error messages
- * @return true in case of success.
+ * \param QDomNode node that will contain the symbology definition for this layer.
+ * \param errorMessage reference to string that will be updated with any error messages
+ * \return true in case of success.
  */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, QgsReadWriteContext &context )
 {
@@ -1544,10 +1544,10 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 } // QgsRasterLayer::readXml( QDomNode & layer_node )
 
 /*
- * @param QDomNode the node that will have the style element added to it.
- * @param QDomDocument the document that will have the QDomNode added.
- * @param errorMessage reference to string that will be updated with any error messages
- * @return true in case of success.
+ * \param QDomNode the node that will have the style element added to it.
+ * \param QDomDocument the document that will have the QDomNode added.
+ * \param errorMessage reference to string that will be updated with any error messages
+ * \return true in case of success.
  */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
