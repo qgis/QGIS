@@ -102,7 +102,10 @@ WORKDIR /root
 RUN curl -s -S -O https://svwh.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.9.2/PyQt5_gpl-5.9.2.tar.gz \
  && tar xzf PyQt5_gpl-5.9.2.tar.gz
 WORKDIR /root/PyQt5_gpl-5.9.2
-RUN python3 configure.py --qsci-api --enable svg sql && make && make install
+RUN apt-get install -y qt5-qmake \
+ && python3 configure.py --confirm-license --qmake /usr/lib/x86_64-linux-gnu/qt5/bin/qmake --qsci-api --enable QtSql --enable QtSvg && make && make install
+
+WORKDIR /root
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
