@@ -435,7 +435,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     QNetworkReply *reply = task->reply();
     if ( !reply )
     {
-      // cancelled
+      // canceled
       QMetaObject::invokeMethod( const_cast< QgsSvgCache * >( this ), "onRemoteSvgFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, false ) );
       return;
     }
