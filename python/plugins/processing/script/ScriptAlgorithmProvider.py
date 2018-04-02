@@ -50,8 +50,8 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         self.algs = []
         self.folder_algorithms = []
         self.actions = [CreateNewScriptAction(),
-                        AddScriptFromFileAction(),
                         AddScriptFromTemplateAction(),
+                        AddScriptFromFileAction()
                         ]
         self.contextMenuActions = [EditScriptAction(),
                                    DeleteScriptAction()]
