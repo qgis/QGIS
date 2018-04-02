@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include <vector>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
@@ -94,6 +95,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void btnAnd_clicked();
     void btnNot_clicked();
     void btnOr_clicked();
+    void onTextChanged( const QString &text );
 
     /**
      * Get all distinct values for the field. Values are inserted
@@ -129,6 +131,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
     QStandardItemModel *mModelValues = nullptr;
+    //! Filter proxy Model for values ListView
+    QSortFilterProxyModel *mProxyValues = nullptr;
     //! Previous field row to delete model
     int mPreviousFieldRow;
 
