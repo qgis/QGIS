@@ -1122,6 +1122,15 @@ void TestQgsGeometry::point()
   QVERIFY( !p.removeDuplicateNodes() );
   QCOMPARE( p.x(), 1.0 );
   QCOMPARE( p.y(), 2.0 );
+
+  // swap xy
+  p = QgsPoint( 1.1, 2.2, 3.3, 4.4, QgsWkbTypes::PointZM );
+  p.swapXy();
+  QCOMPARE( p.x(), 2.2 );
+  QCOMPARE( p.y(), 1.1 );
+  QCOMPARE( p.z(), 3.3 );
+  QCOMPARE( p.m(), 4.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
 }
 
 void TestQgsGeometry::circularString()
@@ -2475,6 +2484,12 @@ void TestQgsGeometry::circularString()
   QVERIFY( !nodeLine.removeDuplicateNodes( 0.02, true ) );
   QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5)" ) );
 
+  //swap xy
+  QgsCircularString swapLine;
+  swapLine.swapXy(); // no crash
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  swapLine.swapXy();
+  QCOMPARE( swapLine.asWkt(), QStringLiteral( "CircularStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
 }
 
 
@@ -4308,6 +4323,13 @@ void TestQgsGeometry::lineString()
                       << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
   QVERIFY( !nodeLine.removeDuplicateNodes( 0.02, true ) );
   QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5, 111.01 11.99 6)" ) );
+
+  // swap xy
+  QgsLineString swapLine;
+  swapLine.swapXy(); // no crash
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  swapLine.swapXy();
+  QCOMPARE( swapLine.asWkt( 2 ), QStringLiteral( "LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
 }
 
 void TestQgsGeometry::polygon()
@@ -6055,6 +6077,19 @@ void TestQgsGeometry::polygon()
   nodePolygon.addInteriorRing( nodeLine.clone() );
   QVERIFY( nodePolygon.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodePolygon.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2),(11 2, 11.01 2.01, 11 2.01, 11 2))" ) );
+
+  // swap XY
+  QgsPolygon swapPolygon;
+  swapPolygon.swapXy(); //no crash
+  QgsLineString swapLine;
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  swapPolygon.setExteriorRing( swapLine.clone() );
+  swapPolygon.swapXy();
+  QCOMPARE( swapPolygon.asWkt(), QStringLiteral( "PolygonZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))" ) );
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  swapPolygon.addInteriorRing( swapLine.clone() );
+  swapPolygon.swapXy();
+  QCOMPARE( swapPolygon.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))" ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -10810,6 +10845,20 @@ void TestQgsGeometry::compoundCurve()
   nodeCurve.addCurve( linePart.clone() );
   QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve ((1 1, 111.01 11.99),(111.01 11.99, 31 33))" ) );
+
+  // swap xy
+  QgsCompoundCurve swapCurve;
+  swapCurve.swapXy(); //no crash
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  swapCurve.addCurve( nodeLine.clone() );
+  swapCurve.swapXy();
+  QCOMPARE( swapCurve.asWkt(), QStringLiteral( "CompoundCurveZM (CircularStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
+  QgsLineString lsSwap;
+  lsSwap.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, QgsWkbTypes::PointZM ) << QgsPoint( 22, 122, 33, 34, QgsWkbTypes::PointZM ) );
+  swapCurve.addCurve( lsSwap.clone() );
+  swapCurve.swapXy();
+  QCOMPARE( swapCurve.asWkt(), QStringLiteral( "CompoundCurveZM (CircularStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(111 12 23 24, 122 22 33 34))" ) );
+
 }
 
 void TestQgsGeometry::multiPoint()
@@ -15187,6 +15236,19 @@ void TestQgsGeometry::geometryCollection()
   gcNodes.addGeometry( nodeLine.clone() );
   QVERIFY( gcNodes.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( gcNodes.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12),LineString (11 2, 11 12, 111 12))" ) );
+
+  //swapXy
+  QgsGeometryCollection swapCollect;
+  QgsLineString swapLine;
+  swapCollect.swapXy(); // no crash
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  swapCollect.addGeometry( swapLine.clone() );
+  swapCollect.swapXy();
+  QCOMPARE( swapCollect.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
+  swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 11.01, 1.99, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, QgsWkbTypes::PointZM ) );
+  swapCollect.addGeometry( swapLine.clone() );
+  swapCollect.swapXy();
+  QCOMPARE( swapCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineStringZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))" ) );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

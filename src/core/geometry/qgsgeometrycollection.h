@@ -140,6 +140,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
 
 #ifndef SIP_RUN

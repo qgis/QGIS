@@ -234,6 +234,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 

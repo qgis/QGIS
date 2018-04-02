@@ -122,6 +122,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;

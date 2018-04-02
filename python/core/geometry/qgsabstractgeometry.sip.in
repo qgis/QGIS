@@ -589,6 +589,15 @@ Drops any measure values which exist in the geometry.
 .. versionadded:: 2.14
 %End
 
+    virtual void swapXy() = 0;
+%Docstring
+Swaps the x and y coordinates from the geometry. This can be used
+to repair geometries which have accidentally had their latitude and longitude
+coordinates reversed.
+
+.. versionadded:: 3.2
+%End
+
     virtual bool convertTo( QgsWkbTypes::Type type );
 %Docstring
 Converts the geometry to a specified type.

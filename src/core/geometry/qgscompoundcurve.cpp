@@ -904,3 +904,12 @@ bool QgsCompoundCurve::dropMValue()
   return true;
 }
 
+void QgsCompoundCurve::swapXy()
+{
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  {
+    curve->swapXy();
+  }
+  clearCache();
+}
+

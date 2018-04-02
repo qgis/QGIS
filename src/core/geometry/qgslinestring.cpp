@@ -1253,6 +1253,12 @@ bool QgsLineString::dropMValue()
   return true;
 }
 
+void QgsLineString::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
+}
+
 bool QgsLineString::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )

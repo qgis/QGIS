@@ -415,6 +415,8 @@ Angle undefined. Always returns 0.0
 
     virtual bool dropMValue();
 
+    virtual void swapXy();
+
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 

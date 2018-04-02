@@ -553,6 +553,14 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool dropMValue() = 0;
 
     /**
+     * Swaps the x and y coordinates from the geometry. This can be used
+     * to repair geometries which have accidentally had their latitude and longitude
+     * coordinates reversed.
+     * \since QGIS 3.2
+     */
+    virtual void swapXy() = 0;
+
+    /**
      * Converts the geometry to a specified type.
      * \returns true if conversion was successful
      * \since QGIS 2.14
