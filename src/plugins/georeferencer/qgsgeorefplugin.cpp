@@ -72,12 +72,6 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
 //
 //////////////////////////////////////////////////////////////////////
 
-/**
- * Constructor for the plugin. The plugin is passed a pointer to the main app
- * and an interface object that provides access to exposed functions in QGIS.
- * \param theQGisApp - Pointer to the QGIS main window
- * \param theQGisInterface - Pointer to the QGIS interface object
- */
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )

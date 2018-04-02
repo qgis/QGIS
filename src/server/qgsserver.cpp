@@ -88,10 +88,6 @@ QFileInfo QgsServer::defaultAdminSLD()
   return QFileInfo( QStringLiteral( "admin.sld" ) );
 }
 
-
-/**
- * \brief QgsServer::setupNetworkAccessManager
- */
 void QgsServer::setupNetworkAccessManager()
 {
   QSettings settings;
@@ -106,10 +102,6 @@ void QgsServer::setupNetworkAccessManager()
   nam->setCache( cache );
 }
 
-/**
- * \brief QgsServer::defaultProjectFile
- * \return the default project file
- */
 QFileInfo QgsServer::defaultProjectFile()
 {
   QDir currentDir;
@@ -128,11 +120,6 @@ QFileInfo QgsServer::defaultProjectFile()
   return projectFiles.at( 0 );
 }
 
-/**
- * \brief QgsServer::printRequestParameters prints the request parameters
- * \param parameterMap
- * \param logLevel
- */
 void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, Qgis::MessageLevel logLevel )
 {
   if ( logLevel > Qgis::Info )
@@ -147,12 +134,6 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
   }
 }
 
-/**
- * \brief QgsServer::configPath
- * \param defaultConfigPath
- * \param parameters
- * \return config file path
- */
 QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QString, QString> &parameters )
 {
   QString cfPath( defaultConfigPath );
@@ -178,10 +159,6 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
   return cfPath;
 }
 
-
-/**
- * Server initialization
- */
 bool QgsServer::init()
 {
   if ( sInitialized )
@@ -284,11 +261,6 @@ void QgsServer::putenv( const QString &var, const QString &val )
   sSettings.load( var );
 }
 
-/**
- * \brief Handles the request
- * \param queryString
- * \return response headers and body
- */
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();

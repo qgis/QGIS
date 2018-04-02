@@ -81,9 +81,8 @@ class GUI_EXPORT QgsAttributeEditorContext
     }
 
     /**
-     * Sets distance area object for area/length calculations
-     * \param distanceArea map canvas
-     * \see setDistanceArea
+     * Sets distance area object, \a distanceArea, for area/length calculations
+     * \see distanceArea()
      * \since QGIS 2.2
      */
     inline void setDistanceArea( const QgsDistanceArea &distanceArea )
@@ -95,24 +94,41 @@ class GUI_EXPORT QgsAttributeEditorContext
       }
     }
 
+    /**
+     * Returns the distance area object used for area/length calculations.
+     * \see setDistanceArea()
+     * \since QGIS 2.2
+     */
     inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
     /**
-     * Sets the map canvas (e.g. to zoom to related features)
-     * \param mapCanvas map canvas
+     * Sets the associated map canvas, \a mapCanvas, (e.g. to zoom to related features).
      * \see mapCanvas()
      * \since QGIS 3.2
      */
     inline void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
+
+    /**
+     * Returns the associated map canvas (e.g. to zoom to related features).
+     * \see setMapCanvas()
+     * \since QGIS 3.2
+     */
     inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
     /**
-     * Sets the vector layer tools
+     * Sets the associated vector layer tools.
      * \param vlTools vector layer tools
      * \see vectorLayerTools()
      * \since QGIS 2.2
      */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
+    // TODO QGIS 4.0 - rename vlTools to tools
+
+    /**
+     * Returns the associated vector layer tools.
+     * \see setVectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
 
     /**
@@ -124,7 +140,21 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \since QGIS 2.6
      */
     inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+
+    /**
+     * Returns the attribute relation.
+     * \see setRelation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline const QgsRelation &relation() const { return mRelation; }
+
+    /**
+     * Returns the attribute relation mode.
+     * \see setRelation()
+     * \see relation()
+     * \since QGIS 2.6
+     */
     inline RelationMode relationMode() const { return mRelationMode; }
 
     /**

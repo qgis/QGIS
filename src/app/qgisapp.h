@@ -210,11 +210,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Open a raster or vector file; ignore other files.
-      Used to process a commandline argument, FileOpen or Drop event.
-      Set interactive to true if it is OK to ask the user for information (mostly for
-      when a vector layer has sublayers and we want to ask which sublayers to use).
-      \returns true if the file is successfully opened
-      */
+     * Used to process a commandline argument, FileOpen or Drop event.
+     * Set \a allowInteractive to true if it is OK to ask the user for information (mostly for
+     * when a vector layer has sublayers and we want to ask which sublayers to use).
+     * \returns true if the file is successfully opened
+     */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
     /**
@@ -238,9 +238,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void runScript( const QString &filePath );
 
     /**
-     * Opens a qgis project file
-      \returns false if unable to open the project
-      */
+     * Opens a QGIS project file
+     * \returns false if unable to open the project
+     */
     bool addProject( const QString &projectFile );
 
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
@@ -994,7 +994,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onSnappingConfigChanged();
 
-    //! validate a SRS
+    /**
+     * Triggers validation of the specified \a crs.
+     */
     void validateCrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGIS Sponsors
@@ -1749,7 +1751,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //void readWKB(const char *, QStringList tables);
     //! shows the paste-transformations dialog
     // void pasteTransformations();
-    //! check to see if file is dirty and if so, prompt the user th save it
+
+    /**
+     * Check to see if the current project file is dirty and if so, prompt the user to save it.
+     * \returns true if saved or discarded, false if canceled
+     */
     bool saveDirty();
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();

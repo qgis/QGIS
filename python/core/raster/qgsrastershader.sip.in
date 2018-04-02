@@ -24,17 +24,27 @@ Interface for all raster shaders.
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
 
 
-    double maximumValue();
+
+    double maximumValue() const;
 %Docstring
- Return the maximum value for the raster shader
+Returns the maximum value for the raster shader.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
 %End
 
-    double minimumValue();
+    double minimumValue() const;
 %Docstring
- Return the minimum value for the raster shader
+Returns the minimum value for the raster shader.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
 %End
 
     QgsRasterShaderFunction *rasterShaderFunction();
+
 
     bool shade( double value,
                 int *returnRedValue /Out/,
@@ -42,7 +52,15 @@ Interface for all raster shaders.
                 int *returnBlueValue /Out/,
                 int *returnAlpha /Out/ );
 %Docstring
- generates and new RGBA value based on one input value
+Generates a new RGBA value based on one input ``value``.
+
+:param value: The original value to base a new RGBA value on
+:param returnRedValue:  The red component of the new RGBA value
+:param returnGreenValue:  The green component of the new RGBA value
+:param returnBlueValue:  The blue component of the new RGBA value
+:param returnAlpha:  The alpha component of the new RGBA value
+
+:return: True if the return values are valid otherwise false
 %End
 
     bool shade( double redValue,
@@ -54,26 +72,45 @@ Interface for all raster shaders.
                 int *returnBlueValue /Out/,
                 int *returnAlpha /Out/ );
 %Docstring
- generates and new RGBA value based on original RGBA value
+Generates a new RGBA value based on an original RGBA value.
+
+:param redValue: The red component of the original value to base a new RGBA value on
+:param greenValue: The green component of the original value to base a new RGBA value on
+:param blueValue: The blue component of the original value to base a new RGBA value on
+:param alphaValue:  The alpha component of the original value to base a new RGBA value on
+:param returnRedValue:  The red component of the new RGBA value
+:param returnGreenValue:  The green component of the new RGBA value
+:param returnBlueValue:  The blue component of the new RGBA value
+:param returnAlphaValue:  The alpha component of the new RGBA value
+
+:return: True if the return values are valid otherwise false
 %End
 
     void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
 %Docstring
- A public method that allows the user to set their own shader function
+ A public method that allows the user to set their own shader ``function``.
 
 .. note::
 
-   Raster shader takes ownership of the shader function instance *
+   Raster shader takes ownership of the shader function instance
 %End
 
-    void setMaximumValue( double );
+    void setMaximumValue( double value );
 %Docstring
- Set the maximum value
+Sets the maximum ``value`` for the raster shader.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
 %End
 
-    void setMinimumValue( double );
+    void setMinimumValue( double value );
 %Docstring
- Return the minimum value
+Sets the minimum ``value`` for the raster shader.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
 %End
 
     void writeXml( QDomDocument &doc, QDomElement &parent ) const;

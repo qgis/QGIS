@@ -47,11 +47,20 @@ class CORE_EXPORT QgsRasterShader
      * Non-Static Inline methods
      *
      */
-    //! \brief Return the maximum value for the raster shader
-    double maximumValue() { return mMaximumValue; }
 
-    //! \brief Return the minimum value for the raster shader
-    double minimumValue() { return mMinimumValue; }
+    /**
+     * Returns the maximum value for the raster shader.
+     * \see setMaximumValue()
+     * \see minimumValue()
+     */
+    double maximumValue() const { return mMaximumValue; }
+
+    /**
+     * Returns the minimum value for the raster shader.
+     * \see setMinimumValue()
+     * \see maximumValue()
+     */
+    double minimumValue() const { return mMinimumValue; }
 
     QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
     const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); } SIP_SKIP
@@ -61,14 +70,35 @@ class CORE_EXPORT QgsRasterShader
      * Non-Static methods
      *
      */
-    //! \brief generates and new RGBA value based on one input value
+
+    /**
+     * Generates a new RGBA value based on one input \a value.
+     *
+     * \param value The original value to base a new RGBA value on
+     * \param returnRedValue  The red component of the new RGBA value
+     * \param returnGreenValue  The green component of the new RGBA value
+     * \param returnBlueValue  The blue component of the new RGBA value
+     * \param returnAlpha  The alpha component of the new RGBA value
+     * \return True if the return values are valid otherwise false
+    */
     bool shade( double value,
                 int *returnRedValue SIP_OUT,
                 int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT,
                 int *returnAlpha SIP_OUT );
 
-    //! \brief generates and new RGBA value based on original RGBA value
+    /**
+     * Generates a new RGBA value based on an original RGBA value.
+     * \param redValue The red component of the original value to base a new RGBA value on
+     * \param greenValue The green component of the original value to base a new RGBA value on
+     * \param blueValue The blue component of the original value to base a new RGBA value on
+     * \param alphaValue  The alpha component of the original value to base a new RGBA value on
+     * \param returnRedValue  The red component of the new RGBA value
+     * \param returnGreenValue  The green component of the new RGBA value
+     * \param returnBlueValue  The blue component of the new RGBA value
+     * \param returnAlphaValue  The alpha component of the new RGBA value
+     * \return True if the return values are valid otherwise false
+    */
     bool shade( double redValue,
                 double greenValue,
                 double blueValue,
@@ -79,15 +109,24 @@ class CORE_EXPORT QgsRasterShader
                 int *returnAlpha SIP_OUT );
 
     /**
-     * \brief A public method that allows the user to set their own shader function
-      \note Raster shader takes ownership of the shader function instance */
+     * \brief A public method that allows the user to set their own shader \a function.
+     * \note Raster shader takes ownership of the shader function instance
+    */
     void setRasterShaderFunction( QgsRasterShaderFunction *function SIP_TRANSFER );
 
-    //! \brief Set the maximum value
-    void setMaximumValue( double );
+    /**
+     * Sets the maximum \a value for the raster shader.
+     * \see setMinimumValue()
+     * \see maximumValue()
+     */
+    void setMaximumValue( double value );
 
-    //! \brief Return the minimum value
-    void setMinimumValue( double );
+    /**
+     * Sets the minimum \a value for the raster shader.
+     * \see setMaximumValue()
+     * \see minimumValue()
+     */
+    void setMinimumValue( double value );
 
     /**
      * Writes shader state to an XML element.

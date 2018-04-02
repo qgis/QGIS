@@ -584,7 +584,7 @@ void QgisApp::activeLayerChanged( QgsMapLayer *layer )
   }
 }
 
-/**
+/*
  * This function contains forced validation of CRS used in QGIS.
  * There are 3 options depending on the settings:
  * - ask for CRS using projection selecter
@@ -3008,26 +3008,26 @@ void QgisApp::setIconSizes( int size )
 
 void QgisApp::setTheme( const QString &themeName )
 {
-  /*****************************************************************
-  // Init the toolbar icons by setting the icon for each action.
-  // All toolbar/menu items must be a QAction in order for this
-  // to work.
-  //
-  // When new toolbar/menu QAction objects are added to the interface,
-  // add an entry below to set the icon
-  //
-  // PNG names must match those defined for the default theme. The
-  // default theme is installed in <prefix>/share/qgis/themes/default.
-  //
-  // New core themes can be added by creating a subdirectory under src/themes
-  // and modifying the appropriate CMakeLists.txt files. User contributed themes
-  // will be installed directly into <prefix>/share/qgis/themes/<themedir>.
-  //
-  // Themes can be selected from the preferences dialog. The dialog parses
-  // the themes directory and builds a list of themes (ie subdirectories)
-  // for the user to choose from.
-  //
+  /*
+  Init the toolbar icons by setting the icon for each action.
+  All toolbar/menu items must be a QAction in order for this
+  to work.
+
+  When new toolbar/menu QAction objects are added to the interface,
+  add an entry below to set the icon
+
+  PNG names must match those defined for the default theme. The
+  default theme is installed in <prefix>/share/qgis/themes/default.
+
+  New core themes can be added by creating a subdirectory under src/themes
+  and modifying the appropriate CMakeLists.txt files. User contributed themes
+  will be installed directly into <prefix>/share/qgis/themes/<themedir>.
+
+  Themes can be selected from the preferences dialog. The dialog parses
+  the themes directory and builds a list of themes (ie subdirectories)
+  for the user to choose from.
   */
+
   QgsApplication::setUITheme( themeName );
   //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
@@ -5511,10 +5511,6 @@ void QgisApp::enableProjectMacros()
   QgsPythonRunner::run( QStringLiteral( "qgis.utils.reloadProjectMacros()" ) );
 }
 
-/**
-  adds a saved project to qgis, usually called on startup by specifying a
-  project file on the command line
-  */
 bool QgisApp::addProject( const QString &projectFile )
 {
   MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
@@ -5944,11 +5940,6 @@ void QgisApp::runScript( const QString &filePath )
 #endif
 }
 
-
-/**
-  Open the specified project file; prompt to save previous project if necessary.
-  Used to process a commandline argument or OpenDocument AppleEvent.
-  */
 void QgisApp::openProject( const QString &fileName )
 {
   if ( checkTasksDependOnProject() )
@@ -5962,11 +5953,6 @@ void QgisApp::openProject( const QString &fileName )
   }
 }
 
-/**
-  Open a raster or vector file; ignore other files.
-  Used to process a commandline argument or OpenDocument AppleEvent.
-  \returns true if the file is successfully opened
-  */
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 {
   QFileInfo fileInfo( fileName );
@@ -10534,10 +10520,6 @@ void QgisApp::setExtent( const QgsRectangle &rect )
   mMapCanvas->setExtent( rect );
 }
 
-/**
-  Prompt and save if project has been modified.
-  \return true if saved or discarded, false if canceled
- */
 bool QgisApp::saveDirty()
 {
   QString whyDirty;
@@ -11680,7 +11662,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionCopyLayer->setEnabled( true );
   mActionPasteLayer->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) );
 
-  /***********Vector layers****************/
+  // Vector layers
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -11896,7 +11878,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLayerSubsetString->setEnabled( false );
     }
   } //end vector layer block
-  /*************Raster layers*************/
+  // Raster layers
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );

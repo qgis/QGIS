@@ -247,10 +247,18 @@ Returns result of evaluating the function.
 %End
 
     virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
+%Docstring
+Evaluates the function, first evaluating all required arguments before passing them to the
+function's func() method.
+%End
 
     bool operator==( const QgsExpressionFunction &other ) const;
 
     virtual bool handlesNull() const;
+%Docstring
+Returns true if the function handles NULL values in arguments by itself, and the default
+NULL value handling should be skipped.
+%End
 
   protected:
 

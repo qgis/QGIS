@@ -36,7 +36,7 @@
 ///////////////////////////////////////////////
 // three-value logic
 
-/// @cond
+/// @cond PRIVATE
 class QgsExpressionUtils
 {
   public:

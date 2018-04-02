@@ -250,7 +250,7 @@ v.visit( self)
     class NodeList
 {
 %Docstring
-List of nodes *
+A list of nodes.
 %End
 
 %TypeHeaderCode

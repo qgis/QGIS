@@ -234,7 +234,7 @@ void QgsPropertyAssistantWidget::updatePreview()
     i++;
   }
   // center icon and align text left by giving icons the same width
-  // \todo maybe add some space so that icons don't touch
+  // TODO maybe add some space so that icons don't touch
   for ( int i = 0; i < breaks.length(); i++ )
   {
     QPixmap img( mPreviewList.item( i )->icon().pixmap( mPreviewList.item( i )->icon().actualSize( QSize( 512, 512 ) ) ) );

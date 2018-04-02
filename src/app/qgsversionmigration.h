@@ -18,7 +18,7 @@
 
 #include "qgis_app.h"
 #include "qgserror.h"
-
+#include <memory>
 #include <QSettings>
 
 class QgsSettings;
@@ -33,13 +33,16 @@ class APP_EXPORT QgsVersionMigration
     QgsVersionMigration() = default;
     virtual ~QgsVersionMigration() = default;
 
+    QgsVersionMigration( const QgsVersionMigration &other ) = delete;
+    QgsVersionMigration &operator=( const QgsVersionMigration &other ) = delete;
+
     /**
      * Check if two version has a migration options.
      * \param fromVersion The version migrating from.
      * \param toVersion The version migrating to.
-     * \returns migration object
+     * \returns new migration object
      */
-    static QgsVersionMigration *canMigrate( int fromVersion, int toVersion );
+    static std::unique_ptr< QgsVersionMigration > canMigrate( int fromVersion, int toVersion );
 
     /**
      * Run the version migration to convert between versions.
@@ -65,9 +68,9 @@ class Qgs2To3Migration : public QgsVersionMigration
 
     QString migrationFilePath();
 
-    int mMigrationFileVersion;
+    int mMigrationFileVersion = 0;
 
-    QSettings *mOldSettings;
+    QSettings *mOldSettings = nullptr;
 
 };
 

@@ -16,6 +16,8 @@
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnode.h"
 
+///@cond PRIVATE
+
 QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =
 {
   // false  true    unknown
@@ -31,3 +33,5 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 };
 
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
+
+///@endcond

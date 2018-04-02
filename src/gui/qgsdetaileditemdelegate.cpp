@@ -351,7 +351,7 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
     if ( metrics.width( myCumulativeLine ) >= width )
     {
       //time to wrap
-      //\todo deal with long strings that have no spaces
+      //TODO deal with long strings that have no spaces
       //forcing a break at current pos...
       myList << myStringToPreviousSpace.trimmed();
       i = myPreviousSpacePos;

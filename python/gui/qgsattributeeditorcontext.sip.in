@@ -49,32 +49,43 @@ Constructor for QgsAttributeEditorContext
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
-Sets distance area object for area/length calculations
+Sets distance area object, ``distanceArea``, for area/length calculations
 
-:param distanceArea: map canvas
+.. seealso:: :py:func:`distanceArea`
+
+.. versionadded:: 2.2
+%End
+
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+Returns the distance area object used for area/length calculations.
 
 .. seealso:: :py:func:`setDistanceArea`
 
 .. versionadded:: 2.2
 %End
 
-    const QgsDistanceArea &distanceArea() const;
-
     void setMapCanvas( QgsMapCanvas *mapCanvas );
 %Docstring
-Sets the map canvas (e.g. to zoom to related features)
-
-:param mapCanvas: map canvas
+Sets the associated map canvas, ``mapCanvas``, (e.g. to zoom to related features).
 
 .. seealso:: :py:func:`mapCanvas`
 
 .. versionadded:: 3.2
 %End
+
     QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the associated map canvas (e.g. to zoom to related features).
+
+.. seealso:: :py:func:`setMapCanvas`
+
+.. versionadded:: 3.2
+%End
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
 %Docstring
-Sets the vector layer tools
+Sets the associated vector layer tools.
 
 :param vlTools: vector layer tools
 
@@ -82,7 +93,15 @@ Sets the vector layer tools
 
 .. versionadded:: 2.2
 %End
+
     const QgsVectorLayerTools *vectorLayerTools() const;
+%Docstring
+Returns the associated vector layer tools.
+
+.. seealso:: :py:func:`setVectorLayerTools`
+
+.. versionadded:: 2.2
+%End
 
     void setRelation( const QgsRelation &relation, RelationMode mode );
 %Docstring
@@ -97,8 +116,28 @@ Set attribute relation and mode
 
 .. versionadded:: 2.6
 %End
+
     const QgsRelation &relation() const;
+%Docstring
+Returns the attribute relation.
+
+.. seealso:: :py:func:`setRelation`
+
+.. seealso:: :py:func:`relationMode`
+
+.. versionadded:: 2.6
+%End
+
     RelationMode relationMode() const;
+%Docstring
+Returns the attribute relation mode.
+
+.. seealso:: :py:func:`setRelation`
+
+.. seealso:: :py:func:`relation`
+
+.. versionadded:: 2.6
+%End
 
     FormMode formMode() const;
 %Docstring
