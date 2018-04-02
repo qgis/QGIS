@@ -100,7 +100,6 @@ RUN  apt-get update \
 WORKDIR /root
 RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && tar xzf tip.tar.gz \
- && mv $(ls sip-*) sip-419
  && mkdir /root/sip419
  && mv  $(find -type d -iname 'sip-*')/* sip419
 WORKDIR /root/sip419
