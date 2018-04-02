@@ -50,7 +50,7 @@ fi
 
 docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
-  docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
+  docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 else
   docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 fi
