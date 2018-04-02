@@ -63,7 +63,7 @@ bool QgsMultiSurface::fromWkt( const QString &wkt )
                             QStringLiteral( "Polygon" ) );
 }
 
-QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
@@ -86,7 +86,7 @@ QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QSt
   return elemMultiPolygon;
 }
 
-QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
 

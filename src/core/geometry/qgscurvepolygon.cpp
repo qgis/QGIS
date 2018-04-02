@@ -339,7 +339,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
@@ -366,7 +366,7 @@ QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QSt
   return elemPolygon;
 }
 
-QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
 

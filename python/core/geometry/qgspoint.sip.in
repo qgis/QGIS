@@ -349,9 +349,9 @@ Example:
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     virtual QString asJson( int precision = 17 ) const;
 

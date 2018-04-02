@@ -63,7 +63,7 @@ bool QgsMultiCurve::fromWkt( const QString &wkt )
                             QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const  AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
@@ -86,7 +86,7 @@ QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QStri
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
 

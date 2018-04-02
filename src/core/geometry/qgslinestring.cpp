@@ -335,7 +335,7 @@ QString QgsLineString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -350,7 +350,7 @@ QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
