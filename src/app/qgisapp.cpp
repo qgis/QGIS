@@ -9524,6 +9524,7 @@ void QgisApp::setLayerCrs()
     }
   }
 
+  markDirty();
   refreshMapCanvas();
 }
 
