@@ -1124,3 +1124,9 @@ bool QgsCircularString::dropMValue()
   mM.clear();
   return true;
 }
+
+void QgsCircularString::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
+}

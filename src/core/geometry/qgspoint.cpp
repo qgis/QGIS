@@ -553,6 +553,12 @@ bool QgsPoint::dropMValue()
   return true;
 }
 
+void QgsPoint::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
+}
+
 bool QgsPoint::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )

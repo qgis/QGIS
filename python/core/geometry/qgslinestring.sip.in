@@ -286,6 +286,8 @@ of the curve.
 
     virtual bool dropMValue();
 
+    virtual void swapXy();
+
 
     virtual bool convertTo( QgsWkbTypes::Type type );
 

@@ -94,6 +94,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 #ifndef SIP_RUN

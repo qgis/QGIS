@@ -830,6 +830,16 @@ bool QgsGeometryCollection::dropMValue()
   return true;
 }
 
+void QgsGeometryCollection::swapXy()
+{
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( geom )
+      geom->swapXy();
+  }
+  clearCache();
+}
+
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
   std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );

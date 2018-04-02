@@ -195,6 +195,8 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual bool dropMValue();
 
+    virtual void swapXy();
+
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 

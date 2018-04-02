@@ -1158,6 +1158,17 @@ bool QgsCurvePolygon::dropMValue()
   return true;
 }
 
+void QgsCurvePolygon::swapXy()
+{
+  if ( mExteriorRing )
+    mExteriorRing->swapXy();
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    curve->swapXy();
+  }
+  clearCache();
+}
+
 QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
 {
   return clone();

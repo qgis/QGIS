@@ -122,6 +122,8 @@ Sets the circular string's points
 
     virtual bool dropMValue();
 
+    virtual void swapXy();
+
     virtual double xAt( int index ) const;
 
     virtual double yAt( int index ) const;

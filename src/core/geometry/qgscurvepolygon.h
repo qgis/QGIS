@@ -151,6 +151,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 #ifndef SIP_RUN

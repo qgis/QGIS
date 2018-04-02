@@ -154,6 +154,8 @@ Appends first point if not already closed.
 
     virtual bool dropMValue();
 
+    virtual void swapXy();
+
 
     virtual double xAt( int index ) const;
 
