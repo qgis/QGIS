@@ -87,7 +87,6 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-    pyqt5 \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
@@ -98,6 +97,12 @@ RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && mv  $(find -type d -iname 'sip-*')/* sip419
 WORKDIR /root/sip419
 RUN python3 build.py prepare && python3 configure.py && make && make install
+
+WORKDIR /root
+RUN curl -s -S -O https://svwh.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.9.2/PyQt5_gpl-5.9.2.tar.gz \
+ && tar xzf PyQt5_gpl-5.9.2.tar.gz
+WORKDIR /root/PyQt5_gpl-5.9.2
+RUN python3 configure.py --qsci-api --enable svg sql && make && make install
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
