@@ -51,9 +51,6 @@ RUN  apt-get update \
     pkg-config \
     poppler-utils \
     postgresql-client \
-    pyqt5-dev \
-    pyqt5-dev-tools \
-    pyqt5.qsci-dev \
     python3-all-dev \
     python3-dev \
     python3-future \
@@ -62,10 +59,6 @@ RUN  apt-get update \
     python3-nose2 \
     python3-pip \
     python3-psycopg2 \
-    python3-pyqt5 \
-    python3-pyqt5.qsci \
-    python3-pyqt5.qtsql \
-    python3-pyqt5.qtsvg \
     python3-termcolor \
     python3-yaml \
     qt3d5-dev \
@@ -94,6 +87,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
+    pyqt5 \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
