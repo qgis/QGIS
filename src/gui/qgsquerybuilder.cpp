@@ -73,6 +73,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
   txtSQL->setText( mOrigSubsetString );
 
+  mFilterLineEdit->setShowSearchIcon( true );
   mFilterLineEdit->setPlaceholderText( tr( "Search" ) );
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsQueryBuilder::onTextChanged );
 
