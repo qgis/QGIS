@@ -446,13 +446,15 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
       return;
     }
 
+    bool ok = true;
+
     QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
       QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path ), tr( "SVG" ) );
       mRemoteContentCache.insert( path, new QByteArray( mMissingSvg ) );
-      return;
+      ok = false;
     }
 
     // we accept both real SVG mime types AND plain text types - because some sites
@@ -463,11 +465,14 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     {
       QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
       mRemoteContentCache.insert( path, new QByteArray( mMissingSvg ) );
-      return;
+      ok = false;
     }
 
-    // read the image data
-    mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+    if ( ok )
+    {
+      // read the image data
+      mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+    }
     QMetaObject::invokeMethod( const_cast< QgsSvgCache * >( this ), "onRemoteSvgFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
   } );
 
