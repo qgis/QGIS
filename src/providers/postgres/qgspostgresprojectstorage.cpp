@@ -220,6 +220,69 @@ bool QgsPostgresProjectStorage::readProjectMetadata( const QString &uri, QgsProj
 }
 
 
+#ifdef HAVE_GUI
+
+#include "qgspostgresprojectstoragedialog.h"
+
+QString QgsPostgresProjectStorage::visibleName()
+{
+  return QObject::tr( "PostgreSQL" );
+}
+
+QString QgsPostgresProjectStorage::showLoadGui()
+{
+  QgsPostgresProjectStorageDialog dlg( false );
+  if ( !dlg.exec() )
+    return QString();
+
+  QgsPostgresProjectUri postUri;
+  postUri.connInfo = QgsPostgresConn::connUri( dlg.connectionName() );
+  postUri.schemaName = dlg.schemaName();
+  postUri.projectName = dlg.projectName();
+  return makeUri( postUri );
+}
+
+QString QgsPostgresProjectStorage::showSaveGui()
+{
+  QgsPostgresProjectStorageDialog dlg( true );
+  if ( !dlg.exec() )
+    return QString();
+
+  QgsPostgresProjectUri postUri;
+  postUri.connInfo = QgsPostgresConn::connUri( dlg.connectionName() );
+  postUri.schemaName = dlg.schemaName();
+  postUri.projectName = dlg.projectName();
+  return makeUri( postUri );
+}
+
+#endif
+
+
+QString QgsPostgresProjectStorage::makeUri( const QgsPostgresProjectUri &postUri )
+{
+  QUrl u;
+  QUrlQuery urlQuery;
+
+  u.setScheme( "postgresql" );
+  u.setHost( postUri.connInfo.host() );
+  if ( !postUri.connInfo.port().isEmpty() )
+    u.setPort( postUri.connInfo.port().toInt() );
+  u.setUserName( postUri.connInfo.username() );
+  u.setPassword( postUri.connInfo.password() );
+  // TODO: sslmode, authcfg, service
+
+  urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
+
+  urlQuery.addQueryItem( "schema", postUri.schemaName );
+  if ( !postUri.projectName.isEmpty() )
+    urlQuery.addQueryItem( "project", postUri.projectName );
+
+  u.setQuery( urlQuery );
+
+  return QString::fromUtf8( u.toEncoded() );
+}
+
+
 QgsPostgresProjectUri QgsPostgresProjectStorage::parseUri( const QString &uri )
 {
   QUrl u = QUrl::fromEncoded( uri.toUtf8() );

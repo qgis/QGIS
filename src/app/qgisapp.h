@@ -1880,6 +1880,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     int dockedToolbarIconSize( int standardToolbarIconSize ) const;
 
+    //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
+    void populateProjectStorageMenu( QMenu *menu, bool saving );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------

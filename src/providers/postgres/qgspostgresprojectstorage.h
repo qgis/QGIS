@@ -1,6 +1,7 @@
 #ifndef QGSPOSTGRESPROJECTSTORAGE_H
 #define QGSPOSTGRESPROJECTSTORAGE_H
 
+#include "qgsconfig.h"
 #include "qgsprojectstorage.h"
 
 #include "qgsdatasourceuri.h"
@@ -12,7 +13,6 @@ typedef struct
 
   QgsDataSourceUri connInfo;  // using only the bits about connection info (server, port, username, password, service, ssl mode)
 
-  QString dbName;
   QString schemaName;
   QString projectName;
 
@@ -37,7 +37,14 @@ class QgsPostgresProjectStorage : public QgsProjectStorage
 
     virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
 
-  private:
+#ifdef HAVE_GUI
+    // GUI support
+    virtual QString visibleName() override;
+    virtual QString showLoadGui() override;
+    virtual QString showSaveGui() override;
+#endif
+
+    static QString makeUri( const QgsPostgresProjectUri &postUri );
     static QgsPostgresProjectUri parseUri( const QString &uri );
 };
 

@@ -30,10 +30,12 @@ IF (WITH_GUI)
   SET(PG_SRCS ${PG_SRCS}
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
+    qgspostgresprojectstoragedialog.cpp
   )
   SET(PG_MOC_HDRS ${PG_MOC_HDRS}
     qgspgnewconnection.h
     qgspgsourceselect.h
+    qgspostgresprojectstoragedialog.h
   )
 ENDIF ()
 
