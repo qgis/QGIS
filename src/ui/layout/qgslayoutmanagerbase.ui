@@ -35,7 +35,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Duplicate</string>
+        <string>&amp;Duplicate…</string>
        </property>
       </widget>
      </item>
@@ -48,7 +48,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Re&amp;name</string>
+        <string>Re&amp;name…</string>
        </property>
       </widget>
      </item>
@@ -61,7 +61,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Remove</string>
+        <string>&amp;Remove…</string>
        </property>
       </widget>
      </item>
@@ -117,7 +117,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Create</string>
+         <string>Create…</string>
         </property>
        </widget>
       </item>
