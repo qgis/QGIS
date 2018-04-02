@@ -90,6 +90,17 @@ class TestQgsLayerTreeView(unittest.TestCase):
         show_in_overview.trigger()
         self.assertEqual(view.currentNode().customProperty('overview', 0), False)
 
+    def testMoveToTopAction(self):
+        """Test move to top action"""
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer, self.layer2, self.layer3])
+        view.setCurrentLayer(self.layer3)
+        movetotop = actions.actionMoveToTop()
+        movetotop.trigger()
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer3, self.layer, self.layer2])
+
 
 if __name__ == '__main__':
     unittest.main()
