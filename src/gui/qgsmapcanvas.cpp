@@ -893,7 +893,6 @@ void QgsMapCanvas::zoomToFullExtent()
 } // zoomToFullExtent
 
 
-
 void QgsMapCanvas::zoomToPreviousExtent()
 {
   if ( mLastExtentIndex > 0 )
@@ -2281,7 +2280,6 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
   {
     startPreviewJob( number );
-  }
-                                   );
+  } );
   mPreviewTimer.start();
 }

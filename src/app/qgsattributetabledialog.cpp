@@ -149,6 +149,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   QgsFeatureRequest r;
   bool needsGeom = false;

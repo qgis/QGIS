@@ -25,6 +25,8 @@
 #include "qgis_gui.h"
 #include "qgsproject.h"
 
+class QgsMapCanvas;
+
 /**
  * \ingroup gui
  * This class contains context information for attribute editor widgets.
@@ -59,6 +61,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
       , mFormMode( formMode )
     {
@@ -68,6 +71,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode )
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
       , mRelationMode( relationMode )
@@ -86,6 +90,9 @@ class GUI_EXPORT QgsAttributeEditorContext
     }
 
     inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
+
+    inline void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
+    inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
     inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
@@ -130,6 +137,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;

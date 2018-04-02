@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAttributeEditorContext
 {
 %Docstring
@@ -49,6 +50,9 @@ Constructor for QgsAttributeEditorContext
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 
     const QgsDistanceArea &distanceArea() const;
+
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
+    QgsMapCanvas *mapCanvas() const;
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
     const QgsVectorLayerTools *vectorLayerTools() const;
