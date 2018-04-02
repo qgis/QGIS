@@ -40,7 +40,7 @@ from processing.script.ScriptEditorDialog import ScriptEditorDialog
 class AddScriptFromTemplateAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate("AddScriptFromTemplate", "Load Script From Template...")
+        self.name = QCoreApplication.translate("AddScriptFromTemplate", "Create New Script from Template…")
         self.group = self.tr("Tools")
 
     def execute(self):
