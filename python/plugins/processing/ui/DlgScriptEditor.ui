@@ -124,10 +124,10 @@
   </widget>
   <action name="actionOpenScript">
    <property name="text">
-    <string>Open script...</string>
+    <string>Open Script…</string>
    </property>
    <property name="toolTip">
-    <string>Open script</string>
+    <string>Open Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -135,10 +135,10 @@
   </action>
   <action name="actionSaveScript">
    <property name="text">
-    <string>Save script...</string>
+    <string>Save Script…</string>
    </property>
    <property name="toolTip">
-    <string>Save script...</string>
+    <string>Save Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -146,10 +146,10 @@
   </action>
   <action name="actionSaveScriptAs">
    <property name="text">
-    <string>Save script as...</string>
+    <string>Save Script as…</string>
    </property>
    <property name="toolTip">
-    <string>Save script as...</string>
+    <string>Save Script as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -157,10 +157,10 @@
   </action>
   <action name="actionRunScript">
    <property name="text">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="toolTip">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -223,18 +223,18 @@
   </action>
   <action name="actionIncreaseFontSize">
    <property name="text">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
   </action>
   <action name="actionDecreaseFontSize">
    <property name="text">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
    </property>
   </action>
   <action name="actionFindReplace">
@@ -242,7 +242,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Find &amp; replace</string>
+    <string>Find &amp;&amp; &amp;Replace</string>
    </property>
   </action>
  </widget>
