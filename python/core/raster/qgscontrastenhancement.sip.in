@@ -95,7 +95,7 @@ can elect to not generate the lookup tale. By default it will be generated.
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function /Transfer/ );
 %Docstring
 Allows the user to set their own custom contrast enhancement ``function``. Ownership of
-``function`` is transfered.
+``function`` is transferred.
 %End
 
     void setMaximumValue( double value, bool generateTable = true );

@@ -127,7 +127,7 @@ class CORE_EXPORT QgsContrastEnhancement
 
     /**
      * Allows the user to set their own custom contrast enhancement \a function. Ownership of
-     * \a function is transfered.
+     * \a function is transferred.
     */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function SIP_TRANSFER );
 
