@@ -83,6 +83,9 @@ class ModelerParametersDialog(QDialog):
         settings = QgsSettings()
         self.restoreGeometry(settings.value("/Processing/modelParametersDialogGeometry", QByteArray()))
 
+    def algorithm(self):
+        return self._alg
+
     def closeEvent(self, event):
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDialogGeometry", self.saveGeometry())
