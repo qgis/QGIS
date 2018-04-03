@@ -105,6 +105,10 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   if ( clipGeoms.length() > 1 )
   {
     combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms );
+    if ( combinedClipGeom.isEmpty() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not create the combined clip geometry: %1" ).arg( combinedClipGeom.lastError() ) );
+    }
     singleClipFeature = false;
   }
   else
