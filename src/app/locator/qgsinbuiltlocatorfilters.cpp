@@ -36,13 +36,13 @@ QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
   return new QgsLayerTreeLocatorFilter();
 }
 
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && stringMatches( layer->layer()->name(), string ) )
+    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layer->layer()->name();
@@ -74,12 +74,12 @@ QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
   return new QgsLayoutLocatorFilter();
 }
 
-void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && stringMatches( layout->name(), string ) )
+    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layout->name();
