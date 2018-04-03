@@ -30,7 +30,8 @@ Solve shortest path problem using Dijkstra algorithm
 :param source: source graph
 :param startVertexIdx: index of the start vertex
 :param criterionNum: index of the optimization strategy
-:param resultTree: array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
+:param resultTree: array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1.
+Note that the startVertexIdx will also have a value of -1 and may need special handling by callers.
 :param resultCost: array of the paths costs
 %End
 
