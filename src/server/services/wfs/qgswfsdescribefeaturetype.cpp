@@ -263,7 +263,7 @@ namespace QgsWfs
 
         //xsd:element
         QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
-        attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ) );
+        attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
         QVariant::Type attributeType = fields.at( idx ).type();
         if ( attributeType == QVariant::Int )
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
