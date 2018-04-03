@@ -2709,13 +2709,6 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
   }
 }
 
-inline QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double offset )
-{
-  double deltaX = p2.x() - p1.x();
-  double deltaY = p2.y() - p1.y();
-  return QgsPoint( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
-}
-
 std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const unsigned int iterations,
     const double offset, double squareDistThreshold, double maxAngleRads,
     bool isRing )
@@ -2771,9 +2764,9 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         if ( !isRing )
         {
           if ( !skipFirst )
-            outputLine << ( i == 0 ? result->pointN( i ) : interpolatePointOnLine( p1, p2, offset ) );
+            outputLine << ( i == 0 ? result->pointN( i ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset ) );
           if ( !skipLast )
-            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset ) );
           else
             outputLine << p2;
         }
@@ -2781,11 +2774,11 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         {
           // ring
           if ( !skipFirst )
-            outputLine << interpolatePointOnLine( p1, p2, offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset );
           else if ( i == 0 )
             outputLine << p1;
           if ( !skipLast )
-            outputLine << interpolatePointOnLine( p1, p2, 1.0 - offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset );
           else
             outputLine << p2;
         }
