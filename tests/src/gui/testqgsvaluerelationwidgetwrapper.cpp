@@ -23,6 +23,7 @@
 #include <qgsvectorlayer.h>
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
+#include <QTableWidget>
 #include "qgsgui.h"
 
 class TestQgsValueRelationWidgetWrapper : public QObject

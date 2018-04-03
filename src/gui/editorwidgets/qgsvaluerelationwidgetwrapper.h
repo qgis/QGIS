@@ -18,12 +18,11 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
-
-#include <QComboBox>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QLineEdit>
 #include "qgis_gui.h"
+
+class QTableWidget;
+class QComboBox;
+class QLineEdit;
 
 SIP_NO_FILE
 

@@ -23,8 +23,11 @@
 #include "qgsfilterlineedit.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvaluerelationfieldformatter.h"
-#include "qgslogger.h"
 
+#include <QHeaderView>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
 
