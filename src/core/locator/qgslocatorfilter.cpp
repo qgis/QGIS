@@ -34,7 +34,7 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
-  return candidate.contains( search, Qt::CaseInsensitive );
+  return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );
 }
 
 bool QgsLocatorFilter::enabled() const

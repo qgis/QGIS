@@ -81,8 +81,9 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   filter->setUseWithoutPrefix( byDefault );
 }
 
-void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c, QgsFeedback *feedback )
 {
+  QgsLocatorContext context( c );
   // ideally this should not be required, as well behaved callers
   // will NOT fire up a new fetchResults call while an existing one is
   // operating/waiting to be canceled...
@@ -111,6 +112,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
       activeFilters << mPrefixedFilters.value( prefix );
       searchString = searchString.mid( prefix.length() + 1 );
     }
+    context.usingPrefix = !activeFilters.empty();
   }
   if ( activeFilters.isEmpty() )
   {
