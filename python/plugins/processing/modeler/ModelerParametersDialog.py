@@ -70,6 +70,8 @@ class ModelerParametersDialog(QDialog):
     def __init__(self, alg, model, algName=None):
         QDialog.__init__(self)
         self.setModal(True)
+        #call canExecute which will do full parsing of algorithm by calling defineCharacteristicsFromFile()
+        alg.canExecute()
         # The algorithm to define in this dialog. It is an instance of QgsProcessingModelAlgorithm
         self._alg = alg
         # The model this algorithm is going to be added to
