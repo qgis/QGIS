@@ -106,6 +106,14 @@ RUN apt-get install -y qt5-qmake \
  && python3 configure.py --confirm-license --qmake /usr/lib/x86_64-linux-gnu/qt5/bin/qmake --qsci-api --enable QtSql --enable QtSvg && make && make install
 
 WORKDIR /root
+RUN curl -s -S -O https://cfhcable.dl.sourceforge.net/project/pyqt/QScintilla2/QScintilla-2.10.3/QScintilla_gpl-2.10.3.tar.gz
+ && tar xzf QScintilla_gpl-2.10.3.tar.gz
+WORKDIR /root/QScintilla_gpl-2.10.3/Python
+RUN python3 configure.py --pyqt=PyQt5
+ && make
+ && make install
+
+WORKDIR /root
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
