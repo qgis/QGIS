@@ -4,13 +4,7 @@ PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composermapgridtest
 qgis_composerutils
-ProcessingGrass7AlgorithmsImageryTest
-ProcessingGrass7AlgorithmsRasterTest
-ProcessingGrass7AlgorithmsVectorTest
 PyQgsAppStartup
-
-# temporary during processing refactoring
-ProcessingParametersTest
 
 # code layout tests are run on separate build
 qgis_spelling
