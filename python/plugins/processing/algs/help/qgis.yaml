@@ -229,6 +229,15 @@ qgis:importintopostgis: >
 
   Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
 
+qgis:insertfeaturestolayer: >
+  This algorithm copies features from a vector layer and pastes them into another already existent vector layer.
+
+  Input layer's attributes that match the target layer's attribute names are inserted, whereas those that don't match will be lost.
+
+  Therefore, a natural prior step for this algorithm is the Refactor Fields algorithm, to configure how well attributes will match.
+
+  Regarding geometries, the algorithm attempts to convert to target geometry types. For instance, input polygons may be converted to lines if target layer has line geometries.
+
 qgis:intersection: >
   This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
 

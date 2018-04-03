@@ -4944,3 +4944,99 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_07.gml
         type: vector
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (table-table)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_table
+        type: table
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_table
+        type: table
+        in_place: true
+    results:
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_table
+        type: table
+        in_place_result: true
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (simple-simple)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_simple_polygons
+        type: vector
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_simple_polygons
+        type: vector
+        in_place: true
+    results:
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_simple_polygons
+        type: vector
+        in_place_result: true
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (multi-multi)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_multi_polygons
+        type: vector
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_multi_polygons
+        type: vector
+        in_place: true
+    results:
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_multi_polygons
+        type: vector
+        in_place_result: true
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (simple-multi)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_simple_polygons
+        type: vector
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_multi_from_simple_polygons
+        type: vector
+        in_place: true
+    results:
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_multi_from_simple_polygons
+        type: vector
+        in_place_result: true
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (simple polygon-simple line)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_simple_polygons
+        type: vector
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_simple_lines
+        type: vector
+        in_place: true
+    results: # Polygon with inner rings is not copied
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_simple_lines_from_polygon
+        type: vector
+        in_place_result: true
+
+  - algorithm: qgis:insertfeaturestolayer
+    name: Insert features to layer (multi polygon-simple polygon)
+    params:
+      INPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=source_multi_polygons
+        type: vector
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=target_simple_polygons
+        type: vector
+        in_place: true
+    results: # Polygon with more than one part are not copied
+      OUTPUT:
+        name: custom/insert_features_to_layer_test.gpkg|layername=expected_simple_polygons_from_multi_polygons
+        type: vector
+        in_place_result: true
