@@ -435,6 +435,53 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from (\a x1, \a y1) to (\a x2, \a y2).
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a x1, \a y1) and 1 represents
+     * the end of the line (\a x2, \a y2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLineByValue()
+     */
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
+
+    /**
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from \a p1 to \a p2.
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a p1) and 1 represents
+     * the end of the line (\a p2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * Any Z or M values present in the input points will also be interpolated
+     * and present in the returned point.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLineByValue()
+     */
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
+
+    /**
+     * Interpolates the position of a point along the line from (\a x1, \a y1)
+     * to (\a x2, \a y2).
+     *
+     * The position is interpolated using a supplied target \a value and the value
+     * at the start of the line (\a v1) and end of the line (\a v2). The returned
+     * point will be linearly interpolated to match position corresponding to
+     * the target \a value.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLine()
+     */
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
+
+    /**
      * Return the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.

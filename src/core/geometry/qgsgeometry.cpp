@@ -2709,16 +2709,6 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
   }
 }
 
-inline QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double offset )
-{
-  const double _offset = 1 - offset;
-  return QgsPoint( p1.wkbType(),
-                   p1.x() * _offset + p2.x() * offset,
-                   p1.y() * _offset + p2.y() * offset,
-                   p1.is3D() ? p1.z() * _offset + p2.z() * offset : std::numeric_limits<double>::quiet_NaN(),
-                   p1.isMeasure() ? p1.m() * _offset + p2.m() * offset : std::numeric_limits<double>::quiet_NaN() );
-}
-
 std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const unsigned int iterations,
     const double offset, double squareDistThreshold, double maxAngleRads,
     bool isRing )
@@ -2774,9 +2764,9 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         if ( !isRing )
         {
           if ( !skipFirst )
-            outputLine << ( i == 0 ? result->pointN( i ) : interpolatePointOnLine( p1, p2, offset ) );
+            outputLine << ( i == 0 ? result->pointN( i ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset ) );
           if ( !skipLast )
-            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset ) );
           else
             outputLine << p2;
         }
@@ -2784,11 +2774,11 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         {
           // ring
           if ( !skipFirst )
-            outputLine << interpolatePointOnLine( p1, p2, offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset );
           else if ( i == 0 )
             outputLine << p1;
           if ( !skipLast )
-            outputLine << interpolatePointOnLine( p1, p2, 1.0 - offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset );
           else
             outputLine << p2;
         }
