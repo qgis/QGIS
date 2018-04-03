@@ -1044,6 +1044,32 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
   return QgsPoint( pType, x, y, z, m );
 }
 
+QgsPoint QgsGeometryUtils::interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double fraction )
+{
+  const double _fraction = 1 - fraction;
+  return QgsPoint( p1.wkbType(),
+                   p1.x() * _fraction + p2.x() * fraction,
+                   p1.y() * _fraction + p2.y() * fraction,
+                   p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
+                   p1.isMeasure() ? p1.m() * _fraction + p2.m() * fraction : std::numeric_limits<double>::quiet_NaN() );
+}
+
+QgsPointXY QgsGeometryUtils::interpolatePointOnLine( const double x1, const double y1, const double x2, const double y2, const double fraction )
+{
+  const double deltaX = ( x2 - x1 ) * fraction;
+  const double deltaY = ( y2 - y1 ) * fraction;
+  return QgsPointXY( x1 + deltaX, y1 + deltaY );
+}
+
+QgsPointXY QgsGeometryUtils::interpolatePointOnLineByValue( const double x1, const double y1, const double v1, const double x2, const double y2, const double v2, const double value )
+{
+  if ( qgsDoubleNear( v1, v2 ) )
+    return QgsPointXY( x1, y1 );
+
+  const double fraction = ( value - v1 ) / ( v2 - v1 );
+  return interpolatePointOnLine( x1, y1, x2, y2, fraction );
+}
+
 double QgsGeometryUtils::gradient( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   double delta_x = pt2.x() - pt1.x();
