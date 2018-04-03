@@ -131,7 +131,7 @@ bool QgsExpressionFunction::handlesNull() const
 }
 
 // doxygen doesn't like this constructor for some reason (maybe the function arguments?)
-///@ cond PRIVATE
+///@cond PRIVATE
 QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname, const QgsExpressionFunction::ParameterList &params,
     FcnEval fcn,
     const QString &group,
