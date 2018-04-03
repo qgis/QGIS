@@ -3477,7 +3477,7 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode lines
     params:
       INPUT:
@@ -3491,7 +3491,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode multilines
     params:
       INPUT:
@@ -3504,6 +3504,17 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:explodelines
+    name: Explode compound curves
+    params:
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings_with_line
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_compound_curve.shp
+        type: vector
 
   - algorithm: qgis:findprojection
     name: Find projection
