@@ -260,6 +260,12 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(m.data(m.index(2, 0)), 'a1')
         self.assertEqual(m.data(m.index(3, 0)), 'a2')
 
+    def testStringMatches(self):
+        self.assertFalse(QgsLocatorFilter.stringMatches('xxx', 'yyyy'))
+        self.assertTrue(QgsLocatorFilter.stringMatches('axxxy', 'xxx'))
+        self.assertTrue(QgsLocatorFilter.stringMatches('aXXXXy', 'xxx'))
+        self.assertFalse(QgsLocatorFilter.stringMatches('aXXXXy', ''))
+
 
 if __name__ == '__main__':
     unittest.main()
