@@ -322,8 +322,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relationId )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
@@ -333,8 +331,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
@@ -346,8 +342,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, relationId, parent )
       , mRelationId( relationId )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
@@ -360,8 +354,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       : QgsAttributeEditorElement( AeTypeRelation, relation.id(), parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
 
@@ -416,8 +408,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
-    bool mShowLinkButton;
-    bool mShowUnlinkButton;
+    bool mShowLinkButton = true;
+    bool mShowUnlinkButton = true;
 };
 
 
