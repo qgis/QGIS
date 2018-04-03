@@ -24,6 +24,7 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxf
     : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
     , mPaintDevice( dxfDevice )
     , mDxf( dxf )
+    , mOpacity( 1.0 )
 {
 }
 
@@ -64,6 +65,11 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
 
   if ( state.state() & QPaintEngine::DirtyBrush )
     mBrush = state.brush();
+
+  if ( state.state() & QPaintEngine::DirtyOpacity )
+  {
+    mOpacity = state.opacity();
+  }
 }
 
 void QgsDxfPaintEngine::setRing( QgsPointSequenceV2 &polyline, const QPointF *points, int pointCount )
@@ -86,12 +92,12 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   if ( mode == QPaintEngine::PolylineMode )
   {
     if ( mPen.style() != Qt::NoPen && mPen.brush().style() != Qt::NoBrush )
-      mDxf->writePolyline( polygon.at( 0 ), mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+      mDxf->writePolyline( polygon.at( 0 ), mLayer, "CONTINUOUS", penColor(), currentWidth() );
   }
   else
   {
     if ( mBrush.style() != Qt::NoBrush )
-      mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
+      mDxf->writePolygon( polygon, mLayer, "SOLID", brushColor() );
   }
 }
 
@@ -122,7 +128,7 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
   endPolygon();
 
   if ( !mPolygon.isEmpty() && mBrush.style() != Qt::NoBrush )
-    mDxf->writePolygon( mPolygon, mLayer, "SOLID", mBrush.color() );
+    mDxf->writePolygon( mPolygon, mLayer, "SOLID", brushColor() );
 
   mPolygon.clear();
 }
@@ -198,7 +204,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     mDxf->writeLine( toDxfCoordinates( lines[i].p1() ),
                      toDxfCoordinates( lines[i].p2() ),
-                     mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+                     mLayer, "CONTINUOUS", penColor(), currentWidth() );
   }
 }
 
@@ -290,4 +296,26 @@ int QgsDxfPaintEngine::faculty( int n )
     result *= i;
 
   return result;
+}
+
+QColor QgsDxfPaintEngine::penColor() const
+{
+  if ( qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    return mPen.color();
+  }
+  QColor c = mPen.color();
+  c.setAlphaF( c.alphaF() * mOpacity );
+  return c;
+}
+
+QColor QgsDxfPaintEngine::brushColor() const
+{
+  if ( qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    return mBrush.color();
+  }
+  QColor c = mBrush.color();
+  c.setAlphaF( c.alphaF() * mOpacity );
+  return c;
 }
