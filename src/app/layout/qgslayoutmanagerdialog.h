@@ -99,10 +99,6 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
-    QPushButton *mShowButton = nullptr;
-    QPushButton *mRemoveButton = nullptr;
-    QPushButton *mRenameButton = nullptr;
-    QPushButton *mDuplicateButton = nullptr;
     QPushButton *mCreateReportButton = nullptr;
     QgsLayoutManagerModel *mModel = nullptr;
     QgsLayoutManagerProxyModel *mProxyModel = nullptr;
