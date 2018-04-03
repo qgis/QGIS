@@ -75,10 +75,10 @@ class CORE_EXPORT QgsRasterShader
      * Generates a new RGBA value based on one input \a value.
      *
      * \param value The original value to base a new RGBA value on
-     * \param returnRedValue  The red component of the new RGBA value
-     * \param returnGreenValue  The green component of the new RGBA value
-     * \param returnBlueValue  The blue component of the new RGBA value
-     * \param returnAlpha  The alpha component of the new RGBA value
+     * \param returnRedValue The red component of the new RGBA value
+     * \param returnGreenValue The green component of the new RGBA value
+     * \param returnBlueValue The blue component of the new RGBA value
+     * \param returnAlpha The alpha component of the new RGBA value
      * \return True if the return values are valid otherwise false
     */
     bool shade( double value,
@@ -92,11 +92,11 @@ class CORE_EXPORT QgsRasterShader
      * \param redValue The red component of the original value to base a new RGBA value on
      * \param greenValue The green component of the original value to base a new RGBA value on
      * \param blueValue The blue component of the original value to base a new RGBA value on
-     * \param alphaValue  The alpha component of the original value to base a new RGBA value on
-     * \param returnRedValue  The red component of the new RGBA value
-     * \param returnGreenValue  The green component of the new RGBA value
-     * \param returnBlueValue  The blue component of the new RGBA value
-     * \param returnAlphaValue  The alpha component of the new RGBA value
+     * \param alphaValue The alpha component of the original value to base a new RGBA value on
+     * \param returnRedValue The red component of the new RGBA value
+     * \param returnGreenValue The green component of the new RGBA value
+     * \param returnBlueValue The blue component of the new RGBA value
+     * \param returnAlpha The alpha component of the new RGBA value
      * \return True if the return values are valid otherwise false
     */
     bool shade( double redValue,

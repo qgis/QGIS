@@ -130,6 +130,8 @@ bool QgsExpressionFunction::handlesNull() const
   return mHandlesNull;
 }
 
+// doxygen doesn't like this constructor for some reason (maybe the function arguments?)
+///@ cond PRIVATE
 QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname, const QgsExpressionFunction::ParameterList &params,
     FcnEval fcn,
     const QString &group,
@@ -147,6 +149,7 @@ QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname,
   , mReferencedColumnsFunc( referencedColumns )
 {
 }
+///@endcond
 
 QStringList QgsStaticExpressionFunction::aliases() const
 {
