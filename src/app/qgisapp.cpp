@@ -6229,9 +6229,9 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
   QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() ).toStringList();
   QStringList toolBarsActive = settings.value( QStringLiteral( "UI/hiddenToolBarsActive" ), QStringList() ).toStringList();
 
-  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
-  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
-  QList<QToolBar *> toolBars = findChildren<QToolBar *>();
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  const QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  const QList<QToolBar *> toolBars = findChildren<QToolBar *>();
 
   bool allWidgetsVisible = settings.value( QStringLiteral( "UI/allWidgetsVisible" ), true ).toBool();
 
@@ -6241,7 +6241,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
     if ( viewMapOnly )  //
     {
       // hide also statusbar and menubar and all toolbars
-      Q_FOREACH ( QToolBar *toolBar, toolBars )
+      for ( QToolBar *toolBar : toolBars )
       {
         if ( toolBar->isVisible() && !toolBar->isFloating() )
         {
@@ -6257,7 +6257,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
     }
 
-    Q_FOREACH ( QDockWidget *dock, docks )
+    for ( QDockWidget *dock : docks )
     {
       if ( dock->isVisible() && !dock->isFloating() )
       {
@@ -6267,7 +6267,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       }
     }
 
-    Q_FOREACH ( QTabBar *tabBar, tabBars )
+    for ( QTabBar *tabBar : tabBars )
     {
       // remember the active tab from the docks
       docksActive << tabBar->tabText( tabBar->currentIndex() );
@@ -6280,7 +6280,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
   }
   else  // currently panels or other widgets are hidden: show ALL based on 'remembered UI settings'
   {
-    Q_FOREACH ( QDockWidget *dock, docks )
+    for ( QDockWidget *dock : docks )
     {
       if ( docksTitle.contains( dock->windowTitle() ) )
       {
@@ -6288,7 +6288,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       }
     }
 
-    Q_FOREACH ( QTabBar *tabBar, tabBars )
+    for ( QTabBar *tabBar : tabBars )
     {
       for ( int i = 0; i < tabBar->count(); ++i )
       {
@@ -6299,7 +6299,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       }
     }
 
-    Q_FOREACH ( QToolBar *toolBar, toolBars )
+    for ( QToolBar *toolBar : toolBars )
     {
       if ( toolBarsActive.contains( toolBar->windowTitle() ) )
       {
@@ -6311,7 +6311,6 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
 
     settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), true );
   }
-
 }
 
 void QgisApp::showActiveWindowMinimized()
