@@ -16,15 +16,21 @@ class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresP
     QString schemaName() const;
     QString projectName() const;
 
+    QString currentProjectUri( bool schemaOnly = false );
+
   signals:
 
   private slots:
     void populateSchemas();
     void populateProjects();
     void onOK();
+    void projectChanged();
+    void removeProject();
 
   private:
+
     bool mSaving;  //!< Whether using this dialog for loading or saving a project
+    QAction *mActionRemoveProject = nullptr;
 };
 
 #endif // QGSPOSTGRESPROJECTSTORAGEDIALOG_H

@@ -44,8 +44,8 @@ class QgsPostgresProjectStorage : public QgsProjectStorage
     virtual QString showSaveGui() override;
 #endif
 
-    static QString makeUri( const QgsPostgresProjectUri &postUri );
-    static QgsPostgresProjectUri parseUri( const QString &uri );
+    static QString encodeUri( const QgsPostgresProjectUri &postUri );
+    static QgsPostgresProjectUri decodeUri( const QString &uri );
 };
 
 #endif // QGSPOSTGRESPROJECTSTORAGE_H

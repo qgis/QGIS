@@ -52,7 +52,7 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
 
-  QgsPostgresProjectUri projectUri = parseUri( uri );
+  QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return lst;
 
@@ -81,7 +81,7 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
 
 bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context )
 {
-  QgsPostgresProjectUri projectUri = parseUri( uri );
+  QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
     context.pushMessage( "Invalid URI for PostgreSQL provider: " + uri, Qgis::Critical );
@@ -121,7 +121,7 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
 
 bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context )
 {
-  QgsPostgresProjectUri projectUri = parseUri( uri );
+  QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
     context.pushMessage( "Invalid URI for PostgreSQL provider: " + uri, Qgis::Critical );
@@ -173,7 +173,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
 
 bool QgsPostgresProjectStorage::removeProject( const QString &uri )
 {
-  QgsPostgresProjectUri projectUri = parseUri( uri );
+  QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return false;
 
@@ -195,7 +195,7 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
 
 bool QgsPostgresProjectStorage::readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
 {
-  QgsPostgresProjectUri projectUri = parseUri( uri );
+  QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return false;
 
@@ -235,11 +235,7 @@ QString QgsPostgresProjectStorage::showLoadGui()
   if ( !dlg.exec() )
     return QString();
 
-  QgsPostgresProjectUri postUri;
-  postUri.connInfo = QgsPostgresConn::connUri( dlg.connectionName() );
-  postUri.schemaName = dlg.schemaName();
-  postUri.projectName = dlg.projectName();
-  return makeUri( postUri );
+  return dlg.currentProjectUri();
 }
 
 QString QgsPostgresProjectStorage::showSaveGui()
@@ -248,17 +244,13 @@ QString QgsPostgresProjectStorage::showSaveGui()
   if ( !dlg.exec() )
     return QString();
 
-  QgsPostgresProjectUri postUri;
-  postUri.connInfo = QgsPostgresConn::connUri( dlg.connectionName() );
-  postUri.schemaName = dlg.schemaName();
-  postUri.projectName = dlg.projectName();
-  return makeUri( postUri );
+  return dlg.currentProjectUri();
 }
 
 #endif
 
 
-QString QgsPostgresProjectStorage::makeUri( const QgsPostgresProjectUri &postUri )
+QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postUri )
 {
   QUrl u;
   QUrlQuery urlQuery;
@@ -283,7 +275,7 @@ QString QgsPostgresProjectStorage::makeUri( const QgsPostgresProjectUri &postUri
 }
 
 
-QgsPostgresProjectUri QgsPostgresProjectStorage::parseUri( const QString &uri )
+QgsPostgresProjectUri QgsPostgresProjectStorage::decodeUri( const QString &uri )
 {
   QUrl u = QUrl::fromEncoded( uri.toUtf8() );
   QUrlQuery urlQuery( u.query() );

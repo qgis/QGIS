@@ -8,7 +8,9 @@
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
+#include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 
 QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )
@@ -17,6 +19,12 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   setupUi( this );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsPostgresProjectStorageDialog::onOK );
+
+  QPushButton *btnManageProjects = new QPushButton( tr( "Manage Projects" ), this );
+  QMenu *menuManageProjects = new QMenu( btnManageProjects );
+  mActionRemoveProject = menuManageProjects->addAction( tr( "Remove Project" ), this, &QgsPostgresProjectStorageDialog::removeProject );
+  btnManageProjects->setMenu( menuManageProjects );
+  buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
 
   if ( saving )
   {
@@ -38,6 +46,9 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
 
   connect( mCboSchema, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
+  connect( mCboProject, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
+
+  projectChanged();
 }
 
 QString QgsPostgresProjectStorageDialog::connectionName() const
@@ -89,20 +100,19 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
   {
     mCboSchema->addItem( schema.name );
   }
+
+  projectChanged();
 }
 
 void QgsPostgresProjectStorageDialog::populateProjects()
 {
   mCboProject->clear();
 
-  QgsPostgresProjectUri postUri;
-  postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
-  postUri.schemaName = mCboSchema->currentText();
-  QString uri = QgsPostgresProjectStorage::makeUri( postUri );
-
+  QString uri = currentProjectUri();
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
   Q_ASSERT( storage );
   mCboProject->addItems( storage->listProjects( uri ) );
+  projectChanged();
 }
 
 void QgsPostgresProjectStorageDialog::onOK()
@@ -124,4 +134,33 @@ void QgsPostgresProjectStorageDialog::onOK()
   }
 
   accept();
+}
+
+void QgsPostgresProjectStorageDialog::projectChanged()
+{
+  mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mCboProject->findText( mCboProject->currentText() ) != -1 );
+}
+
+void QgsPostgresProjectStorageDialog::removeProject()
+{
+  int res = QMessageBox::question( this, tr( "Remove project" ),
+                                   tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
+                                   QMessageBox::Yes | QMessageBox::No );
+  if ( res != QMessageBox::Yes )
+    return;
+
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
+  Q_ASSERT( storage );
+  storage->removeProject( currentProjectUri() );
+  populateProjects();
+}
+
+QString QgsPostgresProjectStorageDialog::currentProjectUri( bool schemaOnly )
+{
+  QgsPostgresProjectUri postUri;
+  postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
+  postUri.schemaName = mCboSchema->currentText();
+  if ( !schemaOnly )
+    postUri.projectName = mCboProject->currentText();
+  return QgsPostgresProjectStorage::encodeUri( postUri );
 }
