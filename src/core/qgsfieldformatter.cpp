@@ -25,11 +25,8 @@ QgsFieldFormatter::QgsFieldFormatter() //NOLINT
 
 QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIndex )
   Q_UNUSED( config )
   Q_UNUSED( cache )
-  Q_UNUSED( value )
 
   QString defVal;
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
