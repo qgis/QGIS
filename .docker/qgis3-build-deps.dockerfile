@@ -91,6 +91,7 @@ RUN  apt-get update \
     future \
     termcolor \
     PyQt5 \
+    QScintilla \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
