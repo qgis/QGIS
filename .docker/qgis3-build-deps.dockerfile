@@ -62,10 +62,6 @@ RUN  apt-get update \
     python3-nose2 \
     python3-pip \
     python3-psycopg2 \
-    python3-pyqt5 \
-    python3-pyqt5.qsci \
-    python3-pyqt5.qtsql \
-    python3-pyqt5.qtsvg \
     python3-termcolor \
     python3-yaml \
     qt3d5-dev \
@@ -94,7 +90,8 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 python3-sip sip-dev\
+    PyQt5 \
+  && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
 WORKDIR /root
@@ -107,6 +104,8 @@ RUN python3 build.py prepare \
  && python3 configure.py \
  && make \
  && make install
+
+RUN echo $(sip -V)
 
 # WORKDIR /root
 # RUN curl -s -S -O https://svwh.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.9.2/PyQt5_gpl-5.9.2.tar.gz \
