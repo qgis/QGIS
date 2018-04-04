@@ -646,9 +646,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg = None
         try:
             dlg = alg.getCustomModelerParametersDialog(self.model)
-        except:
-            pass
-        if not dlg:
+        except AttributeError:
             dlg = ModelerParametersDialog(alg, self.model)
         if dlg.exec_():
             alg = dlg.createAlgorithm()
