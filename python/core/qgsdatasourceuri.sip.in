@@ -276,6 +276,20 @@ Returns the srid
 Sets the srid
 %End
 
+    static SslMode decodeSslMode( const QString &sslMode );
+%Docstring
+Decodes SSL mode string into enum value. If the string is not recognized, SslPrefer is returned.
+
+.. versionadded:: 3.2
+%End
+
+    static QString encodeSslMode( SslMode sslMode );
+%Docstring
+Encodes SSL mode enum value into a string.
+
+.. versionadded:: 3.2
+%End
+
 };
 
 

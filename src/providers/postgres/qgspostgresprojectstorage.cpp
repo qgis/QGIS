@@ -261,7 +261,13 @@ QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postU
     u.setPort( postUri.connInfo.port().toInt() );
   u.setUserName( postUri.connInfo.username() );
   u.setPassword( postUri.connInfo.password() );
-  // TODO: sslmode, authcfg, service
+
+  if ( !postUri.connInfo.service().isEmpty() )
+    urlQuery.addQueryItem( "service", postUri.connInfo.service() );
+  if ( !postUri.connInfo.authConfigId().isEmpty() )
+    urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
+  if ( !postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
+    urlQuery.addQueryItem( "sslmode", QgsDataSourceUri::encodeSslMode( postUri.connInfo.sslMode() ) );
 
   urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
 
@@ -287,11 +293,14 @@ QgsPostgresProjectUri QgsPostgresProjectStorage::decodeUri( const QString &uri )
   QString port = u.port() != -1 ? QString::number( u.port() ) : QString();
   QString username = u.userName();
   QString password = u.password();
-  QgsDataSourceUri::SslMode sslMode = QgsDataSourceUri::SslPrefer;
-  QString authConfigId;  // TODO: ?
+  QgsDataSourceUri::SslMode sslMode = QgsDataSourceUri::decodeSslMode( urlQuery.queryItemValue( "sslmode" ) );
+  QString authConfigId = urlQuery.queryItemValue( "authcfg" );
   QString dbName = urlQuery.queryItemValue( "dbname" );
-  postUri.connInfo.setConnection( host, port, dbName, username, password, sslMode, authConfigId );
-  // TODO: "service"
+  QString service = urlQuery.queryItemValue( "service" );
+  if ( !service.isEmpty() )
+    postUri.connInfo.setConnection( service, dbName, username, password, sslMode, authConfigId );
+  else
+    postUri.connInfo.setConnection( host, port, dbName, username, password, sslMode, authConfigId );
 
   postUri.schemaName = urlQuery.queryItemValue( "schema" );
   postUri.projectName = urlQuery.queryItemValue( "project" );
