@@ -1357,7 +1357,11 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
-  stopRendering();
+  const QList<QgsMapCanvas *> canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    canvas->stopRendering( true );
+  }
 
   delete mInternalClipboard;
   delete mQgisInterface;

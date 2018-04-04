@@ -660,7 +660,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * stop rendering (if there is any right now)
      * \since QGIS 2.4
      */
-    void stopRendering();
+    void stopRendering( bool blocking = false );
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );
@@ -1037,7 +1037,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );
 
     void startPreviewJobs();
-    void stopPreviewJobs();
+    void stopPreviewJobs( bool blocking = false );
     void schedulePreviewJob( int number );
 
     friend class TestQgsMapCanvas;

@@ -686,7 +686,7 @@ void QgsMapCanvas::mapUpdateTimeout()
   }
 }
 
-void QgsMapCanvas::stopRendering()
+void QgsMapCanvas::stopRendering( bool blocking )
 {
   if ( mJob )
   {
@@ -694,10 +694,17 @@ void QgsMapCanvas::stopRendering()
     mJobCanceled = true;
     disconnect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
     connect( mJob, &QgsMapRendererQImageJob::finished, mJob, &QgsMapRendererQImageJob::deleteLater );
-    mJob->cancelWithoutBlocking();
+    if ( !blocking )
+    {
+      mJob->cancelWithoutBlocking();
+    }
+    else
+    {
+      mJob->cancel();
+    }
     mJob = nullptr;
   }
-  stopPreviewJobs();
+  stopPreviewJobs( blocking );
 }
 
 //the format defaults to "PNG" if not specified
@@ -2256,7 +2263,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   job->start();
 }
 
-void QgsMapCanvas::stopPreviewJobs()
+void QgsMapCanvas::stopPreviewJobs( bool blocking )
 {
   mPreviewTimer.stop();
   QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
@@ -2266,7 +2273,14 @@ void QgsMapCanvas::stopPreviewJobs()
     {
       disconnect( *it, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
       connect( *it, &QgsMapRendererQImageJob::finished, *it, &QgsMapRendererQImageJob::deleteLater );
-      ( *it )->cancelWithoutBlocking();
+      if ( !blocking )
+      {
+        ( *it )->cancelWithoutBlocking();
+      }
+      else
+      {
+        ( *it )->cancel();
+      }
     }
   }
   mPreviewJobs.clear();
