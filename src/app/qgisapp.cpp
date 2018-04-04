@@ -1357,8 +1357,6 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
-  stopRendering();
-
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -1446,6 +1444,12 @@ QgisApp::~QgisApp()
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
+
+  const QList<QgsMapCanvas *> canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    delete canvas;
+  }
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
