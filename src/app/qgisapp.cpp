@@ -6344,6 +6344,10 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
     this->menuBar()->setVisible( true );
     this->statusBar()->setVisible( true );
 
+    settings.remove( QStringLiteral( "UI/hiddenToolBarsActive" ) );
+    settings.remove( QStringLiteral( "UI/hiddenDocksTitle" ) );
+    settings.remove( QStringLiteral( "UI/hiddenDocksActive" ) );
+
     settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), true );
   }
 }
