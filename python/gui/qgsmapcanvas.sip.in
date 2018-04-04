@@ -744,7 +744,7 @@ Sets whether a user has disabled canvas renders via the GUI.
 while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
-    void stopRendering();
+    void stopRendering( bool blocking = false );
 %Docstring
 stop rendering (if there is any right now)
 

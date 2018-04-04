@@ -75,7 +75,10 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     //! QgsOgrConnPoolGroup cannot be copied
     QgsOgrConnPoolGroup &operator=( const QgsOgrConnPoolGroup &other ) = delete;
 
-    void ref() { ++mRefCount; }
+    void ref()
+    {
+      ++mRefCount;
+    }
     bool unref()
     {
       Q_ASSERT( mRefCount > 0 );
