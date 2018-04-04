@@ -103,7 +103,7 @@ RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && mkdir /root/sip419 \
  && mv  $(find -type d -iname 'sip-*')/* sip419
 WORKDIR /root/sip419
-RUN sed -i -r "s/RM_HEXVERSION = '04ffff'/RM_HEXVERSION = '041308'/; s/RM_RELEASE = '4.255.255'/RM_RELEASE = '4.19.8'/" build.py \
+RUN sed -i -r "s/SIP_API_MINOR_NR    4/SIP_API_MINOR_NR    3/" siplib/sip.h.in.in \
  && python3 build.py prepare \
  && python3 configure.py \
  && make \
