@@ -94,7 +94,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python3-pip python2.7 python3-sip sip-dev\
   && apt-get clean
 
 WORKDIR /root
@@ -103,8 +103,7 @@ RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && mkdir /root/sip419 \
  && mv  $(find -type d -iname 'sip-*')/* sip419
 WORKDIR /root/sip419
-RUN sed -i -r "s/SIP_API_MINOR_NR    4/SIP_API_MINOR_NR    3/" siplib/sip.h.in.in \
- && python3 build.py prepare \
+RUN python3 build.py prepare \
  && python3 configure.py \
  && make \
  && make install
