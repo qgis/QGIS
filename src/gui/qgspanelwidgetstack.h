@@ -122,6 +122,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
   protected:
 
     void mouseReleaseEvent( QMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   private:
     void updateBreadcrumb();
