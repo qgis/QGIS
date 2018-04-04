@@ -16,11 +16,13 @@
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
+#include "qgspostgresprojectstorage.h"
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
 
 #ifdef HAVE_GUI
@@ -573,6 +575,22 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
+
+  if ( QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" ) )
+  {
+    QgsPostgresProjectUri postUri;
+    postUri.connInfo = uri;
+    postUri.schemaName = mName;
+    QString schemaUri = QgsPostgresProjectStorage::encodeUri( postUri );
+    const QStringList projectNames = storage->listProjects( schemaUri );
+    for ( const QString &projectName : projectNames )
+    {
+      QgsPostgresProjectUri projectUri( postUri );
+      projectUri.projectName = projectName;
+      items.append( new QgsProjectItem( this, projectName, QgsPostgresProjectStorage::encodeUri( projectUri ) ) );
+    }
+  }
+
   return items;
 }
 

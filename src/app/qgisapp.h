@@ -703,7 +703,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
-    void openFile( const QString &fileName );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();

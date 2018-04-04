@@ -598,6 +598,8 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
 
     bool hasDragEnabled() const override { return true; }
 
+    QgsMimeDataUtils::Uri mimeUri() const override;
+
 };
 
 /**
