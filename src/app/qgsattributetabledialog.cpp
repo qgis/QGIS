@@ -149,6 +149,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   QgsFeatureRequest r;
   bool needsGeom = false;
@@ -186,6 +187,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionSelectedFilter->setIcon( filterIcon );
   mActionVisibleFilter->setIcon( filterIcon );
   mActionEditedFilter->setIcon( filterIcon );
+
+  mActionFeatureActions = new QToolButton();
+  mActionFeatureActions->setAutoRaise( false );
+  mActionFeatureActions->setPopupMode( QToolButton::InstantPopup );
+  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+  mActionFeatureActions->setText( tr( "Actions" ) );
+  mActionFeatureActions->setToolTip( tr( "Actions" ) );
+  mToolbar->addWidget( mActionFeatureActions );
 
   // Connect filter signals
   connect( mActionAdvancedFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterExpressionBuilder );

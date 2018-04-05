@@ -2372,78 +2372,164 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   return writeAsVectorFormat( layer, fileName, options, newFilename, errorMessage );
 }
 
+
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
   : driverName( QStringLiteral( "GPKG" ) )
 {
 }
 
-QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
-    const QString &fileName,
-    const SaveVectorOptions &options,
-    QString *newFilename,
-    QString *errorMessage )
+
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat( QgsVectorLayer *layer, const QgsVectorFileWriter::SaveVectorOptions &options, QgsVectorFileWriter::PreparedWriterDetails &details )
 {
   if ( !layer )
   {
     return ErrInvalidLayer;
   }
 
-  bool shallTransform = false;
-  QgsCoordinateReferenceSystem outputCRS;
+
+  if ( layer->renderer() )
+    details.renderer.reset( layer->renderer()->clone() );
+  details.sourceCrs = layer->crs();
+  details.sourceWkbType = layer->wkbType();
+  details.sourceFields = layer->fields();
+  details.providerType = layer->providerType();
+  details.featureCount = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+  if ( layer->dataProvider() )
+    details.dataSourceUri = layer->dataProvider()->dataSourceUri();
+  details.storageType = layer->storageType();
+  details.selectedFeatureIds = layer->selectedFeatureIds();
+
+  if ( details.storageType == QLatin1String( "ESRI Shapefile" ) )
+  {
+    QgsFeatureRequest req;
+    if ( options.onlySelectedFeatures )
+    {
+      req.setFilterFids( details.selectedFeatureIds );
+    }
+    req.setSubsetOfAttributes( QgsAttributeList() );
+    details.geometryTypeScanIterator = layer->getFeatures( req );
+  }
+
+  details.expressionContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  details.renderContext.setExpressionContext( details.expressionContext );
+  details.renderContext.setRendererScale( options.symbologyScale );
+
+  details.shallTransform = false;
   if ( options.ct.isValid() )
   {
     // This means we should transform
-    outputCRS = options.ct.destinationCrs();
-    shallTransform = true;
+    details.outputCrs = options.ct.destinationCrs();
+    details.shallTransform = true;
   }
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = layer->crs();
+    details.outputCrs = details.sourceCrs;
   }
 
-  QgsWkbTypes::Type destWkbType = layer->wkbType();
+  details.destWkbType = details.sourceWkbType;
   if ( options.overrideGeometryType != QgsWkbTypes::Unknown )
   {
-    destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
+    details.destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
     if ( QgsWkbTypes::hasZ( options.overrideGeometryType ) || options.includeZ )
-      destWkbType = QgsWkbTypes::addZ( destWkbType );
+      details.destWkbType = QgsWkbTypes::addZ( details.destWkbType );
   }
   if ( options.forceMulti )
   {
-    destWkbType = QgsWkbTypes::multiType( destWkbType );
+    details.destWkbType = QgsWkbTypes::multiType( details.destWkbType );
   }
 
-  QgsAttributeList attributes( options.attributes );
+  details.attributes = options.attributes;
   if ( options.skipAttributeCreation )
-    attributes.clear();
-  else if ( attributes.isEmpty() )
+    details.attributes.clear();
+  else if ( details.attributes.isEmpty() )
   {
-    Q_FOREACH ( int idx, layer->attributeList() )
+    const QgsAttributeList allAttributes = details.sourceFields.allAttributesList();
+    for ( int idx : allAttributes )
     {
-      QgsField fld = layer->fields().at( idx );
-      if ( layer->providerType() == QLatin1String( "oracle" ) && fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) )
+      QgsField fld = details.sourceFields.at( idx );
+      if ( details.providerType == QLatin1String( "oracle" ) && fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) )
         continue;
-      attributes.append( idx );
+      details.attributes.append( idx );
     }
   }
 
-  QgsFields fields;
-  if ( !attributes.isEmpty() )
+  if ( !details.attributes.isEmpty() )
   {
-    Q_FOREACH ( int attrIdx, attributes )
+    for ( int attrIdx : qgis::as_const( details.attributes ) )
     {
-      fields.append( layer->fields().at( attrIdx ) );
+      details.outputFields.append( details.sourceFields.at( attrIdx ) );
     }
   }
+
+  // not ideal - would be nice to avoid this happening in the preparation step if possible,
+  // but currently requires access to the layer's minimumValue/maximumValue methods
+  if ( details.providerType == QLatin1String( "spatialite" ) )
+  {
+    for ( int i = 0; i < details.outputFields.size(); i++ )
+    {
+      if ( details.outputFields.at( i ).type() == QVariant::LongLong )
+      {
+        QVariant min = layer->minimumValue( i );
+        QVariant max = layer->maximumValue( i );
+        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
+        {
+          details.outputFields[i].setType( QVariant::Int );
+        }
+      }
+    }
+  }
+
+
+  //add possible attributes needed by renderer
+  addRendererAttributes( details.renderer.get(), details.renderContext, details.sourceFields, details.attributes );
+
+  QgsFeatureRequest req;
+  req.setSubsetOfAttributes( details.attributes );
+  if ( options.onlySelectedFeatures )
+    req.setFilterFids( details.selectedFeatureIds );
+
+  if ( !options.filterExtent.isNull() )
+  {
+    QgsRectangle filterRect = options.filterExtent;
+    bool useFilterRect = true;
+    if ( details.shallTransform )
+    {
+      try
+      {
+        // map filter rect back from destination CRS to layer CRS
+        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        useFilterRect = false;
+      }
+    }
+    if ( useFilterRect )
+    {
+      req.setFilterRect( filterRect );
+    }
+    details.filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
+    details.filterRectEngine.reset( QgsGeometry::createGeometryEngine( details.filterRectGeometry.constGet() ) );
+    details.filterRectEngine->prepareGeometry();
+  }
+  details.sourceFeatureIterator = layer->getFeatures( req );
+
+  return NoError;
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( PreparedWriterDetails &details, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *errorMessage )
+{
+
+  QgsWkbTypes::Type destWkbType = details.destWkbType;
 
   int lastProgressReport = 0;
-  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+  long total = details.featureCount;
 
-  if ( layer->providerType() == QLatin1String( "ogr" ) && layer->dataProvider() )
+  if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
-    QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( '|' );
+    QStringList theURIParts = details.dataSourceUri.split( '|' );
     QString srcFileName = theURIParts[0];
 
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
@@ -2454,15 +2540,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     }
 
     // Shapefiles might contain multi types although wkbType() only reports singles
-    if ( layer->storageType() == QLatin1String( "ESRI Shapefile" ) && !QgsWkbTypes::isMultiType( destWkbType ) )
+    if ( details.storageType == QLatin1String( "ESRI Shapefile" ) && !QgsWkbTypes::isMultiType( destWkbType ) )
     {
-      QgsFeatureRequest req;
-      if ( options.onlySelectedFeatures )
-      {
-        req.setFilterFids( layer->selectedFeatureIds() );
-      }
-      req.setSubsetOfAttributes( QgsAttributeList() );
-      QgsFeatureIterator fit = layer->getFeatures( req );
+      QgsFeatureIterator fit = details.geometryTypeScanIterator;
       QgsFeature fet;
       long scanned = 0;
       while ( fit.nextFeature( fet ) )
@@ -2491,33 +2571,18 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
   }
-  else if ( layer->providerType() == QLatin1String( "spatialite" ) )
-  {
-    for ( int i = 0; i < fields.size(); i++ )
-    {
-      if ( fields.at( i ).type() == QVariant::LongLong )
-      {
-        QVariant min = layer->minimumValue( i );
-        QVariant max = layer->maximumValue( i );
-        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
-        {
-          fields[i].setType( QVariant::Int );
-        }
-      }
-    }
-  }
 
-  QgsVectorFileWriter *writer =
-    new QgsVectorFileWriter( fileName,
-                             options.fileEncoding, fields, destWkbType,
-                             outputCRS, options.driverName,
-                             options.datasourceOptions,
-                             options.layerOptions,
-                             newFilename,
-                             options.symbologyExport,
-                             options.fieldValueConverter,
-                             options.layerName,
-                             options.actionOnExistingFile );
+  std::unique_ptr< QgsVectorFileWriter > writer =
+    qgis::make_unique< QgsVectorFileWriter >( fileName,
+        options.fileEncoding, details.outputFields, destWkbType,
+        details.outputCrs, options.driverName,
+        options.datasourceOptions,
+        options.layerOptions,
+        newFilename,
+        options.symbologyExport,
+        options.fieldValueConverter,
+        options.layerName,
+        options.actionOnExistingFile );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
@@ -2531,7 +2596,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   {
     if ( errorMessage )
       *errorMessage = writer->errorMessage();
-    delete writer;
     return err;
   }
 
@@ -2542,47 +2606,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
 
   QgsFeature fet;
 
-  //add possible attributes needed by renderer
-  writer->addRendererAttributes( layer, attributes );
-
-  QgsFeatureRequest req;
-  if ( layer->wkbType() == QgsWkbTypes::NoGeometry )
-  {
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-  }
-  req.setSubsetOfAttributes( attributes );
-  if ( options.onlySelectedFeatures )
-    req.setFilterFids( layer->selectedFeatureIds() );
-
-  QgsGeometry filterRectGeometry;
-  std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
-  if ( !options.filterExtent.isNull() )
-  {
-    QgsRectangle filterRect = options.filterExtent;
-    bool useFilterRect = true;
-    if ( shallTransform )
-    {
-      try
-      {
-        // map filter rect back from destination CRS to layer CRS
-        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
-      }
-      catch ( QgsCsException & )
-      {
-        useFilterRect = false;
-      }
-    }
-    if ( useFilterRect )
-    {
-      req.setFilterRect( filterRect );
-    }
-    filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
-    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.constGet() ) );
-    filterRectEngine->prepareGeometry();
-  }
-
-  QgsFeatureIterator fit = layer->getFeatures( req );
-
   //create symbol table if needed
   if ( writer->symbologyExport() != NoSymbology )
   {
@@ -2591,12 +2614,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
 
   if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
-    QgsFeatureRenderer *r = layer->renderer();
-    if ( r->capabilities() & QgsFeatureRenderer::SymbolLevels
+    QgsFeatureRenderer *r = details.renderer.get();
+    if ( r && r->capabilities() & QgsFeatureRenderer::SymbolLevels
          && r->usingSymbolLevels() )
     {
-      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, fit, options.ct, errorMessage );
-      delete writer;
+      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( details, details.sourceFeatureIterator, options.ct, errorMessage );
       return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
     }
   }
@@ -2604,26 +2626,25 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   int n = 0, errors = 0;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( options.ct.isValid() )
   {
     mapUnits = options.ct.destinationCrs().mapUnits();
   }
 
-  writer->startRender( layer );
+  writer->startRender( details.renderer.get(), details.sourceFields );
 
-  writer->resetMap( attributes );
+  writer->resetMap( details.attributes );
   // Reset mFields to layer fields, and not just exported fields
-  writer->mFields = layer->fields();
+  writer->mFields = details.sourceFields;
 
   // write all features
   long saved = 0;
   int initialProgress = lastProgressReport;
-  while ( fit.nextFeature( fet ) )
+  while ( details.sourceFeatureIterator.nextFeature( fet ) )
   {
     if ( options.feedback && options.feedback->isCanceled() )
     {
-      delete writer;
       return Canceled;
     }
 
@@ -2639,7 +2660,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( shallTransform )
+    if ( details.shallTransform )
     {
       try
       {
@@ -2652,8 +2673,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
       catch ( QgsCsException &e )
       {
-        delete writer;
-
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
                       .arg( fet.id() ).arg( e.what() );
         QgsLogger::warning( msg );
@@ -2664,15 +2683,15 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().constGet() ) )
+    if ( fet.hasGeometry() && details.filterRectEngine && !details.filterRectEngine->intersects( fet.geometry().constGet() ) )
       continue;
 
-    if ( attributes.empty() && options.skipAttributeCreation )
+    if ( details.attributes.empty() && options.skipAttributeCreation )
     {
       fet.initAttributes( 0 );
     }
 
-    if ( !writer->addFeatureWithStyle( fet, layer->renderer(), mapUnits ) )
+    if ( !writer->addFeatureWithStyle( fet, writer->mRenderer.get(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
@@ -2700,7 +2719,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   writer->stopRender();
-  delete writer;
 
   if ( errors > 0 && errorMessage && n > 0 )
   {
@@ -2708,6 +2726,21 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   return errors == 0 ? NoError : ErrFeatureWriteFailed;
+}
+
+QgsVectorFileWriter::WriterError
+QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
+    const QString &fileName,
+    const SaveVectorOptions &options,
+    QString *newFilename,
+    QString *errorMessage )
+{
+  QgsVectorFileWriter::PreparedWriterDetails details;
+  WriterError err = prepareWriteAsVectorFormat( layer, options, details );
+  if ( err != NoError )
+    return err;
+
+  return writeAsVectorFormat( details, fileName, options, newFilename, errorMessage );
 }
 
 
@@ -3062,28 +3095,24 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer *vl,  const Qgs
   OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit,
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( const PreparedWriterDetails &details, QgsFeatureIterator &fit,
     const QgsCoordinateTransform &ct, QString *errorMessage )
 {
-  if ( !layer )
+  if ( !details.renderer )
     return ErrInvalidLayer;
 
-  mRenderContext.expressionContext() = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-
-  QgsFeatureRenderer *renderer = layer->renderer();
-  if ( !renderer )
-    return ErrInvalidLayer;
+  mRenderContext.expressionContext() = details.expressionContext;
 
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
   }
 
-  startRender( layer );
+  startRender( details.renderer.get(), details.sourceFields );
 
   //fetch features
   QgsFeature fet;
@@ -3114,7 +3143,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     }
     mRenderContext.expressionContext().setFeature( fet );
 
-    featureSymbol = renderer->symbolForFeature( fet, mRenderContext );
+    featureSymbol = mRenderer->symbolForFeature( fet, mRenderContext );
     if ( !featureSymbol )
     {
       continue;
@@ -3130,7 +3159,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //find out order
   QgsSymbolLevelOrder levels;
-  QgsSymbolList symbols = renderer->symbols( mRenderContext );
+  QgsSymbolList symbols = mRenderer->symbols( mRenderContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbol *sym = symbols[i];
@@ -3236,15 +3265,15 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::Rend
   return 1.0;
 }
 
-void QgsVectorFileWriter::startRender( QgsVectorLayer *vl )
+void QgsVectorFileWriter::startRender( QgsFeatureRenderer *sourceRenderer, const QgsFields &fields )
 {
-  mRenderer = createSymbologyRenderer( vl );
+  mRenderer = createSymbologyRenderer( sourceRenderer );
   if ( !mRenderer )
   {
     return;
   }
 
-  mRenderer->startRender( mRenderContext, vl->fields() );
+  mRenderer->startRender( mRenderContext,  fields );
 }
 
 void QgsVectorFileWriter::stopRender()
@@ -3257,28 +3286,28 @@ void QgsVectorFileWriter::stopRender()
   mRenderer->stopRender( mRenderContext );
 }
 
-std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsVectorLayer *vl ) const
+std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsFeatureRenderer *sourceRenderer ) const
 {
   if ( mSymbologyExport == NoSymbology )
   {
     return nullptr;
   }
-  if ( !vl || !vl->renderer() )
+  if ( !sourceRenderer )
   {
     return nullptr;
   }
 
-  return std::unique_ptr< QgsFeatureRenderer >( vl->renderer()->clone() );
+  return std::unique_ptr< QgsFeatureRenderer >( sourceRenderer->clone() );
 }
 
-void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList )
+void QgsVectorFileWriter::addRendererAttributes( QgsFeatureRenderer *renderer, QgsRenderContext &context, const QgsFields &fields, QgsAttributeList &attList )
 {
-  if ( mRenderer )
+  if ( renderer )
   {
-    const QSet<QString> rendererAttributes = mRenderer->usedAttributes( mRenderContext );
+    const QSet<QString> rendererAttributes = renderer->usedAttributes( context );
     for ( const QString &attr : rendererAttributes )
     {
-      int index = vl->fields().lookupField( attr );
+      int index = fields.lookupField( attr );
       if ( index != -1 )
       {
         attList.append( index );
@@ -3422,4 +3451,3 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
   }
   return ret;
 }
-

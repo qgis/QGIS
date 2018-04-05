@@ -61,8 +61,6 @@ QgsDualView::QgsDualView( QWidget *parent )
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context, bool loadFeatures )
 {
-  mMapCanvas = mapCanvas;
-
   if ( !layer )
     return;
 
@@ -196,7 +194,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   switch ( mFilterModel->filterMode() )
   {
     case QgsAttributeTableFilterModel::ShowVisible:
-      disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
+      disconnect( mFilterModel->mapCanvas(), &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:
@@ -228,10 +226,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   switch ( filterMode )
   {
     case QgsAttributeTableFilterModel::ShowVisible:
-      connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
-      if ( mMapCanvas )
+      connect( mFilterModel->mapCanvas(), &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
+      if ( mFilterModel->mapCanvas() )
       {
-        QgsRectangle rect = mMapCanvas->mapSettings().mapToLayerCoordinates( mLayer, mMapCanvas->extent() );
+        QgsRectangle rect = mFilterModel->mapCanvas()->mapSettings().mapToLayerCoordinates( mLayer, mFilterModel->mapCanvas()->extent() );
         r.setFilterRect( rect );
       }
       break;
@@ -571,7 +569,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( !action.runable() )
         continue;
 
-      if ( !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
+      if ( vl && !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
@@ -667,7 +665,7 @@ void QgsDualView::tableColumnResized( int column, int width )
 {
   QgsAttributeTableConfig config = mConfig;
   int sourceCol = config.mapVisibleColumnToIndex( column );
-  if ( sourceCol >= 0 )
+  if ( sourceCol >= 0 && config.columnWidth( sourceCol ) != width )
   {
     config.setColumnWidth( sourceCol, width );
     setAttributeTableConfig( config );
@@ -840,9 +838,13 @@ void QgsDualView::previewExpressionChanged( const QString &expression )
 void QgsDualView::onSortColumnChanged()
 {
   QgsAttributeTableConfig cfg = mLayer->attributeTableConfig();
-  cfg.setSortExpression( mFilterModel->sortExpression() );
-  cfg.setSortOrder( mFilterModel->sortOrder() );
-  setAttributeTableConfig( cfg );
+  if ( cfg.sortExpression() != mFilterModel->sortExpression() ||
+       cfg.sortOrder() != mFilterModel->sortOrder() )
+  {
+    cfg.setSortExpression( mFilterModel->sortExpression() );
+    cfg.setSortOrder( mFilterModel->sortOrder() );
+    setAttributeTableConfig( cfg );
+  }
 }
 
 void QgsDualView::sortByPreviewExpression()
@@ -870,9 +872,9 @@ void QgsDualView::updateSelectedFeatures()
 void QgsDualView::extentChanged()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( mMapCanvas && ( r.filterType() != QgsFeatureRequest::FilterNone || !r.filterRect().isNull() ) )
+  if ( mFilterModel->mapCanvas() && ( r.filterType() != QgsFeatureRequest::FilterNone || !r.filterRect().isNull() ) )
   {
-    QgsRectangle rect = mMapCanvas->mapSettings().mapToLayerCoordinates( mLayer, mMapCanvas->extent() );
+    QgsRectangle rect = mFilterModel->mapCanvas()->mapSettings().mapToLayerCoordinates( mLayer, mFilterModel->mapCanvas()->extent() );
     r.setFilterRect( rect );
     mMasterModel->setRequest( r );
     mMasterModel->loadLayer();
@@ -912,9 +914,10 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featu
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   mConfig = config;
-  mLayer->setAttributeTableConfig( config );
-  mFilterModel->setAttributeTableConfig( config );
-  mTableView->setAttributeTableConfig( config );
+  mConfig.update( mLayer->fields() );
+  mLayer->setAttributeTableConfig( mConfig );
+  mFilterModel->setAttributeTableConfig( mConfig );
+  mTableView->setAttributeTableConfig( mConfig );
 }
 
 void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder )

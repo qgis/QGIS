@@ -36,7 +36,6 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationCopyrightDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationCopyrightDialog::buttonBox_rejected );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked );
-  connect( pbnColorChooser, &QgsColorButton::colorChanged, this, &QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
 
   QgsSettings settings;
@@ -48,6 +47,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   grpEnable->setChecked( mDeco.enabled() );
 
   // label text
+  txtCopyrightText->setAcceptRichText( false );
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
     QDate now = QDate::currentDate();
@@ -70,16 +70,10 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
-  // color
-  pbnColorChooser->setAllowOpacity( true );
-  pbnColorChooser->setColor( mDeco.mColor );
-  pbnColorChooser->setContext( QStringLiteral( "gui" ) );
-  pbnColorChooser->setColorDialogTitle( tr( "Select Text color" ) );
-
-  QTextCursor cursor = txtCopyrightText->textCursor();
-  txtCopyrightText->selectAll();
-  txtCopyrightText->setTextColor( mDeco.mColor );
-  txtCopyrightText->setTextCursor( cursor );
+  // font settings
+  mButtonFontStyle->setDialogTitle( tr( "Copyright Label Text Format" ) );
+  mButtonFontStyle->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mButtonFontStyle->setTextFormat( mDeco.textFormat() );
 }
 
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
@@ -120,19 +114,10 @@ void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
   }
 }
 
-void QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged( const QColor &c )
-{
-  QTextCursor cursor = txtCopyrightText->textCursor();
-  txtCopyrightText->selectAll();
-  txtCopyrightText->setTextColor( c );
-  txtCopyrightText->setTextCursor( cursor );
-}
-
 void QgsDecorationCopyrightDialog::apply()
 {
-  mDeco.mQFont = txtCopyrightText->currentFont();
+  mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.mLabelText = txtCopyrightText->toPlainText();
-  mDeco.mColor = pbnColorChooser->color();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();

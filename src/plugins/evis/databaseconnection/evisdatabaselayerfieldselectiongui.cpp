@@ -28,8 +28,8 @@
 
 /**
 * Constructor
-* @param parent - Pointer the to parent QWidget for modality
-* @param fl - Windown flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param fl - Windown flags
 */
 eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -41,7 +41,7 @@ eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget 
 
 /**
 * Public method that will insert the values in fieldList into the x and y coordinate selection combo boxes.
-* @param fileList - QStringList containing the field names to add to the combo boxes
+* \param fileList - QStringList containing the field names to add to the combo boxes
 */
 void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList *fieldList )
 {

@@ -147,12 +147,61 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
  Compute the intersection of a line and a circle.
 If the intersection has two solutions (points),
 the closest point to the initial ``intersection`` point is returned.
-@param center the center of the circle
-@param radius the radius of the circle
-@param linePoint1 a first point on the line
-@param linePoint2 a second point on the line
-@param intersection the initial point and the returned intersection point
-@return true if an intersection has been found
+
+:param center: the center of the circle
+:param radius: the radius of the circle
+:param linePoint1: a first point on the line
+:param linePoint2: a second point on the line
+:param intersection: the initial point and the returned intersection point
+
+:return: true if an intersection has been found
+%End
+
+    static int circleCircleIntersections( QgsPointXY center1, double radius1,
+                                          QgsPointXY center2, double radius2,
+                                          QgsPointXY &intersection1 /Out/, QgsPointXY &intersection2 /Out/ );
+%Docstring
+Calculates the intersections points between the circle with center ``center1`` and
+radius ``radius1`` and the circle with center ``center2`` and radius ``radius2``.
+
+If found, the intersection points will be stored in ``intersection1`` and ``intersection2``.
+
+:return: number of intersection points found.
+
+.. versionadded:: 3.2
+%End
+
+    static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
+                                       const QgsPointXY &p, QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ );
+%Docstring
+Calculates the tangent points between the circle with the specified ``center`` and ``radius``
+and the point ``p``.
+
+If found, the tangent points will be stored in ``pt1`` and ``pt2``.
+
+.. versionadded:: 3.2
+%End
+
+    static int circleCircleOuterTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ );
+%Docstring
+Calculates the outer tangent points for two circles, centered at ``center1`` and
+``center2`` and with radii of ``radius1`` and ``radius2`` respectively.
+
+The outer tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles touch
+the circles.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+.. versionadded:: 3.2
 %End
 
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );

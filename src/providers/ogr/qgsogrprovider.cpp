@@ -2960,11 +2960,11 @@ QGISEXTERN bool isProvider()
 
 /**
  * Creates an empty data source
-@param uri location to store the file(s)
-@param format data format (e.g. "ESRI Shapefile"
-@param vectortype point/line/polygon or multitypes
-@param attributes a list of name/type pairs for the initial attributes
-@return true in case of success*/
+\param uri location to store the file(s)
+\param format data format (e.g. "ESRI Shapefile"
+\param vectortype point/line/polygon or multitypes
+\param attributes a list of name/type pairs for the initial attributes
+\return true in case of success*/
 QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,

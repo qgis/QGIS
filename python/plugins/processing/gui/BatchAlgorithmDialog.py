@@ -134,6 +134,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.setProgressText(QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(count + 1, len(alg_parameters)))
                 self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
 
+                parameters = self.algorithm().preprocessParameters(parameters)
+
                 feedback.pushInfo(self.tr('Input parameters:'))
                 feedback.pushCommandInfo(pformat(parameters))
                 feedback.pushInfo('')

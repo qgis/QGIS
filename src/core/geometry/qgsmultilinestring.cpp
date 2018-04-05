@@ -55,7 +55,7 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
   return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
 
@@ -75,7 +75,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
 

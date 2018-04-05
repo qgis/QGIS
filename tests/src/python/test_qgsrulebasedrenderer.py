@@ -40,7 +40,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsRendererCategory,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
-                       QgsRendererRange
+                       QgsRendererRange,
+                       QgsRenderContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -100,6 +101,52 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         result = renderchecker.runTest('rulebased_disabled_else')
 
         assert result
+
+    def testWillRenderFeature(self):
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(0) # 'id' = 1
+        renderer = vl.renderer()
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        renderer.rootRule().children()[0].setActive(False)
+        renderer.rootRule().children()[1].setActive(True)
+        renderer.rootRule().children()[2].setActive(True)
+
+        renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
+        rendered = renderer.willRenderFeature(ft, ctx)
+        renderer.stopRender(ctx)
+        renderer.rootRule().children()[0].setActive(True)
+        assert rendered == False
+
+        renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
+        rendered = renderer.willRenderFeature(ft, ctx)
+        renderer.stopRender(ctx)
+        assert rendered == True
+
+    def testFeatureCount(self):
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(2) # 'id' = 3 => ELSE
+        renderer = vl.renderer()
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        counter = vl.countSymbolFeatures()
+        counter.waitForFinished()
+
+        renderer.startRender(ctx, vl.fields())
+
+        elseRule = None
+        for rule in renderer.rootRule().children():
+            if rule.filterExpression() == 'ELSE':
+                elseRule = rule
+
+        assert elseRule != None
+
+        cnt = counter.featureCount(elseRule.ruleKey())
+        assert cnt == 1
 
     def testRefineWithCategories(self):
         # Test refining rule with categories (refs #10815)

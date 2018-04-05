@@ -1,7 +1,7 @@
 {
   "name": "smooth",
   "type": "function",
-  "description":"Smooths a geometry by adding extra nodes which round off corners in the geometry.",
+  "description":"Smooths a geometry by adding extra nodes which round off corners in the geometry. If input geometries contain Z or M values, these will also be smoothed and the output geometry will retain the same dimensionality as the input geometry.",
   "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"iterations", "optional":true,"description":"number of smoothing iterations to apply. Larger numbers result in smoother but more complex geometries."},
                  {"arg":"offset", "optional":true,"description":"value between 0 and 0.5 which controls how tightly the smoothed geometry follow the original geometry. Smaller values result in a tighter smoothing, larger values result in looser smoothing."},

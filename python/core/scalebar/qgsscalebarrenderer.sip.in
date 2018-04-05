@@ -27,6 +27,7 @@ custom labeling.
 
     struct ScaleBarContext
     {
+
       double segmentWidth;
 
       QSizeF size;

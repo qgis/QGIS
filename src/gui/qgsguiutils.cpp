@@ -248,5 +248,15 @@ QgsTemporaryCursorOverride::QgsTemporaryCursorOverride( const QCursor &cursor )
 
 QgsTemporaryCursorOverride::~QgsTemporaryCursorOverride()
 {
+  if ( mHasOverride )
+    QApplication::restoreOverrideCursor();
+}
+
+void QgsTemporaryCursorOverride::release()
+{
+  if ( !mHasOverride )
+    return;
+
+  mHasOverride = false;
   QApplication::restoreOverrideCursor();
 }

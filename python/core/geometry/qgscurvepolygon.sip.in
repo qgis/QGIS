@@ -50,9 +50,9 @@ class QgsCurvePolygon: QgsSurface
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     virtual QString asJson( int precision = 17 ) const;
 
@@ -194,6 +194,8 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
     virtual bool dropZValue();
 
     virtual bool dropMValue();
+
+    virtual void swapXy();
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;

@@ -98,6 +98,11 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
   return true;
 }
 
+QVariantMap QgsProcessingAlgorithm::preprocessParameters( const QVariantMap &parameters )
+{
+  return parameters;
+}
+
 QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
 {
   return mProvider;

@@ -1537,7 +1537,20 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     "QgsRuleBasedLabeling::Rule",
     "QgsActionMenu",
     "QgsAuthMethod",
-    "QgsDartMeasurement"]
+    "QgsDartMeasurement",
+    "QgsExpressionNode::NodeList",
+    "QgsExpressionFunction",
+    "QgsExpressionNode",
+    "QgsExpressionNodeBinaryOperator",
+    "QgsExpressionNodeColumnRef",
+    "QgsExpressionNodeCondition",
+    "QgsExpressionNodeFunction",
+    "QgsExpressionNodeInOperator",
+    "QgsExpressionNodeLiteral",
+    "QgsExpressionNodeUnaryOperator",
+    "QgsStaticExpressionFunction",
+    "QgsExpressionNodeCondition::WhenThen"
+]
 
 ACCEPTABLE_MISSING_BRIEF = ['QgsBrushStyleComboBox',
                             'QgsHiddenWidgetFactory',

@@ -1651,6 +1651,14 @@
     <string>Ctrl+Tab</string>
    </property>
   </action>
+  <action name="mActionToggleMapOnly">
+   <property name="text">
+    <string>Toggle Map Only</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Tab</string>
+   </property>
+  </action>
   <action name="mActionProjectProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

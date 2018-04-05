@@ -118,8 +118,6 @@ namespace pal
        * \param displayAll if true, all features will be labelled even though overlaps occur
        *
        * \throws PalException::LayerExists
-       *
-       * @todo add symbolUnit
        */
       Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 

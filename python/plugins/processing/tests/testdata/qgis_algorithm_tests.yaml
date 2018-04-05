@@ -4944,3 +4944,14 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_07.gml
         type: vector
+
+  - algorithm: native:swapxy
+    name: Swap XY coordinates
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/swap_xy.gml
+        type: vector

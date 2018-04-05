@@ -67,7 +67,7 @@ void QgsMultiPoint::clear()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -87,7 +87,7 @@ QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 

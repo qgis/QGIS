@@ -415,7 +415,7 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns the number of functions defined in the parser
-     *  \returns The number of function defined in the parser.
+     * \returns The number of function defined in the parser.
      */
     static int functionCount();
 
@@ -467,8 +467,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
-     * \param showValue set to true to include current value of variable in help text
-     * \param value current value of variable to show in help text
      * \see helpText()
      * \since QGIS 2.12
      */

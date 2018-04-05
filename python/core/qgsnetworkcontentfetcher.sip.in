@@ -11,7 +11,6 @@
 
 
 
-
 class QgsNetworkContentFetcher : QObject
 {
 %Docstring
@@ -20,6 +19,8 @@ and converting the content to standard formats. Url redirects are automatically
 handled.
 
 .. versionadded:: 2.5
+
+.. seealso:: :py:class:`QgsNetworkContentFetcherTask`
 %End
 
 %TypeHeaderCode
@@ -42,6 +43,14 @@ signal will be emitted when content has been fetched.
 :param url: URL to fetch
 %End
 
+    void fetchContent( const QNetworkRequest &request );
+%Docstring
+Fetches content using a network ``request`` and handles redirects. The finished()
+signal will be emitted when content has been fetched.
+
+.. versionadded:: 3.2
+%End
+
     QNetworkReply *reply();
 %Docstring
 Returns a reference to the network reply
@@ -56,11 +65,25 @@ Returns the fetched content as a string
 :return: string containing network content
 %End
 
+    void cancel();
+%Docstring
+Cancels any ongoing request.
+
+.. versionadded:: 3.2
+%End
+
   signals:
 
     void finished();
 %Docstring
 Emitted when content has loaded
+%End
+
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when data is received.
+
+.. versionadded:: 3.2
 %End
 
 };

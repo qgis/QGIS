@@ -78,7 +78,6 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
 
-    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;
     mRubberBand = nullptr;
     mActive = false;

@@ -555,10 +555,14 @@ typedef unsigned long long qgssize;
 #define NODISCARD [[nodiscard]]
 #elif defined(_MSC_VER)
 #define NODISCARD // no support
-#elif __has_cpp_attribute(nodiscard)
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(nodiscard)
 #define NODISCARD [[nodiscard]]
 #elif __has_cpp_attribute(gnu::warn_unused_result)
 #define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
 #else
 #define NODISCARD Q_REQUIRED_RESULT
 #endif
@@ -569,8 +573,12 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED [[maybe_unused]]
 #elif defined(_MSC_VER)
 #define MAYBE_UNUSED // no support
-#elif __has_cpp_attribute(gnu::unused)
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(gnu::unused)
 #define MAYBE_UNUSED [[gnu::unused]]
+#else
+#define MAYBE_UNUSED
+#endif
 #else
 #define MAYBE_UNUSED
 #endif

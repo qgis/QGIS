@@ -165,9 +165,6 @@ QgsRasterLayer *QgsRasterLayer::clone() const
 //
 /////////////////////////////////////////////////////////
 
-/**
- * This helper checks to see whether the file name appears to be a valid raster file name
- */
 bool QgsRasterLayer::isValidRasterFileName( const QString &fileNameQString, QString &retErrMsg )
 {
   isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
@@ -230,17 +227,11 @@ void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawing
   setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
 }
 
-/**
- * @return 0 if not using the data provider model (i.e. directly using GDAL)
- */
 QgsRasterDataProvider *QgsRasterLayer::dataProvider()
 {
   return mDataProvider;
 }
 
-/**
- * @return 0 if not using the data provider model (i.e. directly using GDAL)
- */
 const QgsRasterDataProvider *QgsRasterLayer::dataProvider() const
 {
   return mDataProvider;
@@ -482,11 +473,6 @@ QString QgsRasterLayer::htmlMetadata() const
   return myMetadata;
 }
 
-
-/**
- * @param bandNumber the number of the band to use for generating a pixmap of the associated palette
- * @return a 100x100 pixel QPixmap of the bands palette
- */
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
   //TODO: This function should take dimensions
@@ -546,9 +532,6 @@ QString QgsRasterLayer::providerType() const
   return mProviderKey;
 }
 
-/**
- * @return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
- */
 double QgsRasterLayer::rasterUnitsPerPixelX() const
 {
 // We return one raster pixel per map unit pixel
@@ -557,7 +540,7 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }
@@ -566,7 +549,7 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 
 double QgsRasterLayer::rasterUnitsPerPixelY() const
 {
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
   {
     return mDataProvider->extent().height() / mDataProvider->ySize();
   }
@@ -1301,9 +1284,9 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 //
 /////////////////////////////////////////////////////////
 /*
- * @param QDomNode node that will contain the symbology definition for this layer.
- * @param errorMessage reference to string that will be updated with any error messages
- * @return true in case of success.
+ * \param QDomNode node that will contain the symbology definition for this layer.
+ * \param errorMessage reference to string that will be updated with any error messages
+ * \return true in case of success.
  */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, QgsReadWriteContext &context )
 {
@@ -1400,14 +1383,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
   return readSymbology( node, errorMessage, context );
-} //readSymbology
+}
 
-/**
-
-  Raster layer project file XML of form:
-
-  \note Called by QgsMapLayer::readXml().
-*/
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( "Entered", 4 );
@@ -1544,10 +1521,10 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 } // QgsRasterLayer::readXml( QDomNode & layer_node )
 
 /*
- * @param QDomNode the node that will have the style element added to it.
- * @param QDomDocument the document that will have the QDomNode added.
- * @param errorMessage reference to string that will be updated with any error messages
- * @return true in case of success.
+ * \param QDomNode the node that will have the style element added to it.
+ * \param QDomDocument the document that will have the QDomNode added.
+ * \param errorMessage reference to string that will be updated with any error messages
+ * \return true in case of success.
  */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {

@@ -279,8 +279,9 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /**
+     * A list of nodes.
      * \ingroup core
-     * List of nodes */
+     */
     class CORE_EXPORT NodeList
     {
       public:

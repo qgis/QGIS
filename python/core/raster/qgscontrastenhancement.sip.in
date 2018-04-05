@@ -38,24 +38,25 @@ ContrastEnhancementAlgorithm.
     ~QgsContrastEnhancement();
 
 
+
     static double maximumValuePossible( Qgis::DataType );
 %Docstring
- Helper function that returns the maximum possible value for a GDAL data type
+Helper function that returns the maximum possible value for a GDAL data type.
 %End
 
     static double minimumValuePossible( Qgis::DataType );
 %Docstring
- Helper function that returns the minimum possible value for a GDAL data type
+Helper function that returns the minimum possible value for a GDAL data type.
 %End
 
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 %Docstring
- Return a string to serialize ContrastEnhancementAlgorithm
+Return a string to serialize ContrastEnhancementAlgorithm.
 %End
 
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 %Docstring
- Deserialize ContrastEnhancementAlgorithm
+Deserialize ContrastEnhancementAlgorithm.
 %End
 
     double maximumValue() const;
@@ -70,34 +71,55 @@ ContrastEnhancementAlgorithm.
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
 
-    int enhanceContrast( double );
+
+    int enhanceContrast( double value );
 %Docstring
- Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed
+Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
 %End
 
-    bool isValueInDisplayableRange( double );
+    bool isValueInDisplayableRange( double value );
 %Docstring
- Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped)
+Return true if a pixel ``value`` is in displayable range, false if pixel
+is outside of range (i.e. clipped).
 %End
 
-    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
+    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm algorithm, bool generateTable = true );
 %Docstring
- Set the contrast enhancement algorithm
+Sets the contrast enhancement ``algorithm``.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the Minimum or Maximum value, you
+can elect to not generate the lookup tale. By default it will be generated.
 %End
 
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function /Transfer/ );
 %Docstring
- A public method that allows the user to set their own custom contrast enhancement function
+Allows the user to set their own custom contrast enhancement ``function``. Ownership of
+``function`` is transferred.
 %End
 
-    void setMaximumValue( double, bool generateTable = true );
+    void setMaximumValue( double value, bool generateTable = true );
 %Docstring
- Set the maximum value for the contrast enhancement range.
+Sets the maximum ``value`` for the contrast enhancement range.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the minimum value or the contrast
+enhancement algorithm, you can elect to not generate the lookup table.
+By default it will be generated.
+
+.. seealso:: :py:func:`setMinimumValue`
 %End
 
-    void setMinimumValue( double, bool generateTable = true );
+    void setMinimumValue( double value, bool generateTable = true );
 %Docstring
- Return the minimum value for the contrast enhancement range.
+Sets the minimum ``value`` for the contrast enhancement range.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the maximum value or the contrast
+enhancement algorithm, you can elect to not generate the lookup table.
+By default it will be generated.
+
+.. seealso:: :py:func:`setMaximumValue`
 %End
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;

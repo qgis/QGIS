@@ -39,6 +39,7 @@ echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
 cmake \
  -GNinja \
+ -DUSE_CCACHE=OFF \
  -DWITH_3D=ON \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=OFF \
@@ -67,7 +68,7 @@ echo "travis_fold:end:cmake"
 # uploading and subtract the bootstrapping time from that.
 # Hopefully clocks are in sync :)
 TRAVIS_TIME=90
-UPLOAD_TIME=8
+UPLOAD_TIME=5
 CURRENT_TIME=`date +%s`
 TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
 TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
@@ -105,7 +106,15 @@ popd > /dev/null # /root/QGIS
 ###########
 # Run tests
 ###########
-python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+CURRENT_TIME=`date +%s`
+TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
+echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
+timeout ${TIMEOUT}s python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+rv=$?
+if [ $rv -eq 124 ] ; then
+    printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
+    exit #$rv
+fi
 
 ########################
 # Show ccache statistics

@@ -184,6 +184,15 @@ class GUI_EXPORT QgsTemporaryCursorOverride
 
     ~QgsTemporaryCursorOverride();
 
+    /**
+     * Releases the cursor override early (i.e. before this object is destroyed).
+     */
+    void release();
+
+  private:
+
+    bool mHasOverride = true;
+
 };
 
 #endif // QGSGUIUTILS_H

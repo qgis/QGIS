@@ -61,8 +61,8 @@ class QgsWidgetStateHelper : public QObject
 
     /**
      * Return a non null safe name for the widget.
-     * @param widget The widget.
-     * @return A non null safe name for the widget.
+     * \param widget The widget.
+     * \return A non null safe name for the widget.
      */
     QString widgetSafeName( QWidget *widget );
 };

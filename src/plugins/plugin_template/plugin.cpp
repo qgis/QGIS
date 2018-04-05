@@ -49,7 +49,7 @@ static const QString sPluginIcon = ":/[pluginlcasename]/[pluginlcasename].png";
 /**
  * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
- * @param theQGisInterface - Pointer to the QGIS interface object
+ * \param theQGisInterface - Pointer to the QGIS interface object
  */
 [pluginname]::[pluginname]( QgisInterface *qgisInterface ):
   QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),

@@ -102,6 +102,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
+    bool mUpdating = false;
 
     static const QList< QgsStatisticalSummary::Statistic > DISPLAY_STATS;
 

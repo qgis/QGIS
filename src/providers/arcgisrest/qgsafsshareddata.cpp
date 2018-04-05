@@ -39,6 +39,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   QStringList fetchAttribNames;
   QList<int> fetchAttribIdx;
   fetchAttribIdx.reserve( mFields.size() );
+  fetchAttribNames.reserve( mFields.size() );
   for ( int idx = 0, n = mFields.size(); idx < n; ++idx )
   {
     fetchAttribNames.append( mFields.at( idx ).name() );
@@ -58,7 +59,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
   if ( objectIds.empty() )
   {
-    QgsDebugMsg( "No valid features IDs to fetch" );
+    QgsDebugMsg( QStringLiteral( "No valid features IDs to fetch" ) );
     return false;
   }
 
@@ -75,7 +76,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   if ( queryData.isEmpty() )
   {
 //    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
-    QgsDebugMsg( "Query returned empty result" );
+    QgsDebugMsg( QStringLiteral( "Query returned empty result" ) );
     return false;
   }
 
@@ -84,7 +85,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   const QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
   if ( featuresData.isEmpty() )
   {
-    QgsDebugMsgLevel( "Query returned no features", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Query returned no features" ), 3 );
     return false;
   }
   for ( int i = 0, n = featuresData.size(); i < n; ++i )
@@ -107,7 +108,10 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
           // ensure that null values are mapped correctly for PyQGIS
           attribute = QVariant( QVariant::Int );
         }
-        mFields.at( idx ).convertCompatible( attribute );
+        if ( !mFields.at( idx ).convertCompatible( attribute ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
+        }
         attributes[idx] = attribute;
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
         {
