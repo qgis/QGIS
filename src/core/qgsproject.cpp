@@ -1077,11 +1077,12 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     mRootGroup->readLayerOrderFromXml( layerTreeElem );
   }
-  else
+
+  // Load pre 3.0 configuration
+  QDomElement layerTreeCanvasElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+  if ( !layerTreeCanvasElem.isNull( ) )
   {
-    // Load pre 3.0 configuration
-    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
-    mRootGroup->readLayerOrderFromXml( elem );
+    mRootGroup->readLayerOrderFromXml( layerTreeCanvasElem );
   }
 
   // make sure the are just valid layers
