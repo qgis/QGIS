@@ -54,6 +54,8 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
   public slots:
     //! will be triggered from map canvas changes (from mouse wheel, zoom)
     void updateMagnification( double factor );
+    //! get magnification value
+    int magnification();
 
 
   private slots:
