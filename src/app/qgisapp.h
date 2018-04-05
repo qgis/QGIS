@@ -1743,13 +1743,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            bool guiUpdate );
 
     /**
-     * Add this file to the recently opened/saved projects list
+     * Add thie current project to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
-    void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
+    void saveRecentProjectPath( bool savePreviewImage = true );
     //! Save recent projects list to settings
     void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects

@@ -468,8 +468,7 @@ static void setTitleBarText_( QWidget &qgisApp )
     }
     else
     {
-      QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption = projectFileInfo.completeBaseName();
+      caption = QgsProject::instance()->baseName();
     }
   }
   else
@@ -3964,19 +3963,20 @@ void QgisApp::updateRecentProjectPaths()
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( bool savePreviewImage )
 {
   // first, re-read the recent project paths. This prevents loss of recent
   // projects when multiple QGIS sessions are open
   readRecentProjects();
 
   // Get canonical absolute path
-  QFileInfo myFileInfo( projectPath );
   QgsWelcomePageItemsModel::RecentProjectData projectData;
-  projectData.path = myFileInfo.absoluteFilePath();
+  projectData.path = QgsProject::instance()->absoluteFilePath();
+  if ( projectData.path.isEmpty() )  // in case of custom project storage
+    projectData.path = QgsProject::instance()->fileName();
   projectData.title = QgsProject::instance()->title();
   if ( projectData.title.isEmpty() )
-    projectData.title = projectData.path;
+    projectData.title = QgsProject::instance()->baseName();
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
@@ -5681,7 +5681,7 @@ bool QgisApp::addProject( const QString &projectFile )
   // specific plug-in state
 
   // add this to the list of recently used project files
-  saveRecentProjectPath( projectFile, false );
+  saveRecentProjectPath( false );
 
   QApplication::restoreOverrideCursor();
 
@@ -5767,7 +5767,7 @@ bool QgisApp::fileSave()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
 
     QFileInfo fi( QgsProject::instance()->fileName() );
     mProjectLastModified = fi.lastModified();
@@ -5827,7 +5827,7 @@ void QgisApp::fileSaveAs()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
     mProjectLastModified = fullPath.lastModified();
   }
   else
@@ -13582,7 +13582,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
             setTitleBarText_( *this ); // update title bar
             mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
             // add this to the list of recently used project files
-            saveRecentProjectPath( uri );
+            saveRecentProjectPath();
             mProjectLastModified = QgsProject::instance()->lastModified();
           }
           else
