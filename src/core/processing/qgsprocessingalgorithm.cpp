@@ -371,9 +371,9 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
   return false;
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration ) const
 {
-  std::unique_ptr< QgsProcessingAlgorithm > alg( create() );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
   if ( ok )
     *ok = false;
 

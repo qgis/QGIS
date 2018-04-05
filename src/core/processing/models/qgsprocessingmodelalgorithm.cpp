@@ -288,7 +288,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
+      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
       childAlg.reset( nullptr );
       if ( !ok )
       {

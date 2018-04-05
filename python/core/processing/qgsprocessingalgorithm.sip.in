@@ -276,7 +276,7 @@ Returns true if this algorithm generates HTML outputs.
 %End
 
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0 ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call

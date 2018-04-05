@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
      */
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap() ) const;
 
     /**
      * Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
