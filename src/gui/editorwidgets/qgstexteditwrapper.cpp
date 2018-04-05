@@ -100,7 +100,8 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 
 void QgsTextEditWrapper::initWidget( QWidget *editor )
 {
-  mTextEdit = qobject_cast<QTextBrowser *>( editor );
+  mTextBrowser = qobject_cast<QTextBrowser *>( editor );
+  mTextEdit = qobject_cast<QTextEdit *>( editor );
   mPlainTextEdit = qobject_cast<QPlainTextEdit *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
@@ -225,8 +226,11 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
       if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
       {
         mTextEdit->setHtml( v );
-        mTextEdit->setTextInteractionFlags( Qt::LinksAccessibleByMouse );
-        mTextEdit->setOpenExternalLinks( true );
+        if ( mTextBrowser )
+        {
+          mTextBrowser->setTextInteractionFlags( Qt::LinksAccessibleByMouse );
+          mTextBrowser->setOpenExternalLinks( true );
+        }
       }
       else
         mTextEdit->setPlainText( v );
