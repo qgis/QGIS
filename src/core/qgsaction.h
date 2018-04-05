@@ -251,7 +251,7 @@ class CORE_EXPORT QgsAction
     mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
     QgsExpressionContextScope mExpressionContextScope;
-    bool mIsEnabledOnlyWhenEditable;
+    bool mIsEnabledOnlyWhenEditable = false;
 };
 
 Q_DECLARE_METATYPE( QgsAction )
