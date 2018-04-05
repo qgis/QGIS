@@ -53,6 +53,7 @@ import re
 
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
+    QUERY_HISTORY_LIMIT = 20
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
@@ -181,6 +182,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.queryHistoryTableWidget.resizeRowsToContents()
 
     def writeQueryHistory(self, sql, affectedRows, secs):
+        if len(self.history[self.connectionName]) >= self.QUERY_HISTORY_LIMIT:
+            self.history[self.connectionName].pop(0)
+
         settings = QgsSettings()
         self.history[self.connectionName].append({'query': sql,
                                                   'rows': affectedRows,
