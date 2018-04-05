@@ -12416,6 +12416,11 @@ void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
   mBookMarksDockWidget->zoomToBookmarkIndex( index );
 }
 
+QgisAppInterface *QgisApp::getQgisInterface()
+{
+  return mQgisInterface;
+}
+
 // Slot that gets called when the project file was saved with an older
 // version of QGIS
 

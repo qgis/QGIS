@@ -690,6 +690,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
 
+    QgisAppInterface *getQgisInterface();
+
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr );

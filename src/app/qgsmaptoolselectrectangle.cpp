@@ -53,17 +53,17 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-    mSelectionHandler->selectFeaturesReleaseEvent( e );
-    if (mSelectionHandler->mSelectFeatures)
+  mSelectionHandler->selectFeaturesReleaseEvent( e );
+  if ( mSelectionHandler->mSelectFeatures )
+  {
+    if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
     {
-        if (mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
-        {
-            QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-            QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
-            double sr = searchRadiusMU( mCanvas );
-            QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
-            mSelectionHandler->setSelectedGeometry(QgsGeometry::fromRect(r));
-        }
-        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+      QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+      QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
+      double sr = searchRadiusMU( mCanvas );
+      QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ) );
     }
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+  }
 }

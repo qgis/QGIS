@@ -59,13 +59,7 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
-
-  // TODO @vsklencar set interface after first useage. delete from here.
-  QgisAppInterface *appIface = QgisApp::instance()->getInterface();
-  QgisInterface *iface = reinterpret_cast<QgisInterface*> (appIface);
-  //*iface = QgisApp::instance()->getInterface();
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, iface );
-  //mSelectionHandler->setIface(reinterpret_cast<QgisInterface*> (QgisApp::instance()->getInterface()));
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -174,11 +168,12 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-   if (!mSelectionHandler->mQgisInterface) {
-       mSelectionHandler->setIface(reinterpret_cast<QgisInterface*> (QgisApp::instance()->getInterface()));
-   }
+  if ( !mSelectionHandler->mQgisInterface )
+  {
+    mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
+  }
 
-    if ( mResultsDialog )
+  if ( mResultsDialog )
   {
     mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
   }
@@ -251,6 +246,6 @@ void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
 
 void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 {
- if (mSelectionHandler->escapeSelection(e)) return;
+  if ( mSelectionHandler->escapeSelection( e ) ) return;
   QgsMapTool::keyReleaseEvent( e );
 }

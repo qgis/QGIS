@@ -26,28 +26,28 @@ class QgsMapToolSelectionHandler;
 
 
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
-    mCursor = Qt::ArrowCursor;
-    mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  mCursor = Qt::ArrowCursor;
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 {
-    delete mSelectionHandler;
+  delete mSelectionHandler;
 }
 
 void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
-    mSelectionHandler->selectPolygonReleaseEvent( e );
-    if (mSelectionHandler->mSelectFeatures)
-    {
-        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
-    }
+  mSelectionHandler->selectPolygonReleaseEvent( e );
+  if ( mSelectionHandler->mSelectFeatures )
+  {
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+  }
 }
 
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-    mSelectionHandler->selectPolygonMoveEvent( e );
+  mSelectionHandler->selectPolygonMoveEvent( e );
 }
 

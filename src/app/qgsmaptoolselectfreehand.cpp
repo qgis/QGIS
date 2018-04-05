@@ -46,17 +46,17 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   mSelectionHandler->selectFreehandReleaseEvent( e );
-  if (mSelectionHandler->mSelectFeatures)
+  if ( mSelectionHandler->mSelectFeatures )
   {
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
   }
 }
 
 void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
 {
-  if (mSelectionHandler->escapeSelection(e))
+  if ( mSelectionHandler->escapeSelection( e ) )
   {
-      return;
+    return;
   }
   QgsMapTool::keyReleaseEvent( e );
 }

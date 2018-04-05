@@ -131,7 +131,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     void initRubberBand();
 
-    void setIface(QgisInterface *iface);
+    void setIface( QgisInterface *iface );
 
     QgsGeometry selectedGeometry();
     void setSelectedGeometry( QgsGeometry geometry );
@@ -142,24 +142,26 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     // TODO @vsklencar move to identifyTool only
     bool mJustFinishedSelection = false;
 
+    bool mSelectionActive = false;
+
     std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 
-    void selectFeaturesPressEvent(QgsMapMouseEvent *e);
+    void selectFeaturesPressEvent( QgsMapMouseEvent *e );
 
-private slots:
+  private slots:
     //! update the rubber band from the input widget
     void updateRubberband( const double &radius );
 
     /**
-   * triggered when the user input widget has a new value
-   * either programmatically (from the mouse event) or entered by the user
-   */
+    * triggered when the user input widget has a new value
+    * either programmatically (from the mouse event) or entered by the user
+    */
     void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
 
     //! cancel selecting (between two click events)
     void cancel();
 
-signals:
+  signals:
     void selectionGeometryChanged();
   protected:
     //! stores exact selection geometry
@@ -183,8 +185,6 @@ signals:
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
-
-    bool mSelectionActive = false;
 
     SelectionMode mSelectionMode;
 
