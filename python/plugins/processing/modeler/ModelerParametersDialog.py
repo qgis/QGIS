@@ -314,7 +314,7 @@ class ModelerParametersDialog(QDialog):
         outputs = {}
         for dest in self._alg.destinationParameterDefinitions():
             if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                name = str(self.valueItems[dest.name()].text())
+                name = self.valueItems[dest.name()].text()
                 if name.strip() != '':
                     output = QgsProcessingModelOutput(name, name)
                     output.setChildId(alg.childId())
