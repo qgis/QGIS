@@ -122,7 +122,7 @@ public:
      *
      * \param name the name of the environment variable
      * \param value the new value for the environment variable
-     * \param overwrite if @c false and the environment variable is already
+     * \param overwrite if \c false and the environment variable is already
      *   set, the old value will be preserved
      */
     void setEnv(const QString &name, const QString &value, bool overwrite = true);

@@ -26,6 +26,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     ~QgsDecorationNorthArrowDialog() override;
 
   private:
+    void updateSvgPath( const QString &svgPath );
     void drawNorthArrow();
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 

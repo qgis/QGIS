@@ -169,9 +169,11 @@
 %Include layout/qgslayoututils.sip
 %Include layout/qgsreportsectionfieldgroup.sip
 %Include layout/qgsreportsectionlayout.sip
+%Include metadata/qgsabstractmetadatabase.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include metadata/qgslayermetadataformatter.sip
+%Include metadata/qgsprojectmetadata.sip
 %Include processing/qgsprocessing.sip
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
@@ -330,6 +332,7 @@
 %Include qgsmessageoutput.sip
 %Include qgsnetworkaccessmanager.sip
 %Include qgsnetworkcontentfetcher.sip
+%Include qgsnetworkcontentfetchertask.sip
 %Include qgsofflineediting.sip
 %Include qgspluginlayer.sip
 %Include qgspointxy.sip

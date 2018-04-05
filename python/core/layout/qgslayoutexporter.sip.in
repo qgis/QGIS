@@ -135,6 +135,9 @@ Constructor for ImageExportSettings
 
       bool generateWorldFile;
 
+      bool exportMetadata;
+
+
       QgsLayoutRenderContext::Flags flags;
 
     };
@@ -179,6 +182,8 @@ Constructor for PdfExportSettings
       bool rasterizeWholeImage;
 
       bool forceVectorOutput;
+
+      bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
 
@@ -275,6 +280,8 @@ Constructor for SvgExportSettings
       QgsMargins cropMargins;
 
       bool exportAsLayers;
+
+      bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
 

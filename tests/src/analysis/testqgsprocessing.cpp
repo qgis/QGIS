@@ -137,7 +137,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
-      addParameter( sinkParam );
+      QVERIFY( addParameter( sinkParam ) );
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) );
       QCOMPARE( sinkParam->algorithm(), this );
       QVERIFY( !sinkParam->provider() );
@@ -145,7 +145,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // default raster format extension
       QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster" );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
-      addParameter( rasterParam );
+      QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
 
       // should allow parameters with same name but different case (required for grass provider)
@@ -165,7 +165,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
-      addParameter( sinkParam );
+      QVERIFY( addParameter( sinkParam ) );
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "xshp" ) );
       QCOMPARE( sinkParam->algorithm(), this );
       QCOMPARE( sinkParam->provider(), provider() );
@@ -173,7 +173,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // default raster format extension
       QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster2" );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
-      addParameter( rasterParam );
+      QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
     }
 
@@ -323,6 +323,12 @@ class DummyProvider : public QgsProcessingProvider
       return supportsNonFileOutputs;
     }
 
+    bool isActive() const override
+    {
+      return active;
+    }
+
+    bool active = true;
     bool *unloaded = nullptr;
     bool supportsNonFileOutputs = false;
 
@@ -1079,8 +1085,18 @@ void TestQgsProcessing::algorithm()
     QCOMPARE( providerRefreshed.count(), 2 + i );
   }
 
+  // inactive provider, should not load algorithms
+  p->active = false;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 3 );
+  QVERIFY( p->algorithms().empty() );
+  p->active = true;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 4 );
+  QVERIFY( !p->algorithms().empty() );
+
   QgsProcessingRegistry r;
-  r.addProvider( p );
+  QVERIFY( r.addProvider( p ) );
   QCOMPARE( r.algorithms().size(), 2 );
   QVERIFY( r.algorithms().contains( p->algorithm( "alg1" ) ) );
   QVERIFY( r.algorithms().contains( p->algorithm( "alg2" ) ) );
@@ -1118,7 +1134,7 @@ void TestQgsProcessing::algorithm()
   // test that adding a provider to the registry automatically refreshes algorithms (via load)
   DummyProvider *p3 = new DummyProvider( "p3" );
   QVERIFY( p3->algorithms().isEmpty() );
-  r.addProvider( p3 );
+  QVERIFY( r.addProvider( p3 ) );
   QCOMPARE( p3->algorithms().size(), 2 );
 }
 

@@ -142,6 +142,7 @@ GRASS plugin for QGIS required to interface with the GRASS system.
 Provides: %{name}-python = %{version}-%{release}
 Provides: %{name}-python%{?_isa} = %{version}-%{release}
 Obsoletes: %{name}-python < %{version}-%{release}
+Obsoletes: python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}

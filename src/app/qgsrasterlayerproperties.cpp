@@ -1903,7 +1903,7 @@ void QgsRasterLayerProperties::loadMetadata()
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mRasterLayer->metadata() );
+    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
   }
   else
   {
@@ -1965,7 +1965,7 @@ void QgsRasterLayerProperties::loadDefaultMetadata()
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mRasterLayer->metadata() );
+    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
   }
   else
   {

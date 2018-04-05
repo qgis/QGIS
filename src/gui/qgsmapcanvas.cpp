@@ -211,6 +211,16 @@ QgsMapCanvas::~QgsMapCanvas()
     delete mJob;
   }
 
+  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
+  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  {
+    if ( *previewJob )
+    {
+      whileBlocking( *previewJob )->cancel();
+      delete *previewJob;
+    }
+  }
+
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
@@ -499,6 +509,7 @@ void QgsMapCanvas::refreshMap()
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
@@ -890,7 +901,6 @@ void QgsMapCanvas::zoomToFullExtent()
   refresh();
 
 } // zoomToFullExtent
-
 
 
 void QgsMapCanvas::zoomToPreviousExtent()
@@ -2280,7 +2290,6 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
   {
     startPreviewJob( number );
-  }
-                                   );
+  } );
   mPreviewTimer.start();
 }

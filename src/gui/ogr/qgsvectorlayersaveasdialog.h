@@ -82,6 +82,14 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     bool hasFilterExtent() const;
     QgsRectangle filterExtent() const;
 
+    /**
+     * Sets whether only selected features will be saved.
+     */
+    void setOnlySelected( bool onlySelected );
+
+    /**
+     * Returns whether only selected features will be saved.
+     */
     bool onlySelected() const;
 
     /**

@@ -51,6 +51,7 @@ Abstract base class for all nodes that can appear in an expression.
     }
 %End
   public:
+
     enum NodeType
     {
       ntUnaryOperator,
@@ -82,6 +83,9 @@ Constructor for NamedNode
 
     class NodeList
 {
+%Docstring
+A list of expression nodes.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnode.h"
@@ -137,6 +141,9 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 %End
 
         virtual QString dump() const;
+%Docstring
+Returns a string dump of the expression node.
+%End
 
       public:
     };

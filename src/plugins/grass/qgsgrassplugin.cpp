@@ -61,8 +61,8 @@ static const QString pluginIcon = QStringLiteral( ":/images/themes/default/grass
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param theQGisApp Pointer to the QGIS main window
- * @param qgisInterFace Pointer to the QGIS interface object
+ * \param theQGisApp Pointer to the QGIS main window
+ * \param qgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface *qgisInterFace )
   : qGisInterface( qgisInterFace )

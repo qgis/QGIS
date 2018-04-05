@@ -863,6 +863,11 @@ QgsRectangle QgsVectorLayerSaveAsDialog::filterExtent() const
   return mExtentGroupBox->outputExtent();
 }
 
+void QgsVectorLayerSaveAsDialog::setOnlySelected( bool onlySelected )
+{
+  mSelectedOnly->setChecked( onlySelected );
+}
+
 bool QgsVectorLayerSaveAsDialog::onlySelected() const
 {
   return mSelectedOnly->isChecked();

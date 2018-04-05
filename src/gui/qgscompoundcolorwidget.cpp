@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
+#include <QHeaderView>
 #include <QPushButton>
 #include <QMenu>
 #include <QToolButton>

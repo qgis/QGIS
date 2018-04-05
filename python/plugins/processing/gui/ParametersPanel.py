@@ -74,7 +74,6 @@ class ParametersPanel(BASE, WIDGET):
         self.alg = alg
         self.wrappers = {}
         self.outputWidgets = {}
-        self.labels = {}
         self.checkBoxes = {}
         self.dependentItems = {}
         self.iterateButtons = {}
@@ -108,14 +107,6 @@ class ParametersPanel(BASE, WIDGET):
             if param.isDestination():
                 continue
             else:
-                desc = param.description()
-                if isinstance(param, QgsProcessingParameterExtent):
-                    desc += self.tr(' (xmin, xmax, ymin, ymax)')
-                if isinstance(param, QgsProcessingParameterPoint):
-                    desc += self.tr(' (x, y)')
-                if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                    desc += self.tr(' [optional]')
-
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
                 widget = wrapper.widget
@@ -141,21 +132,21 @@ class ParametersPanel(BASE, WIDGET):
 
                     widget.setToolTip(param.toolTip())
 
-                    if isinstance(widget, QCheckBox):
-                        # checkbox widget - so description is embedded in widget rather than a separate
-                        # label
-                        widget.setText(desc)
-                    else:
-                        label = QLabel(desc)
-                        # label.setToolTip(tooltip)
-                        self.labels[param.name()] = label
-
+                    if wrapper.label is not None:
                         if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                            self.layoutAdvanced.addWidget(label)
+                            self.layoutAdvanced.addWidget(wrapper.label)
                         else:
                             self.layoutMain.insertWidget(
-                                self.layoutMain.count() - 2, label)
-
+                                self.layoutMain.count() - 2, wrapper.label)
+                    else:
+                        desc = param.description()
+                        if isinstance(param, QgsProcessingParameterExtent):
+                            desc += self.tr(' (xmin, xmax, ymin, ymax)')
+                        if isinstance(param, QgsProcessingParameterPoint):
+                            desc += self.tr(' (x, y)')
+                        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                            desc += self.tr(' [optional]')
+                        widget.setText(desc)
                     if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                         self.layoutAdvanced.addWidget(widget)
                     else:

@@ -180,31 +180,6 @@ QModelIndex QgsReportSectionModel::parent( const QModelIndex &index ) const
     return createIndex( parentSection->row(), 0, parentSection != mReport ? parentSection : nullptr );
 }
 
-bool QgsReportSectionModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  QgsAbstractReportSection *section = sectionForIndex( index );
-  ( void )section;
-  ( void )value;
-
-  if ( role != Qt::EditRole )
-    return false;
-
-  switch ( index.column() )
-  {
-    case 0:
-      return false;
-
-    default:
-      return false;
-  }
-
-  emit dataChanged( index, index );
-  return true;
-}
-
 QgsAbstractReportSection *QgsReportSectionModel::sectionForIndex( const QModelIndex &index ) const
 {
   if ( !index.isValid() )

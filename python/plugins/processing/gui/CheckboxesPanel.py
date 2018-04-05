@@ -107,9 +107,7 @@ class CheckboxesPanel(QWidget):
     def setValue(self, value):
         if self._multiple:
             for (v, button) in self._buttons:
-                if v in value:
-                    button.setChecked(True)
+                button.setChecked(v in value)
         else:
             for v, button in self._buttons:
-                if v == value:
-                    button.setChecked(True)
+                button.setChecked(v == value)

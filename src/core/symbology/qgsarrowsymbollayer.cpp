@@ -320,7 +320,7 @@ inline qreal clampAngle( qreal a )
 
 /**
  * Compute the circumscribed circle from three points
- * @return false if the three points are colinear
+ * \return false if the three points are colinear
  */
 bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &radius )
 {

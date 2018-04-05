@@ -31,9 +31,9 @@ QgsGdalProviderBase::QgsGdalProviderBase()
 }
 
 /**
- * @param bandNumber the number of the band for which you want a color table
- * @param list a pointer the object that will hold the color table
- * @return true of a color table was able to be read, false otherwise
+ * \param bandNumber the number of the band for which you want a color table
+ * \param list a pointer the object that will hold the color table
+ * \return true of a color table was able to be read, false otherwise
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
 {

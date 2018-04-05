@@ -130,6 +130,8 @@ This slot is normally auto connected to panelAccepted when a panel is shown.
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
+    virtual void keyPressEvent( QKeyEvent *e );
+
 
 };
 

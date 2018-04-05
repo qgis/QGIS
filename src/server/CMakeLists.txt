@@ -29,7 +29,6 @@ SET(QGIS_SERVER_SRCS
   qgsfcgiserverresponse.cpp
   qgsfilterresponsedecorator.cpp
   qgsfilterrestorer.cpp
-  qgsmslayercache.cpp
   qgsrequesthandler.cpp
   qgsserver.cpp
   qgsserverexception.cpp
@@ -56,7 +55,6 @@ SET (QGIS_SERVER_HDRS
 SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
-  qgsmslayercache.h
   qgsserverlogger.h
   qgsserversettings.h
 )

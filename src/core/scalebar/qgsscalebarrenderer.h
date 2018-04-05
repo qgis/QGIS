@@ -40,10 +40,15 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Contains parameters regarding scalebar calculations.
+     * \note The need to attribute the parameters vary depending on the targeted scalebar.
      */
     struct ScaleBarContext
     {
-      //! Width of each individual segment (in millimeters)
+
+      /**
+       * The width, in millimeters, of each individual segment drawn.
+       * \note The number of map units per segment needs to be set via QgsScaleBarSettings::setUnitsPerSegment.
+       */
       double segmentWidth { 0.0 };
 
       /**

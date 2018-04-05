@@ -30,12 +30,12 @@
 
 /**
 * Constructor
-* @param hostname - Host name of the database server
-* @param port - The port number the database server is listening to
-* @param databasename - The name of the database to connect to
-* @param username - The username needed to access the database or database server
-* @param password - The password associate with the username needed to access the database or database server
-* @param type - The type of database being connected to
+* \param hostname - Host name of the database server
+* \param port - The port number the database server is listening to
+* \param databasename - The name of the database to connect to
+* \param username - The username needed to access the database or database server
+* \param password - The password associate with the username needed to access the database or database server
+* \param type - The type of database being connected to
 */
 eVisDatabaseConnection::eVisDatabaseConnection( const QString &hostname, int port, const QString &databasename, const QString &username, const QString &password, DatabaseType type )
 {
@@ -158,7 +158,7 @@ bool eVisDatabaseConnection::connect()
 
 /**
 * Executes a query on the current active database connection
-* @param sqlStatement - QString containing the sql statement to execute
+* \param sqlStatement - QString containing the sql statement to execute
 */
 QSqlQuery *eVisDatabaseConnection::query( const QString &sqlStatement )
 {
@@ -187,12 +187,12 @@ QSqlQuery *eVisDatabaseConnection::query( const QString &sqlStatement )
 
 /**
 * Reset the connection parameters
-* @param hostname - Host name of the database server
-* @param port - The port number the database server is listening to
-* @param databasename - The name of the database to connect to
-* @param username - The username needed to access the database or database server
-* @param password - The password associate with the username needed to access the database or database server
-* @param type - The type of database being connected to
+* \param hostname - Host name of the database server
+* \param port - The port number the database server is listening to
+* \param databasename - The name of the database to connect to
+* \param username - The username needed to access the database or database server
+* \param password - The password associate with the username needed to access the database or database server
+* \param type - The type of database being connected to
 */
 void eVisDatabaseConnection::resetConnectionParameters( const QString &hostname, int port, const QString &databasename, const QString &username, const QString &password, DatabaseType type )
 {

@@ -788,6 +788,21 @@ QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsPro
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
 
+  // metadata
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), project->metadata().author(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_abstract" ), project->metadata().abstract(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_creation_date" ), project->metadata().creationDateTime(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_identifier" ), project->metadata().identifier(), true, true ) );
+
+  // keywords
+  QVariantMap keywords;
+  QgsAbstractMetadataBase::KeywordMap metadataKeywords = project->metadata().keywords();
+  for ( auto it = metadataKeywords.constBegin(); it != metadataKeywords.constEnd(); ++it )
+  {
+    keywords.insert( it.key(), it.value() );
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_keywords" ), keywords, true, true ) );
+
   scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
   return scope;
 }

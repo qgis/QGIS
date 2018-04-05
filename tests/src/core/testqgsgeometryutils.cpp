@@ -23,6 +23,9 @@
 class TestQgsGeometryUtils: public QObject
 {
     Q_OBJECT
+  public:
+    QString elemToString( const QDomElement &elem ) const;
+
   private slots:
     void testExtractLinestrings();
     void testCircleClockwise_data();
@@ -56,8 +59,21 @@ class TestQgsGeometryUtils: public QObject
     void testClosestPoint();
     void testSegmentIntersection();
     void testLineCircleIntersection();
+    void testCircleCircleIntersection();
+    void testTangentPointAndCircle();
+    void testCircleCircleOuterTangents();
+    void testGml();
 };
 
+
+QString TestQgsGeometryUtils::elemToString( const QDomElement &elem ) const
+{
+  QString s;
+  QTextStream stream( &s );
+  elem.save( stream, -1 );
+
+  return s;
+}
 
 void TestQgsGeometryUtils::testExtractLinestrings()
 {
@@ -813,6 +829,90 @@ void TestQgsGeometryUtils::testLineCircleIntersection()
   linePoint2 = QgsPoint( 5, 2 );
   isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
   QVERIFY( !isIntersection );
+}
+
+void TestQgsGeometryUtils::testCircleCircleIntersection()
+{
+  QgsPointXY int1;
+  QgsPointXY int2;
+
+  // no intersections
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 2, 0 ), 0.5, int1, int2 ), 0 );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 0.5, 0.1 ), 0.2, int1, int2 ), 0 );
+  // one intersection
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 3, 0 ), 2, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( 1, 0 ) );
+  QCOMPARE( int2, QgsPointXY( 1, 0 ) );
+  // two intersections
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 5, 3 ), 2, QgsPointXY( 7, -1 ), 4, int1, int2 ), 2 );
+  QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
+  QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
+  QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
+  QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
+}
+
+void TestQgsGeometryUtils::testTangentPointAndCircle()
+{
+  QgsPointXY t1;
+  QgsPointXY t2;
+  QVERIFY( !QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( 1, 2 ), 4, QgsPointXY( 1, 2 ), t1, t2 ) );
+  QVERIFY( QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( 1, 2 ), 4, QgsPointXY( 8, 4 ), t1, t2 ) );
+  QGSCOMPARENEAR( t1.x(), 4.03, 0.01 );
+  QGSCOMPARENEAR( t1.y(), -0.61, 0.01 );
+  QGSCOMPARENEAR( t2.x(), 2.2, 0.01 );
+  QGSCOMPARENEAR( t2.y(), 5.82, 0.01 );
+}
+
+void TestQgsGeometryUtils::testCircleCircleOuterTangents()
+{
+  QgsPointXY l1p1;
+  QgsPointXY l1p2;
+  QgsPointXY l2p1;
+  QgsPointXY l2p2;
+
+  // no tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 2, 3 ), 1, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 1, 2 ), 1, QgsPointXY( 10, 3 ), 4, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 0.566, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 2.901, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 8.266, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 6.604, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 0.7749, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+
+  // larger circle first
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 10, 3 ), 4, QgsPointXY( 1, 2 ), 1, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 0.566, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 2.901, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 8.266, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 6.604, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 0.7749, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+}
+
+void TestQgsGeometryUtils::testGml()
+{
+  QgsPoint point = QgsPoint( 1, 2 );
+  QDomDocument doc;
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
+
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
+  QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

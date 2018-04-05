@@ -6,6 +6,7 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 %ModuleCode
 
 #include "qgsexception.h"
+#include "qgslogger.h"
 
 QString getTraceback()
 {
@@ -107,6 +108,7 @@ done:
 
 %VirtualErrorHandler processing_exception_handler
     QString trace = getTraceback();
+    QgsLogger::critical( trace );
     SIP_RELEASE_GIL( sipGILState );
     throw QgsProcessingException( trace );
 %End

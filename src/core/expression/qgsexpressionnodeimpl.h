@@ -47,7 +47,14 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     {}
     ~QgsExpressionNodeUnaryOperator() override { delete mOperand; }
 
+    /**
+     * Returns the unary operator.
+     */
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const { return mOp; }
+
+    /**
+     * Returns the node the operator will operate upon.
+     */
     QgsExpressionNode *operand() const { return mOperand; }
 
     QgsExpressionNode::NodeType nodeType() const override;
@@ -76,6 +83,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 };
 
 /**
+ * A binary expression operator, which operates on two values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
@@ -130,8 +138,21 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     {}
     ~QgsExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
 
+    /**
+     * Returns the binary operator.
+     */
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const { return mOp; }
+
+    /**
+     * Returns the node to the left of the operator.
+     * \see opRight()
+     */
     QgsExpressionNode *opLeft() const { return mOpLeft; }
+
+    /**
+     * Returns the node to the right of the operator.
+     * \see opLeft()
+     */
     QgsExpressionNode *opRight() const { return mOpRight; }
 
     QgsExpressionNode::NodeType nodeType() const override;
@@ -145,7 +166,14 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
+    /**
+     * Returns the precedence index for the operator. Higher values have higher precedence.
+     */
     int precedence() const;
+
+    /**
+     * Returns true if the operator is left-associative.
+     */
     bool leftAssociative() const;
 
     /**
@@ -174,6 +202,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 };
 
 /**
+ * An expression node for value IN or NOT IN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
@@ -190,8 +219,19 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     {}
     ~QgsExpressionNodeInOperator() override;
 
+    /**
+     * Returns the expression node.
+     */
     QgsExpressionNode *node() const { return mNode; }
+
+    /**
+     * Returns true if this node is a "NOT IN" operator, or false if the node is a normal "IN" operator.
+     */
     bool isNotIn() const { return mNotIn; }
+
+    /**
+     * Returns the list of nodes to search for matching values within.
+     */
     QgsExpressionNode::NodeList *list() const { return mList; }
 
     QgsExpressionNode::NodeType nodeType() const override;
@@ -212,6 +252,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
 };
 
 /**
+ * An expression node for expression functions.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
@@ -226,7 +267,14 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 
     ~QgsExpressionNodeFunction() override;
 
+    /**
+     * Returns the index of the node's function.
+     */
     int fnIndex() const { return mFnIndex; }
+
+    /**
+     * Returns a list of arguments specified for the function.
+     */
     QgsExpressionNode::NodeList *args() const { return mArgs; }
 
     QgsExpressionNode::NodeType nodeType() const override;
@@ -249,11 +297,16 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 };
 
 /**
+ * An expression node for literal values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 {
   public:
+
+    /**
+     * Constructor for QgsExpressionNodeLiteral, with the specified literal \a value.
+     */
     QgsExpressionNodeLiteral( const QVariant &value )
       : mValue( value )
     {}
@@ -277,11 +330,17 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 };
 
 /**
+ * An expression node which takes it value from a feature's field.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 {
   public:
+
+    /**
+     * Constructor for QgsExpressionNodeColumnRef, referencing the column
+     * with the specified \a name.
+     */
     QgsExpressionNodeColumnRef( const QString &name )
       : mName( name )
       , mIndex( -1 )
@@ -308,11 +367,17 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 };
 
 /**
+ * An expression node for CASE WHEN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
 {
   public:
+
+    /**
+     * Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+     * \ingroup core
+     */
     class CORE_EXPORT WhenThen
     {
       public:

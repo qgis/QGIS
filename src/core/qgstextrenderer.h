@@ -1277,6 +1277,14 @@ class CORE_EXPORT QgsTextRenderer
 {
   public:
 
+    //! Draw mode to calculate width and height
+    enum DrawMode
+    {
+      Rect = 0, //!< Text within rectangle draw mode
+      Point, //!< Text at point of origin draw mode
+      Label, //!< Label-specific draw mode
+    };
+
     //! Components of text
     enum TextPart
     {
@@ -1374,14 +1382,28 @@ class CORE_EXPORT QgsTextRenderer
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 
-  private:
+    /**
+     * Returns the width of a text based on a given format.
+     * \param context render context
+     * \param format text format
+     * \param textLines list of lines of text to calculate width from
+     * \param fontMetrics font metrics
+     */
+    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
+                             QFontMetricsF *fontMetrics = nullptr );
 
-    enum DrawMode
-    {
-      Rect = 0,
-      Point,
-      Label,
-    };
+    /**
+     * Returns the height of a text based on a given format.
+     * \param context render context
+     * \param format text format
+     * \param textLines list of lines of text to calculate width from
+     * \param mode draw mode
+     * \param fontMetrics font metrics
+     */
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
+                              QFontMetricsF *fontMetrics = nullptr );
+
+  private:
 
     struct Component
     {
@@ -1447,11 +1469,6 @@ class CORE_EXPORT QgsTextRenderer
     friend class QgsLabelPreview;
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
-
-    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
-                             QFontMetricsF *fm = nullptr );
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
-                              QFontMetricsF *fm = nullptr );
 
 
 };

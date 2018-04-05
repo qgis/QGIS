@@ -256,7 +256,7 @@ QString QgsPoint::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
@@ -269,18 +269,26 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
   elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
 
-  QString strCoordinates = qgsDoubleToString( mX, precision ) + cs + qgsDoubleToString( mY, precision );
+  QString strCoordinates;
+  if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+    strCoordinates = qgsDoubleToString( mX, precision ) + cs + qgsDoubleToString( mY, precision );
+  else
+    strCoordinates = qgsDoubleToString( mY, precision ) + cs + qgsDoubleToString( mX, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
   elemPoint.appendChild( elemCoordinates );
   return elemPoint;
 }
 
-QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
   elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D() ? 3 : 2 );
-  QString strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
+  QString strCoordinates;
+  if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+    strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
+  else
+    strCoordinates = qgsDoubleToString( mY, precision ) + ' ' + qgsDoubleToString( mX, precision );
   if ( is3D() )
     strCoordinates += ' ' + qgsDoubleToString( mZ, precision );
 
@@ -543,6 +551,12 @@ bool QgsPoint::dropMValue()
   mM = std::numeric_limits<double>::quiet_NaN();
   clearCache();
   return true;
+}
+
+void QgsPoint::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
 }
 
 bool QgsPoint::convertTo( QgsWkbTypes::Type type )

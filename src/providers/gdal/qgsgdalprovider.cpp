@@ -1062,9 +1062,9 @@ void QgsGdalProvider::computeMinMax( int bandNo ) const
 #endif
 
 /**
- * @param bandNumber the number of the band for which you want a color table
- * @param list a pointer the object that will hold the color table
- * @return true of a color table was able to be read, false otherwise
+ * \param bandNumber the number of the band for which you want a color table
+ * \param list a pointer the object that will hold the color table
+ * \return true of a color table was able to be read, false otherwise
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNumber )const
 {
@@ -1692,8 +1692,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
  * pyramids (.ovr) are to be created. If no parameter is passed in
  * it will default to nearest neighbor resampling.
  *
- * @param tryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
- * @return null string on success, otherwise a string specifying error
+ * \param tryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
+ * \return null string on success, otherwise a string specifying error
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                                         const QString &resamplingMethod, QgsRaster::RasterPyramidsFormat format,

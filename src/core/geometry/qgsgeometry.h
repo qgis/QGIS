@@ -887,7 +887,7 @@ class CORE_EXPORT QgsGeometry
       SideLeft = 0, //!< Buffer to left of line
       SideRight, //!< Buffer to right of line
     };
-    Q_ENUM( BufferSide );
+    Q_ENUM( BufferSide )
 
     //! End cap styles for buffers
     enum EndCapStyle
@@ -896,7 +896,7 @@ class CORE_EXPORT QgsGeometry
       CapFlat, //!< Flat cap (in line with start/end of line)
       CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
     };
-    Q_ENUM( EndCapStyle );
+    Q_ENUM( EndCapStyle )
 
     //! Join styles for buffers
     enum JoinStyle
@@ -905,7 +905,7 @@ class CORE_EXPORT QgsGeometry
       JoinStyleMiter, //!< Use mitered joins
       JoinStyleBevel, //!< Use beveled joins
     };
-    Q_ENUM( JoinStyle );
+    Q_ENUM( JoinStyle )
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
@@ -1675,6 +1675,10 @@ class CORE_EXPORT QgsGeometry
     /**
      * Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
+     *
+     * If input geometries contain Z or M values, these will also be smoothed and the output
+     * geometry will retain the same dimensionality as the input geometry.
+     *
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
      * \param offset fraction of line to create new vertices along, between 0 and 1.0,

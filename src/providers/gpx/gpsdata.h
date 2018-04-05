@@ -229,12 +229,12 @@ class QgsGpsData
 
     /**
      * This function returns a pointer to the GPSData object associated with
-        the file @c file name. If the file does not exist or can't be parsed,
+        the file \c file name. If the file does not exist or can't be parsed,
         NULL will be returned. If the file is already used by another layer,
         a pointer to the same GPSData object will be returned. And if the file
         is not used by any other layer, and can be parsed, a new GPSData object
         will be created and a pointer to it will be returned. If you use this
-        function you should also call releaseData() with the same @c file name
+        function you should also call releaseData() with the same \c file name
         when you're done with the GPSData pointer, otherwise the data will stay
         in memory forever and you will get an ugly memory leak. */
     static QgsGpsData *getData( const QString &fileName );
@@ -242,7 +242,7 @@ class QgsGpsData
     /**
      * Call this function when you're done with a GPSData pointer that you
         got earlier using getData(). Do NOT call this function if you haven't
-        called getData() earlier with the same @c file name, that can cause data
+        called getData() earlier with the same \c file name, that can cause data
         that is still in use to be deleted. */
     static void releaseData( const QString &fileName );
 

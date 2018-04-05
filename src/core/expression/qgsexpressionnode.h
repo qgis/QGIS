@@ -69,6 +69,8 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode );
 
   public:
+
+    //! Known node types.
     enum NodeType
     {
       ntUnaryOperator, //!< \see QgsExpression::Node::NodeUnaryOperator
@@ -108,6 +110,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     };
 
     /**
+     * A list of expression nodes.
      * \ingroup core
      */
     class CORE_EXPORT NodeList
@@ -155,6 +158,9 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         //! Creates a deep copy of this list. Ownership is transferred to the caller
         QgsExpressionNode::NodeList *clone() const SIP_FACTORY;
 
+        /**
+         * Returns a string dump of the expression node.
+         */
         virtual QString dump() const;
 
       private:

@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 from qgis.testing import unittest
-from qgis.core import QgsCoordinateFormatter
+from qgis.core import QgsCoordinateFormatter, QgsPointXY
 
 
 class TestQgsCoordinateFormatter(unittest.TestCase):
@@ -47,6 +47,11 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
         self.assertEqual(QgsCoordinateFormatter.asPair(20.111, 10.999, 2), '20.11,11.00')
         self.assertEqual(QgsCoordinateFormatter.asPair(20, 10, 2), '20.00,10.00')
         self.assertEqual(QgsCoordinateFormatter.asPair(20, -10, 2), '20.00,-10.00')
+
+    def testFormat(self):
+        self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 0), '20,30')
+        self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20.1, 30.2), QgsCoordinateFormatter.FormatPair, 1), '20.1,30.2')
+        self.assertEqual(QgsCoordinateFormatter.format(QgsPointXY(20, 30), QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 0), '20°0′0″E,30°0′0″N')
 
     def testFormatXFormatDegreesMinutesSeconds(self):
         """Test formatting x as DMS"""

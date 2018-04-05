@@ -205,6 +205,15 @@ Overridden implementations should also check this base class implementation.
 :return: true if parameters are acceptable for the algorithm.
 %End
 
+    virtual QVariantMap preprocessParameters( const QVariantMap &parameters );
+%Docstring
+Pre-processes a set of ``parameters``, allowing the algorithm to clean their
+values.
+
+This method is automatically called after users enter parameters, e.g. via the algorithm
+dialog. This method should NOT be called manually by algorithms.
+%End
+
     QgsProcessingProvider *provider() const;
 %Docstring
 Returns the provider to which this algorithm belongs.
@@ -855,7 +864,7 @@ Returns the source's coordinate reference system. This will only return a valid 
 called from a subclasses' processFeature() implementation.
 %End
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Processes an individual input ``feature`` from the source. Algorithms should implement their
 logic in this method for performing the algorithm's operation (e.g. replacing the feature's

@@ -433,10 +433,9 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ), tr( "SVG" ) );
-
+      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString(), path ), tr( "SVG" ) );
       reply->deleteLater();
-      return QByteArray();
+      return mMissingSvg;
     }
 
     QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
@@ -456,16 +455,19 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   if ( !status.isNull() && status.toInt() >= 400 )
   {
     QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2]" ).arg( status.toInt() ).arg( phrase.toString() ), tr( "SVG" ) );
+    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path ), tr( "SVG" ) );
 
     reply->deleteLater();
     return mMissingSvg;
   }
 
+  // we accept both real SVG mime types AND plain text types - because some sites
+  // (notably github) serve up svgs as raw text
   QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-  QgsDebugMsg( "contentType: " + contentType );
-  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive )
+       && !contentType.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
   {
+    QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
     reply->deleteLater();
     return mMissingSvg;
   }

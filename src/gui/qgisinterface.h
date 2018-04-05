@@ -688,7 +688,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see registerCustomLayoutDropHandler() */
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
-    // @todo is this deprecated in favour of QgsContextHelp?
+    // TODO is this deprecated in favour of QgsContextHelp?
 
     /**
      * Open a url in the users browser. By default the QGIS doc directory is used

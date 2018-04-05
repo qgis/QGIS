@@ -210,11 +210,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Open a raster or vector file; ignore other files.
-      Used to process a commandline argument, FileOpen or Drop event.
-      Set interactive to true if it is OK to ask the user for information (mostly for
-      when a vector layer has sublayers and we want to ask which sublayers to use).
-      \returns true if the file is successfully opened
-      */
+     * Used to process a commandline argument, FileOpen or Drop event.
+     * Set \a allowInteractive to true if it is OK to ask the user for information (mostly for
+     * when a vector layer has sublayers and we want to ask which sublayers to use).
+     * \returns true if the file is successfully opened
+     */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
     /**
@@ -238,9 +238,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void runScript( const QString &filePath );
 
     /**
-     * Opens a qgis project file
-      \returns false if unable to open the project
-      */
+     * Opens a QGIS project file
+     * \returns false if unable to open the project
+     */
     bool addProject( const QString &projectFile );
 
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
@@ -527,6 +527,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
     QAction *actionTogglePanelsVisibility() { return mActionTogglePanelsVisibility; }
+    QAction *actionToggleMapOnly() { return mActionToggleMapOnly; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
@@ -692,8 +693,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     //! save current vector layer
-    void saveAsFile( QgsMapLayer *layer = nullptr );
-
+    void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
+    //! save qml style for the current layer
+    void saveStyleFile( QgsMapLayer *layer = nullptr );
+    //! save qrl definition for the current layer
+    void saveAsLayerDefinition();
+    //! save current raster layer
+    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
@@ -821,6 +827,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer *destinationLayer = nullptr );
+    //! copies group or layer on the clipboard
+    void copyLayer();
+    //! pastes group or layer from the clipboard to layer tree
+    void pasteLayer();
+
+    //! Set CRS of a layer
+    void setLayerCrs();
+    //! Assign layer CRS to project
+    void setProjectCrsFromLayer();
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );
@@ -980,7 +995,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onSnappingConfigChanged();
 
-    //! validate a SRS
+    /**
+     * Triggers validation of the specified \a crs.
+     */
     void validateCrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGIS Sponsors
@@ -1031,10 +1048,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerScaleVisibility();
     //! Zoom to nearest scale such that current layer is visible
     void zoomToLayerScale();
-    //! Set CRS of a layer
-    void setLayerCrs();
-    //! Assign layer CRS to project
-    void setProjectCrsFromLayer();
 
     /**
      * Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
@@ -1503,11 +1516,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! set the CAD dock widget visible
     void setCadDockVisible( bool visible );
 
-    void saveAsLayerDefinition();
-
-    //! save current raster layer
-    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
-
     //! show Python console
     void showPythonDialog();
 
@@ -1525,6 +1533,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Toggle visibility of opened panels
     void togglePanelsVisibility();
+
+    //! Toggle visibility of main map only
+    void toggleMapOnly();
+
+    //! Toggle between full QGIS view and reduced view (being either Map only or only hiding panels)
+    void toggleReducedView( bool viewMapOnly );
 
     //! Set minimized mode of active window
     void showActiveWindowMinimized();
@@ -1744,7 +1758,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //void readWKB(const char *, QStringList tables);
     //! shows the paste-transformations dialog
     // void pasteTransformations();
-    //! check to see if file is dirty and if so, prompt the user th save it
+
+    /**
+     * Check to see if the current project file is dirty and if so, prompt the user to save it.
+     * \returns true if saved or discarded, false if canceled
+     */
     bool saveDirty();
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
@@ -1763,7 +1781,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
-    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
+    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
 
     /**
      * Paste features from clipboard into a new memory layer.

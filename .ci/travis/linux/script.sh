@@ -17,11 +17,11 @@ set -e
 
 source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
 
-DOCKER_QGIS_IMAGE_BUILD_PUSH=create_qgis_image
+DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
 
 mkdir -p $CCACHE_DIR
 
-if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH -eq 1 ]]; then
+if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ true ]]; then
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd ${DIR}
   echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"

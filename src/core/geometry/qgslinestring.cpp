@@ -335,7 +335,7 @@ QString QgsLineString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -345,12 +345,12 @@ QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QStri
   if ( isEmpty() )
     return elemLineString;
 
-  elemLineString.appendChild( QgsGeometryUtils::pointsToGML2( pts, doc, precision, ns ) );
+  elemLineString.appendChild( QgsGeometryUtils::pointsToGML2( pts, doc, precision, ns, axisOrder ) );
 
   return elemLineString;
 }
 
-QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -360,7 +360,7 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   if ( isEmpty() )
     return elemLineString;
 
-  elemLineString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
+  elemLineString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D(), axisOrder ) );
   return elemLineString;
 }
 
@@ -1251,6 +1251,12 @@ bool QgsLineString::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   mM.clear();
   return true;
+}
+
+void QgsLineString::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
 }
 
 bool QgsLineString::convertTo( QgsWkbTypes::Type type )

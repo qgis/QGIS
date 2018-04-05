@@ -339,7 +339,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
@@ -349,7 +349,7 @@ QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QSt
 
   QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, QStringLiteral( "outerBoundaryIs" ) );
   std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
-  QDomElement outerRing = exteriorLineString->asGml2( doc, precision, ns );
+  QDomElement outerRing = exteriorLineString->asGml2( doc, precision, ns, axisOrder );
   outerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
   elemOuterBoundaryIs.appendChild( outerRing );
   elemPolygon.appendChild( elemOuterBoundaryIs );
@@ -358,7 +358,7 @@ QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QSt
   {
     QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
     interiorLineString.reset( interiorRing( i )->curveToLine() );
-    QDomElement innerRing = interiorLineString->asGml2( doc, precision, ns );
+    QDomElement innerRing = interiorLineString->asGml2( doc, precision, ns, axisOrder );
     innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInnerBoundaryIs.appendChild( innerRing );
     elemPolygon.appendChild( elemInnerBoundaryIs );
@@ -366,7 +366,7 @@ QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QSt
   return elemPolygon;
 }
 
-QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
 
@@ -374,7 +374,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
     return elemCurvePolygon;
 
   QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
-  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns );
+  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
   if ( curveElem.tagName() == QLatin1String( "LineString" ) )
   {
     curveElem.setTagName( QStringLiteral( "LinearRing" ) );
@@ -385,7 +385,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
-    QDomElement innerRing = interiorRing( i )->asGml3( doc, precision, ns );
+    QDomElement innerRing = interiorRing( i )->asGml3( doc, precision, ns, axisOrder );
     if ( innerRing.tagName() == QLatin1String( "LineString" ) )
     {
       innerRing.setTagName( QStringLiteral( "LinearRing" ) );
@@ -1156,6 +1156,17 @@ bool QgsCurvePolygon::dropMValue()
   }
   clearCache();
   return true;
+}
+
+void QgsCurvePolygon::swapXy()
+{
+  if ( mExteriorRing )
+    mExteriorRing->swapXy();
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    curve->swapXy();
+  }
+  clearCache();
 }
 
 QgsCurvePolygon *QgsCurvePolygon::toCurveType() const

@@ -170,8 +170,9 @@ created for the same data source and renderer is cloned too.
 This helper checks to see whether the file name appears to be a valid
 raster file name.  If the file name looks like it could be valid,
 but some sort of error occurs in processing the file, the error is
-returned in retError.
+returned in ``retError``.
 %End
+
     static bool isValidRasterFileName( const QString &fileNameQString );
 
     static QDateTime lastModified( const QString   &name );
@@ -233,27 +234,11 @@ Get raster pipe
 
     virtual const QgsRasterDataProvider *dataProvider() const /PyName=constDataProvider/;
 
-%Docstring
-Returns the data provider in a const-correct manner
-
-.. note::
-
-   available in Python bindings as constDataProvider()
-%End
 
     virtual void reload();
 
-%Docstring
-Synchronises with changes in the datasource
-%End
-
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
-%Docstring
-Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-
-.. versionadded:: 2.4
-%End
 
     void draw( QPainter *theQPainter,
                QgsRasterViewPort *myRasterViewPort,
@@ -274,7 +259,9 @@ Returns a list with classification items (Text and color)
 
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
- Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+
+:param bandNumber: the number of the band to use for generating a pixmap of the associated palette
 %End
 
     QString providerType() const;
@@ -284,11 +271,21 @@ Returns a list with classification items (Text and color)
 
     double rasterUnitsPerPixelX() const;
 %Docstring
- Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
+Returns the number of raster units per each raster pixel in X axis.
+
+In a world file, this is normally the first row (without the sign). (E.g.
+the value reported by the GDAL geotransform[1]).
+
+.. seealso:: :py:func:`rasterUnitsPerPixelY`
 %End
+
     double rasterUnitsPerPixelY() const;
 %Docstring
- Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
+Returns the number of raster units per each raster pixel in Y axis.
+
+In a world file, this is normally the first row (without the sign).
+
+.. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
 
@@ -318,9 +315,6 @@ Returns a list with classification items (Text and color)
 
     virtual QStringList subLayers() const;
 
-%Docstring
- Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
-%End
 
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
@@ -332,23 +326,10 @@ Returns a list with classification items (Text and color)
 
     virtual void setLayerOrder( const QStringList &layers );
 
-%Docstring
-Reorders the *previously selected* sublayers of this layer from bottom to top
-
-(Useful for providers that manage their own layers, such as WMS)
-%End
-
     virtual void setSubLayerVisibility( const QString &name, bool vis );
-
-%Docstring
-Set the visibility of the given sublayer name
-%End
 
     virtual QDateTime timestamp() const;
 
-%Docstring
-Time stamp of data source in the moment when data/metadata were loaded by provider
-%End
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -356,39 +337,16 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
   protected:
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
-%Docstring
- Read the symbology for the current layer from the Dom node supplied
-%End
-
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-
-%Docstring
- Read the style information for the current layer from the Dom node supplied
-%End
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
-%Docstring
- Reads layer specific state from project file Dom node
-%End
-
     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
-%Docstring
- Write the symbology for the layer into the docment provided
-%End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
-%Docstring
- Write the style for the layer into the docment provided
-%End
-
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-%Docstring
- Write layer specific state to project file Dom node
-%End
 
 };
 

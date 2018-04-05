@@ -301,15 +301,15 @@ QString QgsCircularString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QDomElement gml = line->asGml2( doc, precision, ns );
+  QDomElement gml = line->asGml2( doc, precision, ns, axisOrder );
   return gml;
 }
 
-QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -321,7 +321,7 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
 
   QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
   QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
-  elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
+  elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D(), axisOrder ) );
   elemSegments.appendChild( elemArcString );
   elemCurve.appendChild( elemSegments );
   return elemCurve;
@@ -1123,4 +1123,10 @@ bool QgsCircularString::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   mM.clear();
   return true;
+}
+
+void QgsCircularString::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
 }

@@ -59,6 +59,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
+                       QgsProcessingOutputHtml,
                        QgsProcessingUtils)
 from qgis.utils import iface
 

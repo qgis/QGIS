@@ -48,8 +48,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
 
     //curve interface
@@ -122,6 +122,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;

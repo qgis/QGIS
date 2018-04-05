@@ -192,6 +192,15 @@ class CORE_EXPORT QgsLayoutExporter
       bool generateWorldFile = false;
 
       /**
+       * Indicates whether image export should include metadata generated
+       * from the layout's project's metadata.
+       *
+       * \since QGIS 3.2
+       */
+      bool exportMetadata = true;
+
+
+      /**
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = 0;
@@ -252,6 +261,14 @@ class CORE_EXPORT QgsLayoutExporter
        * This option is mutually exclusive with rasterizeWholeImage.
        */
       bool forceVectorOutput = false;
+
+      /**
+       * Indicates whether PDF export should include metadata generated
+       * from the layout's project's metadata.
+       *
+       * \since QGIS 3.2
+       */
+      bool exportMetadata = true;
 
       /**
        * Layout context flags, which control how the export will be created.
@@ -385,6 +402,14 @@ class CORE_EXPORT QgsLayoutExporter
       bool exportAsLayers = false;
 
       /**
+       * Indicates whether SVG export should include RDF metadata generated
+       * from the layout's project's metadata.
+       *
+       * \since QGIS 3.2
+       */
+      bool exportMetadata = true;
+
+      /**
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = 0;
@@ -473,7 +498,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
-    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat );
+    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata );
 
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.
@@ -519,7 +544,12 @@ class CORE_EXPORT QgsLayoutExporter
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
                                      const QString &filename, int svgLayerId, const QString &layerName,
-                                     QDomDocument &svg, QDomNode &svgDocRoot ) const;
+                                     QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
+
+    void appendMetadataToSvg( QDomDocument &svg ) const;
+
+    bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
+                                    const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
     friend class TestQgsLayout;
 

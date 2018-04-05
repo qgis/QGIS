@@ -24,6 +24,8 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
 
+#include <QButtonGroup>
+
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
