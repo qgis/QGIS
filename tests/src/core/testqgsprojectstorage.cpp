@@ -184,7 +184,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   QCOMPARE( prj2.mapLayers().count(), 1 );
   QCOMPARE( prj2.title(), QString( "best project ever" ) );
 
-  // test access of non-existant project
+  // test access of non-existent project
 
   QgsProject prj3;
   prj3.setFileName( "memory:nooooooooo!" );

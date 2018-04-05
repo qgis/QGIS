@@ -110,6 +110,7 @@ Returns QFileInfo object for the project's associated file.
 .. seealso:: :py:func:`fileName`
 
 .. versionadded:: 2.9
+\deprecated
 %End
 
     QDateTime lastModified() const;

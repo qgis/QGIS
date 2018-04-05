@@ -1743,7 +1743,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            bool guiUpdate );
 
     /**
-     * Add thie current project to the recently opened/saved projects list
+     * Add the current project to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
