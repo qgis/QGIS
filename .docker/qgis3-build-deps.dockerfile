@@ -94,7 +94,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python3-pip python2.7 sip-dev \
   && apt-get clean
 
   RUN bash -c "echo $(sip -V)"
