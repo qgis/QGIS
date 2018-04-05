@@ -5591,7 +5591,7 @@ bool QgisApp::addProject( const QString &projectFile )
       // We loaded data from the backup file, but we pretend to work on the original project file.
       QgsProject::instance()->setFileName( projectFile );
       QgsProject::instance()->setDirty( true );
-      mProjectLastModified = pfi.lastModified();
+      mProjectLastModified = QgsProject::instance()->lastModified();
       return true;
     }
 
@@ -5600,7 +5600,7 @@ bool QgisApp::addProject( const QString &projectFile )
     return false;
   }
 
-  mProjectLastModified = pfi.lastModified();
+  mProjectLastModified = QgsProject::instance()->lastModified();
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
@@ -5701,7 +5701,6 @@ bool QgisApp::fileSave()
 {
   // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
-  QFileInfo fullPath;
 
   if ( QgsProject::instance()->fileName().isNull() )
   {
@@ -5720,6 +5719,7 @@ bool QgisApp::fileSave()
     if ( path.isEmpty() )
       return false;
 
+    QFileInfo fullPath;
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
@@ -5738,9 +5738,10 @@ bool QgisApp::fileSave()
   }
   else
   {
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    fullPath = fi.absoluteFilePath();
-    if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
+    bool usingProjectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( QgsProject::instance()->fileName() );
+    bool fileExists = usingProjectStorage ? true : QFileInfo( QgsProject::instance()->fileName() ).exists();
+
+    if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )
     {
       if ( QMessageBox::warning( this,
                                  tr( "Open a Project" ),
@@ -5748,12 +5749,12 @@ bool QgisApp::fileSave()
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
                                  .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
-                                       fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                       QgsProject::instance()->lastModified().toString( Qt::DefaultLocaleLongDate ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
 
-    if ( fi.exists() && ! fi.isWritable() )
+    if ( fileExists && !usingProjectStorage && ! QFileInfo( QgsProject::instance()->fileName() ).isWritable() )
     {
       messageBar()->pushMessage( tr( "Insufficient permissions" ),
                                  tr( "The project file is not writable." ),
@@ -5769,8 +5770,7 @@ bool QgisApp::fileSave()
 
     saveRecentProjectPath();
 
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    mProjectLastModified = fi.lastModified();
+    mProjectLastModified = QgsProject::instance()->lastModified();
   }
   else
   {
