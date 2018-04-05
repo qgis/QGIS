@@ -95,7 +95,7 @@ RUN  apt-get update \
     future \
     termcolor \
     virtualenv \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python2.7 \
   && apt-get clean
 
   RUN bash -c "echo $(sip -V)"
@@ -115,7 +115,8 @@ WORKDIR /root/sip419
 RUN python3 build.py prepare \
  && python3 configure.py \
  && make \
- && make install
+ && make install \
+ && pip3 install PyQt5
 
  RUN bash -c "echo $(sip -V)"
  RUN bash -c "echo $(which sip)"
