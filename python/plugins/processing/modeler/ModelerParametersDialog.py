@@ -63,10 +63,6 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 
 
 class ModelerParametersDialog(QDialog):
-    ENTER_NAME = '[Enter name if this is a final result]'
-    NOT_SELECTED = '[Not selected]'
-    USE_MIN_COVERING_EXTENT = '[Use min covering extent]'
-
     def __init__(self, alg, model, algName=None):
         QDialog.__init__(self)
         self.setModal(True)
@@ -157,7 +153,7 @@ class ModelerParametersDialog(QDialog):
                 label = QLabel(dest.description())
                 item = QgsFilterLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
-                    item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+                    item.setPlaceholderText(self.tr('[Enter name if this is a final result]'))
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(item)
                 self.valueItems[dest.name()] = item
@@ -320,7 +316,7 @@ class ModelerParametersDialog(QDialog):
         for dest in self._alg.destinationParameterDefinitions():
             if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 name = str(self.valueItems[dest.name()].text())
-                if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
+                if name.strip() != '':
                     output = QgsProcessingModelOutput(name, name)
                     output.setChildId(alg.childId())
                     output.setChildOutputName(dest.name())
