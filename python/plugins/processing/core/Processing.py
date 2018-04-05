@@ -181,7 +181,7 @@ class Processing:
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for p in Processing.providers:
-            Processing.reloadProvider(p)
+            Processing.reloadProvider(p.getName())
         QApplication.restoreOverrideCursor()
 
     @staticmethod
