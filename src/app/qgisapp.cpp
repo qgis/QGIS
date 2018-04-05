@@ -5536,7 +5536,7 @@ void QgisApp::fileRevert()
     return;
 
   // re-open the current project
-  addProject( QgsProject::instance()->fileInfo().filePath() );
+  addProject( QgsProject::instance()->fileName() );
 }
 
 void QgisApp::enableProjectMacros()

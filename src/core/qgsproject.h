@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see fileName()
      * \since QGIS 2.9
      */
-    QFileInfo fileInfo() const;
+    Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
     /**
      * Returns last modified time of the project file as returned by the file system (or other project storage).

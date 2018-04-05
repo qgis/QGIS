@@ -97,7 +97,7 @@ representation.
 .. seealso:: :py:func:`fileInfo`
 %End
 
-    QFileInfo fileInfo() const;
+ QFileInfo fileInfo() const /Deprecated/;
 %Docstring
 Returns QFileInfo object for the project's associated file.
 
