@@ -92,7 +92,7 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
 
   if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
   {
-    // TODO: write to context
+    context.pushMessage( "Table qgis_projects does not exist or it is not accessible.", Qgis::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
   }
@@ -267,7 +267,7 @@ QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postU
     urlQuery.addQueryItem( "service", postUri.connInfo.service() );
   if ( !postUri.connInfo.authConfigId().isEmpty() )
     urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
-  if ( !postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
+  if ( postUri.connInfo.sslMode() != QgsDataSourceUri::SslPrefer )
     urlQuery.addQueryItem( "sslmode", QgsDataSourceUri::encodeSslMode( postUri.connInfo.sslMode() ) );
 
   urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );

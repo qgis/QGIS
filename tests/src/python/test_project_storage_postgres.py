@@ -25,15 +25,46 @@ import time
 
 from qgis.core import (
     QgsApplication,
+    QgsDataSourceUri,
     QgsVectorLayer,
     QgsProject,
 )
-from PyQt5.QtCore import QDateTime
+from PyQt5.QtCore import QDateTime, QUrl, QUrlQuery
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
+
+def encode_uri(ds_uri, schema_name, project_name=None):
+    u = QUrl()
+    urlQuery = QUrlQuery()
+
+    u.setScheme("postgresql")
+    u.setHost(ds_uri.host())
+    if ds_uri.port() != '':
+        u.setPort(int(ds_uri.port()))
+    if ds_uri.username() != '':
+        u.setUserName(ds_uri.username())
+    if ds_uri.password() != '':
+        u.setPassword(ds_uri.password())
+
+    if ds_uri.service() != '':
+        urlQuery.addQueryItem("service", ds_uri.service())
+    if ds_uri.authConfigId() != '':
+        urlQuery.addQueryItem("authcfg", ds_uri.authConfigId())
+    if ds_uri.sslMode() != QgsDataSourceUri.SslPrefer:
+        urlQuery.addQueryItem("sslmode", QgsDataSourceUri.encodeSslMode(ds_uri.sslMode()))
+
+    urlQuery.addQueryItem("dbname", ds_uri.database())
+
+    urlQuery.addQueryItem("schema", schema_name)
+    if project_name:
+        urlQuery.addQueryItem("project", project_name)
+
+    u.setQuery(urlQuery)
+    return str(u.toEncoded(), 'utf-8')
 
 
 class TestPyQgsProjectStoragePostgres(unittest.TestCase):
@@ -44,6 +75,8 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
         cls.dbconn = 'dbname=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        cls.ds_uri = QgsDataSourceUri(cls.dbconn)
+
         # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert cls.vl.isValid()
@@ -66,9 +99,8 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
 
     def testSaveLoadProject(self):
 
-        # TODO: respect QGIS_PGTEST_DB
-        schema_uri = "postgresql:///?dbname=qgis_test&schema=qgis_test"
-        project_uri = "postgresql:///?dbname=qgis_test&schema=qgis_test&project=abc"
+        schema_uri = encode_uri(self.ds_uri, 'qgis_test')
+        project_uri = encode_uri(self.ds_uri, 'qgis_test', 'abc')
 
         self.dropProjectsTable()  # make sure we have a clean start
 
