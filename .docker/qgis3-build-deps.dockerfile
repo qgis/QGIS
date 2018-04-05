@@ -94,12 +94,18 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 sip-dev \
+    virtualenv \
+  && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
   RUN bash -c "echo $(sip -V)"
   RUN bash -c "echo $(which sip)"
 
+WORKDIR /root
+RUN mkdir /root/virtualenvironment \
+ && virtualenv /root/virtualenvironment/sip419
+WORKDIR /root/virtualenvironment/sip419/bin
+RUN source activate
 WORKDIR /root
 RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && tar xzf tip.tar.gz \
