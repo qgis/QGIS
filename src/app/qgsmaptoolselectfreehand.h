@@ -21,6 +21,7 @@
 
 class QgsMapCanvas;
 class QgsRubberBand;
+class QgsMapToolSelectionHandler;
 
 
 class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
@@ -41,14 +42,8 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   private:
+    QgsMapToolSelectionHandler *mSelectionHandler;
 
-    //! used for storing all of the maps point for the freehand sketch
-    QgsRubberBand *mRubberBand = nullptr;
-
-    bool mActive = false;
-
-    QColor mFillColor;
-    QColor mStrokeColor;
 };
 
 #endif

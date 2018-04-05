@@ -63,8 +63,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void handleOnCanvasRelease( QgsMapMouseEvent *e );
 
-    void initRubberBand();
-
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -82,41 +80,9 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
-
-    bool mSelectionActive = false;
-
-    std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
-
-    QColor mFillColor;
-
-    QColor mStrokeColor;
-
-    bool mJustFinishedSelection = false;
-
-    //! Center point for the radius
-    QgsPointXY mRadiusCenter;
-
-    QPoint mInitDragPos;
-
     QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
-
-    void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
-    void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
-
-    void selectPolygonMoveEvent( QgsMapMouseEvent *e );
-    void selectPolygonReleaseEvent( QgsMapMouseEvent *e );
-
-    void selectFreehandMoveEvent( QgsMapMouseEvent *e );
-    void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
-
-    void selectRadiusMoveEvent( QgsMapMouseEvent *e );
-    void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
-
-    void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
     void keyReleaseEvent( QKeyEvent *e ) override;
 

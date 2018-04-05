@@ -16,83 +16,47 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmaptoolselectfreehand.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
+#include "qgsmaptoolselectionhandler.h"
 #include "qgsmapcanvas.h"
 #include "qgis.h"
 
 #include <QMouseEvent>
+class QgsMapToolSelectionHandler;
 
 
 QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
 {
-  delete mRubberBand;
+  delete mSelectionHandler;
 }
 
 
 void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mActive || !mRubberBand )
-    return;
-
-  mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+  mSelectionHandler->selectFreehandMoveEvent( e );
 }
 
 
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( !mActive )
+  mSelectionHandler->selectFreehandReleaseEvent( e );
+  if (mSelectionHandler->mSelectFeatures)
   {
-    if ( e->button() != Qt::LeftButton )
-      return;
-
-    if ( !mRubberBand )
-    {
-      mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-      mRubberBand->setFillColor( mFillColor );
-      mRubberBand->setStrokeColor( mStrokeColor );
-    }
-    else
-    {
-      mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    }
-    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-    mActive = true;
-  }
-  else
-  {
-    if ( e->button() == Qt::LeftButton )
-    {
-      if ( mRubberBand && mRubberBand->numberOfVertices() > 2 )
-      {
-        QgsGeometry shapeGeom = mRubberBand->asGeometry();
-        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e->modifiers() );
-      }
-    }
-
-    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    delete mRubberBand;
-    mRubberBand = nullptr;
-    mActive = false;
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
   }
 }
 
 void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
 {
-  if ( mActive && e->key() == Qt::Key_Escape )
+  if (mSelectionHandler->escapeSelection(e))
   {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-    mActive = false;
-    return;
+      return;
   }
   QgsMapTool::keyReleaseEvent( e );
 }

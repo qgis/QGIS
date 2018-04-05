@@ -16,61 +16,38 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmaptoolselectpolygon.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
+#include "qgsmaptoolselectionhandler.h"
 #include "qgsmapcanvas.h"
 #include "qgis.h"
 
 #include <QMouseEvent>
 
+class QgsMapToolSelectionHandler;
+
 
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
-  : QgsMapTool( canvas )
+    : QgsMapTool( canvas )
 {
-  mRubberBand = nullptr;
-  mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
+    mCursor = Qt::ArrowCursor;
+    mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 {
-  delete mRubberBand;
+    delete mSelectionHandler;
 }
 
 void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand )
-  {
-    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setStrokeColor( mStrokeColor );
-  }
-  if ( e->button() == Qt::LeftButton )
-  {
-    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  }
-  else
-  {
-    if ( mRubberBand->numberOfVertices() > 2 )
+    mSelectionHandler->selectPolygonReleaseEvent( e );
+    if (mSelectionHandler->mSelectFeatures)
     {
-      QgsGeometry polygonGeom = mRubberBand->asGeometry();
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, polygonGeom, e->modifiers() );
+        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
     }
-    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    delete mRubberBand;
-    mRubberBand = nullptr;
-  }
 }
 
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand )
-    return;
-
-  if ( mRubberBand->numberOfVertices() > 0 )
-  {
-    mRubberBand->removeLastPoint( 0 );
-    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  }
+    mSelectionHandler->selectPolygonMoveEvent( e );
 }
 

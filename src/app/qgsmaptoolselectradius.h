@@ -27,6 +27,7 @@ class QgsDoubleSpinBox;
 class QgsMapCanvas;
 class QgsRubberBand;
 class QgsSnapIndicator;
+class QgsMapToolSelectionHandler;
 
 class APP_EXPORT QgsDistanceWidget : public QWidget
 {
@@ -119,6 +120,8 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     //! Shows current angle value and allows numerical editing
     QgsDistanceWidget *mDistanceWidget = nullptr;
+
+    QgsMapToolSelectionHandler *mSelectionHandler;
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "qgsrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
+#include "qgsmaptoolselectionhandler.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
@@ -30,88 +31,39 @@
 
 QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mDragging( false )
 {
   mToolName = tr( "Select features" );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Select ) );
-  mRubberBand = nullptr;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
 }
 
 
 void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
-  mSelectRect.setRect( 0, 0, 0, 0 );
-  delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mRubberBand->setFillColor( mFillColor );
-  mRubberBand->setStrokeColor( mStrokeColor );
+  mSelectionHandler->selectFeaturesPressEvent( e );
 }
 
 
 void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( e->buttons() != Qt::LeftButton )
-    return;
-
-  if ( !mDragging )
-  {
-    mDragging = true;
-    mSelectRect.setTopLeft( e->pos() );
-  }
-  mSelectRect.setBottomRight( e->pos() );
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
+  mSelectionHandler->selectFeaturesMoveEvent( e );
 }
 
 
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( !vlayer )
-  {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-    mDragging = false;
-    return;
-  }
-
-  //if the user simply clicked without dragging a rect
-  //we will fabricate a small 1x1 pix rect and then continue
-  //as if they had dragged a rect
-  if ( !mDragging )
-  {
-    QgsMapToolSelectUtils::expandSelectRectangle( mSelectRect, vlayer, e->pos() );
-  }
-  else
-  {
-    // Set valid values for rectangle's width and height
-    if ( mSelectRect.width() == 1 )
+    mSelectionHandler->selectFeaturesReleaseEvent( e );
+    if (mSelectionHandler->mSelectFeatures)
     {
-      mSelectRect.setLeft( mSelectRect.left() + 1 );
+        if (mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+        {
+            QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+            QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
+            double sr = searchRadiusMU( mCanvas );
+            QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+            mSelectionHandler->setSelectedGeometry(QgsGeometry::fromRect(r));
+        }
+        QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
     }
-    if ( mSelectRect.height() == 1 )
-    {
-      mSelectRect.setBottom( mSelectRect.bottom() + 1 );
-    }
-  }
-
-  if ( mRubberBand )
-  {
-    QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
-
-    QgsGeometry selectGeom = mRubberBand->asGeometry();
-    if ( !mDragging )
-    {
-      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers() );
-    }
-    else
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, selectGeom, e->modifiers() );
-
-    delete mRubberBand;
-    mRubberBand = nullptr;
-  }
-
-  mDragging = false;
 }

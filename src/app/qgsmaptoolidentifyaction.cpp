@@ -47,6 +47,8 @@
 #include <QStatusBar>
 #include <QVariant>
 
+class QgisAppInterface;
+
 QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )
 {
@@ -58,9 +60,12 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
 
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  // TODO @vsklencar set interface after first useage. delete from here.
+  QgisAppInterface *appIface = QgisApp::instance()->getInterface();
+  QgisInterface *iface = reinterpret_cast<QgisInterface*> (appIface);
+  //*iface = QgisApp::instance()->getInterface();
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, iface );
+  //mSelectionHandler->setIface(reinterpret_cast<QgisInterface*> (QgisApp::instance()->getInterface()));
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -155,75 +160,9 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   resultsDialog()->updateViewModes();
 }
 
-void QgsMapToolIdentifyAction::selectRadiusMoveEvent( QgsMapMouseEvent *e )
-{
-  QgsPointXY radiusEdge = e->snapPoint();
-
-  if ( !mSelectionActive )
-    return;
-
-  if ( !mSelectionRubberBand )
-  {
-    initRubberBand();
-  }
-
-  updateRadiusFromEdge( radiusEdge );
-}
-
-void QgsMapToolIdentifyAction::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
-{
-
-  if ( e->button() == Qt::RightButton )
-  {
-    mSelectionActive = false;
-    return;
-  }
-
-  if ( e->button() != Qt::LeftButton )
-    return;
-
-  if ( !mSelectionActive )
-  {
-    mSelectionActive = true;
-    mRadiusCenter = e->snapPoint();
-  }
-  else
-  {
-    if ( !mSelectionRubberBand )
-    {
-      initRubberBand();
-    }
-    mSelectionGeometry = mSelectionRubberBand->asGeometry();
-    mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    mSelectionActive = false;
-  }
-}
-
-void QgsMapToolIdentifyAction::updateRadiusFromEdge( QgsPointXY &radiusEdge )
-{
-  double radius = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
-  mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  const int RADIUS_SEGMENTS = 80;
-  for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
-  {
-    double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
-    QgsPointXY radiusPoint( mRadiusCenter.x() + radius * std::cos( theta ),
-                            mRadiusCenter.y() + radius * std::sin( theta ) );
-    mSelectionRubberBand->addPoint( radiusPoint, false );
-  }
-  mSelectionRubberBand->closePoints( true );
-}
-
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   mSelectionHandler->canvasMoveEvent( e );
-}
-
-void QgsMapToolIdentifyAction::initRubberBand()
-{
-  mSelectionRubberBand = qgis::make_unique< QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mSelectionRubberBand->setFillColor( mFillColor );
-  mSelectionRubberBand->setStrokeColor( mStrokeColor );
 }
 
 void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
@@ -234,7 +173,12 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( mResultsDialog )
+
+   if (!mSelectionHandler->mQgisInterface) {
+       mSelectionHandler->setIface(reinterpret_cast<QgisInterface*> (QgisApp::instance()->getInterface()));
+   }
+
+    if ( mResultsDialog )
   {
     mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
   }
@@ -242,8 +186,8 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     mSelectionHandler->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
   }
-  mSelectionHandler->canvasReleaseEvent( e );
 
+  mSelectionHandler->canvasReleaseEvent( e );
   handleOnCanvasRelease( e );
 }
 
@@ -270,6 +214,7 @@ void QgsMapToolIdentifyAction::activate()
 void QgsMapToolIdentifyAction::deactivate()
 {
   resultsDialog()->deactivate();
+  mSelectionHandler->deactivate();
   QgsMapToolIdentify::deactivate();
 }
 
@@ -303,122 +248,9 @@ void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
   }
 }
 
-void QgsMapToolIdentifyAction::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
-{
-  if ( e->buttons() != Qt::LeftButton )
-    return;
-
-  QRect rect;
-  if ( !mSelectionActive )
-  {
-    mSelectionActive = true;
-    rect = QRect( e->pos(), e->pos() );
-  }
-  else
-  {
-    rect = QRect( e->pos(), mInitDragPos );
-  }
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, rect, mSelectionRubberBand.get() );
-}
-
-void QgsMapToolIdentifyAction::selectFeaturesReleaseEvent( QgsMapMouseEvent *e )
-{
-  QPoint point = e->pos() - mInitDragPos;
-  if ( !mSelectionActive || ( point.manhattanLength() < QApplication::startDragDistance() ) )
-  {
-    mSelectionGeometry = QgsGeometry::fromPointXY( toMapCoordinates( e ->pos() ) );
-    mSelectionActive = false;
-  }
-
-  if ( mSelectionRubberBand && mSelectionActive )
-  {
-    mSelectionGeometry = mSelectionRubberBand->asGeometry();
-    mSelectionRubberBand.reset();
-  }
-
-  mSelectionActive = false;
-}
-
-void QgsMapToolIdentifyAction::selectPolygonMoveEvent( QgsMapMouseEvent *e )
-{
-  if ( !mSelectionRubberBand )
-    return;
-
-  if ( mSelectionRubberBand->numberOfVertices() > 0 )
-  {
-    mSelectionRubberBand->movePoint( toMapCoordinates( e->pos() ) );
-  }
-}
-
-void QgsMapToolIdentifyAction::selectPolygonReleaseEvent( QgsMapMouseEvent *e )
-{
-  if ( !mSelectionRubberBand )
-  {
-    initRubberBand();
-  }
-  if ( e->button() == Qt::LeftButton )
-  {
-    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  }
-  else
-  {
-    if ( mSelectionRubberBand->numberOfVertices() > 2 )
-    {
-      mSelectionGeometry = mSelectionRubberBand->asGeometry();
-    }
-    mSelectionRubberBand.reset();
-    mJustFinishedSelection = true;
-  }
-}
-
-void QgsMapToolIdentifyAction::selectFreehandMoveEvent( QgsMapMouseEvent *e )
-{
-  if ( !mSelectionActive || !mSelectionRubberBand )
-    return;
-
-  mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-}
-
-void QgsMapToolIdentifyAction::selectFreehandReleaseEvent( QgsMapMouseEvent *e )
-{
-  if ( !mSelectionActive )
-  {
-    if ( e->button() != Qt::LeftButton )
-      return;
-
-    if ( !mSelectionRubberBand )
-    {
-      initRubberBand();
-    }
-    else
-    {
-      mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    }
-    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-    mSelectionActive = true;
-  }
-  else
-  {
-    if ( e->button() == Qt::LeftButton )
-    {
-      if ( mSelectionRubberBand && mSelectionRubberBand->numberOfVertices() > 2 )
-      {
-        mSelectionGeometry = mSelectionRubberBand->asGeometry();
-      }
-    }
-
-    mSelectionRubberBand.reset();
-    mSelectionActive = false;
-  }
-}
 
 void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 {
-  if ( mSelectionActive && e->key() == Qt::Key_Escape )
-  {
-    mSelectionRubberBand.reset();
-    mSelectionActive = false;
-    return;
-  }
+ if (mSelectionHandler->escapeSelection(e)) return;
   QgsMapTool::keyReleaseEvent( e );
 }

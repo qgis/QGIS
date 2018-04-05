@@ -188,7 +188,6 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
     if ( mSelectionHandler->selectedGeometry().isNull() )
     {
       mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
-      //mSelectionGeometry = QgsGeometry::fromPointXY( point );
     }
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), selectionMode );
   }

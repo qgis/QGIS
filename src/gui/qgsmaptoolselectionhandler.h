@@ -34,6 +34,47 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsHighlight;
 class QgsDistanceArea;
+class QgsDistanceWidgetNew;
+
+class QHBoxLayout;
+
+class QgsDoubleSpinBox;
+class QgsRubberBand;
+class QgsSnapIndicator;
+class QgisInterface;
+
+class GUI_EXPORT QgsDistanceWidgetNew : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsDistanceWidgetNew( const QString &label = QString(), QWidget *parent = nullptr );
+
+    void setDistance( double distance );
+
+    double distance();
+
+    QgsDoubleSpinBox *editor() {return mDistanceSpinBox;}
+
+  signals:
+    void distanceChanged( double distance );
+    void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
+    void addDistanceWidget();
+    void distanceEditingCanceled();
+
+  protected:
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
+
+  private slots:
+    void distanceSpinBoxValueChanged( double distance );
+
+  private:
+    QHBoxLayout *mLayout = nullptr;
+    QgsDoubleSpinBox *mDistanceSpinBox = nullptr;
+};
+
+
 
 /**
  * \ingroup gui
@@ -60,15 +101,21 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgisInterface *iface = nullptr );
 
     ~QgsMapToolSelectionHandler() override;
+
+    bool mSelectFeatures = false;
+
+    QgisInterface *mQgisInterface;
 
     void canvasMoveEvent( QgsMapMouseEvent *e );
     void canvasPressEvent( QgsMapMouseEvent *e );
     void canvasReleaseEvent( QgsMapMouseEvent *e );
+    bool escapeSelection( QKeyEvent *e );
+
     //    void activate() override;
-    //    void deactivate() override;
+    void deactivate();
 
     void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
@@ -84,6 +131,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     void initRubberBand();
 
+    void setIface(QgisInterface *iface);
+
     QgsGeometry selectedGeometry();
     void setSelectedGeometry( QgsGeometry geometry );
 
@@ -93,7 +142,24 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     // TODO @vsklencar move to identifyTool only
     bool mJustFinishedSelection = false;
 
-  signals:
+    std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
+
+    void selectFeaturesPressEvent(QgsMapMouseEvent *e);
+
+private slots:
+    //! update the rubber band from the input widget
+    void updateRubberband( const double &radius );
+
+    /**
+   * triggered when the user input widget has a new value
+   * either programmatically (from the mouse event) or entered by the user
+   */
+    void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
+
+    //! cancel selecting (between two click events)
+    void cancel();
+
+signals:
     void selectionGeometryChanged();
   protected:
     //! stores exact selection geometry
@@ -110,6 +176,9 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     QgsMapCanvas *mCanvas;
 
+
+    //friend class QgisAppInterface;
+
     QPoint mInitDragPos;
 
     //! Flag to indicate a map canvas drag operation is taking place
@@ -122,7 +191,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! Center point for the radius
     QgsPointXY mRadiusCenter;
 
-    std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
+    //! Shows current angle value and allows numerical editing
+    QgsDistanceWidgetNew *mDistanceWidget = nullptr;
 
     QColor mFillColor;
 
@@ -134,12 +204,15 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     //    void keyReleaseEvent( QKeyEvent *e );
 
-    //    void createRotationWidget();
-    //    void deleteRotationWidget();
+    void createRotationWidget();
+    void deleteRotationWidget();
 
     void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
+
+    //! perform selection using radius from rubberband
+    void selectFromRubberband( const Qt::KeyboardModifiers &modifiers );
 
 };
 

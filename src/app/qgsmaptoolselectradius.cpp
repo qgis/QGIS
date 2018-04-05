@@ -30,6 +30,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgslogger.h"
 #include "qgsdoublespinbox.h"
 #include "qgssnapindicator.h"
+#include "qgsmaptoolselectionhandler.h"
 
 
 const int RADIUS_SEGMENTS = 80;
@@ -107,6 +108,9 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
 {
   mCursor = Qt::ArrowCursor;
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  //mSelectionHandler->setIface( QgisApp::instance()->mQgisInterface);
+  mSelectionHandler->setIface(reinterpret_cast<QgisInterface*> (QgisApp::instance()->getInterface()));
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
