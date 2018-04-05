@@ -367,6 +367,7 @@
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatormodel.sip
+%Include processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include processing/qgsprocessingalgrunnertask.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip

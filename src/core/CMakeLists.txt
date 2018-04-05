@@ -102,6 +102,7 @@ SET(QGIS_CORE_SRCS
   locator/qgslocatormodel.cpp
 
   processing/qgsprocessingalgorithm.cpp
+  processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingcontext.cpp
   processing/qgsprocessingfeedback.cpp
@@ -668,6 +669,7 @@ SET(QGIS_CORE_MOC_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
 
+  processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h

@@ -38,6 +38,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractbylocation.cpp
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
@@ -139,6 +140,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   network/qgsvectorlayerdirector.h
 
   processing/qgsalgorithmfiledownloader.h
+  processing/qgsalgorithmfilter.h
 
   vector/geometry_checker/qgsfeaturepool.h
   vector/geometry_checker/qgsgeometrychecker.h
