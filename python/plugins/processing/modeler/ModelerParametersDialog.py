@@ -66,12 +66,11 @@ class ModelerParametersDialog(QDialog):
     def __init__(self, alg, model, algName=None):
         QDialog.__init__(self)
         self.setModal(True)
-        # The algorithm to define in this dialog. It is an instance of QgsProcessingModelAlgorithm
-        self._alg = alg
-        # The model this algorithm is going to be added to
-        self.model = model
-        # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
-        self.childId = algName
+
+        self._alg = alg # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
+        self.model = model # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
+        self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+
         self.setupUi()
         self.params = None
         settings = QgsSettings()
