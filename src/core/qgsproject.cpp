@@ -462,6 +462,45 @@ QFileInfo QgsProject::fileInfo() const
   return QFileInfo( mFile );
 }
 
+QDateTime QgsProject::lastModified() const
+{
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+  if ( storage )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectMetadata( mFile.fileName(), metadata );
+    return metadata.lastModified;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).lastModified();
+  }
+}
+
+QString QgsProject::absoluteFilePath() const
+{
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+  if ( storage )
+    return QString();
+
+  return QFileInfo( mFile.fileName() ).absoluteFilePath();
+}
+
+QString QgsProject::baseName() const
+{
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+  if ( storage )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectMetadata( mFile.fileName(), metadata );
+    return metadata.name;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).baseName();
+  }
+}
+
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
   return mCrs;

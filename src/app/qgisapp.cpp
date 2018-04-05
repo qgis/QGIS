@@ -13571,14 +13571,28 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     QAction *action = menu->addAction( name );
     if ( saving )
     {
-      connect( action, &QAction::triggered, [storage]
+      connect( action, &QAction::triggered, [this, storage]
       {
         QString uri = storage->showSaveGui();
         if ( !uri.isEmpty() )
         {
-          // TODO: merge with QgisApp::fileSaveAs()
           QgsProject::instance()->setFileName( uri );
-          QgsProject::instance()->write();
+          if ( QgsProject::instance()->write() )
+          {
+            setTitleBarText_( *this ); // update title bar
+            mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
+            // add this to the list of recently used project files
+            saveRecentProjectPath( uri );
+            mProjectLastModified = QgsProject::instance()->lastModified();
+          }
+          else
+          {
+            QMessageBox::critical( this,
+                                   tr( "Unable to save project %1" ).arg( uri ),
+                                   QgsProject::instance()->error(),
+                                   QMessageBox::Ok,
+                                   Qt::NoButton );
+          }
         }
       } );
     }

@@ -102,10 +102,15 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
 
         self.assertEqual(len(prj2.mapLayers()), 1)
 
+        self.assertEqual(prj2.baseName(), "abc")
+        self.assertEqual(prj2.absoluteFilePath(), "")  # path not supported for project storages
+        self.assertTrue(abs(prj2.lastModified().secsTo(QDateTime.currentDateTime())) < 10)
+
         # try to see project's metadata
 
         res, metadata = prj_storage.readProjectMetadata(project_uri)
         self.assertTrue(res)
+        self.assertEqual(metadata.name, "abc")
         time_project = metadata.lastModified
         time_now = QDateTime.currentDateTime()
         time_diff = time_now.secsTo(time_project)

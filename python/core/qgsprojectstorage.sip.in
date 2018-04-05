@@ -35,6 +35,7 @@ Metadata associated with a project
 #include "qgsprojectstorage.h"
 %End
       public:
+        QString name;
         QDateTime lastModified;
     };
 

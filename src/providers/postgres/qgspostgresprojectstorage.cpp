@@ -208,6 +208,7 @@ bool QgsPostgresProjectStorage::readProjectMetadata( const QString &uri, QgsProj
   {
     if ( result.PQntuples() == 1 )
     {
+      metadata.name = projectUri.projectName;
       QString metadataStr = result.PQgetvalue( 0, 0 );
       QJsonDocument doc( QJsonDocument::fromJson( metadataStr.toUtf8() ) );
       ok = _parseMetadataDocument( doc, metadata );

@@ -151,10 +151,34 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns QFileInfo object for the project's associated file.
+     *
+     * \note The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
+     * in the file system. It is recommended to use absoluteFilePath(), baseName(), lastModifiedTime() as
+     * replacements that are aware of the fact that projects may be saved in other project storages.
+     *
      * \see fileName()
      * \since QGIS 2.9
      */
     QFileInfo fileInfo() const;
+
+    /**
+     * Returns last modified time of the project file as returned by the file system (or other project storage).
+     * \since QGIS 3.2
+     */
+    QDateTime lastModified() const;
+
+    /**
+     * Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absoluteFilePath() const;
+
+    /**
+     * Returns the base name of the project file without the path and without extension - derived from fileName().
+     * \since QGIS 3.2
+     */
+    QString baseName() const;
 
     /**
      * Returns the project's native coordinate reference system.

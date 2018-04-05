@@ -41,6 +41,9 @@ class CORE_EXPORT QgsProjectStorage
     class Metadata
     {
       public:
+        //! Name of the project - equivalent to a file's base name (i.e. without path and extension).
+        QString name;
+        //! Date and local time when the file was last modified.
         QDateTime lastModified;
     };
 

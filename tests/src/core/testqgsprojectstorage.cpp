@@ -106,6 +106,11 @@ class MemoryStorage : public QgsProjectStorage
       QString projectName = lst[1];
 
       mProjects[projectName] = ioDevice->readAll();
+
+      QgsProjectStorage::Metadata meta;
+      meta.name = projectName;
+      meta.lastModified = QDateTime::currentDateTime();
+      mProjectsMetadata[projectName] = meta;
       return true;
     }
 
@@ -119,11 +124,25 @@ class MemoryStorage : public QgsProjectStorage
         return false;
 
       mProjects.remove( projectName );
+      mProjectsMetadata.remove( projectName );
+      return true;
+    }
+
+    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override
+    {
+      QStringList lst = uri.split( ":" );
+      Q_ASSERT( lst.count() == 2 );
+      QString projectName = lst[1];
+      if ( !mProjects.contains( projectName ) )
+        return false;
+
+      metadata = mProjectsMetadata[projectName];
       return true;
     }
 
   private:
     QHash<QString, QByteArray> mProjects;
+    QHash<QString, QgsProjectStorage::Metadata> mProjectsMetadata;
 };
 
 
@@ -151,6 +170,12 @@ void TestQgsProjectStorage::testMemoryStorage()
   QVERIFY( writeOk );
   QCOMPARE( memStorage->listProjects( QString() ).count(), 1 );
 
+  QVERIFY( prj1.absoluteFilePath().isEmpty() );
+  QCOMPARE( prj1.baseName(), QString( "project1" ) );
+  QVERIFY( prj1.lastModified().secsTo( QDateTime::currentDateTime() ) < 1 );
+
+  // read the project back
+
   QgsProject prj2;
   prj2.setFileName( "memory:project1" );
   bool readOk = prj2.read();
@@ -165,6 +190,18 @@ void TestQgsProjectStorage::testMemoryStorage()
   prj3.setFileName( "memory:nooooooooo!" );
   bool readInvalidOk = prj3.read();
   QVERIFY( !readInvalidOk );
+
+  // test metadata access
+
+  QgsProjectStorage::Metadata meta1;
+  bool readMetaOk = memStorage->readProjectMetadata( "memory:project1", meta1 );
+  QVERIFY( readMetaOk );
+  QCOMPARE( meta1.name, QString( "project1" ) );
+  QVERIFY( meta1.lastModified.secsTo( QDateTime::currentDateTime() ) < 1 );
+
+  QgsProjectStorage::Metadata metaX;
+  bool readMetaInvalidOk = memStorage->readProjectMetadata( "memory:projectXYZ", metaX );
+  QVERIFY( !readMetaInvalidOk );
 
   // test removal
 
