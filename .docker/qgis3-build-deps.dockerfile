@@ -105,7 +105,7 @@ WORKDIR /root
 RUN mkdir /root/virtualenvironment \
  && virtualenv /root/virtualenvironment/sip419
 WORKDIR /root/virtualenvironment/sip419/bin
-RUN source activate
+RUN bash -c "source activate"
 WORKDIR /root
 RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
  && tar xzf tip.tar.gz \
