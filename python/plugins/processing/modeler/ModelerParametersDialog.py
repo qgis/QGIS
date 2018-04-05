@@ -63,13 +63,15 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 
 
 class ModelerParametersDialog(QDialog):
-    def __init__(self, alg, model, algName=None):
+
+    def __init__(self, alg, model, algName=None, configuration=None):
         QDialog.__init__(self)
         self.setModal(True)
 
         self._alg = alg # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
         self.model = model # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
         self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        self.configuration = configuration
 
         self.setupUi()
         self.params = None
@@ -87,6 +89,8 @@ class ModelerParametersDialog(QDialog):
         self.wrappers = {}
         self.valueItems = {}
         self.dependentItems = {}
+        self.algorithmItem = None
+
         self.resize(650, 450)
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
@@ -114,6 +118,10 @@ class ModelerParametersDialog(QDialog):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout.addWidget(line)
+        self.algorithmItem = self._alg.createModelerWidget()
+        if self.configuration:
+            self.algorithmItem.setConfiguration(self.configuration)
+        self.verticalLayout.addWidget(self.algorithmItem)
 
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
@@ -284,6 +292,8 @@ class ModelerParametersDialog(QDialog):
         else:
             alg.setChildId(self.childId)
         alg.setDescription(self.descriptionBox.text())
+        if self.algorithmItem:
+            alg.setConfiguration(self.algorithmItem.configuration())
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue

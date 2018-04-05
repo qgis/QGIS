@@ -33,14 +33,14 @@ class QgsProcessingProvider;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
 class QgsProcessingFeedback;
-
+class QgsProcessingModelAlgorithm;
+class QgsProcessingAlgorithmConfigurationWidget;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
 % End
 #endif
-
 
 /**
  * \class QgsProcessingAlgorithm
@@ -355,6 +355,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * parameters widget should be used.
      */
     virtual QWidget *createCustomParametersWidget( QWidget *parent = nullptr ) const SIP_FACTORY;
+
+    /**
+     * If an algorithm subclass implements a configuration widget for the algorithm itself,
+     * a new instance of this widget should be returned by this method.
+     */
+    virtual QgsProcessingAlgorithmConfigurationWidget *createModelerWidget() const SIP_FACTORY;
 
     /**
      * Creates an expression context relating to the algorithm. This can be called by algorithms
