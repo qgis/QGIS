@@ -67,11 +67,11 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
-        interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
+        self.interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
         return True
 
     def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
-            new_geometry = feature.geometry().densifyByDistance(float(interval))
+            new_geometry = feature.geometry().densifyByDistance(float(self.interval))
             feature.setGeometry(new_geometry)
         return [feature]
