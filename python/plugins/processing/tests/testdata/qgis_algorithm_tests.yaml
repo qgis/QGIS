@@ -4859,6 +4859,53 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, nearest 3 points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 3
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_nearest3.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, different layers
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_diff.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Standard (N x T) distance matrix
@@ -4898,6 +4945,28 @@ tests:
     results:
       OUTPUT:
         name: expected/summary_matrix.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
+  - algorithm: qgis:distancematrix
+    name: Summary matrix different layers
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 2
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/summary_matrix_diff_layers.gml
         type: vector
         compare:
           fields:
