@@ -70,7 +70,12 @@ class QgsVectorLayerEditBuffer : QObject
     /** Stop editing and discard the edits */
     virtual void rollBack();
 
-
+    /**
+     * Changes values of attributes (but does not commit it).
+     * @return true if attributes are well updated, false otherwise
+     * @note added in QGIS 2.18
+     */
+    virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
 
     /** New features which are not commited. */
     const QgsFeatureMap& addedFeatures();

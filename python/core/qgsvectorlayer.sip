@@ -954,6 +954,39 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
+    /**
+    * Changes attributes' values for a feature (but does not immediately
+    * commit the changes).
+    * The \a fid argument specifies the ID of the feature to be changed.
+    *
+    * The new values to be assigned to the fields are given by \a newValues.
+    *
+    * If a valid QVariant is specified for a field in \a oldValues, it will be
+    * used as the field value in the case of an undo operation corresponding
+    * to this attribute value change. If an invalid QVariant is used (the
+    * default behavior), then the feature's current value will be
+    * automatically retrieved and used. Note that this involves a feature
+    * request to the underlying data provider, so it is more efficient to
+    * explicitly pass an oldValue if it is already available.
+    *
+    * Returns true if feature's attributes was successfully changed.
+    *
+    * @note Calls to changeAttributeValues() are only valid for layers in
+    * which edits have been enabled by a call to startEditing(). Changes made
+    * to features using this method are not committed to the underlying data
+    * provider until a commitChanges() call is made. Any uncommitted changes
+    * can be discarded by calling rollBack().
+    *
+    * @see startEditing()
+    * @see commitChanges()
+    * @see changeGeometry()
+    * @see updateFeature()
+    * @see changeAttributeValue()
+    *
+    * @note added in QGIS 2.18
+    */
+   bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
+
     /** Add an attribute field (but does not commit it)
      * returns true if the field was added
      */

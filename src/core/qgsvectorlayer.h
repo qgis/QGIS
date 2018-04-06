@@ -1364,19 +1364,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * Returns true if feature's attributes was successfully changed.
      *
-     * \note Calls to changeAttributeValues() are only valid for layers in
+     * @note Calls to changeAttributeValues() are only valid for layers in
      * which edits have been enabled by a call to startEditing(). Changes made
      * to features using this method are not committed to the underlying data
      * provider until a commitChanges() call is made. Any uncommitted changes
      * can be discarded by calling rollBack().
      *
-     * \see startEditing()
-     * \see commitChanges()
-     * \see changeGeometry()
-     * \see updateFeature()
-     * \see changeAttributeValue()
+     * @see startEditing()
+     * @see commitChanges()
+     * @see changeGeometry()
+     * @see updateFeature()
+     * @see changeAttributeValue()
      *
-     * \since QGIS 2.18
+     * @note added in QGIS 2.18
      */
     bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
 
