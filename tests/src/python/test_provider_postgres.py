@@ -20,15 +20,26 @@ import os
 
 from qgis.core import (
     QgsGeometry,
+    QgsProject,
     QgsPoint,
     QgsVectorLayer,
     QgsVectorLayerImport,
     QgsFeatureRequest,
+    QgsMapLayerRegistry,
     QgsFeature,
     QgsTransactionGroup,
     NULL
 )
+
+from qgis.gui import (
+    QgsEditorWidgetRegistry,
+    QgsAttributeForm
+)
+
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+
+from qgis.PyQt.QtWidgets import QLabel
+
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -53,6 +64,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
         cls.con = psycopg2.connect(cls.dbconn)
+
+        QgsEditorWidgetRegistry.initEditors()
 
     @classmethod
     def tearDownClass(cls):
@@ -406,6 +419,48 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         styles = myvl.listStylesInDatabase()
         ids = styles[1]
         self.assertEqual(len(ids), 1)
+
+    def testTransactionConstrains(self):
+        # create a vector layer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."check_constraints" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject.instance()
+        p.setAutoTransaction(True)
+
+        QgsMapLayerRegistry.instance().addMapLayers([vl])
+
+        # get feature
+        f = next(vl.getFeatures(QgsFeatureRequest(1)))  # fid=1
+        self.assertEqual(f.attributes(), [1, 4, 3])
+
+        # start edition
+        vl.startEditing()
+
+        # update attribute form with a failing constraints
+        # coming from the database if attributes are updated
+        # one at a time.
+        # Current feature: a = 4 / b = 3
+        # Update feature: a = 1 / b = 0
+        # If updated one at a time, '(a = 1) < (b = 3)' => FAIL!
+        form = QgsAttributeForm(vl)
+        form.setFeature(f)
+        self.assertTrue(form.editable())
+        for w in form.findChildren(QLabel):
+            if w.buddy():
+                spinBox = w.buddy()
+                if w.text() == 'a':
+                    spinBox.setValue('1')
+                if w.text() == 'b':
+                    spinBox.setValue('0')
+
+        # save
+        form.save()
+
+        # check new values
+        f = next(vl.getFeatures(QgsFeatureRequest(1)))  # fid=1
+        self.assertEqual(f.attributes(), [1, 1, 0])
 
 
 if __name__ == '__main__':
