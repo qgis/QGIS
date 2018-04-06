@@ -66,8 +66,6 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
-    python3-sip \
-    python3-sip-dev \
     python3-termcolor \
     python3-yaml \
     qt3d5-dev \
@@ -96,8 +94,44 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python2.7 python3-sip sip-dev \
   && apt-get clean
+
+  RUN bash -c "echo $(sip -V)"
+  RUN bash -c "echo $(which sip)"
+
+WORKDIR /root
+RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
+ && tar xzf tip.tar.gz \
+ && mkdir /root/sip419 \
+ && mv  $(find -type d -iname 'sip-*')/* sip419
+WORKDIR /root/sip419
+RUN python3 build.py prepare \
+ && python3 configure.py \
+ && make \
+ && make install
+
+ RUN bash -c "echo $(sip -V)"
+ RUN bash -c "echo $(which sip)"
+
+WORKDIR /root
+RUN curl -s -S -O https://svwh.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.9.2/PyQt5_gpl-5.9.2.tar.gz \
+ && tar xzf PyQt5_gpl-5.9.2.tar.gz
+WORKDIR /root/PyQt5_gpl-5.9.2
+RUN apt-get install -y qt5-qmake \
+ && python3 configure.py --confirm-license --qmake /usr/lib/x86_64-linux-gnu/qt5/bin/qmake --qsci-api --enable QtSql --enable QtSvg \
+ && make \
+ && make install
+
+WORKDIR /root
+RUN curl -s -S -O https://cfhcable.dl.sourceforge.net/project/pyqt/QScintilla2/QScintilla-2.10.3/QScintilla_gpl-2.10.3.tar.gz \
+ && tar xzf QScintilla_gpl-2.10.3.tar.gz
+WORKDIR /root/QScintilla_gpl-2.10.3/Python
+RUN python3 configure.py --pyqt=PyQt5 \
+ && make \
+ && make install
+
+WORKDIR /root
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
