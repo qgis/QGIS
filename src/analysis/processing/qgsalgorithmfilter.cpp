@@ -127,6 +127,8 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   {
     outputs.insert( output->name, output->destinationIdentifier );
   }
+  qDeleteAll( mOutputs );
+  mOutputs.clear();
   return outputs;
 }
 
