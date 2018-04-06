@@ -84,11 +84,11 @@ void QgsFilterAlgorithm::initAlgorithm( const QVariantMap &configuration )
 
 QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     return QVariantMap();
 
-  QgsExpressionContext expressionContext = context.expressionContext();
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   for ( Output *output : qgis::as_const( mOutputs ) )
   {
     output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
