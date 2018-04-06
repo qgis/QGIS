@@ -89,9 +89,6 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
   QVariantMap childParams;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
-      continue;
-
     if ( !def->isDestination() )
     {
       if ( !child.parameterSources().contains( def->name() ) )
