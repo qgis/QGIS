@@ -679,6 +679,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter")
 
+        # test with multiple countries
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country:\"name\" IN ( 'eurasia' , 'arctic' , 'sus' )"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter4")
+
         # try to display a feature yet filtered by the project
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectStatePath),
@@ -928,7 +947,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
     def test_wms_getmap_group(self):
-        """A WMS shall render the requested layers by drawing the leftmost in the list 
+        """A WMS shall render the requested layers by drawing the leftmost in the list
         bottommost, the next one over that, and so on."""
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
