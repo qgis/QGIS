@@ -55,9 +55,10 @@
 #include <qgisinterface.h>
 
 class QgisInterface;
+class QgsMapToolIdentifyAction;
 
 
-QgsDistanceWidgetNew::QgsDistanceWidgetNew( const QString &label, QWidget *parent )
+QgsDistanceWidget::QgsDistanceWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
@@ -84,23 +85,23 @@ QgsDistanceWidgetNew::QgsDistanceWidgetNew( const QString &label, QWidget *paren
 
   // connect signals
   mDistanceSpinBox->installEventFilter( this );
-  connect( mDistanceSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsDistanceWidgetNew::distanceSpinBoxValueChanged );
+  connect( mDistanceSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsDistanceWidget::distanceSpinBoxValueChanged );
 
   // config focus
   setFocusProxy( mDistanceSpinBox );
 }
 
-void QgsDistanceWidgetNew::setDistance( double distance )
+void QgsDistanceWidget::setDistance( double distance )
 {
   mDistanceSpinBox->setValue( distance );
 }
 
-double QgsDistanceWidgetNew::distance()
+double QgsDistanceWidget::distance()
 {
   return mDistanceSpinBox->value();
 }
 
-bool QgsDistanceWidgetNew::eventFilter( QObject *obj, QEvent *ev )
+bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
 {
   if ( obj == mDistanceSpinBox && ev->type() == QEvent::KeyPress )
   {
@@ -120,7 +121,7 @@ bool QgsDistanceWidgetNew::eventFilter( QObject *obj, QEvent *ev )
   return false;
 }
 
-void QgsDistanceWidgetNew::distanceSpinBoxValueChanged( double distance )
+void QgsDistanceWidget::distanceSpinBoxValueChanged( double distance )
 {
   emit distanceChanged( distance );
 }
@@ -247,15 +248,16 @@ void QgsMapToolSelectionHandler::selectFeaturesReleaseEvent( QgsMapMouseEvent *e
   QPoint point = e->pos() - mInitDragPos;
   if ( !mSelectionActive || ( point.manhattanLength() < QApplication::startDragDistance() ) )
   {
-    mSelectionGeometry = QgsGeometry::fromPointXY( toMapCoordinates( e ->pos() ) );
     mSelectionActive = false;
     mSelectFeatures = true;
+    setSelectedGeometry(QgsGeometry::fromPointXY( toMapCoordinates( e ->pos() )), e->modifiers());
+    emit geometryChanged();
   }
 
   if ( mSelectionRubberBand && mSelectionActive )
   {
-    mSelectionGeometry = mSelectionRubberBand->asGeometry();
     mSelectFeatures = true;
+    setSelectedGeometry(mSelectionRubberBand->asGeometry(), e->modifiers());
     mSelectionRubberBand.reset();
   }
 
@@ -294,8 +296,8 @@ void QgsMapToolSelectionHandler::selectPolygonReleaseEvent( QgsMapMouseEvent *e 
   {
     if ( mSelectionRubberBand->numberOfVertices() > 2 )
     {
-      mSelectionGeometry = mSelectionRubberBand->asGeometry();
       mSelectFeatures = true;
+      setSelectedGeometry(mSelectionRubberBand->asGeometry(), e->modifiers());
     }
     mSelectionRubberBand.reset();
     mJustFinishedSelection = mSelectionActive;
@@ -336,8 +338,8 @@ void QgsMapToolSelectionHandler::selectFreehandReleaseEvent( QgsMapMouseEvent *e
     {
       if ( mSelectionRubberBand && mSelectionRubberBand->numberOfVertices() > 2 )
       {
-        mSelectionGeometry = mSelectionRubberBand->asGeometry();
         mSelectFeatures = true;
+        setSelectedGeometry(mSelectionRubberBand->asGeometry(), e->modifiers());
       }
     }
 
@@ -393,10 +395,10 @@ void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
     {
       initRubberBand();
     }
-    mSelectionGeometry = mSelectionRubberBand->asGeometry();
-    mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     mSelectionActive = false;
     mSelectFeatures = true;
+    setSelectedGeometry(mSelectionRubberBand->asGeometry(), e->modifiers());
+    mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     deleteRotationWidget();
   }
 }
@@ -423,25 +425,25 @@ void QgsMapToolSelectionHandler::createRotationWidget()
 
   deleteRotationWidget();
 
-  mDistanceWidget = new QgsDistanceWidgetNew( QStringLiteral( "Selection radius:" ) );
+  mDistanceWidget = new QgsDistanceWidget( QStringLiteral( "Selection radius:" ) );
   if ( mQgisInterface )
   {
     mQgisInterface->addUserInputWidget( mDistanceWidget );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
 
-  connect( mDistanceWidget, &QgsDistanceWidgetNew::distanceChanged, this, &QgsMapToolSelectionHandler::updateRubberband );
-  connect( mDistanceWidget, &QgsDistanceWidgetNew::distanceEditingFinished, this, &QgsMapToolSelectionHandler::radiusValueEntered );
-  connect( mDistanceWidget, &QgsDistanceWidgetNew::distanceEditingCanceled, this, &QgsMapToolSelectionHandler::cancel );
+  connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRubberband );
+  connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectionHandler::radiusValueEntered );
+  connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCanceled, this, &QgsMapToolSelectionHandler::cancel );
 }
 
 void QgsMapToolSelectionHandler::deleteRotationWidget()
 {
   if ( mDistanceWidget )
   {
-    disconnect( mDistanceWidget, &QgsDistanceWidgetNew::distanceChanged, this, &QgsMapToolSelectionHandler::updateRubberband );
-    disconnect( mDistanceWidget, &QgsDistanceWidgetNew::distanceEditingFinished, this, &QgsMapToolSelectionHandler::radiusValueEntered );
-    disconnect( mDistanceWidget, &QgsDistanceWidgetNew::distanceEditingCanceled, this, &QgsMapToolSelectionHandler::cancel );
+    disconnect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRubberband );
+    disconnect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectionHandler::radiusValueEntered );
+    disconnect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCanceled, this, &QgsMapToolSelectionHandler::cancel );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
@@ -460,7 +462,10 @@ void QgsMapToolSelectionHandler::selectFromRubberband( const Qt::KeyboardModifie
 void QgsMapToolSelectionHandler::radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers )
 {
   updateRubberband( radius );
-  selectFromRubberband( modifiers );
+  setSelectedGeometry(mSelectionRubberBand->asGeometry(), modifiers);
+  mSelectionRubberBand->reset();
+  deleteRotationWidget();
+  mSelectionActive = false;
 }
 
 void QgsMapToolSelectionHandler::cancel()
@@ -508,9 +513,10 @@ QgsGeometry QgsMapToolSelectionHandler::selectedGeometry()
   return mSelectionGeometry;
 }
 
-void QgsMapToolSelectionHandler::setSelectedGeometry( QgsGeometry geometry )
+void QgsMapToolSelectionHandler::setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers)
 {
   mSelectionGeometry = geometry;
+  emit geometryChanged(modifiers);
 }
 
 void QgsMapToolSelectionHandler::setSelectionMode( SelectionMode mode )

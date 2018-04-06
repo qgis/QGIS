@@ -63,7 +63,9 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void handleOnCanvasRelease( QgsMapMouseEvent *e );
 
-  public slots:
+    void identifyOnGeometryChange(int x, int y, IdentifyMode mode);
+
+public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
@@ -85,6 +87,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void setClickContextScope( const QgsPointXY &point );
 
     void keyReleaseEvent( QKeyEvent *e ) override;
+
+    void identifyFromGeometry();
 
     friend class TestQgsMapToolIdentifyAction;
 };

@@ -60,6 +60,8 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
+
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -68,6 +70,7 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
   {
     mResultsDialog->done( 0 );
   }
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
 }
 
 QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
@@ -103,15 +106,48 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   tableDialog->show();
 }
 
+void QgsMapToolIdentifyAction::identifyOnGeometryChange(int x, int y, IdentifyMode mode)
+{
+    resultsDialog()->clear();
+    connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
+    connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
+    QList<IdentifyResult> results = QgsMapToolIdentify::identify( x, y, mode, AllLayers, mSelectionHandler->selectionMode() );
+
+    disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
+    disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
+    if ( mSelectionHandler->mJustFinishedSelection ) mSelectionHandler->mJustFinishedSelection = false;
+
+    if ( results.isEmpty() )
+    {
+      resultsDialog()->clear();
+      QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
+    }
+    else
+    {
+      // Show the dialog before items are inserted so that items can resize themselves
+      // according to dialog size also the first time, see also #9377
+      if ( results.size() != 1 || !QgsSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
+        resultsDialog()->QDialog::show();
+
+      QList<IdentifyResult>::const_iterator result;
+      for ( result = results.constBegin(); result != results.constEnd(); ++result )
+      {
+        resultsDialog()->addFeature( *result );
+      }
+
+      // Call QgsIdentifyResultsDialog::show() to adjust with items
+      resultsDialog()->show();
+    }
+
+    // update possible view modes
+    resultsDialog()->updateViewModes();
+}
+
 void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
 {
-  resultsDialog()->clear();
-  connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
-  connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
-
   setClickContextScope( toMapCoordinates( e->pos() ) );
-
-  identifyMenu()->setResultsIfExternalAction( false );
 
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
@@ -120,38 +156,9 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
+  identifyMenu()->setResultsIfExternalAction( false );
 
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode, AllLayers, mSelectionHandler->selectionMode() );
-
-  disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
-  disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
-
-  if ( mSelectionHandler->mJustFinishedSelection ) mSelectionHandler->mJustFinishedSelection = false;
-
-  if ( results.isEmpty() )
-  {
-    resultsDialog()->clear();
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
-  }
-  else
-  {
-    // Show the dialog before items are inserted so that items can resize themselves
-    // according to dialog size also the first time, see also #9377
-    if ( results.size() != 1 || !QgsSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
-      resultsDialog()->QDialog::show();
-
-    QList<IdentifyResult>::const_iterator result;
-    for ( result = results.constBegin(); result != results.constEnd(); ++result )
-    {
-      resultsDialog()->addFeature( *result );
-    }
-
-    // Call QgsIdentifyResultsDialog::show() to adjust with items
-    resultsDialog()->show();
-  }
-
-  // update possible view modes
-  resultsDialog()->updateViewModes();
+  identifyOnGeometryChange(e->x(), e->y(), mode);
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -248,4 +255,13 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 {
   if ( mSelectionHandler->escapeSelection( e ) ) return;
   QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolIdentifyAction::identifyFromGeometry()
+{
+    QgsDebugMsg( QString( "!!!!!!tralala" ));
+    // TODO @vsklencar set x, y according geometry;
+    int x = 0;
+    int y = 0;
+    this->identifyOnGeometryChange(x, y, DefaultQgsSetting);
 }

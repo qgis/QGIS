@@ -49,6 +49,8 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
   private:
 
+    void selectFeatures(Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     QgsMapToolSelectionHandler *mSelectionHandler;

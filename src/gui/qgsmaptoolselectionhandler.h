@@ -34,7 +34,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsHighlight;
 class QgsDistanceArea;
-class QgsDistanceWidgetNew;
+class QgsDistanceWidget;
 
 class QHBoxLayout;
 
@@ -43,13 +43,13 @@ class QgsRubberBand;
 class QgsSnapIndicator;
 class QgisInterface;
 
-class GUI_EXPORT QgsDistanceWidgetNew : public QWidget
+class GUI_EXPORT QgsDistanceWidget : public QWidget
 {
     Q_OBJECT
 
   public:
 
-    explicit QgsDistanceWidgetNew( const QString &label = QString(), QWidget *parent = nullptr );
+    explicit QgsDistanceWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setDistance( double distance );
 
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgisInterface *iface = nullptr );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgisInterface *iface = nullptr);
 
     ~QgsMapToolSelectionHandler() override;
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void setIface( QgisInterface *iface );
 
     QgsGeometry selectedGeometry();
-    void setSelectedGeometry( QgsGeometry geometry );
+    void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     void setSelectionMode( SelectionMode mode );
     SelectionMode selectionMode();
@@ -147,6 +147,9 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 
     void selectFeaturesPressEvent( QgsMapMouseEvent *e );
+
+   signals:
+    void geometryChanged(Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
   private slots:
     //! update the rubber band from the input widget
@@ -192,12 +195,14 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     QgsPointXY mRadiusCenter;
 
     //! Shows current angle value and allows numerical editing
-    QgsDistanceWidgetNew *mDistanceWidget = nullptr;
+    QgsDistanceWidget *mDistanceWidget = nullptr;
 
     QColor mFillColor;
 
     QColor mStrokeColor;
 
+    //typedef void (*functiontype) mRadiusValueEnteredCallback;
+    //typedef void (*mRadiusValueEnteredCallback)();
 
 
     QgsPointXY toMapCoordinates( QPoint point );
