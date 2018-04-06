@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgis.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <QRect>
@@ -39,7 +40,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
 
 void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
   if ( !vlayer )
     return;
 
@@ -50,6 +51,6 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
   QgsGeometry selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers() );
+  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers(), QgisApp::instance()->messageBar() );
   rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

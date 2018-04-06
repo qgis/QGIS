@@ -139,7 +139,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void setSelectionMode( SelectionMode mode );
     SelectionMode selectionMode();
 
-    // TODO @vsklencar move to identifyTool only
+    //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
 
     bool mSelectionActive = false;
@@ -202,12 +202,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     QgsPointXY toMapCoordinates( QPoint point );
 
-    //    void keyReleaseEvent( QKeyEvent *e );
-
     void createRotationWidget();
     void deleteRotationWidget();
-
-    void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 

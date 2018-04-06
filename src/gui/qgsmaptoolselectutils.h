@@ -26,6 +26,7 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsGeometry;
 class QgsRubberBand;
+class QgsMessageBar;
 
 /**
   Namespace containing methods which are useful for the select maptool widgets
@@ -45,7 +46,7 @@ namespace QgsMapToolSelectUtils
    * \returns list of features which match search geometry and parameters
    * \since QGIS 2.16
    */
-  QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect );
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar* messageBar );
 
   /**
     Selects the features within currently selected layer.
@@ -61,9 +62,10 @@ namespace QgsMapToolSelectUtils
   */
   void setSelectedFeatures( QgsMapCanvas *canvas,
                             const QgsGeometry &selectGeometry,
+                            QgsMessageBar* messageBar ,
                             QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
                             bool doContains = true,
-                            bool singleSelect = false );
+                            bool singleSelect = false);
 
   /**
     Selects multiple matching features from within currently selected layer.
@@ -76,7 +78,7 @@ namespace QgsMapToolSelectUtils
     \since QGIS 2.16
     \see selectSingleFeature()
   */
-  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar* messageBar);
 
   /**
     Selects a single feature from within currently selected layer.
@@ -88,14 +90,14 @@ namespace QgsMapToolSelectUtils
     operations (add, subtract, contains)
     \see selectMultipleFeatures()
   */
-  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar* messageBar );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
     \param canvas The map canvas used for getting the current layer
     \returns QgsVectorLayer The layer
   */
-  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar* messageBar );
 
   /**
   Expands a rectangle to a minimum size for selection based on the vector layer type

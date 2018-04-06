@@ -24,10 +24,12 @@
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgis.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <QRect>
 
+class QgisApp;
 
 QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -58,12 +60,12 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
     {
-      QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+      QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
       QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
       double sr = searchRadiusMU( mCanvas );
       QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
       mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ) );
     }
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
   }
 }

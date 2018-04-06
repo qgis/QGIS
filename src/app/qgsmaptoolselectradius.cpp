@@ -61,7 +61,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
   mSelectionHandler->selectRadiusReleaseEvent( e );
   if ( mSelectionHandler->mSelectFeatures )
   {
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
     mSelectionHandler->mSelectFeatures = false;
   }
 }

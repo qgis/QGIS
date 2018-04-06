@@ -19,6 +19,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsmapcanvas.h"
 #include "qgis.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 class QgsMapToolSelectionHandler;
@@ -48,7 +49,7 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
   mSelectionHandler->selectFreehandReleaseEvent( e );
   if ( mSelectionHandler->mSelectFeatures )
   {
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers() );
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
   }
 }
 

@@ -42,6 +42,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgsmaptoolselectutils.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -53,7 +54,6 @@
 #include <qgsdoublespinbox.h>
 #include <qgisinterface.h>
 
-class QgsMapToolSelectUtils;
 class QgisInterface;
 
 
@@ -238,8 +238,7 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
   {
     rect = QRect( e->pos(), mInitDragPos );
   }
-  // TODO @vsklencar refactor
-  this->setRubberBand( mCanvas, rect, mSelectionRubberBand.get() );
+  QgsMapToolSelectUtils::setRubberBand( mCanvas, rect, mSelectionRubberBand.get() );
 }
 
 void QgsMapToolSelectionHandler::selectFeaturesReleaseEvent( QgsMapMouseEvent *e )
@@ -451,8 +450,7 @@ void QgsMapToolSelectionHandler::deleteRotationWidget()
 
 void QgsMapToolSelectionHandler::selectFromRubberband( const Qt::KeyboardModifiers &modifiers )
 {
-  // TODO @vsklencar
-  //QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionRubberBand->asGeometry(), modifiers );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionRubberBand->asGeometry(), modifiers, mQgisInterface->messageBar() );
   mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   deleteRotationWidget();
   mSelectionActive = false;
@@ -524,22 +522,3 @@ QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::selectionM
 {
   return mSelectionMode;
 }
-
-void QgsMapToolSelectionHandler::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
-{
-  const QgsMapToPixel *transform = canvas->getCoordinateTransform();
-  QgsPointXY ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
-  QgsPointXY lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
-  QgsPointXY ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
-  QgsPointXY ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
-
-  if ( rubberBand )
-  {
-    rubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    rubberBand->addPoint( ll, false );
-    rubberBand->addPoint( lr, false );
-    rubberBand->addPoint( ur, false );
-    rubberBand->addPoint( ul, true );
-  }
-}
-
