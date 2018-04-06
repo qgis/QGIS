@@ -377,6 +377,15 @@ class CORE_EXPORT QgsAuxiliaryStorage
      */
     static QString extension();
 
+    /**
+     * Returns true if the auxiliary database yet exists for a project, false otherwise.
+     *
+     * \param project The project for which the database is checked
+     *
+     * \since QGIS 3.2
+     */
+    static bool exists( const QgsProject &project );
+
   private:
     spatialite_database_unique_ptr open( const QString &filename = QString() );
     spatialite_database_unique_ptr open( const QgsProject &project );

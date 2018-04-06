@@ -2505,6 +2505,7 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
   const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     if ( it.value()->type() != QgsMapLayer::VectorLayer )
@@ -2514,10 +2515,15 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();
+      empty &= vl->auxiliaryLayer()->auxiliaryFields().isEmpty();
     }
   }
 
-  if ( !filename.isEmpty() )
+  if ( !mAuxiliaryStorage->exists( *this ) && filename.isEmpty() && empty )
+  {
+    return true; // it's not an error
+  }
+  else if ( !filename.isEmpty() )
   {
     return mAuxiliaryStorage->saveAs( filename );
   }

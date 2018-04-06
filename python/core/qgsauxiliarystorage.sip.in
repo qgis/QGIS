@@ -347,6 +347,15 @@ Duplicates a table and its content.
 Returns the extension used for auxiliary databases.
 %End
 
+    static bool exists( const QgsProject &project );
+%Docstring
+Returns true if the auxiliary database yet exists for a project, false otherwise.
+
+:param project: The project for which the database is checked
+
+.. versionadded:: 3.2
+%End
+
 };
 
 /************************************************************************
