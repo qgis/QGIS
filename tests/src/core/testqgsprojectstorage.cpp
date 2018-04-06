@@ -15,6 +15,7 @@
 
 #include "qgstest.h"
 
+#include "qgsauxiliarystorage.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
@@ -165,6 +166,16 @@ void TestQgsProjectStorage::testMemoryStorage()
   prj1.setTitle( "best project ever" );
   prj1.addMapLayer( layer1 );
   prj1.setFileName( "memory:project1" );
+
+  // let's use the aux storage as well - so that the project will include aux database as well
+  int fldCnt0 = layer1->fields().count();
+  QgsAuxiliaryLayer *layerAux = prj1.auxiliaryStorage()->createAuxiliaryLayer( layer1->fields().at( 0 ), layer1 );
+  layer1->setAuxiliaryLayer( layerAux );
+  layerAux->addAttribute( QgsField( "fld_aux", QVariant::Int ) );
+  layerAux->commitChanges();
+  QCOMPARE( fldCnt0, 6 );
+  QCOMPARE( layer1->fields().count(), 7 );
+
   bool writeOk = prj1.write();
 
   QVERIFY( writeOk );
@@ -183,6 +194,12 @@ void TestQgsProjectStorage::testMemoryStorage()
   QVERIFY( readOk );
   QCOMPARE( prj2.mapLayers().count(), 1 );
   QCOMPARE( prj2.title(), QString( "best project ever" ) );
+
+  // let's check that our stuff from auxiliary database got stored written and read
+  QgsVectorLayer *prj2layer1 = qobject_cast<QgsVectorLayer *>( prj2.mapLayers().constBegin().value() );
+  QVERIFY( prj2layer1 );
+  QCOMPARE( prj2layer1->fields().count(), 7 );
+  QCOMPARE( prj2layer1->fields().at( 6 ).name(), QString( "auxiliary_storage_fld_aux" ) );
 
   // test access of non-existent project
 
