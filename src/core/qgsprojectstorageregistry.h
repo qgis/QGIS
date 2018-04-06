@@ -33,7 +33,6 @@ class QgsProjectStorage;
 class CORE_EXPORT QgsProjectStorageRegistry
 {
   public:
-    QgsProjectStorageRegistry() = default;
     ~QgsProjectStorageRegistry();
 
     //! Returns storage implementation if the storage type matches one. Returns null pointer otherwise (it is a normal file)

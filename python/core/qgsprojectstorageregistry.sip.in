@@ -23,7 +23,6 @@ This is a singleton that should be accessed through :py:func:`QgsApplication.pro
 #include "qgsprojectstorageregistry.h"
 %End
   public:
-    QgsProjectStorageRegistry();
     ~QgsProjectStorageRegistry();
 
     QgsProjectStorage *projectStorageFromType( const QString &type );

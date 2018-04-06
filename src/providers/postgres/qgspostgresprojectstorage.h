@@ -23,7 +23,6 @@ typedef struct
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-    QgsPostgresProjectStorage() = default;
 
     virtual QString type() override { return QStringLiteral( "postgresql" ); }
 

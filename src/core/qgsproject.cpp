@@ -483,6 +483,9 @@ QString QgsProject::absoluteFilePath() const
   if ( storage )
     return QString();
 
+  if ( mFile.fileName().isEmpty() )
+    return QString();  // this is to protect ourselves from getting current directory from QFileInfo::absoluteFilePath()
+
   return QFileInfo( mFile.fileName() ).absoluteFilePath();
 }
 
