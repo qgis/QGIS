@@ -44,6 +44,7 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
   private:
     QgsMapToolSelectionHandler *mSelectionHandler;
 
+    void selectFeatures(Qt::KeyboardModifiers modifiers);
 };
 
 #endif

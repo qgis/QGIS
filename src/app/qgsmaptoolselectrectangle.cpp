@@ -37,8 +37,14 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
   mToolName = tr( "Select features" );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Select ) );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
 }
 
+QgsMapToolSelectFeatures::~QgsMapToolSelectFeatures()
+{
+    disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
+    delete mSelectionHandler;
+}
 
 void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
 {
@@ -56,16 +62,18 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   mSelectionHandler->selectFeaturesReleaseEvent( e );
-  if ( mSelectionHandler->mSelectFeatures )
-  {
+}
+
+
+void QgsMapToolSelectFeatures::selectFeatures(Qt::KeyboardModifiers modifiers)
+{
     if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
     {
       QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
       QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
       double sr = searchRadiusMU( mCanvas );
       QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
-      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ) );
+      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ), modifiers );
     }
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
-  }
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }

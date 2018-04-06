@@ -34,6 +34,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
     Q_OBJECT
   public:
     QgsMapToolSelectFeatures( QgsMapCanvas *canvas );
+    ~QgsMapToolSelectFeatures() override;
 
     //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -46,6 +47,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 
   private:
     QgsMapToolSelectionHandler *mSelectionHandler;
+    void selectFeatures(Qt::KeyboardModifiers modifiers);
 };
 
 #endif

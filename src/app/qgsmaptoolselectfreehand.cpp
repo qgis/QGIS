@@ -30,11 +30,14 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
 {
   mCursor = Qt::ArrowCursor;
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFreehand::selectFeatures );
+
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
 {
-  delete mSelectionHandler;
+    disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFreehand::selectFeatures );
+    delete mSelectionHandler;
 }
 
 
@@ -47,10 +50,10 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   mSelectionHandler->selectFreehandReleaseEvent( e );
-  if ( mSelectionHandler->mSelectFeatures )
-  {
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
-  }
+//  if ( mSelectionHandler->mSelectFeatures )
+//  {
+//    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
+//  }
 }
 
 void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
@@ -60,4 +63,9 @@ void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
     return;
   }
   QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolSelectFreehand::selectFeatures(Qt::KeyboardModifiers modifiers)
+{
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }

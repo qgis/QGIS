@@ -37,14 +37,13 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
   mCursor = Qt::ArrowCursor;
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
   mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
-
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectRadius::selectFeatures );
-
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
 {
-  mSelectionHandler->deactivate();
+    disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectRadius::selectFeatures );
+    mSelectionHandler->deactivate();
   delete mSelectionHandler;
 }
 

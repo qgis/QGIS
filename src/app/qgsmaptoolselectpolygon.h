@@ -40,6 +40,7 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 
   private:
     QgsMapToolSelectionHandler *mSelectionHandler;
+    void selectFeatures(Qt::KeyboardModifiers modifiers);
 };
 
 #endif

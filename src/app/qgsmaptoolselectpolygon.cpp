@@ -31,10 +31,12 @@ QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
 {
   mCursor = Qt::ArrowCursor;
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 {
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
   delete mSelectionHandler;
 }
 
@@ -50,5 +52,10 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   mSelectionHandler->selectPolygonMoveEvent( e );
+}
+
+void QgsMapToolSelectPolygon::selectFeatures(Qt::KeyboardModifiers modifiers)
+{
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }
 
