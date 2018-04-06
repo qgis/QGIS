@@ -1341,8 +1341,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mCentralContainer->insertWidget( 2, puzzleWidget );
   connect( mCoordsEdit, &QgsStatusBarCoordinatesWidget::weAreBored, this, [ this, puzzleWidget ]
   {
-    puzzleWidget->letsGetThePartyStarted();
-    mCentralContainer->setCurrentIndex( 2 );
+    if ( puzzleWidget->letsGetThePartyStarted() )
+      mCentralContainer->setCurrentIndex( 2 );
   } );
   connect( puzzleWidget, &QgsPuzzleWidget::done, this, [ this ]
   {

@@ -27,14 +27,13 @@ class QgsPuzzleWidget : public QGraphicsView
   public:
     explicit QgsPuzzleWidget( QgsMapCanvas *canvas = nullptr );
 
+    bool letsGetThePartyStarted();
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
 
   signals:
     void done();
-
-  public slots:
-    void letsGetThePartyStarted();
 
   private:
     void updateTilePositions();

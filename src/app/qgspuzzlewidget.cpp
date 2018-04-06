@@ -80,6 +80,9 @@ QgsPuzzleWidget::QgsPuzzleWidget( QgsMapCanvas *canvas )
 
 void QgsPuzzleWidget::mousePressEvent( QMouseEvent *event )
 {
+  if ( mTileWidth == 0 || mTileHeight == 0 )
+    return;  // not initialized
+
   int idxEmpty = findEmpty( mPositions );
   int rEmpty = idxEmpty / mSize;
   int cEmpty = idxEmpty % mSize;
@@ -107,12 +110,17 @@ void QgsPuzzleWidget::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void QgsPuzzleWidget::letsGetThePartyStarted()
+bool QgsPuzzleWidget::letsGetThePartyStarted()
 {
   mPositions.clear();
   delete mScene;
   mItems.clear();
   mTextItems.clear();
+  mTileWidth = 0;
+  mTileHeight = 0;
+
+  if ( !mCanvas->layerCount() )
+    return false;
 
   mScene = new QGraphicsScene;
 
@@ -168,6 +176,7 @@ void QgsPuzzleWidget::letsGetThePartyStarted()
   updateTilePositions();
 
   setScene( mScene );
+  return true;
 }
 
 void QgsPuzzleWidget::updateTilePositions()
