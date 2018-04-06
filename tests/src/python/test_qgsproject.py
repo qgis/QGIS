@@ -857,6 +857,36 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue('source="./points.shp"' in content)
             self.assertTrue('source="./landsat_4326.tif"' in content)
 
+    def testCustomLayerOrderFrom2xProject(self):
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'layer_rendering_order_issue_qgis3.qgs'))
+
+        layer_x = prj.mapLayers()['x20180406151213536']
+        layer_y = prj.mapLayers()['y20180406151217017']
+
+        # check layer order
+        tree = prj.layerTreeRoot()
+        self.assertEqual(tree.children()[0].layer(), layer_x)
+        self.assertEqual(tree.children()[1].layer(), layer_y)
+        self.assertTrue(tree.hasCustomLayerOrder())
+        self.assertEqual(tree.customLayerOrder(), [layer_y, layer_x])
+        self.assertEqual(tree.layerOrder(), [layer_y, layer_x])
+
+    def testCustomLayerOrderFrom3xProject(self):
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'layer_rendering_order_qgis3_project.qgs'))
+
+        layer_x = prj.mapLayers()['x20180406151213536']
+        layer_y = prj.mapLayers()['y20180406151217017']
+
+        # check layer order
+        tree = prj.layerTreeRoot()
+        self.assertEqual(tree.children()[0].layer(), layer_x)
+        self.assertEqual(tree.children()[1].layer(), layer_y)
+        self.assertTrue(tree.hasCustomLayerOrder())
+        self.assertEqual(tree.customLayerOrder(), [layer_y, layer_x])
+        self.assertEqual(tree.layerOrder(), [layer_y, layer_x])
+
 
 if __name__ == '__main__':
     unittest.main()
