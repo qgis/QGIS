@@ -135,6 +135,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->isSpatial() )
       {
         menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+        if ( vlayer )
+        {
+          QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );
+          actionZoomSelected->setEnabled( !vlayer->selectedFeatures().isEmpty() );
+          menu->addAction( actionZoomSelected );
+        }
         menu->addAction( actions->actionShowInOverview( menu ) );
       }
 

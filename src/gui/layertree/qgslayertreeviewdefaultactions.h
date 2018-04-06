@@ -58,8 +58,13 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionCheckAndAllParents( QObject *parent = nullptr );
 
     QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Action to zoom to selected features of a vector layer
+     * \since QGIS 3.2
+     */
+    QAction *actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
-    // TODO: zoom to selected
 
     QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
 
@@ -77,6 +82,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
     void zoomToLayer( QgsMapCanvas *canvas );
+
+    /**
+     * \see zoomToSelection()
+     * \since QGIS 3.2
+     */
+    void zoomToSelection( QgsMapCanvas *canvas );
     void zoomToGroup( QgsMapCanvas *canvas );
 
   public slots:
@@ -88,6 +99,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void renameGroupOrLayer();
     void showFeatureCount();
     void zoomToLayer();
+
+    /**
+     * Slot to zoom to selected features of a vector layer
+     * \since QGIS 3.2
+     */
+    void zoomToSelection();
     void zoomToGroup();
     void makeTopLevel();
 

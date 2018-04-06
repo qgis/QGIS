@@ -97,6 +97,15 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent )
+{
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ),
+                            tr( "&Zoom to Selection" ), parent );
+  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToSelection ) );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
@@ -259,6 +268,15 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   zoomToLayers( canvas, layers );
 }
 
+void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
+{
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
+  if ( !layer )
+    return;
+
+  canvas->zoomToSelected( layer );
+}
+
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
 {
   QgsLayerTreeGroup *groupNode = mView->currentGroupNode();
@@ -279,6 +297,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
   QApplication::restoreOverrideCursor();
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToSelection()
+{
+  QAction *s = qobject_cast<QAction *>( sender() );
+  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+  zoomToSelection( canvas );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
