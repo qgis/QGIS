@@ -339,6 +339,18 @@ tests:
         name: expected/multipolys_densify.gml
         type: vector
 
+  - algorithm: qgis:densifygeometriesgivenaninterval
+    name: Densify polygons by interval
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERVAL: 1.0
+    results:
+      OUTPUT:
+        name: expected/densify_by_interval_polys.gml
+        type: vector
+
   - name: Polygons to Lines
     algorithm: qgis:polygonstolines
     params:
