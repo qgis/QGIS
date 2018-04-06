@@ -23,7 +23,7 @@ typedef struct
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-    QgsPostgresProjectStorage();
+    QgsPostgresProjectStorage() = default;
 
     virtual QString type() override { return QStringLiteral( "postgresql" ); }
 
@@ -35,7 +35,7 @@ class QgsPostgresProjectStorage : public QgsProjectStorage
 
     virtual bool removeProject( const QString &uri ) override;
 
-    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
 
 #ifdef HAVE_GUI
     // GUI support

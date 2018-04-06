@@ -140,7 +140,7 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
 
         # try to see project's metadata
 
-        res, metadata = prj_storage.readProjectMetadata(project_uri)
+        res, metadata = prj_storage.readProjectStorageMetadata(project_uri)
         self.assertTrue(res)
         self.assertEqual(metadata.name, "abc")
         time_project = metadata.lastModified

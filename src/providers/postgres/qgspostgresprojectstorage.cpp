@@ -43,11 +43,6 @@ static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaNa
 }
 
 
-QgsPostgresProjectStorage::QgsPostgresProjectStorage()
-{
-}
-
-
 QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
@@ -193,7 +188,7 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
 }
 
 
-bool QgsPostgresProjectStorage::readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
+bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
 {
   QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )

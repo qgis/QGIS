@@ -468,7 +468,7 @@ QDateTime QgsProject::lastModified() const
   if ( storage )
   {
     QgsProjectStorage::Metadata metadata;
-    storage->readProjectMetadata( mFile.fileName(), metadata );
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
     return metadata.lastModified;
   }
   else
@@ -492,7 +492,7 @@ QString QgsProject::baseName() const
   if ( storage )
   {
     QgsProjectStorage::Metadata metadata;
-    storage->readProjectMetadata( mFile.fileName(), metadata );
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
     return metadata.name;
   }
   else

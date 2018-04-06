@@ -128,7 +128,7 @@ class MemoryStorage : public QgsProjectStorage
       return true;
     }
 
-    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override
     {
       QStringList lst = uri.split( ":" );
       Q_ASSERT( lst.count() == 2 );
@@ -194,13 +194,13 @@ void TestQgsProjectStorage::testMemoryStorage()
   // test metadata access
 
   QgsProjectStorage::Metadata meta1;
-  bool readMetaOk = memStorage->readProjectMetadata( "memory:project1", meta1 );
+  bool readMetaOk = memStorage->readProjectStorageMetadata( "memory:project1", meta1 );
   QVERIFY( readMetaOk );
   QCOMPARE( meta1.name, QString( "project1" ) );
   QVERIFY( meta1.lastModified.secsTo( QDateTime::currentDateTime() ) < 1 );
 
   QgsProjectStorage::Metadata metaX;
-  bool readMetaInvalidOk = memStorage->readProjectMetadata( "memory:projectXYZ", metaX );
+  bool readMetaInvalidOk = memStorage->readProjectStorageMetadata( "memory:projectXYZ", metaX );
   QVERIFY( !readMetaInvalidOk );
 
   // test removal

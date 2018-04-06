@@ -29,7 +29,7 @@ class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresP
 
   private:
 
-    bool mSaving;  //!< Whether using this dialog for loading or saving a project
+    bool mSaving = false;  //!< Whether using this dialog for loading or saving a project
     QAction *mActionRemoveProject = nullptr;
 };
 

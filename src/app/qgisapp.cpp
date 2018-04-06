@@ -13563,7 +13563,8 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
 {
   menu->clear();
-  for ( QgsProjectStorage *storage : QgsApplication::projectStorageRegistry()->projectStorages() )
+  const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
+  for ( QgsProjectStorage *storage : storages )
   {
     QString name = storage->visibleName();
     if ( name.isEmpty() )

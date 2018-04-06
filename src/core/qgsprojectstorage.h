@@ -28,6 +28,7 @@ class QStringList;
 class QgsReadWriteContext;
 
 /**
+ * \ingroup core
  * Abstract interface for project storage - to be implemented by various backends
  * and registered in QgsProjectStorageRegistry.
  *
@@ -37,7 +38,11 @@ class CORE_EXPORT QgsProjectStorage
 {
   public:
 
-    //! Metadata associated with a project
+    /**
+     * \ingroup core
+     * Metadata associated with a project
+     * \since QGIS 3.2
+     */
     class Metadata
     {
       public:
@@ -47,7 +52,7 @@ class CORE_EXPORT QgsProjectStorage
         QDateTime lastModified;
     };
 
-    virtual ~QgsProjectStorage();
+    virtual ~QgsProjectStorage() = default;
 
     /**
      * Unique identifier of the project storage type. If type() returns "memory", all project file names
@@ -75,7 +80,7 @@ class CORE_EXPORT QgsProjectStorage
     virtual bool writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
 
     /**
-     * Removes and existing project at the given URI. Returns true if the removal
+     * Removes an existing project at the given URI. Returns true if the removal
      * was successful.
      */
     virtual bool removeProject( const QString &uri ) = 0;
@@ -90,7 +95,7 @@ class CORE_EXPORT QgsProjectStorage
      * Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
      * Returns true if the metadata were read with success.
      */
-    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT ) { Q_UNUSED( uri ); Q_UNUSED( metadata ); return false; }
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT ) { Q_UNUSED( uri ); Q_UNUSED( metadata ); return false; }
 
     /**
      * Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name

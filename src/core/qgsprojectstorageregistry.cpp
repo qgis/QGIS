@@ -17,10 +17,6 @@
 
 #include "qgsprojectstorage.h"
 
-QgsProjectStorageRegistry::QgsProjectStorageRegistry()
-{
-
-}
 
 QgsProjectStorageRegistry::~QgsProjectStorageRegistry()
 {
@@ -37,7 +33,7 @@ QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QStri
   for ( auto it = mBackends.constBegin(); it != mBackends.constEnd(); ++it )
   {
     QgsProjectStorage *storage = it.value();
-    QString scheme = storage->type() + ":";
+    QString scheme = storage->type() + ':';
     if ( uri.startsWith( scheme ) )
       return storage;
   }

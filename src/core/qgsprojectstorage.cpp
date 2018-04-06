@@ -14,8 +14,3 @@
  ***************************************************************************/
 
 #include "qgsprojectstorage.h"
-
-
-QgsProjectStorage::~QgsProjectStorage()
-{
-}

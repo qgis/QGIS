@@ -39,17 +39,17 @@
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
      <property name="title">
-      <string>New From Template</string>
+      <string>New from Template</string>
      </property>
     </widget>
     <widget class="QMenu" name="mProjectToStorageMenu">
      <property name="title">
-      <string>Save To</string>
+      <string>Save to</string>
      </property>
     </widget>
     <widget class="QMenu" name="mProjectFromStorageMenu">
      <property name="title">
-      <string>Open From</string>
+      <string>Open from</string>
      </property>
     </widget>
     <addaction name="mActionNewProject"/>

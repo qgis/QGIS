@@ -29,6 +29,8 @@ and registered in QgsProjectStorageRegistry.
 {
 %Docstring
 Metadata associated with a project
+
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
@@ -70,7 +72,7 @@ can read all data from it until it reaches its end.
 
     virtual bool removeProject( const QString &uri ) = 0;
 %Docstring
-Removes and existing project at the given URI. Returns true if the removal
+Removes an existing project at the given URI. Returns true if the removal
 was successful.
 %End
 
@@ -80,7 +82,7 @@ Rename an existing project at the given URI to a different URI. Returns true if 
 was successful.
 %End
 
-    virtual bool readProjectMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
 %Docstring
 Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
 Returns true if the metadata were read with success.

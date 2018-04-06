@@ -24,6 +24,7 @@
 class QgsProjectStorage;
 
 /**
+ * \ingroup core
  * Registry of storage backends that QgsProject may use.
  * This is a singleton that should be accessed through QgsApplication::projectStorageRegistry().
  *
@@ -32,7 +33,7 @@ class QgsProjectStorage;
 class CORE_EXPORT QgsProjectStorageRegistry
 {
   public:
-    QgsProjectStorageRegistry();
+    QgsProjectStorageRegistry() = default;
     ~QgsProjectStorageRegistry();
 
     //! Returns storage implementation if the storage type matches one. Returns null pointer otherwise (it is a normal file)
