@@ -447,6 +447,12 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgshillshaderenderer.cpp
 
+  mesh/qgsmeshdataprovider.cpp
+  mesh/qgsmeshlayer.cpp
+  mesh/qgsmeshlayerrenderer.cpp
+  mesh/qgsmeshmemorydataprovider.cpp
+  mesh/qgstriangularmesh.cpp
+
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
   geometry/qgscircle.cpp
@@ -682,6 +688,10 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterinterface.h
   raster/qgsrasterlayerrenderer.h
   raster/qgsrasterprojector.h
+
+  mesh/qgsmeshdataprovider.h
+  mesh/qgsmeshlayer.h
+  mesh/qgsmeshmemorydataprovider.h
 
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
@@ -1060,6 +1070,9 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgshillshaderenderer.h
 
+  mesh/qgstriangularmesh.h
+  mesh/qgsmeshlayerrenderer.h
+
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
   scalebar/qgsscalebarsettings.h
@@ -1179,6 +1192,7 @@ INCLUDE_DIRECTORIES(
   scalebar
   symbology
   metadata
+  mesh
   ${CMAKE_SOURCE_DIR}/external/nmea
 )
 IF (WITH_INTERNAL_QEXTSERIALPORT)

@@ -24,6 +24,7 @@ class QgsLayerItem;
 class QgsLayerTreeNode;
 class QgsVectorLayer;
 class QgsRasterLayer;
+class QgsMeshLayer;
 
 /**
  * \ingroup core
@@ -63,7 +64,14 @@ class CORE_EXPORT QgsMimeDataUtils
        */
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 
-      //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom" / "project"
+      /**
+       * Get mesh layer from uri if possible, otherwise returns 0 and error is set
+       * \param owner set to true if caller becomes owner
+       * \param error set to error message if cannot get raster
+       */
+      QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
+
+      //! Type of URI. Recognized types: "vector" / "raster" / "mesh" / "plugin" / "custom" / "project"
       QString layerType;
 
       /**

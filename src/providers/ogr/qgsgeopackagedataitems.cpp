@@ -228,6 +228,12 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
         srcLayer = dropUri.vectorLayer( owner, error );
         isVector = true;
       }
+      else if ( dropUri.layerType == QStringLiteral( "mesh" ) )
+      {
+        // unsuported
+        hasError = true;
+        continue;
+      }
       else
       {
         srcLayer = dropUri.rasterLayer( owner, error );

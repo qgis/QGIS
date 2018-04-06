@@ -20,6 +20,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
@@ -187,7 +188,9 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testziplayer.cpp
-    )
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerrenderer.cpp
+   )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}

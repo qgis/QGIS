@@ -167,6 +167,7 @@ class CORE_EXPORT QgsProviderRegistry
       \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
+
     //! Return a string containing the available database drivers
     virtual QString databaseDrivers() const;
     //! Return a string containing the available directory drivers

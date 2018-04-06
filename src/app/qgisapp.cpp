@@ -228,6 +228,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmeshlayer.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
@@ -1666,6 +1667,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
       addRasterLayer( uri, u.name, u.providerKey );
+    }
+    else if ( u.layerType == QLatin1String( "mesh" ) )
+    {
+      QgsMeshLayer *layer = new QgsMeshLayer( uri, u.name, u.providerKey );
+      addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {

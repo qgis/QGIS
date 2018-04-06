@@ -394,7 +394,8 @@ Item that represents a layer that can be opened with one of the providers
       TableLayer,
       Database,
       Table,
-      Plugin
+      Plugin,
+      Mesh
     };
 
 
@@ -470,6 +471,7 @@ Returns the icon name of the given ``layerType``
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
+    static QIcon iconMesh();
 
     virtual QString layerName() const;
 %Docstring
