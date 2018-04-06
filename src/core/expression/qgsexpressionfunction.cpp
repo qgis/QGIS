@@ -3438,7 +3438,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
 
   const QVariant &attVal = values.at( 2 );
 
-  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( vl->id() ).arg( attributeId ).arg( attVal.toString() );
+  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( vl->id(), QString::number( attributeId ), attVal.toString() );
   if ( context && context->hasCachedValue( cacheValueKey ) )
   {
     return context->cachedValue( cacheValueKey );
