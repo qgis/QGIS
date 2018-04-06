@@ -2,29 +2,29 @@
 
 tests:
 
-#  - algorithm: saga:invertgrid
-#    name: Raster tools - Invert grid
-#    params:
-#      GRID:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      INVERSE:
-#        hash: 8e3947b878a00f70ce837fba962f6be6d3f0c8eae2d614099b015f1e
-#        type: rasterhash
-#
-#  - algorithm: saga:fixeddistancebuffer
-#    name: Vector general - Fixed distance buffer (polygon)
-#    params:
-#      DARC: 5.0
-#      DISSOLVE: false
-#      DIST_FIELD_DEFAULT: 0.5
-#      NZONES: 1
-#      POLY_INNER: false
-#      SHAPES:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      BUFFER:
-#        name: expected/saga/buffer_polys.shp
-#        type: vector
+  - algorithm: saga:invertgrid
+    name: Raster tools - Invert grid
+    params:
+      GRID:
+        name: dem.tif
+        type: raster
+    results:
+      INVERSE:
+        hash: 8e3947b878a00f70ce837fba962f6be6d3f0c8eae2d614099b015f1e
+        type: rasterhash
+
+  - algorithm: saga:fixeddistancebuffer
+    name: Vector general - Fixed distance buffer (polygon)
+    params:
+      DARC: 5.0
+      DISSOLVE: false
+      DIST_FIELD_DEFAULT: 0.5
+      NZONES: 1
+      POLY_INNER: false
+      SHAPES:
+        name: polys.gml
+        type: vector
+    results:
+      BUFFER:
+        name: expected/saga/buffer_polys.shp
+        type: vector
