@@ -24,6 +24,10 @@
 #include <QVariantMap>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+class QgsProcessingAlgorithm;
+class QgsProcessingAlgorithmConfigurationWidget;
 
 /**
  * A configuration widget for processing algorithms allows to provide additional
@@ -37,6 +41,7 @@ class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */
@@ -53,5 +58,29 @@ class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
      */
     virtual void setConfiguration( const QVariantMap &configuration ) = 0;
 };
+
+
+/**
+ * Interface base class for factories for algorithm configuration widgets.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ */
+class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidgetFactory
+{
+  public:
+    virtual ~QgsProcessingAlgorithmConfigurationWidgetFactory() = default;
+
+    /**
+     * Create a new configuration widget for \a algorithm.
+     */
+    virtual QgsProcessingAlgorithmConfigurationWidget *create( QgsProcessingAlgorithm *algorithm ) const = 0 SIP_FACTORY;
+
+    /**
+     * Check if this factory can create widgets for \a algorithm.
+     */
+    virtual bool canCreateFor( QgsProcessingAlgorithm *algorithm ) const = 0;
+};
+
 
 #endif // QGSPROCESSINGALGORITHMCONFIGURATIONWIDGET_H

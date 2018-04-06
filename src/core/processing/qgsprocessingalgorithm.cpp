@@ -131,11 +131,6 @@ QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
   return nullptr;
 }
 
-QgsProcessingAlgorithmConfigurationWidget *QgsProcessingAlgorithm::createModelerWidget() const
-{
-  return nullptr;
-}
-
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
     QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {

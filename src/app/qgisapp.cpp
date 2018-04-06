@@ -246,6 +246,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
+#include "qgsprocessingconfigurationwidgets.h"
 #include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
@@ -1457,6 +1458,7 @@ QgisApp::~QgisApp()
 
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
+  QgsProcessingConfigurationWidgets::cleanup();
 
   unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
 
@@ -10495,6 +10497,7 @@ void QgisApp::initNativeProcessing()
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
+  QgsProcessingConfigurationWidgets::initialize();
 }
 
 void QgisApp::initLayouts()

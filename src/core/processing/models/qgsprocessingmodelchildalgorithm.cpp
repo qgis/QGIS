@@ -64,6 +64,7 @@ const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() cons
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
 {
   mModelOutputs = modelOutputs;
+
   QMap<QString, QgsProcessingModelOutput>::iterator outputIt = mModelOutputs.begin();
   for ( ; outputIt != mModelOutputs.end(); ++outputIt )
   {

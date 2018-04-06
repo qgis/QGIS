@@ -312,4 +312,5 @@
 %Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocatorwidget.sip
 %Include processing/qgsprocessingalgorithmdialogbase.sip
+%Include processing/qgsprocessingconfigurationwidgets.sip
 %Include qgsadvanceddigitizingcanvasitem.sip

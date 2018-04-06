@@ -24,6 +24,7 @@
 #include <QMap>
 
 class QgsProcessingParameterType;
+class QgsProcessingAlgorithmConfigurationWidgetFactory;
 
 /**
  * \class QgsProcessingRegistry
@@ -168,6 +169,29 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QList<QgsProcessingParameterType *> parameterTypes() const;
 
+    /**
+     * Add a new configuration widget factory for customized algorithm configuration
+     * widgets. Ownership is taken.
+     *
+     * \since QGIS 3.2
+     */
+    void addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory SIP_TRANSFER );
+
+    /**
+     * Remove a configuration widget factory for customized algorithm configuration
+     * widgets.
+     *
+     * \since QGIS 3.2
+     */
+    void removeAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory );
+
+    /**
+     * @brief algorithmConfigurationWidget
+     * @param algorithm
+     * @return
+     */
+    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
+
 
   signals:
 
@@ -199,6 +223,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     //! Hash of available parameter types by id. This object owns the pointers.
     QMap<QString, QgsProcessingParameterType *> mParameterTypes;
+
+    QList <QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

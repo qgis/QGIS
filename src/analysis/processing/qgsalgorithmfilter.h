@@ -22,38 +22,18 @@
 
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsprocessingalgorithmconfigurationwidget.h"
 
 class QgsProcessingModelAlgorithm;
 class QTableWidget;
 
 ///@cond PRIVATE
 
-
-class QgsFilterAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfigurationWidget
-{
-    Q_OBJECT
-
-  public:
-    QgsFilterAlgorithmConfigurationWidget( QWidget *parent = nullptr );
-
-    QVariantMap configuration() const override;
-
-    void setConfiguration( const QVariantMap &configuration ) override;
-
-  private slots:
-    void removeSelectedOutputs();
-    void addOutput();
-
-  private:
-    QTableWidget *mOutputExpressionWidget;
-};
-
-
 /**
  * Feature filter algorithm for modeler.
  * Accepts a list of expressions and names and creates outputs where
  * matching features are sent to.
+ *
+ * \since QGIS 3.2
  */
 class QgsFilterAlgorithm : public QgsProcessingAlgorithm
 {
@@ -70,7 +50,6 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
     virtual Flags flags() const override;
     QString shortHelpString() const override;
     QgsFilterAlgorithm *createInstance() const override SIP_FACTORY;
-    QgsProcessingAlgorithmConfigurationWidget *createModelerWidget() const override SIP_FACTORY;
 
   protected:
 

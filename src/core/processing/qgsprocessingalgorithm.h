@@ -357,12 +357,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QWidget *createCustomParametersWidget( QWidget *parent = nullptr ) const SIP_FACTORY;
 
     /**
-     * If an algorithm subclass implements a configuration widget for the algorithm itself,
-     * a new instance of this widget should be returned by this method.
-     */
-    virtual QgsProcessingAlgorithmConfigurationWidget *createModelerWidget() const SIP_FACTORY;
-
-    /**
      * Creates an expression context relating to the algorithm. This can be called by algorithms
      * to create a new expression context ready for evaluating expressions within the algorithm.
      * Optionally, a \a source can be specified which will be used to populate the context if it

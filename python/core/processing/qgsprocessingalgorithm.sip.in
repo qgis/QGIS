@@ -351,12 +351,6 @@ The base class implementation returns None, which indicates that an autogenerate
 parameters widget should be used.
 %End
 
-    virtual QgsProcessingAlgorithmConfigurationWidget *createModelerWidget() const /Factory/;
-%Docstring
-If an algorithm subclass implements a configuration widget for the algorithm itself,
-a new instance of this widget should be returned by this method.
-%End
-
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
 %Docstring

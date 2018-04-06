@@ -36,6 +36,7 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QHBoxLayout, QWidget)
 
 from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
@@ -118,7 +119,7 @@ class ModelerParametersDialog(QDialog):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout.addWidget(line)
-        self.algorithmItem = self._alg.createModelerWidget()
+        self.algorithmItem = QgsApplication.instance().processingRegistry().algorithmConfigurationWidget(self._alg)
         if self.configuration:
             self.algorithmItem.setConfiguration(self.configuration)
         self.verticalLayout.addWidget(self.algorithmItem)
@@ -330,6 +331,7 @@ class ModelerParametersDialog(QDialog):
                     output.setChildId(alg.childId())
                     output.setChildOutputName(dest.name())
                     outputs[name] = output
+
         alg.setModelOutputs(outputs)
 
         selectedOptions = self.dependenciesPanel.selectedoptions

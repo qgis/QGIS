@@ -9,18 +9,67 @@
 
 
 
+
+
+
+
 class QgsProcessingAlgorithmConfigurationWidget : QWidget
 {
+%Docstring
+A configuration widget for processing algorithms allows to provide additional
+configuration options directly on algorithm level, in addition to parameters.
+
+.. versionadded:: 3.2
+%End
 
 %TypeHeaderCode
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 %End
   public:
+
     QgsProcessingAlgorithmConfigurationWidget( QWidget *parent = 0 );
+%Docstring
+Creates a new QgsProcessingAlgorithmConfigurationWidget
+%End
     virtual ~QgsProcessingAlgorithmConfigurationWidget();
+
     virtual QVariantMap configuration() const = 0;
+%Docstring
+Read the current configuration from this widget.
+%End
+
     virtual void setConfiguration( const QVariantMap &configuration ) = 0;
+%Docstring
+Set the configuration which this widget should represent.
+%End
 };
+
+
+class QgsProcessingAlgorithmConfigurationWidgetFactory
+{
+%Docstring
+Interface base class for factories for algorithm configuration widgets.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingalgorithmconfigurationwidget.h"
+%End
+  public:
+    virtual ~QgsProcessingAlgorithmConfigurationWidgetFactory();
+
+    virtual QgsProcessingAlgorithmConfigurationWidget *create( QgsProcessingAlgorithm *algorithm ) const = 0 /Factory/;
+%Docstring
+Create a new configuration widget for ``algorithm``.
+%End
+
+    virtual bool canCreateFor( QgsProcessingAlgorithm *algorithm ) const = 0;
+%Docstring
+Check if this factory can create widgets for ``algorithm``.
+%End
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

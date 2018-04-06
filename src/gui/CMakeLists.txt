@@ -193,6 +193,7 @@ SET(QGIS_GUI_SRCS
   ogr/qgsvectorlayersaveasdialog.cpp
 
   processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingconfigurationwidgets.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -710,6 +711,7 @@ SET(QGIS_GUI_MOC_HDRS
   locator/qgslocatorwidget.h
 
   processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingconfigurationwidgets.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
@@ -881,6 +883,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar

@@ -140,7 +140,6 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   network/qgsvectorlayerdirector.h
 
   processing/qgsalgorithmfiledownloader.h
-  processing/qgsalgorithmfilter.h
 
   vector/geometry_checker/qgsfeaturepool.h
   vector/geometry_checker/qgsgeometrychecker.h

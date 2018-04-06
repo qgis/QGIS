@@ -18,6 +18,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -187,5 +188,29 @@ QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString 
 QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
 {
   return mParameterTypes.values();
+}
+
+void QgsProcessingRegistry::addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory )
+{
+  mAlgorithmConfigurationWidgetFactories.append( factory );
+}
+
+void QgsProcessingRegistry::removeAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory )
+{
+  mAlgorithmConfigurationWidgetFactories.removeAll( factory );
+  delete factory;
+}
+
+QgsProcessingAlgorithmConfigurationWidget *QgsProcessingRegistry::algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const
+{
+  for ( const auto *factory : mAlgorithmConfigurationWidgetFactories )
+  {
+    if ( factory->canCreateFor( algorithm ) )
+    {
+      return factory->create( algorithm );
+    }
+  }
+
+  return nullptr;
 }
 
