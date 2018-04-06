@@ -1,0 +1,166 @@
+/***************************************************************************
+                         qgsmeshmemorydataprovider.cpp
+                         -----------------------------
+    begin                : April 2018
+    copyright            : (C) 2018 by Peter Petrik
+    email                : zilolv at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsmeshmemorydataprovider.h"
+#include <QFile>
+#include <QJsonDocument>
+#include <limits>
+
+static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mesh_memory" );
+static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Mesh memory provider" );
+
+bool QgsMeshMemoryDataProvider::isValid() const
+{
+  return true;
+}
+
+QString QgsMeshMemoryDataProvider::name() const
+{
+  return "mesh_memory";
+}
+
+QString QgsMeshMemoryDataProvider::description() const
+{
+  return "memory data provider for mesh layer";
+}
+
+QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri )
+  : QgsMeshDataProvider( uri )
+  , mIsValid( false )
+{
+  mIsValid = splitSections( uri );
+}
+
+QgsMeshMemoryDataProvider::~QgsMeshMemoryDataProvider()
+{
+}
+
+QString QgsMeshMemoryDataProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
+
+QString QgsMeshMemoryDataProvider::providerDescription()
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
+
+QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri )
+{
+  return new QgsMeshMemoryDataProvider( uri );
+}
+
+bool QgsMeshMemoryDataProvider::splitSections( const QString &uri )
+{
+  QStringList sections = uri.split( "---", QString::SkipEmptyParts );
+  if ( sections.size() != 2 )
+  {
+    setError( QgsError( QStringLiteral( "Invalid mesh definition, does not contain 2 sections" ),
+                        QStringLiteral( "Mesh Memory Provider" ) ) );
+    return false;
+  }
+
+  if ( addVertices( sections[0] ) )
+    return addFaces( sections[1] );
+  else
+    return false;
+}
+
+bool QgsMeshMemoryDataProvider::addVertices( const QString &def )
+{
+  QVector<QgsMeshVertex> vertices;
+
+  QStringList verticesCoords = def.split( "\n", QString::SkipEmptyParts );
+  for ( int i = 0; i < verticesCoords.size(); ++i )
+  {
+    QStringList coords = verticesCoords[i].split( ",", QString::SkipEmptyParts );
+    if ( coords.size() != 2 )
+    {
+      setError( QgsError( QStringLiteral( "Invalid mesh definition, vertex definition does not contain x, y" ),
+                          QStringLiteral( "Mesh Memory Provider" ) ) );
+      return false;
+    }
+    double x = coords.at( 0 ).toDouble();
+    double y = coords.at( 1 ).toDouble();
+    QgsMeshVertex vertex( x, y );
+    vertices.push_back( vertex );
+  }
+
+  mVertices = vertices;
+  return true;
+}
+
+bool QgsMeshMemoryDataProvider::addFaces( const QString &def )
+{
+  QVector<QgsMeshFace> faces;
+
+  QStringList facesVertices = def.split( "\n", QString::SkipEmptyParts );
+  for ( int i = 0; i < facesVertices.size(); ++i )
+  {
+    QStringList vertices = facesVertices[i].split( ",", QString::SkipEmptyParts );
+    if ( vertices.size() < 3 )
+    {
+      setError( QgsError( QStringLiteral( "Invalid mesh definition, face must contain at least 3 vertices" ),
+                          QStringLiteral( "Mesh Memory Provider" ) ) );
+      return false;
+    }
+    QgsMeshFace face;
+    for ( int j = 0; j < vertices.size(); ++j )
+    {
+      int vertex_id = vertices[j].toInt();
+      face.push_back( vertex_id );
+      if ( face[j] >= mVertices.size() )
+      {
+        setError( QgsError( QStringLiteral( "Invalid mesh definition, missing vertex id defined in face" ),  QStringLiteral( "Mesh Memory Provider" ) ) );
+        return false;
+      }
+    }
+    faces.push_back( face );
+  }
+
+  mFaces = faces;
+  return true;
+}
+
+size_t QgsMeshMemoryDataProvider::vertexCount() const
+{
+  return mVertices.size();
+}
+
+size_t QgsMeshMemoryDataProvider::faceCount() const
+{
+  return mFaces.size();
+}
+
+QgsMeshVertex QgsMeshMemoryDataProvider::vertex( size_t index ) const
+{
+  Q_ASSERT( vertexCount() > index );
+  return mVertices[index];
+}
+
+QgsMeshFace QgsMeshMemoryDataProvider::face( size_t index ) const
+{
+  Q_ASSERT( faceCount() > index );
+  return mFaces[index];
+}
+
+

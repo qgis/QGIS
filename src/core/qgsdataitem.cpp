@@ -74,6 +74,12 @@ QIcon QgsLayerItem::iconRaster()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRaster.svg" ) );
 }
 
+QIcon QgsLayerItem::iconMesh()
+{
+  // TODO new icon!
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+}
+
 QIcon QgsLayerItem::iconDefault()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -602,6 +608,8 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
 {
   if ( mLayerType == QgsLayerItem::Raster )
     return QgsMapLayer::RasterLayer;
+  if ( mLayerType == QgsLayerItem::Mesh )
+    return QgsMapLayer::MeshLayer;
   if ( mLayerType == QgsLayerItem::Plugin )
     return QgsMapLayer::PluginLayer;
   return QgsMapLayer::VectorLayer;
@@ -637,6 +645,8 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
     case Raster:
       return QStringLiteral( "/mIconRaster.svg" );
       break;
+    case Mesh:
+    //TODO add icon!
     default:
       return QStringLiteral( "/mIconLayer.png" );
       break;
@@ -669,6 +679,9 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       break;
     case QgsMapLayer::RasterLayer:
       u.layerType = QStringLiteral( "raster" );
+      break;
+    case QgsMapLayer::MeshLayer:
+      u.layerType = QStringLiteral( "mesh" );
       break;
     case QgsMapLayer::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );

@@ -433,3 +433,6 @@
 %Include qgsuserprofilemanager.sip
 %Include symbology/qgsarrowsymbollayer.sip
 %Include qgsuserprofile.sip
+%Include mesh/qgsmeshdataprovider.sip
+%Include mesh/qgsmeshlayer.sip
+

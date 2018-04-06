@@ -3622,6 +3622,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Vector" );
       case QgsMapLayer::RasterLayer:
         return QCoreApplication::translate( "expressions", "Raster" );
+      case QgsMapLayer::MeshLayer:
+        return QCoreApplication::translate( "expressions", "Mesh" );
       case QgsMapLayer::PluginLayer:
         return QCoreApplication::translate( "expressions", "Plugin" );
     }

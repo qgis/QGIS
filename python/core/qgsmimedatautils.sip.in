@@ -56,6 +56,14 @@ Get raster layer from uri if possible, otherwise returns 0 and error is set
 :param error: set to error message if cannot get raster
 %End
 
+      QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
+%Docstring
+Get mesh layer from uri if possible, otherwise returns 0 and error is set
+
+:param owner: set to true if caller becomes owner
+:param error: set to error message if cannot get raster
+%End
+
       QString layerType;
 
       QString providerKey;

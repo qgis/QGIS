@@ -35,7 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-
+#include "qgsmeshlayer.h"
 
 #include <QDragEnterEvent>
 
@@ -144,6 +144,20 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     QgsDebugMsg( "creating raster layer" );
     // should copy code from addLayer() to split uri ?
     QgsRasterLayer *layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    if ( layer )
+    {
+      if ( layer->isValid() )
+      {
+        layerCrs = layer->crs();
+        layerMetadata = layer->htmlMetadata();
+      }
+      delete layer;
+    }
+  }
+  else if ( type == QgsMapLayer::MeshLayer )
+  {
+    QgsDebugMsg( "creating mesh layer" );
+    QgsMeshLayer *layer = new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
     if ( layer )
     {
       if ( layer->isValid() )
