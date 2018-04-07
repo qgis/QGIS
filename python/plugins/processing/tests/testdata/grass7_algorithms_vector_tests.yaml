@@ -3,18 +3,33 @@
 tests:
 
 # v.* modules
-#  - algorithm: grass7:r.plane
-#    name: GRASS7 r.plane
-#    params:
-#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-#      azimuth: 125
-#      dip: 45
-#      easting: 351610
-#      elevation: 50
-#      northing: 6688312
-#      type: 1
-#    results:
-#      output:
-#        hash: a9326678c39b6f925e7f22f6e79a48217100071cc8af85d675f28462
-#        type: rasterhash
+  - algorithm: grass7:v.buffer
+    name: Buffer vectors
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      angle: 0.0
+      cats: ''
+      distance: 0.1
+      input:
+        name: lines.gml
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_lines.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 7
 
