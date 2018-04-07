@@ -40,7 +40,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # There will be as many outputs as the difference between start and end divided by steps
     start = alg.parameterAsDouble(parameters, 'start', context)
     end = alg.parameterAsDouble(parameters, 'end', context)

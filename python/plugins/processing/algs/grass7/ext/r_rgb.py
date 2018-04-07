@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
         return
 
@@ -35,7 +35,7 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # if the input raster is multiband: export each component directly
     rasterInput = alg.exportedLayers['input']
     raster = alg.parameterAsRasterLayer(parameters, 'input', context)
@@ -52,7 +52,7 @@ def processCommand(alg, parameters, context):
         ))
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     raster = alg.parameterAsRasterLayer(parameters, 'input', context)
 
     # if the raster was monoband, export from r.rgb

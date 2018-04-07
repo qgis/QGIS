@@ -33,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return verifyRasterNum(alg, parameters, context, 'input', 2)
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # We need to extract the basename of the signature file
     signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
     shortSigFile = os.path.basename(signatureFile)
@@ -41,7 +41,7 @@ def processCommand(alg, parameters, context):
 
     # Regroup rasters
     group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
-    alg.processCommand(parameters, context)
+    alg.processCommand(parameters, context, feedback)
 
     # Re-add signature files
     parameters['signaturefile'] = signatureFile

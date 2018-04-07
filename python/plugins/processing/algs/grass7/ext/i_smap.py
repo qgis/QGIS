@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from .i import regroupRasters, importSigFile
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
     group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
 
@@ -38,4 +38,4 @@ def processCommand(alg, parameters, context):
     parameters['signaturefile'] = shortSigFile
 
     # Handle other parameters
-    alg.processCommand(parameters, context)
+    alg.processCommand(parameters, context, feedback)
