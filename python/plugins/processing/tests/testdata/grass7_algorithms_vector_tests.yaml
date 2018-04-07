@@ -1,0 +1,20 @@
+# See ../README.md for a description of the file format
+
+tests:
+
+# v.* modules
+#  - algorithm: grass7:r.plane
+#    name: GRASS7 r.plane
+#    params:
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      azimuth: 125
+#      dip: 45
+#      easting: 351610
+#      elevation: 50
+#      northing: 6688312
+#      type: 1
+#    results:
+#      output:
+#        hash: a9326678c39b6f925e7f22f6e79a48217100071cc8af85d675f28462
+#        type: rasterhash
+
