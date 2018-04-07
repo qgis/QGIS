@@ -60,7 +60,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputHtml,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsVectorLayer)
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -761,7 +762,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param external: use v.external (v.in.ogr if False).
         """
         layer = self.parameterAsVectorLayer(parameters, name, context)
-        self.loadVectorLayer(name, layer, external)
+        if layer is None or layer.dataProvider().name() != 'ogr':
+            # parameter is not a vector layer or not an OGR layer - try to convert to a source compatible with
+            # grass OGR inputs and extract selection if required
+            path = self.parameterAsCompatibleSourceLayerPath(parameters, name, context,
+                                                             QgsVectorFileWriter.supportedFormatExtensions(),
+                                                             feedback=feedback)
+            ogr_layer = QgsVectorLayer(path, '', 'ogr')
+            self.loadVectorLayer(name, ogr_layer, external)
+        else:
+            # already an ogr layer source
+            self.loadVectorLayer(name, layer, external)
 
     def loadVectorLayer(self, name, layer, external=False):
         """
@@ -771,7 +782,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param layer: QgsMapLayer for the vector layer.
         :param external: use v.external (v.in.ogr if False).
         """
-        # TODO: support selections
         # TODO: support multiple input formats
         if external is None:
             external = ProcessingConfig.getSetting(
