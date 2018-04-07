@@ -38,7 +38,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Handle inline rules
     txtRules = alg.parameterAsString(parameters, 'input_txt', context)
     if txtRules:
@@ -51,10 +51,10 @@ def processCommand(alg, parameters, context):
         alg.removeParameter('input_txt')
         parameters['input'] = tempRulesName
 
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # We need to add the from layer to outputs:
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
     grassName = alg.exportedLayers['map']

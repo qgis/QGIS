@@ -38,7 +38,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # handle inline points
     inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
     if inlinePoints:
@@ -51,4 +51,4 @@ def processCommand(alg, parameters, context):
         alg.removeParameter('inline_points')
         parameters['points'] = tempPoints
 
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)

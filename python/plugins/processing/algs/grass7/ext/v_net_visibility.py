@@ -28,6 +28,6 @@ __revision__ = '$Format:%H$'
 from .v_net import variableOutput
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     outputParameter = {'output': ['output', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)
