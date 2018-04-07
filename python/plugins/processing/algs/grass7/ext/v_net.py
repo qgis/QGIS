@@ -34,7 +34,7 @@ from qgis.core import QgsProcessingException
 from processing.tools.system import getTempFilename
 
 
-def incorporatePoints(alg, parameters, context, pointLayerName='points', networkLayerName='input'):
+def incorporatePoints(alg, parameters, context, feedback, pointLayerName='points', networkLayerName='input'):
     """
     incorporate points with lines to form a GRASS network
     """
@@ -76,7 +76,7 @@ def incorporatePoints(alg, parameters, context, pointLayerName='points', network
     if 'threshold' in parameters:
         alg.removeParameter('threshold')
 
-    alg.processCommand(parameters, context)
+    alg.processCommand(parameters, context, feedback)
 
 
 def variableOutput(alg, layers, parameters, context, nocats=True):
@@ -107,7 +107,7 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
             typeList[3])
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     idx = alg.parameterAsInt(parameters, 'operation', context)
     operations = alg.parameterDefinition('operation').options()
     operation = operations[idx]

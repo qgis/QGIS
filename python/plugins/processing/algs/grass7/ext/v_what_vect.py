@@ -26,12 +26,12 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Exclude outputs from commands
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # We need to add the initial vector layer to outputs:
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
     grassName = alg.exportedLayers['map']

@@ -35,7 +35,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     """Prepare the GRASS import commands"""
     if 'map' in alg.exportedLayers:
         return
@@ -45,12 +45,12 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # We temporary remove the output 'sequence'
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
     grassName = alg.exportedLayers['map']
     alg.exportRasterLayer(grassName, fileName, False)

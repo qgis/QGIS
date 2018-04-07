@@ -26,16 +26,16 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
         return
 
     # We need to use v.in.ogr instead of v.external
-    alg.loadVectorLayerFromParameter('input', parameters, context, False)
-    alg.processInputs(parameters, context)
+    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
+    alg.processInputs(parameters, context, feedback)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
     grassName = '{}{}'.format('output', alg.uniqueSuffix)
     dataType = 'auto'

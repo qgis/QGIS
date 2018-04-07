@@ -29,10 +29,10 @@ from .v_net import incorporatePoints, variableOutput
 from qgis.core import QgsProcessingParameterDefinition
 
 
-def processCommand(alg, parameters, context):
-    incorporatePoints(alg, parameters, context)
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     outputParameter = {'output': ['output', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

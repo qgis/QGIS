@@ -39,7 +39,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     # import all rasters with their color tables (and their bands)
     # We need to import all the bands and color tables of the input rasters
     rasters = alg.parameterAsLayerList(parameters, 'map', context)
@@ -56,7 +56,7 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Handle inline rules
     txtRules = alg.parameterAsString(parameters, 'txtrules', context)
     if txtRules:
@@ -69,10 +69,10 @@ def processCommand(alg, parameters, context):
         alg.removeParameter('txtrules')
         parameters['rules'] = tempRulesName
 
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
