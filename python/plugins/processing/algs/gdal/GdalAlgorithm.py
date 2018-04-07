@@ -73,7 +73,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
         ogr_data_path = None
         ogr_layer_name = None
-        if input_layer is None:
+        if input_layer is None or input_layer.dataProvider().name() == 'memory':
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required
