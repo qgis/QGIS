@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 
 import os
+from processing.tools.system import getTempFilename
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):

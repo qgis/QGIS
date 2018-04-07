@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
+from processing.tools.system import getTempFilename
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
