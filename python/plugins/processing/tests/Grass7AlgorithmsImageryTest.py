@@ -29,11 +29,13 @@ import AlgorithmsTestBase
 
 import nose2
 import shutil
+import shutil
 
 from qgis.testing import (
     start_app,
     unittest
 )
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -44,6 +46,12 @@ class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.Algo
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+
+        cmdList = ["grass74", "grass72", "grass71", "grass70", "grass",
+                   "grass74.sh", "grass72.sh", "grass71.sh", "grass70.sh", "grass.sh"]
+        commands = {cmd: shutil.which(cmd) for cmd in cmdList}
+
+        assert Grass7Utils.installedVersion(), commands
 
     @classmethod
     def tearDownClass(cls):
