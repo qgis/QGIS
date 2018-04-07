@@ -6,6 +6,7 @@ qgis_composermapgridtest
 qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
+ProcessingGrass7AlgorithmsVectorTest
 PyQgsAppStartup
 
 # temporary during processing refactoring
