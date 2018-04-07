@@ -28,7 +28,16 @@ __revision__ = ':%H$'
 import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
-from qgis.core import QgsProcessingContext
+from qgis.core import (QgsProcessingContext,
+                       QgsProcessingFeedback,
+                       QgsApplication,
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsProject,
+                       QgsProcessingUtils,
+                       QgsProcessingFeatureSourceDefinition)
 import nose2
 import os
 import shutil
@@ -58,6 +67,82 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     def test_definition_file(self):
         return 'gdal_algorithm_tests.yaml'
+
+    def testGetOgrCompatibleSourceFromMemoryLayer(self):
+        # create a memory layer and add to project and context
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
+        self.assertTrue(layer.isValid())
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 457])
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        self.assertTrue(pr.addFeatures([f, f2]))
+        self.assertEqual(layer.featureCount(), 2)
+        QgsProject.instance().addMapLayer(layer)
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('gdal:buffervectors')
+        self.assertIsNotNone(alg)
+        parameters = {'INPUT': 'testmem'}
+        feedback = QgsProcessingFeedback()
+        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, executing=True)
+        self.assertTrue(ogr_data_path)
+        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(os.path.exists(ogr_data_path))
+        self.assertTrue(ogr_layer_name)
+
+        # make sure that layer has correct features
+        res = QgsVectorLayer(ogr_data_path, 'res')
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.featureCount(), 2)
+
+        QgsProject.instance().removeMapLayer(layer)
+
+    def testGetOgrCompatibleSourceFromFeatureSource(self):
+        # create a memory layer and add to project and context
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
+        self.assertTrue(layer.isValid())
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 457])
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        self.assertTrue(pr.addFeatures([f, f2]))
+        self.assertEqual(layer.featureCount(), 2)
+        # select first feature
+        layer.selectByIds([next(layer.getFeatures()).id()])
+        self.assertEqual(len(layer.selectedFeatureIds()), 1)
+        QgsProject.instance().addMapLayer(layer)
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('gdal:buffervectors')
+        self.assertIsNotNone(alg)
+        parameters = {'INPUT': QgsProcessingFeatureSourceDefinition('testmem', True)}
+        feedback = QgsProcessingFeedback()
+        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
+                                                                   executing=True)
+        self.assertTrue(ogr_data_path)
+        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(os.path.exists(ogr_data_path))
+        self.assertTrue(ogr_layer_name)
+
+        # make sure that layer has only selected feature
+        res = QgsVectorLayer(ogr_data_path, 'res')
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.featureCount(), 1)
+
+        QgsProject.instance().removeMapLayer(layer)
 
     def testOgrLayerNameExtraction(self):
         outdir = tempfile.mkdtemp()
