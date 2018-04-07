@@ -365,9 +365,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for fName in ['Inputs', 'Command', 'Outputs']:
             fullName = 'process{}'.format(fName)
             if self.module and hasattr(self.module, fullName):
-                getattr(self.module, fullName)(self, parameters, context)
+                getattr(self.module, fullName)(self, parameters, context, feedback)
             else:
-                getattr(self, fullName)(parameters, context)
+                getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
         loglines = []
@@ -398,7 +398,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         return outputs
 
-    def processInputs(self, parameters, context):
+    def processInputs(self, parameters, context, feedback):
         """Prepare the GRASS import commands"""
         inputs = [p for p in self.parameterDefinitions()
                   if isinstance(p, (QgsProcessingParameterVectorLayer,
@@ -428,7 +428,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             paramName, parameters, context)
                     else:
                         self.loadVectorLayerFromParameter(
-                            paramName, parameters, context, None)
+                            paramName, parameters, context, feedback, None)
             # For multiple inputs, process each layer
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, paramName, context)
@@ -474,7 +474,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
-    def processCommand(self, parameters, context, delOutputs=False):
+    def processCommand(self, parameters, context, feedback, delOutputs=False):
         """
         Prepare the GRASS algorithm command
         :param parameters:
@@ -622,7 +622,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.outType = ('auto' if typeidx
                             is None else self.OUTPUT_TYPES[typeidx])
 
-    def processOutputs(self, parameters, context):
+    def processOutputs(self, parameters, context, feedback):
         """Prepare the GRASS v.out.ogr commands"""
         # TODO: support multiple raster formats.
         # TODO: support multiple vector formats.
@@ -751,7 +751,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             )
             cmd.append("done")
 
-    def loadVectorLayerFromParameter(self, name, parameters, context, external=False):
+    def loadVectorLayerFromParameter(self, name, parameters, context, feedback, external=False):
         """
         Creates a dedicated command to load a vector into
         the temporary GRASS DB.

@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 
 
-def processCommand(alg, parameters, context):
-    incorporatePoints(alg, parameters, context)
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     idx = alg.parameterAsInt(parameters, 'method', context)
     operations = alg.parameterDefinition('method').options()
     operation = operations[idx]

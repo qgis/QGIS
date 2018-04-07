@@ -45,12 +45,12 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # We temporary remove the output directory
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # We take all the outputs and we export them to the output directory
     outputDir = alg.parameterAsString(parameters, 'output_dir', context)
     output = alg.parameterAsString(parameters, 'output', context)

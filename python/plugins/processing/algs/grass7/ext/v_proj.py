@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsProcessingParameterString
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
     layer = alg.parameterAsLayer(parameters, 'input', context)
     alg.setSessionProjectionFromLayer(layer)
@@ -45,7 +45,7 @@ def processInputs(alg, parameters, context):
 
     # Import the layer
     alg.loadVectorLayerFromParameter(
-        'input', parameters, context, False)
+        'input', parameters, context, feedback, False)
 
     # Go back to default location
     alg.commands.append('g.mapset mapset=PERMANENT location=temp_location')

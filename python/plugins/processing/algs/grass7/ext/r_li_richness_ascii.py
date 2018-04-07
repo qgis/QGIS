@@ -32,9 +32,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return checkMovingWindow(alg, parameters, context, True)
 
 
-def processCommand(alg, parameters, context):
-    configFile(alg, parameters, context, True)
+def processCommand(alg, parameters, context, feedback):
+    configFile(alg, parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     moveOutputTxtFile(alg, parameters, context)
