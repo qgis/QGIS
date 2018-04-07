@@ -20,7 +20,8 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsapplication.h"
-#include "qgsprocessingregistry.h"
+#include "qgsgui.h"
+#include "qgsprocessingguiregistry.h"
 
 #include <QTableWidget>
 #include <QGridLayout>
@@ -28,32 +29,6 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QHeaderView>
-
-QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> QgsProcessingConfigurationWidgets::sProcessingAlgorithmConfigurationWidgetFactories;
-
-QgsProcessingConfigurationWidgets::QgsProcessingConfigurationWidgets()
-{
-
-}
-
-void QgsProcessingConfigurationWidgets::initialize()
-{
-  if ( !sProcessingAlgorithmConfigurationWidgetFactories.isEmpty() )
-  {
-    QgsDebugMsg( "QgsProcessingConfigurationWidgets::initialize() called more than once. Exiting now." );
-    return;
-  }
-  QgsProcessingAlgorithmConfigurationWidgetFactory *factory = new QgsFilterAlgorithmConfigurationWidgetFactory();
-  sProcessingAlgorithmConfigurationWidgetFactories.append( factory );
-  QgsApplication::instance()->processingRegistry()->addAlgorithmConfigurationWidgetFactory( factory );
-}
-
-void QgsProcessingConfigurationWidgets::cleanup()
-{
-  for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : qgis::as_const( sProcessingAlgorithmConfigurationWidgetFactories ) )
-    QgsApplication::instance()->processingRegistry()->removeAlgorithmConfigurationWidgetFactory( factory );
-  sProcessingAlgorithmConfigurationWidgetFactories.clear();
-}
 
 QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QWidget *parent )
   : QgsProcessingAlgorithmConfigurationWidget( parent )

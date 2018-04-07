@@ -28,6 +28,7 @@
 #else
 #include "qgsnative.h"
 #endif
+#include "qgsprocessingguiregistry.h"
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
@@ -73,6 +74,11 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
   return instance()->mLayoutItemGuiRegistry;
 }
 
+QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
+{
+  return instance()->mProcessingGuiRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
@@ -109,4 +115,5 @@ QgsGui::QgsGui()
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
   mWidgetStateHelper = new QgsWidgetStateHelper();
+  mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 }

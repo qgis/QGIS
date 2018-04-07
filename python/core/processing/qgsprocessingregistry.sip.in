@@ -143,30 +143,6 @@ Return a list with all known parameter types.
 .. versionadded:: 3.2
 %End
 
-    void addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory /Transfer/ );
-%Docstring
-Add a new configuration widget factory for customized algorithm configuration
-widgets. Ownership is taken.
-
-.. versionadded:: 3.2
-%End
-
-    void removeAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory );
-%Docstring
-Remove a configuration widget factory for customized algorithm configuration
-widgets.
-
-.. versionadded:: 3.2
-%End
-
-    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
-%Docstring
- algorithmConfigurationWidget
-@param algorithm
-@return
-%End
-
-
   signals:
 
     void providerAdded( const QString &id );

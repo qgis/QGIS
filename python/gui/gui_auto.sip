@@ -311,6 +311,8 @@
 %Include layout/qgslayoutviewtooltemporarymousepan.sip
 %Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocatorwidget.sip
+%Include processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include processing/qgsprocessingalgorithmdialogbase.sip
 %Include processing/qgsprocessingconfigurationwidgets.sip
+%Include processing/qgsprocessingguiregistry.sip
 %Include qgsadvanceddigitizingcanvasitem.sip

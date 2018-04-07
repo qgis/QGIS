@@ -25,41 +25,6 @@
 
 class QTableWidget;
 
-/**
- * This class is responsible for the management of processing widgets which
- * QGIS internally.
- *
- * Standalone applications that require to show configuration widgets for processing
- * algorithms will need to execute the following code to have the configuration
- * interfaces available.
- *
- * \code{.py}
- * # At startup time
- * QgsApplicationProcessingConfigurationWidgets.initialize()
- *
- * # At exit time
- * QgsApplicationProcessingConfigurationWidgets.cleanup()
- * \endcode
- */
-class GUI_EXPORT QgsProcessingConfigurationWidgets
-{
-  public:
-
-    /**
-     * Initialize native configuration widgets.
-     */
-    static void initialize();
-
-    /**
-     * Cleanup native configuration widgets.
-     */
-    static void cleanup();
-
-  private:
-    QgsProcessingConfigurationWidgets() SIP_FORCE;
-    static QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> sProcessingAlgorithmConfigurationWidgetFactories;
-};
-
 ///@cond PRIVATE
 
 #ifndef SIP_RUN

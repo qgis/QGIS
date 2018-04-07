@@ -11,44 +11,6 @@
 
 
 
-class QgsProcessingConfigurationWidgets
-{
-%Docstring
-This class is responsible for the management of processing widgets which
-QGIS internally.
-
-Standalone applications that require to show configuration widgets for processing
-algorithms will need to execute the following code to have the configuration
-interfaces available.
-
-.. code-block:: python
-
-     # At startup time
-     QgsApplicationProcessingConfigurationWidgets.initialize()
-
-     # At exit time
-     QgsApplicationProcessingConfigurationWidgets.cleanup()
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingconfigurationwidgets.h"
-%End
-  public:
-
-    static void initialize();
-%Docstring
-Initialize native configuration widgets.
-%End
-
-    static void cleanup();
-%Docstring
-Cleanup native configuration widgets.
-%End
-
-  private:
-    QgsProcessingConfigurationWidgets();
-};
-
 
 
 

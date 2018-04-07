@@ -53,7 +53,8 @@ from qgis.core import (Qgis,
                        QgsProcessingOutputDefinition,
                        QgsSettings)
 
-from qgis.gui import (QgsMessageBar,
+from qgis.gui import (QgsGui,
+                      QgsMessageBar,
                       QgsScrollArea,
                       QgsFilterLineEdit,
                       QgsHelp)
@@ -119,7 +120,7 @@ class ModelerParametersDialog(QDialog):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout.addWidget(line)
-        self.algorithmItem = QgsApplication.instance().processingRegistry().algorithmConfigurationWidget(self._alg)
+        self.algorithmItem = QgsGui.instance().processingGuiRegistry().algorithmConfigurationWidget(self._alg)
         if self.configuration:
             self.algorithmItem.setConfiguration(self.configuration)
         self.verticalLayout.addWidget(self.algorithmItem)
@@ -331,6 +332,13 @@ class ModelerParametersDialog(QDialog):
                     output.setChildId(alg.childId())
                     output.setChildOutputName(dest.name())
                     outputs[name] = output
+
+            if dest.flags() & QgsProcessingParameterDefinition.FlagIsModelOutput:
+                if not name in outputs:
+                    output = QgsProcessingModelOutput(dest.name(), dest.name())
+                    output.setChildId(alg.childId())
+                    output.setChildOutputName(dest.name())
+                    outputs[dest.name()] = output
 
         alg.setModelOutputs(outputs)
 

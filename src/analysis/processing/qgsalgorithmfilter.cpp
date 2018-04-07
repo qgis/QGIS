@@ -75,7 +75,11 @@ void QgsFilterAlgorithm::initAlgorithm( const QVariantMap &configuration )
     const QVariantMap outputDef = output.toMap();
     const QString name = QStringLiteral( "OUTPUT_%1" ).arg( outputDef.value( QStringLiteral( "name" ) ).toString() );
     QgsProcessingParameterFeatureSink *outputParam = new QgsProcessingParameterFeatureSink( name, outputDef.value( QStringLiteral( "name" ) ).toString() );
-    outputParam->setFlags( QgsProcessingParameterDefinition::FlagHidden );
+    QgsProcessingParameterDefinition::Flags flags = QgsProcessingParameterDefinition::Flags();
+    flags |= QgsProcessingParameterDefinition::FlagHidden;
+    if ( outputDef.value( QStringLiteral( "isModelOutput" ) ).toBool() )
+      flags |= QgsProcessingParameterDefinition::FlagIsModelOutput;
+    outputParam->setFlags( flags );
     addParameter( outputParam );
     mOutputs.append( new Output( name, outputDef.value( QStringLiteral( "expression" ) ).toString() ) );
   }
@@ -92,6 +96,8 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   for ( Output *output : qgis::as_const( mOutputs ) )
   {
     output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
+    if ( !output->sink )
+      return QVariantMap();
     output->expression.prepare( &expressionContext );
   }
 
@@ -115,7 +121,9 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
     for ( Output *output : qgis::as_const( mOutputs ) )
     {
       if ( output->expression.evaluate( &expressionContext ).toBool() )
+      {
         output->sink->addFeature( f, QgsFeatureSink::FastInsert );
+      }
     }
 
     feedback->setProgress( current * step );

@@ -30,6 +30,7 @@ class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
+class QgsProcessingGuiRegistry;
 
 /**
  * \ingroup gui
@@ -89,6 +90,8 @@ class GUI_EXPORT QgsGui
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
 
+    static QgsProcessingGuiRegistry *processingGuiRegistry();
+
     /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
@@ -109,6 +112,7 @@ class GUI_EXPORT QgsGui
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
+    QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
