@@ -63,6 +63,7 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsVectorLayer)
 from qgis.utils import iface
+from osgeo import ogr
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -786,6 +787,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if external is None:
             external = ProcessingConfig.getSetting(
                 Grass7Utils.GRASS_USE_VEXTERNAL)
+
+        # safety check: we can only use external for ogr layers which support random read
+        if external:
+            ds = ogr.Open(layer.source())
+            if ds is not None:
+                ogr_layer = ds.GetLayer()
+                if ogr_layer is None or not ogr_layer.TestCapability(ogr.OLCRandomRead):
+                    external = False
+            else:
+                external = False
+
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
         destFilename = 'vector_{}'.format(os.path.basename(getTempFilename()))
