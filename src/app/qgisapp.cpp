@@ -5738,7 +5738,7 @@ bool QgisApp::fileSave()
   }
   else
   {
-    bool usingProjectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( QgsProject::instance()->fileName() );
+    bool usingProjectStorage = QgsProject::instance()->projectStorage();
     bool fileExists = usingProjectStorage ? true : QFileInfo( QgsProject::instance()->fileName() ).exists();
 
     if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )

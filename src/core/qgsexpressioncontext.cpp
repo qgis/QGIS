@@ -778,15 +778,17 @@ QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsPro
     scope->setVariable( it.key(), it.value(), true );
   }
 
-  QString projectPath = project->absoluteFilePath();
+  QString projectPath = project->projectStorage() ? project->fileName() : project->absoluteFilePath();
   QString projectFolder = QFileInfo( projectPath ).path();
   QString projectFilename = QFileInfo( projectPath ).fileName();
+  QString projectBasename = project->baseName();
 
   //add other known project variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), project->title(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), QDir::toNativeSeparators( projectPath ), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), QDir::toNativeSeparators( projectFolder ), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( project->homePath() ), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = project->crs();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );

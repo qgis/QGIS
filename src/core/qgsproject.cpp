@@ -462,10 +462,14 @@ QFileInfo QgsProject::fileInfo() const
   return QFileInfo( mFile );
 }
 
+QgsProjectStorage *QgsProject::projectStorage() const
+{
+  return QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+}
+
 QDateTime QgsProject::lastModified() const
 {
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
-  if ( storage )
+  if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
     storage->readProjectStorageMetadata( mFile.fileName(), metadata );
@@ -479,8 +483,7 @@ QDateTime QgsProject::lastModified() const
 
 QString QgsProject::absoluteFilePath() const
 {
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
-  if ( storage )
+  if ( projectStorage() )
     return QString();
 
   if ( mFile.fileName().isEmpty() )
@@ -491,8 +494,7 @@ QString QgsProject::absoluteFilePath() const
 
 QString QgsProject::baseName() const
 {
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
-  if ( storage )
+  if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
     storage->readProjectStorageMetadata( mFile.fileName(), metadata );
@@ -866,8 +868,7 @@ bool QgsProject::read()
   QString filename = mFile.fileName();
   bool rc;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( filename );
-  if ( storage )
+  if ( QgsProjectStorage *storage = projectStorage() )
   {
     QTemporaryFile inDevice;
     if ( !inDevice.open() )
@@ -1438,8 +1439,7 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
-  QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
-  if ( projectStorage )
+  if ( QgsProjectStorage *storage = projectStorage() )
   {
     // for projects stored in a custom storage, we cannot use relative paths since the storage most likely
     // will not be in a file system
@@ -1459,7 +1459,7 @@ bool QgsProject::write()
     }
 
     QgsReadWriteContext context;
-    if ( !projectStorage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
+    if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
     {
       setError( tr( "Unable to save project to storage %1" ).arg( mFile.fileName() ) );
       return false;

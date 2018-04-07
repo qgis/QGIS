@@ -16,6 +16,7 @@
 #include "qgstest.h"
 
 #include "qgsauxiliarystorage.h"
+#include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
@@ -200,6 +201,12 @@ void TestQgsProjectStorage::testMemoryStorage()
   QVERIFY( prj2layer1 );
   QCOMPARE( prj2layer1->fields().count(), 7 );
   QCOMPARE( prj2layer1->fields().at( 6 ).name(), QString( "auxiliary_storage_fld_aux" ) );
+
+  // test project-related variables for project storage
+  QgsExpressionContext expressionContext;
+  expressionContext.appendScope( QgsExpressionContextUtils::projectScope( &prj2 ) );
+  QCOMPARE( QgsExpression( "@project_path" ).evaluate( &expressionContext ).toString(), QString( "memory:project1" ) );
+  QCOMPARE( QgsExpression( "@project_basename" ).evaluate( &expressionContext ).toString(), QString( "project1" ) );
 
   // test access of non-existent project
 

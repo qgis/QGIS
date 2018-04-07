@@ -163,6 +163,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
     /**
+     * Returns pointer to project storage implementation that handles read/write of the project file.
+     * If the project file is stored in the local file system, returns null pointer.
+     * The project storage object is inferred from fileName() of the project.
+     * \since QGIS 3.2
+     */
+    QgsProjectStorage *projectStorage() const;
+
+    /**
      * Returns last modified time of the project file as returned by the file system (or other project storage).
      * \since QGIS 3.2
      */

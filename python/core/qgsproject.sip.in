@@ -113,6 +113,15 @@ Returns QFileInfo object for the project's associated file.
 \deprecated
 %End
 
+    QgsProjectStorage *projectStorage() const;
+%Docstring
+Returns pointer to project storage implementation that handles read/write of the project file.
+If the project file is stored in the local file system, returns null pointer.
+The project storage object is inferred from fileName() of the project.
+
+.. versionadded:: 3.2
+%End
+
     QDateTime lastModified() const;
 %Docstring
 Returns last modified time of the project file as returned by the file system (or other project storage).
