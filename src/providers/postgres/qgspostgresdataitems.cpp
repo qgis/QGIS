@@ -576,7 +576,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
-  if ( QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" ) )
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
+  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && storage )
   {
     QgsPostgresProjectUri postUri;
     postUri.connInfo = uri;

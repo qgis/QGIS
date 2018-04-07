@@ -38,6 +38,8 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
 
   connect( mCboConnection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
 
+  mLblProjectsNotAllowed->setVisible( false );
+
   // populate connections
   mCboConnection->addItems( QgsPostgresConn::connectionList() );
 
@@ -73,6 +75,11 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 
   QString name = mCboConnection->currentText();
   QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+
+  bool projectsAllowed = QgsPostgresConn::allowProjectsInDatabase( name );
+  mLblProjectsNotAllowed->setVisible( !projectsAllowed );
+  if ( !projectsAllowed )
+    return;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>463</width>
-    <height>307</height>
+    <width>552</width>
+    <height>442</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -44,6 +44,19 @@
       <widget class="QComboBox" name="mCboProject"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="mLblProjectsNotAllowed">
+     <property name="text">
+      <string>Storage of QGIS projects is not enabled for this database connection.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
