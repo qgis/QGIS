@@ -1,8 +1,8 @@
 v.net
 Performs network maintenance
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|True
-QgsProcessingParameterVectorLayer|points|Input vector point layer (nodes)|0|None|True
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|True
+QgsProcessingParameterFeatureSource|points|Input vector point layer (nodes)|0|None|True
 QgsProcessingParameterFile|file|Name of input arcs file|QgsProcessingParameterFile.File|txt|None|True
 QgsProcessingParameterEnum|operation|Operation to be performed|nodes;connect;arcs|False|0|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None

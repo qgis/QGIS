@@ -1,7 +1,7 @@
 v.buffer
 Creates a buffer around vector features of given type. 
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
 QgsProcessingParameterString|cats|Category values|None|False|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
 QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area|True|0,1,4|True

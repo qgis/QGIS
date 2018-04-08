@@ -1,9 +1,9 @@
 v.distance
 Finds the nearest element in vector map 'to' for elements in vector map 'from'.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|from|'from' vector map|-1|None|False
+QgsProcessingParameterFeatureSource|from|'from' vector map|-1|None|False
 *QgsProcessingParameterEnum|from_type|'from' feature type|point;line;boundary;area;centroid|True|0,1,3|True
-QgsProcessingParameterVectorLayer|to|'to' vector map|-1|None|False
+QgsProcessingParameterFeatureSource|to|'to' vector map|-1|None|False
 *QgsProcessingParameterEnum|to_type|'to' feature type|point;line;boundary;area;centroid|True|0,1,3|True
 QgsProcessingParameterNumber|dmax|Maximum distance or -1.0 for no limit|QgsProcessingParameterNumber.Double|-1.0|True|-1.0|None
 QgsProcessingParameterNumber|dmin|Minimum distance or -1.0 for no limit|QgsProcessingParameterNumber.Double|-1.0|True|-1.0|None

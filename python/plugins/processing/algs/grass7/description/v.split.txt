@@ -1,7 +1,7 @@
 v.split
 Split lines to shorter segments by length.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input lines layer|1|None|False
+QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False
 QgsProcessingParameterNumber|length|Maximum segment length|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterEnum|units|Length units|map;meters;kilometers;feet;surveyfeet;miles;nautmiles|False|0|True
 QgsProcessingParameterNumber|vertices|Maximum number of vertices in segment|QgsProcessingParameterNumber.Integer|None|True|None|None

@@ -1,7 +1,7 @@
 v.outlier
 Removes outliers from vector point data.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
 QgsProcessingParameterNumber|ew_step|Interpolation spline step value in east direction|QgsProcessingParameterNumber.Double|10.0|True|None|None
 QgsProcessingParameterNumber|ns_step|Interpolation spline step value in north direction|QgsProcessingParameterNumber.Double|10.0|True|None|None
 QgsProcessingParameterNumber|lambda|Tykhonov regularization weight|QgsProcessingParameterNumber.Double|0.1|True|None|None

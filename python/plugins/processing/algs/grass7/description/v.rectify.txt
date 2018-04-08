@@ -1,7 +1,7 @@
 v.rectify
 Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Name of input vector map|-1|None|False
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
 QgsProcessingParameterString|inline_points|Inline control points|None|True|True
 QgsProcessingParameterFile|points|Name of input file with control points|QgsProcessingParameterFile.File|txt|None|True
 QgsProcessingParameterNumber|order|Rectification polynomial order|QgsProcessingParameterNumber.Integer|1|True|1|3

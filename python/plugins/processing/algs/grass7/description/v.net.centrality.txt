@@ -1,8 +1,8 @@
 v.net.centrality
 Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 QgsProcessingParameterString|degree|Name of output degree centrality column|degree|False|True
 QgsProcessingParameterString|closeness|Name of output closeness centrality column|closeness|False|True

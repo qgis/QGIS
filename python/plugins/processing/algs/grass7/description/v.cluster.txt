@@ -1,7 +1,7 @@
 v.cluster
 Performs cluster identification
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False
 QgsProcessingParameterNumber|distance|Maximum distance to neighbors|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|min|Minimum number of points to create a cluster|QgsProcessingParameterNumber.Integer|None|True|0|None
 QgsProcessingParameterEnum|method|Clustering method|dbscan, dbscan2, density, optics, optics2|False|0|False
