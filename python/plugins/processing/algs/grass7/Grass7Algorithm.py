@@ -51,6 +51,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterField,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMultipleLayers,
@@ -213,7 +214,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     parameter = getParameterFromString(line)
                     if parameter is not None:
                         self.params.append(parameter)
-                        if isinstance(parameter, QgsProcessingParameterVectorLayer):
+                        if isinstance(parameter, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
                             hasVectorInput = True
                         elif isinstance(parameter, QgsProcessingParameterRasterLayer):
                             hasRasterInput = True
@@ -404,6 +405,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """Prepare the GRASS import commands"""
         inputs = [p for p in self.parameterDefinitions()
                   if isinstance(p, (QgsProcessingParameterVectorLayer,
+                                    QgsProcessingParameterFeatureSource,
                                     QgsProcessingParameterRasterLayer,
                                     QgsProcessingParameterMultipleLayers))]
         for param in inputs:
@@ -422,7 +424,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.loadRasterLayerFromParameter(
                         paramName, parameters, context)
             # Vector inputs needs to be imported into temp GRASS DB
-            elif isinstance(param, QgsProcessingParameterVectorLayer):
+            elif isinstance(param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                 if paramName not in self.exportedLayers:
                     # Attribute tables are also vector inputs
                     if QgsProcessing.TypeFile in param.dataTypes():
@@ -505,7 +507,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
             # Raster and vector layers
             if isinstance(param, (QgsProcessingParameterRasterLayer,
-                                  QgsProcessingParameterVectorLayer)):
+                                  QgsProcessingParameterVectorLayer,
+                                  QgsProcessingParameterFeatureSource)):
                 if paramName in self.exportedLayers:
                     value = self.exportedLayers[paramName]
                 else:
