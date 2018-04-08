@@ -769,6 +769,9 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
         continue;
 
       std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
+      // Even if an output was hidden in a child algorithm, we want to show it here for the final
+      // outputs.
+      param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
       addParameter( param.release() );
