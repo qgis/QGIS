@@ -6,8 +6,8 @@ QgsProcessingParameterPoint|start_coordinates|Coordinates of starting point(s) (
 QgsProcessingParameterPoint|stop_coordinates|Coordinates of stopping point(s) (E,N)|0,0|False
 QgsProcessingParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
 QgsProcessingParameterBoolean|-n|Keep null values in output raster layer|True
-QgsProcessingParameterVectorLayer|start_points|Start points|0|None|True
-QgsProcessingParameterVectorLayer|stop_points|Stop points|0|None|True
+QgsProcessingParameterFeatureSource|start_points|Start points|0|None|True
+QgsProcessingParameterFeatureSource|stop_points|Stop points|0|None|True
 QgsProcessingParameterRasterLayer|start_raster|Name of starting raster points map|None|True
 QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|None|True|None|None

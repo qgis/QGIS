@@ -1,8 +1,8 @@
 v.vect.stats
 Count points in areas and calculate statistics.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|points|Name of existing vector map with points|0|None|False
-QgsProcessingParameterVectorLayer|areas|Name of existing vector map with areas|2|None|False
+QgsProcessingParameterFeatureSource|points|Name of existing vector map with points|0|None|False
+QgsProcessingParameterFeatureSource|areas|Name of existing vector map with areas|2|None|False
 QgsProcessingParameterEnum|type|Input feature type|point;centroid|True|0|False
 QgsProcessingParameterEnum|method|Method for aggregate statistics|sum;average;median;mode;minimum;min_cat;maximum;max_cat;range;stddev;variance;diversity|False|0
 QgsProcessingParameterField|points_column|Column name of points map to use for statistics|None|points|0|False|False

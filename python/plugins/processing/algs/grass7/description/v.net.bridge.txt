@@ -1,8 +1,8 @@
 v.net.bridge
 Computes bridges and articulation points in the network.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|True
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|True
 QgsProcessingParameterEnum|method|Feature type|bridge;articulation|False|0|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|True|0.0|None
 *QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (name)|None|input|0|False|True
