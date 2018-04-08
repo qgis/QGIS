@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/processing/qgsprocessingalgorithmconfigurationwidget.h      *
+ * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -12,11 +12,10 @@
 
 
 
-
 class QgsProcessingAlgorithmConfigurationWidget : QWidget
 {
 %Docstring
-A configuration widget for processing algorithms allows to provide additional
+A configuration widget for processing algorithms allows providing additional
 configuration options directly on algorithm level, in addition to parameters.
 
 .. versionadded:: 3.2
@@ -74,7 +73,7 @@ Check if this factory can create widgets for ``algorithm``.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/processing/qgsprocessingalgorithmconfigurationwidget.h      *
+ * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

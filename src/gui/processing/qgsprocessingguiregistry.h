@@ -37,6 +37,11 @@ class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class GUI_EXPORT QgsProcessingGuiRegistry
 {
   public:
+
+    /**
+     * Constructor. Should never be called manually, is already
+     * created by QgsGui.
+     */
     QgsProcessingGuiRegistry();
     ~QgsProcessingGuiRegistry();
 

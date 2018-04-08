@@ -29,7 +29,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 
 /**
- * A configuration widget for processing algorithms allows to provide additional
+ * A configuration widget for processing algorithms allows providing additional
  * configuration options directly on algorithm level, in addition to parameters.
  *
  * \since QGIS 3.2
