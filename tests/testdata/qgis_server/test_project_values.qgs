@@ -19,7 +19,7 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="testlayer20150528120452665" name="layer0" source="../../../../qgis2/tests/testdata/qgis_server/testlayer.shp" providerKey="ogr">
+    <layer-tree-layer expanded="1" checked="Qt::Checked" id="testlayer20150528120452665" name="layer0" source="./testlayer.shp" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -72,7 +72,7 @@
         <ymax>44.90148252600183554</ymax>
       </extent>
       <id>testlayer20150528120452665</id>
-      <datasource>../../../../qgis2/tests/testdata/qgis_server/testlayer.shp</datasource>
+      <datasource>./testlayer.shp</datasource>
       <title>A test vector layer</title>
       <abstract>A test vector layer with unicode òà</abstract>
       <keywordList>
