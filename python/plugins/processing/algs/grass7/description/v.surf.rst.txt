@@ -1,7 +1,7 @@
 v.surf.rst
 Performs surface interpolation from vector points map by splines.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input points layer|0|None|False
+QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False
 QgsProcessingParameterField|zcolumn|Name of the attribute column with values to be used for approximation|None|input|-1|False|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
 QgsProcessingParameterRasterLayer|mask|Name of the raster map used as mask|None|True

@@ -1,9 +1,9 @@
 v.net.distance
 Computes shortest distance via the network between the given sets of features.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-QgsProcessingParameterVectorLayer|flayer|Input vector from points layer (from)|0|None|False
-QgsProcessingParameterVectorLayer|tlayer|Input vector to layer (to)|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|flayer|Input vector from points layer (from)|0|None|False
+QgsProcessingParameterFeatureSource|tlayer|Input vector to layer (to)|-1|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting nodes to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 *QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|True
 *QgsProcessingParameterString|from_cats|From Category values|None|False|True
