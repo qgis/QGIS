@@ -93,18 +93,19 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(self.temp_dir,'grass_output.shp')
-        parameters ={'input':'testmem',
-                     'type':[0,1,4],
-                     'distance':1,
-                     'angle':0,
-                     'scale':1,
-                     'tolerance':0.01,
-                     '-s':False,
-                     '-c':False,
-                     '-t':False,
-                     'output':temp_file,
-                     'GRASS_SNAP_TOLERANCE_PARAMETER':-1,'GRASS_MIN_AREA_PARAMETER':0.0001,'GRASS_OUTPUT_TYPE_PARAMETER':0}
+        temp_file = os.path.join(self.temp_dir, 'grass_output.shp')
+        parameters = {'input': 'testmem',
+                      'type': [0, 1, 4],
+                      'distance': 1,
+                      'angle': 0,
+                      'scale': 1,
+                      'tolerance': 0.01,
+                      '-s': False,
+                      '-c': False,
+                      '-t': False,
+                      'output': temp_file,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1, 'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -143,7 +144,7 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
         self.assertIsNotNone(alg)
-        temp_file = os.path.join(self.temp_dir,'grass_output_sel.shp')
+        temp_file = os.path.join(self.temp_dir, 'grass_output_sel.shp')
         parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
                       'type': [0, 1, 4],
                       'distance': 1,
@@ -168,6 +169,7 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         self.assertEqual(res.featureCount(), 1)
 
         QgsProject.instance().removeMapLayer(layer)
+
 
 if __name__ == '__main__':
     nose2.main()
