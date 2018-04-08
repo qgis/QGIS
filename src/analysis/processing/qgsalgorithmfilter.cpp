@@ -140,3 +140,5 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   return outputs;
 }
 
+
+///@endcond PRIVATE
