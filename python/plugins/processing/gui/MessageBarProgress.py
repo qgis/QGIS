@@ -48,7 +48,7 @@ class MessageBarProgress(QgsProcessingFeedback):
         iface.messageBar().pushWidget(self.progressMessageBar,
                                       Qgis.Info)
 
-    def reportError(self, msg, fatal_error):
+    def reportError(self, msg, fatalError=False):
         self.msg.append(msg)
 
     def close(self):
