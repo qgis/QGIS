@@ -30,6 +30,7 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 import os
+import tempfile
 
 from qgis.core import (QgsVectorLayer,
                        QgsApplication,
@@ -55,6 +56,9 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+
+        cls.temp_dir = tempfile.mkdtemp()
+        cls.cleanup_paths.append(cls.temp_dir)
 
         assert Grass7Utils.installedVersion()
 
@@ -88,7 +92,8 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
         self.assertIsNotNone(alg)
-        temp_file = '/tmp/grass_output.shp'
+
+        temp_file = os.path.join(self.temp_dir,'grass_output.shp')
         parameters ={'input':'testmem',
                      'type':[0,1,4],
                      'distance':1,
@@ -138,7 +143,7 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
         self.assertIsNotNone(alg)
-        temp_file = '/tmp/grass_output.shp'
+        temp_file = os.path.join(self.temp_dir,'grass_output_sel.shp')
         parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
                       'type': [0, 1, 4],
                       'distance': 1,
