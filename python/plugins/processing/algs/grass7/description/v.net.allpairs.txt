@@ -1,8 +1,8 @@
 v.net.allpairs
 Computes the shortest path between all pairs of nodes in the network
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
-QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 *QgsProcessingParameterString|cats|Category values|1-10000|False|True
 *QgsProcessingParameterString|where|WHERE condition of SQL statement without 'where' keyword'|None|True|True

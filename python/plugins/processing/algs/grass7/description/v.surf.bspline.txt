@@ -1,9 +1,9 @@
 v.surf.bspline
 Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input points layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input points layer|-1|None|False
 QgsProcessingParameterField|column|Attribute table column with values to interpolate|None|input|-1|False|True
-QgsProcessingParameterVectorLayer|sparse_input|Sparse points layer|-1|None|True
+QgsProcessingParameterFeatureSource|sparse_input|Sparse points layer|-1|None|True
 QgsProcessingParameterNumber|ew_step|Length of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|4.0|True|None|None
 QgsProcessingParameterNumber|ns_step|Length of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|4.0|True|None|None
 QgsProcessingParameterEnum|method|Spline interpolation algorithm|bilinear;bicubic|False|0|True

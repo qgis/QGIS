@@ -1,6 +1,6 @@
 v.build
 v.build.check - Checks for topological errors.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|map|Name of vector map|-1|None|False
+QgsProcessingParameterFeatureSource|map|Name of vector map|-1|None|False
 Hardcoded|-e
 QgsProcessingParameterVectorDestination|error|Topological errors
