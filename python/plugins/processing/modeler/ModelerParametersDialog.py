@@ -296,6 +296,7 @@ class ModelerParametersDialog(QDialog):
         alg.setDescription(self.descriptionBox.text())
         if self.algorithmItem:
             alg.setConfiguration(self.algorithmItem.configuration())
+            self._alg = alg.algorithm().create(self.algorithmItem.configuration())
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
