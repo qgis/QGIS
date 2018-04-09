@@ -80,6 +80,7 @@ RUN  apt-get update \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \
+    saga \
     spawn-fcgi \
     txt2tags \
     xauth \
