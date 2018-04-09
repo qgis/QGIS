@@ -97,7 +97,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   {
     output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
     if ( !output->sink )
-      return QVariantMap();
+      throw QgsProcessingException( QObject::tr( "Could not create feature sink for output %1." ).arg( output->name ) );
     output->expression.prepare( &expressionContext );
   }
 
