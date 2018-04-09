@@ -90,14 +90,14 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not open input layer or feature source for parameter INPUT." ) );
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   for ( Output *output : qgis::as_const( mOutputs ) )
   {
     output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
     if ( !output->sink )
-      throw QgsProcessingException( QObject::tr( "Could not create feature sink for output %1." ).arg( output->name ) );
+      throw QgsProcessingException( QObject::tr( "Could not create output layer or feature sink for output %1." ).arg( output->name ) );
     output->expression.prepare( &expressionContext );
   }
 
