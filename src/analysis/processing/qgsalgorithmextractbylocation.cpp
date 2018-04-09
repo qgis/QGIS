@@ -349,7 +349,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
 
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   auto addToSink = [&]( const QgsFeature & feature )
   {

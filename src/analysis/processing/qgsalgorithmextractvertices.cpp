@@ -70,7 +70,7 @@ QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
   QgsWkbTypes::Type outputWkbType = QgsWkbTypes::Point;
   if ( QgsWkbTypes::hasM( featureSource->wkbType() ) )
@@ -96,7 +96,7 @@ QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &pa
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputWkbType, featureSource->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
   QgsFeatureIterator fi = featureSource->getFeatures( QgsFeatureRequest() );

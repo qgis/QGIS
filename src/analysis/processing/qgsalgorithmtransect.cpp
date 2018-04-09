@@ -91,7 +91,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
   QgsFields fields = source->fields();
 
@@ -112,7 +112,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
                                           outputWkb, source->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   QgsFeatureIterator features = source->getFeatures( );
 
