@@ -118,7 +118,7 @@ class AlgorithmsTest(object):
         if expectFailure:
             try:
                 results, ok = alg.run(parameters, context, feedback)
-                self.check_results(results, context, defs['params'], defs['results'])
+                self.check_results(results, context, parameters, defs['results'])
                 if ok:
                     raise _UnexpectedSuccess
             except Exception:
@@ -126,7 +126,7 @@ class AlgorithmsTest(object):
         else:
             results, ok = alg.run(parameters, context, feedback)
             self.assertTrue(ok, 'params: {}, results: {}'.format(parameters, results))
-            self.check_results(results, context, defs['params'], defs['results'])
+            self.check_results(results, context, parameters, defs['results'])
 
     def load_params(self, params):
         """
@@ -294,6 +294,7 @@ class AlgorithmsTest(object):
 
             elif 'rasterhash' == expected_result['type']:
                 print("id:{} result:{}".format(id, results[id]))
+                self.assertTrue(os.path.exists(results[id]), 'File does not exist: {}, {}'.format(results[id], params))
                 dataset = gdal.Open(results[id], GA_ReadOnly)
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
