@@ -63,6 +63,11 @@ Returns the global layout item GUI registry, used for registering the GUI behavi
 %End
 
     static QgsProcessingGuiRegistry *processingGuiRegistry();
+%Docstring
+Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
+
+.. versionadded:: 3.2
+%End
 
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring

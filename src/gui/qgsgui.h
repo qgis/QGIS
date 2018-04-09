@@ -90,6 +90,10 @@ class GUI_EXPORT QgsGui
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
 
+    /**
+     * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
+     * \since QGIS 3.2
+     */
     static QgsProcessingGuiRegistry *processingGuiRegistry();
 
     /**
