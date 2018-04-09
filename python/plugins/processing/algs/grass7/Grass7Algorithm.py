@@ -575,7 +575,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.parameterAsString(parameters, paramName, context)
                 )
             if value:
-                command += ' {}={}'.format(paramName, value)
+                command += ' {}={}'.format(paramName.replace('~', ''), value)
 
         # Handle outputs
         if not delOutputs:
