@@ -82,7 +82,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   std::unique_ptr< QgsFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
   if ( !input || !input2 )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
 
   QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
@@ -91,7 +91,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   int joinField1Index = input->fields().lookupField( field1Name );
   int joinField2Index = input2->fields().lookupField( field2Name );
   if ( joinField1Index < 0 || joinField2Index < 0 )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Invalid join fields" ) );
 
   QgsFields outFields2;
   QgsAttributeList fields2Indices;
@@ -125,7 +125,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
                                           input->wkbType(), input->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );
 
 
   // cache attributes of input2

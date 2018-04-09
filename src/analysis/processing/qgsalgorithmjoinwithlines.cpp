@@ -90,7 +90,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr< QgsFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
   std::unique_ptr< QgsFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
   if ( !hubSource || !spokeSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
   int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
@@ -176,7 +176,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
                                           outType, hubSource->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
   {
