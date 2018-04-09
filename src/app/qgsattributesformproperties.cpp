@@ -88,14 +88,14 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   //load Fields
 
-  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields" );
+  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields", "Fields" );
   QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
   {
     const QgsField field = fields.at( i );
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name() );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name(), field.name() );
     itemData.setShowLabel( true );
 
     FieldConfig cfg( mLayer, i );
@@ -108,14 +108,14 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem->setExpanded( true );
 
   //load Relations
-  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations" );
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations", "Relations" );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
 
   for ( const QgsRelation &relation : relations )
   {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ), QStringLiteral( "%1" ).arg( relation.name() ) );
     itemData.setShowLabel( true );
 
     RelationConfig cfg( mLayer, relation.id() );
@@ -374,13 +374,14 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   }
 }
 
-QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationName )
+QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationId )
 {
   QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
   while ( *itemIt )
   {
     QTreeWidgetItem *item = *itemIt;
-    if ( item->data( 0, FieldNameRole ).toString() == relationName )
+
+    if ( item->data( 0, FieldNameRole ).toString() == relationId )
       return item->data( 0, RelationConfigRole ).value<RelationConfig>();
     ++itemIt;
   }
@@ -398,7 +399,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
   {
     case QgsAttributeEditorElement::AeTypeField:
     {
-      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name() );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -407,20 +408,19 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     case QgsAttributeEditorElement::AeTypeRelation:
     {
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
-      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, widgetDef->name() );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
       itemData.setRelationEditorConfiguration( relEdConfig );
-
       newWidget = tree->addItem( parent, itemData );
       break;
     }
 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
-      DnDTreeItemData itemData( DnDTreeItemData::Container, widgetDef->name() );
+      DnDTreeItemData itemData( DnDTreeItemData::Container, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
 
       const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
@@ -531,7 +531,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     case DnDTreeItemData::Relation:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
-      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
+      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
       widgetDef = relDef;
@@ -771,7 +771,7 @@ QTreeWidgetItem *DnDTree::addContainer( QTreeWidgetItem *parent, const QString &
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
   newItem->setBackground( 0, QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-  QgsAttributesFormProperties::DnDTreeItemData itemData( QgsAttributesFormProperties::DnDTreeItemData::Container, title );
+  QgsAttributesFormProperties::DnDTreeItemData itemData( QgsAttributesFormProperties::DnDTreeItemData::Container, title, title );
   itemData.setColumnCount( columnCount );
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
   parent->addChild( newItem );
@@ -811,6 +811,8 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
+  newItem->setText( 0, data.displayName() );
+
   if ( index < 0 )
     parent->addChild( newItem );
   else
@@ -1081,19 +1083,21 @@ void DnDTree::setType( const Type &value )
 
 QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormProperties::DnDTreeItemData &data )
 {
-  stream << ( quint32 )data.type() << data.name();
+  stream << ( quint32 )data.type() << data.name() << data.displayName();
   return stream;
 }
 
 QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTreeItemData &data )
 {
   QString name;
+  QString displayName;
   quint32 type;
 
-  stream >> type >> name;
+  stream >> type >> name >> displayName;
 
   data.setType( ( QgsAttributesFormProperties::DnDTreeItemData::Type )type );
   data.setName( name );
+  data.setDisplayName( displayName );
 
   return stream;
 }
