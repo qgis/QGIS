@@ -197,6 +197,22 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         #                          'wms_getfeatureinfo-values1-text-xml',
         #                          'test_project_values.qgs')
 
+        # Test GetFeatureInfo resolves "relation reference" widget "display expression" values
+        # TODO make GetFeatureInfo show what's in the display expression and enable test
+        # mypath = self.testdata_path + "test_project_values.qgs"
+        # self.wms_request_compare('GetFeatureInfo',
+        #                          '&layers=layer2&styles=&' +
+        #                          'VERSION=1.3.0&' +
+        #                          'info_format=text%2Fxml&' +
+        #                          'width=926&height=787&srs=EPSG%3A4326' +
+        #                          '&bbox=912217,5605059,914099,5606652' +
+        #                          '&CRS=EPSG:3857' +
+        #                          '&FEATURE_COUNT=10' +
+        #                          '&WITH_GEOMETRY=True' +
+        #                          '&QUERY_LAYERS=layer2&I=487&J=308',
+        #                          'wms_getfeatureinfo-values2-text-xml',
+        #                          'test_project_values.qgs')
+
     def testGetFeatureInfoFilter(self):
         # Test getfeatureinfo response xml
 
