@@ -334,7 +334,7 @@ class ModelerParametersDialog(QDialog):
                     outputs[name] = output
 
             if dest.flags() & QgsProcessingParameterDefinition.FlagIsModelOutput:
-                if not name in outputs:
+                if dest.name() not in outputs:
                     output = QgsProcessingModelOutput(dest.name(), dest.name())
                     output.setChildId(alg.childId())
                     output.setChildOutputName(dest.name())
