@@ -70,7 +70,7 @@ QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::createInstance
 
 QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
@@ -106,7 +106,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
     req.setFilterExpression( expressionString );
     req.setExpressionContext( expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req );
+    QgsFeatureIterator it = source->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {

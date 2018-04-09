@@ -93,8 +93,8 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
   bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
-  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  std::unique_ptr< QgsFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
   if ( !input || !input2 )
     throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
 
@@ -144,7 +144,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   // cache attributes of input2
   QMultiHash< QVariant, QgsAttributes > input2AttributeCache;
-  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ) );
+  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
   QgsFeature feat;
@@ -175,7 +175,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   // Create output vector layer with additional attribute
   step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
-  features = input->getFeatures();
+  features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   i = 0;
   while ( features.nextFeature( feat ) )
   {

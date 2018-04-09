@@ -69,7 +69,7 @@ QgsOrderByExpressionAlgorithm *QgsOrderByExpressionAlgorithm::createInstance() c
 
 QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
@@ -91,7 +91,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   request.addOrderBy( expressionString, ascending, nullsFirst );
 
   QgsFeature inFeature;
-  QgsFeatureIterator features = source->getFeatures( request );
+  QgsFeatureIterator features = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   while ( features.nextFeature( inFeature ) )
   {
     if ( feedback->isCanceled() )
