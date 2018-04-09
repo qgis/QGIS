@@ -1658,6 +1658,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
@@ -1700,6 +1701,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
@@ -1743,6 +1745,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
@@ -2176,6 +2179,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
     return result;
   }
 
+  result.reserve( polyline.count() );
   for ( const QgsPointXY &p : qgis::as_const( polyline ) )
   {
     result << p.toQPointF();
@@ -2604,6 +2608,7 @@ QgsPolygonXY QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
 QgsPolylineXY QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
 {
   QgsPolylineXY result;
+  result.reserve( polygon.count() );
   for ( const QPointF &p : polygon )
   {
     result.append( QgsPointXY( p ) );
@@ -2714,9 +2719,10 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
     bool isRing )
 {
   std::unique_ptr< QgsLineString > result = qgis::make_unique< QgsLineString >( line );
+  QgsPointSequence outputLine;
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
-    QgsPointSequence outputLine;
+    outputLine.resize( 0 );
     outputLine.reserve( 2 * ( result->numPoints() - 1 ) );
     bool skipFirst = false;
     bool skipLast = false;
@@ -2990,6 +2996,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           {
             const QgsPolygonXY polygon = asPolygon();
             QgsMultiPolylineXY multiLine;
+            multiLine.reserve( polygon.count() );
             for ( const QgsPolylineXY &line : polygon )
               multiLine << line;
             return fromMultiPolylineXY( multiLine );
