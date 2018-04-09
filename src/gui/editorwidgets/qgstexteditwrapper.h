@@ -20,7 +20,7 @@
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
-#include <QTextEdit>
+#include <QTextBrowser>
 #include "qgis_gui.h"
 
 SIP_NO_FILE
@@ -68,6 +68,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void textChanged( const QString &text );
 
   private:
+    QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;
     QLineEdit *mLineEdit = nullptr;
