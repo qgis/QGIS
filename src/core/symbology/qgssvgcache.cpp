@@ -84,7 +84,21 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
   , mMutex( QMutex::Recursive )
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
-  mFetchingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>&#8987;</text></svg>" ).toLatin1();
+
+  const QString downloadingSvgPath = QgsApplication::defaultThemePath() + QStringLiteral( "downloading_svg.svg" );
+  if ( QFile::exists( downloadingSvgPath ) )
+  {
+    QFile file( downloadingSvgPath );
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+      mFetchingSvg = file.readAll();
+    }
+  }
+
+  if ( mFetchingSvg.isEmpty() )
+  {
+    mFetchingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+  }
 }
 
 QgsSvgCache::~QgsSvgCache()
