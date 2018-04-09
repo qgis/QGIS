@@ -2384,6 +2384,48 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 }
 
+bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  bool result = true;
+
+  QgsAttributeMap newValidValues;
+  QgsAttributeMap oldValidValues;
+
+  QgsAttributeMap::const_iterator it;
+  for ( it = newValues.constBegin(); it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    switch ( fields().fieldOrigin( field ) )
+    {
+      case QgsFields::OriginProvider:
+      case QgsFields::OriginEdit:
+      case QgsFields::OriginExpression:
+      {
+        newValidValues[field] = newValue;
+        oldValidValues[field] = oldValue;
+        break;
+      }
+
+      case QgsFields::OriginJoin:
+      case QgsFields::OriginUnknown:
+        break;
+    }
+  }
+
+  if ( ! newValidValues.isEmpty() && mEditBuffer && mDataProvider )
+  {
+    result &= mEditBuffer->changeAttributeValues( fid, newValidValues, oldValidValues );
+  }
+
+  return result;
+}
+
 bool QgsVectorLayer::addAttribute( const QgsField &field )
 {
   if ( !mEditBuffer || !mDataProvider )

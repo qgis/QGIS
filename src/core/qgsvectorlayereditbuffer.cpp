@@ -776,3 +776,22 @@ void QgsVectorLayerEditBuffer::updateLayerFields()
 {
   L->updateFields();
 }
+
+bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  bool success = true;
+  QgsAttributeMap::const_iterator it;
+  for ( it = newValues.constBegin() ; it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    success &= changeAttributeValue( fid, field, newValue, oldValue );
+  }
+
+  return success;
+}

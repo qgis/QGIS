@@ -30,7 +30,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 171 (class 1259 OID 377761)
--- Name: someData; Type: TABLE; Schema: qgis_test; Owner: postgres; Tablespace: 
+-- Name: someData; Type: TABLE; Schema: qgis_test; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE qgis_test."someData" (
@@ -70,7 +70,7 @@ INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
 
 --
 -- TOC entry 3953 (class 2606 OID 377768)
--- Name: someData_pkey; Type: CONSTRAINT; Schema: qgis_test; Owner: postgres; Tablespace: 
+-- Name: someData_pkey; Type: CONSTRAINT; Schema: qgis_test; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY qgis_test."someData"
@@ -399,6 +399,16 @@ CREATE TABLE qgis_test.domains
   fld_numeric_domain qgis_test.numeric_domain
 );
 
+CREATE TABLE qgis_test.check_constraints (
+  id integer PRIMARY KEY,
+  a integer,
+  b integer, CHECK (a > b)
+);
+INSERT INTO qgis_test.check_constraints VALUES (
+  1, -- id
+  4, -- a
+  3  -- b
+);
 
 --------------------------------------
 -- Temporary table for testing renaming fields
