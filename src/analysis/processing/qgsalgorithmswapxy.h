@@ -45,6 +45,7 @@ class QgsSwapXYAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
 
     QString outputName() const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };

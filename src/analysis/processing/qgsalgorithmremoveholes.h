@@ -47,6 +47,7 @@ class QgsRemoveHolesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QList<int> inputLayerTypes() const override;
     QgsProcessing::SourceType outputLayerType() const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

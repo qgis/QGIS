@@ -69,6 +69,11 @@ QgsWkbTypes::Type QgsDropGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type ) c
   return QgsWkbTypes::NoGeometry;
 }
 
+QgsProcessingFeatureSource::Flag QgsDropGeometryAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
 {
   return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );

@@ -75,6 +75,11 @@ QgsWkbTypes::Type QgsDropMZValuesAlgorithm::outputWkbType( QgsWkbTypes::Type inp
   return wkb;
 }
 
+QgsProcessingFeatureSource::Flag QgsDropMZValuesAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mDropM = parameterAsBool( parameters, QStringLiteral( "DROP_M_VALUES" ), context );

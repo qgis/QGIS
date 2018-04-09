@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingFeatureSource,
                        NULL)
 from qgis.PyQt.QtCore import QVariant
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -158,7 +159,7 @@ class StatisticsByCategories(QgisAlgorithm):
             attrs = []
         attrs.extend(category_field_indexes)
         request.setSubsetOfAttributes(attrs)
-        features = source.getFeatures(request)
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 50.0 / source.featureCount() if source.featureCount() else 0
         if field_type == 'none':
             values = defaultdict(lambda: 0)

@@ -66,6 +66,12 @@ QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInst
   return new QgsMultipartToSinglepartAlgorithm();
 }
 
+QgsProcessingFeatureSource::Flag QgsMultipartToSinglepartAlgorithm::sourceFlags() const
+{
+  // skip geometry checks - this algorithm can be used to repair geometries
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   if ( !feature.hasGeometry() )
