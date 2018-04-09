@@ -1,0 +1,102 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option type="Map" name="children">
+    <Option type="Map" name="native:filter_1">
+      <Option value="true" type="bool" name="active"/>
+      <Option type="Map" name="alg_config">
+        <Option type="List" name="outputs">
+          <Option type="Map">
+            <Option value="1" type="QString" name="expression"/>
+            <Option value="true" type="bool" name="isModelOutput"/>
+            <Option value="all" type="QString" name="name"/>
+          </Option>
+          <Option type="Map">
+            <Option value="0" type="QString" name="expression"/>
+            <Option value="true" type="bool" name="isModelOutput"/>
+            <Option value="nothing" type="QString" name="name"/>
+          </Option>
+        </Option>
+      </Option>
+      <Option value="native:filter" type="QString" name="alg_id"/>
+      <Option value="Filter" type="QString" name="component_description"/>
+      <Option value="623" type="double" name="component_pos_x"/>
+      <Option value="347" type="double" name="component_pos_y"/>
+      <Option name="dependencies"/>
+      <Option value="native:filter_1" type="QString" name="id"/>
+      <Option type="Map" name="outputs">
+        <Option type="Map" name="OUTPUT_all">
+          <Option value="native:filter_1" type="QString" name="child_id"/>
+          <Option value="OUTPUT_all" type="QString" name="component_description"/>
+          <Option value="823" type="double" name="component_pos_x"/>
+          <Option value="392" type="double" name="component_pos_y"/>
+          <Option value="OUTPUT_all" type="QString" name="name"/>
+          <Option value="OUTPUT_all" type="QString" name="output_name"/>
+        </Option>
+        <Option type="Map" name="OUTPUT_nothing">
+          <Option value="native:filter_1" type="QString" name="child_id"/>
+          <Option value="OUTPUT_nothing" type="QString" name="component_description"/>
+          <Option value="823" type="double" name="component_pos_x"/>
+          <Option value="422" type="double" name="component_pos_y"/>
+          <Option value="OUTPUT_nothing" type="QString" name="name"/>
+          <Option value="OUTPUT_nothing" type="QString" name="output_name"/>
+        </Option>
+      </Option>
+      <Option value="false" type="bool" name="outputs_collapsed"/>
+      <Option value="false" type="bool" name="parameters_collapsed"/>
+      <Option type="Map" name="params">
+        <Option type="List" name="INPUT">
+          <Option type="Map">
+            <Option value="layer" type="QString" name="parameter_name"/>
+            <Option value="0" type="int" name="source"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="help"/>
+  <Option value="filter" type="QString" name="model_group"/>
+  <Option value="filtertest" type="QString" name="model_name"/>
+  <Option type="Map" name="parameterDefinitions">
+    <Option type="Map" name="layer">
+      <Option type="List" name="data_types">
+        <Option value="5" type="int"/>
+      </Option>
+      <Option value="" type="Unknown" name="default"/>
+      <Option value="layer" type="QString" name="description"/>
+      <Option value="0" type="int" name="flags"/>
+      <Option name="metadata"/>
+      <Option value="layer" type="QString" name="name"/>
+      <Option value="vector" type="QString" name="parameter_type"/>
+    </Option>
+    <Option type="Map" name="native:filter_1:OUTPUT_all">
+      <Option value="true" type="bool" name="create_by_default"/>
+      <Option value="-1" type="int" name="data_type"/>
+      <Option value="" type="Unknown" name="default"/>
+      <Option value="OUTPUT_all" type="QString" name="description"/>
+      <Option value="20" type="int" name="flags"/>
+      <Option name="metadata"/>
+      <Option value="native:filter_1:OUTPUT_all" type="QString" name="name"/>
+      <Option value="sink" type="QString" name="parameter_type"/>
+      <Option value="true" type="bool" name="supports_non_file_outputs"/>
+    </Option>
+    <Option type="Map" name="native:filter_1:OUTPUT_nothing">
+      <Option value="true" type="bool" name="create_by_default"/>
+      <Option value="-1" type="int" name="data_type"/>
+      <Option value="" type="Unknown" name="default"/>
+      <Option value="OUTPUT_nothing" type="QString" name="description"/>
+      <Option value="20" type="int" name="flags"/>
+      <Option name="metadata"/>
+      <Option value="native:filter_1:OUTPUT_nothing" type="QString" name="name"/>
+      <Option value="sink" type="QString" name="parameter_type"/>
+      <Option value="true" type="bool" name="supports_non_file_outputs"/>
+    </Option>
+  </Option>
+  <Option type="Map" name="parameters">
+    <Option type="Map" name="layer">
+      <Option value="layer" type="QString" name="component_description"/>
+      <Option value="208" type="double" name="component_pos_x"/>
+      <Option value="291" type="double" name="component_pos_y"/>
+      <Option value="layer" type="QString" name="name"/>
+    </Option>
+  </Option>
+</Option>
