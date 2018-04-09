@@ -19,15 +19,14 @@
 #ifndef QGSPROCESSINGCONFIGURATIONWIDGETS_H
 #define QGSPROCESSINGCONFIGURATIONWIDGETS_H
 
+#define SIP_NO_FILE
+
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgis_gui.h"
-#include "qgis_sip.h"
 
 class QTableWidget;
 
 ///@cond PRIVATE
-
-#ifndef SIP_RUN
 
 class QgsFilterAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfigurationWidget
 {
@@ -54,8 +53,6 @@ class QgsFilterAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorit
     virtual QgsProcessingAlgorithmConfigurationWidget *create( QgsProcessingAlgorithm *algorithm ) const override;
     virtual bool canCreateFor( QgsProcessingAlgorithm *algorithm ) const override;
 };
-
-#endif
 
 ///@endcond
 

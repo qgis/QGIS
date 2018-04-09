@@ -30,6 +30,8 @@
 #include <QCheckBox>
 #include <QHeaderView>
 
+///@cond PRIVATE
+
 QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QWidget *parent )
   : QgsProcessingAlgorithmConfigurationWidget( parent )
 {
@@ -160,3 +162,5 @@ bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( QgsProcessingAl
   else
     return false;
 }
+
+///@endcond PRIVATE

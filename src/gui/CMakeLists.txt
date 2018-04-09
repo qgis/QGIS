@@ -715,7 +715,6 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
-  processing/qgsprocessingguiregistry.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
@@ -814,6 +813,8 @@ SET(QGIS_GUI_HDRS
 
   layout/qgslayoutreportsectionlabel.h
   layout/qgslayoutviewmouseevent.h
+
+  processing/qgsprocessingguiregistry.h
 
   raster/qgsrasterrendererwidget.h
 

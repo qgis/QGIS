@@ -72,6 +72,6 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
     QList<Output *> mOutputs;
 };
 
-///@cond PRIVATE
+///@endcond PRIVATE
 
 #endif // QGSFILTERALGORITHM_H
