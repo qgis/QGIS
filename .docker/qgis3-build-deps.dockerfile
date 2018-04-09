@@ -97,7 +97,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python3-pip \
   && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
