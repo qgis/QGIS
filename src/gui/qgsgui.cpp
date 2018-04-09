@@ -90,6 +90,7 @@ void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 
 QgsGui::~QgsGui()
 {
+  delete mProcessingGuiRegistry;
   delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
