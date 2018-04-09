@@ -357,7 +357,9 @@ tests:
         - 755eccae32fd3406dc33daf02942c107256eb59f6b9e4cdef173892a
         type: rasterhash
       output:
-        hash: b65992a5d48b867d4a32a533f38e7a72cb1ba18f1e261c6be132baca
+        hash:
+        - b65992a5d48b867d4a32a533f38e7a72cb1ba18f1e261c6be132baca
+        - 4331b7bc0a60d7bc886795e27bc633b81cdea1268706fdf913061d99
         type: rasterhash
 
   - algorithm: grass7:i.gensig
