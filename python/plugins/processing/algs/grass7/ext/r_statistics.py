@@ -32,7 +32,7 @@ from processing.algs.grass7.Grass7Utils import Grass7Utils
 def processCommand(alg, parameters, context, feedback):
     # We had a new "output" parameter
     out = 'output{}'.format(alg.uniqueSuffix)
-    p = QgsProcessingParameterString('output', None, out, False, False)
+    p = QgsProcessingParameterString('~output', None, out, False, False)
     alg.addParameter(p)
 
     # We need to remove all outputs
