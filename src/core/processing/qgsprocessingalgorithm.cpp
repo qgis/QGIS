@@ -86,7 +86,7 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
 
 bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
     {
@@ -115,7 +115,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
     // need to update all destination parameters to turn off non file based outputs
-    Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
+    for ( const QgsProcessingParameterDefinition *definition : qgis::as_const( mParameters ) )
     {
       if ( definition->isDestination() )
       {
@@ -165,7 +165,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
 
   bool foundCrs = false;
   QgsCoordinateReferenceSystem crs;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->type() == QStringLiteral( "layer" ) || def->type() == QStringLiteral( "raster" ) )
     {
@@ -227,7 +227,7 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
   QString s = QStringLiteral( "processing.run(\"%1\"," ).arg( id() );
 
   QStringList parts;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
@@ -330,7 +330,7 @@ const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinit
 int QgsProcessingAlgorithm::countVisibleParameters() const
 {
   int count = 0;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( !( def->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
       count++;
@@ -341,19 +341,17 @@ int QgsProcessingAlgorithm::countVisibleParameters() const
 QgsProcessingParameterDefinitions QgsProcessingAlgorithm::destinationParameterDefinitions() const
 {
   QgsProcessingParameterDefinitions result;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( !def->isDestination() )
-      continue;
-
-    result << def;
+    if ( def->isDestination() )
+      result << def;
   }
   return result;
 }
 
 const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
     if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
       return def;
@@ -363,7 +361,7 @@ const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( c
 
 bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 {
-  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
     if ( def->type() == QStringLiteral( "outputHtml" ) )
       return true;
