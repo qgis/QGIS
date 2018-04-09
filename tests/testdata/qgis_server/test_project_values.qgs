@@ -19,25 +19,34 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="testlayer20150528120452665" name="layer0" source="./testlayer.shp" providerKey="ogr">
+    <layer-tree-layer id="value_dict_4e5dce19_7169_42fe_8408_4927be615c09" name="value_dict" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./value_dict.csv">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="testlayer20150528120452665" name="layer0" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./testlayer.shp">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1" name="layer1" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./testlayer.shp">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
       <item>testlayer20150528120452665</item>
+      <item>layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1</item>
+      <item>value_dict_4e5dce19_7169_42fe_8408_4927be615c09</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings type="2" enabled="0" intersection-snapping="0" tolerance="0" unit="2" mode="1">
+  <snapping-settings intersection-snapping="0" mode="1" tolerance="0" unit="2" enabled="0" type="2">
     <individual-layer-settings>
-      <layer-setting id="testlayer20150528120452665" type="2" units="2" enabled="0" tolerance="0"/>
+      <layer-setting id="testlayer20150528120452665" tolerance="0" enabled="0" units="2" type="2"/>
+      <layer-setting id="layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1" tolerance="30" enabled="1" units="1" type="2"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
-  <mapcanvas annotationsVisible="1" name="theMapCanvas">
+  <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
-      <xmin>8.20315414376310059</xmin>
+      <xmin>8.20264578195449801</xmin>
       <ymin>44.90112783049693235</ymin>
-      <xmax>8.204164917965862</xmax>
+      <xmax>8.20467327977446459</xmax>
       <ymax>44.90170711558835137</ymax>
     </extent>
     <rotation>0</rotation>
@@ -56,15 +65,303 @@
     <rendermaptile>0</rendermaptile>
   </mapcanvas>
   <legend updateDrawingOrder="true">
-    <legendlayer checked="Qt::Checked" drawingOrder="-1" open="true" name="layer0" showFeatureCount="0">
+    <legendlayer name="value_dict" drawingOrder="-1" open="true" checked="Qt::Checked" showFeatureCount="0">
       <filegroup hidden="false" open="true">
-        <legendlayerfile layerid="testlayer20150528120452665" isInOverview="0" visible="1"/>
+        <legendlayerfile isInOverview="0" visible="1" layerid="value_dict_4e5dce19_7169_42fe_8408_4927be615c09"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer name="layer0" drawingOrder="-1" open="true" checked="Qt::Checked" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile isInOverview="0" visible="1" layerid="testlayer20150528120452665"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer name="layer1" drawingOrder="-1" open="true" checked="Qt::Checked" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile isInOverview="0" visible="1" layerid="layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
   <projectlayers>
-    <maplayer simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" readOnly="0" labelsEnabled="1" simplifyAlgorithm="0" type="vector" simplifyLocal="1" minScale="1e+8" refreshOnNotifyMessage="" simplifyDrawingTol="1" refreshOnNotifyEnabled="0" autoRefreshTime="0" maxScale="0" simplifyDrawingHints="0" geometry="Point" autoRefreshEnabled="0">
+    <maplayer readOnly="0" simplifyAlgorithm="0" autoRefreshEnabled="0" simplifyDrawingHints="0" simplifyMaxScale="1" maxScale="0" autoRefreshTime="0" simplifyDrawingTol="1" simplifyLocal="1" minScale="1e+8" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" geometry="Point" type="vector" labelsEnabled="0">
+      <extent>
+        <xmin>8.20345930703634352</xmin>
+        <ymin>44.90139483904469131</ymin>
+        <xmax>8.20354699399348775</xmax>
+        <ymax>44.90148252600183554</ymax>
+      </extent>
+      <id>layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1</id>
+      <datasource>./testlayer.shp</datasource>
+      <title>A test vector layer</title>
+      <abstract>A test vector layer with unicode òà</abstract>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>layer1</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent>
+          <spatial dimensions="2" miny="0" maxx="0" crs="" minz="0" maxz="0" maxy="0" minx="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <renderer-v2 forceraster="0" symbollevels="0" enableorderby="0" type="singleSymbol">
+        <symbols>
+          <symbol name="0" alpha="1" clip_to_extent="1" type="marker">
+            <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="102,164,67,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="0,0,0,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="area"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+              <effect enabled="0" type="effectStack">
+                <effect type="drawSource">
+                  <prop k="blend_mode" v="0"/>
+                  <prop k="draw_mode" v="2"/>
+                  <prop k="enabled" v="1"/>
+                  <prop k="opacity" v="1"/>
+                </effect>
+              </effect>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" value="" type="QString"/>
+                  <Option name="properties"/>
+                  <Option name="type" value="collection" type="QString"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+        <effect enabled="0" type="effectStack">
+          <effect type="drawSource">
+            <prop k="blend_mode" v="0"/>
+            <prop k="draw_mode" v="2"/>
+            <prop k="enabled" v="1"/>
+            <prop k="opacity" v="1"/>
+          </effect>
+        </effect>
+      </renderer-v2>
+      <customproperties>
+        <property key="embeddedWidgets/count" value="0"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1">
+        <DiagramCategory rotationOffset="270" sizeType="MM" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" penWidth="0" maxScaleDenominator="1e+8" height="15" scaleBasedVisibility="0" width="15" backgroundColor="#ffffff" penAlpha="255" scaleDependency="Area" diagramOrientation="Up" opacity="1" minScaleDenominator="0" penColor="#000000" minimumSize="0" enabled="0" barWidth="5" backgroundAlpha="255" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0">
+          <fontProperties description="Ubuntu,9,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings zIndex="0" linePlacementFlags="2" showAll="1" priority="0" obstacle="0" dist="0" placement="0">
+        <properties>
+          <Option type="Map">
+            <Option name="name" value="" type="QString"/>
+            <Option name="properties" type="Map">
+              <Option name="show" type="Map">
+                <Option name="active" value="true" type="bool"/>
+                <Option name="field" value="id" type="QString"/>
+                <Option name="type" value="2" type="int"/>
+              </Option>
+            </Option>
+            <Option name="type" value="collection" type="QString"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
+      <fieldConfiguration>
+        <field name="id">
+          <editWidget type="ValueRelation">
+            <config>
+              <Option type="Map">
+                <Option name="AllowMulti" value="false" type="bool"/>
+                <Option name="AllowNull" value="false" type="bool"/>
+                <Option name="FilterExpression" value="" type="QString"/>
+                <Option name="Key" value="id" type="QString"/>
+                <Option name="Layer" value="value_dict_4e5dce19_7169_42fe_8408_4927be615c09" type="QString"/>
+                <Option name="NofColumns" value="1" type="int"/>
+                <Option name="OrderByValue" value="false" type="bool"/>
+                <Option name="UseCompleter" value="false" type="bool"/>
+                <Option name="Value" value="value_id" type="QString"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="name">
+          <editWidget type="ValueRelation">
+            <config>
+              <Option type="Map">
+                <Option name="AllowMulti" value="false" type="bool"/>
+                <Option name="AllowNull" value="false" type="bool"/>
+                <Option name="FilterExpression" value="" type="QString"/>
+                <Option name="Key" value="reverse" type="QString"/>
+                <Option name="Layer" value="value_dict_4e5dce19_7169_42fe_8408_4927be615c09" type="QString"/>
+                <Option name="NofColumns" value="1" type="int"/>
+                <Option name="OrderByValue" value="false" type="bool"/>
+                <Option name="UseCompleter" value="false" type="bool"/>
+                <Option name="Value" value="reverse_val" type="QString"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="utf8nameè">
+          <editWidget type="TextEdit">
+            <config>
+              <Option type="Map">
+                <Option name="IsMultiline" value="false" type="bool"/>
+                <Option name="UseHtml" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias field="id" index="0" name=""/>
+        <alias field="name" index="1" name=""/>
+        <alias field="utf8nameè" index="2" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default field="id" expression="" applyOnUpdate="0"/>
+        <default field="name" expression="" applyOnUpdate="0"/>
+        <default field="utf8nameè" expression="" applyOnUpdate="0"/>
+      </defaults>
+      <constraints>
+        <constraint field="id" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="name" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="utf8nameè" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint field="id" exp="" desc=""/>
+        <constraint field="name" exp="" desc=""/>
+        <constraint field="utf8nameè" exp="" desc=""/>
+      </constraintExpressions>
+      <attributeactions>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+        <columns>
+          <column width="-1" name="id" hidden="0" type="field"/>
+          <column width="-1" name="name" hidden="0" type="field"/>
+          <column width="130" name="utf8nameè" hidden="0" type="field"/>
+          <column width="-1" hidden="1" type="actions"/>
+        </columns>
+      </attributetableconfig>
+      <editform>../../../../qgis2/tests/testdata/qgis_server</editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath>../../../../qgis2/tests/testdata/qgis_server</editforminitfilepath>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable>
+        <field name="id" editable="1"/>
+        <field name="name" editable="1"/>
+        <field name="utf8nameè" editable="1"/>
+      </editable>
+      <labelOnTop>
+        <field name="id" labelOnTop="0"/>
+        <field name="name" labelOnTop="0"/>
+        <field name="utf8nameè" labelOnTop="0"/>
+      </labelOnTop>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <expressionfields/>
+      <previewExpression>COALESCE( "name", '&lt;NULL>' )</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer readOnly="0" simplifyAlgorithm="0" autoRefreshEnabled="0" simplifyDrawingHints="0" simplifyMaxScale="1" maxScale="0" autoRefreshTime="0" simplifyDrawingTol="1" simplifyLocal="1" minScale="1e+8" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" geometry="Point" type="vector" labelsEnabled="1">
       <extent>
         <xmin>8.20345930703634352</xmin>
         <ymin>44.90139483904469131</ymin>
@@ -110,7 +407,7 @@
             <description></description>
             <projectionacronym></projectionacronym>
             <ellipsoidacronym></ellipsoidacronym>
-            <geographicflag>false</geographicflag>
+            <geographicflag>true</geographicflag>
           </spatialrefsys>
         </crs>
         <extent/>
@@ -124,10 +421,10 @@
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+      <renderer-v2 forceraster="0" symbollevels="0" enableorderby="0" type="singleSymbol">
         <symbols>
-          <symbol alpha="1" type="marker" name="0" clip_to_extent="1">
-            <layer pass="0" class="SimpleMarker" enabled="1" locked="0">
+          <symbol name="0" alpha="1" clip_to_extent="1" type="marker">
+            <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
               <prop k="angle" v="0"/>
               <prop k="color" v="102,164,67,255"/>
               <prop k="horizontal_anchor_point" v="1"/>
@@ -146,7 +443,7 @@
               <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="size_unit" v="MM"/>
               <prop k="vertical_anchor_point" v="1"/>
-              <effect type="effectStack" enabled="0">
+              <effect enabled="0" type="effectStack">
                 <effect type="drawSource">
                   <prop k="blend_mode" v="0"/>
                   <prop k="draw_mode" v="2"/>
@@ -156,9 +453,9 @@
               </effect>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option value="" type="QString" name="name"/>
+                  <Option name="name" value="" type="QString"/>
                   <Option name="properties"/>
-                  <Option value="collection" type="QString" name="type"/>
+                  <Option name="type" value="collection" type="QString"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -166,7 +463,7 @@
         </symbols>
         <rotation/>
         <sizescale/>
-        <effect type="effectStack" enabled="0">
+        <effect enabled="0" type="effectStack">
           <effect type="drawSource">
             <prop k="blend_mode" v="0"/>
             <prop k="draw_mode" v="2"/>
@@ -176,7 +473,7 @@
         </effect>
       </renderer-v2>
       <customproperties>
-        <property value="0" key="embeddedWidgets/count"/>
+        <property key="embeddedWidgets/count" value="0"/>
         <property key="variableNames"/>
         <property key="variableValues"/>
       </customproperties>
@@ -184,23 +481,23 @@
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1">
-        <DiagramCategory sizeType="MM" labelPlacementMethod="XHeight" lineSizeType="MM" barWidth="5" scaleBasedVisibility="0" maxScaleDenominator="1e+8" penColor="#000000" penWidth="0" backgroundColor="#ffffff" diagramOrientation="Up" backgroundAlpha="255" height="15" penAlpha="255" minimumSize="0" sizeScale="3x:0,0,0,0,0,0" scaleDependency="Area" enabled="0" minScaleDenominator="inf" lineSizeScale="3x:0,0,0,0,0,0" width="15" rotationOffset="270" opacity="1">
+        <DiagramCategory rotationOffset="270" sizeType="MM" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" penWidth="0" maxScaleDenominator="1e+8" height="15" scaleBasedVisibility="0" width="15" backgroundColor="#ffffff" penAlpha="255" scaleDependency="Area" diagramOrientation="Up" opacity="1" minScaleDenominator="inf" penColor="#000000" minimumSize="0" enabled="0" barWidth="5" backgroundAlpha="255" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0">
           <fontProperties description="Ubuntu,9,-1,5,50,0,0,0,0,0" style=""/>
-          <attribute label="" field="" color="#000000"/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>
-      <DiagramLayerSettings showAll="1" placement="0" priority="0" zIndex="0" dist="0" linePlacementFlags="10" obstacle="0">
+      <DiagramLayerSettings zIndex="0" linePlacementFlags="10" showAll="1" priority="0" obstacle="0" dist="0" placement="0">
         <properties>
           <Option type="Map">
-            <Option value="" type="QString" name="name"/>
-            <Option type="Map" name="properties">
-              <Option type="Map" name="show">
-                <Option value="true" type="bool" name="active"/>
-                <Option value="id" type="QString" name="field"/>
-                <Option value="2" type="int" name="type"/>
+            <Option name="name" value="" type="QString"/>
+            <Option name="properties" type="Map">
+              <Option name="show" type="Map">
+                <Option name="active" value="true" type="bool"/>
+                <Option name="field" value="id" type="QString"/>
+                <Option name="type" value="2" type="int"/>
               </Option>
             </Option>
-            <Option value="collection" type="QString" name="type"/>
+            <Option name="type" value="collection" type="QString"/>
           </Option>
         </properties>
       </DiagramLayerSettings>
@@ -209,8 +506,8 @@
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
-                <Option value="0" type="QString" name="IsMultiline"/>
-                <Option value="0" type="QString" name="UseHtml"/>
+                <Option name="IsMultiline" value="0" type="QString"/>
+                <Option name="UseHtml" value="0" type="QString"/>
               </Option>
             </config>
           </editWidget>
@@ -219,8 +516,8 @@
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
-                <Option value="0" type="QString" name="IsMultiline"/>
-                <Option value="0" type="QString" name="UseHtml"/>
+                <Option name="IsMultiline" value="0" type="QString"/>
+                <Option name="UseHtml" value="0" type="QString"/>
               </Option>
             </config>
           </editWidget>
@@ -229,10 +526,10 @@
           <editWidget type="ValueMap">
             <config>
               <Option type="Map">
-                <Option type="Map" name="map">
-                  <Option value="one èé" type="QString" name="First Value"/>
-                  <Option value="two àò" type="QString" name="Second Value"/>
-                  <Option value="three èé↓" type="QString" name="Third èé↓"/>
+                <Option name="map" type="Map">
+                  <Option name="First Value" value="one èé" type="QString"/>
+                  <Option name="Second Value" value="two àò" type="QString"/>
+                  <Option name="Third èé↓" value="three èé↓" type="QString"/>
                 </Option>
               </Option>
             </config>
@@ -240,36 +537,36 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" name="" field="id"/>
-        <alias index="1" name="" field="name"/>
-        <alias index="2" name="" field="utf8nameè"/>
+        <alias field="id" index="0" name=""/>
+        <alias field="name" index="1" name=""/>
+        <alias field="utf8nameè" index="2" name=""/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <defaults>
-        <default expression="" field="id" applyOnUpdate="0"/>
-        <default expression="" field="name" applyOnUpdate="0"/>
-        <default expression="" field="utf8nameè" applyOnUpdate="0"/>
+        <default field="id" expression="" applyOnUpdate="0"/>
+        <default field="name" expression="" applyOnUpdate="0"/>
+        <default field="utf8nameè" expression="" applyOnUpdate="0"/>
       </defaults>
       <constraints>
-        <constraint exp_strength="0" constraints="0" notnull_strength="0" field="id" unique_strength="0"/>
-        <constraint exp_strength="0" constraints="0" notnull_strength="0" field="name" unique_strength="0"/>
-        <constraint exp_strength="0" constraints="0" notnull_strength="0" field="utf8nameè" unique_strength="0"/>
+        <constraint field="id" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="name" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="utf8nameè" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint exp="" desc="" field="id"/>
-        <constraint exp="" desc="" field="name"/>
-        <constraint exp="" desc="" field="utf8nameè"/>
+        <constraint field="id" exp="" desc=""/>
+        <constraint field="name" exp="" desc=""/>
+        <constraint field="utf8nameè" exp="" desc=""/>
       </constraintExpressions>
       <attributeactions>
-        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
-      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
-          <column hidden="0" type="field" name="id" width="-1"/>
-          <column hidden="0" type="field" name="name" width="-1"/>
-          <column hidden="0" type="field" name="utf8nameè" width="130"/>
-          <column hidden="1" type="actions" width="-1"/>
+          <column width="-1" name="id" hidden="0" type="field"/>
+          <column width="-1" name="name" hidden="0" type="field"/>
+          <column width="130" name="utf8nameè" hidden="0" type="field"/>
+          <column width="-1" hidden="1" type="actions"/>
         </columns>
       </attributetableconfig>
       <editform>../../../../qgis2/tests/testdata/qgis_server</editform>
@@ -306,130 +603,164 @@ def my_form_open(dialog, layer, feature):
       <previewExpression>COALESCE( "name", '&lt;NULL>' )</previewExpression>
       <mapTip></mapTip>
     </maplayer>
+    <maplayer readOnly="0" autoRefreshEnabled="0" maxScale="0" autoRefreshTime="0" minScale="1e+8" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" geometry="No geometry" type="vector">
+      <id>value_dict_4e5dce19_7169_42fe_8408_4927be615c09</id>
+      <datasource>./value_dict.csv</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>value_dict</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <customproperties/>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <fieldConfiguration>
+        <field name="id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="value_id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="reverse">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="reverse_val">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias field="id" index="0" name=""/>
+        <alias field="value_id" index="1" name=""/>
+        <alias field="reverse" index="2" name=""/>
+        <alias field="reverse_val" index="3" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default field="id" expression="" applyOnUpdate="0"/>
+        <default field="value_id" expression="" applyOnUpdate="0"/>
+        <default field="reverse" expression="" applyOnUpdate="0"/>
+        <default field="reverse_val" expression="" applyOnUpdate="0"/>
+      </defaults>
+      <constraints>
+        <constraint field="id" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="value_id" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="reverse" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+        <constraint field="reverse_val" exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint field="id" exp="" desc=""/>
+        <constraint field="value_id" exp="" desc=""/>
+        <constraint field="reverse" exp="" desc=""/>
+        <constraint field="reverse_val" exp="" desc=""/>
+      </constraintExpressions>
+      <attributeactions>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+        <columns/>
+      </attributetableconfig>
+      <editform></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <expressionfields/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
   </projectlayers>
   <layerorder>
     <layer id="testlayer20150528120452665"/>
+    <layer id="layer0_5eef4a92_d4ca_47ad_a912_4860ad969cc1"/>
+    <layer id="value_dict_4e5dce19_7169_42fe_8408_4927be615c09"/>
   </layerorder>
   <properties>
-    <Macros>
-      <pythonCode type="QString"></pythonCode>
-    </Macros>
-    <Identify>
-      <disabledLayers type="QStringList"/>
-    </Identify>
-    <WMSExtent type="QStringList">
-      <value>8.20315414376310059</value>
-      <value>44.901236559338642</value>
-      <value>8.204164917965862</value>
-      <value>44.90159838674664172</value>
-    </WMSExtent>
-    <WMSContactPosition type="QString"></WMSContactPosition>
-    <WMSRestrictedLayers type="QStringList"/>
-    <WMSContactOrganization type="QString">QGIS dev team</WMSContactOrganization>
-    <WFSLayersPrecision>
-      <testlayer20150528120452665 type="int">8</testlayer20150528120452665>
-    </WFSLayersPrecision>
-    <WMSContactPerson type="QString">Alessandro Pasotti</WMSContactPerson>
-    <Gui>
-      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
-      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
-      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
-      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
-      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
-      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
-      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
-    </Gui>
-    <DefaultStyles>
-      <Marker type="QString"></Marker>
-      <ColorRamp type="QString"></ColorRamp>
-      <Fill type="QString"></Fill>
-      <AlphaInt type="int">255</AlphaInt>
-      <Line type="QString"></Line>
-      <RandomColors type="bool">true</RandomColors>
-    </DefaultStyles>
-    <SpatialRefSys>
-      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
-      <ProjectCrs type="QString">EPSG:4326</ProjectCrs>
-      <ProjectCRSProj4String type="QString">+proj=longlat +datum=WGS84 +no_defs</ProjectCRSProj4String>
-      <ProjectCRSID type="int">3452</ProjectCRSID>
-    </SpatialRefSys>
-    <WMSAddWktGeometry type="bool">true</WMSAddWktGeometry>
-    <WMSFees type="QString">conditions unknown</WMSFees>
     <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
+    <WMSContactMail type="QString">elpaso@itopen.it</WMSContactMail>
+    <WMSServiceAbstract type="QString">Some UTF8 text èòù</WMSServiceAbstract>
+    <WMSContactOrganization type="QString">QGIS dev team</WMSContactOrganization>
+    <WMSRestrictedLayers type="QStringList"/>
     <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
-    <Digitizing>
-      <LayerSnappingToleranceList type="QStringList">
-        <value>0.000000</value>
-      </LayerSnappingToleranceList>
-      <LayerSnappingToleranceUnitList type="QStringList">
-        <value>2</value>
-      </LayerSnappingToleranceUnitList>
-      <DefaultSnapToleranceUnit type="int">2</DefaultSnapToleranceUnit>
-      <LayerSnappingList type="QStringList">
-        <value>testlayer20150528120452665</value>
-      </LayerSnappingList>
-      <SnappingMode type="QString">current_layer</SnappingMode>
-      <DefaultSnapType type="QString">off</DefaultSnapType>
-      <AvoidIntersectionsList type="QStringList"/>
-      <DefaultSnapTolerance type="double">0</DefaultSnapTolerance>
-      <LayerSnappingEnabledList type="QStringList">
-        <value>disabled</value>
-      </LayerSnappingEnabledList>
-      <LayerSnapToList type="QStringList">
-        <value>to_vertex_and_segment</value>
-      </LayerSnapToList>
-    </Digitizing>
-    <WMSPrecision type="QString">4</WMSPrecision>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSImageQuality type="int">90</WMSImageQuality>
     <Measurement>
       <AreaUnits type="QString">m2</AreaUnits>
       <DistanceUnits type="QString">meters</DistanceUnits>
     </Measurement>
-    <WMSUrl type="QString"></WMSUrl>
-    <WFSLayers type="QStringList">
-      <value>testlayer20150528120452665</value>
-    </WFSLayers>
-    <WMSContactPhone type="QString"></WMSContactPhone>
-    <PAL>
-      <CandidatesPolygon type="int">30</CandidatesPolygon>
-      <ShowingAllLabels type="bool">false</ShowingAllLabels>
-      <ShowingCandidates type="bool">false</ShowingCandidates>
-      <DrawRectOnly type="bool">false</DrawRectOnly>
-      <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
-      <CandidatesPoint type="int">16</CandidatesPoint>
-      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
-      <SearchMethod type="int">0</SearchMethod>
-      <CandidatesLine type="int">50</CandidatesLine>
-    </PAL>
-    <PositionPrecision>
-      <DecimalPlaces type="int">2</DecimalPlaces>
-      <DegreeFormat type="QString">D</DegreeFormat>
-      <Automatic type="bool">true</Automatic>
-    </PositionPrecision>
-    <Measure>
-      <Ellipsoid type="QString">WGS84</Ellipsoid>
-    </Measure>
-    <WCSUrl type="QString"></WCSUrl>
-    <WMSServiceAbstract type="QString">Some UTF8 text èòù</WMSServiceAbstract>
-    <Legend>
-      <filterByMap type="bool">false</filterByMap>
-    </Legend>
-    <WMSRestrictedComposers type="QStringList"/>
-    <WMSServiceCapabilities type="bool">true</WMSServiceCapabilities>
-    <WFSUrl type="QString"></WFSUrl>
-    <Paths>
-      <Absolute type="bool">false</Absolute>
-    </Paths>
-    <Variables>
-      <variableNames type="QStringList"/>
-      <variableValues type="QStringList"/>
-    </Variables>
-    <WMSServiceTitle type="QString">QGIS TestProject</WMSServiceTitle>
     <WCSLayers type="QStringList"/>
-    <WMSImageQuality type="int">90</WMSImageQuality>
-    <WMSOnlineResource type="QString"></WMSOnlineResource>
-    <WMSKeywordList type="QStringList">
-      <value></value>
-    </WMSKeywordList>
+    <WMSServiceTitle type="QString">QGIS TestProject</WMSServiceTitle>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <WFSLayersPrecision>
+      <testlayer20150528120452665 type="int">8</testlayer20150528120452665>
+    </WFSLayersPrecision>
     <WFSTLayers>
       <Insert type="QStringList">
         <value>testlayer20150528120452665</value>
@@ -441,7 +772,108 @@ def my_form_open(dialog, layer, feature):
         <value>testlayer20150528120452665</value>
       </Update>
     </WFSTLayers>
-    <WMSContactMail type="QString">elpaso@itopen.it</WMSContactMail>
+    <WMSUrl type="QString"></WMSUrl>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <Digitizing>
+      <AvoidIntersectionsList type="QStringList"/>
+      <DefaultSnapTolerance type="double">0</DefaultSnapTolerance>
+      <LayerSnapToList type="QStringList">
+        <value>to_vertex_and_segment</value>
+      </LayerSnapToList>
+      <LayerSnappingToleranceUnitList type="QStringList">
+        <value>2</value>
+      </LayerSnappingToleranceUnitList>
+      <DefaultSnapToleranceUnit type="int">2</DefaultSnapToleranceUnit>
+      <DefaultSnapType type="QString">off</DefaultSnapType>
+      <LayerSnappingToleranceList type="QStringList">
+        <value>0.000000</value>
+      </LayerSnappingToleranceList>
+      <SnappingMode type="QString">current_layer</SnappingMode>
+      <LayerSnappingEnabledList type="QStringList">
+        <value>disabled</value>
+      </LayerSnappingEnabledList>
+      <LayerSnappingList type="QStringList">
+        <value>testlayer20150528120452665</value>
+      </LayerSnappingList>
+    </Digitizing>
+    <WMSFees type="QString">conditions unknown</WMSFees>
+    <SpatialRefSys>
+      <ProjectCrs type="QString">EPSG:4326</ProjectCrs>
+      <ProjectCRSProj4String type="QString">+proj=longlat +datum=WGS84 +no_defs</ProjectCRSProj4String>
+      <ProjectCRSID type="int">3452</ProjectCRSID>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <WMSRestrictedComposers type="QStringList"/>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <Variables>
+      <variableNames type="QStringList"/>
+      <variableValues type="QStringList"/>
+    </Variables>
+    <DefaultStyles>
+      <Line type="QString"></Line>
+      <AlphaInt type="int">255</AlphaInt>
+      <Fill type="QString"></Fill>
+      <Marker type="QString"></Marker>
+      <ColorRamp type="QString"></ColorRamp>
+      <RandomColors type="bool">true</RandomColors>
+    </DefaultStyles>
+    <Gui>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+    </Gui>
+    <WMSExtent type="QStringList">
+      <value>8.20315414376310059</value>
+      <value>44.901236559338642</value>
+      <value>8.204164917965862</value>
+      <value>44.90159838674664172</value>
+    </WMSExtent>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DegreeFormat type="QString">D</DegreeFormat>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+    </PositionPrecision>
+    <WMSKeywordList type="QStringList">
+      <value></value>
+    </WMSKeywordList>
+    <WMSContactPerson type="QString">Alessandro Pasotti</WMSContactPerson>
+    <PAL>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
+      <SearchMethod type="int">0</SearchMethod>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <CandidatesLine type="int">50</CandidatesLine>
+    </PAL>
+    <WMSServiceCapabilities type="bool">true</WMSServiceCapabilities>
+    <WFSLayers type="QStringList">
+      <value>testlayer20150528120452665</value>
+    </WFSLayers>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <WCSUrl type="QString"></WCSUrl>
+    <WMSAddWktGeometry type="bool">true</WMSAddWktGeometry>
+    <Identify>
+      <disabledLayers type="QStringList"/>
+    </Identify>
+    <WMSPrecision type="QString">4</WMSPrecision>
   </properties>
   <visibility-presets/>
   <transformContext/>
