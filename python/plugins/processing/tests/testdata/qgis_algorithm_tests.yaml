@@ -5176,3 +5176,19 @@ tests:
       OUTPUT:
         name: expected/swap_xy.gml
         type: vector
+
+  - algorithm: model:filtertest
+    name: Test (model:filtertest)
+    params:
+      layer:
+        name: points.gml
+        type: vector
+    results:
+      native:filter_1:OUTPUT_small:
+        name: expected/filter_points_small.gml
+        type: vector
+      native:filter_1:OUTPUT_big:
+        name: expected/filter_points_big.gml
+        type: vector
+
+# See ../README.md for a description of the file format
