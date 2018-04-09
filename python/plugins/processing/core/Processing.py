@@ -162,6 +162,9 @@ class Processing(object):
             else:
                 # auto convert layer references in results to map layers
                 for out in alg.outputDefinitions():
+                    if out.name() not in results:
+                        continue
+
                     if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):
