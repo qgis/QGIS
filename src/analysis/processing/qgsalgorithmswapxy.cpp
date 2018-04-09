@@ -60,6 +60,12 @@ QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
   return new QgsSwapXYAlgorithm();
 }
 
+QgsProcessingFeatureSource::Flag QgsSwapXYAlgorithm::sourceFlags() const
+{
+  // this algorithm doesn't care about invalid geometries
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsFeatureList QgsSwapXYAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeatureList list;

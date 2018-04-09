@@ -31,7 +31,8 @@ from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsPropertyDefinition,
                        QgsProcessingParameters,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingFeatureSource)
 
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -84,6 +85,9 @@ class SetMValue(QgisFeatureBasedAlgorithm):
         if self.dynamic_m:
             self.m_property = parameters[self.M_VALUE]
         return True
+
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
 
     def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()

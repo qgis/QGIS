@@ -32,9 +32,11 @@ from qgis.core import (QgsWkbTypes,
                        QgsVertexId,
                        QgsFeature,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
                        QgsGeometry,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSink,
@@ -103,7 +105,7 @@ class ExtractSpecificVertices(QgisAlgorithm):
                 raise QgsProcessingException(
                     self.tr('\'{}\' is not a valid vertex index').format(vertex))
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):

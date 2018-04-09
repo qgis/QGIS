@@ -73,6 +73,12 @@ QgsRemoveHolesAlgorithm *QgsRemoveHolesAlgorithm::createInstance() const
   return new QgsRemoveHolesAlgorithm();
 }
 
+QgsProcessingFeatureSource::Flag QgsRemoveHolesAlgorithm::sourceFlags() const
+{
+  // skip geometry checks - this algorithm can be used to repair geometries
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 void QgsRemoveHolesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > minArea = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN_AREA" ),

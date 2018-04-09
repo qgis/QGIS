@@ -68,7 +68,7 @@ void QgsExtractVerticesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
@@ -99,7 +99,7 @@ QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
-  QgsFeatureIterator fi = featureSource->getFeatures( QgsFeatureRequest() );
+  QgsFeatureIterator fi = featureSource->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
   int i = -1;
   while ( fi.nextFeature( f ) )
