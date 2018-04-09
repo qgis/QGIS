@@ -42,6 +42,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameterFileDestination)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -118,7 +119,7 @@ class UniqueValues(QgisAlgorithm):
             request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
             request.setSubsetOfAttributes(field_indices)
             total = 100.0 / source.featureCount() if source.featureCount() else 0
-            for current, f in enumerate(source.getFeatures(request)):
+            for current, f in enumerate(source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)):
                 if feedback.isCanceled():
                     break
 

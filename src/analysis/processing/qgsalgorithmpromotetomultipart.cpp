@@ -70,6 +70,11 @@ QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Ty
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
+QgsProcessingFeatureSource::Flag QgsPromoteToMultipartAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsFeatureList QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;

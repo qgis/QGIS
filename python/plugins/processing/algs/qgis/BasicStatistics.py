@@ -38,7 +38,8 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingOutputNumber,
+                       QgsProcessingFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -133,7 +134,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
-        features = source.getFeatures(request)
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
         data = []

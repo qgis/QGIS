@@ -31,7 +31,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterExpression)
+                       QgsProcessingParameterExpression,
+                       QgsProcessingFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -103,6 +104,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
 
     def outputWkbType(self, input_wkb_type):
         return self.wkb_type
+
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
 
     def processFeature(self, feature, context, feedback):
         self.expression_context.setFeature(feature)
