@@ -37,4 +37,4 @@ def processCommand(alg, parameters, context, feedback):
 
 
 def processOutputs(alg, parameters, context, feedback):
-    moveOutputTxtFile(alg, parameters, context, feedback)
+    moveOutputTxtFile(alg, parameters, context)
