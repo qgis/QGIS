@@ -143,6 +143,7 @@ void QgsFilterAlgorithmConfigurationWidget::addOutput()
   int rowIndex = mOutputExpressionWidget->rowCount();
   mOutputExpressionWidget->setRowCount( rowIndex + 1 );
   QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
+  mOutputExpressionWidget->setItem( rowIndex, 0, new QTableWidgetItem( QString() ) );
   mOutputExpressionWidget->setCellWidget( rowIndex, 1, expressionBuilder );
   mOutputExpressionWidget->setCellWidget( rowIndex, 2, new QCheckBox() );
 }
