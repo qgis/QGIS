@@ -352,7 +352,9 @@ tests:
       threshold: 0.5
     results:
       goodness:
-        hash: 4d7728e28734d2b67427a514bcd155d254d30b3424bf4e0ad8f0f0c6
+        hash:
+        - 4d7728e28734d2b67427a514bcd155d254d30b3424bf4e0ad8f0f0c6
+        - 755eccae32fd3406dc33daf02942c107256eb59f6b9e4cdef173892a
         type: rasterhash
       output:
         hash: b65992a5d48b867d4a32a533f38e7a72cb1ba18f1e261c6be132baca
@@ -617,5 +619,7 @@ tests:
         name: custom/grass7/i.atcorr.txt
     results:
       output:
-        hash: e5fada2ec43658e25a34d0486e810dec1cad289b626f6d1c4bbfea18
+        hash:
+        - e5fada2ec43658e25a34d0486e810dec1cad289b626f6d1c4bbfea18
+        - dad0f79abac42d42abb01b7a1d96871a09d8bb4647b6a443197475c2
         type: rasterhash
