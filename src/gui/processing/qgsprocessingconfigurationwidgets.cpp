@@ -140,8 +140,8 @@ void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
 
 void QgsFilterAlgorithmConfigurationWidget::addOutput()
 {
-  int rowIndex = mOutputExpressionWidget->rowCount() + 1;
-  mOutputExpressionWidget->setRowCount( rowIndex );
+  int rowIndex = mOutputExpressionWidget->rowCount();
+  mOutputExpressionWidget->setRowCount( rowIndex + 1 );
   QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
   mOutputExpressionWidget->setCellWidget( rowIndex, 1, expressionBuilder );
   mOutputExpressionWidget->setCellWidget( rowIndex, 2, new QCheckBox() );
