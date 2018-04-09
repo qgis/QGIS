@@ -1142,282 +1142,282 @@ tests:
 #          - 'N:    6693700    S:    6682800   Res:   100'
 #          - 'E:     358400    W:     344500   Res:   100'
 
-  - algorithm: grass7:r.li.cwed
-    name: GRASS7 r.li.cwed
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      path:
-        name: custom/grass7/weighted.csv
-        type: file
-    results:
-      output:
-        hash: ec76f5b372d859548d580023dabc210dd8c76987eada6cde7c0b3e5a
-        type: rasterhash
+#  - algorithm: grass7:r.li.cwed
+#    name: GRASS7 r.li.cwed
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      path:
+#        name: custom/grass7/weighted.csv
+#        type: file
+#    results:
+#      output:
+#        hash: ec76f5b372d859548d580023dabc210dd8c76987eada6cde7c0b3e5a
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.dominance
-    name: GRASS7 r.li.dominance
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 3df7cd453b8cebedc92a7d127e10b0eb1fdc6e1f2ff3c3b4ca578369
-        type: rasterhash
+#  - algorithm: grass7:r.li.dominance
+#    name: GRASS7 r.li.dominance
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 3df7cd453b8cebedc92a7d127e10b0eb1fdc6e1f2ff3c3b4ca578369
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.edgedensity
-    name: GRASS7 r.li.edgedensity
-    params:
-      -b: false
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-      patch_type: '3'
-    results:
-      output:
-        hash: f7ff986b10f23376e788ca1544d15d9296bfe6c0317e3aad89a7446e
-        type: rasterhash
+#  - algorithm: grass7:r.li.edgedensity
+#    name: GRASS7 r.li.edgedensity
+#    params:
+#      -b: false
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#      patch_type: '3'
+#    results:
+#      output:
+#        hash: f7ff986b10f23376e788ca1544d15d9296bfe6c0317e3aad89a7446e
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.mpa
-    name: GRASS7 r.li.mpa
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: d03a0795dc1a441cf6016dae791791f255b35e9c4b656c4956793041
-        type: rasterhash
+#  - algorithm: grass7:r.li.mpa
+#    name: GRASS7 r.li.mpa
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: d03a0795dc1a441cf6016dae791791f255b35e9c4b656c4956793041
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.mps
-    name: GRASS7 r.li.mps
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: f6ab86cd0b6148c4298921f80845cb573915e32d66af8bf7b4695250
-        type: rasterhash
+#  - algorithm: grass7:r.li.mps
+#    name: GRASS7 r.li.mps
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: f6ab86cd0b6148c4298921f80845cb573915e32d66af8bf7b4695250
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.padcv
-    name: GRASS7 r.li.padcv
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 1f351e437934e8655905fe42ee55d6918ec25f1ca737abd6d78b5246
-        type: rasterhash
+#  - algorithm: grass7:r.li.padcv
+#    name: GRASS7 r.li.padcv
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 1f351e437934e8655905fe42ee55d6918ec25f1ca737abd6d78b5246
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.padrange
-    name: GRASS7 r.li.padrange
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 83a3fdb3eaf47fcdf878a0c66a6727553b58ab3d1f4736b485399cff
-        type: rasterhash
+#  - algorithm: grass7:r.li.padrange
+#    name: GRASS7 r.li.padrange
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 83a3fdb3eaf47fcdf878a0c66a6727553b58ab3d1f4736b485399cff
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.padsd
-    name: GRASS7 r.li.padsd
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 48f8a52703f6e9b168b15fca180bb774580c557484598d165ef697c0
-        type: rasterhash
+#  - algorithm: grass7:r.li.padsd
+#    name: GRASS7 r.li.padsd
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 48f8a52703f6e9b168b15fca180bb774580c557484598d165ef697c0
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.patchdensity
-    name: GRASS7 r.li.patchdensity
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: d32d9875ff52e1ed69df306602c74ae4f0d5c40e16f620482d7341d6
-        type: rasterhash
+#  - algorithm: grass7:r.li.patchdensity
+#    name: GRASS7 r.li.patchdensity
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: d32d9875ff52e1ed69df306602c74ae4f0d5c40e16f620482d7341d6
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.patchnum
-    name: GRASS7 r.li.patchnum
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 234771688886677233dc56a3d7f1d6cafbc1f736cbb48e1251719b72
-        type: rasterhash
+#  - algorithm: grass7:r.li.patchnum
+#    name: GRASS7 r.li.patchnum
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 234771688886677233dc56a3d7f1d6cafbc1f736cbb48e1251719b72
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.pielou
-    name: GRASS7 r.li.pielou
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: b10a953914ed37ee7e4c1e14f796621d7656f55f7b7185d2e6ae0184
-        type: rasterhash
+#  - algorithm: grass7:r.li.pielou
+#    name: GRASS7 r.li.pielou
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: b10a953914ed37ee7e4c1e14f796621d7656f55f7b7185d2e6ae0184
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.renyi
-    name: GRASS7 r.li.renyi
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      alpha: '3'
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 83f86ca9d7c029ef9e62e0c8804ae60059fccb2bbf5c96bd4c2704e1
-        type: rasterhash
+#  - algorithm: grass7:r.li.renyi
+#    name: GRASS7 r.li.renyi
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      alpha: '3'
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 83f86ca9d7c029ef9e62e0c8804ae60059fccb2bbf5c96bd4c2704e1
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.richness
-    name: GRASS7 r.li.richness
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 010f0d0a68fb14a4cb064b9890b5bf7e0921f3faa91276419cb037c5
-        type: rasterhash
+#  - algorithm: grass7:r.li.richness
+#    name: GRASS7 r.li.richness
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 010f0d0a68fb14a4cb064b9890b5bf7e0921f3faa91276419cb037c5
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.shannon
-    name: GRASS7 r.li.shannon
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 144094fba63106b776cb78fd9fac418988044b55f7d19db1b45876cd
-        type: rasterhash
+#  - algorithm: grass7:r.li.shannon
+#    name: GRASS7 r.li.shannon
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 144094fba63106b776cb78fd9fac418988044b55f7d19db1b45876cd
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.shape
-    name: GRASS7 r.li.shape
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: b703521aff3a9ea75612b174912061173a761f1ebef58a3523d2eaa9
-        type: rasterhash
+#  - algorithm: grass7:r.li.shape
+#    name: GRASS7 r.li.shape
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: b703521aff3a9ea75612b174912061173a761f1ebef58a3523d2eaa9
+#        type: rasterhash
 
-  - algorithm: grass7:r.li.simpson
-    name: GRASS7 r.li.simpson
-    params:
-      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-      config:
-        name: custom/grass7/rliconfigmoving
-        type: file
-      config_txt: ''
-      input:
-        name: custom/grass7/raster_6class.tif
-        type: raster
-    results:
-      output:
-        hash: 6f1f3af79c1baaebdd795f569bcb1dcf43b8c025896c5425d539422e
-        type: rasterhash
+#  - algorithm: grass7:r.li.simpson
+#    name: GRASS7 r.li.simpson
+#    params:
+#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+#      config:
+#        name: custom/grass7/rliconfigmoving
+#        type: file
+#      config_txt: ''
+#      input:
+#        name: custom/grass7/raster_6class.tif
+#        type: raster
+#    results:
+#      output:
+#        hash: 6f1f3af79c1baaebdd795f569bcb1dcf43b8c025896c5425d539422e
+#        type: rasterhash
 
   - algorithm: grass7:r.li.cwed.ascii
     name: GRASS7 r.li.cwed.ascii
