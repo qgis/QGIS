@@ -27,7 +27,7 @@ QString QgsFilterAlgorithm::name() const
 
 QString QgsFilterAlgorithm::displayName() const
 {
-  return QObject::tr( "Filter" );
+  return QObject::tr( "Feature Filter" );
 }
 
 QStringList QgsFilterAlgorithm::tags() const
