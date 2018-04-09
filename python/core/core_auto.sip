@@ -91,6 +91,8 @@
 %Include qgsprojectbadlayerhandler.sip
 %Include qgsprojectfiletransform.sip
 %Include qgsprojectproperty.sip
+%Include qgsprojectstorage.sip
+%Include qgsprojectstorageregistry.sip
 %Include qgsprojectversion.sip
 %Include qgsproperty.sip
 %Include qgspropertycollection.sip

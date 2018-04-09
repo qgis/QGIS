@@ -29,6 +29,8 @@
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
 #include "qgspathresolver.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
@@ -460,6 +462,50 @@ QFileInfo QgsProject::fileInfo() const
   return QFileInfo( mFile );
 }
 
+QgsProjectStorage *QgsProject::projectStorage() const
+{
+  return QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+}
+
+QDateTime QgsProject::lastModified() const
+{
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
+    return metadata.lastModified;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).lastModified();
+  }
+}
+
+QString QgsProject::absoluteFilePath() const
+{
+  if ( projectStorage() )
+    return QString();
+
+  if ( mFile.fileName().isEmpty() )
+    return QString();  // this is to protect ourselves from getting current directory from QFileInfo::absoluteFilePath()
+
+  return QFileInfo( mFile.fileName() ).absoluteFilePath();
+}
+
+QString QgsProject::baseName() const
+{
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
+    return metadata.name;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).baseName();
+  }
+}
+
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
   return mCrs;
@@ -821,6 +867,25 @@ bool QgsProject::read()
 {
   QString filename = mFile.fileName();
   bool rc;
+
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QTemporaryFile inDevice;
+    if ( !inDevice.open() )
+    {
+      setError( tr( "Unable to open %1" ).arg( inDevice.fileName() ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !storage->readProject( filename, &inDevice, context ) )
+    {
+      setError( tr( "Unable to open %1" ).arg( filename ) );
+      return false;
+    }
+
+    return unzip( inDevice.fileName() );  // calls setError() if returning false
+  }
 
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
@@ -1374,6 +1439,38 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    // for projects stored in a custom storage, we cannot use relative paths since the storage most likely
+    // will not be in a file system
+    writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+
+    QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+    QString tmpZipFilename( tempPath + QDir::separator() + QUuid::createUuid().toString() );
+
+    if ( !zip( tmpZipFilename ) )
+      return false;  // zip() already calls setError() when returning false
+
+    QFile tmpZipFile( tmpZipFilename );
+    if ( !tmpZipFile.open( QIODevice::ReadOnly ) )
+    {
+      setError( tr( "Unable to read file %1" ).arg( tmpZipFilename ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
+    {
+      setError( tr( "Unable to save project to storage %1" ).arg( mFile.fileName() ) );
+      return false;
+    }
+
+    tmpZipFile.close();
+    QFile::remove( tmpZipFilename );
+
+    return true;
+  }
+
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
     return zip( mFile.fileName() );

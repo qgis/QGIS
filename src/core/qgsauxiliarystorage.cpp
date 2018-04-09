@@ -503,12 +503,9 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
 {
   initTmpFileName();
 
-  if ( !project.fileInfo().fileName().isEmpty() )
+  if ( !project.absoluteFilePath().isEmpty() )
   {
-    const QFileInfo info = project.fileInfo();
-    const QString path = info.path() + QDir::separator() + info.baseName();
-    const QString asFileName = path + "." + QgsAuxiliaryStorage::extension();
-    mFileName = asFileName;
+    mFileName = filenameForProject( project );
   }
 
   open( mFileName );
@@ -776,7 +773,7 @@ spatialite_database_unique_ptr QgsAuxiliaryStorage::open( const QgsProject &proj
 
 QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 {
-  const QFileInfo info = project.fileInfo();
+  const QFileInfo info( project.absoluteFilePath() );
   const QString path = info.path() + QDir::separator() + info.baseName();
   return path + '.' + QgsAuxiliaryStorage::extension();
 }

@@ -250,6 +250,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgspythonrunner.h"
 #include "qgsquerybuilder.h"
@@ -466,8 +468,7 @@ static void setTitleBarText_( QWidget &qgisApp )
     }
     else
     {
-      QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption = projectFileInfo.completeBaseName();
+      caption = QgsProject::instance()->baseName();
     }
   }
   else
@@ -1292,6 +1293,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   setupDuplicateFeaturesAction();
 
+  // support for project storage
+  connect( mProjectFromStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectFromStorageMenu, false ); } );
+  connect( mProjectToStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectToStorageMenu, true ); } );
+
   QList<QAction *> actions = mPanelMenu->actions();
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
@@ -1676,6 +1681,10 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
           break;
         }
       }
+    }
+    else if ( u.layerType == QStringLiteral( "project" ) )
+    {
+      openFile( u.uri, QStringLiteral( "project" ) );
     }
   }
 }
@@ -3954,19 +3963,20 @@ void QgisApp::updateRecentProjectPaths()
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( bool savePreviewImage )
 {
   // first, re-read the recent project paths. This prevents loss of recent
   // projects when multiple QGIS sessions are open
   readRecentProjects();
 
   // Get canonical absolute path
-  QFileInfo myFileInfo( projectPath );
   QgsWelcomePageItemsModel::RecentProjectData projectData;
-  projectData.path = myFileInfo.absoluteFilePath();
+  projectData.path = QgsProject::instance()->absoluteFilePath();
+  if ( projectData.path.isEmpty() )  // in case of custom project storage
+    projectData.path = QgsProject::instance()->fileName();
   projectData.title = QgsProject::instance()->title();
   if ( projectData.title.isEmpty() )
-    projectData.title = projectData.path;
+    projectData.title = QgsProject::instance()->baseName();
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
@@ -5526,7 +5536,7 @@ void QgisApp::fileRevert()
     return;
 
   // re-open the current project
-  addProject( QgsProject::instance()->fileInfo().filePath() );
+  addProject( QgsProject::instance()->fileName() );
 }
 
 void QgisApp::enableProjectMacros()
@@ -5581,7 +5591,7 @@ bool QgisApp::addProject( const QString &projectFile )
       // We loaded data from the backup file, but we pretend to work on the original project file.
       QgsProject::instance()->setFileName( projectFile );
       QgsProject::instance()->setDirty( true );
-      mProjectLastModified = pfi.lastModified();
+      mProjectLastModified = QgsProject::instance()->lastModified();
       return true;
     }
 
@@ -5590,7 +5600,7 @@ bool QgisApp::addProject( const QString &projectFile )
     return false;
   }
 
-  mProjectLastModified = pfi.lastModified();
+  mProjectLastModified = QgsProject::instance()->lastModified();
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
@@ -5671,7 +5681,7 @@ bool QgisApp::addProject( const QString &projectFile )
   // specific plug-in state
 
   // add this to the list of recently used project files
-  saveRecentProjectPath( projectFile, false );
+  saveRecentProjectPath( false );
 
   QApplication::restoreOverrideCursor();
 
@@ -5691,7 +5701,6 @@ bool QgisApp::fileSave()
 {
   // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
-  QFileInfo fullPath;
 
   if ( QgsProject::instance()->fileName().isNull() )
   {
@@ -5710,6 +5719,7 @@ bool QgisApp::fileSave()
     if ( path.isEmpty() )
       return false;
 
+    QFileInfo fullPath;
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
@@ -5728,9 +5738,10 @@ bool QgisApp::fileSave()
   }
   else
   {
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    fullPath = fi.absoluteFilePath();
-    if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
+    bool usingProjectStorage = QgsProject::instance()->projectStorage();
+    bool fileExists = usingProjectStorage ? true : QFileInfo( QgsProject::instance()->fileName() ).exists();
+
+    if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )
     {
       if ( QMessageBox::warning( this,
                                  tr( "Open a Project" ),
@@ -5738,12 +5749,12 @@ bool QgisApp::fileSave()
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
                                  .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
-                                       fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                       QgsProject::instance()->lastModified().toString( Qt::DefaultLocaleLongDate ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
 
-    if ( fi.exists() && ! fi.isWritable() )
+    if ( fileExists && !usingProjectStorage && ! QFileInfo( QgsProject::instance()->fileName() ).isWritable() )
     {
       messageBar()->pushMessage( tr( "Insufficient permissions" ),
                                  tr( "The project file is not writable." ),
@@ -5757,10 +5768,9 @@ bool QgisApp::fileSave()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
 
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    mProjectLastModified = fi.lastModified();
+    mProjectLastModified = QgsProject::instance()->lastModified();
   }
   else
   {
@@ -5817,7 +5827,7 @@ void QgisApp::fileSaveAs()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
     mProjectLastModified = fullPath.lastModified();
   }
   else
@@ -6043,11 +6053,11 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
 
 // Open a file specified by a commandline argument, Drop or FileOpen event.
-void QgisApp::openFile( const QString &fileName )
+void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
 {
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
-  if ( fi.suffix() == QLatin1String( "qgs" ) || fi.suffix() == QLatin1String( "qgz" ) )
+  if ( fileTypeHint == QStringLiteral( "project" ) || fi.suffix() == QLatin1String( "qgs" ) || fi.suffix() == QLatin1String( "qgz" ) )
   {
     QgsDebugMsg( "Opening project " + fileName );
     openProject( fileName );
@@ -13549,3 +13559,52 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   return QgsFeature();
 }
 
+
+void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
+{
+  menu->clear();
+  const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
+  for ( QgsProjectStorage *storage : storages )
+  {
+    QString name = storage->visibleName();
+    if ( name.isEmpty() )
+      continue;
+    QAction *action = menu->addAction( name );
+    if ( saving )
+    {
+      connect( action, &QAction::triggered, [this, storage]
+      {
+        QString uri = storage->showSaveGui();
+        if ( !uri.isEmpty() )
+        {
+          QgsProject::instance()->setFileName( uri );
+          if ( QgsProject::instance()->write() )
+          {
+            setTitleBarText_( *this ); // update title bar
+            mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
+            // add this to the list of recently used project files
+            saveRecentProjectPath();
+            mProjectLastModified = QgsProject::instance()->lastModified();
+          }
+          else
+          {
+            QMessageBox::critical( this,
+                                   tr( "Unable to save project %1" ).arg( uri ),
+                                   QgsProject::instance()->error(),
+                                   QMessageBox::Ok,
+                                   Qt::NoButton );
+          }
+        }
+      } );
+    }
+    else
+    {
+      connect( action, &QAction::triggered, [this, storage]
+      {
+        QString uri = storage->showLoadGui();
+        if ( !uri.isEmpty() )
+          addProject( uri );
+      } );
+    }
+  }
+}

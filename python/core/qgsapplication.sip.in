@@ -737,6 +737,13 @@ Returns registry of available 3D renderers.
 .. versionadded:: 3.0
 %End
 
+    static QgsProjectStorageRegistry *projectStorageRegistry();
+%Docstring
+Returns registry of available project storage implementations.
+
+.. versionadded:: 3.2
+%End
+
     static QString nullRepresentation();
 %Docstring
 This string is used to represent the value `NULL` throughout QGIS.

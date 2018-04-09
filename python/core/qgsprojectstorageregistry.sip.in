@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorageregistry.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProjectStorageRegistry
+{
+%Docstring
+Registry of storage backends that QgsProject may use.
+This is a singleton that should be accessed through :py:func:`QgsApplication.projectStorageRegistry()`
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorageregistry.h"
+%End
+  public:
+    ~QgsProjectStorageRegistry();
+
+    QgsProjectStorage *projectStorageFromType( const QString &type );
+%Docstring
+Returns storage implementation if the storage type matches one. Returns null pointer otherwise (it is a normal file)
+%End
+
+    QgsProjectStorage *projectStorageFromUri( const QString &uri );
+%Docstring
+Returns storage implementation if the URI matches one. Returns null pointer otherwise (it is a normal file)
+%End
+
+    QList<QgsProjectStorage *> projectStorages() const;
+%Docstring
+Returns a list of registered project storage implementations
+%End
+
+    void registerProjectStorage( QgsProjectStorage *storage /Transfer/ );
+%Docstring
+Registers a storage backend and takes ownership of it
+%End
+
+    void unregisterProjectStorage( QgsProjectStorage *storage );
+%Docstring
+Unregisters a storage backend and destroys its instance
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorageregistry.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+
+#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectstorageregistry.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -211,7 +214,12 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
   // This check can be slow for network based projects, so only run it the first time
   if ( !projectData.checkedExists )
   {
-    projectData.exists = QFile::exists( ( projectData.path ) );
+    if ( QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path ) )
+      // we could check whether a project exists in a custom project storage by checking its metadata,
+      // but that may be slow (e.g. doing some network queries) so for now we always assume such projects exist
+      projectData.exists = true;
+    else
+      projectData.exists = QFile::exists( ( projectData.path ) );
     projectData.checkedExists = true;
   }
 

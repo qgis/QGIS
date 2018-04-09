@@ -1092,6 +1092,15 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const 
   setState( Populated ); // no more children
 }
 
+QgsMimeDataUtils::Uri QgsProjectItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "project" );
+  u.name = mName;
+  u.uri = mPath;
+  return u;
+}
+
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )
   : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {

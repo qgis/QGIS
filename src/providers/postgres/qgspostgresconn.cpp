@@ -1815,6 +1815,12 @@ bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
+bool QgsPostgresConn::allowProjectsInDatabase( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/projectsInDatabase", false ).toBool();
+}
+
 void QgsPostgresConn::deleteConnection( const QString &connName )
 {
   QgsSettings settings;

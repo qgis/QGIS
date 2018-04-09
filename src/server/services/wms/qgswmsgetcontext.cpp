@@ -99,7 +99,7 @@ namespace QgsWms
                                           QgsServerInterface *serverIface, const QgsProject *project,
                                           const QgsServerRequest &request )
     {
-      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->fileInfo().baseName() );
+      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
       // OWSContext General element
       QDomElement generalElem = doc.createElement( QStringLiteral( "General" ) );

@@ -97,13 +97,51 @@ representation.
 .. seealso:: :py:func:`fileInfo`
 %End
 
-    QFileInfo fileInfo() const;
+ QFileInfo fileInfo() const /Deprecated/;
 %Docstring
 Returns QFileInfo object for the project's associated file.
+
+.. note::
+
+   The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
+   in the file system. It is recommended to use absoluteFilePath(), baseName(), lastModifiedTime() as
+   replacements that are aware of the fact that projects may be saved in other project storages.
 
 .. seealso:: :py:func:`fileName`
 
 .. versionadded:: 2.9
+\deprecated
+%End
+
+    QgsProjectStorage *projectStorage() const;
+%Docstring
+Returns pointer to project storage implementation that handles read/write of the project file.
+If the project file is stored in the local file system, returns null pointer.
+The project storage object is inferred from fileName() of the project.
+
+.. versionadded:: 3.2
+%End
+
+    QDateTime lastModified() const;
+%Docstring
+Returns last modified time of the project file as returned by the file system (or other project storage).
+
+.. versionadded:: 3.2
+%End
+
+    QString absoluteFilePath() const;
+%Docstring
+Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+
+.. versionadded:: 3.2
+%End
+
+    QString baseName() const;
+%Docstring
+Returns the base name of the project file without the path and without extension - derived from fileName().
+
+.. versionadded:: 3.2
 %End
 
     QgsCoordinateReferenceSystem crs() const;

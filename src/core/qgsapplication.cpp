@@ -31,6 +31,7 @@
 #include "qgssvgcache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
@@ -1710,6 +1711,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
+{
+  return members()->mProjectStorageRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1733,6 +1739,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mLayoutItemRegistry->populate();
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
+  mProjectStorageRegistry = new QgsProjectStorageRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -1747,6 +1754,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
+  delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
   delete mLayoutItemRegistry;
   delete mProfiler;

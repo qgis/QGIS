@@ -155,6 +155,7 @@ SET(TESTS
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
  testqgsproject.cpp
+ testqgsprojectstorage.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
