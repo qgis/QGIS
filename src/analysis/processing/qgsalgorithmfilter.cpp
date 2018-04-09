@@ -88,7 +88,6 @@ void QgsFilterAlgorithm::initAlgorithm( const QVariantMap &configuration )
 
 QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( QObject::tr( "Could not open input layer or feature source for parameter INPUT." ) );
@@ -105,7 +104,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   long count = source->featureCount();
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
