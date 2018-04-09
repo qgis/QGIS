@@ -208,10 +208,10 @@ void QgsApplication::init( QString profileFolder )
   }
   else
   {
-    if ( ABISYM( mPrefixPath ).isNull() )
+    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    if ( !prefixPath )
     {
-      char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
-      if ( !prefixPath )
+      if ( ABISYM( mPrefixPath ).isNull() )
       {
 #if defined(Q_OS_MACX) || defined(Q_OS_WIN)
         setPrefixPath( applicationDirPath(), true );
