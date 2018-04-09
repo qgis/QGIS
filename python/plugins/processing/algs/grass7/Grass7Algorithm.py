@@ -637,6 +637,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         for out in self.destinationParameterDefinitions():
             outName = out.name()
+            if not outName in parameters:
+                # skipped output
+                continue
+
             if isinstance(out, QgsProcessingParameterRasterDestination):
                 self.exportRasterLayerFromParameter(outName, parameters, context)
             elif isinstance(out, QgsProcessingParameterVectorDestination):
@@ -688,8 +692,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param context: Algorithm context.
         :param colorTable: preserve color Table.
         """
-        fileName = os.path.normpath(
-            self.parameterAsOutputLayer(parameters, name, context))
+        fileName = self.parameterAsOutputLayer(parameters, name, context)
+        if not fileName:
+            return
+
+        fileName = os.path.normpath(fileName)
         grassName = '{}{}'.format(name, self.uniqueSuffix)
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         createOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_OPT, context)
