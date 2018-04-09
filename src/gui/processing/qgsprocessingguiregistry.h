@@ -62,9 +62,11 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     void removeAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory );
 
     /**
-     * @brief algorithmConfigurationWidget
-     * @param algorithm
-     * @return
+     * Get the configuration widget for an \a algorithm. This widget will be shown
+     * next to parameter widgets. Most algorithms do not have a configuration widget
+     * and in this case, nullptr will be returned.
+     *
+     * \since QGIS 3.2
      */
     QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
 

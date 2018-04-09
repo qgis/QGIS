@@ -50,9 +50,11 @@ widgets.
 
     QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
 %Docstring
- algorithmConfigurationWidget
-@param algorithm
-@return
+Get the configuration widget for an ``algorithm``. This widget will be shown
+next to parameter widgets. Most algorithms do not have a configuration widget
+and in this case, None will be returned.
+
+.. versionadded:: 3.2
 %End
 
 };
