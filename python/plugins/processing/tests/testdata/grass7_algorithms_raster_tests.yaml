@@ -556,7 +556,7 @@ tests:
         type: raster
       method: '0'
     results:
-      output:
+      routput:
         hash: 57def04673343492d83c9572979d752fd7f2d996a2b4bb4cd0a01982
         type: rasterhash
 
