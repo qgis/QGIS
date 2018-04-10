@@ -967,6 +967,9 @@ void QgsDxfExport::writeEntities()
   ctx.setScaleFactor( 96.0 / 25.4 );
   ctx.setMapToPixel( QgsMapToPixel( 1.0 / mFactor, mExtent.center().x(), mExtent.center().y(), mExtent.width() * mFactor, mExtent.height() * mFactor, 0 ) );
 
+  ctx.expressionContext().appendScope( QgsExpressionContextUtils::projectScope() );
+  ctx.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
+
   // label engine
   QgsLabelingEngineV2 engine;
   engine.readSettingsFromProject();
