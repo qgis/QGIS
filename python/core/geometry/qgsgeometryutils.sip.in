@@ -277,10 +277,14 @@ first 3D point amongst ``p1`` and ``p2``.
 .. seealso:: :py:func:`segmentMidPointFromCenter`
 %End
 
-    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center );
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
 %Docstring
 Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
 with the specified ``center`` coordinate.
+
+If ``useShortestArc`` is true, then the midpoint returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
+to ``p2`` will be used (i.e. winding the other way around the circle).
 
 .. versionadded:: 3.2
 
