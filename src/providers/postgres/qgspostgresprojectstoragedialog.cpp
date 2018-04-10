@@ -22,7 +22,8 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
 
   QPushButton *btnManageProjects = new QPushButton( tr( "Manage Projects" ), this );
   QMenu *menuManageProjects = new QMenu( btnManageProjects );
-  mActionRemoveProject = menuManageProjects->addAction( tr( "Remove Project" ), this, &QgsPostgresProjectStorageDialog::removeProject );
+  mActionRemoveProject = menuManageProjects->addAction( tr( "Remove Project" ) );
+  connect( mActionRemoveProject, &QAction::triggered, this, &QgsPostgresProjectStorageDialog::removeProject );
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
 
