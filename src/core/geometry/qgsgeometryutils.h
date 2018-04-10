@@ -288,10 +288,14 @@ class CORE_EXPORT QgsGeometryUtils
      * Calculates the midpoint on the circle passing through \a p1 and \a p2,
      * with the specified \a center coordinate.
      *
+     * If \a useShortestArc is true, then the midpoint returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * to \a p2 will be used (i.e. winding the other way around the circle).
+     *
      * \since QGIS 3.2
      * \see segmentMidPoint()
      */
-    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center );
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );

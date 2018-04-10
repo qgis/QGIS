@@ -220,6 +220,9 @@ void TestQgsGeometryUtils::testSegmentMidPointCenter()
   QgsPoint mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ) );
   QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
   QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ), false );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
   mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 9, 20 ), QgsPoint( 10, 20 ) );
   QGSCOMPARENEAR( mid.x(), 9.292893, 0.0001 );
   QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );

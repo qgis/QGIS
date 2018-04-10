@@ -740,10 +740,12 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   return true;
 }
 
-QgsPoint QgsGeometryUtils::segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center )
+QgsPoint QgsGeometryUtils::segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
 {
-  const double midPointAngle = averageAngle( lineAngle( center.x(), center.y(), p1.x(), p1.y() ),
-                               lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
+  double midPointAngle = averageAngle( lineAngle( center.x(), center.y(), p1.x(), p1.y() ),
+                                       lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
+  if ( !useShortestArc )
+    midPointAngle += M_PI;
   return center.project( center.distance( p1 ), midPointAngle * 180 / M_PI );
 }
 
