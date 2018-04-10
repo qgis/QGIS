@@ -401,6 +401,15 @@ class CORE_EXPORT QgsExpression
                                           const QgsDistanceArea *distanceArea = nullptr );
 
     /**
+     * This function returns variables in each expression between [% and %].
+     *
+     * \param text The source string in which variables should be searched.
+     *
+     * \since QGIS 3.2
+     */
+    static QSet<QString> referencedVariables( const QString &text );
+
+    /**
      * Attempts to evaluate a text string as an expression to a resultant double
      * value.
      * \param text text to evaluate as expression
