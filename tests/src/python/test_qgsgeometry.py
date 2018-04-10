@@ -36,7 +36,9 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWkbTypes,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsCoordinateReferenceSystem,
+    QgsProject
 )
 from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath
@@ -1196,33 +1198,89 @@ class TestQgsGeometry(unittest.TestCase):
 
         polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))")
         self.assertEqual(polygon.translate(1, 2), 0, "Translate failed")
-        expwkt = "MultiPolygon (((1 2, 2 2, 2 3, 3 3, 3 4, 1 4, 1 2)),((5 2, 6 2, 6 2, 4 4, 4 3, 5 3, 5 2)))"
+        expwkt = "MultiPolygon (((1 2, 2 2, 2 3, 3 3, 3 4, 1 4, 1 2)),((5 2, 6 2, 6 4, 4 4, 4 3, 5 3, 5 2)))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+    def testTransform(self):
+        # null transform
         ct = QgsCoordinateTransform()
 
         point = QgsGeometry.fromWkt("Point (1 1)")
-        self.assertEqual(point.transform(ct), 0, "Translate failed")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
         expwkt = "Point (1 1)"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         point = QgsGeometry.fromWkt("MultiPoint ((1 1),(2 2),(3 3))")
-        self.assertEqual(point.transform(ct), 0, "Translate failed")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
         expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         linestring = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
-        self.assertEqual(linestring.transform(ct), 0, "Translate failed")
+        self.assertEqual(linestring.transform(ct), 0, "Transform failed")
         expwkt = "LineString (1 0, 2 0)"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polygon = QgsGeometry.fromWkt("MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))")
-        self.assertEqual(polygon.transform(ct), 0, "Translate failed")
+        self.assertEqual(polygon.transform(ct), 0, "Transform failed")
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # valid transform
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), QgsProject.instance())
+
+        point = QgsGeometry.fromWkt("Point (1 1)")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
+        expwkt = "Point (111319 111325)"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        point = QgsGeometry.fromWkt("MultiPoint ((1 1),(2 2),(3 3))")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
+        expwkt = "MultiPoint ((111319 111325),(222638 222684),(333958 334111))"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        linestring = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
+        self.assertEqual(linestring.transform(ct), 0, "Transform failed")
+        expwkt = "LineString (111319 0, 222638 0)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        polygon = QgsGeometry.fromWkt("MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))")
+        self.assertEqual(polygon.transform(ct), 0, "Transform failed")
+        expwkt = "MultiPolygon (((0 0, 111319 0, 111319 111325, 222638 111325, 222638 222684, 0 222684, 0 0)),((445277 0, 556597 0, 556597 222684, 333958 222684, 333958 111325, 445277 111325, 445277 0)))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # reverse transform
+        point = QgsGeometry.fromWkt("Point (111319 111325)")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "Point (1 1)"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        point = QgsGeometry.fromWkt("MultiPoint ((111319 111325),(222638 222684),(333958 334111))")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        linestring = QgsGeometry.fromWkt("LineString (111319 0, 222638 0)")
+        self.assertEqual(linestring.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "LineString (1 0, 2 0)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 111319 0, 111319 111325, 222638 111325, 222638 222684, 0 222684, 0 0)),((445277 0, 556597 0, 556597 222684, 333958 222684, 333958 111325, 445277 111325, 445277 0)))")
+        self.assertEqual(polygon.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
     def testExtrude(self):
         # test with empty geometry
