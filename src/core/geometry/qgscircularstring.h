@@ -34,7 +34,31 @@
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
   public:
+
+    /**
+     * Constructs an empty circular string.
+     */
     QgsCircularString();
+
+    /**
+     * Constructs a circular string with a single
+     * arc passing through \a p1, \a p2 and \a p3.
+     *
+     * \since QGIS 3.2
+     */
+    QgsCircularString( const QgsPoint &p1,
+                       const QgsPoint &p2,
+                       const QgsPoint &p3 );
+
+    /**
+     * Creates a circular string with a single arc representing
+     * the curve from \a p1 to \a p2 with the specified \a center.
+     *
+     * \since QGIS 3.2
+     */
+    static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
+        const QgsPoint &p2,
+        const QgsPoint &center );
 
     bool equals( const QgsCurve &other ) const override;
 
