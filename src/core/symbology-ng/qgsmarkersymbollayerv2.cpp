@@ -1311,7 +1311,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  outlineWidth *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits() );
+  outlineWidth *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 
   //color
   QColor pc = mPen.color();
