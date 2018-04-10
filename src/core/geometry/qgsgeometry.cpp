@@ -2337,7 +2337,7 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
 {
   if ( !d->geometry )
   {
@@ -2345,7 +2345,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
   }
 
   detach();
-  d->geometry->transform( ct );
+  d->geometry->transform( ct, direction, transformZ );
   return QgsGeometry::Success;
 }
 

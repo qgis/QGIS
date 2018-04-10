@@ -659,10 +659,22 @@ class CORE_EXPORT QgsGeometry
     OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
-     * Transforms this geometry as described by CoordinateTransform ct
+     * Transforms this geometry as described by the coordinate transform \a ct.
+     *
+     * The transformation defaults to a forward transform, but the direction can be swapped
+     * by setting the \a direction argument.
+     *
+     * By default, z-coordinates are not transformed, even if the coordinate transform
+     * includes a vertical datum transformation. To transform z-coordinates, set
+     * \a transformZ to true. This requires that the z coordinates in the geometry represent
+     * height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
+     * and are expressed in its vertical units (generally meters).
+     *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct,
+                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
+                               bool transformZ = false );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
