@@ -148,7 +148,7 @@ void QgsFilterAlgorithmConfigurationWidget::addOutput()
   mOutputExpressionWidget->setCellWidget( rowIndex, 2, new QCheckBox() );
 }
 
-QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidgetFactory::create( QgsProcessingAlgorithm *algorithm ) const
+QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidgetFactory::create( const QgsProcessingAlgorithm *algorithm ) const
 {
   if ( algorithm->name() == QStringLiteral( "filter" ) )
     return new QgsFilterAlgorithmConfigurationWidget();
@@ -156,7 +156,7 @@ QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidget
     return nullptr;
 }
 
-bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( QgsProcessingAlgorithm *algorithm ) const
+bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
 {
   if ( algorithm->name() == QStringLiteral( "filter" ) )
     return true;

@@ -68,7 +68,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.2
      */
-    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
+    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( const QgsProcessingAlgorithm *algorithm ) const;
 
   private:
 

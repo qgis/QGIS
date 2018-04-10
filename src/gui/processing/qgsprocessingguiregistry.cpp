@@ -42,7 +42,7 @@ void QgsProcessingGuiRegistry::removeAlgorithmConfigurationWidgetFactory( QgsPro
   delete factory;
 }
 
-QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const
+QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmConfigurationWidget( const QgsProcessingAlgorithm *algorithm ) const
 {
   for ( const auto *factory : mAlgorithmConfigurationWidgetFactories )
   {

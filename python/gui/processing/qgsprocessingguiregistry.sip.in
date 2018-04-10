@@ -48,7 +48,7 @@ widgets.
 .. versionadded:: 3.2
 %End
 
-    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( QgsProcessingAlgorithm *algorithm ) const;
+    QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( const QgsProcessingAlgorithm *algorithm ) const;
 %Docstring
 Get the configuration widget for an ``algorithm``. This widget will be shown
 next to parameter widgets. Most algorithms do not have a configuration widget

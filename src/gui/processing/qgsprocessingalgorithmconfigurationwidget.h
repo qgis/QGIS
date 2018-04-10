@@ -73,12 +73,12 @@ class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidgetFactory
     /**
      * Create a new configuration widget for \a algorithm.
      */
-    virtual QgsProcessingAlgorithmConfigurationWidget *create( QgsProcessingAlgorithm *algorithm ) const = 0 SIP_FACTORY;
+    virtual QgsProcessingAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const = 0 SIP_FACTORY;
 
     /**
      * Check if this factory can create widgets for \a algorithm.
      */
-    virtual bool canCreateFor( QgsProcessingAlgorithm *algorithm ) const = 0;
+    virtual bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const = 0;
 };
 
 

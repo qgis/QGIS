@@ -58,12 +58,12 @@ Interface base class for factories for algorithm configuration widgets.
   public:
     virtual ~QgsProcessingAlgorithmConfigurationWidgetFactory();
 
-    virtual QgsProcessingAlgorithmConfigurationWidget *create( QgsProcessingAlgorithm *algorithm ) const = 0 /Factory/;
+    virtual QgsProcessingAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const = 0 /Factory/;
 %Docstring
 Create a new configuration widget for ``algorithm``.
 %End
 
-    virtual bool canCreateFor( QgsProcessingAlgorithm *algorithm ) const = 0;
+    virtual bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const = 0;
 %Docstring
 Check if this factory can create widgets for ``algorithm``.
 %End
