@@ -114,7 +114,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     QgsRectangle bbox = f.geometry().boundingBox();
     request = QgsFeatureRequest().setFilterRect( bbox );
     if ( onlyRequireTargetIds )
-      request.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() );
+      request.setSubsetOfAttributes( QgsAttributeList() );
 
     QgsFeatureIterator testFeatureIt = targetSource->getFeatures( request );
     QgsFeature testFeature;
