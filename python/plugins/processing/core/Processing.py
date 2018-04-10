@@ -116,7 +116,7 @@ class Processing(object):
             alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
         if feedback is None:
-            feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
+            feedback = QgsProcessingFeedback()
 
         if alg is None:
             # fix_print_with_import
