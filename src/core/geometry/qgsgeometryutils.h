@@ -277,11 +277,21 @@ class CORE_EXPORT QgsGeometryUtils
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
     /**
-     * Calculates midpoint on circle passing through p1 and p2, closest to
-     * given coordinate. Z dimension is supported and is retrieved from the
+     * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
+     * the given coordinate \a mousePos. Z dimension is supported and is retrieved from the
      * first 3D point amongst \a p1 and \a p2.
+     * \see segmentMidPointFromCenter()
      */
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
+
+    /**
+     * Calculates the midpoint on the circle passing through \a p1 and \a p2,
+     * with the specified \a center coordinate.
+     *
+     * \since QGIS 3.2
+     * \see segmentMidPoint()
+     */
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -386,7 +396,10 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
 
-    //! Angle between two linear segments
+    /**
+     * Calculates the average angle (in radians) between the two linear segments from
+     * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
+     */
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 
     /**
