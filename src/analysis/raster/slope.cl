@@ -1,7 +1,7 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float x32, float x13, float x23, float x33,
-                       float mInputNodataValue, float mOutputNodataValue, double mZFactor, double mCellSize )
+                       double mInputNodataValue, double mOutputNodataValue, double mZFactor, double mCellSize )
 {
  //the basic formula would be simple, but we need to test for nodata values...
  //X: return (( (x31 - x11) + 2 * (x32 - x12) + (x33 - x13) ) / (8 * mCellSizeX));
@@ -72,14 +72,10 @@ float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float
 
 
 __kernel void processNineCellWindow( __global float *scanLine1,
-                                   __global float *scanLine2,
-                                   __global float *scanLine3,
-                                   __global float *resultLine,
-                                   __global float *mInputNodataValue,
-                                   __global float *mOutputNodataValue,
-                                   __global double *mZFactor,
-                                   __global double *mCellSizeX,
-                                   __global double *mCellSizeY
+                                     __global float *scanLine2,
+                                     __global float *scanLine3,
+                                     __global float *resultLine,
+                                     __global double *rasterParams
                        ) {
 
   // Get the index of the current element
@@ -90,17 +86,19 @@ __kernel void processNineCellWindow( __global float *scanLine1,
   float derX = calcFirstDer(   scanLine1[i],   scanLine2[i],   scanLine3[i],
                                scanLine1[i+1], scanLine2[i+1], scanLine3[i+1],
                                scanLine1[i+2], scanLine2[i+2], scanLine3[i+2],
-                               *mInputNodataValue, *mOutputNodataValue, *mZFactor, *mCellSizeX
+                               rasterParams[0], rasterParams[1], rasterParams[2], rasterParams[3]
                              );
   //return (((x11 - x13) + 2 * (x21 - x23) + (x31 - x33)) / ( 8 * mCellSizeY));
   float derY = calcFirstDer(   scanLine1[i+2], scanLine1[i+1], scanLine1[i],
                                scanLine2[i+2], scanLine2[i+1], scanLine2[i],
                                scanLine3[i+2], scanLine3[i+1], scanLine3[i],
-                               *mInputNodataValue, *mOutputNodataValue, *mZFactor, *mCellSizeY
+                               rasterParams[0], rasterParams[1], rasterParams[2], rasterParams[4]
                              );
-  if ( derX == *mOutputNodataValue || derY == *mOutputNodataValue )
+
+
+  if ( derX == rasterParams[1] || derY == rasterParams[1] )
   {
-    resultLine[i] = *mOutputNodataValue;
+    resultLine[i] = rasterParams[1];
   }
   else
   {
