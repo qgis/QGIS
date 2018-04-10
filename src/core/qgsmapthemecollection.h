@@ -65,7 +65,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         {
           return mLayer == other.mLayer &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
-                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems;
+                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
+                 expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
@@ -86,6 +87,19 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         bool usingLegendItems = false;
         //! Rule keys of check legend items in layer tree model
         QSet<QString> checkedLegendItems;
+
+        /**
+         * Rule keys of expanded legend items in layer tree view.
+         * \since QGIS 3.2
+         */
+        QSet<QString> expandedLegendItems;
+
+        /**
+         * Whether the layer's tree node is expanded
+         * (only to be applied if the parent MapThemeRecord has the information about expanded nodes stored)
+         * \since QGIS 3.2
+         */
+        bool expandedLayerNode = false;
       private:
         //! Weak pointer to the layer
         QgsWeakMapLayerPointer mLayer;
@@ -103,7 +117,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
-          return validLayerRecords() == other.validLayerRecords();
+          return validLayerRecords() == other.validLayerRecords() &&
+                 mHasExpandedStateInfo == other.mHasExpandedStateInfo && mExpandedGroupNodes == other.mExpandedGroupNodes;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
@@ -128,9 +143,46 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
+        /**
+         * Returns whether information about expanded/collapsed state of nodes has been recorded
+         * and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNode from layer records are valid.
+         * \since QGIS 3.2
+         */
+        bool hasExpandedStateInfo() const { return mHasExpandedStateInfo; }
+
+        /**
+         * Sets whether the map theme contains valid expanded/collapsed state of nodes
+         * \since QGIS 3.2
+         */
+        void setHasExpandedStateInfo( bool hasInfo ) { mHasExpandedStateInfo = hasInfo; }
+
+        /**
+         * Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
+         * The returned value is valid only when hasExpandedStateInfo() returns true.
+         * Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+         * and a forward slash, e.g. "level1/level2"
+         * \since QGIS 3.2
+         */
+        QSet<QString> expandedGroupNodes() const { return mExpandedGroupNodes; }
+
+        /**
+         * Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
+         * \since QGIS 3.2
+         */
+        void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes ) { mExpandedGroupNodes = expandedGroupNodes; }
+
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.
         QList<MapThemeLayerRecord> mLayerRecords;
+
+        //! Whether the information about expanded/collapsed state of groups, layers and legend items has been stored
+        bool mHasExpandedStateInfo = false;
+
+        /**
+         * Which groups should be expanded. Each group is identified by its name (sub-groups IDs are prepended with parent
+         * group and forward slash - e.g. "level1/level2/level3").
+         */
+        QSet<QString> mExpandedGroupNodes;
 
         friend class QgsMapThemeCollection;
     };

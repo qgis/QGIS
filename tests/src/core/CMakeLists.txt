@@ -141,6 +141,7 @@ SET(TESTS
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
