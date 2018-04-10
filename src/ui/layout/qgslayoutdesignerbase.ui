@@ -1152,7 +1152,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionVertexTool.svg</normaloff>:/images/themes/default/mActionVertexTool.svg</iconset>
+     <normaloff>:/images/themes/default/mActionEditNodesItem.svg</normaloff>:/images/themes/default/mActionEditNodesItem.svg</iconset>
    </property>
    <property name="text">
     <string>Edit Nodes Item</string>
