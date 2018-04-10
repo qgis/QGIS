@@ -36,6 +36,7 @@ class TestQgsGeometryUtils: public QObject
     void testLeftOfLine();
     void testSegmentMidPoint_data();
     void testSegmentMidPoint();
+    void testSegmentMidPointCenter();
     void testCircleLength_data();
     void testCircleLength();
     void testNormalizedAngle_data();
@@ -212,6 +213,30 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * DBL_EPSILON );
+}
+
+void TestQgsGeometryUtils::testSegmentMidPointCenter()
+{
+  QgsPoint mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 9, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 9.292893, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 19 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 11.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 21 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21, 3, 4 ), QgsPoint( 11, 20, 5, 6 ), QgsPoint( 10, 20, 7, 8 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QCOMPARE( mid.z(), 7.0 );
+  QCOMPARE( mid.m(), 8.0 );
 }
 
 void TestQgsGeometryUtils::testCircleLength_data()

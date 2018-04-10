@@ -270,9 +270,21 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
 
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos );
 %Docstring
-Calculates midpoint on circle passing through p1 and p2, closest to
-given coordinate. Z dimension is supported and is retrieved from the
+Calculates midpoint on circle passing through ``p1`` and ``p2``, closest to
+the given coordinate ``mousePos``. Z dimension is supported and is retrieved from the
 first 3D point amongst ``p1`` and ``p2``.
+
+.. seealso:: :py:func:`segmentMidPointFromCenter`
+%End
+
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center );
+%Docstring
+Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
+with the specified ``center`` coordinate.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`segmentMidPoint`
 %End
 
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -363,7 +375,8 @@ clockwise from the north direction.
 
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 %Docstring
-Angle between two linear segments
+Calculates the average angle (in radians) between the two linear segments from
+(``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
 %End
 
     static double averageAngle( double a1, double a2 );
