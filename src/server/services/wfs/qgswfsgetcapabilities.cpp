@@ -421,6 +421,10 @@ namespace QgsWfs
     for ( const QString &wfsLayerId : wfsLayerIds )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerId );
+      if ( !layer )
+      {
+        continue;
+      }
       if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
       {
         continue;
