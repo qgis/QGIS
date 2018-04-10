@@ -258,6 +258,39 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
   return collected;
 }
 
+QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
+{
+  std::unique_ptr< QgsCompoundCurve > wedge = qgis::make_unique< QgsCompoundCurve >();
+
+  const double startAngle = azimuth - angularWidth * 0.5;
+  const double endAngle = azimuth + angularWidth * 0.5;
+
+  const QgsPoint outerP1 = center.project( outerRadius, startAngle );
+  const QgsPoint outerP2 = center.project( outerRadius, endAngle );
+
+  const bool useShortestArc = angularWidth <= 180.0;
+
+  wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center, useShortestArc ) ) );
+
+  if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
+  {
+    const QgsPoint innerP1 = center.project( innerRadius, startAngle );
+    const QgsPoint innerP2 = center.project( innerRadius, endAngle );
+    wedge->addCurve( new QgsLineString( outerP2, innerP2 ) );
+    wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP2, innerP1, center, useShortestArc ) ) );
+    wedge->addCurve( new QgsLineString( innerP1, outerP1 ) );
+  }
+  else
+  {
+    wedge->addCurve( new QgsLineString( outerP2, center ) );
+    wedge->addCurve( new QgsLineString( center, outerP1 ) );
+  }
+
+  std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
+  cp->setExteriorRing( wedge.release() );
+  return QgsGeometry( std::move( cp ) );
+}
+
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   QgsConstWkbPtr ptr( wkb, length );
