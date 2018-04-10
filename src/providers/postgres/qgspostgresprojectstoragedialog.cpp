@@ -104,7 +104,7 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
     return;
   }
 
-  for ( const QgsPostgresSchemaProperty &schema : qAsConst( schemas ) )
+  for ( const QgsPostgresSchemaProperty &schema : qgis::as_const( schemas ) )
   {
     mCboSchema->addItem( schema.name );
   }
@@ -117,7 +117,7 @@ void QgsPostgresProjectStorageDialog::populateProjects()
   mCboProject->clear();
 
   QString uri = currentProjectUri();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
   Q_ASSERT( storage );
   mCboProject->addItems( storage->listProjects( uri ) );
   projectChanged();
@@ -157,7 +157,7 @@ void QgsPostgresProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();
