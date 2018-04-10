@@ -124,6 +124,31 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
   }
 }
 
+QgsLineString::QgsLineString( const QgsPoint &p1, const QgsPoint &p2 )
+{
+  mWkbType = QgsWkbTypes::LineString;
+  mX.resize( 2 );
+  mX[ 0 ] = p1.x();
+  mX[ 1 ] = p2.x();
+  mY.resize( 2 );
+  mY[ 0 ] = p1.y();
+  mY[ 1 ] = p2.y();
+  if ( p1.is3D() )
+  {
+    mWkbType = QgsWkbTypes::addZ( mWkbType );
+    mZ.resize( 2 );
+    mZ[ 0 ] = p1.z();
+    mZ[ 1 ] = p2.z();
+  }
+  if ( p1.isMeasure() )
+  {
+    mWkbType = QgsWkbTypes::addM( mWkbType );
+    mM.resize( 2 );
+    mM[ 0 ] = p1.m();
+    mM[ 1 ] = p2.m();
+  }
+}
+
 QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 {
   mWkbType = QgsWkbTypes::LineString;

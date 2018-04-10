@@ -64,6 +64,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
                    const QVector<double> &m = QVector<double>() );
 
     /**
+     * Constructs a linestring with a single segment from \a p1 to \a p2.
+     * \since QGIS 3.2
+     */
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+
+    /**
      * Construct a linestring from list of points.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()

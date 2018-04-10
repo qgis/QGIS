@@ -2696,6 +2696,44 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromVector3D.yAt( 1 ), 40.0 );
   QCOMPARE( fromVector3D.zAt( 1 ), 200.0 );
 
+  // from 2 points
+  QgsLineString from2Pts( QgsPoint( 1, 2 ), QgsPoint( 21, 22 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ), QgsPoint( QgsWkbTypes::PointZ, 21, 22, 23 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.zAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.zAt( 1 ), 23.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ), QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 23 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.mAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.mAt( 1 ), 23.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 23, 24 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringZM );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.zAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.mAt( 0 ), 4.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.zAt( 1 ), 23.0 );
+  QCOMPARE( from2Pts.mAt( 1 ), 24.0 );
+
   //addVertex
   QgsLineString l2;
   l2.addVertex( QgsPoint( 1.0, 2.0 ) );
