@@ -2469,16 +2469,25 @@ void TestQgsProcessing::parameterPoint()
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(1.1,2)" ) );
   QVERIFY( def->checkValueIsAcceptable( "    1.1,  2  " ) );
+  QVERIFY( def->checkValueIsAcceptable( " (    1.1,  2 ) " ) );
   QVERIFY( def->checkValueIsAcceptable( "-1.1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,-2" ) );
   QVERIFY( def->checkValueIsAcceptable( "-1.1,-2" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(-1.1,-2)" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2[EPSG:4326]" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2 [EPSG:4326]" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(1.1,2 [EPSG:4326] )" ) );
   QVERIFY( def->checkValueIsAcceptable( "  -1.1,   -2   [EPSG:4326]    " ) );
+  QVERIFY( def->checkValueIsAcceptable( "  (  -1.1,   -2   [EPSG:4326]  )  " ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1,a" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "(1.1,a)" ) );
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "(layer12312312)" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "()" ) );
+  QVERIFY( !def->checkValueIsAcceptable( " (  ) " ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsPointXY( 1, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
@@ -2496,6 +2505,17 @@ void TestQgsProcessing::parameterPoint()
   QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
   QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
 
+  // with optional brackets
+  params.insert( "non_optional", QString( "(1.1,2.2)" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+
+  params.insert( "non_optional", QString( "  (   -1.1  ,-2.2  )  " ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), -1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), -2.2, 0.001 );
+
   // with CRS as string
   params.insert( "non_optional", QString( "1.1,2.2[EPSG:4326]" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsPointCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
@@ -2508,8 +2528,19 @@ void TestQgsProcessing::parameterPoint()
   QGSCOMPARENEAR( point.x(), 122451, 100 );
   QGSCOMPARENEAR( point.y(), 244963, 100 );
 
+  params.insert( "non_optional", QString( "  ( 1.1,2.2   [EPSG:4326]   ) " ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsPointCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
   // nonsense string
   params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QCOMPARE( point.x(), 0.0 );
+  QCOMPARE( point.y(), 0.0 );
+
+  params.insert( "non_optional", QString( "   (   )  " ) );
   point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
   QCOMPARE( point.x(), 0.0 );
   QCOMPARE( point.y(), 0.0 );
