@@ -52,6 +52,8 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
     return lst;
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  if ( !conn )
+    return lst;
 
   if ( _projectsTableExists( *conn, projectUri.schemaName ) )
   {
@@ -79,15 +81,20 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
   QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( "Invalid URI for PostgreSQL provider: " + uri, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::Critical );
     return false;
   }
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  if ( !conn )
+  {
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::Critical );
+    return false;
+  }
 
   if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
   {
-    context.pushMessage( "Table qgis_projects does not exist or it is not accessible.", Qgis::Critical );
+    context.pushMessage( QObject::tr( "Table qgis_projects does not exist or it is not accessible." ), Qgis::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
   }
@@ -106,6 +113,10 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
       device->seek( 0 );
       ok = true;
     }
+    else
+    {
+      context.pushMessage( QObject::tr( "The project '%1' does not exist in schema '%2'." ).arg( projectUri.projectName, projectUri.schemaName ), Qgis::Critical );
+    }
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
@@ -119,11 +130,16 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( "Invalid URI for PostgreSQL provider: " + uri, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::Critical );
     return false;
   }
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  if ( !conn )
+  {
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::Critical );
+    return false;
+  }
 
   if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
   {
@@ -173,6 +189,8 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
     return false;
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  if ( !conn )
+    return false;
 
   bool removed = false;
   if ( _projectsTableExists( *conn, projectUri.schemaName ) )
@@ -195,6 +213,8 @@ bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, 
     return false;
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  if ( !conn )
+    return false;
 
   bool ok = false;
   QString sql( QStringLiteral( "SELECT metadata FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );

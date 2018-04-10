@@ -880,7 +880,11 @@ bool QgsProject::read()
     QgsReadWriteContext context;
     if ( !storage->readProject( filename, &inDevice, context ) )
     {
-      setError( tr( "Unable to open %1" ).arg( filename ) );
+      QString err = tr( "Unable to open %1" ).arg( filename );
+      QList<QgsReadWriteContext::ReadWriteMessage> messages = context.takeMessages();
+      if ( !messages.isEmpty() )
+        err += QStringLiteral( "\n\n" ) + messages.last().message();
+      setError( err );
       return false;
     }
 
@@ -1461,7 +1465,11 @@ bool QgsProject::write()
     QgsReadWriteContext context;
     if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
     {
-      setError( tr( "Unable to save project to storage %1" ).arg( mFile.fileName() ) );
+      QString err = tr( "Unable to save project to storage %1" ).arg( mFile.fileName() );
+      QList<QgsReadWriteContext::ReadWriteMessage> messages = context.takeMessages();
+      if ( !messages.isEmpty() )
+        err += QStringLiteral( "\n\n" ) + messages.last().message();
+      setError( err );
       return false;
     }
 
