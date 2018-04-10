@@ -66,9 +66,9 @@ QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, co
   }
 }
 
-QgsCircularString QgsCircularString::fromTwoPointsAndCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center )
+QgsCircularString QgsCircularString::fromTwoPointsAndCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
 {
-  const QgsPoint midPoint = QgsGeometryUtils::segmentMidPointFromCenter( p1, p2, center );
+  const QgsPoint midPoint = QgsGeometryUtils::segmentMidPointFromCenter( p1, p2, center, useShortestArc );
   return QgsCircularString( p1, midPoint, p2 );
 }
 

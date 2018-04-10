@@ -1221,6 +1221,15 @@ void TestQgsGeometry::circularString()
   QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
   QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
   QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( 1, 2 ), QgsPoint( 31, 2 ), QgsPoint( 21, 2 ), false );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), -18.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
   from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ), QgsPoint( QgsWkbTypes::PointZ, 32, 2, 33 ),
              QgsPoint( QgsWkbTypes::PointZ, 21, 2, 23 ) );
   QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringZ );
