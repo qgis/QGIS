@@ -59,6 +59,10 @@ Set the map layer for this record
         QString currentStyle;
         bool usingLegendItems;
         QSet<QString> checkedLegendItems;
+
+        QSet<QString> expandedLegendItems;
+
+        bool expandedLayerNode;
     };
 
     class MapThemeRecord
@@ -97,6 +101,38 @@ Removes a record for ``layer`` if present.
 Add a new record for a layer.
 %End
 
+
+        bool hasExpandedStateInfo() const;
+%Docstring
+Returns whether information about expanded/collapsed state of nodes has been recorded
+and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNode from layer records are valid.
+
+.. versionadded:: 3.2
+%End
+
+        void setHasExpandedStateInfo( bool hasInfo );
+%Docstring
+Sets whether the map theme contains valid expanded/collapsed state of nodes
+
+.. versionadded:: 3.2
+%End
+
+        QSet<QString> expandedGroupNodes() const;
+%Docstring
+Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
+The returned value is valid only when hasExpandedStateInfo() returns true.
+Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+and a forward slash, e.g. "level1/level2"
+
+.. versionadded:: 3.2
+%End
+
+        void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes );
+%Docstring
+Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
+
+.. versionadded:: 3.2
+%End
 
     };
 
