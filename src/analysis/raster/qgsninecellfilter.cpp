@@ -21,7 +21,7 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include <QFile>
-#include "qdebug.h"
+#include <QFileInfo>
 
 #ifdef HAVE_OPENCL
 #ifdef __APPLE__
@@ -128,128 +128,25 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   cl_mem outputNodataValue_mem_obj = clCreateBuffer( context, CL_MEM_READ_ONLY,
                                      sizeof( float ), NULL, &ret );
   cl_mem zFactor_mem_obj = clCreateBuffer( context, CL_MEM_READ_ONLY,
-                           sizeof( float ), NULL, &ret );
+                           sizeof( double ), NULL, &ret );
   cl_mem cellSizeX_mem_obj = clCreateBuffer( context, CL_MEM_READ_ONLY,
-                             sizeof( float ), NULL, &ret );
+                             sizeof( double ), NULL, &ret );
   cl_mem cellSizeY_mem_obj = clCreateBuffer( context, CL_MEM_READ_ONLY,
-                             sizeof( float ), NULL, &ret );
+                             sizeof( double ), NULL, &ret );
 
   cl_mem resultLine_mem_obj = clCreateBuffer( context, CL_MEM_WRITE_ONLY,
                               sizeof( float ) *  xSize, NULL, &ret );
 
 
-  const char *source_str = R"pgm(
+  char *source_str = new char [QFileInfo( "/home/ale/dev/QGIS/src/analysis/raster/slope.cl" ).size() + 1];
 
-   #pragma OPENCL EXTENSION cl_khr_fp64 : enable
+  QFile file( "/home/ale/dev/QGIS/src/analysis/raster/slope.cl" );
+  file.open( QIODevice::ReadOnly | QIODevice::Text );
 
-   float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float x32, float x13, float x23, float x33,
-                           float mInputNodataValue, float mOutputNodataValue, float mZFactor, float mCellSize )
-   {
-     //the basic formula would be simple, but we need to test for nodata values...
-     //X: return (( (x31 - x11) + 2 * (x32 - x12) + (x33 - x13) ) / (8 * mCellSizeX));
-     //Y: return (((x11 - x13) + 2 * (x21 - x23) + (x31 - x33)) / ( 8 * mCellSizeY));
+  file.read( source_str, file.size() );
+  source_str[QFileInfo( "/home/ale/dev/QGIS/src/analysis/raster/slope.cl" ).size()] = '\0';
+  file.close();
 
-     int weight = 0;
-     double sum = 0;
-
-     //first row
-     if ( x31 != mInputNodataValue && x11 != mInputNodataValue ) //the normal case
-     {
-       sum += ( x31 - x11 );
-       weight += 2;
-     }
-     else if ( x31 == mInputNodataValue && x11 != mInputNodataValue && x21 != mInputNodataValue ) //probably 3x3 window is at the border
-     {
-       sum += ( x21 - x11 );
-       weight += 1;
-     }
-     else if ( x11 == mInputNodataValue && x31 != mInputNodataValue && x21 != mInputNodataValue ) //probably 3x3 window is at the border
-     {
-       sum += ( x31 - x21 );
-       weight += 1;
-     }
-
-     //second row
-     if ( x32 != mInputNodataValue && x12 != mInputNodataValue ) //the normal case
-     {
-       sum += 2 * ( x32 - x12 );
-       weight += 4;
-     }
-     else if ( x32 == mInputNodataValue && x12 != mInputNodataValue && x22 != mInputNodataValue )
-     {
-       sum += 2 * ( x22 - x12 );
-       weight += 2;
-     }
-     else if ( x12 == mInputNodataValue && x32 != mInputNodataValue && x22 != mInputNodataValue )
-     {
-       sum += 2 * ( x32 - x22 );
-       weight += 2;
-     }
-
-     //third row
-     if ( x33 != mInputNodataValue && x13 != mInputNodataValue ) //the normal case
-     {
-       sum += ( x33 - x13 );
-       weight += 2;
-     }
-     else if ( x33 == mInputNodataValue && x13 != mInputNodataValue && x23 != mInputNodataValue )
-     {
-       sum += ( x23 - x13 );
-       weight += 1;
-     }
-     else if ( x13 == mInputNodataValue && x33 != mInputNodataValue && x23 != mInputNodataValue )
-     {
-       sum += ( x33 - x23 );
-       weight += 1;
-     }
-
-     if ( weight == 0 )
-     {
-       return mOutputNodataValue;
-     }
-
-     return sum / ( weight * mCellSize ) * mZFactor;
-   }
-
-
-  __kernel void processNineCellWindow( __global float *scanLine1,
-                                       __global float *scanLine2,
-                                       __global float *scanLine3,
-                                       __global float *resultLine,
-                                       __global float *mInputNodataValue,
-                                       __global float *mOutputNodataValue,
-                                       __global float *mZFactor,
-                                       __global float *mCellSizeX,
-                                       __global float *mCellSizeY
-                           ) {
-
-      // Get the index of the current element
-      int i = get_global_id(0);
-
-      // Do the operation
-      //return (( (x31 - x11) + 2 * (x32 - x12) + (x33 - x13) ) / (8 * mCellSizeX))
-      float derX = calcFirstDer(   scanLine1[i],   scanLine2[i],   scanLine3[i],
-                                   scanLine1[i+1], scanLine2[i+1], scanLine3[i+1],
-                                   scanLine1[i+2], scanLine2[i+2], scanLine3[i+2],
-                                   *mInputNodataValue, *mOutputNodataValue, *mZFactor, *mCellSizeX
-                                 );
-      //return (((x11 - x13) + 2 * (x21 - x23) + (x31 - x33)) / ( 8 * mCellSizeY));
-      float derY = calcFirstDer(   scanLine1[i+2], scanLine1[i+1], scanLine1[i],
-                                   scanLine2[i+2], scanLine2[i+1], scanLine2[i],
-                                   scanLine3[i+2], scanLine3[i+1], scanLine3[i],
-                                   *mInputNodataValue, *mOutputNodataValue, *mZFactor, *mCellSizeY
-                                 );
-
-      if ( derX == *mOutputNodataValue || derY == *mOutputNodataValue )
-      {
-        resultLine[i] = *mOutputNodataValue;
-      }
-      else
-      {
-        resultLine[i] = atan( sqrt( derX * derX + derY * derY ) ) * 180.0 / M_PI;
-      }
-  }
-  )pgm";
   // Create a program from the kernel source
 
   Q_ASSERT( ret == 0 );
@@ -272,9 +169,15 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     program_log[log_size] = '\0';
     clGetProgramBuildInfo( program, device_id, CL_PROGRAM_BUILD_LOG,
                            log_size + 1, program_log, NULL );
-    qDebug() << program_log;
+    QgsDebugMsgLevel( QStringLiteral( "Error building OpenCL program: %1" ).arg( program_log ), 1 );
     free( program_log );
   }
+
+
+  // Create the OpenCL kernel
+  cl_kernel kernel = clCreateKernel( program, "processNineCellWindow", &ret );
+
+  Q_ASSERT( ret == 0 );
 
 #endif
 
@@ -329,7 +232,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
         QgsDebugMsg( "Raster IO Error" );
       }
     }
-
+    // Set first and last extra colums to nodata
     scanLine1[0] = scanLine1[xSize + 1] = mInputNodataValue;
     scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
@@ -348,17 +251,12 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     ret = clEnqueueWriteBuffer( command_queue, outputNodataValue_mem_obj, CL_TRUE, 0,
                                 sizeof( float ), &mOutputNodataValue, 0, NULL, NULL );
     ret = clEnqueueWriteBuffer( command_queue, zFactor_mem_obj, CL_TRUE, 0,
-                                sizeof( float ), &mZFactor, 0, NULL, NULL );
+                                sizeof( double ), &mZFactor, 0, NULL, NULL );
     ret = clEnqueueWriteBuffer( command_queue, cellSizeX_mem_obj, CL_TRUE, 0,
-                                sizeof( float ), &mCellSizeX, 0, NULL, NULL );
+                                sizeof( double ), &mCellSizeX, 0, NULL, NULL );
     ret = clEnqueueWriteBuffer( command_queue, cellSizeY_mem_obj, CL_TRUE, 0,
-                                sizeof( float ), &mCellSizeY, 0, NULL, NULL );
+                                sizeof( double ), &mCellSizeY, 0, NULL, NULL );
 
-
-    // Create the OpenCL kernel
-    cl_kernel kernel = clCreateKernel( program, "processNineCellWindow", &ret );
-
-    Q_ASSERT( ret == 0 );
 
     // Set the arguments of the kernel
     ret = ret || clSetKernelArg( kernel, 0, sizeof( cl_mem ), ( void * )&scanLine1_mem_obj );
@@ -392,20 +290,22 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
       QgsDebugMsg( "Raster IO Error" );
     }
 
-    qDebug() << resultLine[1];
-
-    ret = clReleaseKernel( kernel );
-
   }
 
   // Clean up
-  ret = clFlush( command_queue );
-  ret = clFinish( command_queue );
+  //ret = clFlush( command_queue );
+  //ret = clFinish( command_queue );
+  ret = clReleaseKernel( kernel );
   ret = clReleaseProgram( program );
   ret = clReleaseMemObject( scanLine1_mem_obj );
   ret = clReleaseMemObject( scanLine2_mem_obj );
   ret = clReleaseMemObject( scanLine3_mem_obj );
   ret = clReleaseMemObject( resultLine_mem_obj );
+  ret = clReleaseMemObject( inputNodataValue_mem_obj );
+  ret = clReleaseMemObject( outputNodataValue_mem_obj );
+  ret = clReleaseMemObject( zFactor_mem_obj );
+  ret = clReleaseMemObject( cellSizeX_mem_obj );
+  ret = clReleaseMemObject( cellSizeY_mem_obj );
   ret = clReleaseCommandQueue( command_queue );
   ret = clReleaseContext( context );
 
@@ -427,11 +327,12 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   }
 #endif
 
-
   CPLFree( resultLine );
   CPLFree( scanLine1 );
   CPLFree( scanLine2 );
   CPLFree( scanLine3 );
+
+  delete source_str;
 
   if ( feedback && feedback->isCanceled() )
   {
