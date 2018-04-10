@@ -40,10 +40,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      \param feedback feedback object that receives update and that is checked for cancelation.
-      \returns 0 in case of success
-      TODO: return an enum
-    */
+     * \param feedback feedback object that receives update and that is checked for cancelation.
+     * \returns 0 in case of success
+     */
     int processRaster( QgsFeedback *feedback = nullptr );
 
     double cellSizeX() const { return mCellSizeX; }
@@ -60,8 +59,23 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
 
     /**
-     * Calculates output value from nine input values. The input values and the output value can be equal to the
-      nodata value if not present or outside of the border. Must be implemented by subclasses*/
+     * Calculates output value from nine input values. The input values and the output
+     * value can be equal to the nodata value if not present or outside of the border.
+     * Must be implemented by subclasses.
+     *
+     * First index of the input cell is the row, second index is the column
+     *
+     * @param x11 surrounding cell top left
+     * @param x21 surrounding cell central left
+     * @param x31 surrounding cell bottom left
+     * @param x12 surrounding cell top central
+     * @param x22 the central cell for which the value will be calculated
+     * @param x32 surrounding cell bottom central
+     * @param x13 surrounding cell top right
+     * @param x23 surrounding cell central right
+     * @param x33 surrounding cell bottom right
+     * @return the calculated cell value for the central cell x22
+     */
     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
                                          float *x12, float *x22, float *x32,
                                          float *x13, float *x23, float *x33 ) = 0;
@@ -85,9 +99,8 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
     /**
      * \brief processRasterCPU executes the computation on the CPU
-     * \param feedback
+     * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancelation
      * \return an opaque integer for error codes: 0 in case of success
-     * TODO: return an enum
      */
     int processRasterCPU( QgsFeedback *feedback = nullptr );
 
@@ -95,12 +108,17 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
     /**
      * \brief processRasterGPU executes the computation on the GPU
-     * \param feedback
+     * \param source path to the OpenCL source file
+     * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancelation
      * \return an opaque integer for error codes: 0 in case of success
-     * TODO: return an enum
      */
     int processRasterGPU( const QString &source, QgsFeedback *feedback = nullptr );
 
+    /**
+     * \brief addExtraRasterParams allow derived classes to add parameters needed
+     *        by OpenCL program
+     * \param params vector of parameters passed to OpenCL algorithm
+     */
     virtual void addExtraRasterParams( std::vector<float> &params )
     {
       Q_UNUSED( params );
