@@ -23,7 +23,31 @@ class QgsCircularString: QgsCurve
 #include "qgscircularstring.h"
 %End
   public:
+
     QgsCircularString();
+%Docstring
+Constructs an empty circular string.
+%End
+
+    QgsCircularString( const QgsPoint &p1,
+                       const QgsPoint &p2,
+                       const QgsPoint &p3 );
+%Docstring
+Constructs a circular string with a single
+arc passing through ``p1``, ``p2`` and ``p3``.
+
+.. versionadded:: 3.2
+%End
+
+    static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
+        const QgsPoint &p2,
+        const QgsPoint &center );
+%Docstring
+Creates a circular string with a single arc representing
+the curve from ``p1`` to ``p2`` with the specified ``center``.
+
+.. versionadded:: 3.2
+%End
 
     virtual bool equals( const QgsCurve &other ) const;
 
