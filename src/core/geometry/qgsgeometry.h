@@ -257,6 +257,24 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
+     * Creates a wedge shaped buffer from a \a center point.
+     *
+     * The \a azimuth gives the angle (in degrees) for the middle of the wedge to point.
+     * The buffer width (in degrees) is specified by the \a angularWidth parameter. Note that the
+     * wedge will extend to half of the \a angularWidth either side of the \a azimuth direction.
+     *
+     * The outer radius of the buffer is specified via \a outerRadius, and optionally an
+     * \a innerRadius can also be specified.
+     *
+     * The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+     * need to be segmentized to convert to a standard Polygon geometry.
+     *
+     * \since QGIS 3.2
+     */
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
+                                          double outerRadius, double innerRadius = 0 );
+
+    /**
      * Set the geometry, feeding in a geometry in GEOS format.
      * This class will take ownership of the buffer.
      * \note not available in Python bindings

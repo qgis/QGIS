@@ -211,6 +211,24 @@ Creates a new geometry from a :py:class:`QgsRectangle`
 Creates a new multipart geometry from a list of QgsGeometry objects
 %End
 
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
+                                          double outerRadius, double innerRadius = 0 );
+%Docstring
+Creates a wedge shaped buffer from a ``center`` point.
+
+The ``azimuth`` gives the angle (in degrees) for the middle of the wedge to point.
+The buffer width (in degrees) is specified by the ``angularWidth`` parameter. Note that the
+wedge will extend to half of the ``angularWidth`` either side of the ``azimuth`` direction.
+
+The outer radius of the buffer is specified via ``outerRadius``, and optionally an
+``innerRadius`` can also be specified.
+
+The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+need to be segmentized to convert to a standard Polygon geometry.
+
+.. versionadded:: 3.2
+%End
+
 
 
     void fromWkb( const QByteArray &wkb );
