@@ -28,6 +28,19 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 
 #############################################################
+# Configure OpenCL if available
+
+option(USE_OPENCL "Use OpenCL" ON)
+if (USE_OPENCL)
+    FIND_PACKAGE(OpenCL)
+    if(${OpenCL_FOUND})
+        SET (USE_OPENCL TRUE CACHE BOOL "Use OpenCL")
+        IF(USE_OPENCL)
+          SET(HAVE_OPENCL TRUE)
+        ENDIF(USE_OPENCL)
+    endif(${OpenCL_FOUND})
+endif(USE_OPENCL)
+
 # Configure CCache if available
 IF(NOT MSVC)
   option(USE_CCACHE "Use ccache" ON)
