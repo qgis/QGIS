@@ -211,29 +211,32 @@ void QgsApplication::init( QString profileFolder )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
-      setPrefixPath( applicationDirPath(), true );
-#elif defined(ANDROID)
-      // this is  "/data/data/org.qgis.qgis" in android
-      QDir myDir( QDir::homePath() );
-      myDir.cdUp();
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
-#else
-      QDir myDir( applicationDirPath() );
-      // Fix for server which is one level deeper in /usr/lib/cgi-bin
-      if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+      if ( ABISYM( mPrefixPath ).isNull() )
       {
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+        setPrefixPath( applicationDirPath(), true );
+#elif defined(ANDROID)
+        // this is  "/data/data/org.qgis.qgis" in android
+        QDir myDir( QDir::homePath() );
         myDir.cdUp();
-      }
-      myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
+#else
+        QDir myDir( applicationDirPath() );
+        // Fix for server which is one level deeper in /usr/lib/cgi-bin
+        if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+        {
+          myDir.cdUp();
+        }
+        myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
 #endif
-    }
-    else
-    {
-      setPrefixPath( prefixPath, true );
+      }
+      else
+      {
+        setPrefixPath( prefixPath, true );
+      }
     }
   }
 
