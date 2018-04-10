@@ -293,13 +293,13 @@ bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteConte
   setRule( styleElm.attribute( QStringLiteral( "rule" ) ) );
   setName( styleElm.attribute( QStringLiteral( "name" ) ) );
   QColor bColor = QColor( styleElm.attribute( QStringLiteral( "background_color" ) ) );
-  if( styleElm.hasAttribute( "background_color_alpha" ) )
+  if ( styleElm.hasAttribute( "background_color_alpha" ) )
   {
     bColor.setAlpha( styleElm.attribute( QStringLiteral( "background_color_alpha" ) ).toInt() );
   }
   setBackgroundColor( bColor );
   QColor tColor = QColor( styleElm.attribute( QStringLiteral( "text_color" ) ) );
-  if( styleElm.hasAttribute( "text_color_alpha" ) )
+  if ( styleElm.hasAttribute( "text_color_alpha" ) )
   {
     tColor.setAlpha( styleElm.attribute( QStringLiteral( "text_color_alpha" ) ).toInt() );
   }
