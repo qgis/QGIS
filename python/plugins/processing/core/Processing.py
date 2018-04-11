@@ -116,7 +116,7 @@ class Processing(object):
             alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
         if feedback is None:
-            feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
+            feedback = QgsProcessingFeedback()
 
         if alg is None:
             # fix_print_with_import
@@ -162,6 +162,9 @@ class Processing(object):
             else:
                 # auto convert layer references in results to map layers
                 for out in alg.outputDefinitions():
+                    if out.name() not in results:
+                        continue
+
                     if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):

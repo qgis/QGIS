@@ -301,7 +301,7 @@ QString QgsCircularString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
@@ -309,7 +309,7 @@ QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const Q
   return gml;
 }
 
-QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const QString &ns, const  QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -1123,4 +1123,10 @@ bool QgsCircularString::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   mM.clear();
   return true;
+}
+
+void QgsCircularString::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
 }

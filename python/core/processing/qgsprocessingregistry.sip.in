@@ -143,7 +143,6 @@ Return a list with all known parameter types.
 .. versionadded:: 3.2
 %End
 
-
   signals:
 
     void providerAdded( const QString &id );

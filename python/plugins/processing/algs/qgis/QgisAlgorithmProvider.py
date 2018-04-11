@@ -60,7 +60,6 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
-from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
@@ -180,7 +179,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 EliminateSelection(),
                 ExecuteSQL(),
-                Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),

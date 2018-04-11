@@ -42,6 +42,7 @@ typedef void buildsupportedrasterfilefilter_t( QString &fileFiltersString );
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
+typedef void initProviderFunction_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
 
@@ -228,6 +229,11 @@ void QgsProviderRegistry::init()
 
       QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
+
+    // call initProvider() if such function is available - allows provider to register its services to QGIS
+    initProviderFunction_t *initFunc = reinterpret_cast< initProviderFunction_t * >( cast_to_fptr( myLib.resolve( "initProvider" ) ) );
+    if ( initFunc )
+      initFunc();
   }
 } // QgsProviderRegistry ctor
 

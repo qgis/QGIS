@@ -659,10 +659,22 @@ class CORE_EXPORT QgsGeometry
     OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
-     * Transforms this geometry as described by CoordinateTransform ct
+     * Transforms this geometry as described by the coordinate transform \a ct.
+     *
+     * The transformation defaults to a forward transform, but the direction can be swapped
+     * by setting the \a direction argument.
+     *
+     * By default, z-coordinates are not transformed, even if the coordinate transform
+     * includes a vertical datum transformation. To transform z-coordinates, set
+     * \a transformZ to true. This requires that the z coordinates in the geometry represent
+     * height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
+     * and are expressed in its vertical units (generally meters).
+     *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct,
+                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
+                               bool transformZ = false );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -887,7 +899,7 @@ class CORE_EXPORT QgsGeometry
       SideLeft = 0, //!< Buffer to left of line
       SideRight, //!< Buffer to right of line
     };
-    Q_ENUM( BufferSide );
+    Q_ENUM( BufferSide )
 
     //! End cap styles for buffers
     enum EndCapStyle
@@ -896,7 +908,7 @@ class CORE_EXPORT QgsGeometry
       CapFlat, //!< Flat cap (in line with start/end of line)
       CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
     };
-    Q_ENUM( EndCapStyle );
+    Q_ENUM( EndCapStyle )
 
     //! Join styles for buffers
     enum JoinStyle
@@ -905,7 +917,7 @@ class CORE_EXPORT QgsGeometry
       JoinStyleMiter, //!< Use mitered joins
       JoinStyleBevel, //!< Use beveled joins
     };
-    Q_ENUM( JoinStyle );
+    Q_ENUM( JoinStyle )
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number

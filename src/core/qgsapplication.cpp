@@ -31,6 +31,7 @@
 #include "qgssvgcache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
@@ -210,29 +211,32 @@ void QgsApplication::init( QString profileFolder )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
-      setPrefixPath( applicationDirPath(), true );
-#elif defined(ANDROID)
-      // this is  "/data/data/org.qgis.qgis" in android
-      QDir myDir( QDir::homePath() );
-      myDir.cdUp();
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
-#else
-      QDir myDir( applicationDirPath() );
-      // Fix for server which is one level deeper in /usr/lib/cgi-bin
-      if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+      if ( ABISYM( mPrefixPath ).isNull() )
       {
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+        setPrefixPath( applicationDirPath(), true );
+#elif defined(ANDROID)
+        // this is  "/data/data/org.qgis.qgis" in android
+        QDir myDir( QDir::homePath() );
         myDir.cdUp();
-      }
-      myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
+#else
+        QDir myDir( applicationDirPath() );
+        // Fix for server which is one level deeper in /usr/lib/cgi-bin
+        if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+        {
+          myDir.cdUp();
+        }
+        myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
 #endif
-    }
-    else
-    {
-      setPrefixPath( prefixPath, true );
+      }
+      else
+      {
+        setPrefixPath( prefixPath, true );
+      }
     }
   }
 
@@ -1710,6 +1714,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
+{
+  return members()->mProjectStorageRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1733,6 +1742,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mLayoutItemRegistry->populate();
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
+  mProjectStorageRegistry = new QgsProjectStorageRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -1747,6 +1757,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
+  delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
   delete mLayoutItemRegistry;
   delete mProfiler;

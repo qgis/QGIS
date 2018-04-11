@@ -1658,6 +1658,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
@@ -1700,6 +1701,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
@@ -1743,6 +1745,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   {
     const QVector<QgsGeometry> parts = asGeometryCollection();
     QVector<QgsGeometry> results;
+    results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
@@ -2176,6 +2179,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
     return result;
   }
 
+  result.reserve( polyline.count() );
   for ( const QgsPointXY &p : qgis::as_const( polyline ) )
   {
     result << p.toQPointF();
@@ -2333,7 +2337,7 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
 {
   if ( !d->geometry )
   {
@@ -2341,7 +2345,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
   }
 
   detach();
-  d->geometry->transform( ct );
+  d->geometry->transform( ct, direction, transformZ );
   return QgsGeometry::Success;
 }
 
@@ -2604,6 +2608,7 @@ QgsPolygonXY QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
 QgsPolylineXY QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
 {
   QgsPolylineXY result;
+  result.reserve( polygon.count() );
   for ( const QPointF &p : polygon )
   {
     result.append( QgsPointXY( p ) );
@@ -2709,24 +2714,15 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
   }
 }
 
-inline QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double offset )
-{
-  const double _offset = 1 - offset;
-  return QgsPoint( p1.wkbType(),
-                   p1.x() * _offset + p2.x() * offset,
-                   p1.y() * _offset + p2.y() * offset,
-                   p1.is3D() ? p1.z() * _offset + p2.z() * offset : std::numeric_limits<double>::quiet_NaN(),
-                   p1.isMeasure() ? p1.m() * _offset + p2.m() * offset : std::numeric_limits<double>::quiet_NaN() );
-}
-
 std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const unsigned int iterations,
     const double offset, double squareDistThreshold, double maxAngleRads,
     bool isRing )
 {
   std::unique_ptr< QgsLineString > result = qgis::make_unique< QgsLineString >( line );
+  QgsPointSequence outputLine;
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
-    QgsPointSequence outputLine;
+    outputLine.resize( 0 );
     outputLine.reserve( 2 * ( result->numPoints() - 1 ) );
     bool skipFirst = false;
     bool skipLast = false;
@@ -2774,9 +2770,9 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         if ( !isRing )
         {
           if ( !skipFirst )
-            outputLine << ( i == 0 ? result->pointN( i ) : interpolatePointOnLine( p1, p2, offset ) );
+            outputLine << ( i == 0 ? result->pointN( i ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset ) );
           if ( !skipLast )
-            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset ) );
           else
             outputLine << p2;
         }
@@ -2784,11 +2780,11 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
         {
           // ring
           if ( !skipFirst )
-            outputLine << interpolatePointOnLine( p1, p2, offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, offset );
           else if ( i == 0 )
             outputLine << p1;
           if ( !skipLast )
-            outputLine << interpolatePointOnLine( p1, p2, 1.0 - offset );
+            outputLine << QgsGeometryUtils::interpolatePointOnLine( p1, p2, 1.0 - offset );
           else
             outputLine << p2;
         }
@@ -3000,6 +2996,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           {
             const QgsPolygonXY polygon = asPolygon();
             QgsMultiPolylineXY multiLine;
+            multiLine.reserve( polygon.count() );
             for ( const QgsPolylineXY &line : polygon )
               multiLine << line;
             return fromMultiPolylineXY( multiLine );

@@ -527,6 +527,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
     QAction *actionTogglePanelsVisibility() { return mActionTogglePanelsVisibility; }
+    QAction *actionToggleMapOnly() { return mActionToggleMapOnly; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
@@ -702,7 +703,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
-    void openFile( const QString &fileName );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();
@@ -1533,6 +1534,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toggle visibility of opened panels
     void togglePanelsVisibility();
 
+    //! Toggle visibility of main map only
+    void toggleMapOnly();
+
+    //! Toggle between full QGIS view and reduced view (being either Map only or only hiding panels)
+    void toggleReducedView( bool viewMapOnly );
+
     //! Set minimized mode of active window
     void showActiveWindowMinimized();
 
@@ -1736,13 +1743,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            bool guiUpdate );
 
     /**
-     * Add this file to the recently opened/saved projects list
+     * Add the current project to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
-    void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
+    void saveRecentProjectPath( bool savePreviewImage = true );
     //! Save recent projects list to settings
     void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
@@ -1872,6 +1879,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns the size of docked toolbars for a given standard (non-docked) toolbar icon size.
      */
     int dockedToolbarIconSize( int standardToolbarIconSize ) const;
+
+    //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
+    void populateProjectStorageMenu( QMenu *menu, bool saving );
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

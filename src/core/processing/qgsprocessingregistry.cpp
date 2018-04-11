@@ -188,4 +188,3 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
 {
   return mParameterTypes.values();
 }
-

@@ -1,0 +1,26 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>filter_points_big</Name>
+    <ElementPath>filter_points_big</ElementPath>
+    <!--POINT-->
+    <GeometryType>1</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>4</FeatureCount>
+      <ExtentXMin>1.00000</ExtentXMin>
+      <ExtentXMax>5.00000</ExtentXMax>
+      <ExtentYMin>1.00000</ExtentYMin>
+      <ExtentYMax>3.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>id</Name>
+      <ElementPath>id</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>id2</Name>
+      <ElementPath>id2</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

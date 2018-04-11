@@ -86,6 +86,11 @@ void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
   addParameter( distance.release() );
 }
 
+QgsProcessingFeatureSource::Flag QgsProjectPointCartesianAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 bool QgsProjectPointCartesianAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mBearing = parameterAsDouble( parameters, QStringLiteral( "BEARING" ), context );

@@ -250,15 +250,21 @@ namespace QgsWfs
         QList<int> idxList;
         // build corresponding propertyname
         QList<QString> propertynames;
+        QList<QString> fieldnames;
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
-          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ) );
+          fieldnames.append( fields[idx].name() );
+          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
         {
           fieldName = *plstIt;
           int fieldNameIdx = propertynames.indexOf( fieldName );
+          if ( fieldNameIdx == -1 )
+          {
+            fieldNameIdx = fieldnames.indexOf( fieldName );
+          }
           if ( fieldNameIdx > -1 )
           {
             idxList.append( fieldNameIdx );
@@ -1319,7 +1325,7 @@ namespace QgsWfs
         }
         QString attributeName = fields.at( idx ).name();
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
@@ -1416,7 +1422,7 @@ namespace QgsWfs
         }
         QString attributeName = fields.at( idx ).name();
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );

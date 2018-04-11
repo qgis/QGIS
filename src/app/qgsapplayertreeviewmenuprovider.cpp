@@ -102,6 +102,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+      {
+        menu->addAction( actions->actionMoveToTop( menu ) );
+      }
+
       menu->addSeparator();
 
       if ( mView->selectedNodes( true ).count() >= 2 )
@@ -118,6 +123,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QAction *actionSaveAsDefinitionGroup = new QAction( tr( "Save as Layer Definition File…" ), menuExportGroup );
       connect( actionSaveAsDefinitionGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
       menuExportGroup->addAction( actionSaveAsDefinitionGroup );
+
       menu->addMenu( menuExportGroup );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -129,6 +135,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->isSpatial() )
       {
         menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+        if ( vlayer )
+        {
+          QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );
+          actionZoomSelected->setEnabled( !vlayer->selectedFeatures().isEmpty() );
+          menu->addAction( actionZoomSelected );
+        }
         menu->addAction( actions->actionShowInOverview( menu ) );
       }
 
@@ -165,6 +177,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( node->parent() != mView->layerTreeModel()->rootGroup() )
         menu->addAction( actions->actionMakeTopLevel( menu ) );
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
+      {
+        menu->addAction( actions->actionMoveToTop( menu ) );
+      }
 
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
       if ( checkAll )
@@ -292,6 +309,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );

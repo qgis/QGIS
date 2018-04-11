@@ -27,6 +27,7 @@
 #include "qgsalgorithmdissolve.h"
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
+#include "qgsalgorithmexplode.h"
 #include "qgsalgorithmextenttolayer.h"
 #include "qgsalgorithmextractbyattribute.h"
 #include "qgsalgorithmextractbyexpression.h"
@@ -34,6 +35,7 @@
 #include "qgsalgorithmextractbylocation.h"
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
+#include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
@@ -66,6 +68,7 @@
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
+#include "qgsalgorithmswapxy.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
@@ -123,6 +126,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
@@ -130,6 +134,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
+  addAlgorithm( new QgsFilterAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
@@ -164,6 +169,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
+  addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );

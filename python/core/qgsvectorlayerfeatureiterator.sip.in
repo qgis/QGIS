@@ -153,7 +153,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
 
 
-class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
+class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionContextScopeGenerator
 {
 %Docstring
 QgsFeatureSource subclass for the selected features from a :py:class:`QgsVectorLayer`.
@@ -184,6 +184,8 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
     virtual long featureCount() const;
 
     virtual QString sourceName() const;
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const;
 
 
 

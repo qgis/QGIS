@@ -247,6 +247,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       FlagAdvanced = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
       FlagHidden = 1 << 2, //!< Parameter is hidden and should not be shown to users
       FlagOptional = 1 << 3, //!< Parameter is optional
+      FlagIsModelOutput = 1 << 4, //!< Destination parameter is final output. The parameter name will be used.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

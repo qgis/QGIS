@@ -43,8 +43,7 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputNumber
-                       )
+                       QgsProcessingOutputNumber)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 settings_method_key = "/qgis/digitizing/validate_geometries"

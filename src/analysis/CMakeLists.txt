@@ -30,6 +30,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmextenttolayer.cpp
   processing/qgsalgorithmextractbyattribute.cpp
   processing/qgsalgorithmextractbyexpression.cpp
@@ -37,6 +38,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractbylocation.cpp
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
@@ -68,6 +70,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
+  processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp

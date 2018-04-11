@@ -24,6 +24,7 @@
 #include <QMap>
 
 class QgsProcessingParameterType;
+class QgsProcessingAlgorithmConfigurationWidgetFactory;
 
 /**
  * \class QgsProcessingRegistry
@@ -167,7 +168,6 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * \since QGIS 3.2
      */
     QList<QgsProcessingParameterType *> parameterTypes() const;
-
 
   signals:
 

@@ -168,6 +168,7 @@ their acceptable ranges, defaults, etc.
       FlagAdvanced,
       FlagHidden,
       FlagOptional,
+      FlagIsModelOutput,
     };
     typedef QFlags<QgsProcessingParameterDefinition::Flag> Flags;
 

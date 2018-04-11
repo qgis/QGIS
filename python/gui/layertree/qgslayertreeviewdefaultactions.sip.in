@@ -50,9 +50,24 @@ Action to check a group and all its parents
 %End
 
     QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
+
+    QAction *actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
+%Docstring
+Action to zoom to selected features of a vector layer
+
+.. versionadded:: 3.2
+%End
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
 
     QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
+
+    QAction *actionMoveToTop( QObject *parent = 0 ) /Factory/;
+%Docstring
+
+.. seealso:: :py:func:`moveToTop`
+
+.. versionadded:: 3.2
+%End
     QAction *actionGroupSelected( QObject *parent = 0 ) /Factory/;
 
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
@@ -63,6 +78,14 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
 %End
 
     void zoomToLayer( QgsMapCanvas *canvas );
+
+    void zoomToSelection( QgsMapCanvas *canvas );
+%Docstring
+
+.. seealso:: :py:func:`zoomToSelection`
+
+.. versionadded:: 3.2
+%End
     void zoomToGroup( QgsMapCanvas *canvas );
 
   public slots:
@@ -74,8 +97,23 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
     void renameGroupOrLayer();
     void showFeatureCount();
     void zoomToLayer();
+
+    void zoomToSelection();
+%Docstring
+Slot to zoom to selected features of a vector layer
+
+.. versionadded:: 3.2
+%End
     void zoomToGroup();
     void makeTopLevel();
+
+    void moveToTop();
+%Docstring
+Moves selected layer(s) and/or group(s) to the top of the layer panel
+or the top of the group if the layer/group is placed within a group.
+
+.. versionadded:: 3.2
+%End
     void groupSelected();
 
     void mutuallyExclusiveGroup();

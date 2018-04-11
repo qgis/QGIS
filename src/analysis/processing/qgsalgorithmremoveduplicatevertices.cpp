@@ -86,6 +86,12 @@ void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
   addParameter( useZ.release() );
 }
 
+QgsProcessingFeatureSource::Flag QgsAlgorithmRemoveDuplicateVertices::sourceFlags() const
+{
+  // skip geometry checks - this algorithm can be used to repair geometries
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );

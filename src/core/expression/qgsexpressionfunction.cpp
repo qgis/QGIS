@@ -2376,6 +2376,17 @@ static QVariant fcnYMax( const QVariantList &values, const QgsExpressionContext 
   return QVariant::fromValue( geom.boundingBox().yMaximum() );
 }
 
+static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  std::unique_ptr< QgsAbstractGeometry > flipped( geom.constGet()->clone() );
+  flipped->swapXy();
+  return QVariant::fromValue( QgsGeometry( std::move( flipped ) ) );
+}
+
 static QVariant fcnIsClosed( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3451,7 +3462,7 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
   return result;
 }
 
-static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
@@ -3470,6 +3481,13 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   }
 
   const QVariant &attVal = values.at( 2 );
+
+  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( vl->id(), QString::number( attributeId ), attVal.toString() );
+  if ( context && context->hasCachedValue( cacheValueKey ) )
+  {
+    return context->cachedValue( cacheValueKey );
+  }
+
   QgsFeatureRequest req;
   req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
                            QgsExpression::quotedString( attVal.toString() ) ) );
@@ -3481,10 +3499,15 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   QgsFeatureIterator fIt = vl->getFeatures( req );
 
   QgsFeature fet;
+  QVariant res;
   if ( fIt.nextFeature( fet ) )
-    return QVariant::fromValue( fet );
+  {
+    res = QVariant::fromValue( fet );
+  }
 
-  return QVariant();
+  if ( context )
+    context->setCachedValue( cacheValueKey, res );
+  return res;
 }
 
 static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
@@ -3514,7 +3537,14 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
     }
     else
     {
-      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+
+      const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName, value.toString() );
+      if ( context->hasCachedValue( cacheValueKey ) )
+      {
+        return context->cachedValue( cacheValueKey );
+      }
+
       const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
       const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
@@ -3530,6 +3560,8 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
         cache = context->cachedValue( cacheKey );
 
       result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+
+      context->setCachedValue( cacheValueKey, result );
     }
   }
   else
@@ -4228,6 +4260,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "y_max" ), 1, fcnYMax, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymax" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_wkt" ), 1, fcnGeomFromWKT, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromWKT" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_gml" ), 1, fcnGeomFromGML, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromGML" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "flip_coordinates" ), 1, fcnFlipCoordinates, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "relate" ), -1, fcnRelate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "intersects_bbox" ), 2, fcnBbox, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "bbox" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "disjoint" ), 2, fcnDisjoint, QStringLiteral( "GeometryGroup" ) )

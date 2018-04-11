@@ -69,6 +69,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     cb_geometryColumnsOnly_clicked();
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
+    cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
@@ -156,6 +157,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
+  settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );

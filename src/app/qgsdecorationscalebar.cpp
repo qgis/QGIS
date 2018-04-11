@@ -289,9 +289,6 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
     case QgsUnitTypes::DistanceUnknownUnit:
       scaleBarUnitLabel = QgsUnitTypes::toAbbreviatedString( scaleBarUnits );
       break;
-      scaleBarUnitLabel = tr( "unknown" );
-      QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( scaleBarUnits ) );
-      break;
   }
 
   mSettings.setUnits( scaleBarUnits );

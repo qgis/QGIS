@@ -69,6 +69,11 @@ QgsAddIncrementalFieldAlgorithm *QgsAddIncrementalFieldAlgorithm::createInstance
   return new QgsAddIncrementalFieldAlgorithm();
 }
 
+QgsProcessingFeatureSource::Flag QgsAddIncrementalFieldAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QStringLiteral( "AUTO" ) ) );

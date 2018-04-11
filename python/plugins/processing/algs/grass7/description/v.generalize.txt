@@ -1,7 +1,7 @@
 v.generalize
 Vector based generalization.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False
 QgsProcessingParameterEnum|type|Input feature type|line;boundary;area|True|0,1,2|True
 QgsProcessingParameterString|cats|Category values|None|False|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True

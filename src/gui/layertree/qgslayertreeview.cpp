@@ -69,6 +69,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( model );
 
   connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
+  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeView::onCustomPropertyChanged );
 
   connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayerTreeView::onCurrentChanged );
 
@@ -242,6 +243,22 @@ void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode *node, bool expanded 
   QModelIndex idx = layerTreeModel()->node2index( node );
   if ( isExpanded( idx ) != expanded )
     setExpanded( idx, expanded );
+}
+
+void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
+{
+  if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
+    return;
+
+  QSet<QString> expandedLegendNodes = node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+
+  const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
+  for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+  {
+    QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    if ( !key.isEmpty() )
+      setExpanded( layerTreeModel()->legendNode2index( legendNode ), expandedLegendNodes.contains( key ) );
+  }
 }
 
 void QgsLayerTreeView::onModelReset()

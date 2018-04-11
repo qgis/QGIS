@@ -259,6 +259,8 @@ SET(QGIS_CORE_SRCS
   qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
   qgsprojectproperty.cpp
+  qgsprojectstorage.cpp
+  qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
@@ -889,6 +891,8 @@ SET(QGIS_CORE_HDRS
   qgsprojectbadlayerhandler.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
+  qgsprojectstorage.h
+  qgsprojectstorageregistry.h
   qgsprojectversion.h
   qgsproperty.h
   qgsproperty_p.h

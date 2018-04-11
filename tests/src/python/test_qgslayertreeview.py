@@ -19,10 +19,14 @@ import os
 from qgis.core import (
     QgsLayerTreeModel,
     QgsProject,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsLayerTreeLayer,
+    QgsLayerTree,
 )
-from qgis.gui import (QgsLayerTreeView,
-                      QgsLayerTreeViewDefaultActions)
+from qgis.gui import (
+    QgsLayerTreeView,
+    QgsLayerTreeViewDefaultActions,
+)
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
 from qgis.PyQt.QtCore import QStringListModel
@@ -46,8 +50,25 @@ class TestQgsLayerTreeView(unittest.TestCase):
                                      "layer2", "memory")
         self.layer3 = QgsVectorLayer("Point?field=fldtxt:string",
                                      "layer3", "memory")
+        self.layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer4", "memory")
+        self.layer5 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer5", "memory")
         self.project.addMapLayers([self.layer, self.layer2, self.layer3])
         self.model = QgsLayerTreeModel(self.project.layerTreeRoot())
+
+    def nodeOrder(self, group):
+        nodeorder = []
+        layerTree = QgsLayerTree()
+        for node in group:
+            if QgsLayerTree.isGroup(node):
+                groupname = node.name()
+                nodeorder.append(groupname)
+                for child in self.nodeOrder(node.children()):
+                    nodeorder.append(groupname + '-' + child)
+            elif QgsLayerTree.isLayer(node):
+                nodeorder.append(node.layer().name())
+        return nodeorder
 
     def testSetModel(self):
         view = QgsLayerTreeView()
@@ -89,6 +110,78 @@ class TestQgsLayerTreeView(unittest.TestCase):
         self.assertEqual(view.currentNode().customProperty('overview', 0), True)
         show_in_overview.trigger()
         self.assertEqual(view.currentNode().customProperty('overview', 0), False)
+
+    def testMoveToTopActionLayer(self):
+        """Test move to top action on layer"""
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer, self.layer2, self.layer3])
+        view.setCurrentLayer(self.layer3)
+        movetotop = actions.actionMoveToTop()
+        movetotop.trigger()
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer3, self.layer, self.layer2])
+
+    def testMoveToTopActionGroup(self):
+        """Test move to top action on group"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().addGroup("embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+        nodeLayerIndex = self.model.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        movetotop = actions.actionMoveToTop()
+        movetotop.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+    def testMoveToTopActionEmbeddedGroup(self):
+        """Test move to top action on embeddedgroup layer"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().addGroup("embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+        view.setCurrentLayer(self.layer5)
+        movetotop = actions.actionMoveToTop()
+        movetotop.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.layer4.name(),
+        ])
 
 
 if __name__ == '__main__':

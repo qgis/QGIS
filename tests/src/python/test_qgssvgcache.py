@@ -18,7 +18,7 @@ import os
 import socketserver
 import threading
 import http.server
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDir, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
 from qgis.core import (QgsSvgCache, QgsRenderChecker, QgsApplication, QgsMultiRenderChecker)
@@ -47,14 +47,32 @@ class TestQgsSvgCache(unittest.TestCase):
     def setUp(self):
         self.report = "<h1>Python QgsSvgCache Tests</h1>\n"
 
+        self.fetched = True
+        QgsApplication.svgCache().remoteSvgFetched.connect(self.svgFetched)
+
     def tearDown(self):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def svgFetched(self):
+        self.fetched = True
+
+    def waitForFetch(self):
+        self.fetched = False
+        while not self.fetched:
+            QCoreApplication.processEvents()
+
     def testRemoteSVG(self):
         """Test fetching remote svg."""
         url = 'http://localhost:{}/qgis_local_server/sample_svg.svg'.format(str(TestQgsSvgCache.port))
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
+        # first should be waiting image
+        self.assertTrue(self.imageCheck('Remote SVG', 'waiting_svg', image))
+        self.waitForFetch()
+
+        # second should be correct image
         image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
                                                                strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG', 'remote_svg', image))
@@ -64,11 +82,26 @@ class TestQgsSvgCache(unittest.TestCase):
         url = 'http://localhost:{}/qgis_local_server/svg_as_text.txt'.format(str(TestQgsSvgCache.port))
         image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
                                                                strokeWidth=0.1, widthScaleFactor=1)
+        # first should be waiting image
+        self.assertTrue(self.imageCheck('Remote SVG as Text', 'waiting_svg', image))
+
+        self.waitForFetch()
+        # second should be correct image
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
+        # first should be waiting image
         self.assertTrue(self.imageCheck('Remote SVG as Text', 'remote_svg', image))
 
     def testRemoteSvgBadMime(self):
         """Test fetching remote svg with bad mime type"""
         url = 'http://localhost:{}/qgis_local_server/logo.png'.format(str(TestQgsSvgCache.port))
+        image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
+                                                               strokeWidth=0.1, widthScaleFactor=1)
+        # first should be waiting image
+        self.assertTrue(self.imageCheck('Remote SVG bad MIME type', 'waiting_svg', image))
+
+        # second should be correct image
+        self.waitForFetch()
         image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
                                                                strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG bad MIME type', 'bad_svg', image))
@@ -78,7 +111,8 @@ class TestQgsSvgCache(unittest.TestCase):
         url = 'http://localhost:{}/qgis_local_server/xxx.svg'.format(str(TestQgsSvgCache.port))  # oooo naughty
         image, in_cache = QgsApplication.svgCache().svgAsImage(url, 100, fill=QColor(0, 0, 0), stroke=QColor(0, 0, 0),
                                                                strokeWidth=0.1, widthScaleFactor=1)
-        self.assertTrue(self.imageCheck('Remote SVG missing', 'bad_svg', image))
+
+        self.assertTrue(self.imageCheck('Remote SVG missing', 'waiting_svg', image))
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

@@ -89,9 +89,6 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
   QVariantMap childParams;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
-      continue;
-
     if ( !def->isDestination() )
     {
       if ( !child.parameterSources().contains( def->name() ) )
@@ -288,7 +285,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
+      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
       childAlg.reset( nullptr );
       if ( !ok )
       {
@@ -772,6 +769,9 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
         continue;
 
       std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
+      // Even if an output was hidden in a child algorithm, we want to show it here for the final
+      // outputs.
+      param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
       addParameter( param.release() );

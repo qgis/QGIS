@@ -211,7 +211,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
-QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder ) const
+QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
 
   QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );

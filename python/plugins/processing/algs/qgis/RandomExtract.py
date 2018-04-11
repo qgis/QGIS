@@ -32,7 +32,9 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsFeatureRequest,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -78,7 +80,7 @@ class RandomExtract(QgisAlgorithm):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         featureCount = source.featureCount()
         value = self.parameterAsInt(parameters, self.NUMBER, context)
 

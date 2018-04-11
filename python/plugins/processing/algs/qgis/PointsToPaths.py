@@ -41,6 +41,7 @@ from qgis.core import (QgsFeature,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
+                       QgsProcessingFeatureSource,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFolderDestination)
@@ -126,7 +127,7 @@ class PointsToPaths(QgisAlgorithm):
                                                fields, output_wkb, source.sourceCrs())
 
         points = dict()
-        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([group_field_index, order_field_index]))
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([group_field_index, order_field_index]), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():

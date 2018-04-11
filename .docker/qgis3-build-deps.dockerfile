@@ -80,6 +80,7 @@ RUN  apt-get update \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \
+    saga \
     spawn-fcgi \
     txt2tags \
     xauth \
@@ -96,7 +97,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python3-pip \
   && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases

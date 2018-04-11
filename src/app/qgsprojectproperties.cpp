@@ -1287,7 +1287,7 @@ void QgsProjectProperties::apply()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  mOptionsListWidget->setCurrentRow( 1 );
+  mOptionsListWidget->setCurrentRow( 2 );
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )

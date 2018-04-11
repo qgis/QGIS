@@ -39,11 +39,22 @@
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
      <property name="title">
-      <string>New From Template</string>
+      <string>New from Template</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mProjectToStorageMenu">
+     <property name="title">
+      <string>Save to</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mProjectFromStorageMenu">
+     <property name="title">
+      <string>Open from</string>
      </property>
     </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
+    <addaction name="mProjectFromStorageMenu"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionRevertProject"/>
@@ -51,6 +62,7 @@
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
+    <addaction name="mProjectToStorageMenu"/>
     <addaction name="mActionSaveMapAsImage"/>
     <addaction name="mActionSaveMapAsPdf"/>
     <addaction name="mActionDxfExport"/>
@@ -1649,6 +1661,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="mActionToggleMapOnly">
+   <property name="text">
+    <string>Toggle Map Only</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Tab</string>
    </property>
   </action>
   <action name="mActionProjectProperties">

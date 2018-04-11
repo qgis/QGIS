@@ -203,7 +203,7 @@ Returns a WKT representation of the geometry.
 .. seealso:: :py:func:`asJson`
 %End
 
-    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 %Docstring
 Returns a GML2 representation of the geometry.
 
@@ -221,7 +221,7 @@ Returns a GML2 representation of the geometry.
 .. seealso:: :py:func:`asJson`
 %End
 
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", const AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 %Docstring
 Returns a GML3 representation of the geometry.
 
@@ -587,6 +587,15 @@ Drops any measure values which exist in the geometry.
 .. seealso:: :py:func:`dropZValue`
 
 .. versionadded:: 2.14
+%End
+
+    virtual void swapXy() = 0;
+%Docstring
+Swaps the x and y coordinates from the geometry. This can be used
+to repair geometries which have accidentally had their latitude and longitude
+coordinates reversed.
+
+.. versionadded:: 3.2
 %End
 
     virtual bool convertTo( QgsWkbTypes::Type type );
