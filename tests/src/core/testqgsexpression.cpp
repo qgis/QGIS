@@ -814,6 +814,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "offset_curve line" ) << "geom_to_wkt(offset_curve(geom_from_wkt('LineString(0 0, 10 0)'),1,segments:=4))" << false << QVariant( "LineString (0 1, 10 1)" );
       QTest::newRow( "offset_curve line miter" ) << "geom_to_wkt(offset_curve(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=-1,join:=2,miter_limit:=1))" << false << QVariant( "LineString (10 -1, 0 -1)" );
       QTest::newRow( "offset_curve line bevel" ) << "geom_to_wkt(offset_curve(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),distance:=1,join:=3))" << false << QVariant( "LineString (0 1, 9 1, 9 10)" );
+      QTest::newRow( "wedge_buffer not geom" ) << "wedge_buffer('g', 0, 45, 1)" << true << QVariant();
+      QTest::newRow( "wedge_buffer null" ) << "wedge_buffer(NULL, 0, 45, 1)" << false << QVariant();
+      QTest::newRow( "wedge_buffer point" ) << "geom_to_wkt(wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=1))" << false << QVariant( QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (1 3, 2 2, 1 1),(1 1, 1 2),(1 2, 1 3)))" ) );
+      QTest::newRow( "wedge_buffer point inner" ) << "geom_to_wkt(wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=2,inner_radius:=1))" << false << QVariant( QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (1 4, 3 2, 1 0),(1 0, 1 1),CircularString (1 1, 0 2, 1 3),(1 3, 1 4)))" ) );
       QTest::newRow( "single_sided_buffer not geom" ) << "single_sided_buffer('g', 5)" << true << QVariant();
       QTest::newRow( "single_sided_buffer null" ) << "single_sided_buffer(NULL, 5)" << false << QVariant();
       QTest::newRow( "single_sided_buffer point" ) << "single_sided_buffer(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
@@ -1261,9 +1265,9 @@ class TestQgsExpression: public QObject
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
     {
-      QCOMPARE( exp.hasParserError(), false );
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
+      QCOMPARE( exp.hasParserError(), false );
 
       QVariant result = exp.evaluate();
       if ( exp.hasEvalError() )
