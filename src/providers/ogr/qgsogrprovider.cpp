@@ -2974,9 +2974,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
 
-  GDALDriverH driver;
   QgsApplication::registerOgrDrivers();
-  driver = OGRGetDriverByName( format.toLatin1() );
+  OGRSFDriverH driver = OGRGetDriverByName( format.toLatin1() );
   if ( !driver )
   {
     return false;

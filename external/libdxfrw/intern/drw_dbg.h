@@ -32,8 +32,8 @@ class DRW_dbg
   public:
     enum LEVEL
     {
-      NONE,
-      DEBUG
+      none,
+      debug
     };
     void setLevel( LEVEL lvl );
     LEVEL getLevel();

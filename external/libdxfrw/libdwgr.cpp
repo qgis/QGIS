@@ -53,7 +53,7 @@ dwgR::dwgR( const char *name )
   , writer( nullptr )
 #endif
 {
-  DRW_DBGSL( DRW_dbg::NONE );
+  DRW_DBGSL( DRW_dbg::none );
 }
 
 dwgR::~dwgR()
@@ -65,11 +65,11 @@ void dwgR::setDebug( DRW::DBG_LEVEL lvl )
 {
   switch ( lvl )
   {
-    case DRW::DEBUG:
-      DRW_DBGSL( DRW_dbg::DEBUG );
+    case DRW::debug:
+      DRW_DBGSL( DRW_dbg::debug );
       break;
     default:
-      DRW_DBGSL( DRW_dbg::NONE );
+      DRW_DBGSL( DRW_dbg::none );
   }
 }
 
