@@ -5243,4 +5243,19 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/wedge_buffers.gml
+        type: vector
+
 # See ../README.md for a description of the file format
