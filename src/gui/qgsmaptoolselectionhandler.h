@@ -101,13 +101,15 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgisInterface *iface = nullptr);
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode = SelectionMode::SelectSimple);
 
     ~QgsMapToolSelectionHandler() override;
 
     bool mSelectFeatures = false;
 
-    QgisInterface *mQgisInterface;
+    bool mSelectionActive = false;
+
+    QgisInterface *mQgisInterface = nullptr;
 
     void canvasMoveEvent( QgsMapMouseEvent *e );
     void canvasPressEvent( QgsMapMouseEvent *e );
@@ -121,7 +123,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
 
     void selectPolygonMoveEvent( QgsMapMouseEvent *e );
-    void selectPolygonReleaseEvent( QgsMapMouseEvent *e );
+    void selectPolygonPressEvent( QgsMapMouseEvent *e );
 
     void selectFreehandMoveEvent( QgsMapMouseEvent *e );
     void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
@@ -142,7 +144,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
 
-    bool mSelectionActive = false;
 
     std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 

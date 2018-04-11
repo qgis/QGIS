@@ -36,7 +36,7 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
 {
   mToolName = tr( "Select features" );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Select ) );
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
 }
 
@@ -49,21 +49,18 @@ QgsMapToolSelectFeatures::~QgsMapToolSelectFeatures()
 void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
-  mSelectionHandler->selectFeaturesPressEvent( e );
+  mSelectionHandler->canvasPressEvent( e );
 }
-
 
 void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  mSelectionHandler->selectFeaturesMoveEvent( e );
+  mSelectionHandler->canvasMoveEvent( e );
 }
-
 
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  mSelectionHandler->selectFeaturesReleaseEvent( e );
+  mSelectionHandler->canvasReleaseEvent( e );
 }
-
 
 void QgsMapToolSelectFeatures::selectFeatures(Qt::KeyboardModifiers modifiers)
 {

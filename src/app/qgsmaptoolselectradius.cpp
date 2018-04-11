@@ -35,32 +35,30 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
 {
   mCursor = Qt::ArrowCursor;
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
-  mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectRadius );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectRadius::selectFeatures );
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
 {
-    disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectRadius::selectFeatures );
-    mSelectionHandler->deactivate();
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectRadius::selectFeatures );
+  mSelectionHandler->deactivate();
   delete mSelectionHandler;
 }
 
 void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   mSnapIndicator->setMatch( e->mapPointMatch() );
-  mSelectionHandler->selectRadiusMoveEvent( e );
+  mSelectionHandler->canvasMoveEvent( e );
 }
-
 
 void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mSelectionHandler->mQgisInterface )
   {
-    mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
+      mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
   }
-  mSelectionHandler->selectRadiusReleaseEvent( e );
+  mSelectionHandler->canvasReleaseEvent( e );
 }
 
 void QgsMapToolSelectRadius::deactivate()

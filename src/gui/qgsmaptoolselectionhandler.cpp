@@ -126,15 +126,14 @@ void QgsDistanceWidget::distanceSpinBoxValueChanged( double distance )
   emit distanceChanged( distance );
 }
 
-QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgisInterface *iface )
+QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode )
   : QObject()
   , mLastMapUnitsPerPixel( -1.0 )
   , mCoordinatePrecision( 6 )
   , mCanvas( canvas )
-  , mSelectionMode( QgsMapToolSelectionHandler::SelectSimple )
+  , mSelectionMode( selectionMode )
 {
   mFillColor = QColor( 254, 178, 76, 63 );
-  mQgisInterface = iface;
   mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
@@ -151,7 +150,6 @@ void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
       selectFeaturesReleaseEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectPolygon:
-      selectPolygonReleaseEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectFreehand:
       selectFreehandReleaseEvent( e );
@@ -197,6 +195,7 @@ void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e )
       selectFeaturesPressEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectPolygon:
+      selectPolygonPressEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectFreehand:
       break;
@@ -280,7 +279,7 @@ void QgsMapToolSelectionHandler::selectPolygonMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolSelectionHandler::selectPolygonReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
 {
   mSelectFeatures = false;
   if ( !mSelectionRubberBand )

@@ -190,7 +190,8 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   mSelectionHandler->canvasReleaseEvent( e );
-  handleOnCanvasRelease( e );
+  if (!mSelectionHandler->mSelectionActive)
+    handleOnCanvasRelease( e );
 }
 
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )

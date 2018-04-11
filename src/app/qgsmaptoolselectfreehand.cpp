@@ -29,7 +29,7 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectFreehand );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFreehand::selectFeatures );
 
 }
@@ -40,20 +40,14 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
     delete mSelectionHandler;
 }
 
-
 void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  mSelectionHandler->selectFreehandMoveEvent( e );
+  mSelectionHandler->canvasMoveEvent( e );
 }
-
 
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  mSelectionHandler->selectFreehandReleaseEvent( e );
-//  if ( mSelectionHandler->mSelectFeatures )
-//  {
-//    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), e->modifiers(), QgisApp::instance()->messageBar() );
-//  }
+  mSelectionHandler->canvasReleaseEvent( e );
 }
 
 void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
