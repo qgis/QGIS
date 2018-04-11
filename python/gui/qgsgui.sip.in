@@ -62,6 +62,13 @@ Returns the global map layer action registry, used for registering map layer act
 Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
 %End
 
+    static QgsProcessingGuiRegistry *processingGuiRegistry();
+%Docstring
+Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
+
+.. versionadded:: 3.2
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.

@@ -208,7 +208,7 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelChildAlgorithm):
             elemAlg = self.element.algorithm()
-            dlg = ModelerParametersDialog(elemAlg, self.model, self.element.childId())
+            dlg = ModelerParametersDialog(elemAlg, self.model, self.element.childId(), self.element.configuration())
             if dlg.exec_():
                 alg = dlg.createAlgorithm()
                 alg.setChildId(self.element.childId())

@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsalgorithmbuffer.h
+                         qgsalgorithmfilter.h
                          ---------------------
-    begin                : April 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    begin                : April 2018
+    copyright            : (C) 2018 by Matthias Kuhn
+    email                : matthias@opengis.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,41 +15,63 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMBUFFER_H
-#define QGSALGORITHMBUFFER_H
+#ifndef QGSFILTERALGORITHM_H
+#define QGSFILTERALGORITHM_H
 
 #define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 
+class QgsProcessingModelAlgorithm;
+class QTableWidget;
+
 ///@cond PRIVATE
 
 /**
- * Native buffer algorithm.
+ * Feature filter algorithm for modeler.
+ * Accepts a list of expressions and names and creates outputs where
+ * matching features are sent to.
+ *
+ * \since QGIS 3.2
  */
-class QgsBufferAlgorithm : public QgsProcessingAlgorithm
+class QgsFilterAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
+    QgsFilterAlgorithm() = default;
+    ~QgsFilterAlgorithm();
 
-    QgsBufferAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    virtual Flags flags() const override;
     QString shortHelpString() const override;
-    QgsBufferAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsFilterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+    struct Output
+    {
+      Output( const QString &name, const QString &expression )
+        : name( name )
+        , expression( expression )
+      {}
+      QString name;
+      QgsExpression expression;
+      std::unique_ptr< QgsFeatureSink > sink;
+      QString destinationIdentifier;
+    };
+
+    QList<Output *> mOutputs;
 };
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMBUFFER_H
+#endif // QGSFILTERALGORITHM_H
