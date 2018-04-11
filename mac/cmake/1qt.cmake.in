@@ -79,7 +79,7 @@ FOREACH (QTP cocoa;minimal;offscreen)
     IF (NOT EXISTS "${QPLUGDIR}/../platforms/libq${QTP}.dylib")
         EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/platforms/libq${QTP}.dylib" "${QPLUGDIR}/../platforms/libq${QTP}.dylib")
     ENDIF ()
-ENDFOREACH (QTC)
+ENDFOREACH (QTP)
 EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../sqldrivers")
 SET (QTLISTSQL ite odbc psql mysql)
 # qspatialite driver plugin is part of QGIS build
