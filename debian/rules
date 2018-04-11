@@ -102,7 +102,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful bionic buster sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"artful bionic"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
