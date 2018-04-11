@@ -9298,7 +9298,9 @@ void QgisApp::removeLayer()
     return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const QList<QgsMapLayer *> selectedLayers = mLayerTreeView->selectedLayers();
+
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
@@ -9306,7 +9308,7 @@ void QgisApp::removeLayer()
   }
 
   QStringList activeTaskDescriptions;
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
@@ -9315,6 +9317,18 @@ void QgisApp::removeLayer()
       {
         activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
       }
+    }
+  }
+
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsMapLayer *layer : selectedLayers )
+  {
+    if ( requiredLayers.contains( layer ) )
+    {
+      QMessageBox::warning( this, tr( "Required layers" ),
+                            tr( "The layer '%1' is marked as a required and therefore it cannot be removed from the project.\n\n"
+                                "If you really need to remove the layer, unmark it as required in the Project Properties window > Data Sources tab." ).arg( layer->name() ) );
+      return;
     }
   }
 

@@ -224,4 +224,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
+
+    void populateRequiredLayers();
+    void applyRequiredLayers();
 };
