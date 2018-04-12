@@ -4045,13 +4045,46 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
   {
     return 1.0;
   }
-  // MM or Pixel
-  double scaleFactor = scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, mapUnits ) / 1000.0;
-  if ( symbolUnits == QgsSymbolV2::Pixel )
+  else if ( symbolUnits == QgsSymbolV2::MM )
   {
-    scaleFactor *= mapUnitsPerPixel;
+    return ( scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, mapUnits ) / 1000.0 );
   }
-  return scaleFactor;
+  else if ( symbolUnits == QgsSymbolV2::Pixel )
+  {
+    return mapUnitsPerPixel;
+  }
+}
+
+void QgsDxfExport::clipValueToMapUnitScale( double& value, const QgsMapUnitScale& scale, double pixelToMMFactor ) const
+{
+  if ( !scale.minSizeMMEnabled && !scale.maxSizeMMEnabled )
+  {
+    return;
+  }
+
+  double mapUnitsPerPixel = mMapSettings.mapToPixel().mapUnitsPerPixel();
+
+  double minSizeMU = -DBL_MAX;
+  if ( scale.minSizeMMEnabled )
+  {
+    minSizeMU = scale.minSizeMM * pixelToMMFactor * mapUnitsPerPixel;
+  }
+  if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
+  {
+    minSizeMU = qMax( minSizeMU, value );
+  }
+  value = qMax( value, minSizeMU );
+
+  double maxSizeMU = DBL_MAX;
+  if ( scale.maxSizeMMEnabled )
+  {
+    maxSizeMU = scale.maxSizeMM * pixelToMMFactor * mapUnitsPerPixel;
+  }
+  if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
+  {
+    maxSizeMU = qMin( maxSizeMU, value );
+  }
+  value = qMin( value, maxSizeMU );
 }
 
 QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( QgsRenderContext &context )

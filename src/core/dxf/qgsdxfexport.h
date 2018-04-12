@@ -403,6 +403,7 @@ class CORE_EXPORT QgsDxfExport
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits, double mapUnitsPerPixel = 1.0 );
+    void clipValueToMapUnitScale( double& value, const QgsMapUnitScale& scale, double pixelToMMFactor ) const;
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );

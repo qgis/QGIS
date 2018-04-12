@@ -1301,6 +1301,10 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
 
   size *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mSizeUnit == QgsSymbolV2::MapUnit )
+  {
+    e.clipValueToMapUnitScale( size, mSizeMapUnitScale, context.renderContext().scaleFactor() );
+  }
   double halfSize = size / 2.0;
 
   //outlineWidth
