@@ -274,6 +274,7 @@ void TestQgsPointXY::vector()
   // length
   QCOMPARE( v1.length(), 0.0 );
   QGSCOMPARENEAR( v2.length(), std::sqrt( 5.0 ), 0.000000001 );
+  QCOMPARE( v2.lengthSquared(), 5.0 );
 
   // perpVector
   QCOMPARE( QgsVector( 2, 3 ).perpVector().x(), -3.0 );
@@ -320,6 +321,9 @@ void TestQgsPointXY::vector()
   v1 -= v2;
   QCOMPARE( v1.x(), 1.0 );
   QCOMPARE( v1.y(), 3.0 );
+
+  // 2d cross product
+  QCOMPARE( QgsVector( 1, 3 ).crossProduct( QgsVector( 6, 9 ) ), -9.0 );
 }
 
 void TestQgsPointXY::asVariant()
