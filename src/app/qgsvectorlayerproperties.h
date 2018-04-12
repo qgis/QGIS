@@ -112,6 +112,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //
 
     void pbnQueryBuilder_clicked();
+    void pbnClearQueryBuilder_clicked();
     void pbnIndex_clicked();
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();

@@ -227,8 +227,18 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
-          action->setEnabled( !vlayer->isEditable() );
+          QMenu *menuFiltering = new QMenu( tr( "Filtering" ), menu );
+          QAction *actionFilter = new QAction( tr( "&Filter…" ), menuFiltering );
+          actionFilter->setEnabled( !vlayer->isEditable() );
+          connect( actionFilter, &QAction::triggered, QgisApp::instance(), &QgisApp::layerSubsetString );
+          menuFiltering->addAction( actionFilter );
+          QAction *actionClearFilter = new QAction( tr( "Clear Filter" ), menuFiltering );
+          actionClearFilter->setEnabled( !vlayer->subsetString().isEmpty() );
+          actionClearFilter->setProperty( "layerId", vlayer->id() );
+          connect( actionClearFilter, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::clearLayerFilter );
+          menuFiltering->addAction( actionClearFilter );
+
+          menu->addMenu( menuFiltering );
         }
       }
 
@@ -708,3 +718,20 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
     layer->emitStyleChanged();
   }
 }
+
+void QgsAppLayerTreeViewMenuProvider::clearLayerFilter()
+{
+  QAction *action = qobject_cast< QAction *>( sender() );
+  if ( !action )
+    return;
+
+  QString layerId = action->property( "layerId" ).toString();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+
+  if ( !layer )
+    return;
+
+  layer->setSubsetString( QLatin1String( "" ) );
+  QgsProject::instance()->setDirty( true );
+}
+

@@ -96,6 +96,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
   connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnQueryBuilder_clicked );
+  connect( pbnClearQueryBuilder, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnClearQueryBuilder_clicked );
   connect( pbnIndex, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnIndex_clicked );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerProperties::mCrsSelector_crsChanged );
   connect( pbnUpdateExtents, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnUpdateExtents_clicked );
@@ -810,10 +811,17 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
     // The datasource for the layer needs to be updated with the new sql since this gets
     // saved to the project file. This should happen at the map layer level...
-
   }
+  pbnClearQueryBuilder->setEnabled( !mLayer->subsetString().isEmpty() );
   // delete the query builder object
   delete qb;
+}
+
+void QgsVectorLayerProperties::pbnClearQueryBuilder_clicked()
+{
+  txtSubsetSQL->clear();
+  mLayer->setSubsetString( QLatin1String( "" ) );
+  pbnClearQueryBuilder->setEnabled( false );
 }
 
 void QgsVectorLayerProperties::pbnIndex_clicked()
@@ -1580,6 +1588,8 @@ void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
                                mLayer->dataProvider() &&
                                mLayer->dataProvider()->supportsSubsetString() &&
                                !mLayer->isEditable() );
+
+  pbnClearQueryBuilder->setEnabled( !mLayer->subsetString().isEmpty() );
 
   if ( mLayer && mLayer->isEditable() )
   {
