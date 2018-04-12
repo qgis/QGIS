@@ -26,7 +26,7 @@
 
 
 // from parser
-extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg );
+extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QgsExpression::ParserError &parserError );
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
@@ -99,7 +99,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserError );
   d->mEvalErrorString = QString();
   d->mExp = expression;
 }
@@ -195,7 +195,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserError );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -253,6 +253,11 @@ bool QgsExpression::hasParserError() const
 QString QgsExpression::parserErrorString() const
 {
   return d->mParserErrorString;
+}
+
+QgsExpression::ParserError QgsExpression::parserError() const
+{
+  return d->mParserError;
 }
 
 QSet<QString> QgsExpression::referencedColumns() const
@@ -338,7 +343,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserError );
   }
 
   if ( !d->mRootNode )

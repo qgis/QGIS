@@ -352,6 +352,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void showEvent( QShowEvent *e ) override;
 
   private:
+    void clearErrors();
     void runPythonCode( const QString &code );
     void updateFunctionTree();
     void fillFieldValues( const QString &fieldName, int countLimit );
