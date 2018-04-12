@@ -9320,16 +9320,14 @@ void QgisApp::removeLayer()
     }
   }
 
+  // extra check for required layers
+  // In theory it should not be needed because the remove action should be disabled
+  // if there are required layers in the selection...
   const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
   for ( QgsMapLayer *layer : selectedLayers )
   {
     if ( requiredLayers.contains( layer ) )
-    {
-      QMessageBox::warning( this, tr( "Required layers" ),
-                            tr( "The layer '%1' is marked as a required and therefore it cannot be removed from the project.\n\n"
-                                "If you really need to remove the layer, unmark it as required in the Project Properties window > Data Sources tab." ).arg( layer->name() ) );
       return;
-    }
   }
 
   if ( !activeTaskDescriptions.isEmpty() )
@@ -11587,7 +11585,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 
 void QgisApp::legendLayerSelectionChanged()
 {
-  QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
+  const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
@@ -11613,6 +11611,19 @@ void QgisApp::legendLayerSelectionChanged()
       mLegendExpressionFilterButton->setChecked( exprEnabled );
     }
   }
+
+  // remove action - check for required layers
+  bool removeEnabled = true;
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
+  {
+    if ( requiredLayers.contains( nodeLayer->layer() ) )
+    {
+      removeEnabled = false;
+      break;
+    }
+  }
+  mActionRemoveLayer->setEnabled( removeEnabled );
 }
 
 void QgisApp::layerEditStateChanged()
