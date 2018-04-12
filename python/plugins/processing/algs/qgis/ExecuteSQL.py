@@ -143,7 +143,7 @@ class ExecuteSQL(QgisAlgorithm):
             df.setUid(uid_field)
 
         if geometry_type == 1:  # no geometry
-            df.setGeometryWkbType(QgsWkbTypes.NullGeometry)
+            df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
         else:
             if geometry_field:
                 df.setGeometryField(geometry_field)
