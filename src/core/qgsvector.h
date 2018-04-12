@@ -89,8 +89,19 @@ class CORE_EXPORT QgsVector
 
     /**
      * Returns the length of the vector.
+     * \see lengthSquared()
      */
     double length() const;
+
+    /**
+     * Returns the length of the vector.
+     * \since QGIS 3.2
+     * \see length()
+     */
+    double lengthSquared() const
+    {
+      return mX * mX + mY * mY;
+    }
 
     /**
      * Returns the vector's x-component.
@@ -118,6 +129,14 @@ class CORE_EXPORT QgsVector
      * Returns the angle between this vector and another vector in radians.
      */
     double angle( QgsVector v ) const;
+
+    /**
+     * Returns the 2D cross product of this vector and another vector \a v. (This is sometimes
+     * referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
+     *
+     * \since QGIS 3.2
+     */
+    double crossProduct( QgsVector v ) const;
 
     /**
      * Rotates the vector by a specified angle.
