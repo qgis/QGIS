@@ -654,7 +654,13 @@ double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2
     context.setOriginalValueVariable( mOffset );
     offset = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context, mOffset ).toDouble();
   }
-  return offset;
+
+  offset *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), offsetUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mOffsetUnit == QgsSymbolV2::MapUnit )
+  {
+    e.clipValueToMapUnitScale( offset, mOffsetMapUnitScale, context.renderContext().scaleFactor() );
+  }
+  return -offset; //direction seems to be inverse to symbology offset
 }
 
 /////////
