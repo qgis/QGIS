@@ -1125,6 +1125,9 @@ namespace QgsWms
     {
       mapSettings.setBackgroundColor( backgroundColor );
     }
+
+    // add context from project (global variables, ...)
+    mapSettings.setExpressionContext( mProject->createExpressionContext() );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
