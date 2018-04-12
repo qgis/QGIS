@@ -622,12 +622,13 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2R
     context.setOriginalValueVariable( mWidth );
     width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context, mWidth ).toDouble();
   }
-  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
-  {
-    width = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
-  }
 
-  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  width *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mWidthUnit == QgsSymbolV2::MapUnit )
+  {
+    e.clipValueToMapUnitScale( width, mWidthMapUnitScale, context.renderContext().scaleFactor() );
+  }
+  return width;
 }
 
 QColor QgsSimpleLineSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext& context ) const

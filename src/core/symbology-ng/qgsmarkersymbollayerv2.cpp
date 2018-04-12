@@ -1316,6 +1316,10 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
   outlineWidth *= e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mOutlineWidthUnit == QgsSymbolV2::MapUnit )
+  {
+    e.clipValueToMapUnitScale( outlineWidth, mOutlineWidthMapUnitScale, context.renderContext().scaleFactor() );
+  }
 
   //color
   QColor pc = mPen.color();
