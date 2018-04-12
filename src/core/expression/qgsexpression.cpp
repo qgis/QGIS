@@ -489,7 +489,6 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
     if ( pos < 0 )
       break;
 
-    int start = index;
     index = pos + rx.matchedLength();
     QString to_replace = rx.cap( 1 ).trimmed();
 
