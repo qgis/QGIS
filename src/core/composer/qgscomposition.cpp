@@ -3053,7 +3053,7 @@ bool QgsComposition::print( QPrinter &printer, const bool evaluateDDPageSize )
 
 QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
 {
-  int resolution = mPrintResolution;
+  double resolution = mPrintResolution;
   if ( imageSize.isValid() )
   {
     //output size in pixels specified, calculate resolution using average of
@@ -3068,9 +3068,9 @@ QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
   }
 
   int width = imageSize.isValid() ? imageSize.width()
-              : static_cast< int >( resolution * mPageWidth / 25.4 );
+              : qRound( resolution * mPageWidth / 25.4 );
   int height = imageSize.isValid() ? imageSize.height()
-               : static_cast< int >( resolution * mPageHeight / 25.4 );
+               : qRound( resolution * mPageHeight / 25.4 );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
@@ -3087,7 +3087,7 @@ QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
 
 QImage QgsComposition::renderRectAsRaster( const QRectF& rect, QSize imageSize, int dpi )
 {
-  int resolution = mPrintResolution;
+  double resolution = mPrintResolution;
   if ( imageSize.isValid() )
   {
     //output size in pixels specified, calculate resolution using average of
@@ -3102,9 +3102,9 @@ QImage QgsComposition::renderRectAsRaster( const QRectF& rect, QSize imageSize, 
   }
 
   int width = imageSize.isValid() ? imageSize.width()
-              : static_cast< int >( resolution * rect.width() / 25.4 );
+              : qRound( resolution * rect.width() / 25.4 );
   int height = imageSize.isValid() ? imageSize.height()
-               : static_cast< int >( resolution * rect.height() / 25.4 );
+               : qRound( resolution * rect.height() / 25.4 );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
