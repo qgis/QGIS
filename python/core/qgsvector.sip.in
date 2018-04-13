@@ -121,6 +121,7 @@ Will throw a QgsException if called on a vector with length of 0.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -17,6 +17,7 @@
 #define QGSVECTOR_H
 
 #include "qgis_core.h"
+#include <QtGlobal>
 
 /**
  * \ingroup core
@@ -160,5 +161,7 @@ class CORE_EXPORT QgsVector
     double mX = 0.0, mY = 0.0;
 
 };
+
+Q_DECLARE_TYPEINFO( QgsVector, Q_MOVABLE_TYPE );
 
 #endif // QGSVECTOR_H
