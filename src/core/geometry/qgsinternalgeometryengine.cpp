@@ -389,10 +389,12 @@ QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tole
 
   std::unique_ptr< QgsLineString > best( ring->clone() );
 
+  QVector< QgsVector > /* yep */ motions;
+  motions.reserve( numPoints );
+
   for ( int it = 0; it < iterations; ++it )
   {
-    QVector< QgsVector > /* yep */ motions;
-    motions.reserve( numPoints );
+    motions.resize( 0 ); // avoid re-allocations
 
     // first loop through an calculate all motions
     QgsPoint a;
