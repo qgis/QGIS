@@ -18,8 +18,12 @@
 
 #define SIP_NO_FILE
 
+#include "qgspointxy.h"
+
 class QgsGeometry;
 class QgsAbstractGeometry;
+class QgsLineString;
+class QgsLineSegment2D;
 
 /**
  * \ingroup core
@@ -100,6 +104,39 @@ class QgsInternalGeometryEngine
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
+};
+
+/**
+ * A 2D ray which extends from an origin point to an infinite distance in a given direction.
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsRay2D
+{
+  public:
+
+    /**
+     * Constructor for a ray starting at the given \a origin and extending an infinite distance
+     * in the specified \a direction.
+     */
+    QgsRay2D( const QgsPointXY &origin, QgsVector direction )
+      : origin( origin )
+      , direction( direction )
+    {}
+
+    /**
+     * Finds the closest intersection point of the ray and a line \a segment.
+     *
+     * If found, the intersection point will be stored in \a intersectPoint.
+     *
+     * Returns true if the ray intersects the line segment.
+     */
+    bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
+
+  private:
+
+    QgsPointXY origin;
+    QgsVector direction;
 };
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

@@ -108,6 +108,7 @@ SET(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
