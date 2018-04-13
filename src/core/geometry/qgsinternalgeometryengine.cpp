@@ -711,6 +711,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
   }
 }
 
+///@cond PRIVATE
 //
 // QgsLineSegmentDistanceComparer
 //
@@ -764,6 +765,45 @@ bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSeg
   }
 }
 
+//
+// QgsClockwiseAngleComparer
+//
+
+bool QgsClockwiseAngleComparer::operator()( const QgsPointXY &a, const QgsPointXY &b ) const
+{
+  const bool aIsLeft = a.x() < mVertex.x();
+  const bool bIsLeft = b.x() < mVertex.x();
+  if ( aIsLeft != bIsLeft )
+    return bIsLeft;
+
+  if ( qgsDoubleNear( a.x(), mVertex.x() ) && qgsDoubleNear( b.x(), mVertex.x() ) )
+  {
+    if ( a.y() >= mVertex.y() || b.y() >= mVertex.y() )
+    {
+      return b.y() < a.y();
+    }
+    else
+    {
+      return a.y() < b.y();
+    }
+  }
+  else
+  {
+    const QgsVector oa = a - mVertex;
+    const QgsVector ob = b - mVertex;
+    const double det = oa.crossProduct( ob );
+    if ( qgsDoubleNear( det, 0.0 ) )
+    {
+      return oa.lengthSquared() < ob.lengthSquared();
+    }
+    else
+    {
+      return det < 0;
+    }
+  }
+}
+
+///@endcond PRIVATE
 
 //
 // QgsRay2D
