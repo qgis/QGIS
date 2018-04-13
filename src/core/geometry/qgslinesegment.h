@@ -189,6 +189,14 @@ class CORE_EXPORT QgsLineSegment2D
      */
     int pointLeftOfLine( const QgsPointXY &point ) const;
 
+    /**
+     * Reverses the line segment, so that the start and end points are flipped.
+     */
+    void reverse()
+    {
+      std::swap( mStart, mEnd );
+    }
+
     //! Equality operator
     bool operator==( const QgsLineSegment2D &other ) const
     {
