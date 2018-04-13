@@ -711,6 +711,64 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
   }
 }
 
+//
+// QgsLineSegmentDistanceComparer
+//
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const
+{
+  Q_ASSERT_X( ab.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "AB must not be collinear with the origin." );
+  Q_ASSERT_X( cd.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "CD must not be collinear with the origin." );
+
+  // flip the segments so that if there are common endpoints,
+  // they will be the segment's start points
+  if ( ab.end() == cd.start() || ab.end() == cd.end() )
+    ab.reverse();
+  if ( ab.start() == cd.end() )
+    cd.reverse();
+
+  // cases with common endpoints
+  if ( ab.start() == cd.start() )
+  {
+    const int oad = QgsGeometryUtils::leftOfLine( cd.endX(), cd.endY(), mOrigin.x(), mOrigin.y(), ab.startX(), ab.startY() );
+    const int oab = ab.pointLeftOfLine( mOrigin );
+    if ( ab.end() == cd.end() || oad != oab )
+      return false;
+    else
+      return ab.pointLeftOfLine( cd.end() ) != oab;
+  }
+  else
+  {
+    // cases without common endpoints
+    const int cda = cd.pointLeftOfLine( ab.start() );
+    const int cdb = cd.pointLeftOfLine( ab.end() );
+    if ( cdb == 0 && cda == 0 )
+    {
+      return mOrigin.sqrDist( ab.start() ) < mOrigin.sqrDist( cd.start() );
+    }
+    else if ( cda == cdb || cda == 0 || cdb == 0 )
+    {
+      const int cdo = cd.pointLeftOfLine( mOrigin );
+      return cdo == cda || cdo == cdb;
+    }
+    else
+    {
+      const int abo = ab.pointLeftOfLine( mOrigin );
+      return abo != ab.pointLeftOfLine( cd.start() );
+    }
+  }
+}
+
+
+//
+// QgsRay2D
+//
+
 bool QgsRay2D::intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const
 {
   const QgsVector ao = origin - segment.start();
