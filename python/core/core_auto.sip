@@ -271,6 +271,7 @@
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
 %Include geometry/qgsgeometryutils.sip
+%Include geometry/qgslinesegment.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
 %Include geometry/qgsmultilinestring.sip
