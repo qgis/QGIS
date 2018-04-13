@@ -740,7 +740,7 @@ class ParameterString(Parameter):
     NEWLINE = '\n'
     ESCAPED_NEWLINE = '\\n'
 
-    def __init__(self, name='', description='', default='', multiline=False,
+    def __init__(self, name='', description='', default=None, multiline=False,
                  optional=False, evaluateExpressions=False):
         Parameter.__init__(self, name, description, default, optional)
         self.multiline = parseBool(multiline)
