@@ -1111,6 +1111,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
+  geometry/qgslinesegment.h
   geometry/qgslinestring.h
   geometry/qgsmulticurve.h
   geometry/qgsmultilinestring.h
