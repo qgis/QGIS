@@ -26,8 +26,10 @@
 #include <iterator>
 
 #ifdef HAVE_OPENCL
-#include <CL/cl.hpp>
-#include <CL/cl.h>
+#define CL_HPP_ENABLE_EXCEPTIONS
+#define CL_HPP_MINIMUM_OPENCL_VERSION 110
+#define CL_HPP_TARGET_OPENCL_VERSION 110
+#include <CL/cl2.hpp>
 #endif
 
 
@@ -99,46 +101,6 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 
   cl_int errorCode = 0;
 
-  // Get platform and device information
-//  cl_platform_id platform_id = NULL;
-//  cl_device_id device_id = NULL;
-//  cl_uint ret_num_devices;
-//  cl_uint ret_num_platforms;
-//  cl_int ret = clGetPlatformIDs( 1, &platform_id, &ret_num_platforms );
-//  ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_ALL, 1,
-//                        &device_id, &ret_num_devices );
-
-//  // Create an OpenCL context
-//  cl_context context = clCreateContext( NULL, 1, &device_id, NULL, NULL, &ret );
-
-//  // Create a command queue
-//  cl_command_queue command_queue = clCreateCommandQueue( context, device_id, 0, &ret );
-
-//  // Create memory buffers on the device for each vector
-//  cl_mem scanLine1Buffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                             sizeof( float ) * ( xSize + 2 ), NULL, &ret );
-//  cl_mem scanLine2Buffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                             sizeof( float ) * ( xSize + 2 ), NULL, &ret );
-//  cl_mem scanLine3Buffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                             sizeof( float ) * ( xSize + 2 ), NULL, &ret );
-
-  // TODO: constants
-
-
-//  cl_mem inputNodataValueBuffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                                    sizeof( float ), NULL, &ret );
-//  cl_mem outputNodataValueBuffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                                     sizeof( float ), NULL, &ret );
-//  cl_mem zFactorBuffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                           sizeof( double ), NULL, &ret );
-//  cl_mem cellSizeXBuffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                             sizeof( double ), NULL, &ret );
-//  cl_mem cellSizeYBuffer = clCreateBuffer( context, CL_MEM_READ_ONLY,
-//                             sizeof( double ), NULL, &ret );
-
-//  cl_mem resultLineBuffer = clCreateBuffer( context, CL_MEM_WRITE_ONLY,
-//                              sizeof( float ) *  xSize, NULL, &ret );
-
   std::vector<double> rasterParams;
 
   rasterParams.push_back( mInputNodataValue );
@@ -147,24 +109,11 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   rasterParams.push_back( mCellSizeX );
   rasterParams.push_back( mCellSizeY );
 
-//  cl::Buffer inputNodataValueBuffer( CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-//                                      sizeof( float ), mInputNodataValue , &ret );
-//  cl::Buffer outputNodataValueBuffer( CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-//                                       sizeof( float ), mOutputNodataValue, &ret );
-//  cl::Buffer zFactorBuffer ( CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-//                             sizeof( double ), mZFactor, &ret );
-//  cl::Buffer cellSizeXBuffer ( CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-//                               sizeof( double ), mCellSizeX, &ret );
-//  cl::Buffer cellSizeYBuffer ( CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-//                               sizeof( double ), mCellSizeY, &ret );
-
-  cl::Buffer rasterParamsBuffer( std::begin( rasterParams ), std::end( rasterParams ), true, false, &errorCode );
-
-  cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
-
+  cl::Buffer rasterParamsBuffer( rasterParams.begin(), rasterParams.end(), true, false, &errorCode );
   cl::Buffer scanLine1Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
   cl::Buffer scanLine2Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
   cl::Buffer scanLine3Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
+  cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
 
 
   char *source_str = new char [QFileInfo( "/home/ale/dev/QGIS/src/analysis/raster/slope.cl" ).size() + 1];
@@ -187,7 +136,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 
   // Create the OpenCL kernel
   auto kernel =
-    cl::make_kernel <
+    cl::KernelFunctor <
     cl::Buffer &,
     cl::Buffer &,
     cl::Buffer &,
@@ -254,37 +203,6 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
 
 #ifdef HAVE_OPENCL
-    // Copy the scan lines to their respective memory buffers
-//    ret = clEnqueueWriteBuffer( command_queue, scanLine1Buffer, CL_TRUE, 0,
-//                                sizeof( float ) * ( xSize + 2 ), scanLine1, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, scanLine2Buffer, CL_TRUE, 0,
-//                                sizeof( float ) * ( xSize + 2 ), scanLine2, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, scanLine3Buffer, CL_TRUE, 0,
-//                                sizeof( float ) * ( xSize + 2 ), scanLine3, 0, NULL, NULL );
-
-//    ret = clEnqueueWriteBuffer( command_queue, inputNodataValueBuffer, CL_TRUE, 0,
-//                                sizeof( float ), &mInputNodataValue, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, outputNodataValueBuffer, CL_TRUE, 0,
-//                                sizeof( float ), &mOutputNodataValue, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, zFactorBuffer, CL_TRUE, 0,
-//                                sizeof( double ), &mZFactor, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, cellSizeXBuffer, CL_TRUE, 0,
-//                                sizeof( double ), &mCellSizeX, 0, NULL, NULL );
-//    ret = clEnqueueWriteBuffer( command_queue, cellSizeYBuffer, CL_TRUE, 0,
-//                                sizeof( double ), &mCellSizeY, 0, NULL, NULL );
-
-
-//    // Set the arguments of the kernel
-//    ret = ret || clSetKernelArg( kernel, 0, sizeof( cl_mem ), ( void * )&scanLine1Buffer );
-//    ret = ret || clSetKernelArg( kernel, 1, sizeof( cl_mem ), ( void * )&scanLine2Buffer );
-//    ret = ret || clSetKernelArg( kernel, 2, sizeof( cl_mem ), ( void * )&scanLine3Buffer );
-//    ret = ret || clSetKernelArg( kernel, 3, sizeof( cl_mem ), ( void * )&resultLineBuffer );
-//    ret = ret || clSetKernelArg( kernel, 4, sizeof( cl_mem ), ( void * )&inputNodataValueBuffer );
-//    ret = ret || clSetKernelArg( kernel, 5, sizeof( cl_mem ), ( void * )&outputNodataValueBuffer );
-//    ret = ret || clSetKernelArg( kernel, 6, sizeof( cl_mem ), ( void * )&zFactorBuffer );
-//    ret = ret || clSetKernelArg( kernel, 7, sizeof( cl_mem ), ( void * )&cellSizeXBuffer );
-//    ret = ret || clSetKernelArg( kernel, 8, sizeof( cl_mem ), ( void * )&cellSizeYBuffer );
-
 
     errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
                                         sizeof( float ) * ( xSize + 2 ), scanLine1 );
@@ -303,19 +221,6 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
             resultLineBuffer,
             rasterParamsBuffer
           );
-//    // Execute the OpenCL kernel on the scan line
-//    size_t global_item_size = xSize; // Process the entire lists
-//    //size_t local_item_size = 64; // Process in groups of 64 (or NULL for auto)
-//    //ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL,
-//    //        &global_item_size, &local_item_size, 0, NULL, NULL);
-//    ret = clEnqueueNDRangeKernel( command_queue, kernel, 1, NULL,
-//                                  &global_item_size, NULL, 0, NULL, NULL );
-
-    //Q_ASSERT( ret == 0 );
-
-    //const cl_command_queue command_queue = cl::CommandQueue::getDefault()();
-    //ret = clEnqueueReadBuffer( command_queue , resultLineBuffer(), CL_TRUE, 0,
-    //                           xSize * sizeof( float ), resultLine, 0, NULL, NULL );
 
     cl::enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine );
 
