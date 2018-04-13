@@ -448,7 +448,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, QVariantList args
 
     if ( mFetchGeometry )
     {
-      query += QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn );
+      query += QString( "SDO_UTIL.TO_WKBGEOMETRY( %1 ) AS %1" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) );
       delim = ",";
     }
 
