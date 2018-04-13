@@ -102,6 +102,16 @@ class TestQgsLineSegment2D(unittest.TestCase):
         self.assertAlmostEqual(segment.length(), 3.60555127546, 5)
         self.assertEqual(segment.lengthSquared(), 13)
 
+    def testPointLeftOfLine(self):
+        segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 5))
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(1.5, 6)), -1)
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(1.5, -6)), 1)
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(5, 8)), 0)
+        segment = QgsLineSegment2D(QgsPointXY(3, 5), QgsPointXY(1, 2))
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(1.5, 6)), 1)
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(1.5, -6)), -1)
+        self.assertEqual(segment.pointLeftOfLine(QgsPointXY(5, 8)), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
