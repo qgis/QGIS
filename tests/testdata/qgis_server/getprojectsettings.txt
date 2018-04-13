@@ -137,7 +137,6 @@ Content-Type: text/xml; charset=utf-8
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
-   <MetadataURL/>
    <TreeName>QGIS Test Project</TreeName>
    <Layer geometryType="Point" queryable="1" displayField="name" visible="1">
     <Name>testlayer èé</Name>
