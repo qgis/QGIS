@@ -2660,3 +2660,25 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
 
   setDirty( true );
 }
+
+QSet<QgsMapLayer *> QgsProject::requiredLayers() const
+{
+  QSet<QgsMapLayer *> layers;
+  const QStringList lst = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
+  for ( const QString &layerId : lst )
+  {
+    if ( QgsMapLayer *layer = mapLayer( layerId ) )
+      layers.insert( layer );
+  }
+  return layers;
+}
+
+void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
+{
+  QStringList layerIds;
+  for ( QgsMapLayer *layer : layers )
+  {
+    layerIds << layer->id();
+  }
+  writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
+}

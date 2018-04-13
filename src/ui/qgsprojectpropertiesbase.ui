@@ -1443,7 +1443,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QCheckBox" name="mTrustProjectCheckBox">
              <property name="toolTip">
               <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
@@ -1451,6 +1451,28 @@
              <property name="text">
               <string>Trust project when data source has no metadata</string>
              </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="2">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+             <property name="title">
+              <string>Required layers</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_19">
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Checked layers in this list are protected from inadvertent removal from the project.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QListView" name="mViewRequiredLayers"/>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
