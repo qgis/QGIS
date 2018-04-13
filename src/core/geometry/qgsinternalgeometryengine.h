@@ -149,6 +149,8 @@ class CORE_EXPORT QgsRay2D
  * Assumes: (1) the line segments are intersected by some ray from the origin
  *          (2) the line segments do not intersect except at their endpoints
  *          (3) no line segment is collinear with the origin
+ * \ingroup core
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsLineSegmentDistanceComparer
 {
@@ -174,6 +176,29 @@ class CORE_EXPORT QgsLineSegmentDistanceComparer
   private:
 
     QgsPointXY mOrigin;
+
+};
+
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares angles from an origin to points clockwise, starting at the positive y-axis.
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsClockwiseAngleComparer
+{
+  public:
+    explicit QgsClockwiseAngleComparer( const QgsPointXY &origin )
+      : mVertex( origin )
+    {}
+
+    bool operator()( const QgsPointXY &a, const QgsPointXY &b ) const;
+
+  private:
+
+    QgsPointXY mVertex;
 
 };
 

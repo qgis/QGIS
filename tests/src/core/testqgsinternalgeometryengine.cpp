@@ -30,7 +30,9 @@ class TestQgsInternalGeometryEngine : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void ray();
-    void lineSegmentDistanceComparer();
+    void testLineSegmentDistanceComparer_data();
+    void testLineSegmentDistanceComparer();
+    void clockwiseAngleComparer();
 
 };
 
@@ -94,24 +96,69 @@ void TestQgsInternalGeometryEngine::ray()
   QCOMPARE( intersect.x(), 2.0 );
   QCOMPARE( intersect.y(), 6.0 );
 
+  ray = QgsRay2D( QgsPointXY( 0, 0 ), QgsVector( 1, 0 ) );
+  QVERIFY( !ray.intersects( QgsLineSegment2D( QgsPointXY( -1, 1 ), QgsPointXY( -1, -1 ) ), intersect ) );
+  QVERIFY( !ray.intersects( QgsLineSegment2D( QgsPointXY( -1e-3, 1 ), QgsPointXY( -1e-3, -1 ) ), intersect ) );
+  QVERIFY( !ray.intersects( QgsLineSegment2D( QgsPointXY( -2, 0 ), QgsPointXY( -1, 0 ) ), intersect ) );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 0, 1 ), QgsPointXY( 0, -1 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 0.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( -1, 0 ), QgsPointXY( 0, 0 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 0.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 0, 0 ), QgsPointXY( -1, 0 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 0.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 2, 1 ), QgsPointXY( 2, -1 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 2.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 2, 0 ), QgsPointXY( 3, 0 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 2.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 3, 0 ), QgsPointXY( 2, 0 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 2.0 );
+  QCOMPARE( intersect.y(), 0.0 );
+  QVERIFY( ray.intersects( QgsLineSegment2D( QgsPointXY( 1, 0 ), QgsPointXY( 1, -1 ) ), intersect ) );
+  QCOMPARE( intersect.x(), 1.0 );
+  QCOMPARE( intersect.y(), 0.0 );
 }
 
-void TestQgsInternalGeometryEngine::lineSegmentDistanceComparer()
+void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer_data()
 {
+  QTest::addColumn<QgsPointXY>( "origin" );
+  QTest::addColumn<QgsPointXY>( "a" );
+  QTest::addColumn<QgsPointXY>( "b" );
+  QTest::addColumn<QgsPointXY>( "c" );
+  QTest::addColumn<QgsPointXY>( "d" );
+
+  QTest::newRow( "a" ) << QgsPointXY( 3, 5 ) << QgsPointXY( 1, 2 ) << QgsPointXY( 3, 4 ) << QgsPointXY( 11, 2 ) << QgsPointXY( 13, 4 );
+  QTest::newRow( "b" ) << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, -1 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 2, -1 );
+  QTest::newRow( "b" ) << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, -1 ) << QgsPointXY( 2, 2 ) << QgsPointXY( 2, 3 );
+  QTest::newRow( "b" ) << QgsPointXY( 0, 0 ) << QgsPointXY( 2, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 2, 0 );
+  QTest::newRow( "b" ) << QgsPointXY( 0, 0 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 2, 0 ) << QgsPointXY( 2, 0 ) << QgsPointXY( 3, 1 );
+}
+
+void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer()
+{
+  QFETCH( QgsPointXY, origin );
+  QFETCH( QgsPointXY, a );
+  QFETCH( QgsPointXY, b );
+  QFETCH( QgsPointXY, c );
+  QFETCH( QgsPointXY, d );
+
+  QgsLineSegmentDistanceComparer cmp( origin );
+  QVERIFY( cmp( QgsLineSegment2D( a, b ), QgsLineSegment2D( c, d ) ) );
+  QVERIFY( cmp( QgsLineSegment2D( b, a ), QgsLineSegment2D( c, d ) ) );
+  QVERIFY( cmp( QgsLineSegment2D( a, b ), QgsLineSegment2D( d, c ) ) );
+  QVERIFY( cmp( QgsLineSegment2D( b, a ), QgsLineSegment2D( d, c ) ) );
+
+  QVERIFY( !cmp( QgsLineSegment2D( c, d ), QgsLineSegment2D( a, b ) ) );
+  QVERIFY( !cmp( QgsLineSegment2D( d, c ), QgsLineSegment2D( a, b ) ) );
+  QVERIFY( !cmp( QgsLineSegment2D( c, d ), QgsLineSegment2D( b, a ) ) );
+  QVERIFY( !cmp( QgsLineSegment2D( d, c ), QgsLineSegment2D( b, a ) ) );
+
   QgsLineSegmentDistanceComparer comp( QgsPointXY( 3, 5 ) );
 
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                 QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                 QgsLineSegment2D( QgsPointXY( 13, 4 ), QgsPointXY( 11, 2 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                 QgsLineSegment2D( QgsPointXY( -13, 4 ), QgsPointXY( -11, 2 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                 QgsLineSegment2D( QgsPointXY( -13, -4 ), QgsPointXY( -11, 2 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                 QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ) ) );
-  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ),
-                  QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) ) );
   QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
                   QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
   QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ),
@@ -122,6 +169,28 @@ void TestQgsInternalGeometryEngine::lineSegmentDistanceComparer()
                   QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
   QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 4 ), QgsPointXY( 8, 9 ) ),
                  QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 15, 16 ) ) ) );
+}
+
+void TestQgsInternalGeometryEngine::clockwiseAngleComparer()
+{
+  QgsClockwiseAngleComparer cmp( QgsPointXY( 0, 0 ) );
+  QVERIFY( cmp( QgsPointXY( 0, 1 ), QgsPointXY( 1, 1 ) ) );
+  QVERIFY( !cmp( QgsPointXY( 1, 1 ), QgsPointXY( 0, 1 ) ) );
+
+  QVERIFY( cmp( QgsPointXY( 1, 1 ), QgsPointXY( 1, -1 ) ) );
+  QVERIFY( !cmp( QgsPointXY( 1, -1 ), QgsPointXY( 1, 1 ) ) );
+
+  QVERIFY( cmp( QgsPointXY( 1, 0 ), QgsPointXY( -1, -1 ) ) );
+  QVERIFY( !cmp( QgsPointXY( -1, -1 ), QgsPointXY( 1, 0 ) ) );
+
+  QVERIFY( cmp( QgsPointXY( 0, 1 ), QgsPointXY( 0, -1 ) ) );
+  QVERIFY( !cmp( QgsPointXY( 0, -1 ), QgsPointXY( 0, 1 ) ) );
+
+  QVERIFY( cmp( QgsPointXY( 1, 0 ), QgsPointXY( 2, 0 ) ) );
+  QVERIFY( !cmp( QgsPointXY( 2, 0 ), QgsPointXY( 1, 0 ) ) );
+
+  QVERIFY( !cmp( QgsPointXY( 1, 0 ), QgsPointXY( 1, 0 ) ) );
+  QVERIFY( !cmp( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ) ) );
 }
 
 QGSTEST_MAIN( TestQgsInternalGeometryEngine )
