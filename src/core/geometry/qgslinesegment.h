@@ -176,6 +176,19 @@ class CORE_EXPORT QgsLineSegment2D
       mEnd = end;
     }
 
+    /**
+     * Tests if a \a point is to the left of the line segment.
+     *
+     * Returns -1 if the point falls to the left of the line, or +1 if the point
+     * is to the right.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     *
+     * \see QgsGeometryUtils::leftOfLine()
+     */
+    int pointLeftOfLine( const QgsPointXY &point ) const;
+
     //! Equality operator
     bool operator==( const QgsLineSegment2D &other ) const
     {

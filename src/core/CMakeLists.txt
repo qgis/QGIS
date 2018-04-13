@@ -463,6 +463,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
+  geometry/qgslinesegment.cpp
   geometry/qgslinestring.cpp
   geometry/qgsmulticurve.cpp
   geometry/qgsmultilinestring.cpp
