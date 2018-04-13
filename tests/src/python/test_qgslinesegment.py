@@ -112,6 +112,12 @@ class TestQgsLineSegment2D(unittest.TestCase):
         self.assertEqual(segment.pointLeftOfLine(QgsPointXY(1.5, -6)), -1)
         self.assertEqual(segment.pointLeftOfLine(QgsPointXY(5, 8)), 0)
 
+    def testReverse(self):
+        segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 4))
+        segment.reverse()
+        self.assertEqual(segment.start(), QgsPointXY(3, 4))
+        self.assertEqual(segment.end(), QgsPointXY(1, 2))
+
 
 if __name__ == '__main__':
     unittest.main()
