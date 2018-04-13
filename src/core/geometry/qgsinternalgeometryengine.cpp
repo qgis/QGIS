@@ -22,7 +22,7 @@
 #include "qgsmulticurve.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
-
+#include "qgslinesegment.h"
 
 #include <QTransform>
 #include <memory>
@@ -710,3 +710,53 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry( densifyGeometry( mGeometry, -1, distance ) );
   }
 }
+
+bool QgsRay2D::intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const
+{
+  const QgsVector ao = origin - segment.start();
+  const QgsVector ab = segment.end() - segment.start();
+  const double det = ab.crossProduct( direction );
+  if ( qgsDoubleNear( det, 0.0 ) )
+  {
+    const int abo = segment.pointLeftOfLine( origin );
+    if ( abo != 0 )
+    {
+      return false;
+    }
+    else
+    {
+      const double distA = ao * direction;
+      const double distB = ( origin - segment.end() ) * direction;
+
+      if ( distA > 0 && distB > 0 )
+      {
+        return false;
+      }
+      else
+      {
+        if ( ( distA > 0 ) != ( distB > 0 ) )
+          intersectPoint = origin;
+        else if ( distA > distB ) // at this point, both distances are negative
+          intersectPoint = segment.start(); // hence the nearest point is A
+        else
+          intersectPoint = segment.end();
+        return true;
+      }
+    }
+  }
+  else
+  {
+    const double u = ao.crossProduct( direction ) / det;
+    if ( u < 0.0 || 1.0 < u )
+    {
+      return false;
+    }
+    else
+    {
+      const double t = -ab.crossProduct( ao ) / det;
+      intersectPoint = origin + direction * t;
+      return qgsDoubleNear( t, 0.0 ) || t > 0;
+    }
+  }
+}
+
