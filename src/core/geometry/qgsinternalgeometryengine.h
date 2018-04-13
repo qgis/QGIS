@@ -110,6 +110,7 @@ class QgsInternalGeometryEngine
  * A 2D ray which extends from an origin point to an infinite distance in a given direction.
  * \ingroup core
  * \since QGIS 3.2
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsRay2D
 {
@@ -138,5 +139,44 @@ class CORE_EXPORT QgsRay2D
     QgsPointXY origin;
     QgsVector direction;
 };
+
+///@cond PRIVATE
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares two line segments based on their distance from a given point
+ * Assumes: (1) the line segments are intersected by some ray from the origin
+ *          (2) the line segments do not intersect except at their endpoints
+ *          (3) no line segment is collinear with the origin
+ */
+class CORE_EXPORT QgsLineSegmentDistanceComparer
+{
+  public:
+
+    /**
+     * Constructor for QgsLineSegmentDistanceComparer, comparing points
+     * to the specified \a origin point.
+     */
+    explicit QgsLineSegmentDistanceComparer( const QgsPointXY &origin )
+      : mOrigin( origin )
+    {}
+
+    /**
+     * Checks whether the line segment \a ab is closer to the origin than the
+     * line segment \a cd.
+     * \param ab line segment: left hand side of the comparison operator
+     * \param cd line segment: right hand side of the comparison operator
+     * \returns true if ab < cd (ab is closer than cd) to origin
+     */
+    bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
+
+  private:
+
+    QgsPointXY mOrigin;
+
+};
+
+///@endcond PRIVATE
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

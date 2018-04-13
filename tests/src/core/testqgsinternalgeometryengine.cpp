@@ -30,6 +30,7 @@ class TestQgsInternalGeometryEngine : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void ray();
+    void lineSegmentDistanceComparer();
 
 };
 
@@ -93,6 +94,34 @@ void TestQgsInternalGeometryEngine::ray()
   QCOMPARE( intersect.x(), 2.0 );
   QCOMPARE( intersect.y(), 6.0 );
 
+}
+
+void TestQgsInternalGeometryEngine::lineSegmentDistanceComparer()
+{
+  QgsLineSegmentDistanceComparer comp( QgsPointXY( 3, 5 ) );
+
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                 QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                 QgsLineSegment2D( QgsPointXY( 13, 4 ), QgsPointXY( 11, 2 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                 QgsLineSegment2D( QgsPointXY( -13, 4 ), QgsPointXY( -11, 2 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                 QgsLineSegment2D( QgsPointXY( -13, -4 ), QgsPointXY( -11, 2 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                 QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 11, 2 ), QgsPointXY( 13, 4 ) ),
+                  QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
+                  QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ),
+                 QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ),
+                  QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ),
+                  QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 4 ), QgsPointXY( 8, 9 ) ),
+                 QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 15, 16 ) ) ) );
 }
 
 QGSTEST_MAIN( TestQgsInternalGeometryEngine )
