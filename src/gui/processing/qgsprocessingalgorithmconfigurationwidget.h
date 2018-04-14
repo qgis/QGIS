@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <QVariantMap>
 
-#include "qgis_core.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 
 class QgsProcessingAlgorithm;
@@ -33,9 +33,9 @@ class QgsProcessingAlgorithmConfigurationWidget;
  * configuration options directly on algorithm level, in addition to parameters.
  *
  * \since QGIS 3.2
- * \ingroup core
+ * \ingroup gui
  */
-class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
+class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
 {
     Q_OBJECT
 
@@ -63,9 +63,9 @@ class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
  * Interface base class for factories for algorithm configuration widgets.
  *
  * \since QGIS 3.2
- * \ingroup core
+ * \ingroup gui
  */
-class CORE_EXPORT QgsProcessingAlgorithmConfigurationWidgetFactory
+class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidgetFactory
 {
   public:
     virtual ~QgsProcessingAlgorithmConfigurationWidgetFactory() = default;
