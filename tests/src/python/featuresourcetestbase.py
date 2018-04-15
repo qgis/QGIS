@@ -320,6 +320,10 @@ class FeatureSourceTestCase(object):
         values = [f['name'] for f in self.source.getFeatures(request)]
         self.assertEqual(values, ['Pear', 'Orange', 'Honey', 'Apple', NULL])
 
+        request = QgsFeatureRequest().addOrderBy('num_char', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [5, 4, 3, 2, 1])
+
         # Case sensitivity
         request = QgsFeatureRequest().addOrderBy('name2')
         values = [f['name2'] for f in self.source.getFeatures(request)]
