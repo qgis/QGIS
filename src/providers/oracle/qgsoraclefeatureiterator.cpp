@@ -245,6 +245,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     feature.initAttributes( mSource->mFields.count() );
     feature.setGeometry( 0 );
+    feature.setValid( false );
 
     if ( mRewind )
     {
