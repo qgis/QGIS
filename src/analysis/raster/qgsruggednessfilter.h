@@ -41,6 +41,9 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 
   private:
     QgsRuggednessFilter();
+
+    //virtual QString _openClProgramBaseName() override { return QStringLiteral( "ruggedness" ); }
+
 };
 
 #endif // QGSRUGGEDNESSFILTER_H

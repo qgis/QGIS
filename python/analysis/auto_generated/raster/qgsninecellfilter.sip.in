@@ -10,6 +10,7 @@
 
 
 
+
 class QgsNineCellFilter
 {
 %Docstring
@@ -34,7 +35,8 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 
 :param feedback: feedback object that receives update and that is checked for cancelation.
 
-:return: 0 in case of success*
+:return: 0 in case of success
+TODO: return an enum
 %End
 
     double cellSizeX() const;

@@ -46,6 +46,7 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
   private:
     float mLightAzimuth;
     float mLightAngle;
+
 };
 
 #endif // QGSHILLSHADEFILTER_H

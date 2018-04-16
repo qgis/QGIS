@@ -29,6 +29,9 @@ Calculates output value from nine input values. The input values and the output 
 nodata value if not present or outside of the border. Must be implemented by subclasses*
 %End
 
+
+
+
 };
 
 /************************************************************************

@@ -22,6 +22,8 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsopenclutils.h"
+
 class QgsFeedback;
 
 /**
@@ -40,7 +42,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       \param feedback feedback object that receives update and that is checked for cancelation.
-      \returns 0 in case of success*/
+      \returns 0 in case of success
+      TODO: return an enum
+    */
     int processRaster( QgsFeedback *feedback = nullptr );
 
     double cellSizeX() const { return mCellSizeX; }
@@ -79,6 +83,36 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      * Opens the output file and sets the same geotransform and CRS as the input data
       \returns the output dataset or nullptr in case of error*/
     gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
+
+    /**
+     * \brief processRasterCPU executes the computation on the CPU
+     * \param feedback
+     * \return an opaque integer for error codes: 0 in case of success
+     * TODO: return an enum
+     */
+    int processRasterCPU( QgsFeedback *feedback = nullptr );
+
+#ifdef HAVE_OPENCL
+
+    /**
+     * \brief processRasterGPU executes the computation on the GPU
+     * \param feedback
+     * \return an opaque integer for error codes: 0 in case of success
+     * TODO: return an enum
+     */
+    int processRasterGPU( const QString &source, QgsFeedback *feedback = nullptr );
+
+    virtual void addExtraRasterParams( std::vector<float> &params )
+    {
+      Q_UNUSED( params );
+    }
+
+    virtual const QString openClProgramBaseName() const
+    {
+      return QString();
+    }
+
+#endif
 
   protected:
 

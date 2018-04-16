@@ -36,6 +36,15 @@ class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 ) override;
 
+
+
+
+    // QgsNineCellFilter interface
+  private:
+    const QString openClProgramBaseName() const override
+    {
+      return QStringLiteral( "aspect" );
+    }
 };
 
 #endif // QGSASPECTFILTER_H
