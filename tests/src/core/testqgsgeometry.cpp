@@ -50,6 +50,7 @@
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
 #include "qgsproject.h"
+#include "qgslinesegment.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -2848,6 +2849,15 @@ void TestQgsGeometry::lineString()
   QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
   QCOMPARE( from2Pts.zAt( 1 ), 23.0 );
   QCOMPARE( from2Pts.mAt( 1 ), 24.0 );
+
+  // from lineSegment
+  QgsLineString fromSegment( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) );
+  QCOMPARE( fromSegment.wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( fromSegment.numPoints(), 2 );
+  QCOMPARE( fromSegment.xAt( 0 ), 1.0 );
+  QCOMPARE( fromSegment.yAt( 0 ), 2.0 );
+  QCOMPARE( fromSegment.xAt( 1 ), 3.0 );
+  QCOMPARE( fromSegment.yAt( 1 ), 4.0 );
 
   //addVertex
   QgsLineString l2;

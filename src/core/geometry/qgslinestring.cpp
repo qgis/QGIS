@@ -22,6 +22,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+#include "qgslinesegment.h"
 
 #include <cmath>
 #include <memory>
@@ -159,6 +160,17 @@ QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
     mX << p.x();
     mY << p.y();
   }
+}
+
+QgsLineString::QgsLineString( const QgsLineSegment2D &segment )
+{
+  mWkbType = QgsWkbTypes::LineString;
+  mX.resize( 2 );
+  mY.resize( 2 );
+  mX[0] = segment.startX();
+  mX[1] = segment.endX();
+  mY[0] = segment.startY();
+  mY[1] = segment.endY();
 }
 
 bool QgsLineString::equals( const QgsCurve &other ) const
