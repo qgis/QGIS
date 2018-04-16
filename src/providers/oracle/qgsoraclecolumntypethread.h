@@ -28,7 +28,7 @@ class QgsOracleColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsOracleColumnTypeThread( QString connName,
+    QgsOracleColumnTypeThread( const QString &connName,
                                bool useEstimatedMetaData,
                                bool allowGeometrylessTables );
 
@@ -51,12 +51,12 @@ class QgsOracleColumnTypeThread : public QThread
     void stop();
 
   private:
-    QgsOracleColumnTypeThread() {}
+    QgsOracleColumnTypeThread() = default;
 
     QString mName;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
-    bool mStopped;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = false;
+    bool mStopped = false;
     QVector<QgsOracleLayerProperty> mLayerProperties;
 };
 

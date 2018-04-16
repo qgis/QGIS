@@ -21,7 +21,7 @@ email                : jef at norbit dot de
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( const QString &name, bool useEstimatedMetadata, bool allowGeometrylessTables )
   : QThread()
   , mName( name )
   , mUseEstimatedMetadata( useEstimatedMetadata )
@@ -70,9 +70,9 @@ void QgsOracleColumnTypeThread::run()
     {
       emit progress( i++, n );
       emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                            .arg( layerProperty.ownerName )
-                            .arg( layerProperty.tableName )
-                            .arg( layerProperty.geometryColName ) );
+                            .arg( layerProperty.ownerName,
+                                  layerProperty.tableName,
+                                  layerProperty.geometryColName ) );
       conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 
