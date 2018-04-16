@@ -76,7 +76,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   // If this widget is already embedded by the same relation, reduce functionality
   do
   {
-    if ( ctx->relation().name() == relation.name() )
+    if ( ctx->relation().id() == relation.id() )
     {
       mWidget->setEmbedForm( false );
       mWidget->setReadOnlySelector( true );
