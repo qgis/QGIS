@@ -126,7 +126,7 @@ void QgsDistanceWidget::distanceSpinBoxValueChanged( double distance )
   emit distanceChanged( distance );
 }
 
-QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode )
+QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode )
   : QObject()
   , mSelectionMode( selectionMode )
 {

@@ -257,6 +257,36 @@ class TestQgsExpression: public QObject
       QCOMPARE( !exp.hasParserError(), valid );
     }
 
+    void parsing_error_line_column_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<int>( "firstLine" );
+      QTest::addColumn<int>( "firstColumn" );
+      QTest::addColumn<int>( "lastLine" );
+      QTest::addColumn<int>( "lastColumn" );
+
+      // invalid strings
+      QTest::newRow( "No close brace" ) << "(" << 1 << 1 << 1 << 2;
+      QTest::newRow( "No close brace 2" ) << "to_string(" << 1 << 10 << 1 << 11;
+      QTest::newRow( "No close brace 2 - Multiline" ) << "to_string\n(" << 2 << 0 << 2 << 1;
+    }
+
+    void parsing_error_line_column()
+    {
+      QFETCH( QString, string );
+      QFETCH( int, firstLine );
+      QFETCH( int, firstColumn );
+      QFETCH( int, lastLine );
+      QFETCH( int, lastColumn );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), true );
+      QCOMPARE( exp.parserError().firstLine, firstLine );
+      QCOMPARE( exp.parserError().firstColumn, firstColumn );
+      QCOMPARE( exp.parserError().lastLine, lastLine );
+      QCOMPARE( exp.parserError().lastColumn, lastColumn );
+    }
+
     void parsing_with_locale()
     {
       // check that parsing of numbers works correctly even when using some other locale
@@ -953,6 +983,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "hausdorff line to line densify" ) << " round(hausdorff_distance( geom_from_wkt('LINESTRING (130 0, 0 0, 0 150)'),geom_from_wkt('LINESTRING (10 10, 10 150, 130 10)'),0.5))" << false << QVariant( 70 );
       QTest::newRow( "hausdorff not geom 1" ) << " hausdorff_distance( 'a',geom_from_wkt('LINESTRING (0 0, 2 0)'))" << true << QVariant();
       QTest::newRow( "hausdorff not geom 2" ) << " hausdorff_distance( geom_from_wkt('LINESTRING (0 0, 2 0)'), 'b')" << true << QVariant();
+      QTest::newRow( "flip_coordinates not geom" ) << "flip_coordinates('g')" << true << QVariant();
+      QTest::newRow( "flip_coordinates null" ) << "flip_coordinates(NULL)" << false << QVariant();
+      QTest::newRow( "flip_coordinates point" ) << "geom_to_wkt(flip_coordinates(geom_from_wkt('POINT(1 2)')))" << false << QVariant( "Point (2 1)" );
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );

@@ -71,7 +71,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
   mActionDescription = new QAction( tr( "Description…" ), this );
 
-  mActionCreateAuxiliaryField = new QAction( tr( "Store data in the project" ), this );
+  mActionCreateAuxiliaryField = new QAction( tr( "Store Data in the Project" ), this );
   mActionCreateAuxiliaryField->setCheckable( true );
 
   mActionExpDialog = new QAction( tr( "Edit…" ), this );
@@ -591,7 +591,11 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), mProperty.asExpression(), this, QStringLiteral( "generic" ), context );
+  // build sensible initial expression text - see https://issues.qgis.org/issues/18638
+  QString currentExpression = ( mProperty.propertyType() == QgsProperty::StaticProperty && !mProperty.staticValue().isValid() ) ? QString()
+                              : mProperty.asExpression();
+
+  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, QStringLiteral( "generic" ), context );
   if ( d.exec() == QDialog::Accepted )
   {
     mExpressionString = d.expressionText().trimmed();

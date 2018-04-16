@@ -363,6 +363,131 @@ bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const d
   }
 }
 
+// based on public domain work by 3/26/2005 Tim Voght
+// see http://paulbourke.net/geometry/circlesphere/tvoght.c
+int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center0, const double r0, QgsPointXY center1, const double r1, QgsPointXY &intersection1, QgsPointXY &intersection2 )
+{
+  // determine the straight-line distance between the centers
+  const double d = center0.distance( center1 );
+
+  // check for solvability
+  if ( d > ( r0 + r1 ) )
+  {
+    // no solution. circles do not intersect.
+    return 0;
+  }
+  else if ( d < std::fabs( r0 - r1 ) )
+  {
+    // no solution. one circle is contained in the other
+    return 0;
+  }
+  else if ( qgsDoubleNear( d, 0 ) && ( qgsDoubleNear( r0, r1 ) ) )
+  {
+    // no solutions, the circles coincide
+    return 0;
+  }
+
+  /* 'point 2' is the point where the line through the circle
+   * intersection points crosses the line between the circle
+   * centers.
+  */
+
+  // Determine the distance from point 0 to point 2.
+  const double a = ( ( r0 * r0 ) - ( r1 * r1 ) + ( d * d ) ) / ( 2.0 * d ) ;
+
+  /* dx and dy are the vertical and horizontal distances between
+   * the circle centers.
+   */
+  const double dx = center1.x() - center0.x();
+  const double dy = center1.y() - center0.y();
+
+  // Determine the coordinates of point 2.
+  const double x2 = center0.x() + ( dx * a / d );
+  const double y2 = center0.y() + ( dy * a / d );
+
+  /* Determine the distance from point 2 to either of the
+   * intersection points.
+   */
+  const double h = std::sqrt( ( r0 * r0 ) - ( a * a ) );
+
+  /* Now determine the offsets of the intersection points from
+   * point 2.
+   */
+  const double rx = dy * ( h / d );
+  const double ry = dx * ( h / d );
+
+  // determine the absolute intersection points
+  intersection1 = QgsPointXY( x2 + rx, y2 - ry );
+  intersection2 = QgsPointXY( x2 - rx, y2 +  ry );
+
+  // see if we have 1 or 2 solutions
+  if ( qgsDoubleNear( d, r0 + r1 ) )
+    return 1;
+
+  return 2;
+}
+
+// Using https://stackoverflow.com/a/1351794/1861260
+// and inspired by http://csharphelper.com/blog/2014/11/find-the-tangent-lines-between-a-point-and-a-circle-in-c/
+bool QgsGeometryUtils::tangentPointAndCircle( const QgsPointXY &center, double radius, const QgsPointXY &p, QgsPointXY &pt1, QgsPointXY &pt2 )
+{
+  // distance from point to center of circle
+  const double dx = center.x() - p.x();
+  const double dy = center.y() - p.y();
+  const double distanceSquared = dx * dx + dy * dy;
+  const double radiusSquared = radius * radius;
+  if ( distanceSquared < radiusSquared )
+  {
+    // point is inside circle!
+    return false;
+  }
+
+  // distance from point to tangent point, using pythagoras
+  const double distanceToTangent = std::sqrt( distanceSquared - radiusSquared );
+
+  // tangent points are those where the original circle intersects a circle centered
+  // on p with radius distanceToTangent
+  circleCircleIntersections( center, radius, p, distanceToTangent, pt1, pt2 );
+
+  return true;
+}
+
+// inspired by http://csharphelper.com/blog/2014/12/find-the-tangent-lines-between-two-circles-in-c/
+int QgsGeometryUtils::circleCircleOuterTangents( const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2 )
+{
+  if ( radius1 > radius2 )
+    return circleCircleOuterTangents( center2, radius2, center1, radius1, line1P1, line1P2, line2P1, line2P2 );
+
+  const double radius2a = radius2 - radius1;
+  if ( !tangentPointAndCircle( center2, radius2a, center1, line1P2, line2P2 ) )
+  {
+    // there are no tangents
+    return 0;
+  }
+
+  // get the vector perpendicular to the
+  // first tangent with length radius1
+  QgsVector v1( -( line1P2.y() - center1.y() ), line1P2.x() - center1.x() );
+  const double v1Length = v1.length();
+  v1 = v1 * ( radius1 / v1Length );
+
+  // offset the tangent vector's points
+  line1P1 = center1 + v1;
+  line1P2 = line1P2 + v1;
+
+  // get the vector perpendicular to the
+  // second tangent with length radius1
+  QgsVector v2( line2P2.y() - center1.y(), -( line2P2.x() - center1.x() ) );
+  const double v2Length = v2.length();
+  v2 = v2 * ( radius1 / v2Length );
+
+  // offset the tangent vector's points
+  line2P1 = center1 + v2;
+  line2P2 = line2P2 + v2;
+
+  return 2;
+}
+
 QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
 {
   QVector<SelfIntersection> intersections;
@@ -900,7 +1025,7 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
   return wkt;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns )
+QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder )
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
@@ -915,7 +1040,10 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   QString strCoordinates;
 
   for ( const QgsPoint &p : points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
+    if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+      strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
+    else
+      strCoordinates += qgsDoubleToString( p.y(), precision ) + cs + qgsDoubleToString( p.x(), precision ) + ts;
 
   if ( strCoordinates.endsWith( ts ) )
     strCoordinates.chop( 1 ); // Remove trailing space
@@ -924,7 +1052,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   return elemCoordinates;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D )
+QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder )
 {
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
   elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
@@ -932,7 +1060,10 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
   QString strCoordinates;
   for ( const QgsPoint &p : points )
   {
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
+    if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
+      strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
+    else
+      strCoordinates += qgsDoubleToString( p.y(), precision ) + ' ' + qgsDoubleToString( p.x(), precision ) + ' ';
     if ( is3D )
       strCoordinates += qgsDoubleToString( p.z(), precision ) + ' ';
   }
@@ -1042,6 +1173,32 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
   }
 
   return QgsPoint( pType, x, y, z, m );
+}
+
+QgsPoint QgsGeometryUtils::interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, const double fraction )
+{
+  const double _fraction = 1 - fraction;
+  return QgsPoint( p1.wkbType(),
+                   p1.x() * _fraction + p2.x() * fraction,
+                   p1.y() * _fraction + p2.y() * fraction,
+                   p1.is3D() ? p1.z() * _fraction + p2.z() * fraction : std::numeric_limits<double>::quiet_NaN(),
+                   p1.isMeasure() ? p1.m() * _fraction + p2.m() * fraction : std::numeric_limits<double>::quiet_NaN() );
+}
+
+QgsPointXY QgsGeometryUtils::interpolatePointOnLine( const double x1, const double y1, const double x2, const double y2, const double fraction )
+{
+  const double deltaX = ( x2 - x1 ) * fraction;
+  const double deltaY = ( y2 - y1 ) * fraction;
+  return QgsPointXY( x1 + deltaX, y1 + deltaY );
+}
+
+QgsPointXY QgsGeometryUtils::interpolatePointOnLineByValue( const double x1, const double y1, const double v1, const double x2, const double y2, const double v2, const double value )
+{
+  if ( qgsDoubleNear( v1, v2 ) )
+    return QgsPointXY( x1, y1 );
+
+  const double fraction = ( value - v1 ) / ( v2 - v1 );
+  return interpolatePointOnLine( x1, y1, x2, y2, fraction );
 }
 
 double QgsGeometryUtils::gradient( const QgsPoint &pt1, const QgsPoint &pt2 )

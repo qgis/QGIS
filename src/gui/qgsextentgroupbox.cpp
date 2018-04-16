@@ -24,6 +24,7 @@
 
 #include <QMenu>
 #include <QAction>
+#include <QDoubleValidator>
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )

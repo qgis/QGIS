@@ -37,13 +37,13 @@ QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
   return new QgsLayerTreeLocatorFilter();
 }
 
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && stringMatches( layer->layer()->name(), string ) )
+    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layer->layer()->name();
@@ -75,12 +75,12 @@ QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
   return new QgsLayoutLocatorFilter();
 }
 
-void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && stringMatches( layout->name(), string ) )
+    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layout->name();
@@ -332,7 +332,7 @@ QgsBookmarkLocatorFilter *QgsBookmarkLocatorFilter::clone() const
   return new QgsBookmarkLocatorFilter();
 }
 
-void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
 
@@ -346,7 +346,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
 
     QString name = i.key();
 
-    if ( stringMatches( name, string ) )
+    if ( stringMatches( name, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
       QModelIndex index = i.value();
       QgsLocatorResult result;

@@ -93,8 +93,8 @@ namespace DRW
 
   enum DBG_LEVEL
   {
-    NONE,
-    DEBUG
+    none,
+    debug
   };
 
   //! Special codes for colors

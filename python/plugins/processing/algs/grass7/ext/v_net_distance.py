@@ -32,7 +32,7 @@ from processing.tools.system import getTempFilename
 from qgis.core import QgsProcessingParameterString
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     """ Handle data preparation for v.net.distance:
     * Integrate point layers into network vector map.
     * Make v.net.distance use those layers.
@@ -75,9 +75,9 @@ def processCommand(alg, parameters, context):
     alg.addParameter(fLayer)
     tLayer = QgsProcessingParameterString('to_layer', None, 3, False, False)
     alg.addParameter(tLayer)
-    alg.processCommand(parameters, context)
+    alg.processCommand(parameters, context, feedback)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     outputParameter = {'output': ['output', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

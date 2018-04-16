@@ -260,7 +260,7 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
-    // TODO @vsklencar set x, y according geometry;
+  // TODO @vsklencar set x, y according geometry;
   int x = 0;
   int y = 0;
   this->identifyOnGeometryChange( x, y, DefaultQgsSetting );

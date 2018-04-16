@@ -114,7 +114,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     QgsRectangle bbox = f.geometry().boundingBox();
     request = QgsFeatureRequest().setFilterRect( bbox );
     if ( onlyRequireTargetIds )
-      request.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() );
+      request.setSubsetOfAttributes( QgsAttributeList() );
 
     QgsFeatureIterator testFeatureIt = targetSource->getFeatures( request );
     QgsFeature testFeature;
@@ -349,7 +349,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
 
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   auto addToSink = [&]( const QgsFeature & feature )
   {

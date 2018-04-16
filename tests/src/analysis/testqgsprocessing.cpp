@@ -137,7 +137,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
-      addParameter( sinkParam );
+      QVERIFY( addParameter( sinkParam ) );
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) );
       QCOMPARE( sinkParam->algorithm(), this );
       QVERIFY( !sinkParam->provider() );
@@ -145,7 +145,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // default raster format extension
       QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster" );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
-      addParameter( rasterParam );
+      QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
 
       // should allow parameters with same name but different case (required for grass provider)
@@ -165,7 +165,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
-      addParameter( sinkParam );
+      QVERIFY( addParameter( sinkParam ) );
       QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "xshp" ) );
       QCOMPARE( sinkParam->algorithm(), this );
       QCOMPARE( sinkParam->provider(), provider() );
@@ -173,7 +173,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // default raster format extension
       QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster2" );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
-      addParameter( rasterParam );
+      QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
     }
 
@@ -323,6 +323,12 @@ class DummyProvider : public QgsProcessingProvider
       return supportsNonFileOutputs;
     }
 
+    bool isActive() const override
+    {
+      return active;
+    }
+
+    bool active = true;
     bool *unloaded = nullptr;
     bool supportsNonFileOutputs = false;
 
@@ -1079,8 +1085,18 @@ void TestQgsProcessing::algorithm()
     QCOMPARE( providerRefreshed.count(), 2 + i );
   }
 
+  // inactive provider, should not load algorithms
+  p->active = false;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 3 );
+  QVERIFY( p->algorithms().empty() );
+  p->active = true;
+  p->refreshAlgorithms();
+  QCOMPARE( providerRefreshed.count(), 4 );
+  QVERIFY( !p->algorithms().empty() );
+
   QgsProcessingRegistry r;
-  r.addProvider( p );
+  QVERIFY( r.addProvider( p ) );
   QCOMPARE( r.algorithms().size(), 2 );
   QVERIFY( r.algorithms().contains( p->algorithm( "alg1" ) ) );
   QVERIFY( r.algorithms().contains( p->algorithm( "alg2" ) ) );
@@ -1118,7 +1134,7 @@ void TestQgsProcessing::algorithm()
   // test that adding a provider to the registry automatically refreshes algorithms (via load)
   DummyProvider *p3 = new DummyProvider( "p3" );
   QVERIFY( p3->algorithms().isEmpty() );
-  r.addProvider( p3 );
+  QVERIFY( r.addProvider( p3 ) );
   QCOMPARE( p3->algorithms().size(), 2 );
 }
 
@@ -2453,16 +2469,25 @@ void TestQgsProcessing::parameterPoint()
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(1.1,2)" ) );
   QVERIFY( def->checkValueIsAcceptable( "    1.1,  2  " ) );
+  QVERIFY( def->checkValueIsAcceptable( " (    1.1,  2 ) " ) );
   QVERIFY( def->checkValueIsAcceptable( "-1.1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,-2" ) );
   QVERIFY( def->checkValueIsAcceptable( "-1.1,-2" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(-1.1,-2)" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2[EPSG:4326]" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2 [EPSG:4326]" ) );
+  QVERIFY( def->checkValueIsAcceptable( "(1.1,2 [EPSG:4326] )" ) );
   QVERIFY( def->checkValueIsAcceptable( "  -1.1,   -2   [EPSG:4326]    " ) );
+  QVERIFY( def->checkValueIsAcceptable( "  (  -1.1,   -2   [EPSG:4326]  )  " ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1,a" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "(1.1,a)" ) );
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "(layer12312312)" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "()" ) );
+  QVERIFY( !def->checkValueIsAcceptable( " (  ) " ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsPointXY( 1, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
@@ -2480,6 +2505,17 @@ void TestQgsProcessing::parameterPoint()
   QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
   QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
 
+  // with optional brackets
+  params.insert( "non_optional", QString( "(1.1,2.2)" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+
+  params.insert( "non_optional", QString( "  (   -1.1  ,-2.2  )  " ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), -1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), -2.2, 0.001 );
+
   // with CRS as string
   params.insert( "non_optional", QString( "1.1,2.2[EPSG:4326]" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsPointCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
@@ -2492,8 +2528,19 @@ void TestQgsProcessing::parameterPoint()
   QGSCOMPARENEAR( point.x(), 122451, 100 );
   QGSCOMPARENEAR( point.y(), 244963, 100 );
 
+  params.insert( "non_optional", QString( "  ( 1.1,2.2   [EPSG:4326]   ) " ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsPointCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
   // nonsense string
   params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QCOMPARE( point.x(), 0.0 );
+  QCOMPARE( point.y(), 0.0 );
+
+  params.insert( "non_optional", QString( "   (   )  " ) );
   point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
   QCOMPARE( point.x(), 0.0 );
   QCOMPARE( point.y(), 0.0 );

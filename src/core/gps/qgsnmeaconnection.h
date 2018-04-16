@@ -32,7 +32,7 @@ class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
   public:
 
     /**
-     * @brief Constructs a QgsNmeaConnection with given \a device.
+     * \brief Constructs a QgsNmeaConnection with given \a device.
      */
     QgsNmeaConnection( QIODevice *device );
 

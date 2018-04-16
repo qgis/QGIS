@@ -82,7 +82,7 @@ bool QgsAttributeEditorRelation::init( QgsRelationManager *relationManager )
 
 QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditorElement *parent ) const
 {
-  QgsAttributeEditorRelation *element = new QgsAttributeEditorRelation( name(), mRelationId, parent );
+  QgsAttributeEditorRelation *element = new QgsAttributeEditorRelation( mRelationId, parent );
   element->mRelation = mRelation;
   element->mShowLinkButton = mShowLinkButton;
   element->mShowUnlinkButton = mShowUnlinkButton;

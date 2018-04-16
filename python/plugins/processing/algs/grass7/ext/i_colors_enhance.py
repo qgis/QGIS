@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 from .i import exportInputRasters
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Temporary remove outputs:
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # Input rasters are output rasters
     rasterDic = {'red': 'redoutput', 'green': 'greenoutput', 'blue': 'blueoutput'}
     exportInputRasters(alg, parameters, context, rasterDic)

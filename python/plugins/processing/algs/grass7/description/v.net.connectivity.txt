@@ -1,8 +1,8 @@
 v.net.connectivity
 Computes vertex connectivity between two sets of nodes in the network.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-QgsProcessingParameterVectorLayer|points|Input vector point layer (first set of nodes)|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Input vector point layer (first set of nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 QgsProcessingParameterString|set1_cats|Set1 Category values|None|False|True
 QgsProcessingParameterString|set1_where|Set1 WHERE conditions of SQL statement without 'where' keyword|None|True|True

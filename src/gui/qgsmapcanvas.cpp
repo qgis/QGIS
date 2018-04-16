@@ -65,6 +65,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgssvgcache.h"
 #include <cmath>
 
 /**
@@ -148,6 +149,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     refresh();
   } );
 
+  // refresh canvas when a remote svg has finished downloading
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::refreshAllLayers );
+
   //segmentation parameters
   QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
@@ -209,6 +213,16 @@ QgsMapCanvas::~QgsMapCanvas()
   {
     whileBlocking( mJob )->cancel();
     delete mJob;
+  }
+
+  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
+  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  {
+    if ( *previewJob )
+    {
+      whileBlocking( *previewJob )->cancel();
+      delete *previewJob;
+    }
   }
 
   // delete canvas items prior to deleting the canvas
@@ -499,6 +513,7 @@ void QgsMapCanvas::refreshMap()
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
@@ -890,7 +905,6 @@ void QgsMapCanvas::zoomToFullExtent()
   refresh();
 
 } // zoomToFullExtent
-
 
 
 void QgsMapCanvas::zoomToPreviousExtent()
@@ -2280,7 +2294,6 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
   {
     startPreviewJob( number );
-  }
-                                   );
+  } );
   mPreviewTimer.start();
 }

@@ -309,7 +309,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
-  //mSelectionGeometry = QgsGeometry::fromPointXY( point );
+  mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
   return identifyVectorLayer( results, layer, QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 }
 

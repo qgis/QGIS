@@ -165,7 +165,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Context menu for the symbols/colorramps
     QMenu *mGroupMenu = nullptr;
 
-    //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
+    //! Sub-menu of \c mGroupMenu, dynamically filled to show one entry for every group
     QMenu *mGroupListMenu = nullptr;
 
     //! Context menu for the group tree

@@ -116,6 +116,49 @@ class CORE_EXPORT QgsExpression
   public:
 
     /**
+     * Details about any parser errors that were found when parsing the expression.
+     * \since QGIS 3.0
+     */
+    struct CORE_EXPORT ParserError
+    {
+      enum ParserErrorType
+      {
+        Unknown = 0,  //!< Unknown error type.
+        FunctionUnknown = 1, //!< Function was unknown.
+        FunctionWrongArgs = 2, //!< Function was called with the wrong number of args.
+        FunctionInvalidParams = 3, //!< Function was called with invalid args.
+        FunctionNamedArgsError = 4 //!< Non named function arg used after named arg.
+      };
+
+      /**
+       * The type of parser error that was found.
+       */
+      ParserErrorType errorType = ParserErrorType::Unknown;
+
+      /**
+       * The first line that contained the error in the parser.
+       * Depending on the error sometimes this doesn't mean anything.
+       */
+      int firstLine = 0;
+
+      /**
+       * The first column that contained the error in the parser.
+       * Depending on the error sometimes this doesn't mean anything.
+       */
+      int firstColumn = 0;
+
+      /**
+       * The last line that contained the error in the parser.
+       */
+      int lastLine = 0;
+
+      /**
+       * The last column that contained the error in the parser.
+       */
+      int lastColumn = 0;
+    };
+
+    /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
      * prepare() should always be called before every
@@ -173,6 +216,12 @@ class CORE_EXPORT QgsExpression
     bool hasParserError() const;
     //! Returns parser error
     QString parserErrorString() const;
+
+    /**
+     * Returns parser error details including location of error.
+     * \since QGIS 3.0
+     */
+    ParserError parserError() const;
 
     //! Returns root node of the expression. Root node is null is parsing has failed
     const QgsExpressionNode *rootNode() const;
@@ -415,7 +464,7 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns the number of functions defined in the parser
-     *  \returns The number of function defined in the parser.
+     * \returns The number of function defined in the parser.
      */
     static int functionCount();
 
@@ -467,8 +516,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
-     * \param showValue set to true to include current value of variable in help text
-     * \param value current value of variable to show in help text
      * \see helpText()
      * \since QGIS 2.12
      */

@@ -67,7 +67,7 @@ void QgsLocatorOptionsWidget::configureCurrentFilter()
     QModelIndex sel = selected.at( 0 ).indexes().at( 0 );
     QgsLocatorFilter *filter = mModel->filterForIndex( sel );
     if ( filter )
-      filter->openConfigWidget();
+      filter->openConfigWidget( this );
   }
 }
 

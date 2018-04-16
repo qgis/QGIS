@@ -84,7 +84,7 @@ def checkMovingWindow(alg, parameters, context, outputTxt=False):
     return None
 
 
-def configFile(alg, parameters, context, outputTxt=False):
+def configFile(alg, parameters, context, feedback, outputTxt=False):
     """Handle inline configuration
     :param parameters:
     """
@@ -125,7 +125,7 @@ def configFile(alg, parameters, context, outputTxt=False):
             False, False)
         alg.addParameter(param)
 
-    alg.processCommand(parameters, context, outputTxt)
+    alg.processCommand(parameters, context, feedback, outputTxt)
 
     # Remove Config file:
     removeConfigFile(alg, parameters, context)

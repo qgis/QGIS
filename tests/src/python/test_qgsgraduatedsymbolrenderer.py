@@ -412,9 +412,9 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
 
 
 #    void addClass( QgsSymbol* symbol );
-#    //! @note available in python bindings as addClassRange
+#    //! \note available in python bindings as addClassRange
 #    void addClass( QgsRendererRange range ) /PyName=addClassRange/;
-#    //! @note available in python bindings as addClassLowerUpper
+#    //! \note available in python bindings as addClassLowerUpper
 #    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 #    void deleteClass( int idx );
 #    void deleteAllClasses();

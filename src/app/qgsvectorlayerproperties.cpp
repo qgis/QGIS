@@ -560,7 +560,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mVector3DWidget->setLayer( mLayer );
 #endif
 
-  mMetadataWidget->setMetadata( mLayer->metadata() );
+  mMetadataWidget->setMetadata( &mLayer->metadata() );
 
 } // syncToLayer()
 
@@ -1017,7 +1017,7 @@ void QgsVectorLayerProperties::loadMetadata()
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {
@@ -1092,7 +1092,7 @@ void QgsVectorLayerProperties::loadDefaultMetadata()
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {

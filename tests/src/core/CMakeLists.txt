@@ -141,6 +141,7 @@ SET(TESTS
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
@@ -155,6 +156,7 @@ SET(TESTS
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
  testqgsproject.cpp
+ testqgsprojectstorage.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp

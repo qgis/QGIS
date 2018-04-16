@@ -66,6 +66,28 @@ Implicit sharing was added in 2.14
 %End
   public:
 
+    struct ParserError
+    {
+      enum ParserErrorType
+      {
+        Unknown,
+        FunctionUnknown,
+        FunctionWrongArgs,
+        FunctionInvalidParams,
+        FunctionNamedArgsError
+      };
+
+      ParserErrorType errorType;
+
+      int firstLine;
+
+      int firstColumn;
+
+      int lastLine;
+
+      int lastColumn;
+    };
+
     QgsExpression( const QString &expr );
 %Docstring
 Creates a new expression based on the provided string.
@@ -109,6 +131,13 @@ Returns true if an error occurred when parsing the input expression
     QString parserErrorString() const;
 %Docstring
 Returns parser error
+%End
+
+    ParserError parserError() const;
+%Docstring
+Returns parser error details including location of error.
+
+.. versionadded:: 3.0
 %End
 
     const QgsExpressionNode *rootNode() const;
@@ -485,8 +514,6 @@ Returns the help text for a specified function.
 Returns the help text for a specified variable.
 
 :param variableName: name of variable
-:param showValue: set to true to include current value of variable in help text
-:param value: current value of variable to show in help text
 
 .. seealso:: :py:func:`helpText`
 

@@ -67,7 +67,7 @@ class FieldCalculatorFeedback(QgsProcessingFeedback):
         QgsProcessingFeedback.__init__(self)
         self.dialog = dialog
 
-    def reportError(self, msg, fatal_error):
+    def reportError(self, msg, fatalError=False):
         self.dialog.error(msg)
 
 

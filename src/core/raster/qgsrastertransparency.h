@@ -66,23 +66,46 @@ class CORE_EXPORT QgsRasterTransparency
     //! \brief Accessor for transparentThreeValuePixelList
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
-    //! \brief Reset to the transparency list to a single value
-    void initializeTransparentPixelList( double );
+    /**
+     * Resets the transparency list to a single \a value.
+     */
+    void initializeTransparentPixelList( double value );
 
-    //! \brief Reset to the transparency list to a single value
-    void initializeTransparentPixelList( double, double, double );
+    /**
+     * Resets the transparency list to single red, green, and blue values.
+     */
+    void initializeTransparentPixelList( double redValue, double greenValue, double blueValue );
 
-    //! \brief Mutator for transparentSingleValuePixelList
+    //! \brief Mutator for transparentSingleValuePixelList, replaces the whole list
     void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList SIP_TRANSFER );
 
-    //! \brief Mutator for transparentThreeValuePixelList
+    //! \brief Mutator for transparentThreeValuePixelList, replaces the whole list
     void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList SIP_TRANSFER );
 
-    //! \brief Returns the transparency value for a single value Pixel
-    int alphaValue( double, int globalTransparency = 255 ) const;
+    /**
+     * Returns the transparency value for a single \a value pixel.
+     *
+     * Searches through the transparency list, and if a match is found, the global transparency value is scaled
+     * by the stored transparency value.
+     *
+     * \param value the needle to search for in the transparency hay stack
+     * \param globalTransparency the overal transparency level for the layer
+    */
+    int alphaValue( double value, int globalTransparency = 255 ) const;
 
-    //! \brief Return the transparency value for a RGB Pixel
-    int alphaValue( double, double, double, int globalTransparency = 255 ) const;
+    //! \brief
+
+    /**
+     * Returns the transparency value for a RGB pixel.
+     *
+     * Searches through the transparency list, if a match is found, the global transparency value is scaled
+     * by the stored transparency value.
+     * \param redValue the red portion of the needle to search for in the transparency hay stack
+     * \param greenValue  the green portion of the needle to search for in the transparency hay stack
+     * \param blueValue the green portion of the needle to search for in the transparency hay stack
+     * \param globalTransparency the overal transparency level for the layer
+    */
+    int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
 
     //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;

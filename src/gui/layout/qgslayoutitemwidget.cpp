@@ -21,6 +21,8 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 
+#include <QButtonGroup>
+
 //
 // QgsLayoutConfigObject
 //
@@ -145,13 +147,24 @@ QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
 
 bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
 {
+  QgsLayoutObject *oldObject = mObject;
+  QgsLayoutConfigObject *oldConfigObject = mConfigObject;
+  // have to set new mObject/mConfigObject here, because setNewItem methods require access to them
+  mObject = item;
+  mConfigObject = new QgsLayoutConfigObject( this, mObject );
   if ( setNewItem( item ) )
   {
-    mObject = item;
+    oldConfigObject->deleteLater();
     return true;
   }
-
-  return false;
+  else
+  {
+    // revert object change since it was unsuccessful
+    mObject = oldObject;
+    mConfigObject->deleteLater();
+    mConfigObject = oldConfigObject;
+    return false;
+  }
 }
 
 void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )

@@ -40,6 +40,7 @@ class TestQgsProject : public QObject
     void testPathResolverSvg();
     void testProjectUnits();
     void variablesChanged();
+    void testRequiredLayers();
 };
 
 void TestQgsProject::init()
@@ -132,7 +133,7 @@ void TestQgsProject::testPathResolver()
   QgsPathResolver tempRel( tmpName );
   QFileInfo fi( tmpName );
   QFile testFile( fi.path() + QStringLiteral( "/file1.txt" ) );
-  testFile.open( QIODevice::WriteOnly | QIODevice::Text );
+  QVERIFY( testFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   testFile.close();
   QVERIFY( QFile::exists( fi.path() + QStringLiteral( "/file1.txt" ) ) );
   QCOMPARE( tempRel.readPath( "file1.txt" ), fi.path() + QStringLiteral( "/file1.txt" ) );
@@ -345,6 +346,40 @@ void TestQgsProject::variablesChanged()
   prj->setCustomVariables( vars );
   QVERIFY( spyVariablesChanged.count() == 1 );
   delete prj;
+}
+
+void TestQgsProject::testRequiredLayers()
+{
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString layerPath = dataDir + "/points.shp";
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, QStringLiteral( "points 2" ), QStringLiteral( "ogr" ) );
+
+  QgsProject prj;
+  prj.addMapLayer( layer1 );
+  prj.addMapLayer( layer2 );
+
+  QSet<QgsMapLayer *> reqLayers;
+  reqLayers << layer2;
+  prj.setRequiredLayers( reqLayers );
+
+  QSet<QgsMapLayer *> reqLayersReturned = prj.requiredLayers();
+  QCOMPARE( reqLayersReturned.count(), 1 );
+  QCOMPARE( *reqLayersReturned.constBegin(), layer2 );
+
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  prj.setFileName( f.fileName() );
+  prj.write();
+
+  // test reading required layers back
+  QgsProject prj2;
+  prj2.setFileName( f.fileName() );
+  QVERIFY( prj2.read() );
+  QSet<QgsMapLayer *> reqLayersReturned2 = prj2.requiredLayers();
+  QCOMPARE( reqLayersReturned2.count(), 1 );
+  QCOMPARE( ( *reqLayersReturned.constBegin() )->name(), QString( "points 2" ) );
 }
 
 

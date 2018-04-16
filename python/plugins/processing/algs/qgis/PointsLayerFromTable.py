@@ -34,7 +34,9 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterField)
+                       QgsProcessingParameterField,
+                       QgsProcessingFeatureSource,
+                       QgsFeatureRequest)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -107,7 +109,7 @@ class PointsLayerFromTable(QgisAlgorithm):
                                                fields, wkb_type, target_crs)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, feature in enumerate(features):

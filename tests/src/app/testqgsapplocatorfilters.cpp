@@ -16,6 +16,8 @@
 #include "qgisapp.h"
 #include "qgslocatorfilter.h"
 #include "qgslocator.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
 #include "locator/qgsinbuiltlocatorfilters.h"
 #include <QSignalSpy>
 #include <QClipboard>
@@ -32,6 +34,8 @@ class TestQgsAppLocatorFilters : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void testCalculator();
+    void testLayers();
+    void testLayouts();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -70,6 +74,77 @@ void TestQgsAppLocatorFilters::testCalculator()
   // invalid expression
   results = gatherResults( &filter, QStringLiteral( "1+" ), QgsLocatorContext() );
   QVERIFY( results.empty() );
+}
+
+void TestQgsAppLocatorFilters::testLayers()
+{
+  QgsVectorLayer *l1 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "aaaaa" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "abc" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l3 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "ccccc" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 << l2 << l3 );
+
+  QgsLayerTreeLocatorFilter filter;
+
+  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 0 );
+
+  results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).userData.toString(), l1->id() );
+
+  results = gatherResults( &filter, QStringLiteral( "A" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 2 );
+  QCOMPARE( results.at( 0 ).userData.toString(), l1->id() );
+  QCOMPARE( results.at( 1 ).userData.toString(), l2->id() );
+
+  results = gatherResults( &filter, QString(), QgsLocatorContext() );
+  QCOMPARE( results.count(), 0 );
+
+  QgsLocatorContext context;
+  context.usingPrefix = true;
+  results = gatherResults( &filter, QString(), context );
+  QCOMPARE( results.count(), 3 );
+  QCOMPARE( results.at( 0 ).userData.toString(), l1->id() );
+  QCOMPARE( results.at( 1 ).userData.toString(), l2->id() );
+  QCOMPARE( results.at( 2 ).userData.toString(), l3->id() );
+}
+
+void TestQgsAppLocatorFilters::testLayouts()
+{
+  QgsPrintLayout *pl1 = new QgsPrintLayout( QgsProject::instance() );
+  pl1->setName( QStringLiteral( "aaaaaa" ) );
+  QgsProject::instance()->layoutManager()->addLayout( pl1 );
+  QgsPrintLayout *pl2 = new QgsPrintLayout( QgsProject::instance() );
+  pl2->setName( QStringLiteral( "abc" ) );
+  QgsProject::instance()->layoutManager()->addLayout( pl2 );
+  QgsPrintLayout *pl3 = new QgsPrintLayout( QgsProject::instance() );
+  pl3->setName( QStringLiteral( "ccccc" ) );
+  QgsProject::instance()->layoutManager()->addLayout( pl3 );
+
+  QgsLayoutLocatorFilter filter;
+
+  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 0 );
+
+  results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).userData.toString(), pl1->name() );
+
+  results = gatherResults( &filter, QStringLiteral( "A" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 2 );
+  QCOMPARE( results.at( 0 ).userData.toString(), pl1->name() );
+  QCOMPARE( results.at( 1 ).userData.toString(), pl2->name() );
+
+  results = gatherResults( &filter, QString(), QgsLocatorContext() );
+  QCOMPARE( results.count(), 0 );
+
+  QgsLocatorContext context;
+  context.usingPrefix = true;
+  results = gatherResults( &filter, QString(), context );
+  QCOMPARE( results.count(), 3 );
+  QCOMPARE( results.at( 0 ).userData.toString(), pl1->name() );
+  QCOMPARE( results.at( 1 ).userData.toString(), pl2->name() );
+  QCOMPARE( results.at( 2 ).userData.toString(), pl3->name() );
 
 }
 
@@ -82,7 +157,7 @@ QList<QgsLocatorResult> TestQgsAppLocatorFilters::gatherResults( QgsLocatorFilte
   QList< QgsLocatorResult > results;
   for ( int i = 0; i < spy.count(); ++ i )
   {
-    QVariant v = spy.at( i ).at( i );
+    QVariant v = spy.at( i ).at( 0 );
     QgsLocatorResult result = v.value<QgsLocatorResult>();
     results.append( result );
   }

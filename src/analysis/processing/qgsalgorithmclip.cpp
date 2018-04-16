@@ -71,17 +71,17 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
   std::unique_ptr< QgsFeatureSource > maskSource( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
   if ( !maskSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for OVERLAY" ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   // first build up a list of clip geometries
   QVector< QgsGeometry > clipGeoms;
@@ -105,6 +105,10 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   if ( clipGeoms.length() > 1 )
   {
     combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms );
+    if ( combinedClipGeom.isEmpty() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not create the combined clip geometry: %1" ).arg( combinedClipGeom.lastError() ) );
+    }
     singleClipFeature = false;
   }
   else

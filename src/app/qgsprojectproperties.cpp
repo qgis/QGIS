@@ -55,7 +55,7 @@
 #include "qgstablewidgetitem.h"
 #include "qgslayertree.h"
 #include "qgsprintlayout.h"
-
+#include "qgsmetadatawidget.h"
 #include "qgsmessagelog.h"
 
 //qt includes
@@ -75,6 +75,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   , mEllipsoidIndex( 0 )
 {
   setupUi( this );
+
+  mMetadataWidget = new QgsMetadataWidget();
+  mMetadataPage->layout()->addWidget( mMetadataWidget );
+
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
   connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );
@@ -818,7 +822,16 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 1 );
 
+  // metadata
+  mMetadataWidget->setMode( QgsMetadataWidget::ProjectMetadata );
+  mMetadataWidget->setMetadata( &QgsProject::instance()->metadata() );
+
+  // sync metadata title and project title fields
+  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
+  connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
+
   projectionSelectorInitialized();
+  populateRequiredLayers();
   restoreOptionsBaseUi();
   restoreState();
 }
@@ -865,6 +878,8 @@ void QgsProjectProperties::apply()
 
   QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
   QgsProject::instance()->setTransformContext( transformContext );
+
+  mMetadataWidget->acceptMetadata();
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
@@ -1269,11 +1284,13 @@ void QgsProjectProperties::apply()
     canvas->refresh();
   }
   QgisApp::instance()->mapOverviewCanvas()->refresh();
+
+  applyRequiredLayers();
 }
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  mOptionsListWidget->setCurrentRow( 1 );
+  mOptionsListWidget->setCurrentRow( 2 );
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -2107,4 +2124,38 @@ void QgsProjectProperties::showHelp()
     link = QStringLiteral( "working_with_ogc/server/getting_started.html#prepare-a-project-to-serve" );
   }
   QgsHelp::openHelp( link );
+}
+
+void QgsProjectProperties::populateRequiredLayers()
+{
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  QStandardItemModel *model = new QStandardItemModel( mViewRequiredLayers );
+  QList<QgsLayerTreeLayer *> layers = QgsProject::instance()->layerTreeRoot()->findLayers();
+  std::sort( layers.begin(), layers.end(), []( QgsLayerTreeLayer * layer1, QgsLayerTreeLayer * layer2 ) { return layer1->name() < layer2->name(); } );
+  for ( const QgsLayerTreeLayer *l : layers )
+  {
+    QStandardItem *item = new QStandardItem( l->name() );
+    item->setCheckable( true );
+    item->setCheckState( requiredLayers.contains( l->layer() ) ? Qt::Checked : Qt::Unchecked );
+    item->setData( l->layerId() );
+    model->appendRow( item );
+  }
+
+  mViewRequiredLayers->setModel( model );
+}
+
+void QgsProjectProperties::applyRequiredLayers()
+{
+  QSet<QgsMapLayer *> requiredLayers;
+  QAbstractItemModel *model = mViewRequiredLayers->model();
+  for ( int i = 0; i < model->rowCount(); ++i )
+  {
+    if ( model->data( model->index( i, 0 ), Qt::CheckStateRole ).toInt() == Qt::Checked )
+    {
+      QString layerId = model->data( model->index( i, 0 ), Qt::UserRole + 1 ).toString();
+      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId ) )
+        requiredLayers << layer;
+    }
+  }
+  QgsProject::instance()->setRequiredLayers( requiredLayers );
 }

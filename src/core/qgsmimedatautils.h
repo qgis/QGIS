@@ -63,13 +63,14 @@ class CORE_EXPORT QgsMimeDataUtils
        */
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 
-      //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
+      //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom" / "project"
       QString layerType;
 
       /**
        * For "vector" / "raster" type: provider id.
        * For "plugin" type: plugin layer type name.
        * For "custom" type: key of its QgsCustomDropHandler
+       * For "project" type: unused
        */
       QString providerKey;
       //! Human readable name to be used e.g. in layer tree

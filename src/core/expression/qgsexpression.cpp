@@ -26,7 +26,7 @@
 
 
 // from parser
-extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg );
+extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QgsExpression::ParserError &parserError );
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
@@ -99,7 +99,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserError );
   d->mEvalErrorString = QString();
   d->mExp = expression;
 }
@@ -195,7 +195,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserError );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -253,6 +253,11 @@ bool QgsExpression::hasParserError() const
 QString QgsExpression::parserErrorString() const
 {
   return d->mParserErrorString;
+}
+
+QgsExpression::ParserError QgsExpression::parserError() const
+{
+  return d->mParserError;
 }
 
 QSet<QString> QgsExpression::referencedColumns() const
@@ -338,7 +343,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserError );
   }
 
   if ( !d->mRootNode )
@@ -637,9 +642,15 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_basename" ), QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_author" ), QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_identifier" ), QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_keywords" ), QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
 
   //layer variables
   sVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );

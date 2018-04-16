@@ -33,7 +33,14 @@ A node unary operator is modifying the value of ``operand`` by negating it with 
     ~QgsExpressionNodeUnaryOperator();
 
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
+%Docstring
+Returns the unary operator.
+%End
+
     QgsExpressionNode *operand() const;
+%Docstring
+Returns the node the operator will operate upon.
+%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -66,6 +73,9 @@ I.e. "NOT" or "-"
 
 class QgsExpressionNodeBinaryOperator : QgsExpressionNode
 {
+%Docstring
+A binary expression operator, which operates on two values.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
@@ -113,8 +123,23 @@ Binary combination of the left and the right with op.
     ~QgsExpressionNodeBinaryOperator();
 
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
+%Docstring
+Returns the binary operator.
+%End
+
     QgsExpressionNode *opLeft() const;
+%Docstring
+Returns the node to the left of the operator.
+
+.. seealso:: :py:func:`opRight`
+%End
+
     QgsExpressionNode *opRight() const;
+%Docstring
+Returns the node to the right of the operator.
+
+.. seealso:: :py:func:`opLeft`
+%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -137,7 +162,14 @@ Binary combination of the left and the right with op.
 
 
     int precedence() const;
+%Docstring
+Returns the precedence index for the operator. Higher values have higher precedence.
+%End
+
     bool leftAssociative() const;
+%Docstring
+Returns true if the operator is left-associative.
+%End
 
     QString text() const;
 %Docstring
@@ -149,6 +181,9 @@ I.e. "AND", "OR", ...
 
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
+%Docstring
+An expression node for value IN or NOT IN clauses.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
@@ -162,8 +197,19 @@ This node tests if the result of ``node`` is in the result of ``list``. Optional
     ~QgsExpressionNodeInOperator();
 
     QgsExpressionNode *node() const;
+%Docstring
+Returns the expression node.
+%End
+
     bool isNotIn() const;
+%Docstring
+Returns true if this node is a "NOT IN" operator, or false if the node is a normal "IN" operator.
+%End
+
     QgsExpressionNode::NodeList *list() const;
+%Docstring
+Returns the list of nodes to search for matching values within.
+%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -189,6 +235,9 @@ This node tests if the result of ``node`` is in the result of ``list``. Optional
 
 class QgsExpressionNodeFunction : QgsExpressionNode
 {
+%Docstring
+An expression node for expression functions.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
@@ -204,7 +253,14 @@ a list of arguments that will be passed to it.
     ~QgsExpressionNodeFunction();
 
     int fnIndex() const;
+%Docstring
+Returns the index of the node's function.
+%End
+
     QgsExpressionNode::NodeList *args() const;
+%Docstring
+Returns a list of arguments specified for the function.
+%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -235,12 +291,19 @@ Tests whether the provided argument list is valid for the matching function
 
 class QgsExpressionNodeLiteral : QgsExpressionNode
 {
+%Docstring
+An expression node for literal values.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
+
     QgsExpressionNodeLiteral( const QVariant &value );
+%Docstring
+Constructor for QgsExpressionNodeLiteral, with the specified literal ``value``.
+%End
 
     QVariant value() const;
 %Docstring
@@ -271,12 +334,20 @@ The value of the literal.
 
 class QgsExpressionNodeColumnRef : QgsExpressionNode
 {
+%Docstring
+An expression node which takes it value from a feature's field.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
+
     QgsExpressionNodeColumnRef( const QString &name );
+%Docstring
+Constructor for QgsExpressionNodeColumnRef, referencing the column
+with the specified ``name``.
+%End
 
     QString name() const;
 %Docstring
@@ -308,13 +379,20 @@ The name of the column.
 
 class QgsExpressionNodeCondition : QgsExpressionNode
 {
+%Docstring
+An expression node for CASE WHEN clauses.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
+
     class WhenThen
 {
+%Docstring
+Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionnodeimpl.h"

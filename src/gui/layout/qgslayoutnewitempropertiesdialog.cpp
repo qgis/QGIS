@@ -19,6 +19,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsgui.h"
 
+#include <QButtonGroup>
+
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {

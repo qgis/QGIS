@@ -778,15 +778,36 @@ QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsPro
     scope->setVariable( it.key(), it.value(), true );
   }
 
+  QString projectPath = project->projectStorage() ? project->fileName() : project->absoluteFilePath();
+  QString projectFolder = QFileInfo( projectPath ).path();
+  QString projectFilename = QFileInfo( projectPath ).fileName();
+  QString projectBasename = project->baseName();
+
   //add other known project variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), project->title(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), QDir::toNativeSeparators( project->fileInfo().filePath() ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), QDir::toNativeSeparators( project->fileInfo().dir().path() ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), project->fileInfo().fileName(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), QDir::toNativeSeparators( projectPath ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), QDir::toNativeSeparators( projectFolder ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( project->homePath() ), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = project->crs();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
+
+  // metadata
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), project->metadata().author(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_abstract" ), project->metadata().abstract(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_creation_date" ), project->metadata().creationDateTime(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_identifier" ), project->metadata().identifier(), true, true ) );
+
+  // keywords
+  QVariantMap keywords;
+  QgsAbstractMetadataBase::KeywordMap metadataKeywords = project->metadata().keywords();
+  for ( auto it = metadataKeywords.constBegin(); it != metadataKeywords.constEnd(); ++it )
+  {
+    keywords.insert( it.key(), it.value() );
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_keywords" ), keywords, true, true ) );
 
   scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
   return scope;

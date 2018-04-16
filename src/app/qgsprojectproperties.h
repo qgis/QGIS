@@ -30,6 +30,7 @@ class QgsRelationManagerDialog;
 class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
+class QgsMetadataWidget;
 
 /**
  * Dialog to set project level properties
@@ -173,6 +174,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -222,4 +224,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
+
+    void populateRequiredLayers();
+    void applyRequiredLayers();
 };

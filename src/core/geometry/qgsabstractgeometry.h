@@ -104,6 +104,22 @@ class CORE_EXPORT QgsAbstractGeometry
     };
     Q_ENUM( SegmentationToleranceType )
 
+    //! Axis order for GML generation
+    enum AxisOrder
+    {
+
+      /**
+       * X comes before Y (or lon before lat)
+       */
+      XY = 0,
+
+      /**
+       * Y comes before X (or lat before lon)
+       */
+      YX
+    };
+    Q_ENUM( QgsAbstractGeometry::AxisOrder )
+
     /**
      * Constructor for QgsAbstractGeometry.
      */
@@ -221,24 +237,26 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
+     * \param axisOrder Axis order for generated GML
      * \see asWkb()
      * \see asWkt()
      * \see asGml3()
      * \see asJson()
      */
-    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
      * Returns a GML3 representation of the geometry.
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
+     * \param axisOrder Axis order for generated GML
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asJson()
      */
-    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
      * Returns a GeoJSON representation of the geometry.
@@ -533,6 +551,14 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 2.14
      */
     virtual bool dropMValue() = 0;
+
+    /**
+     * Swaps the x and y coordinates from the geometry. This can be used
+     * to repair geometries which have accidentally had their latitude and longitude
+     * coordinates reversed.
+     * \since QGIS 3.2
+     */
+    virtual void swapXy() = 0;
 
     /**
      * Converts the geometry to a specified type.

@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgssvgcache.h"
 
 #include <QAction>
 #include <QString>
@@ -68,7 +69,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   {
     btnAdvanced->setMenu( new QMenu( this ) );
   }
-  mClipFeaturesAction = new QAction( tr( "Clip features to canvas extent" ), this );
+  mClipFeaturesAction = new QAction( tr( "Clip Features to Canvas Extent" ), this );
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
 
@@ -114,6 +115,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
+
+  // when a remote svg has been fetched, update the widget's previews
+  // this is required if the symbol utilizes remote svgs, and the current previews
+  // have been generated using the temporary "downloading" svg. In this case
+  // we require the preview to be regenerated to use the correct fetched
+  // svg
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsSymbolsListWidget::populateSymbolView );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()

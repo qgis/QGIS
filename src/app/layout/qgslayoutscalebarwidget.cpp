@@ -19,6 +19,7 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgslayout.h"
 #include "qgsguiutils.h"
+
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>

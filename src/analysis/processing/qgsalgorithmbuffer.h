@@ -53,5 +53,3 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMBUFFER_H
-
-

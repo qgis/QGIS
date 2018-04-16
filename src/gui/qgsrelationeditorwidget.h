@@ -152,6 +152,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void deleteSelectedFeatures();
     void unlinkFeature( const QgsFeatureId featureid = QgsFeatureId() );
     void unlinkSelectedFeatures();
+    void zoomToSelectedFeatures();
     void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
@@ -175,6 +176,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mDeleteFeatureButton = nullptr;
     QToolButton *mLinkFeatureButton = nullptr;
     QToolButton *mUnlinkFeatureButton = nullptr;
+    QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;

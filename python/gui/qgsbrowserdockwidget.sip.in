@@ -116,7 +116,7 @@ Splitter has been moved
 %End
 
   signals:
-    void openFile( const QString & );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
 %Docstring
 Emitted when a file needs to be opened
 %End

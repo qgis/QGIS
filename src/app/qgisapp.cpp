@@ -242,6 +242,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
+#include "qgspuzzlewidget.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
@@ -249,6 +250,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgspythonrunner.h"
 #include "qgsquerybuilder.h"
@@ -465,8 +468,7 @@ static void setTitleBarText_( QWidget &qgisApp )
     }
     else
     {
-      QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption = projectFileInfo.completeBaseName();
+      caption = QgsProject::instance()->baseName();
     }
   }
   else
@@ -584,7 +586,7 @@ void QgisApp::activeLayerChanged( QgsMapLayer *layer )
   }
 }
 
-/**
+/*
  * This function contains forced validation of CRS used in QGIS.
  * There are 3 options depending on the settings:
  * - ask for CRS using projection selecter
@@ -683,6 +685,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   profiler->beginGroup( QStringLiteral( "startup" ) );
   startProfile( QStringLiteral( "Setting up UI" ) );
   setupUi( this );
+  // because mActionToggleMapOnly can hide the menu (thereby disabling menu actions),
+  //  we attach the following actions to the MainWindow too (to be able to come back)
+  this->addAction( mActionToggleFullScreen );
+  this->addAction( mActionTogglePanelsVisibility );
+  this->addAction( mActionToggleMapOnly );
   endProfile();
 
 #if QT_VERSION >= 0x050600
@@ -1286,6 +1293,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   setupDuplicateFeaturesAction();
 
+  // support for project storage
+  connect( mProjectFromStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectFromStorageMenu, false ); } );
+  connect( mProjectToStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectToStorageMenu, true ); } );
+
   QList<QAction *> actions = mPanelMenu->actions();
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
@@ -1330,6 +1341,19 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
 
+  // the most important part of the initialization: make sure that people can play puzzle if they need
+  QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
+  mCentralContainer->insertWidget( 2, puzzleWidget );
+  connect( mCoordsEdit, &QgsStatusBarCoordinatesWidget::weAreBored, this, [ this, puzzleWidget ]
+  {
+    if ( puzzleWidget->letsGetThePartyStarted() )
+      mCentralContainer->setCurrentIndex( 2 );
+  } );
+  connect( puzzleWidget, &QgsPuzzleWidget::done, this, [ this ]
+  {
+    mCentralContainer->setCurrentIndex( 0 );
+  } );
+
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1357,8 +1381,6 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
-  stopRendering();
-
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -1446,6 +1468,12 @@ QgisApp::~QgisApp()
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
+
+  const QList<QgsMapCanvas *> canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    delete canvas;
+  }
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -1653,6 +1681,10 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
           break;
         }
       }
+    }
+    else if ( u.layerType == QStringLiteral( "project" ) )
+    {
+      openFile( u.uri, QStringLiteral( "project" ) );
     }
   }
 }
@@ -1913,6 +1945,8 @@ void QgisApp::createActions()
   connect( mActionPasteAsNewMemoryVector, &QAction::triggered, this, [ = ] { pasteAsNewMemoryVector(); } );
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
   connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { pasteStyle(); } );
+  connect( mActionCopyLayer, &QAction::triggered, this, &QgisApp::copyLayer );
+  connect( mActionPasteLayer, &QAction::triggered, this, &QgisApp::pasteLayer );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
   connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringCurvePoint ); } );
   connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
@@ -2059,6 +2093,7 @@ void QgisApp::createActions()
 
   connect( mActionToggleFullScreen, &QAction::triggered, this, &QgisApp::toggleFullScreen );
   connect( mActionTogglePanelsVisibility, &QAction::triggered, this, &QgisApp::togglePanelsVisibility );
+  connect( mActionToggleMapOnly, &QAction::triggered, this, &QgisApp::toggleMapOnly );
   connect( mActionProjectProperties, &QAction::triggered, this, &QgisApp::projectProperties );
   connect( mActionOptions, &QAction::triggered, this, &QgisApp::options );
   connect( mActionCustomProjection, &QAction::triggered, this, &QgisApp::customProjection );
@@ -2317,6 +2352,7 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
     mViewMenu->addAction( mActionTogglePanelsVisibility );
+    mViewMenu->addAction( mActionToggleMapOnly );
   }
   else
   {
@@ -2326,6 +2362,7 @@ void QgisApp::createMenus()
     mSettingsMenu->insertMenu( before, mToolbarMenu );
     mSettingsMenu->insertAction( before, mActionToggleFullScreen );
     mSettingsMenu->insertAction( before, mActionTogglePanelsVisibility );
+    mSettingsMenu->insertAction( before, mActionToggleMapOnly );
     mSettingsMenu->insertSeparator( before );
   }
 
@@ -3006,26 +3043,26 @@ void QgisApp::setIconSizes( int size )
 
 void QgisApp::setTheme( const QString &themeName )
 {
-  /*****************************************************************
-  // Init the toolbar icons by setting the icon for each action.
-  // All toolbar/menu items must be a QAction in order for this
-  // to work.
-  //
-  // When new toolbar/menu QAction objects are added to the interface,
-  // add an entry below to set the icon
-  //
-  // PNG names must match those defined for the default theme. The
-  // default theme is installed in <prefix>/share/qgis/themes/default.
-  //
-  // New core themes can be added by creating a subdirectory under src/themes
-  // and modifying the appropriate CMakeLists.txt files. User contributed themes
-  // will be installed directly into <prefix>/share/qgis/themes/<themedir>.
-  //
-  // Themes can be selected from the preferences dialog. The dialog parses
-  // the themes directory and builds a list of themes (ie subdirectories)
-  // for the user to choose from.
-  //
+  /*
+  Init the toolbar icons by setting the icon for each action.
+  All toolbar/menu items must be a QAction in order for this
+  to work.
+
+  When new toolbar/menu QAction objects are added to the interface,
+  add an entry below to set the icon
+
+  PNG names must match those defined for the default theme. The
+  default theme is installed in <prefix>/share/qgis/themes/default.
+
+  New core themes can be added by creating a subdirectory under src/themes
+  and modifying the appropriate CMakeLists.txt files. User contributed themes
+  will be installed directly into <prefix>/share/qgis/themes/<themedir>.
+
+  Themes can be selected from the preferences dialog. The dialog parses
+  the themes directory and builds a list of themes (ie subdirectories)
+  for the user to choose from.
   */
+
   QgsApplication::setUITheme( themeName );
   //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
@@ -3926,19 +3963,20 @@ void QgisApp::updateRecentProjectPaths()
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( bool savePreviewImage )
 {
   // first, re-read the recent project paths. This prevents loss of recent
   // projects when multiple QGIS sessions are open
   readRecentProjects();
 
   // Get canonical absolute path
-  QFileInfo myFileInfo( projectPath );
   QgsWelcomePageItemsModel::RecentProjectData projectData;
-  projectData.path = myFileInfo.absoluteFilePath();
+  projectData.path = QgsProject::instance()->absoluteFilePath();
+  if ( projectData.path.isEmpty() )  // in case of custom project storage
+    projectData.path = QgsProject::instance()->fileName();
   projectData.title = QgsProject::instance()->title();
   if ( projectData.title.isEmpty() )
-    projectData.title = projectData.path;
+    projectData.title = QgsProject::instance()->baseName();
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
@@ -5498,7 +5536,7 @@ void QgisApp::fileRevert()
     return;
 
   // re-open the current project
-  addProject( QgsProject::instance()->fileInfo().filePath() );
+  addProject( QgsProject::instance()->fileName() );
 }
 
 void QgisApp::enableProjectMacros()
@@ -5509,10 +5547,6 @@ void QgisApp::enableProjectMacros()
   QgsPythonRunner::run( QStringLiteral( "qgis.utils.reloadProjectMacros()" ) );
 }
 
-/**
-  adds a saved project to qgis, usually called on startup by specifying a
-  project file on the command line
-  */
 bool QgisApp::addProject( const QString &projectFile )
 {
   MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
@@ -5557,7 +5591,7 @@ bool QgisApp::addProject( const QString &projectFile )
       // We loaded data from the backup file, but we pretend to work on the original project file.
       QgsProject::instance()->setFileName( projectFile );
       QgsProject::instance()->setDirty( true );
-      mProjectLastModified = pfi.lastModified();
+      mProjectLastModified = QgsProject::instance()->lastModified();
       return true;
     }
 
@@ -5566,7 +5600,7 @@ bool QgisApp::addProject( const QString &projectFile )
     return false;
   }
 
-  mProjectLastModified = pfi.lastModified();
+  mProjectLastModified = QgsProject::instance()->lastModified();
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
@@ -5588,6 +5622,12 @@ bool QgisApp::addProject( const QString &projectFile )
   QgsDebugMsg( "Scale restored..." );
 
   mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
+
+  // Select the first layer
+  if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
+  {
+    mLayerTreeView->setCurrentLayer( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().at( 0 )->layer() );
+  }
 
   QgsSettings settings;
 
@@ -5641,7 +5681,7 @@ bool QgisApp::addProject( const QString &projectFile )
   // specific plug-in state
 
   // add this to the list of recently used project files
-  saveRecentProjectPath( projectFile, false );
+  saveRecentProjectPath( false );
 
   QApplication::restoreOverrideCursor();
 
@@ -5661,7 +5701,6 @@ bool QgisApp::fileSave()
 {
   // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
-  QFileInfo fullPath;
 
   if ( QgsProject::instance()->fileName().isNull() )
   {
@@ -5680,6 +5719,7 @@ bool QgisApp::fileSave()
     if ( path.isEmpty() )
       return false;
 
+    QFileInfo fullPath;
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
@@ -5698,9 +5738,10 @@ bool QgisApp::fileSave()
   }
   else
   {
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    fullPath = fi.absoluteFilePath();
-    if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
+    bool usingProjectStorage = QgsProject::instance()->projectStorage();
+    bool fileExists = usingProjectStorage ? true : QFileInfo( QgsProject::instance()->fileName() ).exists();
+
+    if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )
     {
       if ( QMessageBox::warning( this,
                                  tr( "Open a Project" ),
@@ -5708,12 +5749,12 @@ bool QgisApp::fileSave()
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
                                  .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
-                                       fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                       QgsProject::instance()->lastModified().toString( Qt::DefaultLocaleLongDate ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
 
-    if ( fi.exists() && ! fi.isWritable() )
+    if ( fileExists && !usingProjectStorage && ! QFileInfo( QgsProject::instance()->fileName() ).isWritable() )
     {
       messageBar()->pushMessage( tr( "Insufficient permissions" ),
                                  tr( "The project file is not writable." ),
@@ -5727,10 +5768,9 @@ bool QgisApp::fileSave()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
 
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    mProjectLastModified = fi.lastModified();
+    mProjectLastModified = QgsProject::instance()->lastModified();
   }
   else
   {
@@ -5787,7 +5827,7 @@ void QgisApp::fileSaveAs()
     setTitleBarText_( *this ); // update title bar
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
-    saveRecentProjectPath( fullPath.filePath() );
+    saveRecentProjectPath();
     mProjectLastModified = fullPath.lastModified();
   }
   else
@@ -5936,11 +5976,6 @@ void QgisApp::runScript( const QString &filePath )
 #endif
 }
 
-
-/**
-  Open the specified project file; prompt to save previous project if necessary.
-  Used to process a commandline argument or OpenDocument AppleEvent.
-  */
 void QgisApp::openProject( const QString &fileName )
 {
   if ( checkTasksDependOnProject() )
@@ -5954,11 +5989,6 @@ void QgisApp::openProject( const QString &fileName )
   }
 }
 
-/**
-  Open a raster or vector file; ignore other files.
-  Used to process a commandline argument or OpenDocument AppleEvent.
-  @returns true if the file is successfully opened
-  */
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 {
   QFileInfo fileInfo( fileName );
@@ -6023,11 +6053,11 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
 
 // Open a file specified by a commandline argument, Drop or FileOpen event.
-void QgisApp::openFile( const QString &fileName )
+void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
 {
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
-  if ( fi.suffix() == QLatin1String( "qgs" ) || fi.suffix() == QLatin1String( "qgz" ) )
+  if ( fileTypeHint == QStringLiteral( "project" ) || fi.suffix() == QLatin1String( "qgs" ) || fi.suffix() == QLatin1String( "qgz" ) )
   {
     QgsDebugMsg( "Opening project " + fileName );
     openProject( fileName );
@@ -6242,37 +6272,74 @@ void QgisApp::toggleFullScreen()
 
 void QgisApp::togglePanelsVisibility()
 {
+  toggleReducedView( false );
+}
+
+void QgisApp::toggleMapOnly()
+{
+  toggleReducedView( true );
+}
+
+void QgisApp::toggleReducedView( bool viewMapOnly )
+{
   QgsSettings settings;
 
   QStringList docksTitle = settings.value( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() ).toStringList();
   QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() ).toStringList();
+  QStringList toolBarsActive = settings.value( QStringLiteral( "UI/hiddenToolBarsActive" ), QStringList() ).toStringList();
 
-  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
-  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  const QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  const QList<QToolBar *> toolBars = findChildren<QToolBar *>();
 
-  if ( docksTitle.isEmpty() )
+  bool allWidgetsVisible = settings.value( QStringLiteral( "UI/allWidgetsVisible" ), true ).toBool();
+
+  if ( allWidgetsVisible )  // that is: currently nothing is hidden
   {
 
-    Q_FOREACH ( QDockWidget *dock, docks )
+    if ( viewMapOnly )  //
+    {
+      // hide also statusbar and menubar and all toolbars
+      for ( QToolBar *toolBar : toolBars )
+      {
+        if ( toolBar->isVisible() && !toolBar->isFloating() )
+        {
+          // remember the active toolbars
+          toolBarsActive << toolBar->windowTitle();
+          toolBar->setVisible( false );
+        }
+      }
+
+      this->menuBar()->setVisible( false );
+      this->statusBar()->setVisible( false );
+
+      settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
+    }
+
+    for ( QDockWidget *dock : docks )
     {
       if ( dock->isVisible() && !dock->isFloating() )
       {
+        // remember the active docs
         docksTitle << dock->windowTitle();
         dock->setVisible( false );
       }
     }
 
-    Q_FOREACH ( QTabBar *tabBar, tabBars )
+    for ( QTabBar *tabBar : tabBars )
     {
+      // remember the active tab from the docks
       docksActive << tabBar->tabText( tabBar->currentIndex() );
     }
 
     settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), docksTitle );
     settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), docksActive );
+
+    settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), false );
   }
-  else
+  else  // currently panels or other widgets are hidden: show ALL based on 'remembered UI settings'
   {
-    Q_FOREACH ( QDockWidget *dock, docks )
+    for ( QDockWidget *dock : docks )
     {
       if ( docksTitle.contains( dock->windowTitle() ) )
       {
@@ -6280,7 +6347,7 @@ void QgisApp::togglePanelsVisibility()
       }
     }
 
-    Q_FOREACH ( QTabBar *tabBar, tabBars )
+    for ( QTabBar *tabBar : tabBars )
     {
       for ( int i = 0; i < tabBar->count(); ++i )
       {
@@ -6291,8 +6358,21 @@ void QgisApp::togglePanelsVisibility()
       }
     }
 
-    settings.setValue( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() );
-    settings.setValue( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() );
+    for ( QToolBar *toolBar : toolBars )
+    {
+      if ( toolBarsActive.contains( toolBar->windowTitle() ) )
+      {
+        toolBar->setVisible( true );
+      }
+    }
+    this->menuBar()->setVisible( true );
+    this->statusBar()->setVisible( true );
+
+    settings.remove( QStringLiteral( "UI/hiddenToolBarsActive" ) );
+    settings.remove( QStringLiteral( "UI/hiddenDocksTitle" ) );
+    settings.remove( QStringLiteral( "UI/hiddenDocksActive" ) );
+
+    settings.setValue( QStringLiteral( "UI/allWidgetsVisible" ), true );
   }
 }
 
@@ -6951,7 +7031,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
 }
 
 
-void QgisApp::saveAsFile( QgsMapLayer *layer )
+void QgisApp::saveAsFile( QgsMapLayer *layer, bool onlySelected )
 {
   if ( !layer )
     layer = activeLayer();
@@ -6966,7 +7046,7 @@ void QgisApp::saveAsFile( QgsMapLayer *layer )
   }
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
-    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ) );
+    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected );
   }
 }
 
@@ -6983,6 +7063,28 @@ void QgisApp::saveAsLayerDefinition()
   {
     messageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, Qgis::Warning );
   }
+}
+
+void QgisApp::saveStyleFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = qobject_cast<QgsMapLayer *>( activeLayer() );
+  }
+
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  QString filename = QFileDialog::getSaveFileName( this,
+                     tr( "Save as QGIS Layer Style File" ),
+                     lastUsedDir,
+                     tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( filename.isEmpty() )
+    return;
+
+  bool defaultLoadedFlag;
+  layer->saveNamedStyle( filename, defaultLoadedFlag );
+
+  settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
 }
 
 ///@cond PRIVATE
@@ -7044,7 +7146,7 @@ QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
 
 ///@endcond
 
-void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption )
+void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected )
 {
   if ( !vlayer )
   {
@@ -7066,6 +7168,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
   dialog->setMapCanvas( mMapCanvas );
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
+  dialog->setOnlySelected( onlySelected );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -7429,8 +7532,10 @@ QgsLayoutDesignerDialog *QgisApp::createNewPrintLayout( const QString &t )
   QgsPrintLayout *layout = new QgsPrintLayout( QgsProject::instance() );
   layout->setName( title );
   layout->initializeDefaults();
-  QgsProject::instance()->layoutManager()->addLayout( layout );
-  return openLayoutDesignerDialog( layout );
+  if ( QgsProject::instance()->layoutManager()->addLayout( layout ) )
+    return openLayoutDesignerDialog( layout );
+  else
+    return nullptr;
 }
 
 QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
@@ -8167,6 +8272,7 @@ void QgisApp::selectByForm()
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( mVectorLayerTools );
+  context.setMapCanvas( mMapCanvas );
 
   QgsSelectByFormDialog *dlg = new QgsSelectByFormDialog( vlayer, context, this );
   dlg->setMessageBar( messageBar() );
@@ -8517,12 +8623,6 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer )
   }
 }
 
-/**
-   \param destinationLayer  The layer that the clipboard will be pasted to
-                            (defaults to the active layer on the legend)
- */
-
-
 void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
 {
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
@@ -8559,6 +8659,55 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       selectionLayer->triggerRepaint();
+    }
+  }
+}
+
+void QgisApp::copyLayer()
+{
+  QString errorMessage;
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
+
+  bool saved = QgsLayerDefinition::exportLayerDefinition( doc, mLayerTreeView->selectedNodes(), errorMessage, readWriteContext );
+
+  if ( !saved )
+  {
+    messageBar()->pushMessage( tr( "Error copying layer" ), errorMessage, Qgis::Warning );
+  }
+
+  // Copies data in text form as well, so the XML can be pasted into a text editor
+  clipboard()->setData( QGSCLIPBOARD_MAPLAYER_MIME, doc.toByteArray(), doc.toString() );
+  // Enables the paste menu element
+  mActionPasteLayer->setEnabled( true );
+}
+
+void QgisApp::pasteLayer()
+{
+  if ( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+  {
+    QDomDocument doc;
+    QString errorMessage;
+    QgsReadWriteContext readWriteContext;
+    doc.setContent( clipboard()->data( QGSCLIPBOARD_MAPLAYER_MIME ) );
+
+    QgsLayerTreeNode *currentNode = mLayerTreeView->currentNode();
+    QgsLayerTreeGroup *root = nullptr;
+    if ( QgsLayerTree::isGroup( currentNode ) )
+    {
+      root = QgsLayerTree::toGroup( currentNode );
+    }
+    else
+    {
+      root = QgsProject::instance()->layerTreeRoot();
+    }
+
+    bool loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), root,
+                  errorMessage, readWriteContext );
+
+    if ( !loaded )
+    {
+      messageBar()->pushMessage( tr( "Error pasting layer" ), errorMessage, Qgis::Warning );
     }
   }
 }
@@ -9149,7 +9298,9 @@ void QgisApp::removeLayer()
     return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const QList<QgsMapLayer *> selectedLayers = mLayerTreeView->selectedLayers();
+
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
@@ -9157,7 +9308,7 @@ void QgisApp::removeLayer()
   }
 
   QStringList activeTaskDescriptions;
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
@@ -9167,6 +9318,16 @@ void QgisApp::removeLayer()
         activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
       }
     }
+  }
+
+  // extra check for required layers
+  // In theory it should not be needed because the remove action should be disabled
+  // if there are required layers in the selection...
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsMapLayer *layer : selectedLayers )
+  {
+    if ( requiredLayers.contains( layer ) )
+      return;
   }
 
   if ( !activeTaskDescriptions.isEmpty() )
@@ -9450,6 +9611,7 @@ void QgisApp::setLayerCrs()
     }
   }
 
+  markDirty();
   refreshMapCanvas();
 }
 
@@ -10458,10 +10620,6 @@ void QgisApp::setExtent( const QgsRectangle &rect )
   mMapCanvas->setExtent( rect );
 }
 
-/**
-  Prompt and save if project has been modified.
-  @return true if saved or discarded, false if canceled
- */
 bool QgisApp::saveDirty()
 {
   QString whyDirty;
@@ -11427,7 +11585,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 
 void QgisApp::legendLayerSelectionChanged()
 {
-  QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
+  const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
@@ -11453,6 +11611,19 @@ void QgisApp::legendLayerSelectionChanged()
       mLegendExpressionFilterButton->setChecked( exprEnabled );
     }
   }
+
+  // remove action - check for required layers
+  bool removeEnabled = true;
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
+  {
+    if ( requiredLayers.contains( nodeLayer->layer() ) )
+    {
+      removeEnabled = false;
+      break;
+    }
+  }
+  mActionRemoveLayer->setEnabled( removeEnabled );
 }
 
 void QgisApp::layerEditStateChanged()
@@ -11553,6 +11724,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionPasteFeatures->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
+    mActionCopyLayer->setEnabled( false );
+    mActionPasteLayer->setEnabled( false );
 
     mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
@@ -11599,8 +11772,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   mActionCopyStyle->setEnabled( true );
   mActionPasteStyle->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) );
+  mActionCopyLayer->setEnabled( true );
+  mActionPasteLayer->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) );
 
-  /***********Vector layers****************/
+  // Vector layers
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -11816,7 +11991,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLayerSubsetString->setEnabled( false );
     }
   } //end vector layer block
-  /*************Raster layers*************/
+  // Raster layers
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
@@ -13414,3 +13589,52 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   return QgsFeature();
 }
 
+
+void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
+{
+  menu->clear();
+  const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
+  for ( QgsProjectStorage *storage : storages )
+  {
+    QString name = storage->visibleName();
+    if ( name.isEmpty() )
+      continue;
+    QAction *action = menu->addAction( name );
+    if ( saving )
+    {
+      connect( action, &QAction::triggered, [this, storage]
+      {
+        QString uri = storage->showSaveGui();
+        if ( !uri.isEmpty() )
+        {
+          QgsProject::instance()->setFileName( uri );
+          if ( QgsProject::instance()->write() )
+          {
+            setTitleBarText_( *this ); // update title bar
+            mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
+            // add this to the list of recently used project files
+            saveRecentProjectPath();
+            mProjectLastModified = QgsProject::instance()->lastModified();
+          }
+          else
+          {
+            QMessageBox::critical( this,
+                                   tr( "Unable to save project %1" ).arg( uri ),
+                                   QgsProject::instance()->error(),
+                                   QMessageBox::Ok,
+                                   Qt::NoButton );
+          }
+        }
+      } );
+    }
+    else
+    {
+      connect( action, &QAction::triggered, [this, storage]
+      {
+        QString uri = storage->showLoadGui();
+        if ( !uri.isEmpty() )
+          addProject( uri );
+      } );
+    }
+  }
+}

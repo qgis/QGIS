@@ -156,7 +156,6 @@ Identifies features in the given vector layer and saves results to the passed li
 %End
 
 
-
 };
 
 QFlags<QgsMapToolIdentify::Type> operator|(QgsMapToolIdentify::Type f1, QFlags<QgsMapToolIdentify::Type> f2);

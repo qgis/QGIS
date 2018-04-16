@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'first' and 'second' in alg.exportedLayers:
         return
 
@@ -36,6 +36,6 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # Keep color table
     alg.exportRasterLayerFromParameter('output', parameters, context)

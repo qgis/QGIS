@@ -13,6 +13,10 @@ SET (CMAKE_VERBOSE_MAKEFILE "@CMAKE_VERBOSE_MAKEFILE@")
 SET (CMAKE_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@")
 SET (CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 
+# Qt5 cmake does not create overall qt prefix var, only individual lib prefixes.
+# For simplicity, assume core prefix same as all others
+SET (QT_LIBRARY_DIR "@_qt5Core_install_prefix@/lib")
+
 # OS X options
 SET (CMAKE_OSX_ARCHITECTURES "@CMAKE_OSX_ARCHITECTURES@")
 SET (OSX_HAVE_LOADERPATH @OSX_HAVE_LOADERPATH@)

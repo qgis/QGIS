@@ -236,11 +236,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      * This helper checks to see whether the file name appears to be a valid
-     *  raster file name.  If the file name looks like it could be valid,
-     *  but some sort of error occurs in processing the file, the error is
-     *  returned in retError.
+     * raster file name.  If the file name looks like it could be valid,
+     * but some sort of error occurs in processing the file, the error is
+     * returned in \a retError.
      */
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+    // TODO QGIS 4.0 - rename fileNameQString to fileName
+
     static bool isValidRasterFileName( const QString &fileNameQString );
 
     //! Return time stamp for given file name
@@ -277,21 +279,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Get the name of a band given its number
     QString bandName( int bandNoInt ) const;
 
+    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
     QgsRasterDataProvider *dataProvider() override;
 
-    /**
-     * Returns the data provider in a const-correct manner
-      \note available in Python bindings as constDataProvider()
-     */
+    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
-    //! Synchronises with changes in the datasource
     void reload() override;
-
-    /**
-     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * \since QGIS 2.4
-     */
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
@@ -306,15 +300,32 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QString htmlMetadata() const override;
 
-    //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+    /**
+     * Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+     * \param bandNumber the number of the band to use for generating a pixmap of the associated palette
+     */
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 
     //! \brief [ data provider interface ] Which provider is being used for this Raster Layer?
     QString providerType() const;
 
-    //! \brief Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
+    /**
+     * Returns the number of raster units per each raster pixel in X axis.
+     *
+     * In a world file, this is normally the first row (without the sign). (E.g.
+     * the value reported by the GDAL geotransform[1]).
+     *
+     * \see rasterUnitsPerPixelY()
+     */
     double rasterUnitsPerPixelX() const;
-    //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
+
+    /**
+     * Returns the number of raster units per each raster pixel in Y axis.
+     *
+     * In a world file, this is normally the first row (without the sign).
+     *
+     * \see rasterUnitsPerPixelX()
+     */
     double rasterUnitsPerPixelY() const;
 
     /**
@@ -336,14 +347,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \brief Refresh contrast enhancement with new extent.
      *  \note not available in Python bindings
      */
-    // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
     void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
     /**
      * \brief Refresh renderer with new extent, if needed
      *  \note not available in Python bindings
      */
-    // Used by QgsRasterLayerRenderer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
@@ -357,7 +366,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     QStringList subLayers() const override;
 
     /**
@@ -366,42 +374,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
-    /**
-     * Reorders the *previously selected* sublayers of this layer from bottom to top
-     *
-     * (Useful for providers that manage their own layers, such as WMS)
-     *
-     */
     void setLayerOrder( const QStringList &layers ) override;
-
-    /**
-     * Set the visibility of the given sublayer name
-     */
     void setSubLayerVisibility( const QString &name, bool vis ) override;
-
-    //! Time stamp of data source in the moment when data/metadata were loaded by provider
     QDateTime timestamp() const override;
 
   public slots:
     void showStatusMessage( const QString &message );
 
   protected:
-    //! \brief Read the symbology for the current layer from the Dom node supplied
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-
-    //! \brief Read the style information for the current layer from the Dom node supplied
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-
-    //! \brief Reads layer specific state from project file Dom node
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
-
-    //! \brief Write the symbology for the layer into the docment provided
     bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
-
-    //! \brief Write the style for the layer into the docment provided
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
-
-    //! \brief Write layer specific state to project file Dom node
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:

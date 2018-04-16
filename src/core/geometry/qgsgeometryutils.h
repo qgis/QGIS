@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgspoint.h"
+#include "qgsabstractgeometry.h"
 
 
 class QgsLineString;
@@ -139,19 +140,66 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
-     * @brief Compute the intersection of a line and a circle.
+     * \brief Compute the intersection of a line and a circle.
      * If the intersection has two solutions (points),
      * the closest point to the initial \a intersection point is returned.
-     * @param center the center of the circle
-     * @param radius the radius of the circle
-     * @param linePoint1 a first point on the line
-     * @param linePoint2 a second point on the line
-     * @param intersection the initial point and the returned intersection point
-     * @return true if an intersection has been found
+     * \param center the center of the circle
+     * \param radius the radius of the circle
+     * \param linePoint1 a first point on the line
+     * \param linePoint2 a second point on the line
+     * \param intersection the initial point and the returned intersection point
+     * \return true if an intersection has been found
      */
     static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection SIP_INOUT );
+
+    /**
+     * Calculates the intersections points between the circle with center \a center1 and
+     * radius \a radius1 and the circle with center \a center2 and radius \a radius2.
+     *
+     * If found, the intersection points will be stored in \a intersection1 and \a intersection2.
+     *
+     * \returns number of intersection points found.
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleIntersections( QgsPointXY center1, double radius1,
+                                          QgsPointXY center2, double radius2,
+                                          QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT );
+
+    /**
+     * Calculates the tangent points between the circle with the specified \a center and \a radius
+     * and the point \a p.
+     *
+     * If found, the tangent points will be stored in \a pt1 and \a pt2.
+     *
+     * \since QGIS 3.2
+     */
+    static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
+                                       const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT );
+
+    /**
+     * Calculates the outer tangent points for two circles, centered at \a center1 and
+     * \a center2 and with radii of \a radius1 and \a radius2 respectively.
+     *
+     * The outer tangent points correspond to the points at which the two lines
+     * which are drawn so that they are tangential to both circles touch
+     * the circles.
+     *
+     * The first tangent line is described by the points
+     * stored in \a line1P1 and \a line1P2,
+     * and the second line is described by the points stored in \a line2P1
+     * and \a line2P2.
+     *
+     * Returns the number of tangents (either 0 or 2).
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleOuterTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
 
     /**
      * \brief Project the point on a segment
@@ -281,13 +329,13 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns ) SIP_SKIP;
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D ) SIP_SKIP;
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.
@@ -385,6 +433,53 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.0
      */
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
+
+    /**
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from (\a x1, \a y1) to (\a x2, \a y2).
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a x1, \a y1) and 1 represents
+     * the end of the line (\a x2, \a y2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLineByValue()
+     */
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
+
+    /**
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from \a p1 to \a p2.
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a p1) and 1 represents
+     * the end of the line (\a p2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * Any Z or M values present in the input points will also be interpolated
+     * and present in the returned point.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLineByValue()
+     */
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
+
+    /**
+     * Interpolates the position of a point along the line from (\a x1, \a y1)
+     * to (\a x2, \a y2).
+     *
+     * The position is interpolated using a supplied target \a value and the value
+     * at the start of the line (\a v1) and end of the line (\a v2). The returned
+     * point will be linearly interpolated to match position corresponding to
+     * the target \a value.
+     *
+     * \since QGIS 3.0.2
+     * \see interpolatePointOnLine()
+     */
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
 
     /**
      * Return the gradient of a line defined by points \a pt1 and \a pt2.

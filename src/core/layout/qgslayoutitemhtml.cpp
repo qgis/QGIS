@@ -173,7 +173,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   //set html, using the specified url as base if in Url mode or the project file if in manual mode
   const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ?
                        QUrl( mActualFetchedUrl ) :
-                       QUrl::fromLocalFile( mLayout->project()->fileInfo().absoluteFilePath() );
+                       QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
 
   mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 

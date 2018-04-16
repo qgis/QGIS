@@ -38,16 +38,16 @@ typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int exp_lex_init(yyscan_t* scanner);
 extern int exp_lex_destroy(yyscan_t scanner);
-extern int exp_lex(YYSTYPE* yylval_param, yyscan_t yyscanner);
+extern int exp_lex(YYSTYPE* yylval_param, YYLTYPE* yyloc, yyscan_t yyscanner);
 extern YY_BUFFER_STATE exp__scan_string(const char* buffer, yyscan_t scanner);
 
 /** returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
     (interface function to be called from QgsExpression)
   */
-QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg);
+QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QgsExpression::ParserError& parserError);
 
 /** error handler for bison */
-void exp_error(expression_parser_context* parser_ctx, const char* msg);
+void exp_error(YYLTYPE* yyloc, expression_parser_context* parser_ctx, const char* msg);
 
 struct expression_parser_context
 {
@@ -56,6 +56,7 @@ struct expression_parser_context
 
   // varible where the parser error will be stored
   QString errorMsg;
+  QgsExpression::ParserError parserError;
   // root node of the expression
   QgsExpressionNode* rootNode;
 };
@@ -70,6 +71,7 @@ struct expression_parser_context
 %}
 
 // make the parser reentrant
+%locations
 %define api.pure
 %lex-param {void * scanner}
 %parse-param {expression_parser_context* parser_ctx}
@@ -193,14 +195,18 @@ expression:
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
             // (if the name is not known the token is parsed as a column)
-            exp_error(parser_ctx, "Function is not known");
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error(&yyloc, parser_ctx, "Function is not known");
             delete $3;
             YYERROR;
           }
           QString paramError;
           if ( !QgsExpressionNodeFunction::validateParams( fnIndex, $3, paramError ) )
           {
-            exp_error( parser_ctx, paramError.toLocal8Bit().constData() );
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionInvalidParams;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error( &yyloc, parser_ctx, paramError.toLocal8Bit().constData() );
             delete $3;
             YYERROR;
           }
@@ -208,7 +214,9 @@ expression:
                && !( QgsExpression::Functions()[fnIndex]->params() >= $3->count()
                && QgsExpression::Functions()[fnIndex]->minParams() <= $3->count() ) )
           {
-            exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error(&yyloc, parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             delete $3;
             YYERROR;
           }
@@ -223,14 +231,18 @@ expression:
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
             // (if the name is not known the token is parsed as a column)
-            exp_error(parser_ctx, "Function is not known");
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error(&yyloc, parser_ctx, "Function is not known");
             YYERROR;
           }
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
           if ( QgsExpression::Functions()[fnIndex]->params() > 0 )
           {
-            exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error(&yyloc, parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
           $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
@@ -258,7 +270,9 @@ expression:
           }
           else
           {
-            exp_error(parser_ctx, QString("%1 function is not known").arg(*$1).toLocal8Bit().constData());
+            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
+            parser_ctx->parserError.errorType = errorType;
+            exp_error(&yyloc, parser_ctx, QString("%1 function is not known").arg(*$1).toLocal8Bit().constData());
             YYERROR;
           }
           delete $1;
@@ -292,7 +306,9 @@ exp_list:
        {
          if ( $1->hasNamedNodes() )
          {
-           exp_error(parser_ctx, "All parameters following a named parameter must also be named.");
+           QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionNamedArgsError;
+           parser_ctx->parserError.errorType = errorType;
+           exp_error(&yyloc, parser_ctx, "All parameters following a named parameter must also be named.");
            delete $1;
            YYERROR;
          }
@@ -319,7 +335,7 @@ when_then_clause:
 
 
 // returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
-QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg)
+QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg, QgsExpression::ParserError &parserError)
 {
   expression_parser_context ctx;
   ctx.rootNode = 0;
@@ -337,13 +353,18 @@ QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg)
   else // error?
   {
     parserErrorMsg = ctx.errorMsg;
+    parserError = ctx.parserError;
     delete ctx.rootNode;
     return nullptr;
   }
 }
 
 
-void exp_error(expression_parser_context* parser_ctx, const char* msg)
+void exp_error(YYLTYPE* yyloc,expression_parser_context* parser_ctx, const char* msg)
 {
   parser_ctx->errorMsg = msg;
+  parser_ctx->parserError.firstColumn = yyloc->first_column;
+  parser_ctx->parserError.firstLine = yyloc->first_line;
+  parser_ctx->parserError.lastColumn = yyloc->last_column;
+  parser_ctx->parserError.lastLine = yyloc->last_line;
 }

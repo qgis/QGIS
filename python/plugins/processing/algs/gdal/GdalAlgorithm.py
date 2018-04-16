@@ -59,6 +59,9 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagSupportsBatch # cannot cancel!
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
@@ -70,7 +73,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
         ogr_data_path = None
         ogr_layer_name = None
-        if input_layer is None:
+        if input_layer is None or input_layer.dataProvider().name() == 'memory':
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required

@@ -57,6 +57,7 @@ SET(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
@@ -268,6 +269,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
   qgsmapsavedialog.h
+  qgspuzzlewidget.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgssnappinglayertreemodel.h
@@ -605,6 +607,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core

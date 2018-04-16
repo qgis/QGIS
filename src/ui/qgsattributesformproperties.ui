@@ -49,6 +49,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>Select attribute layout editor</string>
+        </property>
         <item>
          <property name="text">
           <string>Autogenerate</string>

@@ -70,18 +70,16 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 
   private:
 
-    QPointer< QgsVectorLayer > mLayer = nullptr;
-
     QString mDestFileName;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
     QgsVectorFileWriter::WriterError mError = QgsVectorFileWriter::NoError;
 
     QString mNewFilename;
     QString mErrorMessage;
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;
+    QgsVectorFileWriter::PreparedWriterDetails mWriterDetails;
     std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
 };
 

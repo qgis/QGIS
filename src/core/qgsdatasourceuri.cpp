@@ -186,18 +186,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else if ( pname == QLatin1String( "sslmode" ) )
       {
-        if ( pval == QLatin1String( "disable" ) )
-          mSSLmode = SslDisable;
-        else if ( pval == QLatin1String( "allow" ) )
-          mSSLmode = SslAllow;
-        else if ( pval == QLatin1String( "prefer" ) )
-          mSSLmode = SslPrefer;
-        else if ( pval == QLatin1String( "require" ) )
-          mSSLmode = SslRequire;
-        else if ( pval == QLatin1String( "verify-ca" ) )
-          mSSLmode = SslVerifyCa;
-        else if ( pval == QLatin1String( "verify-full" ) )
-          mSSLmode = SslVerifyFull;
+        mSSLmode = decodeSslMode( pval );
       }
       else if ( pname == QLatin1String( "requiressl" ) )
       {
@@ -508,20 +497,10 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     }
   }
 
-  if ( mSSLmode == SslDisable )
-    connectionItems << QStringLiteral( "sslmode=disable" );
-  else if ( mSSLmode == SslAllow )
-    connectionItems << QStringLiteral( "sslmode=allow" );
-  else if ( mSSLmode == SslRequire )
-    connectionItems << QStringLiteral( "sslmode=require" );
-#if 0
-  else if ( mSSLmode == SSLprefer ) // no need to output the default
-    connectionItems << "sslmode=prefer";
-#endif
-  else if ( mSSLmode == SslVerifyCa )
-    connectionItems << QStringLiteral( "sslmode=verify-ca" );
-  else if ( mSSLmode == SslVerifyFull )
-    connectionItems << QStringLiteral( "sslmode=verify-full" );
+  if ( mSSLmode != SslPrefer )  // no need to output the default
+  {
+    connectionItems << QStringLiteral( "sslmode=" ) + encodeSslMode( mSSLmode );
+  }
 
   if ( !mAuthConfigId.isEmpty() )
   {
@@ -705,6 +684,38 @@ QString QgsDataSourceUri::srid() const
 void QgsDataSourceUri::setSrid( const QString &srid )
 {
   mSrid = srid;
+}
+
+QgsDataSourceUri::SslMode QgsDataSourceUri::decodeSslMode( const QString &sslMode )
+{
+  if ( sslMode == QLatin1String( "prefer" ) )
+    return SslPrefer;
+  else if ( sslMode == QLatin1String( "disable" ) )
+    return SslDisable;
+  else if ( sslMode == QLatin1String( "allow" ) )
+    return SslAllow;
+  else if ( sslMode == QLatin1String( "require" ) )
+    return SslRequire;
+  else if ( sslMode == QLatin1String( "verify-ca" ) )
+    return SslVerifyCa;
+  else if ( sslMode == QLatin1String( "verify-full" ) )
+    return SslVerifyFull;
+  else
+    return SslPrefer;  // default
+}
+
+QString QgsDataSourceUri::encodeSslMode( QgsDataSourceUri::SslMode sslMode )
+{
+  switch ( sslMode )
+  {
+    case SslPrefer: return QStringLiteral( "prefer" );
+    case SslDisable: return QStringLiteral( "disable" );
+    case SslAllow: return QStringLiteral( "allow" );
+    case SslRequire: return QStringLiteral( "require" );
+    case SslVerifyCa: return QStringLiteral( "verify-ca" );
+    case SslVerifyFull: return QStringLiteral( "verify-full" );
+  }
+  return QString();
 }
 
 void QgsDataSourceUri::setParam( const QString &key, const QString &value )

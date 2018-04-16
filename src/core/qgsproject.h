@@ -43,6 +43,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
+#include "qgsprojectmetadata.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -55,6 +56,7 @@ class QgsMapLayer;
 class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
+class QgsProjectStorage;
 class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
@@ -92,6 +94,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
+    Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -110,6 +113,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's title.
      * \param title new title
      * \since QGIS 2.4
+     *
+     * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+     *
      * \see title()
      */
     void setTitle( const QString &title );
@@ -117,6 +123,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's title.
      * \see setTitle()
+     *
+     * \note Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
     */
     QString title() const;
 
@@ -143,10 +151,43 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns QFileInfo object for the project's associated file.
+     *
+     * \note The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
+     * in the file system. It is recommended to use absoluteFilePath(), baseName(), lastModifiedTime() as
+     * replacements that are aware of the fact that projects may be saved in other project storages.
+     *
      * \see fileName()
      * \since QGIS 2.9
+     * \deprecated
      */
-    QFileInfo fileInfo() const;
+    Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
+
+    /**
+     * Returns pointer to project storage implementation that handles read/write of the project file.
+     * If the project file is stored in the local file system, returns null pointer.
+     * The project storage object is inferred from fileName() of the project.
+     * \since QGIS 3.2
+     */
+    QgsProjectStorage *projectStorage() const;
+
+    /**
+     * Returns last modified time of the project file as returned by the file system (or other project storage).
+     * \since QGIS 3.2
+     */
+    QDateTime lastModified() const;
+
+    /**
+     * Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absoluteFilePath() const;
+
+    /**
+     * Returns the base name of the project file without the path and without extension - derived from fileName().
+     * \since QGIS 3.2
+     */
+    QString baseName() const;
 
     /**
      * Returns the project's native coordinate reference system.
@@ -871,6 +912,40 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsAuxiliaryStorage *auxiliaryStorage();
 
+    /**
+     * Returns a reference to the project's metadata store.
+     * \since QGIS 3.2
+     * \see setMetadata()
+     * \see metadataChanged()
+     */
+    const QgsProjectMetadata &metadata() const;
+
+    /**
+     * Sets the project's \a metadata store.
+     * \since QGIS 3.2
+     * \see metadata()
+     * \see metadataChanged()
+     */
+    void setMetadata( const QgsProjectMetadata &metadata );
+
+    /**
+     * Returns a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    QSet<QgsMapLayer *> requiredLayers() const;
+
+    /**
+     * Configures a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -1016,6 +1091,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     void labelingEngineSettingsChanged();
+
+    /**
+     * Emitted when the project's metadata is changed.
+     * \see setMetadata()
+     * \see metadata()
+     * \since QGIS 3.2
+     */
+    void metadataChanged();
 
     //
     // signals from QgsMapLayerRegistry
@@ -1259,7 +1342,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QString mHomePath;
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
-    QString mTitle;              // project title
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
@@ -1268,6 +1350,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mTrustLayerMetadata = false;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsProjectMetadata mMetadata;
 
     friend class QgsProjectDirtyBlocker;
 };

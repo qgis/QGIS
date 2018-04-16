@@ -2960,11 +2960,11 @@ QGISEXTERN bool isProvider()
 
 /**
  * Creates an empty data source
-@param uri location to store the file(s)
-@param format data format (e.g. "ESRI Shapefile"
-@param vectortype point/line/polygon or multitypes
-@param attributes a list of name/type pairs for the initial attributes
-@return true in case of success*/
+\param uri location to store the file(s)
+\param format data format (e.g. "ESRI Shapefile"
+\param vectortype point/line/polygon or multitypes
+\param attributes a list of name/type pairs for the initial attributes
+\return true in case of success*/
 QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
@@ -2974,9 +2974,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
 
-  GDALDriverH driver;
   QgsApplication::registerOgrDrivers();
-  driver = OGRGetDriverByName( format.toLatin1() );
+  OGRSFDriverH driver = OGRGetDriverByName( format.toLatin1() );
   if ( !driver )
   {
     return false;

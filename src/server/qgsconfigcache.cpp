@@ -17,7 +17,6 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
-#include "qgsmslayercache.h"
 #include "qgsaccesscontrol.h"
 #include "qgsproject.h"
 

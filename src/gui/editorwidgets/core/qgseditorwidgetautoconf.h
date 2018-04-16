@@ -33,6 +33,8 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
 
+    virtual ~QgsEditorWidgetAutoConfPlugin() {}
+
     /**
      * Typical scores are:
      *   * 0: no matching type found.

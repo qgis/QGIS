@@ -18,11 +18,11 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
-
-#include <QComboBox>
-#include <QListWidget>
-#include <QLineEdit>
 #include "qgis_gui.h"
+
+class QTableWidget;
+class QComboBox;
+class QLineEdit;
 
 SIP_NO_FILE
 
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   private:
     QComboBox *mComboBox = nullptr;
-    QListWidget *mListWidget = nullptr;
+    QTableWidget *mTableWidget = nullptr;
     QLineEdit *mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;

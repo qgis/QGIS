@@ -99,10 +99,6 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
-    QPushButton *mShowButton = nullptr;
-    QPushButton *mRemoveButton = nullptr;
-    QPushButton *mRenameButton = nullptr;
-    QPushButton *mDuplicateButton = nullptr;
     QPushButton *mCreateReportButton = nullptr;
     QgsLayoutManagerModel *mModel = nullptr;
     QgsLayoutManagerProxyModel *mProxyModel = nullptr;
@@ -124,6 +120,8 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     void mTemplatesDefaultDirBtn_pressed();
     //! Slot to open user templates dir with user's system
     void mTemplatesUserDirBtn_pressed();
+    //! Slot to open help file
+    void showHelp();
 
     void createReport();
     void removeClicked();

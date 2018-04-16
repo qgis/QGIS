@@ -289,10 +289,18 @@ class CORE_EXPORT QgsExpressionFunction
      */
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
 
+    /**
+     * Evaluates the function, first evaluating all required arguments before passing them to the
+     * function's func() method.
+     */
     virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
 
     bool operator==( const QgsExpressionFunction &other ) const;
 
+    /**
+     * Returns true if the function handles NULL values in arguments by itself, and the default
+     * NULL value handling should be skipped.
+     */
     virtual bool handlesNull() const;
 
   protected:
@@ -386,8 +394,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  FcnEval fcn,
                                  const QString &group,
                                  const QString &helpText,
-                                 const std::function< bool( const QgsExpressionNodeFunction * )> &usesGeometry,
-                                 const std::function< QSet<QString>( const QgsExpressionNodeFunction * )> &referencedColumns,
+                                 const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry,
+                                 const std::function< QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false );
@@ -419,6 +427,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * \param values list of values passed to the function
      * \param context context expression is being evaluated against
      * \param parent parent expression
+     * \param node function node
      * \returns result of function
      */
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override
@@ -461,6 +470,9 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      */
     void setPrepareFunction( const std::function< bool( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &prepareFunc );
 
+    /**
+     * Returns a list of all registered expression functions.
+     */
     static const QList<QgsExpressionFunction *> &functions();
 
   private:
@@ -480,6 +492,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
  * It temporarily appends a new scope to the expression context for all nested
  * nodes.
  *
+ * \ingroup core
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */

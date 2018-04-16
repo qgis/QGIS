@@ -192,6 +192,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
     void onModelReset();
 
+  private slots:
+    void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
   protected:
     //! helper class with default actions. Lazily initialized.
     QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;

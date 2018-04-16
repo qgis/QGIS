@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
 from qgis.analysis import QgsRuggednessFilter
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,

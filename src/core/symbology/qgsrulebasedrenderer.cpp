@@ -541,13 +541,26 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
 {
   if ( !isFilterOK( feat, context ) )
     return false;
+
   if ( mSymbol )
     return true;
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {
-    if ( rule->willRenderFeature( feat, context ) )
+    if ( rule->isElse() )
+    {
+      RuleList lst = rulesForFeature( feat, context, false );
+      lst.removeOne( rule );
+
+      if ( lst.empty() )
+      {
+        return true;
+      }
+    }
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    {
       return true;
+    }
   }
   return false;
 }
@@ -576,12 +589,31 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {
-    lst.unite( rule->legendKeysForFeature( feat, context ) );
+    bool validKey = false;
+    if ( rule->isElse() )
+    {
+      RuleList lst = rulesForFeature( feat, context, false );
+      lst.removeOne( rule );
+
+      if ( lst.empty() )
+      {
+        validKey = true;
+      }
+    }
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    {
+      validKey = true;
+    }
+
+    if ( validKey )
+    {
+      lst.unite( rule->legendKeysForFeature( feat, context ) );
+    }
   }
   return lst;
 }
 
-QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context )
+QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context, bool onlyActive )
 {
   RuleList lst;
   if ( !isFilterOK( feat, context ) )
@@ -590,9 +622,13 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsF
   if ( mSymbol )
     lst.append( this );
 
-  Q_FOREACH ( Rule *rule, mActiveChildren )
+  RuleList listChildren = children();
+  if ( onlyActive )
+    listChildren = mActiveChildren;
+
+  Q_FOREACH ( Rule *rule, listChildren )
   {
-    lst += rule->rulesForFeature( feat, context );
+    lst += rule->rulesForFeature( feat, context, onlyActive );
   }
   return lst;
 }

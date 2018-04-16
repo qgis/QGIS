@@ -2283,8 +2283,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Bind layer to a specific data provider
-     * \param provider should be "postgres", "ogr", or ??
-     * @todo XXX should this return bool?  Throw exceptions?
+     * \param provider provider key string, must match a valid QgsVectorDataProvider key. E.g. "postgres", "ogr", etc.
      */
     bool setDataProvider( QString const &provider );
 

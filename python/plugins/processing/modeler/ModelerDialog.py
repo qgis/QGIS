@@ -643,13 +643,7 @@ class ModelerDialog(BASE, WIDGET):
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):
-        dlg = None
-        try:
-            dlg = alg.getCustomModelerParametersDialog(self.model)
-        except:
-            pass
-        if not dlg:
-            dlg = ModelerParametersDialog(alg, self.model)
+        dlg = ModelerParametersDialog(alg, self.model)
         if dlg.exec_():
             alg = dlg.createAlgorithm()
             if pos is None:
@@ -700,12 +694,7 @@ class ModelerDialog(BASE, WIDGET):
             else:
                 providerItem = TreeProviderItem(provider, self.algorithmTree, self)
 
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
                 # insert non-native providers at end of tree, alphabetically
-
                 for i in range(self.algorithmTree.invisibleRootItem().childCount()):
                     child = self.algorithmTree.invisibleRootItem().child(i)
                     if isinstance(child, TreeProviderItem):
@@ -713,6 +702,10 @@ class ModelerDialog(BASE, WIDGET):
                             break
 
                 self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
+
+                if not provider.isActive():
+                    providerItem.setHidden(True)
+                    self.disabledProviderItems[provider.id()] = providerItem
 
     def addAlgorithmsFromProvider(self, provider, parent):
         groups = {}

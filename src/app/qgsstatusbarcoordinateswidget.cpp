@@ -138,6 +138,11 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     refreshMapCanvas();
     return;
   }
+  else if ( mLineEdit->text() == QStringLiteral( "bored" ) )
+  {
+    // it's friday afternoon and too late to start another piece of work...
+    emit weAreBored();
+  }
 
   bool xOk = false;
   bool  yOk = false;

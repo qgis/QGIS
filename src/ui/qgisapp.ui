@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1030</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -39,11 +39,22 @@
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
      <property name="title">
-      <string>New From Template</string>
+      <string>New from Template</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mProjectToStorageMenu">
+     <property name="title">
+      <string>Save to</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mProjectFromStorageMenu">
+     <property name="title">
+      <string>Open from</string>
      </property>
     </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
+    <addaction name="mProjectFromStorageMenu"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionRevertProject"/>
@@ -51,6 +62,7 @@
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
+    <addaction name="mProjectToStorageMenu"/>
     <addaction name="mActionSaveMapAsImage"/>
     <addaction name="mActionSaveMapAsPdf"/>
     <addaction name="mActionDxfExport"/>
@@ -172,6 +184,9 @@
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
+    <addaction name="separator"/>
+    <addaction name="mActionCopyLayer"/>
+    <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionToggleEditing"/>
@@ -1648,6 +1663,14 @@
     <string>Ctrl+Tab</string>
    </property>
   </action>
+  <action name="mActionToggleMapOnly">
+   <property name="text">
+    <string>Toggle Map Only</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Tab</string>
+   </property>
+  </action>
   <action name="mActionProjectProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2981,6 +3004,27 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Revert Project to Saved version</string>
+   </property>
+  </action>
+  <action name="mActionCopyLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Layer</string>
+   </property>
+  </action>
+  <action name="mActionPasteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Paste Layer/Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste Layer/Group</string>
    </property>
   </action>
  </widget>

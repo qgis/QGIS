@@ -130,6 +130,10 @@ namespace QgsWfs
     for ( int i = 0; i < wfsLayerIds.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
+      if ( !layer )
+      {
+        continue;
+      }
       if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
       {
         continue;
@@ -263,7 +267,7 @@ namespace QgsWfs
 
         //xsd:element
         QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
-        attElem.setAttribute( QStringLiteral( "name" ), attributeName );
+        attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
         QVariant::Type attributeType = fields.at( idx ).type();
         if ( attributeType == QVariant::Int )
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );

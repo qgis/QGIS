@@ -114,7 +114,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Return the header value
      * \param name of the header
-     * @return the header value or an empty string
+     * \return the header value or an empty string
      */
     QString header( const QString &name ) const;
 
@@ -127,7 +127,7 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
      * Return the header map
-     * @return the headers map
+     * \return the headers map
      */
     QMap<QString, QString> headers() const;
 

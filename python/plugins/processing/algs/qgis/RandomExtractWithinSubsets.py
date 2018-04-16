@@ -33,7 +33,9 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingFeatureSource,
+                       QgsFeatureRequest)
 from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -88,7 +90,7 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
         index = source.fields().lookupField(field)
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         featureCount = source.featureCount()
         unique = source.uniqueValues(index)
         value = self.parameterAsInt(parameters, self.NUMBER, context)

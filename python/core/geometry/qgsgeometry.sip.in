@@ -616,9 +616,20 @@ Translates this geometry by dx, dy, dz and dm.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct,
+                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
+                               bool transformZ = false );
 %Docstring
-Transforms this geometry as described by CoordinateTransform ct
+Transforms this geometry as described by the coordinate transform ``ct``.
+
+The transformation defaults to a forward transform, but the direction can be swapped
+by setting the ``direction`` argument.
+
+By default, z-coordinates are not transformed, even if the coordinate transform
+includes a vertical datum transformation. To transform z-coordinates, set
+``transformZ`` to true. This requires that the z coordinates in the geometry represent
+height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
+and are expressed in its vertical units (generally meters).
 
 :return: OperationResult a result code: success or reason of failure
 %End
@@ -1667,6 +1678,9 @@ tolerance
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
 roughly doubles the number of vertices in a geometry.
+
+If input geometries contain Z or M values, these will also be smoothed and the output
+geometry will retain the same dimensionality as the input geometry.
 
 :param iterations: number of smoothing iterations to run. More iterations results
 in a smoother geometry

@@ -1,7 +1,7 @@
 v.transform
 Performs an affine transformation on a vector layer.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
 QgsProcessingParameterNumber|xshift|X shift|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterNumber|yshift|Y shift|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterNumber|zshift|Z shift|QgsProcessingParameterNumber.Double|0.0|True|None|None

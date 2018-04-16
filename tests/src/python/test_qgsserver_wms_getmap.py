@@ -184,6 +184,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic4")
 
+    def test_wms_getmap_context_rendering(self):
+        project = os.path.join(self.testdata_path, "test_project_render_context.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "points",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-119.8,20.4,-82.4,49.2",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_ContextRendering")
+
     def test_wms_getmap_dpi(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -716,6 +735,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter3")
 
+        # display multiple features filtered from multiple layers
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectStatePath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello,Hello_Filter_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country: \"name\" IN ( 'arctic' , 'eurasia' );Hello: \"color\" = 'red';Hello_Filter_SubsetString: \"color\" = 'slate'"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter4")
+
     def test_wms_getmap_filter_ogc(self):
         filter = "<Filter><PropertyIsEqualTo><PropertyName>name</PropertyName>" + \
                  "<Literal>eurasia</Literal></PropertyIsEqualTo></Filter>"
@@ -928,7 +966,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
     def test_wms_getmap_group(self):
-        """A WMS shall render the requested layers by drawing the leftmost in the list 
+        """A WMS shall render the requested layers by drawing the leftmost in the list
         bottommost, the next one over that, and so on."""
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({

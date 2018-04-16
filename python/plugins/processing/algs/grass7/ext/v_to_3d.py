@@ -36,10 +36,10 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
         return
 
     # We need to import the vector layer with v.in.ogr
-    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
     alg.postInputs()

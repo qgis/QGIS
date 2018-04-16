@@ -299,9 +299,10 @@ inline double qgsRound( double number, double places )
 ///@cond PRIVATE
 
 /**
- * Contains "polyfills" for backporting c++ features from standards > c++11.
+ * Contains "polyfills" for backporting c++ features from standards > c++11 and Qt global methods
+ * added later than our minimum version.
  *
- * To be removed when minimum c++ build requirement includes the std implementation
+ * To be removed when minimum c++ or Qt build requirement includes the std implementation
  * for these features.
  *
  * \note not available in Python bindings.
@@ -361,6 +362,27 @@ namespace qgis
   template<class T, class... Args>
   typename _Unique_if<T>::_Known_bound
   make_unique( Args &&... ) = delete;
+
+  /**
+   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
+   * in these circumstances.
+   *
+   * Example usage:
+   *
+   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
+   *
+   * This is an alternative to qOverload, which was implemented in Qt 5.7.
+   *
+   * See https://stackoverflow.com/a/16795664/1861260
+   */
+  template<typename... Args> struct overload
+  {
+    template<typename C, typename R>
+    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
+    {
+      return pmf;
+    }
+  };
 }
 ///@endcond
 #endif
@@ -555,10 +577,14 @@ typedef unsigned long long qgssize;
 #define NODISCARD [[nodiscard]]
 #elif defined(_MSC_VER)
 #define NODISCARD // no support
-#elif __has_cpp_attribute(nodiscard)
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(nodiscard)
 #define NODISCARD [[nodiscard]]
 #elif __has_cpp_attribute(gnu::warn_unused_result)
 #define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
 #else
 #define NODISCARD Q_REQUIRED_RESULT
 #endif
@@ -569,8 +595,12 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED [[maybe_unused]]
 #elif defined(_MSC_VER)
 #define MAYBE_UNUSED // no support
-#elif __has_cpp_attribute(gnu::unused)
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(gnu::unused)
 #define MAYBE_UNUSED [[gnu::unused]]
+#else
+#define MAYBE_UNUSED
+#endif
 #else
 #define MAYBE_UNUSED
 #endif

@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsProcessing,
-                       QgsProcessingParameterField)
+                       QgsProcessingParameterField,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -75,6 +76,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def prepareAlgorithm(self, parameters, context, feedback):
         self.field_name = self.parameterAsString(parameters, self.FIELD, context)
         return True
+
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
 
     def processFeature(self, feature, context, feedback):
         value = feature[self.field_idx]

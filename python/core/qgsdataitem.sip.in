@@ -586,6 +586,9 @@ Data item that can be used to represent QGIS projects.
 
     virtual bool hasDragEnabled() const;
 
+    virtual QgsMimeDataUtils::Uri mimeUri() const;
+
+
 };
 
 class QgsErrorItem : QgsDataItem

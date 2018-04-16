@@ -87,10 +87,10 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   if ( parameters.value( QStringLiteral( "SPOKES" ) ) == parameters.value( QStringLiteral( "HUBS" ) ) )
     throw QgsProcessingException( QObject::tr( "Same layer given for both hubs and spokes" ) );
 
-  std::unique_ptr< QgsFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
-  std::unique_ptr< QgsFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
   if ( !hubSource || !spokeSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
   int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
@@ -176,7 +176,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
                                           outType, hubSource->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
 
   auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
   {
@@ -192,7 +192,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     return p;
   };
 
-  QgsFeatureIterator hubFeatures = hubSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( hubFields2Fetch ) );
+  QgsFeatureIterator hubFeatures = hubSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( hubFields2Fetch ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   double step = hubSource->featureCount() > 0 ? 100.0 / hubSource->featureCount() : 1;
   int i = 0;
   QgsFeature hubFeature;
@@ -224,7 +224,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     spokeRequest.setSubsetOfAttributes( spokeFields2Fetch );
     spokeRequest.setFilterExpression( QgsExpression::createFieldEqualityExpression( fieldSpokeName, hubFeature.attribute( fieldHubIndex ) ) );
 
-    QgsFeatureIterator spokeFeatures = spokeSource->getFeatures( spokeRequest );
+    QgsFeatureIterator spokeFeatures = spokeSource->getFeatures( spokeRequest, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     QgsFeature spokeFeature;
     while ( spokeFeatures.nextFeature( spokeFeature ) )
     {

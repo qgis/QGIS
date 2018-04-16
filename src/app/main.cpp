@@ -830,17 +830,16 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QSettings *globalSettings = new QSettings( globalsettingsfile, QSettings::IniFormat );
-  globalSettings->setIniCodec( "UTF-8" );
   if ( configLocalStorageLocation.isEmpty() )
   {
+    QSettings globalSettings( globalsettingsfile, QSettings::IniFormat );
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
-    else if ( globalSettings->contains( QStringLiteral( "core/profilesPath" ) ) )
+    else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
-      configLocalStorageLocation = globalSettings->value( QStringLiteral( "core/profilesPath" ), "" ).toString();
+      configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
       QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
@@ -850,7 +849,6 @@ int main( int argc, char *argv[] )
       configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
     }
   }
-  delete globalSettings;
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );

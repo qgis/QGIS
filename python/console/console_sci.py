@@ -244,7 +244,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
-        return (line, len(self.text(line)))
+        return line, len(self.text(line))
 
     def is_cursor_at_end(self):
         """Return True if cursor is at the end of text"""
@@ -560,8 +560,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             if pasteList[-1] != "":
                 line = pasteList[-1]
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
+                curpos = self.getCursorPosition()
                 self.insert(cleanLine)
-                self.move_cursor_to_end()
+                self.setCursorPosition(curpos[0], curpos[1] + len(cleanLine))
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
