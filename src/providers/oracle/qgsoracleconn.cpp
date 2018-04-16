@@ -36,7 +36,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
   {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
+    QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ) );
     sConnections[conninfo]->mRef++;
     return sConnections[conninfo];
   }
@@ -46,7 +46,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
   if ( conn->mRef == 0 )
   {
     delete conn;
-    return 0;
+    return nullptr;
   }
 
   sConnections.insert( conninfo, conn );
@@ -59,15 +59,15 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
 {
-  QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
+  QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo() );
 
   QString database = databaseName( uri.database(), uri.host(), uri.port() );
-  QgsDebugMsg( QString( "New Oracle database " ) + database );
+  QgsDebugMsg( QStringLiteral( "New Oracle database " ) + database );
 
-  mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
+  mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QOCISPATIAL" ), QStringLiteral( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
-  QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
-  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString();
+  QString options = uri.hasParam( QStringLiteral( "dboptions" ) ) ? uri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  QString workspace = uri.hasParam( QStringLiteral( "dbworkspace" ) ) ? uri.param( QStringLiteral( "dbworkspace" ) ) : QString();
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
@@ -77,13 +77,13 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
 
   QString realm( database );
   if ( !username.isEmpty() )
-    realm.prepend( username + "@" );
+    realm.prepend( username + '@' );
 
   if ( sBrokenConnections.contains( realm ) )
   {
     QDateTime now( QDateTime::currentDateTime() );
     QDateTime since( sBrokenConnections[ realm ] );
-    QgsDebugMsg( QString( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
+    QgsDebugMsg( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
 
     if ( since.secsTo( now ) < 30 )
     {
@@ -93,7 +93,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
     }
   }
 
-  QgsDebugMsg( QString( "Connecting with options: " ) + options );
+  QgsDebugMsg( QStringLiteral( "Connecting with options: " ) + options );
   if ( !mDatabase.open() )
   {
     QgsCredentials::instance()->lock();
@@ -104,7 +104,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
       if ( !ok )
       {
         QDateTime now( QDateTime::currentDateTime() );
-        QgsDebugMsg( QString( "get failed: %1 <= %2" ).arg( realm ).arg( now.toString( Qt::ISODate ) ) );
+        QgsDebugMsg( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
         sBrokenConnections.insert( realm, now );
         break;
       }
@@ -114,7 +114,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
       if ( !username.isEmpty() )
       {
         uri.setUsername( username );
-        realm = username + "@" + database;
+        realm = username + '@' + database;
       }
 
       if ( !password.isEmpty() )
@@ -143,7 +143,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   {
     QSqlQuery qry( mDatabase );
 
-    if ( !qry.prepare( QString( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
+    if ( !qry.prepare( QStringLiteral( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
     {
       mDatabase.close();
       QgsMessageLog::logMessage( tr( "Could not switch to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
@@ -163,8 +163,8 @@ QgsOracleConn::~QgsOracleConn()
 QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 {
   QString conninfo = uri.connectionInfo();
-  if ( uri.hasParam( "dbworkspace" ) )
-    conninfo += " dbworkspace=" + uri.param( "dbworkspace" );
+  if ( uri.hasParam( QStringLiteral( "dbworkspace" ) ) )
+    conninfo += QStringLiteral( " dbworkspace=" ) + uri.param( QStringLiteral( "dbworkspace" ) );
   return conninfo;
 }
 
@@ -186,22 +186,22 @@ void QgsOracleConn::disconnect()
   }
   else
   {
-    QgsDebugMsg( "Connection not found" );
+    QgsDebugMsg( QStringLiteral( "Connection not found" ) );
   }
 
   deleteLater();
 }
 
-bool QgsOracleConn::exec( QSqlQuery &qry, QString sql, const QVariantList &params )
+bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
 {
-  QgsDebugMsgLevel( QString( "SQL: %1" ).arg( sql ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( sql ), 4 );
 
   bool res = qry.prepare( sql );
   if ( res )
   {
     for ( const auto &param : params )
     {
-      QgsDebugMsgLevel( QString( " ARG: %1 [%2]" ).arg( param.toString() ).arg( param.typeName() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( " ARG: %1 [%2]" ).arg( param.toString(), param.typeName() ), 4 );
       qry.addBindValue( param );
     }
 
@@ -210,20 +210,20 @@ bool QgsOracleConn::exec( QSqlQuery &qry, QString sql, const QVariantList &param
 
   if ( !res )
   {
-    QgsDebugMsg( QString( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery() )
-                 .arg( qry.lastError().text() ) );
+    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
+                 .arg( qry.lastQuery(),
+                       qry.lastError().text() ) );
   }
 
   return res;
 }
 
-QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
+QStringList QgsOracleConn::pkCandidates( const QString &ownerName, const QString &viewName )
 {
   QStringList cols;
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
+  if ( !exec( qry, QStringLiteral( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
               QVariantList() << ownerName << viewName ) )
   {
     QgsMessageLog::logMessage( tr( "SQL: %1 [owner: %2 table_name: %3]\nerror: %4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ), tr( "Oracle" ) );
@@ -242,31 +242,32 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
 
 bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bool allowGeometrylessTables )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
 
   mLayersSupported.clear();
 
-  QString sql, delim;
+  QString sql;
 
-  QString
-  prefix( userTablesOnly ? "user" : "all" ),
-          owner( userTablesOnly ? "user AS owner" : "c.owner" );
+  QString prefix( userTablesOnly ? QStringLiteral( "user" ) : QStringLiteral( "all" ) ),
+          owner( userTablesOnly ? QStringLiteral( "user AS owner" ) : QStringLiteral( "c.owner" ) );
 
-  sql = QString( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
-                 " FROM %3_%4 c"
-                 " JOIN %3_objects o ON c.table_name=o.object_name AND o.object_type IN ('TABLE','VIEW','SYNONYM')%5%6" )
+  sql = QStringLiteral( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
+                        " FROM %3_%4 c"
+                        " JOIN %3_objects o ON c.table_name=o.object_name AND o.object_type IN ('TABLE','VIEW','SYNONYM')%5%6" )
         .arg( owner )
-        .arg( geometryColumnsOnly ? "c.srid" : "NULL AS srid" )
+        .arg( geometryColumnsOnly ? QStringLiteral( "c.srid" ) : QStringLiteral( "NULL AS srid" ) )
         .arg( prefix )
-        .arg( geometryColumnsOnly ? "sdo_geom_metadata" : "tab_columns" )
-        .arg( userTablesOnly ? "" : " AND c.owner=o.owner" )
-        .arg( geometryColumnsOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY'" );
+        .arg( geometryColumnsOnly ? QStringLiteral( "sdo_geom_metadata" ) : QStringLiteral( "tab_columns" ) )
+        .arg( userTablesOnly ? QStringLiteral( "" ) : QStringLiteral( " AND c.owner='xxxxSCHEMAxxxx'" ) )
+        .arg( geometryColumnsOnly ? QString() : QStringLiteral( " WHERE c.data_type='SDO_GEOMETRY'" ) );
 
   if ( allowGeometrylessTables )
   {
-    sql += QString( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
-                    " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM')" )
-           .arg( owner ).arg( prefix );
+
+    // also here!
+    sql += QStringLiteral( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
+                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM')" )
+           .arg( owner, prefix );
   }
 
   // sql = "SELECT * FROM (" + sql + ")";
@@ -275,7 +276,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   QSqlQuery qry( mDatabase );
   if ( !exec( qry, sql, QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL: %1\nerror: %2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL: %1\nerror: %2\n" ).arg( qry.lastQuery(), qry.lastError().text() ), tr( "Oracle" ) );
     return false;
   }
 
@@ -287,7 +288,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
     layerProperty.geometryColName = qry.value( 2 ).toString();
     layerProperty.types           = QList<QgsWkbTypes::Type>() << ( qry.value( 2 ).isNull() ? QgsWkbTypes::NoGeometry : QgsWkbTypes::Unknown );
     layerProperty.srids           = QList<int>() << qry.value( 3 ).toInt();
-    layerProperty.isView          = qry.value( 4 ) != "TABLE";
+    layerProperty.isView          = qry.value( 4 ) != QLatin1String( "TABLE" );
     layerProperty.pkCols.clear();
 
     mLayersSupported << layerProperty;
@@ -312,22 +313,22 @@ bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty> &layers, bo
 
   layers = mLayersSupported;
 
-  QgsDebugMsg( "Exiting." );
+  QgsDebugMsgLevel( QStringLiteral( "Exiting." ), 4 );
 
   return true;
 }
 
 QString QgsOracleConn::quotedIdentifier( QString ident )
 {
-  ident.replace( '"', "\"\"" );
-  ident = ident.prepend( "\"" ).append( "\"" );
+  ident.replace( '"', QStringLiteral( "\"\"" ) );
+  ident = ident.prepend( '\"' ).append( '\"' );
   return ident;
 }
 
 QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
 {
   if ( value.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
   if ( type == QVariant::Invalid )
     type = value.type();
@@ -345,7 +346,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
       {
         QDateTime datetime( value.toDateTime() );
         if ( datetime.isValid() )
-          return QString( "TO_DATE('%1','YYYY-MM-DD HH24:MI:SS')" ).arg( datetime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+          return QStringLiteral( "TO_DATE('%1','YYYY-MM-DD HH24:MI:SS')" ).arg( datetime.toString( "yyyy-MM-dd hh:mm:ss" ) );
         break;
       }
 
@@ -353,7 +354,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
       {
         QDate date( value.toDate() );
         if ( date.isValid() )
-          return QString( "TO_DATE('%1','YYYY-MM-DD')" ).arg( date.toString( "yyyy-MM-dd" ) );
+          return QStringLiteral( "TO_DATE('%1','YYYY-MM-DD')" ).arg( date.toString( "yyyy-MM-dd" ) );
         break;
       }
 
@@ -361,7 +362,7 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
       {
         QDateTime datetime( value.toDateTime() );
         if ( datetime.isValid() )
-          return QString( "TO_DATE('%1','HH24:MI:SS')" ).arg( datetime.toString( "hh:mm:ss" ) );
+          return QStringLiteral( "TO_DATE('%1','HH24:MI:SS')" ).arg( datetime.toString( "hh:mm:ss" ) );
         break;
       }
 
@@ -371,9 +372,9 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
   }
 
   QString v = value.toString();
-  v.replace( "'", "''" );
-  v.replace( "\\\"", "\\\\\"" );
-  return v.prepend( "'" ).append( "'" );
+  v.replace( '\'', QStringLiteral( "''" ) );
+  v.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\\\\\"" ) );
+  return v.prepend( '\'' ).append( '\'' );
 }
 
 QString QgsOracleConn::fieldExpression( const QgsField &fld )
@@ -413,7 +414,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
-  QgsDebugMsgLevel( "entering: " + layerProperty.toString(), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "entering: " ) + layerProperty.toString(), 3 );
 
   if ( layerProperty.isView )
   {
@@ -421,7 +422,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
     if ( layerProperty.pkCols.isEmpty() )
     {
       QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
-                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
+                                 .arg( layerProperty.ownerName, layerProperty.tableName ),
                                  tr( "Oracle" ) );
     }
   }
@@ -434,16 +435,16 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   if ( useEstimatedMetadata )
   {
-    table = QString( "(SELECT %1 FROM %2.%3 WHERE %1 IS NOT NULL%4 AND rownum<=%5)" )
+    table = QStringLiteral( "(SELECT %1 FROM %2.%3 WHERE %1 IS NOT NULL%4 AND rownum<=%5)" )
             .arg( quotedIdentifier( layerProperty.geometryColName ) )
             .arg( quotedIdentifier( layerProperty.ownerName ) )
             .arg( quotedIdentifier( layerProperty.tableName ) )
-            .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
+            .arg( layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND (%1)" ).arg( layerProperty.sql ) )
             .arg( sGeomTypeSelectLimit );
   }
   else if ( !layerProperty.ownerName.isEmpty() )
   {
-    table = QString( "%1.%2" )
+    table = QStringLiteral( "%1.%2" )
             .arg( quotedIdentifier( layerProperty.ownerName ) )
             .arg( quotedIdentifier( layerProperty.tableName ) );
     where = layerProperty.sql;
@@ -461,7 +462,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   QSqlQuery qry( mDatabase );
   int idx = 0;
-  QString sql = "SELECT DISTINCT ";
+  QString sql = QStringLiteral( "SELECT DISTINCT " );
   if ( detectedType == QgsWkbTypes::Unknown )
   {
     sql += "t.%1.SDO_GTYPE";
@@ -727,13 +728,13 @@ QString QgsOracleConn::selectedConnection()
   return settings.value( "/Oracle/connections/selected" ).toString();
 }
 
-void QgsOracleConn::setSelectedConnection( QString name )
+void QgsOracleConn::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
   return settings.setValue( "/Oracle/connections/selected", name );
 }
 
-QgsDataSourceUri QgsOracleConn::connUri( QString connName )
+QgsDataSourceUri QgsOracleConn::connUri( const QString &connName )
 {
   QgsDebugMsgLevel( "theConnName = " + connName, 3 );
 
@@ -779,37 +780,37 @@ QgsDataSourceUri QgsOracleConn::connUri( QString connName )
   return uri;
 }
 
-bool QgsOracleConn::userTablesOnly( QString connName )
+bool QgsOracleConn::userTablesOnly( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/userTablesOnly", false ).toBool();
 }
 
-bool QgsOracleConn::geometryColumnsOnly( QString connName )
+bool QgsOracleConn::geometryColumnsOnly( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/geometryColumnsOnly", true ).toBool();
 }
 
-bool QgsOracleConn::allowGeometrylessTables( QString connName )
+bool QgsOracleConn::allowGeometrylessTables( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
-bool QgsOracleConn::estimatedMetadata( QString connName )
+bool QgsOracleConn::estimatedMetadata( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/estimatedMetadata", false ).toBool();
 }
 
-bool QgsOracleConn::onlyExistingTypes( QString connName )
+bool QgsOracleConn::onlyExistingTypes( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/onlyExistingTypes", false ).toBool();
 }
 
-QString QgsOracleConn::databaseName( QString database, QString host, QString port )
+QString QgsOracleConn::databaseName( const QString &database, const QString &host, const QString &port )
 {
   QString db;
 
@@ -817,9 +818,9 @@ QString QgsOracleConn::databaseName( QString database, QString host, QString por
   {
     db += host;
 
-    if ( !port.isEmpty() && port != "1521" )
+    if ( !port.isEmpty() && port != QLatin1String( "1521" ) )
     {
-      db += QString( ":%1" ).arg( port );
+      db += QStringLiteral( ":%1" ).arg( port );
     }
 
     if ( !database.isEmpty() )
@@ -840,7 +841,7 @@ bool QgsOracleConn::hasSpatial()
   if ( mHasSpatial == -1 )
   {
     QSqlQuery qry( mDatabase );
-    mHasSpatial = exec( qry, "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'", QVariantList() ) && qry.next();
+    mHasSpatial = exec( qry, QStringLiteral( "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'" ), QVariantList() ) && qry.next();
   }
 
   return mHasSpatial;
@@ -851,7 +852,7 @@ QString QgsOracleConn::currentUser()
   if ( mCurrentUser.isNull() )
   {
     QSqlQuery qry( mDatabase );
-    if ( exec( qry, "SELECT user FROM dual", QVariantList() ) && qry.next() )
+    if ( exec( qry, QStringLiteral( "SELECT user FROM dual" ), QVariantList() ) && qry.next() )
     {
       mCurrentUser = qry.value( 0 ).toString();
     }
