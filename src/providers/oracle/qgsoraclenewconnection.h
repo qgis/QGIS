@@ -31,15 +31,16 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
   public:
     //! Constructor
     QgsOracleNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    //! Destructor
-    ~QgsOracleNewConnection();
 
     QString originalConnName() const { return mOriginalConnName; }
     QString connName() const { return txtName->text(); }
 
   public slots:
-    void accept();
-    void on_btnConnect_clicked();
+    void accept() override;
+
+  private slots:
+    void testConnection();
+
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
