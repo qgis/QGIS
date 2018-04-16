@@ -75,9 +75,9 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
-    bool mRewind;
-    bool mExpressionCompiled;
-    bool mFetchGeometry;
+    bool mRewind = false;
+    bool mExpressionCompiled = false;
+    bool mFetchGeometry = false;
     QgsAttributeList mAttributeList;
     QString mSql;
     QVariantList mArgs;

@@ -36,8 +36,8 @@ class QgsOracleRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOracleRootItem();
+    QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path );
+    ~QgsOracleRootItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -58,8 +58,8 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOracleConnectionItem();
+    QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    ~QgsOracleConnectionItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
@@ -78,7 +78,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
     void refreshConnection();
 
-    void setLayerType( QgsOracleLayerProperty layerProperty );
+    void setLayerType( const QgsOracleLayerProperty &layerProperty );
 
     void threadStarted();
     void threadFinished();
@@ -94,12 +94,12 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleOwnerItem( QgsDataItem *parent, QString name, QString path );
+    QgsOracleOwnerItem( QgsDataItem *parent, const QString &name, const QString &path );
     ~QgsOracleOwnerItem();
 
     QVector<QgsDataItem *> createChildren();
 
-    void addLayer( QgsOracleLayerProperty layerProperty );
+    void addLayer( const QgsOracleLayerProperty &layerProperty );
 };
 
 class QgsOracleLayerItem : public QgsLayerItem
@@ -107,8 +107,7 @@ class QgsOracleLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsOracleLayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsOracleLayerProperty layerProperties );
-    ~QgsOracleLayerItem();
+    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsOracleLayerProperty &layerProperties );
 
     QString createUri();
 

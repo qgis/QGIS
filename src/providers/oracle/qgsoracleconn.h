@@ -165,7 +165,7 @@ class QgsOracleConn : public QObject
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( QString alias, QString geomCol, QgsWkbTypes::Type wkbType );
+    static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType );
 
     static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
 
@@ -179,7 +179,7 @@ class QgsOracleConn : public QObject
     static bool allowGeometrylessTables( const QString &connName );
     static bool estimatedMetadata( const QString &connName );
     static bool onlyExistingTypes( const QString &connName );
-    static void deleteConnection( QString connName );
+    static void deleteConnection( const QString &connName );
     static QString databaseName( const QString &database, const QString &host, const QString &port );
     static QString toPoolName( const QgsDataSourceUri &uri );
 
