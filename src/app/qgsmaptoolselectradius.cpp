@@ -56,7 +56,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mSelectionHandler->mQgisInterface )
   {
-      mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
+    mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
   }
   mSelectionHandler->canvasReleaseEvent( e );
 }
@@ -77,7 +77,7 @@ void QgsMapToolSelectRadius::keyReleaseEvent( QKeyEvent *e )
   QgsMapTool::keyReleaseEvent( e );
 }
 
-void QgsMapToolSelectRadius::selectFeatures(Qt::KeyboardModifiers modifiers)
+void QgsMapToolSelectRadius::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }

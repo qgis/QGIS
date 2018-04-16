@@ -42,8 +42,8 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
 
 QgsMapToolSelectFeatures::~QgsMapToolSelectFeatures()
 {
-    disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
-    delete mSelectionHandler;
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
+  delete mSelectionHandler;
 }
 
 void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
@@ -62,15 +62,15 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
   mSelectionHandler->canvasReleaseEvent( e );
 }
 
-void QgsMapToolSelectFeatures::selectFeatures(Qt::KeyboardModifiers modifiers)
+void QgsMapToolSelectFeatures::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
-    if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
-    {
-      QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
-      QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
-      double sr = searchRadiusMU( mCanvas );
-      QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
-      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ), modifiers );
-    }
-    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
+  if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+  {
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
+    QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
+    double sr = searchRadiusMU( mCanvas );
+    QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+    mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ), modifiers );
+  }
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }

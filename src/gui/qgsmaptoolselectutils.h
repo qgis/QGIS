@@ -75,6 +75,7 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     \param modifiers Keyboard modifiers are used to determine the current selection
     operations (add, subtract, contains)
+    \param messageBar The instance is used when an warning/error message is reised.
     \since QGIS 2.16
     \see selectSingleFeature()
   */

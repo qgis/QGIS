@@ -167,9 +167,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * Identifies features in the given vector layer and saves results to the passed list of results*/
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
-    //! stores exact selection geometry
-    QgsGeometry mSelectionGeometry;
-
     QgsMapToolSelectionHandler *mSelectionHandler;
 
   private:

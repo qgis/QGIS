@@ -101,13 +101,9 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode = SelectionMode::SelectSimple);
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode = SelectionMode::SelectSimple );
 
     ~QgsMapToolSelectionHandler() override;
-
-    bool mSelectFeatures = false;
-
-    bool mSelectionActive = false;
 
     QgisInterface *mQgisInterface = nullptr;
 
@@ -141,6 +137,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void setSelectionMode( SelectionMode mode );
     SelectionMode selectionMode();
 
+    bool selectionActive();
+
     //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
 
@@ -149,8 +147,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     void selectFeaturesPressEvent( QgsMapMouseEvent *e );
 
-   signals:
-    void geometryChanged(Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+  signals:
+    void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private slots:
     //! update the rubber band from the input widget
@@ -167,30 +165,21 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
   signals:
     void selectionGeometryChanged();
-  protected:
-    //! stores exact selection geometry
-    QgsGeometry mSelectionGeometry;
 
   private:
 
-    // Last point in canvas CRS
-    QgsPointXY mLastPoint;
+    //! stores exact selection geometry
+    QgsGeometry mSelectionGeometry;
 
-    double mLastMapUnitsPerPixel;
+    bool mSelectionActive = false;
 
-    int mCoordinatePrecision;
+    bool mSelectFeatures = false;
+
+    SelectionMode mSelectionMode;
 
     QgsMapCanvas *mCanvas;
 
-
-    //friend class QgisAppInterface;
-
     QPoint mInitDragPos;
-
-    //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
-
-    SelectionMode mSelectionMode;
 
     //! Center point for the radius
     QgsPointXY mRadiusCenter;
@@ -201,10 +190,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     QColor mFillColor;
 
     QColor mStrokeColor;
-
-    //typedef void (*functiontype) mRadiusValueEnteredCallback;
-    //typedef void (*mRadiusValueEnteredCallback)();
-
 
     QgsPointXY toMapCoordinates( QPoint point );
 

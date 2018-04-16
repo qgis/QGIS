@@ -212,12 +212,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  mSelectionGeometry = mSelectionHandler->selectedGeometry();
+  QgsGeometry selectionGeom = mSelectionHandler->selectedGeometry();;
   QgsPointXY point;
-  bool isSingleClick = mSelectionGeometry.type() == QgsWkbTypes::PointGeometry || mSelectionGeometry.isNull();
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry || selectionGeom.isNull();
   if ( isSingleClick )
   {
-    point = mSelectionGeometry.asPoint();
+    point = selectionGeom.asPoint();
 
     commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
     commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
@@ -240,12 +240,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     }
     else
     {
-      r = toLayerCoordinates( layer, mSelectionGeometry.boundingBox() );
+      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
     }
 
     QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
-    QgsGeometry selectionGeom = QgsGeometry( mSelectionGeometry );
+
 
     QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(),  layer->crs(), mCanvas->mapSettings().transformContext() );
     if ( ct.isValid() )
@@ -309,7 +309,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
-  mSelectionGeometry = QgsGeometry::fromPointXY( point );
+  //mSelectionGeometry = QgsGeometry::fromPointXY( point );
   return identifyVectorLayer( results, layer, QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 }
 
