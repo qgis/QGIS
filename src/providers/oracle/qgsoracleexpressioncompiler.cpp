@@ -39,6 +39,7 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
       case QgsExpressionNodeBinaryOperator::boILike:
       case QgsExpressionNodeBinaryOperator::boNotILike:
       case QgsExpressionNodeBinaryOperator::boMod:
+      case QgsExpressionNodeBinaryOperator::boIntDiv:
       {
         QString op1, op2;
 
@@ -49,28 +50,34 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
         switch ( bin->op() )
         {
           case QgsExpressionNodeBinaryOperator::boPow:
-            result = QString( "power(%1,%2)" ).arg( op1, op2 );
+            result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
           case QgsExpressionNodeBinaryOperator::boRegexp:
-            result = QString( "regexp_like(%1,%2)" ).arg( op1, op2 );
+            result = QStringLiteral( "regexp_like(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
           case QgsExpressionNodeBinaryOperator::boILike:
-            result = QString( "lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            result = QStringLiteral( "lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
             return Complete;
 
           case QgsExpressionNodeBinaryOperator::boNotILike:
-            result = QString( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            result = QStringLiteral( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
             return Complete;
 
+          case QgsExpressionNodeBinaryOperator::boIntDiv:
+            result = QStringLiteral( "FLOOR(%1 / %2)" ).arg( op1, op2 );
+            return Complete;
+
+
           case QgsExpressionNodeBinaryOperator::boMod  :
-            result = QString( "MOD(%1,%2)" ).arg( op1, op2 );
+            result = QStringLiteral( "MOD(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
           default:
             break;
         }
+        break; // no warnings
       }
 
       default:
@@ -95,7 +102,7 @@ QString QgsOracleExpressionCompiler::quotedValue( const QVariant &value, bool &o
   {
     case QVariant::Bool:
       //no boolean literal support in Oracle, so fake it
-      return value.toBool() ? "(1=1)" : "(1=0)";
+      return value.toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
 
     default:
       return QgsOracleConn::quotedValue( value );
