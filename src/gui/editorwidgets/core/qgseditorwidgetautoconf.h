@@ -32,6 +32,7 @@ class QgsEditorWidgetSetup;
 class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
+    virtual ~QgsEditorWidgetAutoConfPlugin() = default;
 
     /**
      * Typical scores are:

@@ -216,7 +216,6 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   bool success = false;
   QgsGpsObject *obj = nullptr;
   QgsAttributes attrs = f.attributes();
-  QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
   if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
