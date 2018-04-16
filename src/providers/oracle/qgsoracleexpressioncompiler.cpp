@@ -38,6 +38,7 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
       case QgsExpression::boILike:
       case QgsExpression::boNotILike:
       case QgsExpression::boMod:
+      case QgsExpression::boIntDiv:
       {
         QString op1, op2;
 
@@ -63,6 +64,10 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
             result = QString( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
             return Complete;
 
+          case QgsExpression::boIntDiv:
+            result = QString( "FLOOR(%1 / %2)" ).arg( op1, op2 );
+            return Complete;
+
           case QgsExpression::boMod  :
             result = QString( "MOD(%1,%2)" ).arg( op1, op2 );
             return Complete;
@@ -70,6 +75,7 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
           default:
             break;
         }
+        break; // no warnings
       }
 
       default:
@@ -94,7 +100,7 @@ QString QgsOracleExpressionCompiler::quotedValue( const QVariant& value, bool& o
   {
     case QVariant::Bool:
       //no boolean literal support in Oracle, so fake it
-      return value.toBool() ? "(1=1)" : "(1=0)";
+      return value.toBool() ? QString( "(1=1)" ) : QString( "(1=0)" );
 
     default:
       return QgsOracleConn::quotedValue( value );
