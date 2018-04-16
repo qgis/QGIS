@@ -69,9 +69,6 @@ class CORE_EXPORT QgsErrorMessage
     QString mFile;
     QString mFunction;
     int mLine = 0;
-
-    //! Message format
-    Format mFormat = Text;
 };
 
 /**
