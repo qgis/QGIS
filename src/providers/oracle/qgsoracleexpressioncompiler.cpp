@@ -108,3 +108,28 @@ QString QgsOracleExpressionCompiler::quotedValue( const QVariant &value, bool &o
       return QgsOracleConn::quotedValue( value );
   }
 }
+
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
+{
+  { "sqrt", "sqrt" },
+  { "abs", "abs" },
+  { "cos", "cos" },
+  { "sin", "sin" },
+  { "tan", "tan" },
+  { "acos", "acos" },
+  { "asin", "asin" },
+  { "atan", "atan" },
+  { "exp", "exp" },
+  { "ln", "ln" },
+  { "log", "log" },
+  { "round", "round" },
+  { "floor", "floor" },
+  { "ceil", "ceil" },
+  { "lower", "lower" },
+  { "upper", "upper" },
+};
+
+QString QgsOracleExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
+{
+  return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
+}
