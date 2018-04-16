@@ -28,9 +28,6 @@
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
-  , mRewind( false )
-  , mExpressionCompiled( false )
-  , mFetchGeometry( false )
 {
   mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ) );
   if ( !mConnection )
