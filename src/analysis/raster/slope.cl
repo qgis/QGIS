@@ -1,14 +1,14 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float x32, float x13, float x23, float x33,
-                       double mInputNodataValue, double mOutputNodataValue, double mZFactor, double mCellSize )
+                       float mInputNodataValue, float mOutputNodataValue, float mZFactor, float mCellSize )
 {
  //the basic formula would be simple, but we need to test for nodata values...
  //X: return (( (x31 - x11) + 2 * (x32 - x12) + (x33 - x13) ) / (8 * mCellSizeX));
  //Y: return (((x11 - x13) + 2 * (x21 - x23) + (x31 - x33)) / ( 8 * mCellSizeY));
 
  int weight = 0;
- double sum = 0;
+ float sum = 0;
 
 
  //first row
@@ -75,7 +75,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                                      __global float *scanLine2,
                                      __global float *scanLine3,
                                      __global float *resultLine,
-                                     __global double *rasterParams
+                                     __global float *rasterParams
                        ) {
 
   // Get the index of the current element
@@ -102,8 +102,8 @@ __kernel void processNineCellWindow( __global float *scanLine1,
   }
   else
   {
-    double res = sqrt( derX * derX + derY * derY );
+    float res = sqrt( derX * derX + derY * derY );
     res = atanpi( res );
-    resultLine[i] = (float)res * 180.0;
+    resultLine[i] = res * 180.0;
   }
 }

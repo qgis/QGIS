@@ -36,7 +36,11 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 :param feedback: feedback object that receives update and that is checked for cancelation.
 
 :return: 0 in case of success
+<<<<<<< d6e747ca57807318c0b3f6be8266f0b43c0f7747
          TODO: return an enum
+=======
+TODO: return an enum
+>>>>>>> More updates for opencl
 %End
 
     double cellSizeX() const;
