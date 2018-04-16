@@ -68,7 +68,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   const QgsAttributeEditorContext* ctx = &context();
   do
   {
-    if ( ctx->relation().name() == relation.name() )
+    if ( ctx->relation().id() == relation.id() )
     {
       mWidget->setEmbedForm( false );
       mWidget->setReadOnlySelector( true );
