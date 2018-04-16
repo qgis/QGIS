@@ -30,6 +30,9 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   , mOriginalConnName( connName )
 {
   setupUi( this );
+
+  txtSchema->setShowClearButton( true );
+
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
   connect( btnConnect, &QPushButton::clicked, this, &QgsOracleNewConnection::testConnection );
 
@@ -50,6 +53,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     txtPort->setText( port );
     txtOptions->setText( settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
     txtWorkspace->setText( settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
+    txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
     cb_userTablesOnly->setChecked( settings.value( key + QStringLiteral( "/userTablesOnly" ), false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + QStringLiteral( "/geometryColumnsOnly" ), true ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool() );
@@ -136,6 +140,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/savePassword" ), chkStorePassword->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/dboptions" ), txtOptions->text() );
   settings.setValue( baseKey + QStringLiteral( "/dbworkspace" ), txtWorkspace->text() );
+  settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
 
   QDialog::accept();
 }

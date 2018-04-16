@@ -28,7 +28,16 @@ class QgsOracleColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
+
+    /**
+     *
+     * \param connName
+     * \param limitToSchema If specified, only tables from this schema will be scanned
+     * \param useEstimatedMetaData
+     * \param allowGeometrylessTables
+     */
     QgsOracleColumnTypeThread( const QString &connName,
+                               const QString &limitToSchema,
                                bool useEstimatedMetaData,
                                bool allowGeometrylessTables );
 
@@ -54,6 +63,7 @@ class QgsOracleColumnTypeThread : public QThread
     QgsOracleColumnTypeThread() = default;
 
     QString mName;
+    QString mSchema;
     bool mUseEstimatedMetadata = false;
     bool mAllowGeometrylessTables = false;
     bool mStopped = false;

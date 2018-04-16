@@ -548,6 +548,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
     el.setAttribute( QStringLiteral( "dboptions" ), settings.value( path + "/dboptions", "" ).toString() );
     el.setAttribute( QStringLiteral( "dbworkspace" ), settings.value( path + "/dbworkspace", "" ).toString() );
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", QString() ).toString() );
     el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
     el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
@@ -1088,6 +1089,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
     settings.setValue( QStringLiteral( "/dboptions" ), child.attribute( QStringLiteral( "dboptions" ) ) );
     settings.setValue( QStringLiteral( "/dbworkspace" ), child.attribute( QStringLiteral( "dbworkspace" ) ) );
+    settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
     settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
     settings.setValue( QStringLiteral( "/userTablesOnly" ), child.attribute( QStringLiteral( "userTablesOnly" ) ) );
     settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ) ) );

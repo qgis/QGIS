@@ -240,7 +240,7 @@ QStringList QgsOracleConn::pkCandidates( const QString &ownerName, const QString
   return cols;
 }
 
-bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bool allowGeometrylessTables )
+bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, bool userTablesOnly, bool allowGeometrylessTables )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
 
@@ -258,7 +258,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
         .arg( geometryColumnsOnly ? QStringLiteral( "c.srid" ) : QStringLiteral( "NULL AS srid" ) )
         .arg( prefix )
         .arg( geometryColumnsOnly ? QStringLiteral( "sdo_geom_metadata" ) : QStringLiteral( "tab_columns" ) )
-        .arg( userTablesOnly ? QStringLiteral( "" ) : QStringLiteral( " AND c.owner='xxxxSCHEMAxxxx'" ) )
+        .arg( userTablesOnly ? QString() : QStringLiteral( " AND c.owner=%1" ).arg( schema.isEmpty() ? QStringLiteral( "o.owner" ) : quotedValue( schema ) ) )
         .arg( geometryColumnsOnly ? QString() : QStringLiteral( " WHERE c.data_type='SDO_GEOMETRY'" ) );
 
   if ( allowGeometrylessTables )
@@ -266,8 +266,10 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
 
     // also here!
     sql += QStringLiteral( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
-                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM')" )
-           .arg( owner, prefix );
+                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') %3" )
+           .arg( owner,
+                 prefix,
+                 userTablesOnly || schema.isEmpty() ? QString() : QStringLiteral( " AND c.owner=%1" ).arg( quotedValue( schema ) ) );
   }
 
   // sql = "SELECT * FROM (" + sql + ")";
@@ -302,10 +304,10 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   return true;
 }
 
-bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty> &layers, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables )
+bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty> &layers, const QString &limitToSchema, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables )
 {
   // Get the list of supported tables
-  if ( !tableInfo( geometryTablesOnly, userTablesOnly, allowGeometrylessTables ) )
+  if ( !tableInfo( limitToSchema, geometryTablesOnly, userTablesOnly, allowGeometrylessTables ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "Oracle" ) );
     return false;
@@ -784,6 +786,12 @@ bool QgsOracleConn::userTablesOnly( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/Oracle/connections/" + connName + "/userTablesOnly", false ).toBool();
+}
+
+QString QgsOracleConn::restrictToSchema( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/schema" ).toString();
 }
 
 bool QgsOracleConn::geometryColumnsOnly( const QString &connName )

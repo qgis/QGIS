@@ -21,9 +21,10 @@ email                : jef at norbit dot de
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( const QString &name, bool useEstimatedMetadata, bool allowGeometrylessTables )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( const QString &name, const QString &limitToSchema, bool useEstimatedMetadata, bool allowGeometrylessTables )
   : QThread()
   , mName( name )
+  , mSchema( limitToSchema )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mAllowGeometrylessTables( allowGeometrylessTables )
   , mStopped( false )
@@ -52,6 +53,7 @@ void QgsOracleColumnTypeThread::run()
   emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties,
+                               mSchema,
                                QgsOracleConn::geometryColumnsOnly( mName ),
                                QgsOracleConn::userTablesOnly( mName ),
                                mAllowGeometrylessTables ) ||
