@@ -27,6 +27,9 @@ class TestQgsLineSegment2D(unittest.TestCase):
         segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 4))
         self.assertEqual(segment.start(), QgsPointXY(1, 2))
         self.assertEqual(segment.end(), QgsPointXY(3, 4))
+        segment = QgsLineSegment2D(1, 2, 3, 4)
+        self.assertEqual(segment.start(), QgsPointXY(1, 2))
+        self.assertEqual(segment.end(), QgsPointXY(3, 4))
 
     def testGettersSetters(self):
         segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 4))

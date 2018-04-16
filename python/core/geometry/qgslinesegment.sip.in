@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsLineSegment2D
 {
 %Docstring
@@ -24,6 +25,12 @@ Represents a single 2D line segment, consisting of a 2D start and end vertex onl
 %Docstring
 Constructor for a QgsLineSegment2D from the specified ``start`` point to
 the ``end`` point.
+%End
+
+    QgsLineSegment2D( double x1, double y1, double x2, double y2 );
+%Docstring
+Constructor for a QgsLineSegment2D from the point (``x1``, ``y2``) to
+(``x2``, ``y2``).
 %End
 
     double length() const;

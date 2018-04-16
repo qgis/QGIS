@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLineString: QgsCurve
 {
 %Docstring
@@ -62,6 +63,13 @@ This constructor is more efficient then calling setPoints()
 or repeatedly calling addVertex()
 
 .. versionadded:: 3.0
+%End
+
+    explicit QgsLineString( const QgsLineSegment2D &segment );
+%Docstring
+Construct a linestring from a single 2d line segment.
+
+.. versionadded:: 3.2
 %End
 
     virtual bool equals( const QgsCurve &other ) const;
