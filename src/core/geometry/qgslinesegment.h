@@ -11,6 +11,8 @@
 #include "qgis_core.h"
 #include "qgspointxy.h"
 
+class QgsLineString;
+
 /**
  * \ingroup core
  * Represents a single 2D line segment, consisting of a 2D start and end vertex only.
@@ -28,6 +30,15 @@ class CORE_EXPORT QgsLineSegment2D
     QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end )
       : mStart( start )
       , mEnd( end )
+    {}
+
+    /**
+     * Constructor for a QgsLineSegment2D from the point (\a x1, \a y2) to
+     * (\a x2, \a y2).
+     */
+    QgsLineSegment2D( double x1, double y1, double x2, double y2 )
+      : mStart( QgsPointXY( x1, y1 ) )
+      , mEnd( QgsPointXY( x2, y2 ) )
     {}
 
     /**
