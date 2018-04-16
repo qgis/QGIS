@@ -497,7 +497,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   void *greenData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void *blueData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void *alphaData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
-  QgsRectangle mapRect;
   int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
 
