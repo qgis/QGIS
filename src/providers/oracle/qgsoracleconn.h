@@ -127,16 +127,27 @@ class QgsOracleConn : public QObject
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
-    //! Get the list of supported layers
+    /**
+     * Get the list of supported layers.
+     *
+     * If \a limitToSchema is specified, than only layers from the matching schema will be
+     * returned.
+     *
+     */
     bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
+                          const QString &limitToSchema,
                           bool geometryTablesOnly,
                           bool userTablesOnly = true,
                           bool allowGeometrylessTables = false );
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
-    //! Gets information about the spatial tables
-    bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
+    /**
+     * Gets information about the spatial tables.
+     *
+     * If \a schema is specified, only tables from this schema will be retrieved.
+     */
+    bool tableInfo( const QString &schema, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
     //! Get primary key candidates (all int4 columns)
     QStringList pkCandidates( const QString &ownerName, const QString &viewName );
@@ -163,6 +174,7 @@ class QgsOracleConn : public QObject
     static void setSelectedConnection( const QString &connName );
     static QgsDataSourceUri connUri( const QString &connName );
     static bool userTablesOnly( const QString &connName );
+    static QString restrictToSchema( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
     static bool estimatedMetadata( const QString &connName );

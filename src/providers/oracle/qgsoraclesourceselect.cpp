@@ -44,7 +44,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
 
   QString tableName = index.sibling( index.row(), QgsOracleTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
-    return 0;
+    return nullptr;
 
   if ( index.column() == QgsOracleTableModel::DbtmSql )
   {
@@ -515,6 +515,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
   mTablesTreeDelegate->setConnectionInfo( uri );
 
   mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(),
+      QgsOracleConn::restrictToSchema( cmbConnections->currentText() ),
       uri.useEstimatedMetadata(),
       cbxAllowGeometrylessTables->isChecked() );
 

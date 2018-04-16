@@ -91,6 +91,7 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
   if ( !mColumnTypeThread )
   {
     mColumnTypeThread = new QgsOracleColumnTypeThread( mName,
+        QgsOracleConn::restrictToSchema( mName ),
         /* useEstimatedMetadata */ true,
         QgsOracleConn::allowGeometrylessTables( mName ) );
 
