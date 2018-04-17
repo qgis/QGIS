@@ -40,6 +40,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfixgeometries.cpp
+  processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmimportphotos.cpp

@@ -5191,4 +5191,40 @@ tests:
         name: expected/filter_points_big.gml
         type: vector
 
+  - algorithm: native:intersection
+    name: Test Intersection (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
 # See ../README.md for a description of the file format
