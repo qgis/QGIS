@@ -244,8 +244,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  QgsFeatureList::iterator f_it = featureList.begin();
-
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
@@ -258,23 +256,23 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
-  for ( ; f_it != featureList.end(); ++f_it )
+  for ( const QgsFeature &feature : qgis::as_const( featureList ) )
   {
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
-    QgsFeatureId fid = f_it->id();
-    context.expressionContext().setFeature( *f_it );
+    QgsFeatureId fid = feature.id();
+    context.expressionContext().setFeature( feature );
 
-    if ( filter && !renderer->willRenderFeature( *f_it, context ) )
+    if ( filter && !renderer->willRenderFeature( const_cast<QgsFeature &>( feature ), context ) )
       continue;
 
     featureCount++;
 
-    derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
+    derivedAttributes.unite( featureDerivedAttributes( const_cast<QgsFeature *>( &feature ), layer, toLayerCoordinates( layer, point ) ) );
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
-    results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
+    results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), feature, derivedAttributes ) );
   }
 
   if ( renderer )
