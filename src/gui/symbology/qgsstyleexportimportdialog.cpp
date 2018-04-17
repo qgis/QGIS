@@ -23,6 +23,7 @@
 #include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsstylegroupselectiondialog.h"
+#include "qgsguiutils.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>
@@ -143,9 +144,11 @@ void QgsStyleExportImportDialog::doExportImport()
 
     mFileName = fileName;
 
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
     moveStyles( &selection, mStyle, mTempStyle );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
+      override.release();
       QMessageBox::warning( this, tr( "Export Symbols" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
                             .arg( mTempStyle->errorString() ) );
@@ -153,6 +156,7 @@ void QgsStyleExportImportDialog::doExportImport()
     }
     else
     {
+      override.release();
       QMessageBox::information( this, tr( "Export Symbols" ),
                                 tr( "The selected symbols were successfully exported to file:\n%1" )
                                 .arg( mFileName ) );
@@ -160,6 +164,7 @@ void QgsStyleExportImportDialog::doExportImport()
   }
   else // import
   {
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
     moveStyles( &selection, mTempStyle, mStyle );
 
     // clear model
@@ -174,12 +179,15 @@ void QgsStyleExportImportDialog::doExportImport()
 
 bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
 {
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
   // load symbols and color ramps from file
   if ( mDialogMode == Import )
   {
     // NOTE mTempStyle is style here
     if ( !style->importXml( mFileName ) )
     {
+      override.release();
       QMessageBox::warning( this, tr( "Import Symbols or Color Ramps" ),
                             tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
       return false;
