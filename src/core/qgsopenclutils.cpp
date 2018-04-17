@@ -39,7 +39,7 @@ void QgsOpenClUtils::init()
     for ( auto &p : platforms )
     {
       std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-      QgsDebugMsg( QStringLiteral( "Found platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+      QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
       if ( platver.find( "OpenCL 1." ) != std::string::npos )
       {
         std::vector<cl::Device> devices;
@@ -70,6 +70,7 @@ void QgsOpenClUtils::init()
       else
       {
         cl::Device::setDefault( dev );
+        QgsDebugMsg( QStringLiteral( "Found OpenCL device %1" ).arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ) );
         sAvailable = true;
       }
     }
