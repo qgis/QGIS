@@ -112,12 +112,13 @@ void QgsMapToolIdentifyAction::identifyOnGeometryChange( int x, int y, IdentifyM
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( x, y, mode, AllLayers, mSelectionHandler->selectionMode() );
+  QgsDebugMsg( QString( "!!!!!!DELETE ME %1, %2" ).arg( QString::number( x ) ).arg( QString::number( y ) ) );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( x, y, mode, AllLayers, mSelectionHandler->getSelectionMode() );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  if ( mSelectionHandler->mJustFinishedSelection ) mSelectionHandler->mJustFinishedSelection = false;
+  if ( mSelectionHandler->getJustFinishedSelection() ) mSelectionHandler->setJustFinishedSelection( false );
 
   if ( results.isEmpty() )
   {
@@ -152,7 +153,7 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
   bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
-  extendedMenu = extendedMenu && !mSelectionHandler->mJustFinishedSelection;
+  extendedMenu = extendedMenu && !mSelectionHandler->getJustFinishedSelection();
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
@@ -190,7 +191,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   mSelectionHandler->canvasReleaseEvent( e );
-  if ( !mSelectionHandler->selectionActive() )
+  if ( !mSelectionHandler->getSelectionActive() )
     handleOnCanvasRelease( e );
 }
 
@@ -261,6 +262,8 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
   // TODO @vsklencar set x, y according geometry;
+  //int x = mSelectionHandler->getRadiusCenter().x();
+  //int y = mSelectionHandler->getRadiusCenter().y();
   int x = 0;
   int y = 0;
   this->identifyOnGeometryChange( x, y, DefaultQgsSetting );

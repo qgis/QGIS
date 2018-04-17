@@ -114,7 +114,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode getSelectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! desctructor
     ~QgsMapToolSelectionHandler() override;
@@ -162,22 +162,26 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void setIface( QgisInterface *iface );
 
     //! mSelectedGeometry getter
-    QgsGeometry selectedGeometry();
+    QgsGeometry getSelectedGeometry();
     //! mSelectedGeometry setter
     void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     //! mSelectionMode getter
-    SelectionMode selectionMode();
+    SelectionMode getSelectionMode();
     //! mSelectionMode setter
     void setSelectionMode( SelectionMode mode );
 
     //! mSelectionActive getter
-    bool selectionActive();
+    bool getSelectionActive();
 
-    //! to destinguish right click for finishing selection and identify extedned menu
-    bool mJustFinishedSelection = false;
+    QgsRubberBand *getSelectionRubberBand();
+    void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
 
-    QgsRubberBand* getSelectionRubberBand();
+    bool getJustFinishedSelection() const;
+    void setJustFinishedSelection( bool justFinishedSelection );
+
+    QgsPointXY getRadiusCenter() const;
+
 
   signals:
     //! emited when mSelectedGeometry has been changed
@@ -202,7 +206,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
   private:
 
     //! the rubberband for selection visualization
-    QgsRubberBand* mSelectionRubberBand = nullptr;
+    QgsRubberBand *mSelectionRubberBand = nullptr;
 
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;
@@ -226,6 +230,9 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     QColor mFillColor;
 
     QColor mStrokeColor;
+
+    //! to destinguish right click for finishing selection and identify extedned menu
+    bool mJustFinishedSelection = false;
 
     QgsPointXY toMapCoordinates( QPoint point );
 

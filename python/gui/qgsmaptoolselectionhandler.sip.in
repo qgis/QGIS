@@ -95,7 +95,7 @@ class QgsMapToolSelectionHandler: QObject
       SelectRadius
     };
 
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode getSelectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 constructor
 %End
@@ -176,7 +176,7 @@ Initialization of the rubberband
 Interface variable setter - needed for messages
 %End
 
-    QgsGeometry selectedGeometry();
+    QgsGeometry getSelectedGeometry();
 %Docstring
 mSelectedGeometry getter
 %End
@@ -185,7 +185,7 @@ mSelectedGeometry getter
 mSelectedGeometry setter
 %End
 
-    SelectionMode selectionMode();
+    SelectionMode getSelectionMode();
 %Docstring
 mSelectionMode getter
 %End
@@ -194,14 +194,19 @@ mSelectionMode getter
 mSelectionMode setter
 %End
 
-    bool selectionActive();
+    bool getSelectionActive();
 %Docstring
 mSelectionActive getter
 %End
 
-    bool mJustFinishedSelection;
+    QgsRubberBand *getSelectionRubberBand();
+    void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
 
-    QgsRubberBand* getSelectionRubberBand();
+    bool getJustFinishedSelection() const;
+    void setJustFinishedSelection( bool justFinishedSelection );
+
+    QgsPointXY getRadiusCenter() const;
+
 
   signals:
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );

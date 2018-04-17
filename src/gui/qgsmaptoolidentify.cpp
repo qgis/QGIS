@@ -185,7 +185,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    if ( mSelectionHandler->selectedGeometry().isNull() )
+    if ( mSelectionHandler->getSelectedGeometry().isNull() )
     {
       mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
     }
@@ -212,7 +212,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  QgsGeometry selectionGeom = mSelectionHandler->selectedGeometry();;
+  QgsGeometry selectionGeom = mSelectionHandler->getSelectedGeometry();;
   QgsPointXY point;
   bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry || selectionGeom.isNull();
   if ( isSingleClick )

@@ -180,7 +180,8 @@ void QgsMapToolSelectionHandler::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 {
-  getSelectionRubberBand()->reset();
+  if ( getSelectionRubberBand() )
+    getSelectionRubberBand()->reset();
   initRubberBand();
   mInitDragPos = e -> pos();
 }
@@ -297,6 +298,8 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       setSelectedGeometry( getSelectionRubberBand()->asGeometry(), e->modifiers() );
     }
     getSelectionRubberBand()->reset();
+    delete getSelectionRubberBand();
+    setSelectionRubberBand( nullptr );
     mJustFinishedSelection = mSelectionActive;
     mSelectionActive = false;
   }
@@ -403,7 +406,7 @@ void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::initRubberBand()
 {
-  //mSelectionRubberBand = qgis::make_unique< QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+  delete mSelectionRubberBand;
   mSelectionRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   mSelectionRubberBand->setFillColor( mFillColor );
   mSelectionRubberBand->setStrokeColor( mStrokeColor );
@@ -473,6 +476,26 @@ void QgsMapToolSelectionHandler::cancel()
   mSelectionActive = false;
 }
 
+void QgsMapToolSelectionHandler::setSelectionRubberBand( QgsRubberBand *selectionRubberBand )
+{
+  mSelectionRubberBand = selectionRubberBand;
+}
+
+QgsPointXY QgsMapToolSelectionHandler::getRadiusCenter() const
+{
+  return mRadiusCenter;
+}
+
+bool QgsMapToolSelectionHandler::getJustFinishedSelection() const
+{
+  return mJustFinishedSelection;
+}
+
+void QgsMapToolSelectionHandler::setJustFinishedSelection( bool justFinishedSelection )
+{
+  mJustFinishedSelection = justFinishedSelection;
+}
+
 void QgsMapToolSelectionHandler::updateRubberband( const double &radius )
 {
   if ( !getSelectionRubberBand() )
@@ -506,7 +529,7 @@ void QgsMapToolSelectionHandler::updateRadiusFromEdge( QgsPointXY &radiusEdge )
   }
 }
 
-QgsGeometry QgsMapToolSelectionHandler::selectedGeometry()
+QgsGeometry QgsMapToolSelectionHandler::getSelectedGeometry()
 {
   return mSelectionGeometry;
 }
@@ -522,18 +545,18 @@ void QgsMapToolSelectionHandler::setSelectionMode( SelectionMode mode )
   mSelectionMode = mode;
 }
 
-QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::selectionMode()
+QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::getSelectionMode()
 {
   return mSelectionMode;
 }
 
-bool QgsMapToolSelectionHandler::selectionActive()
+bool QgsMapToolSelectionHandler::getSelectionActive()
 {
-    return mSelectionActive;
+  return mSelectionActive;
 }
 
-QgsRubberBand*  QgsMapToolSelectionHandler::getSelectionRubberBand()
+QgsRubberBand  *QgsMapToolSelectionHandler::getSelectionRubberBand()
 {
-    return mSelectionRubberBand;
+  return mSelectionRubberBand;
 }
 
