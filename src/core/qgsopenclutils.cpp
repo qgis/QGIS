@@ -24,7 +24,6 @@
 
 QLatin1String QgsOpenClUtils::SETTINGS_KEY = QLatin1Literal( "OpenClEnabled" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
-std::unique_ptr<cl::Context> QgsOpenClUtils::sContext = nullptr;
 bool QgsOpenClUtils::sAvailable = false;
 
 
@@ -71,10 +70,6 @@ void QgsOpenClUtils::init()
       else
       {
         cl::Device::setDefault( dev );
-        std::vector<cl::Device> devices;
-        devices.push_back( cl::Device::getDefault() );
-        sContext = qgis::make_unique<cl::Context>( devices );
-        cl::Context::setDefault( *sContext );
         sAvailable = true;
       }
     }

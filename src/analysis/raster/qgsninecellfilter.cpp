@@ -20,6 +20,7 @@
 #include "cpl_string.h"
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
+#include "qgsmessagelog.h"
 #include <QFile>
 #include <QDebug>
 #include <QFileInfo>

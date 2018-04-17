@@ -27,9 +27,6 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-//TODO: remove
-#include "qgsmessagelog.h"
-
 
 /**
  * \ingroup core
@@ -52,8 +49,6 @@ class CORE_EXPORT QgsOpenClUtils
     QgsOpenClUtils();
     static void init();
     static bool sAvailable;
-    // TODO: check if this is needed
-    static std::unique_ptr<cl::Context> sContext;
     static QLatin1String SETTINGS_KEY;
 
 };
