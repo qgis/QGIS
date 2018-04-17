@@ -43,24 +43,36 @@ class QgsRubberBand;
 class QgsSnapIndicator;
 class QgisInterface;
 
+/**
+ * \ingroup gui
+  \brief Widget used in addition with radius selection
+  \since QGIS 3.2"
+*/
 class GUI_EXPORT QgsDistanceWidget : public QWidget
 {
     Q_OBJECT
 
   public:
 
+    //! Constrructor
     explicit QgsDistanceWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
+    //! distance setter
     void setDistance( double distance );
-
+    //! distance getter
     double distance();
 
+    //! editor getter
     QgsDoubleSpinBox *editor() {return mDistanceSpinBox;}
 
   signals:
+    //! distance changed signal
     void distanceChanged( double distance );
+    //! distanceEditingFinished signal
     void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
+    //! addDistanceWidget signal
     void addDistanceWidget();
+    //! distanceEditingCanceled signal
     void distanceEditingCanceled();
 
   protected:
@@ -79,6 +91,7 @@ class GUI_EXPORT QgsDistanceWidget : public QWidget
 /**
  * \ingroup gui
   \brief Map tool for selecting geometry in layers
+  \since QGIS 3.2"
 */
 class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 {
@@ -103,51 +116,72 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! constructor
     QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode = SelectionMode::SelectSimple );
 
+    //! desctructor
     ~QgsMapToolSelectionHandler() override;
 
     QgisInterface *mQgisInterface = nullptr;
 
+    //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e );
+    //! Overridden mouse press event
     void canvasPressEvent( QgsMapMouseEvent *e );
+    //! Overridden mouse releasae event
     void canvasReleaseEvent( QgsMapMouseEvent *e );
+    //! Cancel selection - handles escape press event
     bool escapeSelection( QKeyEvent *e );
 
-    //    void activate() override;
+    //! To deactivate handler often within map tool deactivation.
     void deactivate();
 
+    //! Mouse move event handling for simple selection
     void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
+    //! Mouse release event handling for simple selection
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
+    //! Mouse press event handling for simple selection
+    void selectFeaturesPressEvent( QgsMapMouseEvent *e );
 
+    //! Mouse move event handling for polygon selection
     void selectPolygonMoveEvent( QgsMapMouseEvent *e );
+    //! Mouse press event handling for polygon selection
     void selectPolygonPressEvent( QgsMapMouseEvent *e );
 
+    //! Mouse move event handling for freehand selection
     void selectFreehandMoveEvent( QgsMapMouseEvent *e );
+    //! Mouse press event handling for freehand selection
     void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
 
+    //! Mouse move event handling for radius selection
     void selectRadiusMoveEvent( QgsMapMouseEvent *e );
+    //! Mouse press event handling for radius selection
     void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
 
+    //! Initialization of the rubberband
     void initRubberBand();
 
+    //! Interface variable setter - needed for messages
     void setIface( QgisInterface *iface );
 
+    //! mSelectedGeometry getter
     QgsGeometry selectedGeometry();
+    //! mSelectedGeometry setter
     void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
-    void setSelectionMode( SelectionMode mode );
+    //! mSelectionMode getter
     SelectionMode selectionMode();
+    //! mSelectionMode setter
+    void setSelectionMode( SelectionMode mode );
 
+    //! mSelectionActive getter
     bool selectionActive();
 
     //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
 
-
+    //! the rubberband for selection visualization
     std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
 
-    void selectFeaturesPressEvent( QgsMapMouseEvent *e );
-
   signals:
+    //! emited when mSelectedGeometry has been changed
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private slots:
