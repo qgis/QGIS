@@ -549,15 +549,22 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
   {
     if ( rule->isElse() )
     {
-      RuleList lst = rulesForFeature( feat, context, false );
-      lst.removeOne( rule );
-
-      if ( lst.empty() )
+      if ( rule->children().isEmpty() )
       {
-        return true;
+        RuleList lst = rulesForFeature( feat, context, false );
+        lst.removeOne( rule );
+
+        if ( lst.empty() )
+        {
+          return true;
+        }
+      }
+      else
+      {
+        return rule->willRenderFeature( feat, context );
       }
     }
-    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    else if ( rule->willRenderFeature( feat, context ) )
     {
       return true;
     }
