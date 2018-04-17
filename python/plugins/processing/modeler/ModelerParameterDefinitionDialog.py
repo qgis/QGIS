@@ -295,7 +295,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.setLayout(self.verticalLayout)
 
     def accept(self):
-        description = str(self.nameTextBox.text())
+        description = self.nameTextBox.text()
         if description.strip() == '':
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                 self.tr('Invalid parameter name'))
@@ -410,7 +410,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(typeId))
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
-            self.param.setDescription(name)
+            self.param.setDescription(description)
             self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():
