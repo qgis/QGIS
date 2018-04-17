@@ -21,6 +21,11 @@
 #include "qgsruggednessfilter.h"
 #include "qgstotalcurvaturefilter.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
 
 #include <QDir>
 
@@ -38,10 +43,14 @@ class TestNineCellFilters : public QObject
     void testHillshade();
     void testRuggedness();
     void testTotalCurvature();
+#ifdef HAVE_OPENCL
+    void testSlopeCl();
+    void testAspectCl();
+#endif
 
   private:
 
-    template <class T> void _testAlg( const QString &name );
+    template <class T> void _testAlg( const QString &name, bool useOpenCl = false );
 
     static QString referenceFile( const QString &name )
     {
@@ -65,16 +74,21 @@ void TestNineCellFilters::initTestCase()
 }
 
 template <class T>
-void TestNineCellFilters::_testAlg( const QString &name )
+void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 {
+#ifdef HAVE_OPENCL
+  QgsSettings().setValue( QStringLiteral( "useOpenCl" ), true, QgsSettings::Section::Core );
+  QString tmpFile( tempFile( name + ( useOpenCl ? "_opencl" : "" ) ) );
+#else
+  Q_UNUSED( useOpenCl );
   QString tmpFile( tempFile( name ) );
+#endif
   QString refFile( referenceFile( name ) );
-
   QgsAlignRaster::RasterInfo in( SRC_FILE );
   QSize inSize( in.rasterSize() );
   QSizeF inCellSize( in.cellSize( ) );
-  T slopefilter( SRC_FILE, tmpFile, "GTiff" );
-  int res = slopefilter.processRaster();
+  T ninecellsfilter( SRC_FILE, tmpFile, "GTiff" );
+  int res = ninecellsfilter.processRaster();
   QVERIFY( res == 0 );
 
   // Produced file
@@ -93,8 +107,8 @@ void TestNineCellFilters::_testAlg( const QString &name )
 
   double refId1( ref.identify( 4081812, 2431750 ) );
   double refId2( ref.identify( 4081312, 2431350 ) );
-  QCOMPARE( out.identify( 4081812, 2431750 ), refId1 );
-  QCOMPARE( out.identify( 4081312, 2431350 ),  refId2 );
+  QVERIFY( qAbs( out.identify( 4081812, 2431750 ) - refId1 ) < 0.0001f );
+  QVERIFY( qAbs( out.identify( 4081312, 2431350 ) - refId2 ) < 0.0001f );
 
 }
 
@@ -110,6 +124,18 @@ void TestNineCellFilters::testAspect()
   _testAlg<QgsAspectFilter>( QStringLiteral( "aspect" ) );
 }
 
+#ifdef HAVE_OPENCL
+void TestNineCellFilters::testSlopeCl()
+{
+  _testAlg<QgsSlopeFilter>( QStringLiteral( "slope" ), true );
+}
+
+
+void TestNineCellFilters::testAspectCl()
+{
+  _testAlg<QgsAspectFilter>( QStringLiteral( "aspect" ), true );
+}
+#endif
 
 void TestNineCellFilters::testHillshade()
 {
@@ -127,6 +153,7 @@ void TestNineCellFilters::testTotalCurvature()
 {
   _testAlg<QgsTotalCurvatureFilter>( QStringLiteral( "totalcurvature" ) );
 }
+
 
 QGSTEST_MAIN( TestNineCellFilters )
 
