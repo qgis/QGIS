@@ -253,7 +253,7 @@ bool QgsRuleBasedRenderer::Rule::isFilterOK( const QgsFeature &f, QgsRenderConte
 
   context->expressionContext().setFeature( f );
   QVariant res = mFilter->evaluate( &context->expressionContext() );
-  return res.toInt() != 0;
+  return res.toBool();
 }
 
 bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
