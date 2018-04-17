@@ -541,11 +541,11 @@ class OracleDBConnector(DBConnector):
                     buf = list(item)
                     geomtype = geomtypes[j]
                     srid = srids[j]
-                    datatype = Qgis.featureType(Qgis.singleType(geomtype))
-                    geo = datatype[3:].upper().strip(u"25D")
+                    datatype = QgsWkbTypes.displayString(QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype)))
+                    geo = datatype.upper()
                     buf.append(geo)
                     buf.append(geomtype)
-                    buf.append(Qgis.wkbDimensions(geomtype))  # Dimensions
+                    buf.append(QgsWkbTypes.coordDimensions(geomtype))  # Dimensions
                     buf.append(srid)
                     buf.append(None)  # To respect ORTableVector row
                     buf.append(None)  # To respect ORTableVector row
@@ -636,11 +636,11 @@ class OracleDBConnector(DBConnector):
             for j in range(len(geomtypes)):
                 buf = list(item)
                 geomtype = geomtypes[j]
-                datatype = Qgis.featureType(Qgis.singleType(geomtype))
-                geo = datatype[3:].upper().strip(u"25D")
+                datatype = QgsWkbTypes.displayString(QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype)))
+                geo = datatype.upper()
                 buf.append(geo)  # Geometry type as String
                 buf.append(geomtype)  # Qgis.WkbType
-                buf.append(Qgis.wkbDimensions(geomtype))  # Dimensions
+                buf.append(QgsWkbTypes.coordDimensions(geomtype))  # Dimensions
                 buf.append(detectedSrid)  # srid
                 if not self.onlyExistingTypes:
                     geomMultiTypes.append(0)
