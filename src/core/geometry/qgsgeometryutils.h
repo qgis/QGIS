@@ -22,9 +22,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgsabstractgeometry.h"
+#include "qgsvector3d.h"
 
-
-#include <QVector3D>
 
 class QgsLineString;
 
@@ -522,8 +521,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param P22 is the second point on the second line.
      * \return the shortest distance
      */
-    static double skewLinesDistance( const QVector3D &P1, const QVector3D &P12,
-                                     const QVector3D &P2, const QVector3D &P22 );
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22 );
 
     /**
      * A method to project one skew line onto another.
@@ -534,9 +533,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param X1 is the result projection point of line P2P22 onto line P1P12.
      * \return true if such point exists, false - otherwise.
      */
-    static bool skewLinesProjection( const QVector3D &P1, const QVector3D &P12,
-                                     const QVector3D &P2, const QVector3D &P22,
-                                     QVector3D &X1  SIP_OUT,
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1  SIP_OUT,
                                      double epsilon = 0.0001 );
 
     /**
@@ -549,33 +548,33 @@ class CORE_EXPORT QgsGeometryUtils
      * \return true if the intersection can be found, false - otherwise.
      * example:
      * \code{.py}
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(2,1,0), QVector3D(2,3,0))
-     *   # (True, PyQt5.QtGui.QVector3D(2.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(2,1,0), QVector3D(2,0,0))
-     *   # (True, PyQt5.QtGui.QVector3D(2.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(0,1,0), QVector3D(0,3,0))
-     *   # (True, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(0,1,0), QVector3D(0,0,0))
-     *   # (True, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(5,1,0), QVector3D(5,3,0))
-     *   # (False, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(5,1,0), QVector3D(5,0,0))
-     *   # (False, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(1,1,0), QVector3D(2,2,0), QVector3D(3,1,0), QVector3D(3,2,0))
-     *   # (True, PyQt5.QtGui.QVector3D(3.0, 3.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(1,1,0), QVector3D(2,2,0), QVector3D(3,2,0), QVector3D(3,1,0))
-     *   # (True, PyQt5.QtGui.QVector3D(3.0, 3.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(5,5,5), QVector3D(0,0,0), QVector3D(0,5,5), QVector3D(5,0,0))
-     *   # (True, PyQt5.QtGui.QVector3D(2.5, 2.5, 2.5))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(2.5,2.5,2.5), QVector3D(0,5,0), QVector3D(2.5,2.5,2.5), QVector3D(5,0,0))
-     *   # (True, PyQt5.QtGui.QVector3D(2.5, 2.5, 2.5))
-     *   QgsGeometryUtils.linesIntersection3D(QVector3D(2.5,2.5,2.5), QVector3D(5,0,0), QVector3D(0,5,5), QVector3D(5,5,5))
-     *   # (True, PyQt5.QtGui.QVector3D(0.0, 5.0, 5.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
      *   \endcode
      */
-    static bool linesIntersection3D( const QVector3D &La1, const QVector3D &La2,
-                                     const QVector3D &Lb1, const QVector3D &Lb2,
-                                     QVector3D &intersection  SIP_OUT );
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection  SIP_OUT );
 
     /*
      * A Z dimension is added to \a point if one of the point in the list

@@ -671,39 +671,39 @@ void TestQgsGeometryUtils::testClosestPoint()
 
 void TestQgsGeometryUtils::testlinesIntersection3D()
 {
-  QVector3D x;
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 2, 3, 10 ), x ) );
-  QVERIFY( x == QVector3D( 2.0, 0.0, 10.0 ) );
+  QgsVector3D x;
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 2, 0, 10 ), x ) );
-  QVERIFY( x == QVector3D( 2.0, 0.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 0, 1, 10 ), QVector3D( 0, 3, 10 ), x ) );
-  QVERIFY( x == QVector3D( 0.0, 0.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 0, 1, 10 ), QVector3D( 0, 0, 10 ), x ) );
-  QVERIFY( x == QVector3D( 0.0, 0.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 5, 1, 10 ), QVector3D( 5, 3, 10 ), x ) );
-  QVERIFY( x == QVector3D( 5.0, 0.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 0, 0, 10 ), QVector3D( 5, 0, 10 ), QVector3D( 5, 1, 10 ), QVector3D( 5, 0, 10 ), x ) );
-  QVERIFY( x == QVector3D( 5.0, 0.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 1, 1, 10 ), QVector3D( 2, 2, 10 ), QVector3D( 3, 1, 10 ), QVector3D( 3, 2, 10 ), x ) );
-  QVERIFY( x == QVector3D( 3.0, 3.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 1, 10 ), QgsVector3D( 3, 2, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 1, 1, 10 ), QVector3D( 2, 2, 10 ), QVector3D( 3, 2, 10 ), QVector3D( 3, 1, 10 ), x ) );
-  QVERIFY( x == QVector3D( 3.0, 3.0, 10.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 2, 10 ), QgsVector3D( 3, 1, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 5, 5, 5 ), QVector3D( 0, 0, 0 ), QVector3D( 0, 5, 5 ), QVector3D( 5, 0, 0 ), x ) );
-  QVERIFY( x == QVector3D( 2.5, 2.5, 2.5 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 5, 5, 5 ), QgsVector3D( 0, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 0, 5, 0 ), QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 5, 0, 0 ), x ) );
-  QVERIFY( x == QVector3D( 2.5, 2.5, 2.5 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 0, 5, 0 ), QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
 
-  QVERIFY( QgsGeometryUtils::linesIntersection3D( QVector3D( 2.5, 2.5, 2.5 ), QVector3D( 5, 0, 0 ), QVector3D( 0, 5, 5 ), QVector3D( 5, 5, 5 ), x ) );
-  QVERIFY( x == QVector3D( 0.0, 5.0, 5.0 ) );
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 5, 5 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 5.0, 5.0 ) );
 
 }
 

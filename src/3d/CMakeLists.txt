@@ -11,7 +11,6 @@ SET(QGIS_3D_SRCS
   qgstessellatedpolygongeometry.cpp
   qgstessellator.cpp
   qgstilingscheme.cpp
-  qgsvector3d.cpp
   qgsvectorlayer3drenderer.cpp
 
   chunks/qgschunkboundsentity_p.cpp
@@ -85,7 +84,6 @@ SET(QGIS_3D_HDRS
   qgstessellatedpolygongeometry.h
   qgstessellator.h
   qgstilingscheme.h
-  qgsvector3d.h
   qgsvectorlayer3drenderer.h
 
   chunks/qgschunkboundsentity_p.h

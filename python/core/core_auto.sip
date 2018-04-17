@@ -136,6 +136,7 @@
 %Include qgstestutils.sip
 %Include qgsziputils.sip
 %Include qgsvector.sip
+%Include qgsvector3d.sip
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
 %Include auth/qgsauthmanager.sip
