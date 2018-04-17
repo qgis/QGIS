@@ -762,7 +762,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   if ( layersList.size() < 1 )
   {
-    return nullptr;
+    return createImage( 1, 1, false );
   }
 
   //scale
@@ -782,7 +782,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   QStringList layerIds = mConfigParser->layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
   if ( layerIds.size() < 1 )
   {
-    return nullptr;
+    return createImage( 1, 1, false );
   }
 
   //get icon size, spaces between legend items and font from config parser
