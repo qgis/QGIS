@@ -24,7 +24,7 @@ The content of this file is based on
 """
 
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import Qgis
+from qgis.core import QgsWkbTypes
 
 from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \
@@ -576,7 +576,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
              self.table.geomType),
             (QApplication.translate("DBManagerPlugin",
                                     "Qgis Geometry type:"),
-             Qgis.featureType(self.table.wkbType))
+             QgsWkbTypes.displayString(self.table.wkbType))
         ]
 
         # only if we have info from geometry_columns
