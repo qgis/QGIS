@@ -114,7 +114,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, SelectionMode selectionMode = SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! desctructor
     ~QgsMapToolSelectionHandler() override;
@@ -177,8 +177,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
 
-    //! the rubberband for selection visualization
-    std::unique_ptr< QgsRubberBand > mSelectionRubberBand;
+    QgsRubberBand* getSelectionRubberBand();
 
   signals:
     //! emited when mSelectedGeometry has been changed
@@ -201,6 +200,9 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void selectionGeometryChanged();
 
   private:
+
+    //! the rubberband for selection visualization
+    QgsRubberBand* mSelectionRubberBand = nullptr;
 
     //! stores exact selection geometry
     QgsGeometry mSelectionGeometry;
