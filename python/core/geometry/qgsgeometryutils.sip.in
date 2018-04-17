@@ -11,7 +11,6 @@
 
 
 
-
 class QgsGeometryUtils
 {
 %Docstring
@@ -493,8 +492,8 @@ Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defin
 %End
 
 
-    static double skewLinesDistance( const QVector3D &P1, const QVector3D &P12,
-                                     const QVector3D &P2, const QVector3D &P22 );
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22 );
 %Docstring
 An algorithm to calculate the shortest distance between two skew lines.
 
@@ -506,9 +505,9 @@ An algorithm to calculate the shortest distance between two skew lines.
 :return: the shortest distance
 %End
 
-    static bool skewLinesProjection( const QVector3D &P1, const QVector3D &P12,
-                                     const QVector3D &P2, const QVector3D &P22,
-                                     QVector3D &X1  /Out/,
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1  /Out/,
                                      double epsilon = 0.0001 );
 %Docstring
 A method to project one skew line onto another.
@@ -522,9 +521,9 @@ A method to project one skew line onto another.
 :return: true if such point exists, false - otherwise.
 %End
 
-    static bool linesIntersection3D( const QVector3D &La1, const QVector3D &La2,
-                                     const QVector3D &Lb1, const QVector3D &Lb2,
-                                     QVector3D &intersection  /Out/ );
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection  /Out/ );
 %Docstring
 An algorithm to calculate an (approximate) intersection of two lines in 3D.
 
@@ -538,28 +537,28 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 example:
 .. code-block:: python
 
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(2,1,0), QVector3D(2,3,0))
-       # (True, PyQt5.QtGui.QVector3D(2.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(2,1,0), QVector3D(2,0,0))
-       # (True, PyQt5.QtGui.QVector3D(2.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(0,1,0), QVector3D(0,3,0))
-       # (True, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(0,1,0), QVector3D(0,0,0))
-       # (True, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(5,1,0), QVector3D(5,3,0))
-       # (False, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(0,0,0), QVector3D(5,0,0), QVector3D(5,1,0), QVector3D(5,0,0))
-       # (False, PyQt5.QtGui.QVector3D(0.0, 0.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(1,1,0), QVector3D(2,2,0), QVector3D(3,1,0), QVector3D(3,2,0))
-       # (True, PyQt5.QtGui.QVector3D(3.0, 3.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(1,1,0), QVector3D(2,2,0), QVector3D(3,2,0), QVector3D(3,1,0))
-       # (True, PyQt5.QtGui.QVector3D(3.0, 3.0, 0.0))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(5,5,5), QVector3D(0,0,0), QVector3D(0,5,5), QVector3D(5,0,0))
-       # (True, PyQt5.QtGui.QVector3D(2.5, 2.5, 2.5))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(2.5,2.5,2.5), QVector3D(0,5,0), QVector3D(2.5,2.5,2.5), QVector3D(5,0,0))
-       # (True, PyQt5.QtGui.QVector3D(2.5, 2.5, 2.5))
-       QgsGeometryUtils.linesIntersection3D(QVector3D(2.5,2.5,2.5), QVector3D(5,0,0), QVector3D(0,5,5), QVector3D(5,5,5))
-       # (True, PyQt5.QtGui.QVector3D(0.0, 5.0, 5.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
