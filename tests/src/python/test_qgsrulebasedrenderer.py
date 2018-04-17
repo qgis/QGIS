@@ -125,6 +125,42 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderer.stopRender(ctx)
         assert rendered == True
 
+    def testWillRenderFeatureNestedElse(self):
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(0) # 'id' = 1
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        # Create rulebased style
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"id" = 1')
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, 'ELSE')
+
+        self.rx3.appendChild(self.rx1)
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+
+        vl.setRenderer(QgsRuleBasedRenderer(rootrule))
+        renderer = vl.renderer()
+
+        # Reunder with else rule and all activated
+        renderer.startRender(ctx, vl.fields())
+        self.assertTrue(renderer.willRenderFeature(ft, ctx))
+        renderer.stopRender(ctx)
+
+        # Reunder with else rule where else is deactivated
+        renderer.rootRule().children()[1].setActive(False)
+        renderer.startRender(ctx, vl.fields())
+        self.assertFalse(renderer.willRenderFeature(ft, ctx))
+        renderer.stopRender(ctx)
+
     def testFeatureCount(self):
         vl = self.mapsettings.layers()[0]
         ft = vl.getFeature(2) # 'id' = 3 => ELSE
