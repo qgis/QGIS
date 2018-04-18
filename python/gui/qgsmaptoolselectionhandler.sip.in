@@ -230,7 +230,7 @@ mInitDragPos getter
   signals:
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 %Docstring
-emited when mSelectedGeometry has been changed
+emitted when mSelectedGeometry has been changed
 %End
 
 };

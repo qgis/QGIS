@@ -45,9 +45,11 @@ class QgisInterface;
 
 /**
  * \ingroup gui
-  \brief Spinner widget for radius selection.
-  \since QGIS 3.2"
-*/
+ * \class QgsDistanceWidget
+ * \brief Spinner widget for radius selection.
+ *
+ * \since QGIS 3.2
+ */
 class GUI_EXPORT QgsDistanceWidget : public QWidget
 {
     Q_OBJECT
@@ -191,7 +193,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     QPoint getInitDragPos() const;
 
   signals:
-    //! emited when mSelectedGeometry has been changed
+    //! emitted when mSelectedGeometry has been changed
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private slots:
