@@ -181,6 +181,7 @@ SET(TESTS
  testqgstaskmanager.cpp
  testqgstracer.cpp
  testqgsfontutils.cpp
+ testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
  testqgsvectorlayerjoinbuffer.cpp
