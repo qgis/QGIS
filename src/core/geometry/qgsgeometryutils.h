@@ -530,7 +530,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param P12 is the second point that belongs to first skew line,
      * \param P2 is the first point that belongs to second skew line,
      * \param P22 is the second point that belongs to second skew line,
-     * \param X1 is the result projection point of line P2P22 onto line P1P12.
+     * \param X1 is the result projection point of line P2P22 onto line P1P12,
+     * \param epsilon the tolerance to use.
      * \return true if such point exists, false - otherwise.
      */
     static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
