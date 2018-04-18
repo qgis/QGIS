@@ -60,7 +60,7 @@ Sets vector coordinates
 
     QgsVector3D operator-( const QgsVector3D &other ) const;
 
-    QgsVector3D operator *( const double factor) const;
+    QgsVector3D operator *(const double factor) const;
 
     QgsVector3D operator /( const double factor) const;
 
