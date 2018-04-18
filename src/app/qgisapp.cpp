@@ -1450,11 +1450,6 @@ QgisApp::~QgisApp()
   delete mVectorLayerTools;
   delete mWelcomePage;
 
-  delete mOptionsPagesMap;
-  delete mProjectPropertiesPagesMap;
-  delete mSettingPagesMap;
-
-
   deleteLayoutDesigners();
   removeAnnotationItems();
 
@@ -9967,12 +9962,12 @@ void QgisApp::options()
   showOptionsDialog( this );
 }
 
-QMap< QString, QString > *QgisApp::getProjectPropertiesPagesMap()
+QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
 {
-  if ( mProjectPropertiesPagesMap == nullptr )
+  if ( mProjectPropertiesPagesMap.isEmpty() )
   {
     QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this );
-    mProjectPropertiesPagesMap = pp->createPageWidgetNameMap();
+    mProjectPropertiesPagesMap = pp->pageWidgetNameMap();
   }
   return mProjectPropertiesPagesMap;
 }
@@ -9982,15 +9977,14 @@ void QgisApp::showProjectProperties( const QString &page )
   projectProperties( page );
 }
 
-QMap< QString, QString > *QgisApp::getSettingPagesMap()
+QMap< QString, QString > QgisApp::settingPagesMap()
 {
-  if ( mSettingPagesMap == nullptr )
+  if ( mSettingPagesMap.isEmpty() )
   {
-    mSettingPagesMap = new QMap< QString, QString >();
-    mSettingPagesMap->insert( tr( "Style Manager" ), "stylemanager" );
-    mSettingPagesMap->insert( tr( "Keyboard Shortcuts" ), "shortcuts" );
-    mSettingPagesMap->insert( tr( "Custom Projections" ), "customprojection" );
-    mSettingPagesMap->insert( tr( "Interface Customization" ), "customize" );
+    mSettingPagesMap.insert( tr( "Style Manager" ), "stylemanager" );
+    mSettingPagesMap.insert( tr( "Keyboard Shortcuts" ), "shortcuts" );
+    mSettingPagesMap.insert( tr( "Custom Projections" ), "customprojection" );
+    mSettingPagesMap.insert( tr( "Interface Customization" ), "customize" );
   }
   return mSettingPagesMap;
 }
@@ -10015,9 +10009,9 @@ void QgisApp::showSettings( const QString &page )
   }
 }
 
-QMap< QString, QString > *QgisApp::getOptionsPagesMap()
+QMap< QString, QString > QgisApp::optionsPagesMap()
 {
-  if ( mOptionsPagesMap == nullptr )
+  if ( mOptionsPagesMap.isEmpty() )
   {
     QList< QgsOptionsWidgetFactory * > factories;
     Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
@@ -10027,7 +10021,7 @@ QMap< QString, QString > *QgisApp::getOptionsPagesMap()
         factories << f;
     }
     std::unique_ptr< QgsOptions > f( new QgsOptions( this, QgsGuiUtils::ModalDialogFlags, factories ) );
-    mOptionsPagesMap = f->createPageWidgetNameMap();
+    mOptionsPagesMap = f->pageWidgetNameMap();
   }
   return mOptionsPagesMap;
 }
@@ -10310,23 +10304,15 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
 void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories << factory;
-  //Nullify mOptionsPagesMap forcing it to be repopulated next time getOptionsPagesMap() is called
-  if ( mOptionsPagesMap != nullptr )
-  {
-    delete mOptionsPagesMap;
-    mOptionsPagesMap = nullptr;
-  }
+  //clear mOptionsPagesMap forcing it to be repopulated next time optionsPagesMap() is called
+  mOptionsPagesMap.clear();
 }
 
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
-  //Nullify mOptionsPagesMap forcing it to be repopulated next time getOptionsPagesMap() is called
-  if ( mOptionsPagesMap != nullptr )
-  {
-    delete mOptionsPagesMap;
-    mOptionsPagesMap = nullptr;
-  }
+  //clear mOptionsPagesMap forcing it to be repopulated next time optionsPagesMap() is called
+  mOptionsPagesMap.clear();
 }
 
 QgsMapLayer *QgisApp::activeLayer()

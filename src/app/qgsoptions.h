@@ -61,7 +61,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     void setCurrentPage( const QString &pageWidgetName );
 
-    QMap<QString, QString> *createPageWidgetNameMap();
+    QMap<QString, QString> pageWidgetNameMap();
 
 
   public slots:

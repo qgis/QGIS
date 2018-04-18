@@ -148,7 +148,6 @@ class QgsBookmarkLocatorFilter : public QgsLocatorFilter
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-
 };
 
 class QgsSettingsLocatorFilter : public QgsLocatorFilter
@@ -162,20 +161,16 @@ class QgsSettingsLocatorFilter : public QgsLocatorFilter
     QString name() const override { return QStringLiteral( "optionpages" ); }
     QString displayName() const override { return tr( "Settings" ); }
     Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "s" ); }
+    QString prefix() const override { return QStringLiteral( "set" ); }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
-    struct SettingsHandle
-    {
-      QString type;
-      QString page;
-    };
-};
+  private:
 
-Q_DECLARE_METATYPE( QgsSettingsLocatorFilter::SettingsHandle )
+    QMap<QString, QString> settingsPage( const QString &type,  const QString &page );
+};
 
 #endif // QGSINBUILTLOCATORFILTERS_H
 

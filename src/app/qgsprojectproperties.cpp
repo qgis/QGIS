@@ -2158,17 +2158,18 @@ void QgsProjectProperties::applyRequiredLayers()
     }
   }
   QgsProject::instance()->setRequiredLayers( requiredLayers );
+}
 
-QMap< QString, QString > *QgsProjectProperties::createPageWidgetNameMap()
+QMap< QString, QString > QgsProjectProperties::pageWidgetNameMap()
 {
-  QMap< QString, QString > *pageNames = new QMap< QString, QString >();
+  QMap< QString, QString > pageNames;
   for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
   {
     QWidget *currentPage = mOptionsStackedWidget->widget( idx );
     QListWidgetItem *item = mOptionsListWidget->item( idx );
     QString title = item->text();
     QString name = currentPage->objectName();
-    pageNames->insert( title, name );
+    pageNames.insert( title, name );
   }
   return pageNames;
 }

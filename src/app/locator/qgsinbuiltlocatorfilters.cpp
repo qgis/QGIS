@@ -351,93 +351,81 @@ QgsSettingsLocatorFilter *QgsSettingsLocatorFilter::clone() const
   return new QgsSettingsLocatorFilter();
 }
 
-void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
-  QMap<QString, SettingsHandle> filteredSettingHandlesMap;
-  QMap<QString, QString> *optionsPagesMap = QgisApp::instance()->getOptionsPagesMap();
+  QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
 
-  for ( QString op : optionsPagesMap->keys() )
+  QMap<QString, QString> optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
-    if ( feedback->isCanceled() )
-      return;
-
-    if ( stringMatches( op, string ) )
+    QString title = optionsPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
-      SettingsHandle sh;
-      sh.type = "optionpage";
-      sh.page = optionsPagesMap->value( op );
-      filteredSettingHandlesMap.insert( op + " (" + tr( "Options" ) + ")", sh );
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
     }
   }
 
-  QMap<QString, QString> *projectPropertyPagesMap = QgisApp::instance()->getProjectPropertiesPagesMap();
-
-  for ( QString pp : projectPropertyPagesMap->keys() )
+  QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
+  for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
   {
-    if ( feedback->isCanceled() )
-      return;
-
-    if ( stringMatches( pp, string ) )
+    QString title = projectPropertyPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
-      SettingsHandle sh;
-      sh.type = "projectpropertypage";
-      sh.page = projectPropertyPagesMap->value( pp );
-      filteredSettingHandlesMap.insert( pp + " (" + tr( "Project Properties" ) + ")", sh );
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
     }
   }
 
-  QMap<QString, QString> *settingPagesMap = QgisApp::instance()->getSettingPagesMap();
-
-  for ( QString sp : settingPagesMap->keys() )
+  QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
+  for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
   {
-    if ( feedback->isCanceled() )
-      return;
-
-    if ( stringMatches( sp, string ) )
+    QString title = settingPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
-      SettingsHandle sh;
-      sh.type = "settingspage";
-      sh.page = settingPagesMap->value( sp );
-      filteredSettingHandlesMap.insert( sp, sh );
+      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
     }
   }
 
-  for ( QString shk : filteredSettingHandlesMap.keys() )
+  for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
   {
-    if ( feedback->isCanceled() )
-      return;
-
-    QString title = shk;
-    SettingsHandle sh = filteredSettingHandlesMap.value( shk );
-
+    QString title = matchingSettingsPagesIterator.key();
+    QMap<QString, QString> settingsPage = matchingSettingsPagesIterator.value();
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = title;
-    result.userData.setValue( sh );
+    result.userData.setValue( settingsPage );
     result.score = static_cast< double >( string.length() ) / title.length();
     emit resultFetched( result );
   }
+}
 
+QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type,  const QString &page )
+{
+  QMap<QString, QString> returnPage;
+  returnPage.insert( "type", type );
+  returnPage.insert( "page", page );
+  return returnPage;
 }
 
 void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
 
-  SettingsHandle sh = qvariant_cast<SettingsHandle>( result.userData );
-  if ( sh.type == "optionpage" )
+  QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData );
+  QString type = settingsPage.value( "type" );
+  QString page = settingsPage.value( "page" );
+
+  if ( type == "optionpage" )
   {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), sh.page );
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
   }
-  else if ( sh.type == "projectpropertypage" )
+  else if ( type == "projectpropertypage" )
   {
-    QgisApp::instance()->showProjectProperties( sh.page );
+    QgisApp::instance()->showProjectProperties( page );
   }
-  else if ( sh.type == "settingspage" )
+  else if ( type == "settingspage" )
   {
-    QgisApp::instance()->showSettings( sh.page );
+    QgisApp::instance()->showSettings( page );
   }
 }
-
 
 // QgBookmarkLocatorFilter
 //
@@ -472,13 +460,12 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       result.filter = this;
       result.displayString = name;
       result.userData = index;
-      //TODO Create svg for "Bookmark"?
-      //result.icon = TBD
+      //TODO Create svg for "Bookmark"
+      //TODO result.icon =
       result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
     }
   }
-
 }
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )

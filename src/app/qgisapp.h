@@ -936,11 +936,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Settings pages section
      */
     //! Get map of option pages
-    QMap< QString, QString > *getOptionsPagesMap();
+    QMap< QString, QString > optionsPagesMap();
     //! Get map of project property pages
-    QMap< QString, QString > *getProjectPropertiesPagesMap();
+    QMap< QString, QString > projectPropertiesPagesMap();
     //! Get map of setting pages
-    QMap< QString, QString > *getSettingPagesMap();
+    QMap< QString, QString > settingPagesMap();
 
     void showProjectProperties( const QString  &page = QString() );
     void showSettings( const QString &page );
@@ -2229,9 +2229,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
 
     //! Internal vars supporting Settings Pages function
-    QMap< QString, QString > *mOptionsPagesMap = nullptr;
-    QMap< QString, QString > *mProjectPropertiesPagesMap = nullptr;
-    QMap< QString, QString > *mSettingPagesMap = nullptr;
+    QMap< QString, QString > mOptionsPagesMap;
+    QMap< QString, QString > mProjectPropertiesPagesMap;
+    QMap< QString, QString > mSettingPagesMap;
 
     friend class TestQgisAppPython;
 };
