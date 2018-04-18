@@ -25,17 +25,17 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
-QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & ) const
+QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
 
-QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature &, QgsRenderContext & ) const
+QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
 
-bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   //render selected features or features being edited only
   if ( !selected && !drawVertexMarker )
@@ -70,7 +70,7 @@ void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
   }
 }
 
-bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature &, QgsRenderContext & ) const
+bool QgsNullSymbolRenderer::willRenderFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   //return true for every feature - so they are still selectable
   return true;

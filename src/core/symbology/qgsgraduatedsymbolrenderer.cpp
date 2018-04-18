@@ -330,12 +330,12 @@ QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
   return QString();
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
 
-QVariant QgsGraduatedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QVariant QgsGraduatedSymbolRenderer::valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
@@ -351,7 +351,7 @@ QVariant QgsGraduatedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRe
   return value;
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -1190,7 +1190,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 

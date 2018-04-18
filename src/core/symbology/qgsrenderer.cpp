@@ -77,12 +77,12 @@ QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryTy
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
 
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return symbolForFeature( feature, context );
 }
 
-QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
@@ -115,7 +115,7 @@ bool QgsFeatureRenderer::filterNeedsGeometry() const
   return false;
 }
 
-bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
 #ifdef QGISDEBUG
   Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::renderFeature", "renderFeature called in a different thread - use a cloned renderer instead" );
@@ -129,7 +129,7 @@ bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   return true;
 }
 
-void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+void QgsFeatureRenderer::renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   symbol->renderFeature( feature, context, layer, selected, drawVertexMarker, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
 }
@@ -338,9 +338,9 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const
+bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  return nullptr != symbolForFeature( feat, context );
+  return nullptr != symbolForFeature( feature, context );
 }
 
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
@@ -371,10 +371,10 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolyg
   }
 }
 
-QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
+QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
-  QgsSymbol *s = symbolForFeature( feat, context );
+  QgsSymbol *s = symbolForFeature( feature, context );
   if ( s ) lst.append( s );
   return lst;
 }
@@ -385,10 +385,10 @@ void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   Q_UNUSED( context );
 }
 
-QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
+QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
-  QgsSymbol *s = originalSymbolForFeature( feat, context );
+  QgsSymbol *s = originalSymbolForFeature( feature, context );
   if ( s ) lst.append( s );
   return lst;
 }

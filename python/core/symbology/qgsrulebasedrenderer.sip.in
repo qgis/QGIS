@@ -31,7 +31,7 @@ the rules and draws features with symbols from rules that match.
 
     struct FeatureToRender
     {
-      FeatureToRender( QgsFeature &_f, int _flags );
+      FeatureToRender( const QgsFeature &_f, int _flags );
       QgsFeature feat;
       int flags; // selected and/or draw markers
     };
@@ -130,7 +130,7 @@ Returns true if this rule or one of its chilren needs the geometry to be applied
 .. versionadded:: 2.6
 %End
 
-        bool isFilterOK( QgsFeature &f, QgsRenderContext *context = 0 ) const;
+        bool isFilterOK( const QgsFeature &f, QgsRenderContext *context = 0 ) const;
 %Docstring
 Check if a given feature shall be rendered by this rule
 
@@ -307,29 +307,29 @@ Render a given feature, will recursively call subclasses and only render if the 
 the reason for not rendering the feature.
 %End
 
-        bool willRenderFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
+        bool willRenderFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
 %Docstring
 only tell whether a feature will be rendered without actually rendering it
 %End
 
-        QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
+        QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
 %Docstring
 tell which symbols will be used to render the feature
 %End
 
-        QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
+        QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
 %Docstring
 Returns which legend keys match the feature
 
 .. versionadded:: 2.14
 %End
 
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0, bool onlyActive = true );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( const QgsFeature &feature, QgsRenderContext *context = 0, bool onlyActive = true );
 %Docstring
 Returns the list of rules used to render the feature in a specific
 context.
 
-:param feat: The feature for which rules have to be find
+:param feature: The feature for which rules have to be find
 :param context: The rendering context
 :param onlyActive: True to search for active rules only, false otherwise
 %End
@@ -447,13 +447,13 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
 
     ~QgsRuleBasedRenderer();
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
 return symbol for current feature. Should not be used individually: there could be more symbols for a feature
 %End
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
@@ -497,13 +497,13 @@ return symbol for current feature. Should not be used individually: there could 
 
     virtual QString dump() const;
 
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
 

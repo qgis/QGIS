@@ -137,7 +137,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \returns returns pointer to symbol or 0 if symbol was not found
      * \since QGIS 2.12
      */
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const = 0;
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const = 0;
 
     /**
      * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
@@ -145,13 +145,13 @@ class CORE_EXPORT QgsFeatureRenderer
      * of a symbol for use in rendering.
      * \since QGIS 2.12
      */
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Return legend keys matching a specified feature.
      * \since QGIS 2.14
      */
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see startRender()
      * \see stopRender()
      */
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! Returns debug information about this renderer
     virtual QString dump() const;
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Default implementation uses symbolForFeature().
      * \since QGIS 2.12
      */
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Returns list of symbols used for rendering the feature.
@@ -358,14 +358,14 @@ class CORE_EXPORT QgsFeatureRenderer
      * to use symbolForFeature()
      * \since QGIS 2.12
      */
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * \since QGIS 2.12
      */
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Allows for a renderer to modify the extent of a feature request prior to rendering
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsFeatureRenderer
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( QgsFeature &feature,
+    void renderFeatureWithSymbol( const QgsFeature &feature,
                                   QgsSymbol *symbol,
                                   QgsRenderContext &context,
                                   int layer,

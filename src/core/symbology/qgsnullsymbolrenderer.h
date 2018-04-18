@@ -34,12 +34,12 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     QgsNullSymbolRenderer();
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     void stopRender( QgsRenderContext &context ) override;
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
+    bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QString dump() const override;

@@ -32,8 +32,8 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**

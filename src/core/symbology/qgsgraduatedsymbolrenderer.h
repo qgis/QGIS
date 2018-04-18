@@ -147,8 +147,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     ~QgsGraduatedSymbolRenderer() override;
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Returns calculated value used for classifying a feature.
      */
-    QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    QVariant valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     //! Returns list of legend symbol items from individual ranges
     QgsLegendSymbolList baseLegendSymbolItems() const;

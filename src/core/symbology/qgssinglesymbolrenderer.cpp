@@ -40,12 +40,12 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & ) const
+QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return mSymbol.get();
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
@@ -316,7 +316,7 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   return lst;
 }
 
-QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );

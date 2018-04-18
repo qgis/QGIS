@@ -87,7 +87,7 @@ QgsMultiPointXY QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom
   return multiPoint;
 }
 
-bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( layer );
   Q_UNUSED( selected );
@@ -349,7 +349,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   return rendererElem;
 }
 
-QgsSymbol *QgsHeatmapRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext & ) const
+QgsSymbol *QgsHeatmapRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext & ) const
 {
   Q_UNUSED( feature );
   return nullptr;

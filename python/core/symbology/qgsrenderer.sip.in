@@ -78,7 +78,7 @@ return a new renderer - used by default in vector layers
 
     QString type() const;
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const = 0;
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const = 0;
 %Docstring
 To be overridden
 
@@ -92,7 +92,7 @@ Must be called between startRender() and stopRender() calls.
 .. versionadded:: 2.12
 %End
 
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
@@ -101,7 +101,7 @@ of a symbol for use in rendering.
 .. versionadded:: 2.12
 %End
 
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Return legend keys matching a specified feature.
 
@@ -175,7 +175,7 @@ and generate a proper subclass.
 :return: A copy of this renderer
 %End
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 %Docstring
 Render a feature using this renderer in the given context.
 Must be called between startRender() and stopRender() calls.
@@ -320,7 +320,7 @@ If supported by the renderer, return classification attribute for the use in leg
 set type and size of editing vertex markers for subsequent rendering
 %End
 
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Returns whether the renderer will render a feature or not.
 Must be called between startRender() and stopRender() calls.
@@ -329,7 +329,7 @@ Default implementation uses symbolForFeature().
 .. versionadded:: 2.12
 %End
 
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Returns list of symbols used for rendering the feature.
 For renderers that do not support MoreSymbolsPerFeature it is more efficient
@@ -338,7 +338,7 @@ to use symbolForFeature()
 .. versionadded:: 2.12
 %End
 
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
+    virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
 Equivalent of originalSymbolsForFeature() call
 extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
@@ -476,7 +476,7 @@ implementation does not use subrenderers and will always return null.
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( QgsFeature &feature,
+    void renderFeatureWithSymbol( const QgsFeature &feature,
                                   QgsSymbol *symbol,
                                   QgsRenderContext &context,
                                   int layer,

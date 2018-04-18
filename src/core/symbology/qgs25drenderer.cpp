@@ -162,7 +162,7 @@ QgsFeatureRenderer *Qgs25DRenderer::clone() const
   return c;
 }
 
-QgsSymbol *Qgs25DRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *Qgs25DRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )

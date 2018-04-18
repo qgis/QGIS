@@ -207,12 +207,12 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   return *it;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
 
-QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QVariant QgsCategorizedSymbolRenderer::valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
@@ -230,7 +230,7 @@ QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature &feature, Qgs
   return value;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -789,7 +789,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QString value = valueForFeature( feature, context ).toString();
   int i = 0;

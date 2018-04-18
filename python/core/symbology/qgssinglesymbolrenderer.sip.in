@@ -17,9 +17,9 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -53,7 +53,7 @@ create renderer from XML element
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 
