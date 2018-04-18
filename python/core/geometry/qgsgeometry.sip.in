@@ -1341,6 +1341,18 @@ not change the geometry.
 :return: true in case of success and false else
 %End
 
+    bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
+%Docstring
+Converts geometry collection to a the desired geometry type subclass (multi-point,
+multi-linestring or multi-polygon). Child geometries of different type are filtered out.
+Does nothing the geometry is not a geometry collection. May leave the geometry
+empty if none of the child geometries match the desired type.
+
+:return: true in case of success and false else
+
+.. versionadded:: 3.2
+%End
+
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
 
 %Docstring

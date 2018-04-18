@@ -226,11 +226,6 @@ qgis:importintopostgis: >
 
   Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
 
-qgis:intersection: >
-  This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
-
-  Attributes are not modified.
-
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 

@@ -79,7 +79,6 @@ from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
-from .Intersection import Intersection
 from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
@@ -198,7 +197,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
-                Intersection(),
                 KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
