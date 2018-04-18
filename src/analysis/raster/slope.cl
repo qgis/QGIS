@@ -68,7 +68,6 @@ float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float
  return sum / ( weight * mCellSize ) * mZFactor;
 }
 
-
 __kernel void processNineCellWindow( __global float *scanLine1,
                                      __global float *scanLine2,
                                      __global float *scanLine3,

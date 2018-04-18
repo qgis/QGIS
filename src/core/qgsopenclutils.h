@@ -27,6 +27,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
+#include "cpl_conv.h"
 
 /**
  * \ingroup core
@@ -45,6 +46,62 @@ class CORE_EXPORT QgsOpenClUtils
     static QString sourceFromPath( const QString &path );
     static QLatin1String LOGMESSAGE_TAG;
     static QString errorText( const int errorCode );
+
+    /**
+     * Tiny smart-pointer wrapper around CPLMalloc and CPLFree: this is needed because
+     * OpenCL C++ API may throw exceptions
+     */
+    template <typename T>
+    struct CPLAllocator
+    {
+
+      public:
+
+        explicit CPLAllocator( unsigned long size ): mMem( ( T * )CPLMalloc( sizeof( T ) * size ) ) { }
+
+        ~CPLAllocator()
+        {
+          CPLFree( ( void * )mMem );
+        }
+
+        void reset( T *newData )
+        {
+          if ( mMem )
+            CPLFree( ( void * )mMem );
+          mMem = newData;
+        }
+
+        void reset( unsigned long size )
+        {
+          reset( ( T * )CPLMalloc( sizeof( T ) *size ) );
+        }
+
+        T &operator* ()
+        {
+          return &mMem[0];
+        }
+
+        T *release()
+        {
+          T *tmpMem = mMem;
+          mMem = nullptr;
+          return tmpMem;
+        }
+
+        T &operator[]( const int index )
+        {
+          return mMem[index];
+        }
+
+        T *get()
+        {
+          return mMem;
+        }
+
+      private:
+
+        T *mMem = nullptr;
+    };
 
   private:
     QgsOpenClUtils();
