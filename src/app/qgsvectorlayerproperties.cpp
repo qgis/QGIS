@@ -302,6 +302,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDiagramFrame->setLayout( diagLayout );
 
   // Legend tab
+  mLegendWidget->setLayer( mLayer );
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
 
   // WMS Name as layer short name
@@ -572,6 +573,7 @@ void QgsVectorLayerProperties::apply()
   }
 
   // apply legend settings
+  mLegendWidget->applyToLayer();
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   // save metadata

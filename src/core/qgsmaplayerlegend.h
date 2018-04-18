@@ -19,10 +19,14 @@
 #include <QObject>
 #include "qgis.h"
 
+class QDomDocument;
+class QDomElement;
+
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsPluginLayer;
 class QgsRasterLayer;
+class QgsReadWriteContext;
 class QgsVectorLayer;
 
 #include "qgis_core.h"
@@ -43,7 +47,19 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     //! Constructor for QgsMapLayerLegend
     explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    // TODO: type, load/save settings
+    // TODO: type
+
+    /**
+     * Reads configuration from a DOM element previously written by writeXml()
+     * \since QGIS 3.2
+     */
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    /**
+     * Writes configuration to a DOM element, to be used later with readXml()
+     * \since QGIS 3.2
+     */
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Return list of legend nodes to be used for a particular layer tree layer node.
@@ -89,6 +105,8 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 #include <QHash>
 
+#include "qgstextrenderer.h"
+
 /**
  * \ingroup core
  * Default legend implementation for vector layers
@@ -101,10 +119,59 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
+    /**
+     * Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+     * may have extra text rendered on top. The content of labels and their style is controlled
+     * by textOnSymbolContent() and textOnSymbolTextFormat().
+     * \since QGIS 3.2
+     */
+    bool textOnSymbolEnabled() const { return mTextOnSymbolEnabled; }
+
+    /**
+     * Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+     * may have extra text rendered on top. The content of labels and their style is controlled
+     * by textOnSymbolContent() and textOnSymbolTextFormat().
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolEnabled( bool enabled ) { mTextOnSymbolEnabled = enabled; }
+
+    /**
+     * Returns text format of symbol labels for "text on symbol" functionality.
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textOnSymbolTextFormat() const { return mTextOnSymbolTextFormat; }
+
+    /**
+     * Sets text format of symbol labels for "text on symbol" functionality.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
+
+    /**
+     * Returns per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+     * the keys are rule keys of legend items, the values are labels to be shown.
+     * \since QGIS 3.2
+     */
+    QHash<QString, QString> textOnSymbolContent() const { return mTextOnSymbolContent; }
+
+    /**
+     * Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+     * the keys are rule keys of legend items, the values are labels to be shown.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolContent( const QHash<QString, QString> &content ) { mTextOnSymbolContent = content; }
+
     QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+
+    // text on symbol
+    bool mTextOnSymbolEnabled = false;
+    QgsTextFormat mTextOnSymbolTextFormat;
+    QHash<QString, QString> mTextOnSymbolContent;
 };
 
 

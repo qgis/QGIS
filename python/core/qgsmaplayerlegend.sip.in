@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMapLayerLegend : QObject
 {
 %Docstring
@@ -30,6 +31,20 @@ of legends for one map layer.
 Constructor for QgsMapLayerLegend
 %End
 
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from a DOM element previously written by writeXml()
+
+.. versionadded:: 3.2
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a DOM element, to be used later with readXml()
+
+.. versionadded:: 3.2
+%End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
 %Docstring
@@ -84,6 +99,7 @@ update according to layer node's custom properties (order of items, user labels 
 
 
 
+
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
 %Docstring
@@ -98,8 +114,58 @@ Default legend implementation for vector layers
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
+    bool textOnSymbolEnabled() const;
+%Docstring
+Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by textOnSymbolContent() and textOnSymbolTextFormat().
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolEnabled( bool enabled );
+%Docstring
+Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by textOnSymbolContent() and textOnSymbolTextFormat().
+
+.. versionadded:: 3.2
+%End
+
+    QgsTextFormat textOnSymbolTextFormat() const;
+%Docstring
+Returns text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    QHash<QString, QString> textOnSymbolContent() const;
+%Docstring
+Returns per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolContent( const QHash<QString, QString> &content );
+%Docstring
+Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 };
 

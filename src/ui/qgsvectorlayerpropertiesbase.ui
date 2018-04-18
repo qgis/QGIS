@@ -1878,6 +1878,9 @@ border-radius: 2px;</string>
             <number>0</number>
            </property>
            <item>
+	    <widget class="QgsVectorLayerLegendWidget" name="mLegendWidget" native="true"/>
+	   </item>
+	   <item>
             <widget class="QGroupBox" name="groupBox_3">
              <property name="title">
               <string>Embedded widgets in legend</string>
@@ -2415,6 +2418,12 @@ border-radius: 2px;</string>
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+  <customwidget>
+    <class>QgsVectorLayerLegendWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsvectorlayerlegendwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
