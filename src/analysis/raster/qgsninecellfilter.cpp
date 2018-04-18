@@ -235,9 +235,21 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     return 6;
   }
 
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue( ctx );
+=======
+  //keep only three scanlines in memory at a time, make room for initial and final nodata
+  QgsOpenClUtils::CPLAllocator<float> scanLine1( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> scanLine2( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> scanLine3( xSize + 2 );
+  //float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+  //float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+
+  //float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
+>>>>>>> CPLAllocator smart wrapper
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
   QgsOpenClUtils::CPLAllocator<float> scanLine( xSize + 2 );
@@ -256,6 +268,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   // used to pass additional args to opencl program
   addExtraRasterParams( rasterParams );
 
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
 <<<<<<< 583c7ae28727cddaff53706903980733bd4b8979
   std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
   std::size_t inputSize( sizeof( float ) * ( xSize ) );
@@ -288,35 +301,38 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   try
 >>>>>>> Try to avoid crash on intel haswell
   {
+=======
+>>>>>>> CPLAllocator smart wrapper
 
-    cl::Buffer rasterParamsBuffer( rasterParams.begin(), rasterParams.end(), true, false, &errorCode );
-    cl::Buffer scanLine1Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-    cl::Buffer scanLine2Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-    cl::Buffer scanLine3Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-    cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
+  cl::Buffer rasterParamsBuffer( rasterParams.begin(), rasterParams.end(), true, false, &errorCode );
+  cl::Buffer scanLine1Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
+  cl::Buffer scanLine2Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
+  cl::Buffer scanLine3Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
+  cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
 
-    // Create a program from the kernel source
-    cl::Program program( source.toStdString() );
-    // Use CL 1.1 for compatibility with older libs
-    program.build( "-cl-std=CL1.1" );
+  // Create a program from the kernel source
+  cl::Program program( source.toStdString() );
+  // Use CL 1.1 for compatibility with older libs
+  program.build( "-cl-std=CL1.1" );
 
-    // Create the OpenCL kernel
-    auto kernel = cl::KernelFunctor <
-                  cl::Buffer &,
-                  cl::Buffer &,
-                  cl::Buffer &,
-                  cl::Buffer &,
-                  cl::Buffer &
-                  > ( program, "processNineCellWindow" );
+  // Create the OpenCL kernel
+  auto kernel = cl::KernelFunctor <
+                cl::Buffer &,
+                cl::Buffer &,
+                cl::Buffer &,
+                cl::Buffer &,
+                cl::Buffer &
+                > ( program, "processNineCellWindow" );
 
-    //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
-    for ( int i = 0; i < ySize; ++i )
+  //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
+  for ( int i = 0; i < ySize; ++i )
+  {
+    if ( feedback && feedback->isCanceled() )
     {
-      if ( feedback && feedback->isCanceled() )
-      {
-        break;
-      }
+      break;
+    }
 
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
 <<<<<<< 583c7ae28727cddaff53706903980733bd4b8979
     if ( i == 0 )
     {
@@ -338,26 +354,26 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
       if ( i == 0 )
 >>>>>>> Try to avoid crash on intel haswell
+=======
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
+    }
+
+    if ( i == 0 )
+    {
+      //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
+      for ( int a = 0; a < xSize + 2 ; ++a )
+>>>>>>> CPLAllocator smart wrapper
       {
-        //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
-        for ( int a = 0; a < xSize + 2 ; ++a )
-        {
-          scanLine1[a] = mInputNodataValue;
-        }
-        // Read scanline2
-        if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
-        {
-          QgsDebugMsg( "Raster IO Error" );
-        }
+        scanLine1[a] = mInputNodataValue;
       }
-      else
+      // Read scanline2
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        //normally fetch only scanLine3 and release scanline 1 if we move forward one row
-        CPLFree( scanLine1 );
-        scanLine1 = scanLine2;
-        scanLine2 = scanLine3;
-        scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+        QgsDebugMsg( "Raster IO Error" );
       }
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
 <<<<<<< 583c7ae28727cddaff53706903980733bd4b8979
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
@@ -374,22 +390,28 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       // Read scanline 3, fill the last row with nodata values if it's the last iteration
       if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
 =======
+=======
+    }
+    else
+    {
+      //normally fetch only scanLine3 and release scanline 1 if we move forward one row
+      //scanLine1 = scanLine2;
+      //scanLine2 = scanLine3;
+      //scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+      scanLine1.reset( scanLine2.release() );
+      scanLine2.reset( scanLine3.release() );
+      scanLine3.reset( xSize + 2 );
+    }
+>>>>>>> CPLAllocator smart wrapper
 
-      // Read scanline 3
-      if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
+    // Read scanline 3
+    if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
+    {
+      for ( int a = 0; a < xSize + 2; ++a )
       {
-        for ( int a = 0; a < xSize + 2; ++a )
-        {
-          scanLine3[a] = mInputNodataValue;
-        }
+        scanLine3[a] = mInputNodataValue;
       }
-      else
-      {
-        if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
-        {
-          QgsDebugMsg( "Raster IO Error" );
-        }
-      }
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
       // Set first and last extra colums to nodata
       scanLine1[0] = scanLine1[xSize + 1] = mInputNodataValue;
       scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
@@ -416,6 +438,12 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
       if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
 >>>>>>> Try to avoid crash on intel haswell
+=======
+    }
+    else
+    {
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+>>>>>>> CPLAllocator smart wrapper
       {
         for ( int a = 0; a < xSize + 2; ++a )
         {
@@ -423,6 +451,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         }
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
       else // Read line i + 1 and put it into scanline 3
         // Overwrite from input, skip first and last
       {
@@ -454,9 +483,39 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     }
     std::rotate( rowIndex.begin(), rowIndex.begin() + 1, rowIndex.end() );
 =======
+=======
+    }
+    // Set first and last extra colums to nodata
+    scanLine1[0] = scanLine1[xSize + 1] = mInputNodataValue;
+    scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
+    scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
+>>>>>>> CPLAllocator smart wrapper
 
+    errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine1.get() );
+    errorCode = cl::enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine2.get() );
+    errorCode = cl::enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine3.get() );
+
+    kernel( cl::EnqueueArgs(
+              cl::NDRange( xSize )
+            ),
+            scanLine1Buffer,
+            scanLine2Buffer,
+            scanLine3Buffer,
+            resultLineBuffer,
+            rasterParamsBuffer
+          );
+
+    cl::enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine.get() );
+
+    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
     }
   }
+<<<<<<< 7e1d9298000637436eb49d0a886978ad33476894
   catch ( cl::Error &e )
   {
     CPLFree( resultLine );
@@ -467,6 +526,10 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 >>>>>>> Try to avoid crash on intel haswell
   }
 
+=======
+
+
+>>>>>>> CPLAllocator smart wrapper
   if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
