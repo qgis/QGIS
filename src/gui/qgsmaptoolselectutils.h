@@ -98,7 +98,7 @@ namespace QgsMapToolSelectUtils
     \param canvas The map canvas used for getting the current layer
     \returns QgsVectorLayer The layer
   */
-  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = nullptr );
 
   /**
   Expands a rectangle to a minimum size for selection based on the vector layer type

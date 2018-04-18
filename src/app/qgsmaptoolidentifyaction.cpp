@@ -256,7 +256,7 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
-  QgsPointXY mapPoint = this->toMapCoordinates(mSelectionHandler->getInitDragPos());
-  setClickContextScope(mapPoint );
+  QgsPointXY mapPoint = this->toMapCoordinates( mSelectionHandler->getInitDragPos() );
+  setClickContextScope( mapPoint );
   this->identifyOnGeometryChange( mapPoint.x(), mapPoint.y(), DefaultQgsSetting );
 }

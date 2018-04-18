@@ -479,7 +479,7 @@ void QgsMapToolSelectionHandler::cancel()
 
 QPoint QgsMapToolSelectionHandler::getInitDragPos() const
 {
-    return mInitDragPos;
+  return mInitDragPos;
 }
 
 void QgsMapToolSelectionHandler::setSelectionRubberBand( QgsRubberBand *selectionRubberBand )

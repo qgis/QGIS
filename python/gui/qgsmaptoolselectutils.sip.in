@@ -81,7 +81,7 @@ operations (add, subtract, contains)
 .. seealso:: :py:func:`selectMultipleFeatures`
 %End
 
-  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
 %Docstring
 Get the current selected canvas map layer. Returns None if it is not a vector layer
 

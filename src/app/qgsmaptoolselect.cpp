@@ -40,7 +40,17 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
 
 void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
+  QgsMessageBar *messageBar;
+  if ( QgisApp::instance() && QgisApp::instance()->messageBar() )
+  {
+    messageBar = QgisApp::instance()->messageBar();
+  }
+  else
+  {
+    messageBar = nullptr;
+  }
+
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, messageBar );
   if ( !vlayer )
     return;
 
@@ -51,6 +61,6 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
   QgsGeometry selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers(), QgisApp::instance()->messageBar() );
+  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers(), messageBar );
   rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

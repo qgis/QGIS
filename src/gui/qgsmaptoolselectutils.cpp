@@ -40,11 +40,19 @@ QgsVectorLayer GUI_EXPORT *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapC
   {
     QgsSettings settings;
     int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    messageBar->pushMessage(
-      QObject::tr( "No active vector layer" ),
-      QObject::tr( "To select features, choose a vector layer in the legend" ),
-      Qgis::Info,
-      timeout );
+    if ( messageBar )
+    {
+      messageBar->pushMessage(
+        QObject::tr( "No active vector layer" ),
+        QObject::tr( "To select features, choose a vector layer in the legend" ),
+        Qgis::Info,
+        timeout );
+    }
+    else
+    {
+      QgsDebugMsg( "No active vector layer to select features." );
+    }
+
   }
   return vlayer;
 }
