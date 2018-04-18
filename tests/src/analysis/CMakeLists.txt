@@ -76,6 +76,7 @@ SET(TESTS
  testqgsrastercalculator.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
+ testqgsninecellfilters.cpp
     )
 
 FOREACH(TESTSRC ${TESTS})
