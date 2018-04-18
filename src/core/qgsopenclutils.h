@@ -44,6 +44,7 @@ class CORE_EXPORT QgsOpenClUtils
     static QString buildLog( cl::BuildError &e );
     static QString sourceFromPath( const QString &path );
     static QLatin1String LOGMESSAGE_TAG;
+    static QString errorText( const int errorCode );
 
   private:
     QgsOpenClUtils();
