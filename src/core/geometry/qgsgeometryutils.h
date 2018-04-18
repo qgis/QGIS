@@ -576,7 +576,7 @@ class CORE_EXPORT QgsGeometryUtils
                                      const QgsVector3D &Lb1, const QgsVector3D &Lb2,
                                      QgsVector3D &intersection  SIP_OUT );
 
-    /*
+    /**
      * A Z dimension is added to \a point if one of the point in the list
      * \a points is in 3D. Moreover, the Z value of \a point is updated with.
      *
