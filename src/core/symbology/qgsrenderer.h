@@ -462,6 +462,12 @@ class CORE_EXPORT QgsFeatureRenderer
   protected:
     QgsFeatureRenderer( const QString &type );
 
+    /**
+     * Render the \a feature with the \a symbol using \a context.
+     * Use \a layer to specify the symbol layer, \a selected to
+     * specify if it should be rendered as selected and \a drawVertexMarker
+     * to specify if vertex markers should be rendered.
+     */
     void renderFeatureWithSymbol( const QgsFeature &feature,
                                   QgsSymbol *symbol,
                                   QgsRenderContext &context,

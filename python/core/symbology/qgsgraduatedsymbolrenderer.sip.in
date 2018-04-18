@@ -442,7 +442,7 @@ Will return null if the functionality is disabled.
 
     QgsSymbol *symbolForValue( double value ) const;
 %Docstring
-attribute index (derived from attribute name in startRender)
+Get the symbol which is used to represent ``value``.
 %End
 
     QString legendKeyForValue( double value ) const;

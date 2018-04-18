@@ -482,6 +482,12 @@ implementation does not use subrenderers and will always return null.
                                   int layer,
                                   bool selected,
                                   bool drawVertexMarker );
+%Docstring
+Render the ``feature`` with the ``symbol`` using ``context``.
+Use ``layer`` to specify the symbol layer, ``selected`` to
+specify if it should be rendered as selected and ``drawVertexMarker``
+to specify if vertex markers should be rendered.
+%End
 
     void renderVertexMarker( QPointF pt, QgsRenderContext &context );
 %Docstring
