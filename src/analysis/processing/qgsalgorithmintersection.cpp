@@ -18,44 +18,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
 
-#include "qgsmultipoint.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultilinestring.h"
-
 ///@cond PRIVATE
-
-static QgsGeometry geometryCollectionToSingleGeometryType( const QgsGeometry &geom, QgsWkbTypes::GeometryType geomType )
-{
-  const QgsGeometryCollection *origGeom = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
-  if ( !origGeom )
-    return QgsGeometry();
-
-  QgsGeometryCollection *resGeom = nullptr;
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      resGeom = new QgsMultiPoint;
-      break;
-    case QgsWkbTypes::LineGeometry:
-      resGeom = new QgsMultiLineString;
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      resGeom = new QgsMultiPolygon;
-      break;
-    default:
-      break;
-  }
-  if ( !resGeom )
-    return QgsGeometry();
-
-  for ( int i = 0; i < origGeom->numGeometries(); ++i )
-  {
-    const QgsAbstractGeometry *g = origGeom->geometryN( i );
-    if ( QgsWkbTypes::geometryType( g->wkbType() ) == geomType )
-      resGeom->addGeometry( g->clone() );
-  }
-  return QgsGeometry( resGeom );
-}
 
 
 QString QgsIntersectionAlgorithm::name() const
@@ -78,6 +41,12 @@ QString QgsIntersectionAlgorithm::groupId() const
   return QStringLiteral( "vectoroverlay" );
 }
 
+QString QgsIntersectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. Features in the Overlay layer are assigned the attributes of the overlapping features from both the Input and Overlay layers." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Optionally, the rotation can occur around a preset point. If not set the rotation occurs around each feature's centroid." );
+}
 
 QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
 {
@@ -225,27 +194,25 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 
       if ( intGeom.isNull() )
       {
-        // TODO: not sure if this ever happens - if it does, that means GEOS failed badly and we should try to provide an error from it
-        throw QgsProcessingException( QObject::tr( "GEOS geoprocessing error: intersection failed." ) );
+        // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
+        throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), intGeom.lastError() ) );
       }
 
       // Intersection of geometries may give use also geometries we do not want in our results.
       // For example, two square polygons touching at the corner have a point as the intersection, but no area.
       // In other cases we may get a mixture of geometries in the output - we want to keep only the expected types.
+      if ( QgsWkbTypes::flatType( intGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+      {
+        // try to filter out irrelevant parts with different geometry type than what we want
+        intGeom.convertGeometryCollectionToSubclass( QgsWkbTypes::geometryType( geomType ) );
+        if ( intGeom.isEmpty() )
+          continue;
+      }
+
       if ( QgsWkbTypes::geometryType( intGeom.wkbType() ) != QgsWkbTypes::geometryType( geomType ) )
       {
-        if ( QgsWkbTypes::flatType( intGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
-        {
-          // try to filter out irrelevant parts with different geometry type than what we want
-          intGeom = geometryCollectionToSingleGeometryType( intGeom, QgsWkbTypes::geometryType( geomType ) );
-          if ( intGeom.isEmpty() )
-            continue;
-        }
-        else
-        {
-          // we can't make use of this resulting geometry -
-          continue;
-        }
+        // we can't make use of this resulting geometry
+        continue;
       }
 
       const QgsAttributes attrsB( featB.attributes() );

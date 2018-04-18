@@ -31,6 +31,7 @@ class QgsIntersectionAlgorithm : public QgsProcessingAlgorithm
     virtual QString displayName() const override;
     virtual QString group() const override;
     virtual QString groupId() const override;
+    QString shortHelpString() const override;
 
   protected:
     virtual QgsProcessingAlgorithm *createInstance() const override;

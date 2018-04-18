@@ -1328,6 +1328,17 @@ class CORE_EXPORT QgsGeometry
     bool convertToSingleType();
 
     /**
+     * Converts geometry collection to a the desired geometry type subclass (multi-point,
+     * multi-linestring or multi-polygon). Child geometries of different type are filtered out.
+     * Does nothing the geometry is not a geometry collection. May leave the geometry
+     * empty if none of the child geometries match the desired type.
+     *
+     * \returns true in case of success and false else
+     * \since QGIS 3.2
+     */
+    bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
+
+    /**
      * Modifies geometry to avoid intersections with the layers specified in project properties
      * \returns 0 in case of success,
      *         1 if geometry is not of polygon type,

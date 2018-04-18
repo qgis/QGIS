@@ -1315,6 +1315,43 @@ bool QgsGeometry::convertToSingleType()
   return true;
 }
 
+
+bool QgsGeometry::convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType )
+{
+  const QgsGeometryCollection *origGeom = qgsgeometry_cast<const QgsGeometryCollection *>( constGet() );
+  if ( !origGeom )
+    return false;
+
+  std::unique_ptr<QgsGeometryCollection> resGeom;
+  switch ( geomType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      resGeom = qgis::make_unique<QgsMultiPoint>();
+      break;
+    case QgsWkbTypes::LineGeometry:
+      resGeom = qgis::make_unique<QgsMultiLineString>();
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      resGeom = qgis::make_unique<QgsMultiPolygon>();
+      break;
+    default:
+      break;
+  }
+  if ( !resGeom )
+    return false;
+
+  for ( int i = 0; i < origGeom->numGeometries(); ++i )
+  {
+    const QgsAbstractGeometry *g = origGeom->geometryN( i );
+    if ( QgsWkbTypes::geometryType( g->wkbType() ) == geomType )
+      resGeom->addGeometry( g->clone() );
+  }
+
+  set( resGeom.release() );
+  return true;
+}
+
+
 QgsPointXY QgsGeometry::asPoint() const
 {
   if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::Point )
