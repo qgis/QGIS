@@ -46,14 +46,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'duplicatevectorlayer'
+        return 'myscript'
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr('Duplicate a vector layer')
+        return self.tr('My Script')
 
     def group(self):
         """

@@ -188,26 +188,14 @@ void QgsGpsPluginGui::enableRelevantControls()
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
   {
-    if ( !mFileWidget->filePath().isEmpty() )
-    {
-      pbnOK->setEnabled( false );
-      cbGPXWaypoints->setEnabled( false );
-      cbGPXRoutes->setEnabled( false );
-      cbGPXTracks->setEnabled( false );
-      cbGPXWaypoints->setChecked( false );
-      cbGPXRoutes->setChecked( false );
-      cbGPXTracks->setChecked( false );
-    }
-    else
-    {
-      pbnOK->setEnabled( true );
-      cbGPXWaypoints->setEnabled( true );
-      cbGPXWaypoints->setChecked( true );
-      cbGPXRoutes->setEnabled( true );
-      cbGPXTracks->setEnabled( true );
-      cbGPXRoutes->setChecked( true );
-      cbGPXTracks->setChecked( true );
-    }
+    bool enabled = !mFileWidget->filePath().isEmpty();
+    pbnOK->setEnabled( enabled );
+    cbGPXWaypoints->setEnabled( enabled );
+    cbGPXRoutes->setEnabled( enabled );
+    cbGPXTracks->setEnabled( enabled );
+    cbGPXWaypoints->setChecked( enabled );
+    cbGPXRoutes->setChecked( enabled );
+    cbGPXTracks->setChecked( enabled );
   }
 
   // import other file

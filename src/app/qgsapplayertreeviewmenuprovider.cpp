@@ -87,7 +87,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
       menu->addAction( actions->actionAddGroup( menu ) );
-      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      removeAction->setEnabled( removeActionEnabled() );
       menu->addSeparator();
 
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
@@ -171,7 +172,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // duplicate layer
       QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate Layer" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
-      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      removeAction->setEnabled( removeActionEnabled() );
 
       menu->addSeparator();
 
@@ -707,4 +709,16 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   {
     layer->emitStyleChanged();
   }
+}
+
+bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
+{
+  const QList<QgsLayerTreeLayer *> selectedLayers = mView->selectedLayerNodes();
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
+  {
+    if ( requiredLayers.contains( nodeLayer->layer() ) )
+      return false;
+  }
+  return true;
 }

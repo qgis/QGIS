@@ -778,6 +778,8 @@ bool QgsStyleManagerDialog::removeSymbol()
        QMessageBox::No ) )
     return false;
 
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     QString symbolName = index.data().toString();
@@ -797,6 +799,8 @@ bool QgsStyleManagerDialog::removeColorRamp()
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
+
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
   Q_FOREACH ( const QModelIndex &index, indexes )
   {

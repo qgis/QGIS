@@ -233,10 +233,10 @@ void QgsApplication::init( QString profileFolder )
         setPrefixPath( myPrefix, true );
 #endif
       }
-      else
-      {
-        setPrefixPath( prefixPath, true );
-      }
+    }
+    else
+    {
+      setPrefixPath( prefixPath, true );
     }
   }
 

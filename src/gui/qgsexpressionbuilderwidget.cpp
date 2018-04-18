@@ -115,8 +115,24 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->clear();
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
+  lblAutoSave->clear();
+
+  // Note: If you add a indicator here you should add it to clearErrors method if you need to clear it on text parse.
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionUnknown );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionWrongArgs );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionInvalidParams );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionNamedArgsError );
+#if defined(QSCINTILLA_VERSION) && QSCINTILLA_VERSION >= 0x20a00
+  txtExpressionString->indicatorDefine( QgsCodeEditor::TriangleIndicator, QgsExpression::ParserError::Unknown );
+#else
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::Unknown );
+#endif
+
+  // Set all the error markers as red. -1 is all.
+  txtExpressionString->setIndicatorForegroundColor( QColor( Qt::red ), -1 );
+  txtExpressionString->setIndicatorHoverForegroundColor( QColor( Qt::red ), -1 );
+  txtExpressionString->setIndicatorOutlineColor( QColor( Qt::red ), -1 );
 }
 
 
@@ -571,6 +587,7 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
 void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 {
   QString text = expressionText();
+  clearErrors();
 
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
@@ -585,6 +602,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     setEvalError( true );
     return;
   }
+
 
   QgsExpression exp( text );
 
@@ -614,6 +632,19 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     if ( exp.hasEvalError() )
       tooltip += QStringLiteral( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
 
+    int errorFirstLine = exp.parserError().firstLine - 1 ;
+    int errorFirstColumn = exp.parserError().firstColumn - 1;
+    int errorLastColumn = exp.parserError().lastColumn - 1;
+    int errorLastLine = exp.parserError().lastLine - 1;
+
+    // If we have a unknown error we just mark the point that hit the error for now
+    // until we can handle others more.
+    if ( exp.parserError().errorType == QgsExpression::ParserError::Unknown )
+    {
+      errorFirstLine = errorLastLine;
+      errorFirstColumn = errorLastColumn - 1;
+    }
+
     lblPreview->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
     lblPreview->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
     txtExpressionString->setToolTip( tooltip );
@@ -621,6 +652,10 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     emit expressionParsed( false );
     setParserError( exp.hasParserError() );
     setEvalError( exp.hasEvalError() );
+    txtExpressionString->fillIndicatorRange( errorFirstLine,
+        errorFirstColumn,
+        errorLastLine,
+        errorLastColumn, exp.parserError().errorType );
     return;
   }
   else
@@ -632,6 +667,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     setParserError( false );
     setEvalError( false );
   }
+
 }
 
 void QgsExpressionBuilderWidget::loadExpressionContext()
@@ -729,6 +765,17 @@ void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
 {
   QWidget::showEvent( e );
   txtExpressionString->setFocus();
+}
+
+void QgsExpressionBuilderWidget::clearErrors()
+{
+  int lastLine = txtExpressionString->lines() - 1;
+  // Note: -1 here doesn't seem to do the clear all like the other functions.  Will need to make this a bit smarter.
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, QgsExpression::ParserError::Unknown );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, QgsExpression::ParserError::FunctionInvalidParams );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, QgsExpression::ParserError::FunctionUnknown );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, QgsExpression::ParserError::FunctionWrongArgs );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, QgsExpression::ParserError::FunctionNamedArgsError );
 }
 
 void QgsExpressionBuilderWidget::txtSearchEdit_textChanged()

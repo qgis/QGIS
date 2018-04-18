@@ -32,6 +32,7 @@ echo "${bold}Travis environment variables${endbold}"
 echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
 echo "TRAVIS_EVENT_TYPE: $TRAVIS_EVENT_TYPE"
 echo "DOCKER_TAG: $DOCKER_TAG"
+echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
 echo "DOCKER_DEPS_PUSH: $DOCKER_DEPS_PUSH"
 echo "DOCKER_DEPS_IMAGE_REBUILD: $DOCKER_DEPS_IMAGE_REBUILD"
 echo "DOCKER_QGIS_IMAGE_BUILD_PUSH: $DOCKER_QGIS_IMAGE_BUILD_PUSH"
@@ -48,10 +49,10 @@ if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ false ]]; then
   docker-compose -f $DOCKER_COMPOSE config
 fi
 
-docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
   docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 else
+  docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
   docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
 fi
 echo "travis_fold:end:docker_build"

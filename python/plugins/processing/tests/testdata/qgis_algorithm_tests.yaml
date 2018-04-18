@@ -501,6 +501,22 @@ tests:
         name: expected/autoincrement_grouped.gml
         type: vector
 
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with sorting)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      SORT_ASCENDING: true
+      SORT_EXPRESSION: 99-id
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_sort.gml
+        type: vector
+
   - algorithm: native:dissolve
     name: Dissolve using field
     params:

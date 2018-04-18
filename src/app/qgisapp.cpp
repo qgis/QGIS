@@ -9298,7 +9298,9 @@ void QgisApp::removeLayer()
     return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const QList<QgsMapLayer *> selectedLayers = mLayerTreeView->selectedLayers();
+
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
@@ -9306,7 +9308,7 @@ void QgisApp::removeLayer()
   }
 
   QStringList activeTaskDescriptions;
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  for ( QgsMapLayer *layer : selectedLayers )
   {
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
@@ -9316,6 +9318,16 @@ void QgisApp::removeLayer()
         activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
       }
     }
+  }
+
+  // extra check for required layers
+  // In theory it should not be needed because the remove action should be disabled
+  // if there are required layers in the selection...
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsMapLayer *layer : selectedLayers )
+  {
+    if ( requiredLayers.contains( layer ) )
+      return;
   }
 
   if ( !activeTaskDescriptions.isEmpty() )
@@ -11573,7 +11585,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 
 void QgisApp::legendLayerSelectionChanged()
 {
-  QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
+  const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
@@ -11599,6 +11611,19 @@ void QgisApp::legendLayerSelectionChanged()
       mLegendExpressionFilterButton->setChecked( exprEnabled );
     }
   }
+
+  // remove action - check for required layers
+  bool removeEnabled = true;
+  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
+  {
+    if ( requiredLayers.contains( nodeLayer->layer() ) )
+    {
+      removeEnabled = false;
+      break;
+    }
+  }
+  mActionRemoveLayer->setEnabled( removeEnabled );
 }
 
 void QgisApp::layerEditStateChanged()

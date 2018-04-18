@@ -954,6 +954,26 @@ Sets the project's ``metadata`` store.
 .. seealso:: :py:func:`metadataChanged`
 %End
 
+    QSet<QgsMapLayer *> requiredLayers() const;
+%Docstring
+Returns a set of map layers that are required in the project and therefore they should not get
+removed from the project. The set of layers may be configured by users in project properties.
+and it is mainly a hint for the user interface to protect users from removing layers that important
+in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+
+.. versionadded:: 3.2
+%End
+
+    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+%Docstring
+Configures a set of map layers that are required in the project and therefore they should not get
+removed from the project. The set of layers may be configured by users in project properties.
+and it is mainly a hint for the user interface to protect users from removing layers that important
+in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+
+.. versionadded:: 3.2
+%End
+
   signals:
     void readProject( const QDomDocument & );
 %Docstring

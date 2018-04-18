@@ -20,8 +20,11 @@
 %option prefix="exp_"
  // this makes flex generate lexer with context + init/destroy functions
 %option reentrant
+%option yylineno
  // this makes Bison send yylex another argument to use instead of using the global variable yylval
 %option bison-bridge
+%option bison-locations
+
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
@@ -53,6 +56,19 @@
 #define U_OP(x) yylval->u_op = QgsExpressionNodeUnaryOperator::x
 #define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
 #define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
+
+#define YY_USER_ACTION \
+    yylloc->first_line = yylloc->last_line; \
+    yylloc->first_column = yylloc->last_column; \
+    for(int i = 0; yytext[i] != '\0'; i++) { \
+    if(yytext[i] == '\n') { \
+        yylloc->last_line++; \
+        yylloc->last_column = 0; \
+    } \
+    else { \
+        yylloc->last_column++; \
+    } \
+}
 
 static QString stripText(QString text)
 {
