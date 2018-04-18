@@ -1,5 +1,3 @@
-#pragma OPENCL EXTENSION cl_khr_fp64 : enable
-
 float calcFirstDer( float x11, float x21, float x31, float x12, float x22, float x32, float x13, float x23, float x33,
                        float mInputNodataValue, float mOutputNodataValue, float mZFactor, float mCellSize )
 {
@@ -79,7 +77,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                        ) {
 
   // Get the index of the current element
-  int i = get_global_id(0);
+  const int i = get_global_id(0);
 
   // Do the operation
   //return (( (x31 - x11) + 2 * (x32 - x12) + (x33 - x13) ) / (8 * mCellSizeX))
