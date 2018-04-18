@@ -19,8 +19,9 @@ import os
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, NULL
 
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
 
@@ -46,9 +47,41 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         assert(cls.poly_vl.isValid())
         cls.poly_provider = cls.poly_vl.dataProvider()
 
+        cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
+        cls.conn.setDatabaseName('10.0.0.2/orcl')
+        cls.conn.setUserName('QGIS')
+        cls.conn.setPassword('qgis')
+        assert cls.conn.open()
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
+    def execSQLCommand(self, sql, ignore_errors=False):
+        self.assertTrue(self.conn)
+        query = QSqlQuery(self.conn)
+        self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
+        query.finish()
+
+    # disabled: WIP
+    def disabled_getSource(self):
+        # create temporary table for edit tests
+        self.execSQLCommand('DROP TABLE "QGIS"."EDIT_DATA"', ignore_errors=True)
+        self.execSQLCommand("""CREATE TABLE QGIS.EDIT_DATA ("pk" INTEGER PRIMARY KEY, "cnt" INTEGER, "name" VARCHAR2(100), "name2" VARCHAR2(100), "num_char" VARCHAR2(100), GEOM SDO_GEOMETRY)""")
+        self.execSQLCommand("""INSERT INTO QGIS.EDIT_DATA ("pk", "cnt", "name", "name2", "num_char", GEOM)
+      SELECT 5, -200, NULL, 'NuLl', '5', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-71.123, 78.23, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 3,  300, 'Pear', 'PEaR', '3', NULL from dual
+  UNION ALL SELECT 1,  100, 'Orange', 'oranGe', '1', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-70.332, 66.33, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 2,  200, 'Apple', 'Apple', '2', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-68.2, 70.8, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 4,  400, 'Honey', 'Honey', '4', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-65.32, 78.3, NULL), NULL, NULL) from dual""")
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."EDIT_DATA" (GEOM) sql=',
+            'test', 'oracle')
+        return vl
+
+    # disabled: WIP
+    def disabled_getEditableLayer(self):
+        return self.getSource()
 
     def enableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', True)
@@ -102,6 +135,50 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     def testDefaultValue(self):
         self.assertEqual(self.provider.defaultValue(1), NULL)
         self.assertEqual(self.provider.defaultValue(2), "'qgis'")
+
+    def testPoints(self):
+        vl = QgsVectorLayer('%s table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=' %
+                            (self.dbconn), "testpoints", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(features[0].geometry().exportToWkt(), 'Point (1 2)')
+        self.assertEqual(features[1].geometry().exportToWkt(), 'PointZ (1 2 3)')
+        self.assertEqual(features[2].geometry().exportToWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
+        self.assertEqual(features[3].geometry().exportToWkt(), 'MultiPoint ((1 2),(3 4))')
+
+    def testCurves(self):
+        vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=LINESTRING sql=' %
+                            (self.dbconn), "testlines", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = {f['pk']: f for f in vl.getFeatures()}
+        self.assertTrue(compareWkt(features[1].geometry().exportToWkt(), 'LineString (1 2, 3 4, 5 6)', 0.00001), features[1].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[4].geometry().exportToWkt(), 'LineStringZ (1 2 3, 4 5 6, 7 8 9)', 0.00001), features[4].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[5].geometry().exportToWkt(), 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10))', 0.00001), features[5].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[6].geometry().exportToWkt(), 'MultiLineStringZ ((1 2 11, 3 4 -11),(5 6 9, 7 8 1, 9 10 -3))', 0.00001), features[6].geometry().exportToWkt())
+
+    def testSurfaces(self):
+        vl = QgsVectorLayer('%s table="QGIS"."POLY_DATA" (GEOM) srid=4326 type=POLYGON sql=' %
+                            (self.dbconn), "testpoly", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = {f['pk']: f for f in vl.getFeatures()}
+        self.assertTrue(compareWkt(features[1].geometry().exportToWkt(), 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2))', 0.00001), features[1].geometry().exportToWkt())
+        self.assertTrue(compareWkt(features[2].geometry().exportToWkt(), 'PolygonZ ((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3))', 0.00001), features[2].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[3].geometry().exportToWkt(), 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 5 6, 3 6, 3 4))', 0.00001), features[3].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[4].geometry().exportToWkt(), 'PolygonZ ((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3),(5 6 1, 8 9 -1, 8 6 2, 5 6 1))', 0.00001), features[4].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[5].geometry().exportToWkt(), 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2))', 0.00001), features[5].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[7].geometry().exportToWkt(), 'MultiPolygon (((1 2, 11 2, 11 22, 1 22, 1 2)),((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 5 6, 3 6, 3 4)))', 0.00001), features[7].geometry().exportToWkt())
+        self.assertTrue(
+            compareWkt(features[8].geometry().exportToWkt(), 'MultiPolygonZ (((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3)),((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3),(5 6 1, 8 9 -1, 8 6 2, 5 6 1)))', 0.00001), features[8].geometry().exportToWkt())
 
 if __name__ == '__main__':
     unittest.main()
