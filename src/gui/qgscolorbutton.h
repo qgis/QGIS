@@ -175,7 +175,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see showNoColor
      * \see setNoColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     void setShowNoColor( const bool showNoColorOption ) { mShowNoColorOption = showNoColorOption; }
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see setShowNoColor
      * \see noColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     bool showNoColor() const { return mShowNoColorOption; }
 
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see noColorString
      * \see setShowNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
 
@@ -231,7 +231,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see setNoColorString
      * \see showNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     QString noColorString() const { return mNoColorString; }
 
@@ -312,7 +312,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets color to a totally transparent color.
      * \note If the color button is not set to show an opacity channel in the color
-     * dialog (see setColorDialogOptions) then the color will not be changed.
+     * dialog  then the color will not be changed.
      * \see setToNull()
      */
     void setToNoColor();
