@@ -112,7 +112,6 @@ void QgsMapToolIdentifyAction::identifyOnGeometryChange( int x, int y, IdentifyM
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  QgsDebugMsg( QString( "!!!!!!DELETE ME %1, %2" ).arg( QString::number( x ) ).arg( QString::number( y ) ) );
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( x, y, mode, AllLayers, mSelectionHandler->getSelectionMode() );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
@@ -148,8 +147,6 @@ void QgsMapToolIdentifyAction::identifyOnGeometryChange( int x, int y, IdentifyM
 
 void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
 {
-  setClickContextScope( toMapCoordinates( e->pos() ) );
-
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
   bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
@@ -158,8 +155,6 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
   identifyMenu()->setResultsIfExternalAction( false );
-
-  identifyOnGeometryChange( e->x(), e->y(), mode );
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -261,10 +256,7 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
-  // TODO @vsklencar set x, y according geometry;
-  //int x = mSelectionHandler->getRadiusCenter().x();
-  //int y = mSelectionHandler->getRadiusCenter().y();
-  int x = 0;
-  int y = 0;
-  this->identifyOnGeometryChange( x, y, DefaultQgsSetting );
+  QgsPointXY mapPoint = this->toMapCoordinates(mSelectionHandler->getInitDragPos());
+  setClickContextScope(mapPoint );
+  this->identifyOnGeometryChange( mapPoint.x(), mapPoint.y(), DefaultQgsSetting );
 }

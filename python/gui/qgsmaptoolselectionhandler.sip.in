@@ -200,22 +200,35 @@ mSelectionActive getter
 %End
 
     QgsRubberBand *getSelectionRubberBand();
+%Docstring
+mSelectionRubberBand getter
+%End
     void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
+%Docstring
+mSelectionRubberBand setter
+%End
 
     bool getJustFinishedSelection() const;
+%Docstring
+mJustFinishedSelection getter
+%End
     void setJustFinishedSelection( bool justFinishedSelection );
+%Docstring
+mJustFinishedSelection setter
+%End
 
     QgsPointXY getRadiusCenter() const;
+%Docstring
+mRadiusCenter getter
+%End
 
+    QPoint getInitDragPos() const;
 
-  signals:
+signals:
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 %Docstring
 emited when mSelectedGeometry has been changed
 %End
-
-  signals:
-    void selectionGeometryChanged();
 
 };
 

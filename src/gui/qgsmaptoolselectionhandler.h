@@ -174,16 +174,22 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! mSelectionActive getter
     bool getSelectionActive();
 
+    //! mSelectionRubberBand getter
     QgsRubberBand *getSelectionRubberBand();
+    //! mSelectionRubberBand setter
     void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
 
+    //! mJustFinishedSelection getter
     bool getJustFinishedSelection() const;
+    //! mJustFinishedSelection setter
     void setJustFinishedSelection( bool justFinishedSelection );
 
+    //! mRadiusCenter getter
     QgsPointXY getRadiusCenter() const;
 
+    QPoint getInitDragPos() const;
 
-  signals:
+signals:
     //! emited when mSelectedGeometry has been changed
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
@@ -199,9 +205,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     //! cancel selecting (between two click events)
     void cancel();
-
-  signals:
-    void selectionGeometryChanged();
 
   private:
 
