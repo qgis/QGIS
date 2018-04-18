@@ -54,7 +54,7 @@ struct expression_parser_context
   // lexer context
   yyscan_t flex_scanner;
 
-  // varible where the parser error will be stored
+  // variable where the parser error will be stored
   QString errorMsg;
   QgsExpression::ParserError parserError;
   // root node of the expression
