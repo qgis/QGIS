@@ -227,7 +227,7 @@ QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()
   return mRenderer->capabilities();
 }
 
-QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -236,7 +236,7 @@ QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context )
   return mRenderer->symbols( context );
 }
 
-QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -245,14 +245,14 @@ QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( QgsFeature &feature, QgsR
   return mRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbol *QgsPointDistanceRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbol *QgsPointDistanceRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return nullptr;
   return mRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -261,21 +261,21 @@ QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( QgsFeature &feature, 
   return mRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return QgsSymbolList();
   return mRenderer->originalSymbolsForFeature( feat, context );
 }
 
-QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( QgsFeature &feat, QgsRenderContext &context )
+QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return QSet< QString >() << QString();
   return mRenderer->legendKeysForFeature( feat, context );
 }
 
-bool QgsPointDistanceRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsPointDistanceRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {

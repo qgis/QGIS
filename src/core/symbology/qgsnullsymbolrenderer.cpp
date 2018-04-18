@@ -25,12 +25,12 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
-QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
 
-QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
@@ -70,7 +70,7 @@ void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
   }
 }
 
-bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature &, QgsRenderContext & )
+bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature &, QgsRenderContext & ) const
 {
   //return true for every feature - so they are still selectable
   return true;
@@ -92,7 +92,7 @@ QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
   return r;
 }
 
-QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & )
+QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const
 {
   return QgsSymbolList();
 }

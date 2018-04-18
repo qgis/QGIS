@@ -177,13 +177,13 @@ QgsSymbol *QgsCategorizedSymbolRenderer::skipRender()
   return nullptr;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value )
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value ) const
 {
   bool found = false;
   return symbolForValue( value, found );
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, bool &foundMatchingSymbol )
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, bool &foundMatchingSymbol ) const
 {
   foundMatchingSymbol = false;
 
@@ -207,7 +207,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   return *it;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
@@ -230,7 +230,7 @@ QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature &feature, Qgs
   return value;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -547,7 +547,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
   }
 }
 
-QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -789,7 +789,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   QString value = valueForFeature( feature, context ).toString();
   int i = 0;

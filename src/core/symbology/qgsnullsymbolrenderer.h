@@ -34,17 +34,17 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     QgsNullSymbolRenderer();
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
 
     bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     void stopRender( QgsRenderContext &context ) override;
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QString dump() const override;
     QgsFeatureRenderer *clone() const override SIP_FACTORY;
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
      * Creates a null renderer from XML element.

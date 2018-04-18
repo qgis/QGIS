@@ -349,13 +349,13 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   return rendererElem;
 }
 
-QgsSymbol *QgsHeatmapRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext & )
+QgsSymbol *QgsHeatmapRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext & ) const
 {
   Q_UNUSED( feature );
   return nullptr;
 }
 
-QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & )
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const
 {
   return QgsSymbolList();
 }

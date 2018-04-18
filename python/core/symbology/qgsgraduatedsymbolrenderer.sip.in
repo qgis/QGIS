@@ -120,9 +120,9 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     ~QgsGraduatedSymbolRenderer();
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -137,7 +137,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
     QString classAttribute() const;
@@ -292,7 +292,7 @@ create renderer from XML element
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
 
     QgsSymbol *sourceSymbol();
@@ -440,7 +440,7 @@ Will return null if the functionality is disabled.
 
 
 
-    QgsSymbol *symbolForValue( double value );
+    QgsSymbol *symbolForValue( double value ) const;
 %Docstring
 attribute index (derived from attribute name in startRender)
 %End

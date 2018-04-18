@@ -77,12 +77,12 @@ QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryTy
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
 
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   return symbolForFeature( feature, context );
 }
 
-QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
@@ -137,6 +137,12 @@ void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature &feature, QgsSymbol
 QString QgsFeatureRenderer::dump() const
 {
   return QStringLiteral( "UNKNOWN RENDERER\n" );
+}
+
+QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
+{
+  Q_UNUSED( context );
+  return QgsSymbolList();
 }
 
 QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
@@ -332,7 +338,7 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   return nullptr != symbolForFeature( feat, context );
 }
@@ -365,7 +371,7 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolyg
   }
 }
 
-QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
   QgsSymbol *s = symbolForFeature( feat, context );
@@ -373,7 +379,13 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRender
   return lst;
 }
 
-QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
+{
+  Q_UNUSED( extent );
+  Q_UNUSED( context );
+}
+
+QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
   QgsSymbol *s = originalSymbolForFeature( feat, context );
@@ -410,6 +422,16 @@ bool QgsFeatureRenderer::orderByEnabled() const
 void QgsFeatureRenderer::setOrderByEnabled( bool enabled )
 {
   mOrderByEnabled = enabled;
+}
+
+void QgsFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
+{
+  delete subRenderer;
+}
+
+const QgsFeatureRenderer *QgsFeatureRenderer::embeddedRenderer() const
+{
+  return nullptr;
 }
 
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field )

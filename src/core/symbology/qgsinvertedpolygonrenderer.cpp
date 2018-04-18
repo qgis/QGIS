@@ -417,7 +417,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
   return rendererElem;
 }
 
-QgsSymbol *QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
   {
@@ -426,14 +426,14 @@ QgsSymbol *QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature &feature, Qg
   return mSubRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbol *QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbol *QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
     return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
   {
@@ -442,14 +442,14 @@ QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature &feature
   return mSubRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
     return QgsSymbolList();
   return mSubRenderer->originalSymbolsForFeature( feat, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
   {
@@ -485,7 +485,7 @@ QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems() const
   return mSubRenderer->legendSymbolItems();
 }
 
-bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
   {

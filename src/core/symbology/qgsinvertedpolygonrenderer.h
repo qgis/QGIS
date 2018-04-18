@@ -85,27 +85,27 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
 
     //! Creates a renderer out of an XML, for loading
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;

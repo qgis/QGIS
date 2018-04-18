@@ -474,7 +474,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     ~QgsRuleBasedRenderer() override;
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
 
     bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool legendSymbolItemsCheckable() const override;
@@ -504,10 +504,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
     QString dump() const override;
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
+    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
+    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////

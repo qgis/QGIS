@@ -37,9 +37,9 @@ Create a new 2.5D renderer from XML
     virtual QgsFeatureRenderer *clone() const /Factory/;
 
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
     QColor roofColor() const;

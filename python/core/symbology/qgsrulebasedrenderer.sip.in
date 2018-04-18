@@ -447,7 +447,7 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
 
     ~QgsRuleBasedRenderer();
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
 return symbol for current feature. Should not be used individually: there could be more symbols for a feature
@@ -479,7 +479,7 @@ return symbol for current feature. Should not be used individually: there could 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
@@ -497,13 +497,13 @@ return symbol for current feature. Should not be used individually: there could 
 
     virtual QString dump() const;
 
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const;
 
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
 
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const;
 
-    virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
 

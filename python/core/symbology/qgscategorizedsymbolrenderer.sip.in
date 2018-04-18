@@ -83,9 +83,9 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -102,7 +102,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QString filter( const QgsFields &fields = QgsFields() );
 
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
     void updateSymbols( QgsSymbol *sym );
@@ -163,7 +163,7 @@ create renderer from XML element
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
 
     QgsSymbol *sourceSymbol();
@@ -273,7 +273,7 @@ hashtable for faster access to symbols
 .. deprecated:: No longer used, will be removed in QGIS 4.0
 %End
 
- QgsSymbol *symbolForValue( const QVariant &value ) /Deprecated/;
+ QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 
@@ -281,7 +281,7 @@ Returns the matching symbol corresponding to an attribute ``value``.
 %End
 
 
-    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol /Out/ ) /PyName=symbolForValue2/;
+    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol /Out/ ) const /PyName=symbolForValue2/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 

@@ -33,7 +33,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
 
     virtual void stopRender( QgsRenderContext &context );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
 
@@ -41,7 +41,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
 
    symbolForFeature2 in Python bindings
 %End
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 %Docstring
 

@@ -296,7 +296,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
   mRanges.clear(); // should delete all the symbols
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value )
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 {
   Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
@@ -330,7 +330,7 @@ QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
   return QString();
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
@@ -351,7 +351,7 @@ QVariant QgsGraduatedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRe
   return value;
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -513,7 +513,7 @@ void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element,
   }
 }
 
-QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -1190,7 +1190,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 

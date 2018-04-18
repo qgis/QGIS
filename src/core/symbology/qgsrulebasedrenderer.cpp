@@ -838,7 +838,7 @@ QgsRuleBasedRenderer::~QgsRuleBasedRenderer()
 }
 
 
-QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & ) const
 {
   // not used at all
   return nullptr;
@@ -970,7 +970,7 @@ void QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, const
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
-QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context ) const
 {
   return mRootRule->symbols( context );
 }
@@ -1182,22 +1182,22 @@ QString QgsRuleBasedRenderer::dump() const
   return msg;
 }
 
-bool QgsRuleBasedRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsRuleBasedRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   return mRootRule->willRenderFeature( feat, &context );
 }
 
-QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   return mRootRule->symbolsForFeature( feat, &context );
 }
 
-QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) const
 {
   return mRootRule->symbolsForFeature( feat, &context );
 }
 
-QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) const
 {
   return mRootRule->legendKeysForFeature( feature, &context );
 }
