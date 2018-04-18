@@ -220,6 +220,10 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     return 6;
   }
 
+  // Prepare context
+  cl::Context ctx = QgsOpenClUtils::context();
+  cl::Context::setDefault( ctx );
+
   //keep only three scanlines in memory at a time, make room for initial and final nodata
   QgsOpenClUtils::CPLAllocator<float> scanLine1( xSize + 2 );
   QgsOpenClUtils::CPLAllocator<float> scanLine2( xSize + 2 );

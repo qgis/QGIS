@@ -34,6 +34,7 @@ class TestQgsOpenClUtils: public QObject
     void TestDisable();
     void TestAvailable();
     void testRunProgram();
+    void testContext();
 
   private:
 
@@ -76,6 +77,9 @@ void TestQgsOpenClUtils::testRunProgram()
 
   QVERIFY( err == 0 );
 
+  cl::Context ctx = QgsOpenClUtils::context();
+  cl::Context::setDefault( ctx );
+
   std::vector<float> a_vec = {1, 10, 100};
   std::vector<float> b_vec = {1, 10, 100};
   std::vector<float> c_vec = {-1, -1, -1};
@@ -85,11 +89,9 @@ void TestQgsOpenClUtils::testRunProgram()
 
   try
   {
-    cl::Program program( source( ), true );
-
     // This also works:
-    //cl::Program program( source( ) );
-    //program.build("-cl-std=CL1.1");
+    cl::Program program( source( ) );
+    program.build( "-cl-std=CL1.1" );
 
     auto kernel =
       cl::KernelFunctor <
@@ -108,7 +110,7 @@ void TestQgsOpenClUtils::testRunProgram()
   }
   catch ( cl::BuildError e )
   {
-    qDebug() << "OPENCL Error: " << e.err() << e.what();
+    qDebug() << "OPENCL Build Error: " << QgsOpenClUtils::errorText( e.err() ) << e.what();
     cl::BuildLogType build_logs = e.getBuildLog();
     QString build_log;
     if ( build_logs.size() > 0 )
@@ -125,9 +127,13 @@ void TestQgsOpenClUtils::testRunProgram()
   cl::copy( c_buf, c_vec.begin(), c_vec.end() );
   for ( size_t i = 0; i < c_vec.size(); ++i )
   {
-    QCOMPARE( a_vec[i] + b_vec[i], c_vec[i] );
-    qDebug() << c_vec[i];
+    QCOMPARE( c_vec[i], a_vec[i] + b_vec[i] );
   }
+}
+
+void TestQgsOpenClUtils::testContext()
+{
+  QVERIFY( QgsOpenClUtils::context()() != nullptr );
 }
 
 

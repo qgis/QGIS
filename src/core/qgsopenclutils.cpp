@@ -26,54 +26,78 @@
 QLatin1String QgsOpenClUtils::SETTINGS_KEY = QLatin1Literal( "OpenClEnabled" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
-
+cl::Platform QgsOpenClUtils::sPlatform = cl::Platform();
+cl::Device QgsOpenClUtils::sDevice = cl::Device();
 
 void QgsOpenClUtils::init()
 {
   static bool initialized = false;
   if ( ! initialized )
   {
-    std::vector<cl::Platform> platforms;
-    cl::Platform::get( &platforms );
-    cl::Platform plat;
-    cl::Device dev;
-    for ( auto &p : platforms )
+    try
     {
-      std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-      QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
-      if ( platver.find( "OpenCL 1." ) != std::string::npos )
+      std::vector<cl::Platform> platforms;
+      cl::Platform::get( &platforms );
+      cl::Platform plat;
+      cl::Device dev;
+      for ( auto &p : platforms )
       {
-        std::vector<cl::Device> devices;
-        // Check for a GPU device
-        p.getDevices( CL_DEVICE_TYPE_GPU, &devices );
-        if ( devices.size() > 0 )
+        std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+        QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+        if ( platver.find( "OpenCL 1." ) != std::string::npos )
         {
-          // Got one!
-          plat = p;
-          dev = devices[0];
-          break;
+          std::vector<cl::Device> devices;
+          // Check for a GPU device
+          try
+          {
+            p.getDevices( CL_DEVICE_TYPE_GPU, &devices );
+          }
+          catch ( cl::Error &e )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                              .arg( errorText( e.err() ),
+                                    QString::fromStdString( e.what() ),
+                                    QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+          }
+          if ( devices.size() > 0 )
+          {
+            // Got one!
+            plat = p;
+            dev = devices[0];
+            break;
+          }
         }
       }
-    }
-    if ( plat() == 0 )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "No OpenCL 1.x platform with GPU found." ), LOGMESSAGE_TAG, Qgis::Warning );
-      sAvailable = false;
-    }
-    else
-    {
-      cl::Platform newP = cl::Platform::setDefault( plat );
-      if ( newP != plat )
+      if ( plat() == 0 )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ), LOGMESSAGE_TAG, Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "No OpenCL 1.x platform with GPU found." ), LOGMESSAGE_TAG, Qgis::Warning );
         sAvailable = false;
       }
       else
       {
-        cl::Device::setDefault( dev );
-        QgsDebugMsg( QStringLiteral( "Found OpenCL device %1" ).arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ) );
-        sAvailable = true;
+        cl::Platform newP = cl::Platform::setDefault( plat );
+        if ( newP != plat )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ), LOGMESSAGE_TAG, Qgis::Warning );
+          sAvailable = false;
+        }
+        else
+        {
+          cl::Device::setDefault( dev );
+          QgsDebugMsgLevel( QStringLiteral( "Found OpenCL device %1" )
+                            .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ), 2 );
+          sAvailable = true;
+          sDevice = dev;
+          sPlatform = plat;
+        }
       }
+    }
+    catch ( cl::Error &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
+                                 .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+                                 LOGMESSAGE_TAG, Qgis::Critical );
+      sAvailable = false;
     }
     initialized = true;
   }
@@ -218,5 +242,17 @@ QString QgsOpenClUtils::errorText( const int errorCode )
     case -1100: return QStringLiteral( "CL_VA_API_MEDIA_SURFACE_ALREADY_ACQUIRED_INTEL" );
     case -1101: return QStringLiteral( "CL_VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL" );
     default: return QStringLiteral( "CL_UNKNOWN_ERROR" );
+  }
+}
+
+cl::Context QgsOpenClUtils::context()
+{
+  if ( available() && sPlatform() && sDevice() )
+  {
+    return cl::Context( sDevice );
+  }
+  else
+  {
+    return cl::Context();
   }
 }

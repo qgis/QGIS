@@ -47,6 +47,8 @@ class CORE_EXPORT QgsOpenClUtils
     static QLatin1String LOGMESSAGE_TAG;
     static QString errorText( const int errorCode );
 
+    static cl::Context context();
+
     /**
      * Tiny smart-pointer wrapper around CPLMalloc and CPLFree: this is needed because
      * OpenCL C++ API may throw exceptions
@@ -107,8 +109,9 @@ class CORE_EXPORT QgsOpenClUtils
     QgsOpenClUtils();
     static void init();
     static bool sAvailable;
+    static cl::Device sDevice;
+    static cl::Platform sPlatform;
     static QLatin1String SETTINGS_KEY;
-
 };
 
 
