@@ -25,6 +25,10 @@
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
+#include <QApplication>
+#include <QClipboard>
+#include <QFileDialog>
+
 
 ///@cond NOT_STABLE
 
@@ -108,6 +112,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
   connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
 
+  connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::saveLog );
+  connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::copyLogToClipboard );
+  connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::clearLog );
+
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
@@ -163,6 +171,27 @@ QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
 QVariantMap QgsProcessingAlgorithmDialogBase::getParameterValues() const
 {
   return QVariantMap();
+}
+
+void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const LogFormat format )
+{
+  QFile logFile( path );
+  if ( !logFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    return;
+  }
+  QTextStream fout( &logFile );
+
+  switch ( format )
+  {
+    case FormatPlainText:
+      fout << txtLog->toPlainText();
+      break;
+
+    case FormatHtml:
+      fout << txtLog->toHtml();
+      break;
+  }
 }
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
@@ -367,6 +396,49 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
     sb->setValue( sb->maximum() );
   } );
   return dialog;
+}
+
+void QgsProcessingAlgorithmDialogBase::clearLog()
+{
+  txtLog->clear();
+}
+
+void QgsProcessingAlgorithmDialogBase::saveLog()
+{
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QDir::homePath() ).toString();
+
+  QString filter;
+  const QString txtExt = tr( "Text files" ) + QStringLiteral( " (*.txt *.TXT)" );
+  const QString htmlExt = tr( "HTML files" ) + QStringLiteral( " (*.html *.HTML)" );
+
+  QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
+  if ( path.isEmpty() )
+  {
+    return;
+  }
+
+  settings.setValue( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QFileInfo( path ).path() );
+
+  LogFormat format = FormatPlainText;
+  if ( filter == htmlExt )
+  {
+    format = FormatHtml;
+  }
+  saveLogToFile( path, format );
+}
+
+void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
+{
+  QMimeData *m = new QMimeData();
+  m->setText( txtLog->toPlainText() );
+  m->setHtml( txtLog->toHtml() );
+  QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+  cb->setMimeData( m, QClipboard::Selection );
+#endif
+  cb->setMimeData( m, QClipboard::Clipboard );
 }
 
 void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
