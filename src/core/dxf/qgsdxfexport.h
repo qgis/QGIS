@@ -403,7 +403,10 @@ class CORE_EXPORT QgsDxfExport
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
     /** Returns scale factor for conversion to map units
-        @param mapUnitsPerPixel Map units per pixel*/
+     * @param scaleDenominator the map scale denominator
+     * @param symbolUnits the symbol output units
+     * @param mapUnits the map units
+     * @param mapUnitsPerPixel Map units per pixel*/
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits, double mapUnitsPerPixel = 1.0 );
     /** Clips value to scale minimum/maximum
         @param value the value to clip
