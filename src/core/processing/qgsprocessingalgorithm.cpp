@@ -97,7 +97,7 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
 
   std::function< bool( const QgsProcessingAlgorithm::LogicalParameterGroup &group, State &state ) > checkGroup;
 
-  checkGroup = [&parameters, &checkGroup, message, &messageStack]( const QgsProcessingAlgorithm::LogicalParameterGroup & group, State & state )->bool
+  checkGroup = [&parameters, &checkGroup, &messageStack]( const QgsProcessingAlgorithm::LogicalParameterGroup & group, State & state )->bool
   {
     int countSpecified = 0;
     int countMaybeSpecified = 0;
