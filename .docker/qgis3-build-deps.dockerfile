@@ -66,8 +66,6 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
-    python3-sip \
-    python3-sip-dev \
     python3-termcolor \
     python3-yaml \
     qt3d5-dev \
@@ -99,6 +97,13 @@ RUN  apt-get update \
     termcolor \
   && apt-get autoremove -y python3-pip \
   && apt-get clean
+
+WORKDIR /root
+RUN curl -s -S -O https://www.riverbankcomputing.com/hg/sip/archive/tip.tar.gz \
+ && tar xzf tip.tar.gz \
+ && bash -c "mv $(ls sip-*) sip-419"
+WORKDIR /root/sip-419
+RUN python3 configure.py && make && make install
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
