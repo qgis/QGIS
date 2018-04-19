@@ -61,6 +61,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QTransform mTransform;
     QPen mPen;
     QBrush mBrush;
+    /** Opacity*/
     double mOpacity;
     QString mLayer;
     QPointF mShift;
@@ -86,7 +87,9 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     static double power( double a, int b );
     static int faculty( int n );
 
+    /** Returns current pen color*/
     QColor penColor() const;
+    /** Returns current brush color*/
     QColor brushColor() const;
 };
 
