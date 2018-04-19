@@ -43,6 +43,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -197,8 +198,8 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
             self.verticalLayout.addWidget(self.datatypeCombo)
-        elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, QgsProcessingParameterNumber)):
+        elif (self.paramType == parameters.PARAMETER_NUMBER or self.paramType == parameters.PARAMETER_DISTANCE or
+              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
             self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
             self.minTextBox = QLineEdit()
             self.verticalLayout.addWidget(self.minTextBox)
@@ -360,7 +361,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name, description,
                 self.datatypeCombo.currentData())
         elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, QgsProcessingParameterNumber)):
+              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
             try:
                 self.param = QgsProcessingParameterNumber(name, description, QgsProcessingParameterNumber.Double,
                                                           self.defaultTextBox.text())

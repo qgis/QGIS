@@ -65,6 +65,7 @@ from qgis.core import (QgsRasterLayer,
 from PyQt5.QtCore import QCoreApplication
 
 PARAMETER_NUMBER = 'number'
+PARAMETER_DISTANCE = 'distance'
 PARAMETER_RASTER = 'raster'
 PARAMETER_TABLE = 'vector'
 PARAMETER_VECTOR = 'source'

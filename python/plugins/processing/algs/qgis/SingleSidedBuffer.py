@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
                        QgsProcessingException)
@@ -62,9 +63,9 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
                             'Bevel']
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance'), parentParameterName='INPUT',
+                                                         defaultValue=10.0))
         self.addParameter(QgsProcessingParameterEnum(
             self.SIDE,
             self.tr('Side'),

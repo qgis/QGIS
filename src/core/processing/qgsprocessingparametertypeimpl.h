@@ -653,6 +653,36 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
 };
 
 /**
+ * A distance parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParameterType
+{
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDistance( name );
+    }
+
+    virtual QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing a distance measure." );
+    }
+
+    virtual QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Distance" );
+    }
+
+    virtual QString id() const override
+    {
+      return QStringLiteral( "distance" );
+    }
+};
+
+/**
  * A raster band parameter for Processing algorithms.
  *
  * \since QGIS 3.2
