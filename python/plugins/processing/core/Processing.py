@@ -43,7 +43,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputMapLayer,
-                       QgsProcessingOutputMultipleLayers)
+                       QgsProcessingOutputMultipleLayers,
+                       QgsProcessingFeedback)
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
