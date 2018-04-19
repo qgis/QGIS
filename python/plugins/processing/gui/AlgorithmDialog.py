@@ -200,7 +200,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
 
             self.setInfo(
-                self.tr('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
+                QCoreApplication.translate('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
 
             feedback.pushInfo(self.tr('Input parameters:'))
             display_params = []
