@@ -180,6 +180,19 @@ Returns a string containing the available protocol drivers
 
     void registerGuis( QWidget *widget );
 
+    void registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );
+%Docstring
+ register a new vector data provider from its ``providerMetadata``
+
+:param providerMetadata: QgsProviderMetadata instance describing the new provider
+
+.. note::
+
+   ownership of the QgsProviderMetadata instance is transferred to the registry
+
+.. versionadded:: 3.2
+%End
+
 
 
   private:

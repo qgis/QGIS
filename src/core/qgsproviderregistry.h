@@ -180,6 +180,14 @@ class CORE_EXPORT QgsProviderRegistry
     void registerGuis( QWidget *widget );
 
     /**
+     * \brief register a new vector data provider from its \a providerMetadata
+     * \param providerMetadata QgsProviderMetadata instance describing the new provider
+     * \note ownership of the QgsProviderMetadata instance is transferred to the registry
+     * \since QGIS 3.2
+     */
+    void registerProvider( QgsProviderMetadata *providerMetadata SIP_TRANSFER );
+
+    /**
      * Open the given vector data source
      *
      * Similar to open(QString const &), except that the user specifies a data provider

@@ -525,6 +525,12 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
   }
 }
 
+void QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )
+{
+  if ( providerMetadata )
+    mProviders[ providerMetadata->key() ] = providerMetadata;
+}
+
 QString QgsProviderRegistry::fileVectorFilters() const
 {
   return mVectorFileFilters;
