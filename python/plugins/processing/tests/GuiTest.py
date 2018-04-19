@@ -115,11 +115,17 @@ class WrappersTest(unittest.TestCase):
     def testSource(self):
         self.checkConstructWrapper(QgsProcessingParameterFeatureSource('test'), FeatureSourceWidgetWrapper)
 
-    def testSource(self):
-        self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
-
     def testMapLayer(self):
         self.checkConstructWrapper(QgsProcessingParameterMapLayer('test'), MapLayerWidgetWrapper)
+
+    def testDistance(self):
+        self.checkConstructWrapper(QgsProcessingParameterDistance('test'), DistanceWidgetWrapper)
+
+    def testNumber(self):
+        self.checkConstructWrapper(QgsProcessingParameterNumber('test'), NumberWidgetWrapper)
+
+    def testBand(self):
+        self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
 
 
 if __name__ == '__main__':

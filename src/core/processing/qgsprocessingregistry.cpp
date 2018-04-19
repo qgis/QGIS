@@ -41,6 +41,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeMultipleLayers() );
   addParameterType( new QgsProcessingParameterTypeFeatureSource() );
   addParameterType( new QgsProcessingParameterTypeNumber() );
+  addParameterType( new QgsProcessingParameterTypeDistance() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

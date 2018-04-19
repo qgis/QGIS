@@ -130,6 +130,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterMultipleLayers;
     else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
       sipType = sipType_QgsProcessingParameterNumber;
+    else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
+      sipType = sipType_QgsProcessingParameterDistance;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
@@ -1222,6 +1224,64 @@ Sets the acceptable data ``type`` for the parameter.
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+
+};
+
+class QgsProcessingParameterDistance : QgsProcessingParameterNumber
+{
+%Docstring
+A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+to determine what units the distance values are in.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterDistance( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        const QString &parentParameterName = QString(),
+        bool optional = false,
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
+%Docstring
+Constructor for QgsProcessingParameterDistance.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterDistance *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentParameterName() const;
+%Docstring
+Returns the name of the parent parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentParameterName`
+%End
+
+    void setParentParameterName( const QString &parentParameterName );
+%Docstring
+Sets the name of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentParameterName`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
