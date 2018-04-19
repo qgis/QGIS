@@ -1715,7 +1715,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1732,7 +1732,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1748,7 +1748,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       METHOD: '0'
       ROWS: 300
@@ -1768,7 +1768,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       METHOD: '1'
       ROWS: 300
