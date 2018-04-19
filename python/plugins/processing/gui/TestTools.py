@@ -225,7 +225,7 @@ def createTest(text):
             params[param.name()] = token
         elif isinstance(param, QgsProcessingParameterBoolean):
             params[param.name()] = token
-        elif isinstance(param, (QgsProcessingParameterNumber,QgsProcessingParameterDistance)):
+        elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance)):
             if param.dataType() == QgsProcessingParameterNumber.Integer:
                 params[param.name()] = int(token)
             else:
