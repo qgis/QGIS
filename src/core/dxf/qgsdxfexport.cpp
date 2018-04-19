@@ -4053,6 +4053,7 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
   {
     return mapUnitsPerPixel;
   }
+  return 1.0;
 }
 
 void QgsDxfExport::clipValueToMapUnitScale( double& value, const QgsMapUnitScale& scale, double pixelToMMFactor ) const
