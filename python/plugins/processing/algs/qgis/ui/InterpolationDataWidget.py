@@ -57,6 +57,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
 
+        self.cmbLayers.layerChanged.connect(self.layerChanged)
         self.cmbLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
@@ -80,8 +81,7 @@ class InterpolationDataWidget(BASE, WIDGET):
             return
         self.layersTree.invisibleRootItem().removeChild(item)
 
-    @pyqtSlot(QgsMapLayer)
-    def on_cmbLayers_layerChanged(self, layer):
+    def layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
         self.chkUseZCoordinate.setChecked(False)
 
