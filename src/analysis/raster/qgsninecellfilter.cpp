@@ -217,10 +217,20 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
+<<<<<<< 16a49cddaa18cb6d0b12335fe24c68cda183e1c0
   cl::CommandQueue queue( ctx );
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
   QgsOpenClUtils::CPLAllocator<float> scanLine( xSize + 2 );
+=======
+  cl::Context::setDefault( ctx );
+  cl::CommandQueue queue( ctx );
+
+  //keep only three scanlines in memory at a time, make room for initial and final nodata
+  QgsOpenClUtils::CPLAllocator<float> scanLine1( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> scanLine2( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> scanLine3( xSize + 2 );
+>>>>>>> Use OpenCL command queue
   QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
 
   // Cast to float (because double just crashes on some GPUs)
@@ -289,7 +299,18 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       {
         QgsDebugMsg( "Raster IO Error" );
       }
+<<<<<<< 16a49cddaa18cb6d0b12335fe24c68cda183e1c0
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
+=======
+    }
+    else
+    {
+      //normally fetch only scanLine3 and release scanline 1 if we move forward one row
+      scanLine1.reset( scanLine2.release() );
+      scanLine2.reset( scanLine3.release() );
+      scanLine3.reset( xSize + 2 );
+    }
+>>>>>>> Use OpenCL command queue
 
       // Read scanline3: second real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
@@ -320,6 +341,23 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
     }
+<<<<<<< 16a49cddaa18cb6d0b12335fe24c68cda183e1c0
+=======
+    // Set first and last extra colums to nodata
+    scanLine1[0] = scanLine1[xSize + 1] = mInputNodataValue;
+    scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
+    scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
+
+    // TODO: There is room for further optimization here: instead of replacing the buffers
+    //       we could just replace just hthe new one (the top row) and switch the order
+    //       of buffer arguments in the kernell call.
+    errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine1.get() );
+    errorCode = cl::enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine2.get() );
+    errorCode = cl::enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0,
+                                        sizeof( float ) * ( xSize + 2 ), scanLine3.get() );
+>>>>>>> Use OpenCL command queue
 
     kernel( cl::EnqueueArgs(
               queue,
