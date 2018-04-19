@@ -211,6 +211,23 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     line = line.strip('\n').strip()
                     if line.startswith('Hardcoded'):
                         self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                    elif line.startswith('#logical_group='):
+                        # group
+                        line = line[15:]
+                        group = QgsProcessingAlgorithm.LogicalParameterGroup()
+                        if line.lower().startswith('atleastonerequired'):
+                            group.type = QgsProcessingAlgorithm.AtLeastOneRequired
+                        elif line.lower().startswith('allrequired'):
+                            group.type = QgsProcessingAlgorithm.AllRequired
+                        elif line.lower().startswith('mutuallyexclusiveoptional'):
+                            group.type = QgsProcessingAlgorithm.MutuallyExclusiveOptional
+                        elif line.lower().startswith('mutuallyexclusiverequired'):
+                            group.type = QgsProcessingAlgorithm.MutuallyExclusiveRequired
+                        line = ''.join(line.split(':')[1:])
+                        parts = line.split('|')
+                        group.parameters = set(parts)
+                        self.addLogicalParameterGroup(group)
+                        continue
                     parameter = getParameterFromString(line)
                     if parameter is not None:
                         self.params.append(parameter)
