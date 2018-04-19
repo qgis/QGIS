@@ -9,6 +9,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsmaptoolselectutils.h"
+%End
+
 namespace QgsMapToolSelectUtils
 {
 
@@ -23,6 +27,7 @@ must be in terms of the canvas coordinate system.
 :param doContains: features will only be selected if fully contained within
 the selection rubber band (otherwise intersection is enough).
 :param singleSelect: only selects the closest feature to the selectGeometry.
+:param messageBar: The instance is used when an warning/error message is reised.
 
 :return: list of features which match search geometry and parameters
 
@@ -30,11 +35,11 @@ the selection rubber band (otherwise intersection is enough).
 %End
 
   void setSelectedFeatures( QgsMapCanvas *canvas,
-                            const QgsGeometry &selectGeometry,
-                            QgsMessageBar *messageBar,
-                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
-                            bool doContains = true,
-                            bool singleSelect = false );
+                                       const QgsGeometry &selectGeometry,
+                                       QgsMessageBar *messageBar,
+                                       QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                                       bool doContains = true,
+                                       bool singleSelect = false );
 %Docstring
 Selects the features within currently selected layer.
 
@@ -42,6 +47,7 @@ Selects the features within currently selected layer.
 for any required geometry transformations
 :param selectGeometry: the geometry to select the layers features. This geometry
 must be in terms of the canvas coordinate system.
+:param messageBar: The instance is used when an warning/error message is reised.
 :param selectBehavior: behavior of select (ie replace selection, add to selection)
 :param doContains: features will only be selected if fully contained within
 the selection rubber band (otherwise intersection is enough).
@@ -77,6 +83,7 @@ for any required geometry transformations
 must be in terms of the canvas coordinate system.
 :param modifiers: Keyboard modifiers are used to determine the current selection
 operations (add, subtract, contains)
+:param messageBar: The instance is used when an warning/error message is reised.
 
 .. seealso:: :py:func:`selectMultipleFeatures`
 %End
@@ -86,6 +93,7 @@ operations (add, subtract, contains)
 Get the current selected canvas map layer. Returns None if it is not a vector layer
 
 :param canvas: The map canvas used for getting the current layer
+:param messageBar: The instance is used when an warning/error message is reised.
 
 :return: QgsVectorLayer The layer
 %End
@@ -107,7 +115,7 @@ Sets a QgsRubberband to rectangle in map units using a rectangle defined in devi
 :param selectRect: The input rectangle in device coords
 :param rubberBand: The rubberband that will be set in map units using the input rectangle
 %End
-}
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

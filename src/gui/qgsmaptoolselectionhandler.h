@@ -43,6 +43,10 @@ class QgsRubberBand;
 class QgsSnapIndicator;
 class QgisInterface;
 
+#ifndef SIP_RUN
+
+/// @cond private
+
 /**
  * \ingroup gui
  * \class QgsDistanceWidget
@@ -88,6 +92,9 @@ class QgsDistanceWidget : public QWidget
     QgsDoubleSpinBox *mDistanceSpinBox = nullptr;
 };
 
+/// @endcond
+
+#endif
 
 
 /**

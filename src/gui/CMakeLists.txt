@@ -473,7 +473,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
   qgsmaptoolselectionhandler.h
-  qgsmaptoolselectutils.h
   qgsmaptoolzoom.h
   qgsmaplayerconfigwidget.h
   qgsmenuheader.h
@@ -750,6 +749,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayerconfigwidgetfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
+  qgsmaptoolselectutils.h
   qgsrubberband.h
   qgssnapindicator.h
   qgssqlcomposerdialog.h

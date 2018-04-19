@@ -29,6 +29,12 @@ class QgsGeometry;
 class QgsRubberBand;
 class QgsMessageBar;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsmaptoolselectutils.h"
+% End
+#endif
+
 /**
   Namespace containing methods which are useful for the select maptool widgets
  */
@@ -64,11 +70,11 @@ namespace QgsMapToolSelectUtils
     \since QGIS 2.16
   */
   GUI_EXPORT void setSelectedFeatures( QgsMapCanvas *canvas,
-                            const QgsGeometry &selectGeometry,
-                            QgsMessageBar *messageBar,
-                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
-                            bool doContains = true,
-                            bool singleSelect = false );
+                                       const QgsGeometry &selectGeometry,
+                                       QgsMessageBar *messageBar,
+                                       QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                                       bool doContains = true,
+                                       bool singleSelect = false );
 
   /**
     Selects multiple matching features from within currently selected layer.
@@ -120,6 +126,6 @@ namespace QgsMapToolSelectUtils
   \param rubberBand The rubberband that will be set in map units using the input rectangle
   */
   GUI_EXPORT void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
-}
+};
 
 #endif
