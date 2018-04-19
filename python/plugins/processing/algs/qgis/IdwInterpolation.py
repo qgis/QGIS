@@ -76,10 +76,10 @@ class ParameterInterpolationData(QgsProcessingParameterDefinition):
     def dataToString(data):
         s = ''
         for c in data:
-            s += '{}::~:: {}::~:: {:d}::~:: {:d};'.format(c[0],
-                                                          c[1],
-                                                          c[2],
-                                                          c[3])
+            s += '{}::~::{}::~::{:d}::~::{:d};'.format(c[0],
+                                                       c[1],
+                                                       c[2],
+                                                       c[3])
         return s[:-1]
 
 
