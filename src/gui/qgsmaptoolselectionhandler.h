@@ -50,7 +50,7 @@ class QgisInterface;
  *
  * \since QGIS 3.2
  */
-class GUI_EXPORT QgsDistanceWidget : public QWidget
+class QgsDistanceWidget : public QWidget
 {
     Q_OBJECT
 
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode getSelectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! desctructor
     ~QgsMapToolSelectionHandler() override;
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! Mouse release event handling for simple selection
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
     //! Mouse press event handling for simple selection
-    void selectFeaturesPressEvent( QgsMapMouseEvent *e );
+    void selectFeaturesPressEvent();
 
     //! Mouse move event handling for polygon selection
     void selectPolygonMoveEvent( QgsMapMouseEvent *e );
@@ -164,33 +164,33 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     void setIface( QgisInterface *iface );
 
     //! mSelectedGeometry getter
-    QgsGeometry getSelectedGeometry();
+    QgsGeometry selectedGeometry();
     //! mSelectedGeometry setter
     void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     //! mSelectionMode getter
-    SelectionMode getSelectionMode();
+    SelectionMode selectionMode();
     //! mSelectionMode setter
     void setSelectionMode( SelectionMode mode );
 
     //! mSelectionActive getter
-    bool getSelectionActive();
+    bool selectionActive();
 
     //! mSelectionRubberBand getter
-    QgsRubberBand *getSelectionRubberBand();
+    QgsRubberBand *selectionRubberBand();
     //! mSelectionRubberBand setter
     void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
 
     //! mJustFinishedSelection getter
-    bool getJustFinishedSelection() const;
+    bool justFinishedSelection() const;
     //! mJustFinishedSelection setter
     void setJustFinishedSelection( bool justFinishedSelection );
 
     //! mRadiusCenter getter
-    QgsPointXY getRadiusCenter() const;
+    QgsPointXY radiusCenter() const;
 
     //! mInitDragPos getter
-    QPoint getInitDragPos() const;
+    QPoint initDragPos() const;
 
   signals:
     //! emitted when mSelectedGeometry has been changed

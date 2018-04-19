@@ -51,11 +51,11 @@
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
-  , mLastMapUnitsPerPixel( -1.0 )
-  , mCoordinatePrecision( 6 )
-  , mSelectionHandler( new QgsMapToolSelectionHandler( mCanvas ) )
 {
+   mIdentifyMenu = new QgsIdentifyMenu( mCanvas );
+   mLastMapUnitsPerPixel = -1.0;
+   mCoordinatePrecision = 6;
+   mSelectionHandler = new QgsMapToolSelectionHandler( mCanvas );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
 
@@ -185,7 +185,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    if ( mSelectionHandler->getSelectedGeometry().isNull() )
+    if ( mSelectionHandler->selectedGeometry().isNull() )
     {
       mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
     }
@@ -212,7 +212,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  QgsGeometry selectionGeom = mSelectionHandler->getSelectedGeometry();;
+  QgsGeometry selectionGeom = mSelectionHandler->selectedGeometry();;
   QgsPointXY point;
   bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry || selectionGeom.isNull();
   if ( isSingleClick )

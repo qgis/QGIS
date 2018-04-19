@@ -79,5 +79,5 @@ void QgsMapToolSelectRadius::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolSelectRadius::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
-  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->getSelectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }
