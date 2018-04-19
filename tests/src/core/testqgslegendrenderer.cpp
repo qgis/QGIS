@@ -809,6 +809,10 @@ void TestQgsLegendRenderer::testTextOnSymbol()
   content["0"] = "Rd";
   content["2"] = "Bl";
   legend->setTextOnSymbolContent( content );
+  QgsTextFormat textFormat;
+  textFormat.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Roman" ) ) );
+  textFormat.setSize( 9 );
+  legend->setTextOnSymbolTextFormat( textFormat );
   vl->setLegend( legend );
 
   QgsLayerTree *root = new QgsLayerTree();
