@@ -41,7 +41,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! openClProgramBaseName( ).isEmpty() )
   {
     // Load the program sources
-    QString source( QgsOpenClUtils::sourceFromPath( QStringLiteral( "/home/ale/dev/QGIS/src/analysis/raster/%1.cl" ).arg( openClProgramBaseName( ) ) ) );
+    QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName( ) ) );
     if ( ! source.isEmpty() )
     {
       try
@@ -49,19 +49,6 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
         QgsMessageLog::logMessage( QObject::tr( "Running OpenCL program: %1" )
                                    .arg( openClProgramBaseName( ) ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Info );
         return processRasterGPU( source, feedback );
-      }
-      catch ( cl::BuildError &e )
-      {
-        cl::BuildLogType build_logs = e.getBuildLog();
-        QString build_log;
-        if ( build_logs.size() > 0 )
-          build_log = QString::fromStdString( build_logs[0].second );
-        else
-          build_log = QObject::tr( "Build logs not available!" );
-        QString err = QObject::tr( "Error building OpenCL program: %1" )
-                      .arg( build_log );
-        QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
-        throw QgsProcessingException( err );
       }
       catch ( cl::Error &e )
       {
@@ -220,18 +207,15 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     return 6;
   }
 
-  // Prepare context
+  // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
   cl::Context::setDefault( ctx );
+  cl::CommandQueue queue( ctx );
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
   QgsOpenClUtils::CPLAllocator<float> scanLine1( xSize + 2 );
   QgsOpenClUtils::CPLAllocator<float> scanLine2( xSize + 2 );
   QgsOpenClUtils::CPLAllocator<float> scanLine3( xSize + 2 );
-  //float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
-  //float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
-
-  //float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
   QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
 
   cl_int errorCode = 0;
@@ -255,9 +239,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
 
   // Create a program from the kernel source
-  cl::Program program( source.toStdString() );
-  // Use CL 1.1 for compatibility with older libs
-  program.build( "-cl-std=CL1.1" );
+  cl::Program program( QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
   auto kernel = cl::KernelFunctor <
@@ -297,9 +279,6 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     else
     {
       //normally fetch only scanLine3 and release scanline 1 if we move forward one row
-      //scanLine1 = scanLine2;
-      //scanLine2 = scanLine3;
-      //scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
       scanLine1.reset( scanLine2.release() );
       scanLine2.reset( scanLine3.release() );
       scanLine3.reset( xSize + 2 );
@@ -325,6 +304,9 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
 
+    // TODO: There is room for further optimization here: instead of replacing the buffers
+    //       we could just replace just hthe new one (the top row) and switch the order
+    //       of buffer arguments in the kernell call.
     errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
                                         sizeof( float ) * ( xSize + 2 ), scanLine1.get() );
     errorCode = cl::enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0,
@@ -333,6 +315,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
                                         sizeof( float ) * ( xSize + 2 ), scanLine3.get() );
 
     kernel( cl::EnqueueArgs(
+              queue,
               cl::NDRange( xSize )
             ),
             scanLine1Buffer,

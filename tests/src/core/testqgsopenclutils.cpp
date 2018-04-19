@@ -17,6 +17,9 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <QTemporaryFile>
+#include <qgsapplication.h>
+
 //header for class being tested
 #include <qgsopenclutils.h>
 
@@ -29,14 +32,21 @@ class TestQgsOpenClUtils: public QObject
     //void testRunMakeProgram();
 
   private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void TestEnable();
     void TestDisable();
     void TestAvailable();
     void testMakeRunProgram();
+    void testProgramSource();
     void testContext();
 
   private:
+
+    void _testMakeRunProgram();
 
     cl::Program buildProgram( const cl::Context &context, const QString &source )
     {
@@ -59,6 +69,36 @@ class TestQgsOpenClUtils: public QObject
     }
 };
 
+
+void TestQgsOpenClUtils::init()
+{
+}
+
+void TestQgsOpenClUtils::cleanup()
+{
+}
+
+void TestQgsOpenClUtils::initTestCase()
+{
+  // Runs once before any tests are run
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
+
+
+void TestQgsOpenClUtils::cleanupTestCase()
+{
+  // Runs once after all tests are run
+  QgsApplication::exitQgis();
+}
+
+
 void TestQgsOpenClUtils::TestEnable()
 {
   QgsOpenClUtils::setEnabled( true );
@@ -79,6 +119,13 @@ void TestQgsOpenClUtils::TestAvailable()
 
 void TestQgsOpenClUtils::testMakeRunProgram()
 {
+  // Run twice to check for valid command queue in the second call
+  _testMakeRunProgram();
+  _testMakeRunProgram();
+}
+
+void TestQgsOpenClUtils::_testMakeRunProgram()
+{
 
   cl_int err = 0;
 
@@ -86,6 +133,7 @@ void TestQgsOpenClUtils::testMakeRunProgram()
 
   cl::Context ctx = QgsOpenClUtils::context();
   cl::Context::setDefault( ctx );
+  cl::CommandQueue queue( ctx );
 
   std::vector<float> a_vec = {1, 10, 100};
   std::vector<float> b_vec = {1, 10, 100};
@@ -104,6 +152,7 @@ void TestQgsOpenClUtils::testMakeRunProgram()
     > ( program, "vectorAdd" );
 
   kernel( cl::EnqueueArgs(
+            queue,
             cl::NDRange( 3 )
           ),
           a_buf,
@@ -116,6 +165,17 @@ void TestQgsOpenClUtils::testMakeRunProgram()
   {
     QCOMPARE( c_vec[i], a_vec[i] + b_vec[i] );
   }
+}
+
+void TestQgsOpenClUtils::testProgramSource()
+{
+  QgsOpenClUtils::setSourcePath( QDir::tempPath() );
+  QTemporaryFile tmpFile( QDir::tempPath() + "/XXXXXX.cl" );
+  tmpFile.open( );
+  tmpFile.write( QByteArray::fromStdString( source( ) ) );
+  tmpFile.flush();
+  QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );
+  QVERIFY( ! QgsOpenClUtils::sourceFromBaseName( baseName ).isEmpty() );
 }
 
 void TestQgsOpenClUtils::testContext()

@@ -32,7 +32,12 @@
 /**
  * \ingroup core
  * \class QgsOpenClUtils
- * \brief The QgsOpenClUtils class is responsible for common OpenCL operations
+ * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
+ * - enable/disable opencl
+ * - check opencl device availability and automatically choose the first GPU (TODO: let the user choose & override!)
+ * - creating contexts
+ * - loading program sources from standard locations
+ * - build programs and log errors
  * \since QGIS 3.4
  * \note not available in Python bindings
  */
@@ -42,8 +47,8 @@ class CORE_EXPORT QgsOpenClUtils
 
     enum ExceptionBehavior
     {
-      Catch,
-      Throw
+      Catch,  // Write errors in the message log and silently fail
+      Throw   // Write errors in the message log and re-throw exceptions
     };
 
     static bool enabled();
@@ -51,13 +56,16 @@ class CORE_EXPORT QgsOpenClUtils
     static void setEnabled( bool enabled );
     static QString buildLog( cl::BuildError &e );
     static QString sourceFromPath( const QString &path );
+    static QString sourceFromBaseName( const QString &baseName );
     static QLatin1String LOGMESSAGE_TAG;
     static QString errorText( const int errorCode );
     static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
     static cl::Context context();
+    static QString sourcePath();
+    static void setSourcePath( const QString &value );
 
     /**
-     * Tiny smart-pointer wrapper around CPLMalloc and CPLFree: this is needed because
+     * Tiny smart-pointer-like wrapper around CPLMalloc and CPLFree: this is needed because
      * OpenCL C++ API may throw exceptions
      */
     template <typename T>
@@ -112,6 +120,7 @@ class CORE_EXPORT QgsOpenClUtils
         T *mMem = nullptr;
     };
 
+
   private:
     QgsOpenClUtils();
     static void init();
@@ -119,6 +128,7 @@ class CORE_EXPORT QgsOpenClUtils
     static cl::Device sDevice;
     static cl::Platform sPlatform;
     static QLatin1String SETTINGS_KEY;
+    static QString sSourcePath;
 };
 
 

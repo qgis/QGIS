@@ -28,6 +28,7 @@ QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
 cl::Platform QgsOpenClUtils::sPlatform = cl::Platform();
 cl::Device QgsOpenClUtils::sDevice = cl::Device();
+QString QgsOpenClUtils::sSourcePath = QString();
 
 void QgsOpenClUtils::init()
 {
@@ -103,6 +104,16 @@ void QgsOpenClUtils::init()
   }
 }
 
+QString QgsOpenClUtils::sourcePath()
+{
+  return sSourcePath.isEmpty() ? QStringLiteral( "./" ) : sSourcePath;
+}
+
+void QgsOpenClUtils::setSourcePath( const QString &value )
+{
+  sSourcePath = value;
+}
+
 
 bool QgsOpenClUtils::enabled()
 {
@@ -137,6 +148,12 @@ QString QgsOpenClUtils::sourceFromPath( const QString &path )
     QgsMessageLog::logMessage( QObject::tr( "Could not load OpenCL program from path %1." ).arg( path ), LOGMESSAGE_TAG, Qgis::Warning );
   }
   return source_str;
+}
+
+QString QgsOpenClUtils::sourceFromBaseName( const QString &baseName )
+{
+  QString path = QStringLiteral( "%1/%2.cl" ).arg( sourcePath(), baseName );
+  return sourceFromPath( path );
 }
 
 QString QgsOpenClUtils::buildLog( cl::BuildError &e )
@@ -263,15 +280,14 @@ cl::Program QgsOpenClUtils::buildProgram( const cl::Context &context, const QStr
   try
   {
     program = cl::Program( context, source.toStdString( ) );
-    program.build( "-cl-std=CL1.1" );
+    // OpenCL 1.1 for compatibility with older hardware
+    // TODO: make this configurable
+    program.build( QStringLiteral( "-cl-std=CL1.1 -I%1" ).arg( sourcePath() ).toStdString().c_str() );
   }
   catch ( cl::BuildError &e )
   {
-    cl::BuildLogType build_logs = e.getBuildLog();
-    QString build_log;
-    if ( build_logs.size() > 0 )
-      build_log = QString::fromStdString( build_logs[0].second );
-    else
+    QString build_log( buildLog( e ) );
+    if ( build_log.isEmpty() )
       build_log = QObject::tr( "Build logs not available!" );
     QString err = QObject::tr( "Error building OpenCL program: %1" )
                   .arg( build_log );

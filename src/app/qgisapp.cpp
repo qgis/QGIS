@@ -96,6 +96,9 @@
 
 #include "qgsgui.h"
 #include "qgsnative.h"
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -1109,6 +1112,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // Setup QgsNetworkAccessManager (this needs to happen after authentication, for proxy settings)
   namSetup();
+
+
+#ifdef HAVE_OPENCL
+  // Setup OpenCL source path
+  // TODO: cmd line switch and env var
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+#endif
+
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQlrDataItemProvider() );
   registerCustomDropHandler( new QgsQlrDropHandler() );
