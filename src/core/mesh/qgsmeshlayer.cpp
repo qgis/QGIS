@@ -14,19 +14,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <cstddef>
+
 #include <QUuid>
 
-#include "qgsmeshlayer.h"
-#include "qgis.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshlayerrenderer.h"
-#include "qgstriangularmesh.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsmeshmemorydataprovider.h"
 #include "qgsfillsymbollayer.h"
-#include "qgsproviderregistry.h"
 #include "qgslogger.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerrenderer.h"
+#include "qgsproviderregistry.h"
+#include "qgstriangularmesh.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -96,6 +95,14 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
+QgsMesh *QgsMeshLayer::nativeMesh() SIP_SKIP {return mNativeMesh;}
+
+QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP {return mTriangularMesh;}
+
+QgsSymbol *QgsMeshLayer::nativeMeshSymbol() {return mNativeMeshSymbol;}
+
+QgsSymbol *QgsMeshLayer::triangularMeshSymbol() {return mTriangularMeshSymbol;}
+
 void QgsMeshLayer::toggleTriangularMeshRendering( bool toggle )
 {
   if ( toggle && mTriangularMeshSymbol )
@@ -127,13 +134,13 @@ void QgsMeshLayer::fillNativeMesh()
     return;
 
   mNativeMesh->vertices.resize( dataProvider()->vertexCount() );
-  for ( size_t i = 0; i < dataProvider()->vertexCount(); ++i )
+  for ( int i = 0; i < dataProvider()->vertexCount(); ++i )
   {
     mNativeMesh->vertices[i] = dataProvider()->vertex( i );
   }
 
   mNativeMesh->faces.resize( dataProvider()->faceCount() );
-  for ( size_t i = 0; i < dataProvider()->faceCount(); ++i )
+  for ( int i = 0; i < dataProvider()->faceCount(); ++i )
   {
     mNativeMesh->faces[i] = dataProvider()->face( i );
   }

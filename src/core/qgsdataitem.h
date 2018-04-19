@@ -499,6 +499,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
+    //! Return icon for mesh layer type
     static QIcon iconMesh();
 
     //! \returns the layer name

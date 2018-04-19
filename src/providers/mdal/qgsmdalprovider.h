@@ -16,20 +16,12 @@
 #ifndef QGSMDALPROVIDER_H
 #define QGSGDALPROVIDER_H
 
-#include <cstddef>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdataitem.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsrectangle.h"
-
 #include <QString>
-#include <QStringList>
-#include <QDomElement>
-#include <QMap>
-#include <QVector>
 
 #include <mdal.h>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmeshdataprovider.h"
 
 class QMutex;
 class QgsCoordinateTransform;
@@ -58,10 +50,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QString description() const override;
     QgsCoordinateReferenceSystem crs() const override;
 
-    size_t vertexCount() const override;
-    size_t faceCount() const override;
-    QgsMeshVertex vertex( size_t index ) const override;
-    QgsMeshFace face( size_t index ) const override;
+    int vertexCount() const override;
+    int faceCount() const override;
+    QgsMeshVertex vertex( int index ) const override;
+    QgsMeshFace face( int index ) const override;
 
   private:
     MeshH mMeshH;

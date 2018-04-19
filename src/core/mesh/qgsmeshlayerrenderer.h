@@ -18,23 +18,15 @@
 #ifndef QGSMESHLAYERRENDERER_H
 #define QGSMESHLAYERRENDERER_H
 
-class QgsRenderContext;
 class QgsMeshLayer;
-class QgsMeshVectorFieldRenderer;
-class QgsSingleSymbolRenderer;
-class QgsTriangularMesh;
 class QgsSymbol;
 
 #define SIP_NO_FILE
 
-#include <QList>
-#include <QPainter>
-
 #include "qgis.h"
-#include "qgsfeedback.h"
 
 #include "qgsmaplayerrenderer.h"
-#include "qgsmeshdataprovider.h"
+#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 
 /**
@@ -47,9 +39,10 @@ class QgsSymbol;
 class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 {
   public:
+    //! Ctor
     QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context );
-    ~QgsMeshLayerRenderer() override;
 
+    ~QgsMeshLayerRenderer() override;
     bool render() override;
 
   private:

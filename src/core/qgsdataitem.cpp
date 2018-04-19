@@ -76,7 +76,6 @@ QIcon QgsLayerItem::iconRaster()
 
 QIcon QgsLayerItem::iconMesh()
 {
-  // TODO new icon!
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
 }
 

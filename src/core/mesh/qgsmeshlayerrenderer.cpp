@@ -17,18 +17,14 @@
 
 #include "qgsmeshlayerrenderer.h"
 
-#include "qgsrenderer.h"
-#include "qgsrendercontext.h"
-#include "qgsmeshlayer.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsfield.h"
-#include "qgstriangularmesh.h"
+#include "qgslogger.h"
+#include "qgsmeshlayer.h"
 #include "qgspointxy.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
 
-#include <QPicture>
 
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context )

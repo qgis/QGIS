@@ -22,8 +22,6 @@
 
 ///@cond PRIVATE
 
-#include <cstddef>
-
 #include <QString>
 
 #include "qgis_core.h"
@@ -72,10 +70,10 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QString description() const override;
     QgsCoordinateReferenceSystem crs() const override;
 
-    size_t vertexCount() const override;
-    size_t faceCount() const override;
-    QgsMeshVertex vertex( size_t index ) const override;
-    QgsMeshFace face( size_t index ) const override;
+    int vertexCount() const override;
+    int faceCount() const override;
+    QgsMeshVertex vertex( int index ) const override;
+    QgsMeshFace face( int index ) const override;
 
     //! Returns the memory provider key
     static QString providerKey();

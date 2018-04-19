@@ -230,7 +230,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
       }
       else if ( dropUri.layerType == QStringLiteral( "mesh" ) )
       {
-        // unsuported
+        // unsupported
         hasError = true;
         continue;
       }

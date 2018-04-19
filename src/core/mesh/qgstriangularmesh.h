@@ -21,14 +21,10 @@
 
 #define SIP_NO_FILE
 
-#include <QList>
-#include <QPainter>
 #include <QVector>
 
-#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
-#include "qgscoordinatereferencesystem.h"
 
 class QgsRenderContext;
 

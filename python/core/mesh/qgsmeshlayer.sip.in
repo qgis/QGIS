@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsMeshLayer : QgsMapLayer
 {
 %Docstring
@@ -90,29 +88,17 @@ parameters used by the data provider as url query items.
     virtual QgsMeshDataProvider *dataProvider();
 
 %Docstring
-Return data provider
+QgsMeshLayer cannot be copied.
 %End
-
-
     virtual QgsMeshLayer *clone() const /Factory/;
-
-%Docstring
-Returns a new instance equivalent to this one. A new provider is
-created for the same data source and renderers are cloned too.
-
-:return: a new layer instance
-%End
 
     virtual QgsRectangle extent() const;
 
-%Docstring
-Returns the extent of the layer.
-%End
-
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
-%Docstring
-Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-%End
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
+
 
     QString providerType() const;
 %Docstring
@@ -138,30 +124,7 @@ Returns a line symbol used for rendering of triangular (derived) mesh.
 Toggle rendering of triangular (derived) mesh. Off by default
 %End
 
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-%Docstring
-Read the symbology for the current layer from the Dom node supplied.
-
-:param node: node that will contain the symbology definition for this layer.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: reading context (used for transform from relative to absolute paths)
-
-:return: true in case of success.
-%End
-
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-%Docstring
-Write the symbology for the layer into the docment provided.
-
-:param node: the node that will have the style element added to it.
-:param doc: the document that will have the QDomNode added.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: writing context (used for transform from absolute to relative paths)
-
-:return: true in case of success.
-%End
-
-  private:                       // Private methods
+  private: // Private methods
     QgsMeshLayer( const QgsMeshLayer &rhs );
 };
 

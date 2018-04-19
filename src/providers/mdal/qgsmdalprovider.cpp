@@ -16,10 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmdalprovider.h"
-#include <QFile>
-#include <QJsonDocument>
-#include <limits>
-#include "mdal.h"
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mdal" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
@@ -57,23 +53,23 @@ QgsMdalProvider::~QgsMdalProvider()
     MDAL_CloseMesh( mMeshH );
 }
 
-size_t QgsMdalProvider::vertexCount() const
+int QgsMdalProvider::vertexCount() const
 {
   if ( mMeshH )
     return MDAL_M_vertexCount( mMeshH );
   else
-    return ( size_t ) 0;
+    return 0;
 }
 
-size_t QgsMdalProvider::faceCount() const
+int QgsMdalProvider::faceCount() const
 {
   if ( mMeshH )
     return MDAL_M_faceCount( mMeshH );
   else
-    return ( size_t ) 0;
+    return 0;
 }
 
-QgsMeshVertex QgsMdalProvider::vertex( size_t index ) const
+QgsMeshVertex QgsMdalProvider::vertex( int index ) const
 {
   Q_ASSERT( index < vertexCount() );
   double x = MDAL_M_vertexXCoordinatesAt( mMeshH, index );
@@ -82,12 +78,12 @@ QgsMeshVertex QgsMdalProvider::vertex( size_t index ) const
   return vertex;
 }
 
-QgsMeshFace QgsMdalProvider::face( size_t index ) const
+QgsMeshFace QgsMdalProvider::face( int index ) const
 {
   Q_ASSERT( index < faceCount() );
   QgsMeshFace face;
   int n_face_vertices = MDAL_M_faceVerticesCountAt( mMeshH, index );
-  for ( size_t j = 0; j < n_face_vertices; ++j )
+  for ( int j = 0; j < n_face_vertices; ++j )
   {
     int vertex_index = MDAL_M_faceVerticesIndexAt( mMeshH, index, j );
     face.push_back( vertex_index );

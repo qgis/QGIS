@@ -27,7 +27,7 @@ QgsRectangle QgsMeshDataProvider::extent() const
 {
   QgsRectangle rec;
   rec.setMinimal();
-  for ( size_t i = 0; i < vertexCount(); ++i )
+  for ( int i = 0; i < vertexCount(); ++i )
   {
     QgsMeshVertex v = vertex( i );
     rec.setXMinimum( std::min( rec.xMinimum(), v.x() ) );

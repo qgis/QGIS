@@ -18,7 +18,7 @@ namespace MDAL
   {
     public:
       Loader2dm( const std::string &meshFile );
-      Mesh *load( Status *status );
+      Mesh *load( MDAL_Status *status );
 
     private:
       std::string mMeshFile;
