@@ -99,6 +99,7 @@ class MultipleInputDialog(BASE, WIDGET):
             item.setData(value, Qt.UserRole)
             item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
+            item.setDropEnabled(False)
             self.model.appendRow(item)
 
         # add extra options (e.g. manually added layers)
@@ -110,6 +111,7 @@ class MultipleInputDialog(BASE, WIDGET):
             item.setData(item.text(), Qt.UserRole)
             item.setCheckState(Qt.Checked)
             item.setCheckable(True)
+            item.setDropEnabled(False)
             self.model.appendRow(item)
 
         self.lstLayers.setModel(self.model)
@@ -179,4 +181,5 @@ class MultipleInputDialog(BASE, WIDGET):
                 item.setData(filename, Qt.UserRole)
                 item.setCheckState(Qt.Checked)
                 item.setCheckable(True)
+                item.setDropEnabled(False)
                 self.model.appendRow(item)
