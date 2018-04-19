@@ -19,6 +19,8 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
@@ -32,14 +34,21 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mLegendTreeView = new QTreeView;
   mLegendTreeView->setRootIsDecorated( false );
 
-  mTextOnSymbolFormatButton = new QPushButton( tr( "Set Text Format..." ) );
+  mTextOnSymbolFormatButton = new QPushButton( tr( "Set Text Format…" ) );
   connect( mTextOnSymbolFormatButton, &QPushButton::clicked, this, &QgsVectorLayerLegendWidget::openTextFormatWidget );
+
+  mTextOnSymbolFromExpressionButton = new QPushButton( tr( "Set Labels from Expression…" ) );
+  connect( mTextOnSymbolFromExpressionButton, &QPushButton::clicked, this, &QgsVectorLayerLegendWidget::labelsFromExpression );
 
   mTextOnSymbolGroupBox = new QgsCollapsibleGroupBox;
 
+  QHBoxLayout *buttonsLayout = new QHBoxLayout;
+  buttonsLayout->addWidget( mTextOnSymbolFormatButton );
+  buttonsLayout->addWidget( mTextOnSymbolFromExpressionButton );
+
   QVBoxLayout *groupLayout = new QVBoxLayout;
   groupLayout->addWidget( mLegendTreeView );
-  groupLayout->addWidget( mTextOnSymbolFormatButton );
+  groupLayout->addLayout( buttonsLayout );
 
   mTextOnSymbolGroupBox->setTitle( tr( "Text on Symbols" ) );
   mTextOnSymbolGroupBox->setCheckable( true );
@@ -62,13 +71,17 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolTextFormat = legend->textOnSymbolTextFormat();
-  QHash<QString, QString> content = legend->textOnSymbolContent();
+  populateLegendTreeView( legend->textOnSymbolContent() );
+}
 
+
+void QgsVectorLayerLegendWidget::populateLegendTreeView( const QHash<QString, QString> &content )
+{
   QStandardItemModel *model = new QStandardItemModel;
   model->setColumnCount( 2 );
   model->setHorizontalHeaderLabels( QStringList() << tr( "Symbol" ) << tr( "Text" ) );
 
-  const QgsLegendSymbolList lst = layer->renderer()->legendSymbolItems();
+  const QgsLegendSymbolList lst = mLayer->renderer()->legendSymbolItems();
   for ( const QgsLegendSymbolItem &symbolItem : lst )
   {
     if ( !symbolItem.symbol() )
@@ -137,4 +150,45 @@ void QgsVectorLayerLegendWidget::openTextFormatWidget()
     return;
 
   mTextOnSymbolTextFormat = textOnSymbolFormatWidget->format();
+}
+
+
+void QgsVectorLayerLegendWidget::labelsFromExpression()
+{
+  QHash<QString, QString> content;
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+
+  QgsExpressionBuilderDialog dlgExpression( mLayer );
+  dlgExpression.setExpressionContext( context.expressionContext() );
+  if ( !dlgExpression.exec() )
+    return;
+
+  QgsExpression expr( dlgExpression.expressionText() );
+  expr.prepare( &context.expressionContext() );
+
+  std::unique_ptr< QgsFeatureRenderer > r( mLayer->renderer()->clone() );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( r->usedAttributes( context ), mLayer->fields() );
+  QgsFeatureIterator fi = mLayer->getFeatures();
+
+  r->startRender( context, mLayer->fields() );
+  while ( fi.nextFeature( f ) )
+  {
+    context.expressionContext().setFeature( f );
+    const QSet<QString> keys = r->legendKeysForFeature( f, context );
+    for ( const QString &key : keys )
+    {
+      if ( content.contains( key ) )
+        continue;
+
+      QString label = expr.evaluate( &context.expressionContext() ).toString();
+      if ( !label.isEmpty() )
+        content[key] = label;
+    }
+  }
+  r->stopRender( context );
+
+  populateLegendTreeView( content );
 }

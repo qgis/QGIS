@@ -25,6 +25,7 @@ class QPushButton;
 class QTreeView;
 
 class QgsCollapsibleGroupBox;
+class QgsMapCanvas;
 class QgsVectorLayer;
 
 /**
@@ -36,6 +37,12 @@ class QgsVectorLayerLegendWidget : public QWidget
   public:
     explicit QgsVectorLayerLegendWidget( QWidget *parent = nullptr );
 
+    //! Sets pointer to map canvas
+    void setMapCanvas( QgsMapCanvas *canvas ) { mCanvas = canvas; }
+
+    //! Returns pointer to map canvas
+    QgsMapCanvas *mapCanvas() const { return mCanvas; }
+
     //! Initialize widget with a map layer
     void setLayer( QgsVectorLayer *layer );
 
@@ -44,13 +51,19 @@ class QgsVectorLayerLegendWidget : public QWidget
 
   private slots:
     void openTextFormatWidget();
+    void labelsFromExpression();
+
+  private:
+    void populateLegendTreeView( const QHash<QString, QString> &content );
 
   private:
     QTreeView *mLegendTreeView = nullptr;
     QPushButton *mTextOnSymbolFormatButton = nullptr;
+    QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
     QLabel *mTextOnSymbolLabel = nullptr;
 
+    QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsTextFormat mTextOnSymbolTextFormat;
 };

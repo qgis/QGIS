@@ -302,6 +302,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDiagramFrame->setLayout( diagLayout );
 
   // Legend tab
+  mLegendWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mLegendWidget->setLayer( mLayer );
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
 
