@@ -68,6 +68,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      */
     QgsTextFormat format() const;
 
+    /**
+     * Sets the current formatting settings
+     * \since QGIS 3.2
+     */
+    void setFormat( const QgsTextFormat &format );
+
   public slots:
 
     /**

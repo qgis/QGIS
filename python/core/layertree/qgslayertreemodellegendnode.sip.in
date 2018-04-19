@@ -233,6 +233,34 @@ to the associated vector layer's renderer.
 .. versionadded:: 2.14
 %End
 
+    QString textOnSymbolLabel() const;
+%Docstring
+Returns label of text to be shown on top of the symbol.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolLabel( const QString &label );
+%Docstring
+Sets label of text to be shown on top of the symbol.
+
+.. versionadded:: 3.2
+%End
+
+    QgsTextFormat textOnSymbolTextFormat() const;
+%Docstring
+Returns text format of the label to be shown on top of the symbol.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets format of text to be shown on top of the symbol.
+
+.. versionadded:: 3.2
+%End
+
   public slots:
 
     void checkAllItems();

@@ -144,6 +144,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 };
 
 #include "qgslegendsymbolitem.h"
+#include "qgstextrenderer.h"
 
 /**
  * \ingroup core
@@ -221,6 +222,30 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setSymbol( QgsSymbol *symbol );
 
+    /**
+     * Returns label of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    QString textOnSymbolLabel() const { return mTextOnSymbolLabel; }
+
+    /**
+     * Sets label of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolLabel( const QString &label ) { mTextOnSymbolLabel = label; }
+
+    /**
+     * Returns text format of the label to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textOnSymbolTextFormat() const { return mTextOnSymbolTextFormat; }
+
+    /**
+     * Sets format of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
+
   public slots:
 
     /**
@@ -246,6 +271,9 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mSymbolUsesMapUnits;
     QSize mIconSize;
+
+    QString mTextOnSymbolLabel;
+    QgsTextFormat mTextOnSymbolTextFormat;
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
