@@ -80,10 +80,10 @@ class ParameterInterpolationData(QgsProcessingParameterDefinition):
     def dataToString(data):
         s = ''
         for c in data:
-            s += '{}, {}, {:d}, {:d};'.format(c[0],
-                                              c[1],
-                                              c[2],
-                                              c[3])
+            s += '{}::~:: {}::~:: {:d}::~:: {:d};'.format(c[0],
+                                                          c[1],
+                                                          c[2],
+                                                          c[3])
         return s[:-1]
 
 
@@ -160,7 +160,7 @@ class TinInterpolation(QgisAlgorithm):
         layers = []
         crs = QgsCoordinateReferenceSystem()
         for row in interpolationData.split(';'):
-            v = row.split(',')
+            v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
