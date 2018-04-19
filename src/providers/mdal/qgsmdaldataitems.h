@@ -17,6 +17,8 @@
 
 #include "qgsdataitem.h"
 
+#include <QString>
+
 class QgsMdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT

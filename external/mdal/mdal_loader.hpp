@@ -17,7 +17,7 @@ namespace MDAL
   class Loader
   {
     public:
-      static Mesh *load( const std::string &meshFile, Status *status );
+      static Mesh *load( const std::string &meshFile, MDAL_Status *status );
   };
 
 } // namespace MDAL

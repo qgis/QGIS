@@ -16,12 +16,8 @@
  ***************************************************************************/
 
 #include "qgstriangularmesh.h"
-#include "qgsmeshdataprovider.h"
 #include "qgsrendercontext.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmeshlayer.h"
-
 
 QgsTriangularMesh::QgsTriangularMesh( )
 {

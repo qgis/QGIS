@@ -18,12 +18,6 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <QLabel>
-#include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 
 //qgis includes...
 #include "qgsmaplayer.h"
@@ -31,8 +25,6 @@
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmeshmemorydataprovider.h"
 
 /**
  * \ingroup UnitTests
@@ -104,14 +96,14 @@ void TestQgsMeshLayer::test_data_provider()
     QVERIFY( dp->isValid() );
     QCOMPARE( expectedExtent, dp->extent() );
 
-    QCOMPARE( ( size_t ) 5, dp->vertexCount() );
+    QCOMPARE( 5, dp->vertexCount() );
     QCOMPARE( QgsMeshVertex( 1000.0, 2000.0 ), dp->vertex( 0 ) );
     QCOMPARE( QgsMeshVertex( 2000.0, 2000.0 ), dp->vertex( 1 ) );
     QCOMPARE( QgsMeshVertex( 3000.0, 2000.0 ), dp->vertex( 2 ) );
     QCOMPARE( QgsMeshVertex( 2000.0, 3000.0 ), dp->vertex( 3 ) );
     QCOMPARE( QgsMeshVertex( 1000.0, 3000.0 ), dp->vertex( 4 ) );
 
-    QCOMPARE( ( size_t ) 2, dp->faceCount() );
+    QCOMPARE( 2, dp->faceCount() );
     QgsMeshFace f1;
     f1 << 0 << 1 << 3 << 4;
     QCOMPARE( f1, dp->face( 0 ) );

@@ -22,13 +22,13 @@ MDAL::Loader2dm::Loader2dm( const std::string &meshFile ):
 {
 }
 
-MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
+MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
 {
-  if ( status ) *status = Status::None;
+  if ( status ) *status = MDAL_Status::None;
 
   if ( !MDAL::fileExists( mMeshFile ) )
   {
-    if ( status ) *status = Status::Err_FileNotFound;
+    if ( status ) *status = MDAL_Status::Err_FileNotFound;
     return 0;
   }
 
@@ -36,7 +36,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
   std::string line;
   if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
   {
-    if ( status ) *status = Status::Err_UnknownFormat;
+    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
     return 0;
   }
 
@@ -61,7 +61,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
               startsWith( line, "E8Q" ) ||
               startsWith( line, "E9Q" ) )
     {
-      if ( status ) *status = Status::Warn_UnsupportedElement;
+      if ( status ) *status = MDAL_Status::Warn_UnsupportedElement;
       elemCount += 1; // We still count them as elements
     }
   }
@@ -92,7 +92,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
       std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
       if ( search != elemIDtoIndex.end() )
       {
-        if ( status ) *status = Status::Warn_ElementNotUnique;
+        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
       elemIDtoIndex[elemID] = elemIndex;
@@ -114,7 +114,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
       std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
       if ( search != elemIDtoIndex.end() )
       {
-        if ( status ) *status = Status::Warn_ElementNotUnique;
+        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
       elemIDtoIndex[elemID] = elemIndex;
@@ -143,7 +143,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
       std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
       if ( search != elemIDtoIndex.end() )
       {
-        if ( status ) *status = Status::Warn_ElementNotUnique;
+        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
       elemIDtoIndex[elemID] = elemIndex;
@@ -159,7 +159,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
       std::map<size_t, size_t>::iterator search = nodeIDtoIndex.find( nodeID );
       if ( search != nodeIDtoIndex.end() )
       {
-        if ( status ) *status = Status::Warn_NodeNotUnique;
+        if ( status ) *status = MDAL_Status::Warn_NodeNotUnique;
         continue;
       }
       nodeIDtoIndex[nodeID] = nodeIndex;
@@ -188,7 +188,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( Status *status )
       {
         assert( false ); //TODO mark element as unusable
 
-        if ( status ) *status = Status::Warn_ElementWithInvalidNode;
+        if ( status ) *status = MDAL_Status::Warn_ElementWithInvalidNode;
       }
     }
 

@@ -18,22 +18,16 @@
 #ifndef QGSMESHDATAPROVIDER_H
 #define QGSMESHDATAPROVIDER_H
 
-#include <cstddef>
-
 #include "qgis_core.h"
-#include "qgis.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include <QVector>
-#include <QHash>
 #include <QString>
-#include <QVariant>
 
 typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
-typedef QVector<size_t> QgsMeshFace; //list of vertex indexes
+typedef QVector<int> QgsMeshFace; //list of vertex indexes
 
 /**
  * \ingroup core
@@ -53,28 +47,28 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
     virtual ~QgsMeshSource() = default;
 
     /**
-     * \brief Return number of vertexes in the native mesh
-     * \returns Number of vertexes in the mesh
+     * \brief Return number of vertices in the native mesh
+     * \returns Number of vertices in the mesh
      */
-    virtual size_t vertexCount() const = 0;
+    virtual int vertexCount() const = 0;
 
     /**
      * \brief Return number of faces in the native mesh
      * \returns Number of faces in the mesh
      */
-    virtual size_t faceCount() const = 0;
+    virtual int faceCount() const = 0;
 
     /**
      * \brief Factory for mesh vertex with index
      * \returns new mesh vertex on index
      */
-    virtual QgsMeshVertex vertex( size_t index ) const = 0;
+    virtual QgsMeshVertex vertex( int index ) const = 0;
 
     /**
      * \brief Factory for mesh face with index
      * \returns new mesh face on index
      */
-    virtual QgsMeshFace face( size_t index ) const = 0;
+    virtual QgsMeshFace face( int index ) const = 0;
 };
 
 /**

@@ -472,6 +472,9 @@ Returns the icon name of the given ``layerType``
     static QIcon iconRaster();
     static QIcon iconDefault();
     static QIcon iconMesh();
+%Docstring
+Return icon for mesh layer type
+%End
 
     virtual QString layerName() const;
 %Docstring

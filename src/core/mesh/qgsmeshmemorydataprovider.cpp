@@ -14,11 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "qgsmeshmemorydataprovider.h"
-#include <QFile>
-#include <QJsonDocument>
-#include <limits>
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mesh_memory" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Mesh memory provider" );
@@ -127,12 +123,18 @@ bool QgsMeshMemoryDataProvider::addFaces( const QString &def )
     for ( int j = 0; j < vertices.size(); ++j )
     {
       int vertex_id = vertices[j].toInt();
-      face.push_back( vertex_id );
-      if ( face[j] >= mVertices.size() )
+      if ( vertex_id < 0 )
+      {
+        setError( QgsError( QStringLiteral( "Invalid mesh definition, vertex index must be positive value" ),  QStringLiteral( "Mesh Memory Provider" ) ) );
+        return false;
+      }
+      if ( mVertices.size() < vertex_id )
       {
         setError( QgsError( QStringLiteral( "Invalid mesh definition, missing vertex id defined in face" ),  QStringLiteral( "Mesh Memory Provider" ) ) );
         return false;
       }
+
+      face.push_back( vertex_id );
     }
     faces.push_back( face );
   }
@@ -141,23 +143,23 @@ bool QgsMeshMemoryDataProvider::addFaces( const QString &def )
   return true;
 }
 
-size_t QgsMeshMemoryDataProvider::vertexCount() const
+int QgsMeshMemoryDataProvider::vertexCount() const
 {
   return mVertices.size();
 }
 
-size_t QgsMeshMemoryDataProvider::faceCount() const
+int QgsMeshMemoryDataProvider::faceCount() const
 {
   return mFaces.size();
 }
 
-QgsMeshVertex QgsMeshMemoryDataProvider::vertex( size_t index ) const
+QgsMeshVertex QgsMeshMemoryDataProvider::vertex( int index ) const
 {
   Q_ASSERT( vertexCount() > index );
   return mVertices[index];
 }
 
-QgsMeshFace QgsMeshMemoryDataProvider::face( size_t index ) const
+QgsMeshFace QgsMeshMemoryDataProvider::face( int index ) const
 {
   Q_ASSERT( faceCount() > index );
   return mFaces[index];

@@ -10,9 +10,8 @@
 
 
 
-
 typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
-typedef QVector<size_t> QgsMeshFace; //list of vertex indexes
+typedef QVector<int> QgsMeshFace; //list of vertex indexes
 
 class QgsMeshSource /Abstract/
 {
@@ -33,28 +32,28 @@ read on demand
   public:
     virtual ~QgsMeshSource();
 
-    virtual size_t vertexCount() const = 0;
+    virtual int vertexCount() const = 0;
 %Docstring
- Return number of vertexes in the native mesh
+ Return number of vertices in the native mesh
 
-:return: Number of vertexes in the mesh
+:return: Number of vertices in the mesh
 %End
 
-    virtual size_t faceCount() const = 0;
+    virtual int faceCount() const = 0;
 %Docstring
  Return number of faces in the native mesh
 
 :return: Number of faces in the mesh
 %End
 
-    virtual QgsMeshVertex vertex( size_t index ) const = 0;
+    virtual QgsMeshVertex vertex( int index ) const = 0;
 %Docstring
  Factory for mesh vertex with index
 
 :return: new mesh vertex on index
 %End
 
-    virtual QgsMeshFace face( size_t index ) const = 0;
+    virtual QgsMeshFace face( int index ) const = 0;
 %Docstring
  Factory for mesh face with index
 

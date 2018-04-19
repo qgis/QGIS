@@ -19,24 +19,12 @@
 #define QGSMESHLAYER_H
 
 #include "qgis_core.h"
-#include <QMap>
-#include <QSet>
-#include <QSharedPointer>
-#include <QList>
-#include <QStringList>
-#include <QFont>
-#include <QMutex>
-
-#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"
 #include "qgsmeshdataprovider.h"
 
 class QgsMapLayerRenderer;
 class QgsSymbol;
-
-class QgsMeshDataProvider;
-class QgsNativeMesh;
 class QgsTriangularMesh;
 struct QgsMesh;
 
@@ -110,7 +98,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      */
     explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
-    //! Dtor
     ~QgsMeshLayer() override;
 
     //! QgsMeshLayer cannot be copied.
@@ -118,68 +105,36 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! QgsMeshLayer cannot be copied.
     QgsMeshLayer &operator=( QgsMeshLayer const &rhs ) = delete;
 
-    //! Return data provider
     QgsMeshDataProvider *dataProvider() override;
-
-    //! Return const data provider
     const QgsMeshDataProvider *dataProvider() const override SIP_SKIP;
-
-    /**
-     * Returns a new instance equivalent to this one. A new provider is
-     *  created for the same data source and renderers are cloned too.
-     * \returns a new layer instance
-     */
     QgsMeshLayer *clone() const override SIP_FACTORY;
-
-    //! Returns the extent of the layer.
     QgsRectangle extent() const override;
-
-    /**
-     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) SIP_FACTORY;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! Return the provider type for this layer
     QString providerType() const;
 
     //! return native mesh (nullprt before rendering)
-    QgsMesh *nativeMesh() SIP_SKIP {return mNativeMesh;}
+    QgsMesh *nativeMesh() SIP_SKIP;
 
     //! return triangular mesh (nullprt before rendering)
-    QgsTriangularMesh *triangularMesh() SIP_SKIP {return mTriangularMesh;}
+    QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     //! Returns a line symbol used for rendering native mesh.
-    QgsSymbol *nativeMeshSymbol() {return mNativeMeshSymbol;}
+    QgsSymbol *nativeMeshSymbol();
 
     /**
      * Returns a line symbol used for rendering of triangular (derived) mesh.
      * \see toggleTriangularMeshRendering
      */
-    QgsSymbol *triangularMeshSymbol() {return mTriangularMeshSymbol;}
+    QgsSymbol *triangularMeshSymbol();
 
     //! Toggle rendering of triangular (derived) mesh. Off by default
     void toggleTriangularMeshRendering( bool toggle );
 
-    /**
-     * Read the symbology for the current layer from the Dom node supplied.
-     * \param node node that will contain the symbology definition for this layer.
-     * \param errorMessage reference to string that will be updated with any error messages
-     * \param context reading context (used for transform from relative to absolute paths)
-     * \returns true in case of success.
-     */
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-
-    /**
-     * Write the symbology for the layer into the docment provided.
-     *  \param node the node that will have the style element added to it.
-     *  \param doc the document that will have the QDomNode added.
-     *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param context writing context (used for transform from absolute to relative paths)
-     *  \returns true in case of success.
-     */
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
-  private:                       // Private methods
+  private: // Private methods
 
     /**
      * Returns true if the provider is in read-only mode
