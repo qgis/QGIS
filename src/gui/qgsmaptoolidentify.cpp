@@ -52,10 +52,10 @@
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-   mIdentifyMenu = new QgsIdentifyMenu( mCanvas );
-   mLastMapUnitsPerPixel = -1.0;
-   mCoordinatePrecision = 6;
-   mSelectionHandler = new QgsMapToolSelectionHandler( mCanvas );
+  mIdentifyMenu = new QgsIdentifyMenu( mCanvas );
+  mLastMapUnitsPerPixel = -1.0;
+  mCoordinatePrecision = 6;
+  mSelectionHandler = new QgsMapToolSelectionHandler( mCanvas );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
 

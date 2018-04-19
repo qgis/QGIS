@@ -153,7 +153,6 @@ void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
   extendedMenu = extendedMenu && !mSelectionHandler->justFinishedSelection();
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
-  IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
   identifyMenu()->setResultsIfExternalAction( false );
 }
 
