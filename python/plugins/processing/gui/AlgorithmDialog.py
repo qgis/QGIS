@@ -183,7 +183,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             ok, msg = self.algorithm().checkParameterValues(parameters, context)
             if msg:
                 self.messageBar().pushMessage("", msg,
-                                          level=Qgis.Warning, duration=5)
+                                              level=Qgis.Warning, duration=5)
                 return
             self.runButton().setEnabled(False)
             self.cancelButton().setEnabled(False)
