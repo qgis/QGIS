@@ -93,9 +93,11 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
     MaybeSpecified
   };
 
+  QStringList messageStack;
+
   std::function< bool( const QgsProcessingAlgorithm::LogicalParameterGroup &group, State &state ) > checkGroup;
 
-  checkGroup = [&parameters, &checkGroup, message]( const QgsProcessingAlgorithm::LogicalParameterGroup & group, State & state )->bool
+  checkGroup = [&parameters, &checkGroup, message, &messageStack]( const QgsProcessingAlgorithm::LogicalParameterGroup & group, State & state )->bool
   {
     int countSpecified = 0;
     int countMaybeSpecified = 0;
@@ -137,8 +139,7 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
       case AtLeastOneRequired:
         if ( countSpecified == 0 && countMaybeSpecified == 0 )
         {
-          if ( message )
-            *message = QObject::tr( "Must specify any of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          messageStack.append( QObject::tr( "Must specify any of %1" ).arg( names.join( QStringLiteral( ", " ) ) ) );
           return false;
         }
         return true;
@@ -146,8 +147,7 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
       case AllRequired:
         if ( countSpecified + countMaybeSpecified < group.parameters.count() + group.childGroups.count() )
         {
-          if ( message )
-            *message = QObject::tr( "Must specify all of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          messageStack.append( QObject::tr( "Must specify all of %1" ).arg( names.join( QStringLiteral( ", " ) ) ) );
           return false;
         }
         return true;
@@ -155,8 +155,7 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
       case MutuallyExclusiveOptional:
         if ( countSpecified > 1 )
         {
-          if ( message )
-            *message = QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          messageStack.append( QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) ) );
           return false;
         }
         return true;
@@ -164,14 +163,12 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
       case MutuallyExclusiveRequired:
         if ( countSpecified + countMaybeSpecified == 0 )
         {
-          if ( message )
-            *message = QObject::tr( "Must specify one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          messageStack.append( QObject::tr( "Must specify one of %1" ).arg( names.join( QStringLiteral( ", " ) ) ) );
           return false;
         }
         else if ( countSpecified > 1 )
         {
-          if ( message )
-            *message = QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          messageStack.append( QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) ) );
           return false;
         }
 
@@ -183,7 +180,13 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
 
   State state = State::NotSpecified;
   if ( !checkGroup( mLogicalParameterGroups, state ) )
+  {
+    messageStack.pop_back();
+    if ( !messageStack.empty() && message )
+      *message = messageStack.last();
+
     return false;
+  }
 
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
