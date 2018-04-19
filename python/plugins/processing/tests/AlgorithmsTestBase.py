@@ -155,9 +155,9 @@ class AlgorithmsTest(object):
                 prefix = processingTestDataPath()
                 tmp = ''
                 for r in param['name'].split(';'):
-                    v = r.split(',')
-                    tmp += '{},{},{},{};'.format(os.path.join(prefix, v[0]),
-                                                 v[1], v[2], v[3])
+                    v = r.split('::~::')
+                    tmp += '{}::~::{}::~::{}::~::{};'.format(os.path.join(prefix, v[0]),
+                                                             v[1], v[2], v[3])
                 return tmp[:-1]
         except TypeError:
             # No type specified, use whatever is there
