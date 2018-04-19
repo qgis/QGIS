@@ -86,6 +86,105 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
 
 bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
+  enum class State
+  {
+    NotSpecified,
+    Specified,
+    MaybeSpecified
+  };
+
+  std::function< bool( const QgsProcessingAlgorithm::LogicalParameterGroup &group, State &state ) > checkGroup;
+
+  checkGroup = [&parameters, &checkGroup, message]( const QgsProcessingAlgorithm::LogicalParameterGroup & group, State & state )->bool
+  {
+    int countSpecified = 0;
+    int countMaybeSpecified = 0;
+    QStringList names;
+    for ( const QString &paramName : group.parameters )
+    {
+      names.append( paramName );
+      if ( parameters.contains( paramName ) && parameters.value( paramName ).isValid() )
+        countSpecified++;
+    }
+
+    for ( const QgsProcessingAlgorithm::LogicalParameterGroup &childGroup : group.childGroups )
+    {
+      names.append( childGroup.name );
+      State childState = State::NotSpecified;
+      if ( !checkGroup( childGroup, childState ) && childState == State::Specified )
+        return false;
+
+      if ( childState == State::Specified )
+      {
+        countSpecified++;
+      }
+      else if ( childState == State::MaybeSpecified )
+      {
+        countMaybeSpecified++;
+      }
+    }
+
+    if ( countSpecified > 0 )
+      state = State::Specified;
+    else if ( countMaybeSpecified > 0 || group.type == MutuallyExclusiveOptional )
+      state = State::MaybeSpecified;
+    else
+      state = State::NotSpecified;
+
+    // validate group
+    switch ( group.type )
+    {
+      case AtLeastOneRequired:
+        if ( countSpecified == 0 && countMaybeSpecified == 0 )
+        {
+          if ( message )
+            *message = QObject::tr( "Must specify any of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          return false;
+        }
+        return true;
+
+      case AllRequired:
+        if ( countSpecified + countMaybeSpecified < group.parameters.count() + group.childGroups.count() )
+        {
+          if ( message )
+            *message = QObject::tr( "Must specify all of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          return false;
+        }
+        return true;
+
+      case MutuallyExclusiveOptional:
+        if ( countSpecified > 1 )
+        {
+          if ( message )
+            *message = QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          return false;
+        }
+        return true;
+
+      case MutuallyExclusiveRequired:
+        if ( countSpecified + countMaybeSpecified == 0 )
+        {
+          if ( message )
+            *message = QObject::tr( "Must specify one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          return false;
+        }
+        else if ( countSpecified > 1 )
+        {
+          if ( message )
+            *message = QObject::tr( "Must specify only one of %1" ).arg( names.join( QStringLiteral( ", " ) ) );
+          return false;
+        }
+
+        return true;
+    }
+
+    return false; // no warnings
+  };
+
+  State state = State::NotSpecified;
+  if ( !checkGroup( mLogicalParameterGroups, state ) )
+    return false;
+
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
@@ -280,6 +379,16 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
     delete def;
     mParameters.removeAll( def );
   }
+}
+
+void QgsProcessingAlgorithm::addLogicalParameterGroup( const QgsProcessingAlgorithm::LogicalParameterGroup &group )
+{
+  mLogicalParameterGroups.childGroups.append( group );
+}
+
+QList<QgsProcessingAlgorithm::LogicalParameterGroup> QgsProcessingAlgorithm::logicalParameterGroups() const
+{
+  return mLogicalParameterGroups.childGroups;
 }
 
 bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )

@@ -177,6 +177,220 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
     }
 
+    void runLogicalParameterChecks()
+    {
+      //add some params
+      QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p1", QString(), QVariant(), true ) ) );
+      QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p2", QString(), QVariant(), true ) ) );
+      QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p3", QString(), QVariant(), true ) ) );
+      QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p4", QString(), QVariant(), true ) ) );
+
+      QVariantMap params;
+      QString message;
+      QgsProcessingContext context;
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+
+      LogicalParameterGroup group;
+      group.type = AtLeastOneRequired;
+      group.parameters.insert( "p1" );
+      group.parameters.insert( "p2" );
+      group.parameters.insert( "p3" );
+      addLogicalParameterGroup( group );
+      params.clear();
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.clear();
+
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+
+      group.type = AllRequired;
+      addLogicalParameterGroup( group );
+
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( ! checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+
+      group.type = MutuallyExclusiveOptional;
+      addLogicalParameterGroup( group );
+      params.clear();
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p2" );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p3" );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+
+      group.type = MutuallyExclusiveRequired;
+      addLogicalParameterGroup( group );
+      params.clear();
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p2" );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p3" );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+
+      // at_least_one_required( all_required( p1 ,p2 ), mutually_exclusive_required( p3, p4 ) )
+      group.type = AtLeastOneRequired;
+      group.parameters.clear();
+
+      LogicalParameterGroup childGroup1;
+      childGroup1.type = AllRequired;
+      childGroup1.parameters.insert( "p1" );
+      childGroup1.parameters.insert( "p2" );
+      LogicalParameterGroup childGroup2;
+      childGroup2.type = MutuallyExclusiveRequired;
+      childGroup2.parameters.insert( "p3" );
+      childGroup2.parameters.insert( "p4" );
+
+      group.childGroups.append( childGroup1 );
+      group.childGroups.append( childGroup2 );
+
+      addLogicalParameterGroup( group );
+      params.clear();
+
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p4", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.clear();
+      params.insert( "p3", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p4", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p4" );
+      params.insert( "p2", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+
+      // mutually_exclusive_required( all_required( p1, p2 ), all_required( p3, p4 ) )
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+      group.type = MutuallyExclusiveRequired;
+      group.parameters.clear();
+      group.childGroups.clear();
+
+      childGroup1.type = AllRequired;
+      childGroup1.parameters.insert( "p1" );
+      childGroup1.parameters.insert( "p2" );
+      childGroup2.type = AllRequired;
+      childGroup2.parameters.insert( "p3" );
+      childGroup2.parameters.insert( "p4" );
+
+      group.childGroups.append( childGroup1 );
+      group.childGroups.append( childGroup2 );
+
+      addLogicalParameterGroup( group );
+      params.clear();
+
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p4", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.clear();
+      params.insert( "p3", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p4", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+
+      // mutually_exclusive_optional( all_required( p1, p2 ) )
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+      group.type = MutuallyExclusiveOptional;
+      group.parameters.clear();
+      group.childGroups.clear();
+
+      childGroup1.type = AllRequired;
+      childGroup1.parameters.insert( "p1" );
+      childGroup1.parameters.insert( "p2" );
+      group.childGroups.append( childGroup1 );
+      addLogicalParameterGroup( group );
+      params.clear();
+
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.remove( "p1" );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+
+      // mix of children and params
+      mLogicalParameterGroups.parameters.clear();
+      mLogicalParameterGroups.childGroups.clear();
+      group.type = MutuallyExclusiveOptional;
+      group.parameters.clear();
+      group.childGroups.clear();
+
+      childGroup1.type = AllRequired;
+      childGroup1.parameters.insert( "p1" );
+      childGroup1.parameters.insert( "p2" );
+      group.childGroups.append( childGroup1 );
+      group.parameters.insert( "p3" );
+      addLogicalParameterGroup( group );
+      params.clear();
+
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p1", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.insert( "p2", true );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+      params.insert( "p3", true );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p1" );
+      QVERIFY( !checkParameterValues( params, context, &message ) );
+      params.remove( "p2" );
+      QVERIFY( checkParameterValues( params, context, &message ) );
+    }
+
     void runOutputChecks()
     {
       QVERIFY( outputDefinitions().isEmpty() );
@@ -441,6 +655,7 @@ class TestQgsProcessing: public QObject
     void createFeatureSink();
     void parameters();
     void algorithmParameters();
+    void logicalParameterGroups();
     void algorithmOutputs();
     void parameterGeneral();
     void parameterBoolean();
@@ -1784,6 +1999,14 @@ void TestQgsProcessing::algorithmParameters()
 
   p.addAlgorithm( alg );
   alg->runParameterChecks2();
+}
+
+void TestQgsProcessing::logicalParameterGroups()
+{
+  DummyAlgorithm *alg = new DummyAlgorithm( "test" );
+  DummyProvider p( "test" );
+  p.addAlgorithm( alg );
+  alg->runLogicalParameterChecks();
 }
 
 void TestQgsProcessing::algorithmOutputs()
