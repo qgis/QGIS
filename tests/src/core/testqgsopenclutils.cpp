@@ -33,10 +33,17 @@ class TestQgsOpenClUtils: public QObject
     void TestEnable();
     void TestDisable();
     void TestAvailable();
-    void testRunProgram();
+    void testMakeRunProgram();
     void testContext();
 
   private:
+
+    cl::Program buildProgram( const cl::Context &context, const QString &source )
+    {
+      cl::Program program( context, source.toStdString( ) );
+      program.build( "-cl-std=CL1.1" );
+      return program;
+    }
 
     std::string source()
     {
@@ -70,7 +77,7 @@ void TestQgsOpenClUtils::TestAvailable()
 }
 
 
-void TestQgsOpenClUtils::testRunProgram()
+void TestQgsOpenClUtils::testMakeRunProgram()
 {
 
   cl_int err = 0;
@@ -87,43 +94,23 @@ void TestQgsOpenClUtils::testRunProgram()
   cl::Buffer b_buf( b_vec.begin(), b_vec.end(), true );
   cl::Buffer c_buf( c_vec.begin(), c_vec.end(), false );
 
-  try
-  {
-    // This also works:
-    cl::Program program( source( ) );
-    program.build( "-cl-std=CL1.1" );
+  cl::Program program = QgsOpenClUtils::buildProgram( ctx, QString::fromStdString( source() ) );
 
-    auto kernel =
-      cl::KernelFunctor <
-      cl::Buffer &,
-      cl::Buffer &,
-      cl::Buffer &
-      > ( program, "vectorAdd" );
+  auto kernel =
+    cl::KernelFunctor <
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &
+    > ( program, "vectorAdd" );
 
-    kernel( cl::EnqueueArgs(
-              cl::NDRange( 3 )
-            ),
-            a_buf,
-            b_buf,
-            c_buf
-          );
-  }
-  catch ( cl::BuildError e )
-  {
-    qDebug() << "OPENCL Build Error: " << QgsOpenClUtils::errorText( e.err() ) << e.what();
-    cl::BuildLogType build_logs = e.getBuildLog();
-    QString build_log;
-    if ( build_logs.size() > 0 )
-      build_log = QString::fromStdString( build_logs[0].second );
-    else
-      build_log = QObject::tr( "Build logs not available!" );
-    qDebug() << build_log;
+  kernel( cl::EnqueueArgs(
+            cl::NDRange( 3 )
+          ),
+          a_buf,
+          b_buf,
+          c_buf
+        );
 
-  }
-  catch ( cl::Error e )
-  {
-    qDebug() << "OPENCL Error: " << e.err() << e.what();
-  }
   cl::copy( c_buf, c_vec.begin(), c_vec.end() );
   for ( size_t i = 0; i < c_vec.size(); ++i )
   {

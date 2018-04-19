@@ -256,3 +256,35 @@ cl::Context QgsOpenClUtils::context()
     return cl::Context();
   }
 }
+
+cl::Program QgsOpenClUtils::buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior )
+{
+  cl::Program program;
+  try
+  {
+    program = cl::Program( context, source.toStdString( ) );
+    program.build( "-cl-std=CL1.1" );
+  }
+  catch ( cl::BuildError &e )
+  {
+    cl::BuildLogType build_logs = e.getBuildLog();
+    QString build_log;
+    if ( build_logs.size() > 0 )
+      build_log = QString::fromStdString( build_logs[0].second );
+    else
+      build_log = QObject::tr( "Build logs not available!" );
+    QString err = QObject::tr( "Error building OpenCL program: %1" )
+                  .arg( build_log );
+    QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::Critical );
+    if ( exceptionBehavior == Throw )
+      throw e;
+  }
+  catch ( cl::Error &e )
+  {
+    QString err = QObject::tr( "Error %1 running OpenCL program in %2" )
+                  .arg( errorText( e.err() ), QString::fromStdString( e.what() ) );
+    QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::Critical );
+    throw e;
+  }
+  return program;
+}

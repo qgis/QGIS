@@ -39,6 +39,13 @@
 class CORE_EXPORT QgsOpenClUtils
 {
   public:
+
+    enum ExceptionBehavior
+    {
+      Catch,
+      Throw
+    };
+
     static bool enabled();
     static bool available();
     static void setEnabled( bool enabled );
@@ -46,7 +53,7 @@ class CORE_EXPORT QgsOpenClUtils
     static QString sourceFromPath( const QString &path );
     static QLatin1String LOGMESSAGE_TAG;
     static QString errorText( const int errorCode );
-
+    static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
     static cl::Context context();
 
     /**
