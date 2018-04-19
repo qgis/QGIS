@@ -1,0 +1,126 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectutils.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+%ModuleHeaderCode
+#include "qgsmaptoolselectutils.h"
+%End
+
+namespace QgsMapToolSelectUtils
+{
+
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar *messageBar );
+%Docstring
+Calculates a list of features matching a selection geometry and flags.
+
+:param canvas: the map canvas used to get the current selected vector layer and
+for any required geometry transformations
+:param selectGeometry: the geometry to select the layers features. This geometry
+must be in terms of the canvas coordinate system.
+:param doContains: features will only be selected if fully contained within
+the selection rubber band (otherwise intersection is enough).
+:param singleSelect: only selects the closest feature to the selectGeometry.
+:param messageBar: The instance is used when an warning/error message is reised.
+
+:return: list of features which match search geometry and parameters
+
+.. versionadded:: 2.16
+%End
+
+  void setSelectedFeatures( QgsMapCanvas *canvas,
+                                       const QgsGeometry &selectGeometry,
+                                       QgsMessageBar *messageBar,
+                                       QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                                       bool doContains = true,
+                                       bool singleSelect = false );
+%Docstring
+Selects the features within currently selected layer.
+
+:param canvas: the map canvas used to get the current selected vector layer and
+for any required geometry transformations
+:param selectGeometry: the geometry to select the layers features. This geometry
+must be in terms of the canvas coordinate system.
+:param messageBar: The instance is used when an warning/error message is reised.
+:param selectBehavior: behavior of select (ie replace selection, add to selection)
+:param doContains: features will only be selected if fully contained within
+the selection rubber band (otherwise intersection is enough).
+:param singleSelect: only selects the closest feature to the selectGeometry.
+
+.. versionadded:: 2.16
+%End
+
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar );
+%Docstring
+Selects multiple matching features from within currently selected layer.
+
+:param canvas: the map canvas used to get the current selected vector layer and
+for any required geometry transformations
+:param selectGeometry: the geometry to select the layers features. This geometry
+must be in terms of the canvas coordinate system.
+:param modifiers: Keyboard modifiers are used to determine the current selection
+operations (add, subtract, contains)
+:param messageBar: The instance is used when an warning/error message is reised.
+
+.. versionadded:: 2.16
+
+.. seealso:: :py:func:`selectSingleFeature`
+%End
+
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar );
+%Docstring
+Selects a single feature from within currently selected layer.
+
+:param canvas: the map canvas used to get the current selected vector layer and
+for any required geometry transformations
+:param selectGeometry: the geometry to select the layers features. This geometry
+must be in terms of the canvas coordinate system.
+:param modifiers: Keyboard modifiers are used to determine the current selection
+operations (add, subtract, contains)
+:param messageBar: The instance is used when an warning/error message is reised.
+
+.. seealso:: :py:func:`selectMultipleFeatures`
+%End
+
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
+%Docstring
+Get the current selected canvas map layer. Returns None if it is not a vector layer
+
+:param canvas: The map canvas used for getting the current layer
+:param messageBar: The instance is used when an warning/error message is reised.
+
+:return: QgsVectorLayer The layer
+%End
+
+  void expandSelectRectangle( QRect &selectRect, QgsVectorLayer *vlayer, QPoint point );
+%Docstring
+Expands a rectangle to a minimum size for selection based on the vector layer type
+
+:param selectRect: The QRect to expand
+:param vlayer: The vector layer layer
+:param vlayer: The point to expand the rectangle around
+%End
+
+  void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
+%Docstring
+Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords
+
+:param canvas: The map canvas used to transform the rectangle into map units
+:param selectRect: The input rectangle in device coords
+:param rubberBand: The rubberband that will be set in map units using the input rectangle
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectutils.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,188 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectionhandler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsMapToolSelectionHandler: QObject
+{
+%Docstring
+ Map tool for selecting geometry in layers
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolselectionhandler.h"
+%End
+  public:
+
+    enum SelectionMode
+    {
+      //! SelectSimple
+      SelectSimple,
+      //! SelectPolygon
+      SelectPolygon,
+      //! SelectFreehand
+      SelectFreehand,
+      //! SelectRadius
+      SelectRadius
+    };
+
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+%Docstring
+constructor
+%End
+
+    ~QgsMapToolSelectionHandler();
+
+    QgisInterface *mQgisInterface;
+
+    void canvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Overridden mouse move event
+%End
+    void canvasPressEvent( QgsMapMouseEvent *e );
+%Docstring
+Overridden mouse press event
+%End
+    void canvasReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Overridden mouse releasae event
+%End
+    bool escapeSelection( QKeyEvent *e );
+%Docstring
+Cancel selection - handles escape press event
+%End
+
+    void deactivate();
+%Docstring
+To deactivate handler often within map tool deactivation.
+%End
+
+    void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse move event handling for simple selection
+%End
+    void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse release event handling for simple selection
+%End
+    void selectFeaturesPressEvent();
+%Docstring
+Mouse press event handling for simple selection
+%End
+
+    void selectPolygonMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse move event handling for polygon selection
+%End
+    void selectPolygonPressEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse press event handling for polygon selection
+%End
+
+    void selectFreehandMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse move event handling for freehand selection
+%End
+    void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse press event handling for freehand selection
+%End
+
+    void selectRadiusMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse move event handling for radius selection
+%End
+    void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse press event handling for radius selection
+%End
+
+    void initRubberBand();
+%Docstring
+Initialization of the rubberband
+%End
+
+    void setIface( QgisInterface *iface );
+%Docstring
+Interface variable setter - needed for messages
+%End
+
+    QgsGeometry selectedGeometry();
+%Docstring
+mSelectedGeometry getter
+%End
+    void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+%Docstring
+mSelectedGeometry setter
+%End
+
+    SelectionMode selectionMode();
+%Docstring
+mSelectionMode getter
+%End
+    void setSelectionMode( SelectionMode mode );
+%Docstring
+mSelectionMode setter
+%End
+
+    bool selectionActive();
+%Docstring
+mSelectionActive getter
+%End
+
+    QgsRubberBand *selectionRubberBand();
+%Docstring
+mSelectionRubberBand getter
+%End
+    void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
+%Docstring
+mSelectionRubberBand setter
+%End
+
+    bool justFinishedSelection() const;
+%Docstring
+mJustFinishedSelection getter
+%End
+    void setJustFinishedSelection( bool justFinishedSelection );
+%Docstring
+mJustFinishedSelection setter
+%End
+
+    QgsPointXY radiusCenter() const;
+%Docstring
+mRadiusCenter getter
+%End
+
+    QPoint initDragPos() const;
+%Docstring
+mInitDragPos getter
+%End
+
+  signals:
+    void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+%Docstring
+emitted when mSelectedGeometry has been changed
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectionhandler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

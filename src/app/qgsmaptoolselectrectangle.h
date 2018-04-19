@@ -26,7 +26,7 @@ class QMouseEvent;
 class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsGeometry;
-class QgsRubberBand;
+class QgsMapToolSelectionHandler;
 
 
 class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
@@ -34,6 +34,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
     Q_OBJECT
   public:
     QgsMapToolSelectFeatures( QgsMapCanvas *canvas );
+    ~QgsMapToolSelectFeatures() override;
 
     //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -45,18 +46,8 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
-
-    //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
-
-    //! stores actual select rect
-    QRect mSelectRect;
-
-    QgsRubberBand *mRubberBand = nullptr;
-
-    QColor mFillColor;
-
-    QColor mStrokeColor;
+    QgsMapToolSelectionHandler *mSelectionHandler;
+    void selectFeatures( Qt::KeyboardModifiers modifiers );
 };
 
 #endif

@@ -28,12 +28,14 @@
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "qgsmaptoolselectutils.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
+#include "qgsrubberband.h"
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
 #include "qgsactionscoperegistry.h"
@@ -45,6 +47,8 @@
 #include <QStatusBar>
 #include <QVariant>
 
+class QgisAppInterface;
+
 QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )
 {
@@ -55,6 +59,9 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
+
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -63,6 +70,7 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
   {
     mResultsDialog->done( 0 );
   }
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
 }
 
 QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
@@ -98,37 +106,18 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   tableDialog->show();
 }
 
-void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
-{
-  Q_UNUSED( e );
-}
-
-void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  Q_UNUSED( e );
-}
-
-void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolIdentifyAction::identifyOnGeometryChange( int x, int y, IdentifyMode mode )
 {
   resultsDialog()->clear();
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  setClickContextScope( toMapCoordinates( e->pos() ) );
-
-  identifyMenu()->setResultsIfExternalAction( false );
-
-  // enable the right click for extended menu so it behaves as a contextual menu
-  // this would be removed when a true contextual menu is brought in QGIS
-  bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
-  identifyMenu()->setExecWithSingleResult( extendedMenu );
-  identifyMenu()->setShowFeatureActions( extendedMenu );
-  IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
-
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( x, y, mode, AllLayers, mSelectionHandler->selectionMode() );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
+  if ( mSelectionHandler->justFinishedSelection() ) mSelectionHandler->setJustFinishedSelection( false );
 
   if ( results.isEmpty() )
   {
@@ -156,6 +145,50 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   resultsDialog()->updateViewModes();
 }
 
+void QgsMapToolIdentifyAction::handleOnCanvasRelease( QgsMapMouseEvent *e )
+{
+  // enable the right click for extended menu so it behaves as a contextual menu
+  // this would be removed when a true contextual menu is brought in QGIS
+  bool extendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
+  extendedMenu = extendedMenu && !mSelectionHandler->justFinishedSelection();
+  identifyMenu()->setExecWithSingleResult( extendedMenu );
+  identifyMenu()->setShowFeatureActions( extendedMenu );
+  identifyMenu()->setResultsIfExternalAction( false );
+}
+
+void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasMoveEvent( e );
+}
+
+void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
+  mSelectionHandler->canvasPressEvent( e );
+}
+
+void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+
+  if ( !mSelectionHandler->mQgisInterface )
+  {
+    mSelectionHandler->setIface( reinterpret_cast<QgisInterface *>( QgisApp::instance()->getQgisInterface() ) );
+  }
+
+  if ( mResultsDialog )
+  {
+    mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
+  }
+  else
+  {
+    mSelectionHandler->setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+  }
+
+  mSelectionHandler->canvasReleaseEvent( e );
+  if ( !mSelectionHandler->selectionActive() )
+    handleOnCanvasRelease( e );
+}
+
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
 {
   // Add new result after raster format change
@@ -179,6 +212,7 @@ void QgsMapToolIdentifyAction::activate()
 void QgsMapToolIdentifyAction::deactivate()
 {
   resultsDialog()->deactivate();
+  mSelectionHandler->deactivate();
   QgsMapToolIdentify::deactivate();
 }
 
@@ -210,4 +244,18 @@ void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
   {
     mIdentifyMenu->setExpressionContextScope( clickScope );
   }
+}
+
+
+void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mSelectionHandler->escapeSelection( e ) ) return;
+  QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolIdentifyAction::identifyFromGeometry()
+{
+  QgsPointXY mapPoint = this->toMapCoordinates( mSelectionHandler->initDragPos() );
+  setClickContextScope( mapPoint );
+  this->identifyOnGeometryChange( mapPoint.x(), mapPoint.y(), DefaultQgsSetting );
 }

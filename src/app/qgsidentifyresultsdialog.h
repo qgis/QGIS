@@ -26,6 +26,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmaptoolidentifyaction.h"
 
 #include <QWidget>
 #include <QList>
@@ -38,6 +39,7 @@ class QCloseEvent;
 class QTreeWidgetItem;
 class QAction;
 class QMenu;
+class QToolButton;
 
 class QgsFeatureStore;
 class QgsVectorLayer;
@@ -167,6 +169,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
      */
     QgsExpressionContextScope expressionContextScope() const;
 
+    QgsMapToolSelectionHandler::SelectionMode selectionMode();
+
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -251,6 +255,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
     QgsExpressionContextScope mExpressionContextScope;
+    QToolButton *mSelectModeButton;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
@@ -258,6 +263,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
+
 
     void highlightLayer( QTreeWidgetItem *object );
     void layerProperties( QTreeWidgetItem *object );
@@ -279,6 +285,12 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 
     void showHelp();
+
+    QgsMapToolSelectionHandler::SelectionMode mSelectionMode;
+
+    void setSelectionMode();
+
+    void initSelectionModes();
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

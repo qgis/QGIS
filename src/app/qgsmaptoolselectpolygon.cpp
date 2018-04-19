@@ -16,61 +16,43 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmaptoolselectpolygon.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
+#include "qgsmaptoolselectionhandler.h"
 #include "qgsmapcanvas.h"
 #include "qgis.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
+
+class QgsMapToolSelectionHandler;
 
 
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectPolygon );
+  connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 {
-  delete mRubberBand;
+  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
+  delete mSelectionHandler;
 }
 
 void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand )
-  {
-    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setStrokeColor( mStrokeColor );
-  }
-  if ( e->button() == Qt::LeftButton )
-  {
-    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  }
-  else
-  {
-    if ( mRubberBand->numberOfVertices() > 2 )
-    {
-      QgsGeometry polygonGeom = mRubberBand->asGeometry();
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, polygonGeom, e->modifiers() );
-    }
-    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    delete mRubberBand;
-    mRubberBand = nullptr;
-  }
+  mSelectionHandler->selectPolygonPressEvent( e );
+  //mSelectionHandler->canvasPressEvent( e );
 }
 
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand )
-    return;
+  mSelectionHandler->canvasMoveEvent( e );
+}
 
-  if ( mRubberBand->numberOfVertices() > 0 )
-  {
-    mRubberBand->removeLastPoint( 0 );
-    mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
-  }
+void QgsMapToolSelectPolygon::selectFeatures( Qt::KeyboardModifiers modifiers )
+{
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
 }
 

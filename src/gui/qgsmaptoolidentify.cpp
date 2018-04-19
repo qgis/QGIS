@@ -51,10 +51,11 @@
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
-  , mLastMapUnitsPerPixel( -1.0 )
-  , mCoordinatePrecision( 6 )
 {
+  mIdentifyMenu = new QgsIdentifyMenu( mCanvas );
+  mLastMapUnitsPerPixel = -1.0;
+  mCoordinatePrecision = 6;
+  mSelectionHandler = new QgsMapToolSelectionHandler( mCanvas );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
 
@@ -83,19 +84,18 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   return identify( x, y, mode, layerList, AllLayers );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
-  return identify( x, y, mode, QList<QgsMapLayer *>(), layerType );
+  return identify( x, y, mode, QList<QgsMapLayer *>(), layerType, selectionMode );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   QList<IdentifyResult> results;
 
   mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
-
   mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
 
   if ( mode == DefaultQgsSetting )
@@ -106,7 +106,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == LayerSelection )
   {
-    QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType );
+    QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType, selectionMode );
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
     return mIdentifyMenu->exec( results, globalPos );
   }
@@ -121,8 +121,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     }
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
+    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType, selectionMode );
   }
   else
   {
@@ -152,7 +151,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
-      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
+      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType, selectionMode ) )
       {
         if ( mode == TopDownStopAtFirst )
           break;
@@ -178,7 +177,7 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType )
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
@@ -186,7 +185,11 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), point );
+    if ( mSelectionHandler->selectedGeometry().isNull() )
+    {
+      mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
+    }
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), selectionMode );
   }
   else
   {
@@ -194,11 +197,11 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
+
   if ( !layer || !layer->isSpatial() )
     return false;
-
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
@@ -209,8 +212,16 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
-  commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+  QgsGeometry selectionGeom = mSelectionHandler->selectedGeometry();;
+  QgsPointXY point;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry || selectionGeom.isNull();
+  if ( isSingleClick )
+  {
+    point = selectionGeom.asPoint();
+
+    commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
+    commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+  }
 
   int featureCount = 0;
 
@@ -221,21 +232,30 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   // and then click somewhere off the globe, an exception will be thrown.
   try
   {
-    // create the search rectangle
-    double searchRadius = searchRadiusMU( mCanvas );
-
     QgsRectangle r;
-    r.setXMinimum( point.x() - searchRadius );
-    r.setXMaximum( point.x() + searchRadius );
-    r.setYMinimum( point.y() - searchRadius );
-    r.setYMaximum( point.y() + searchRadius );
-
-    r = toLayerCoordinates( layer, r );
+    if ( isSingleClick )
+    {
+      double sr = searchRadiusMU( mCanvas );
+      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+    }
+    else
+    {
+      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
+    }
 
     QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
+
+
+    QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(),  layer->crs(), mCanvas->mapSettings().transformContext() );
+    if ( ct.isValid() )
+      selectionGeom.transform( ct );
+
     while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    {
+      if ( selectionMode == QgsMapToolSelectionHandler::SelectionMode::SelectSimple || selectionGeom.intersects( f.geometry() ) )
+        featureList << QgsFeature( f );
+    }
   }
   catch ( QgsCsException &cse )
   {
@@ -269,9 +289,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
       continue;
 
     featureCount++;
-
-    derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
-
+    if ( isSingleClick )
+      derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
@@ -286,6 +305,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QApplication::restoreOverrideCursor();
   return featureCount > 0;
+}
+
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
+{
+  mSelectionHandler->setSelectedGeometry( QgsGeometry::fromPointXY( point ) );
+  return identifyVectorLayer( results, layer, QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 }
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )

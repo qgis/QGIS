@@ -28,6 +28,7 @@ class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureStore;
+class QgsRubberBand;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -42,6 +43,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
+
     QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
     ~QgsMapToolIdentifyAction() override;
@@ -58,6 +60,10 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void activate() override;
 
     void deactivate() override;
+
+    void handleOnCanvasRelease( QgsMapMouseEvent *e );
+
+    void identifyOnGeometryChange( int x, int y, IdentifyMode mode );
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
@@ -79,6 +85,11 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
+
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+    //! Method called when
+    void identifyFromGeometry();
 
     friend class TestQgsMapToolIdentifyAction;
 };

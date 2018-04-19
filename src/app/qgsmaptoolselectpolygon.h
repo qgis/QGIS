@@ -21,6 +21,7 @@ email                : jpalmer at linz dot govt dot nz
 
 class QgsMapCanvas;
 class QgsRubberBand;
+class QgsMapToolSelectionHandler;
 
 
 class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
@@ -38,13 +39,8 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   private:
-
-    //! used for storing all of the maps point for the polygon
-    QgsRubberBand *mRubberBand = nullptr;
-
-    QColor mFillColor;
-
-    QColor mStrokeColor;
+    QgsMapToolSelectionHandler *mSelectionHandler;
+    void selectFeatures( Qt::KeyboardModifiers modifiers );
 };
 
 #endif
