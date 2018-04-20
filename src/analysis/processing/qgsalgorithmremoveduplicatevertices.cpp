@@ -70,9 +70,8 @@ QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::create
 
 void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber> tolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
-      0.000001, false, 0, 10000000.0 );
+  std::unique_ptr< QgsProcessingParameterDistance> tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
+      QObject::tr( "Tolerance" ), 0.000001, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

@@ -69,9 +69,9 @@ QList<int> QgsSegmentizeByMaximumDistanceAlgorithm::inputLayerTypes() const
 
 void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > tolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ),
-      QObject::tr( "Maximum offset distance" ), QgsProcessingParameterNumber::Double,
-      1.0, false, 0, 10000000.0 );
+  std::unique_ptr< QgsProcessingParameterDistance > tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ),
+      QObject::tr( "Maximum offset distance" ),
+      1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum offset distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

@@ -67,17 +67,15 @@ QgsSnapToGridAlgorithm *QgsSnapToGridAlgorithm::createInstance() const
 
 void QgsSnapToGridAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber> hSpacing = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "HSPACING" ),
-      QObject::tr( "X Grid Spacing" ), QgsProcessingParameterNumber::Double,
-      1, false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> hSpacing = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "HSPACING" ),
+      QObject::tr( "X Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
   hSpacing->setIsDynamic( true );
   hSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "HSPACING" ), QObject::tr( "X Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   hSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( hSpacing.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber> vSpacing = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "VSPACING" ),
-      QObject::tr( "Y Grid Spacing" ), QgsProcessingParameterNumber::Double,
-      1, false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> vSpacing = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "VSPACING" ),
+      QObject::tr( "Y Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
   vSpacing->setIsDynamic( true );
   vSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VSPACING" ), QObject::tr( "Y Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   vSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterNumber,
+from qgis.core import (QgsProcessingParameterDistance,
                        QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -50,9 +50,9 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         self.interval = None
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
-                                                       self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
-                                                       1, False, 0, 10000000))
+        self.addParameter(QgsProcessingParameterDistance(self.INTERVAL,
+                                                         self.tr('Interval between vertices to add'),
+                                                         1, 'INPUT', False, 0, 10000000))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'
