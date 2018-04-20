@@ -23,6 +23,7 @@
 #include <QPointer>
 #include "qgis_app.h"
 
+class QgisInterface;
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsMapToolSelectionHandler;
@@ -59,6 +60,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void activate() override;
 
     void deactivate() override;
+
+    void setInterface( QgisInterface *iface );
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );

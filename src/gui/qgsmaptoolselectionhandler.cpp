@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 
 
 /// @cond private
@@ -96,19 +97,24 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
 
 
 
-QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode, QgisInterface *iface )
+QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode )
   : QObject()
-  , mQgisInterface( iface )
+  , mCanvas( canvas )
   , mSelectionMode( selectionMode )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
+  , mFillColor( QColor( 254, 178, 76, 63 ) )
+  , mStrokeColor( QColor( 254, 58, 29, 100 ) )
 {
-  mCanvas = canvas;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
 {
   cancel();
+}
+
+void QgsMapToolSelectionHandler::setInterface( QgisInterface *iface )
+{
+  mQgisInterface = iface;
 }
 
 void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -320,6 +326,8 @@ void QgsMapToolSelectionHandler::selectRadiusMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPointXY radiusEdge = e->snapPoint();
 
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( !mSelectionActive )
   {
     mSelectFeatures = true;
@@ -413,6 +421,7 @@ void QgsMapToolSelectionHandler::radiusValueEntered( const double &radius, const
 void QgsMapToolSelectionHandler::cancel()
 {
   deleteDistanceWidget();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
   if ( mSelectionRubberBand )
     mSelectionRubberBand->reset();
   mSelectionActive = false;

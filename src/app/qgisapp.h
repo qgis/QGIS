@@ -40,7 +40,6 @@ class QSystemTrayIcon;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
-class QgisInterface;
 class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
@@ -77,6 +76,7 @@ class QgsMapToolAddFeature;
 class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
+class QgsMapToolSelect;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -691,8 +691,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMap<QString, QModelIndex> getBookmarkIndexMap();
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
-
-    QgisInterface *qgisInterface();
 
   public slots:
     //! save current vector layer
@@ -1965,11 +1963,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mReshapeFeatures = nullptr;
         QgsMapTool *mSplitFeatures = nullptr;
         QgsMapTool *mSplitParts = nullptr;
-        QgsMapTool *mSelect = nullptr;
-        QgsMapTool *mSelectFeatures = nullptr;
-        QgsMapTool *mSelectPolygon = nullptr;
-        QgsMapTool *mSelectFreehand = nullptr;
-        QgsMapTool *mSelectRadius = nullptr;
+        QgsMapToolSelect *mSelectFeatures = nullptr;
+        QgsMapToolSelect *mSelectPolygon = nullptr;
+        QgsMapToolSelect *mSelectFreehand = nullptr;
+        QgsMapToolSelect *mSelectRadius = nullptr;
         QgsMapTool *mVertexAdd = nullptr;
         QgsMapTool *mVertexMove = nullptr;
         QgsMapTool *mVertexDelete = nullptr;

@@ -39,13 +39,14 @@ class QgsMapToolSelectionHandler : QObject
     };
 
     QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
-                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple,
-                                QgisInterface *iface = 0 );
+                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 %Docstring
 constructor
 %End
 
     ~QgsMapToolSelectionHandler();
+
+    void setInterface( QgisInterface *iface );
 
     QgsGeometry selectedGeometry();
 %Docstring

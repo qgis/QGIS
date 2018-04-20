@@ -30,6 +30,7 @@ class QgsDoubleSpinBox;
 class QgsMapCanvas;
 class QgsMapMouseEvent;
 class QgsRubberBand;
+class QgsSnapIndicator;
 
 #ifndef SIP_RUN
 
@@ -104,11 +105,12 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
     //! constructor
     QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
-                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple,
-                                QgisInterface *iface = nullptr );
+                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! desctructor
     ~QgsMapToolSelectionHandler() override;
+
+    void setInterface( QgisInterface *iface );
 
     //! mSelectedGeometry getter
     QgsGeometry selectedGeometry();
@@ -185,6 +187,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
   private:
 
+    QgsMapCanvas *mCanvas = nullptr;
+
     QgisInterface *mQgisInterface = nullptr;
 
     //! the rubberband for selection visualization
@@ -199,7 +203,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
     SelectionMode mSelectionMode;
 
-    QgsMapCanvas *mCanvas = nullptr;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     QPoint mInitDragPos;
 
