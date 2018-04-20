@@ -6,7 +6,8 @@
     <message>
         <source>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithmenbeschreibung&lt;/h2&gt;</translation>
+        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithmenbeschreibung&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>OTB execution console output</source>
@@ -65390,6 +65391,10 @@ Fehler war:%2</translation>
     <message>
         <source>Remove Selected</source>
         <translation>Gewähltes löschen</translation>
+    </message>
+    <message>
+        <source>Add &quot;NULL&quot; value</source>
+        <translation>NULL-Wert hinzufügen</translation>
     </message>
 </context>
 <context>
