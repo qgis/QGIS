@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectionhandler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsMapToolSelectionHandler : QObject
+{
+%Docstring
+ Utility class for handling various methods to create geometry for selection in layers.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolselectionhandler.h"
+%End
+  public:
+
+    enum SelectionMode
+    {
+      //! SelectSimple
+      SelectSimple,
+      //! SelectPolygon
+      SelectPolygon,
+      //! SelectFreehand
+      SelectFreehand,
+      //! SelectRadius
+      SelectRadius
+    };
+
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
+                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+%Docstring
+constructor
+%End
+
+    ~QgsMapToolSelectionHandler();
+
+    void setInterface( QgisInterface *iface );
+%Docstring
+Configures QGIS interface - used to register selection radius widget
+%End
+
+    QgsGeometry selectedGeometry();
+%Docstring
+Returns most recently selected geometry (may be a point or a polygon)
+%End
+
+    SelectionMode selectionMode();
+%Docstring
+Sets the current selection mode
+%End
+    void setSelectionMode( SelectionMode mode );
+%Docstring
+Returns the current selection mode
+%End
+
+    void deactivate();
+%Docstring
+Deactivates handler (when map tool gets deactivated)
+%End
+
+    void canvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Handles mouse move event from map tool
+%End
+    void canvasPressEvent( QgsMapMouseEvent *e );
+%Docstring
+Handles mouse press event from map tool
+%End
+    void canvasReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Handles mouse releasae event from map tool
+%End
+    bool keyReleaseEvent( QKeyEvent *e );
+%Docstring
+Handles escape press event - returns true if the even has been processed
+%End
+
+  signals:
+    void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+%Docstring
+emitted when a new geometry has been picked (selectedGeometry())
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolselectionhandler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

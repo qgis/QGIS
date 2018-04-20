@@ -144,6 +144,7 @@
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip
 %Include qgsmaptoolpan.sip
+%Include qgsmaptoolselectionhandler.sip
 %Include qgsmaptoolzoom.sip
 %Include qgsmaplayerconfigwidget.sip
 %Include qgsmenuheader.sip

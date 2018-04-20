@@ -23,8 +23,10 @@
 #include <QPointer>
 #include "qgis_app.h"
 
+class QgisInterface;
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
+class QgsMapToolSelectionHandler;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureStore;
@@ -59,6 +61,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
+    void setInterface( QgisInterface *iface );
+
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -70,15 +74,22 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
   private slots:
     void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
+    void identifyFromGeometry();
+
   private:
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
+
+    QgsMapToolSelectionHandler *mSelectionHandler = nullptr;
+    bool mShowExtendedMenu = false;
 
     QgsIdentifyResultsDialog *resultsDialog();
 
     QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
+
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
     friend class TestQgsMapToolIdentifyAction;
 };

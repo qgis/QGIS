@@ -339,6 +339,60 @@
     <string>Print Selected HTML Response</string>
    </property>
   </action>
+
+<action name="mActionSelectFeatures">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Features by area or single click</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Features by Polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectFreehand.svg</normaloff>:/images/themes/default/mActionSelectFreehand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Features by Freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRadius.svg</normaloff>:/images/themes/default/mActionSelectRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Features by Radius</string>
+   </property>
+  </action>
+
+
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
