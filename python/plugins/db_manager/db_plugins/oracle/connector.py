@@ -1743,3 +1743,7 @@ class OracleDBConnector(DBConnector):
     def getQueryBuilderDictionary(self):
         from .sql_dictionary import getQueryBuilderDictionary
         return getQueryBuilderDictionary()
+
+    def cancel(self):
+        # how to cancel an Oracle query?
+        pass
