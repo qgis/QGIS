@@ -44,6 +44,7 @@ from qgis.core import (QgsField,
                        QgsProject,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -92,10 +93,9 @@ class RandomPointsPolygons(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
                                                            self.tr('Expression'),
                                                            parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
-                                                       self.tr('Minimum distance between points'),
-                                                       QgsProcessingParameterNumber.Double,
-                                                       0, False, 0, 1000000000))
+        self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
+                                                         self.tr('Minimum distance between points'),
+                                                         0, self.INPUT, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))

@@ -73,13 +73,13 @@ QgsProjectPointCartesianAlgorithm *QgsProjectPointCartesianAlgorithm::createInst
 
 void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > bearing = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), QgsProcessingParameterNumber::Double, false );
+  std::unique_ptr< QgsProcessingParameterNumber > bearing = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), QgsProcessingParameterNumber::Double, 0, false );
   bearing->setIsDynamic( true );
   bearing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Bearing" ), QObject::tr( "Bearing (degrees from North)" ), QgsPropertyDefinition::Double ) );
   bearing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( bearing.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > distance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsProcessingParameterNumber::Double, false );
+  std::unique_ptr< QgsProcessingParameterDistance > distance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1, QStringLiteral( "INPUT" ), false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Projection distance" ), QgsPropertyDefinition::Double ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

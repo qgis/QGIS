@@ -29,6 +29,7 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber,
@@ -61,8 +62,8 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                                                                QgsProcessing.TypeVectorLine,
                                                                QgsProcessing.TypeVectorPolygon]))
 
-        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE, self.tr('Tolerance (layer units)'), parentParameterName=self.INPUT,
+                                                         minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
 
         self.modes = [self.tr('Prefer aligning nodes, insert extra vertices where required'),
                       self.tr('Prefer closest point, insert extra vertices where required'),

@@ -42,6 +42,7 @@ from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterDefinition)
@@ -79,10 +80,9 @@ class RandomPointsLayer(QgisAlgorithm):
                                                        self.tr('Number of points'),
                                                        QgsProcessingParameterNumber.Integer,
                                                        1, False, 1, 1000000000))
-        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
-                                                       self.tr('Minimum distance between points'),
-                                                       QgsProcessingParameterNumber.Double,
-                                                       0, False, 0, 1000000000))
+        self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
+                                                         self.tr('Minimum distance between points'),
+                                                         0, self.INPUT, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))

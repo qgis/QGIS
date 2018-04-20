@@ -33,6 +33,7 @@ from qgis.core import (QgsFeatureSink,
                        QgsRectangle,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
@@ -59,12 +60,12 @@ class PointsDisplacement(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterNumber(self.PROXIMITY,
-                                                       self.tr('Minimum distance to other points'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00001, defaultValue=0.00015))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Displacement distance'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00001, defaultValue=0.00015))
+        self.addParameter(QgsProcessingParameterDistance(self.PROXIMITY,
+                                                         self.tr('Minimum distance to other points'), parentParameterName='INPUT',
+                                                         minValue=0.00001, defaultValue=0.00015))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Displacement distance'), parentParameterName='INPUT',
+                                                         minValue=0.00001, defaultValue=0.00015))
         self.addParameter(QgsProcessingParameterBoolean(self.HORIZONTAL,
                                                         self.tr('Horizontal distribution for two point case')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.TypeVectorPoint))

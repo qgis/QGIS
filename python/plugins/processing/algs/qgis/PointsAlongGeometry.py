@@ -37,6 +37,7 @@ from qgis.core import (QgsFeature,
                        QgsField,
                        QgsProcessing,
                        QgsProcessingUtils,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
@@ -72,8 +73,8 @@ class PointsAlongGeometry(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=1.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance'), parentParameterName=self.INPUT, minValue=0.0, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.START_OFFSET,
                                                        self.tr('Start offset'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.END_OFFSET,

@@ -279,4 +279,8 @@ class DistanceInputPanel(NumberInputPanel):
             units = layer.crs().mapUnits()
         elif isinstance(value, QgsCoordinateReferenceSystem):
             units = value.mapUnits()
+        elif isinstance(value, str):
+            crs = QgsCoordinateReferenceSystem(value)
+            if crs.isValid():
+                units = crs.mapUnits()
         self.setUnits(units)
