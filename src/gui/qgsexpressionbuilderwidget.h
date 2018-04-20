@@ -307,6 +307,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   private slots:
+    void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
     void showContextMenu( QPoint );
     void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
@@ -352,10 +353,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void showEvent( QShowEvent *e ) override;
 
   private:
+    int FUNCTION_MARKER_ID = 25;
+    void createMarkers( const QgsExpressionNode *node );
+    void clearFunctionMarkers();
     void clearErrors();
     void runPythonCode( const QString &code );
     void updateFunctionTree();
     void fillFieldValues( const QString &fieldName, int countLimit );
+    QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
 

@@ -398,6 +398,19 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
          */
         QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
 
+        /**
+         * The expression that makes the WHEN part of the condition.
+         * \return The expression node that makes the WHEN part of the condition check.
+         */
+        QgsExpressionNode *whenExp() const { return mWhenExp; }
+
+        /**
+         * The expression node that makes the THEN result part of the condition.
+         * \return The expression node that makes the THEN result part of the condition.
+         */
+
+        QgsExpressionNode *thenExp() const { return mThenExp; }
+
       private:
 #ifdef SIP_RUN
         WhenThen( const QgsExpressionNodeCondition::WhenThen &rh );
@@ -428,6 +441,18 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
     QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
     QString dump() const override;
+
+    /**
+     * The list of WHEN THEN expression parts of the expression.
+     * \return The list of WHEN THEN expression parts of the expression.
+     */
+    WhenThenList conditions() const { return mConditions; }
+
+    /**
+     * The ELSE expression used for the condition.
+     * \return The ELSE expression used for the condition.
+     */
+    QgsExpressionNode *elseExp() const { return mElseExp; }
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
