@@ -305,7 +305,7 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
   if ( to == -1 ) to = mRenderer->ranges().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
+    QgsDebugMsg( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t ) t--;
@@ -356,7 +356,6 @@ void QgsGraduatedSymbolRendererModel::sort( int column, Qt::SortOrder order )
   }
   emit rowsMoved();
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
-  QgsDebugMsg( "Done" );
 }
 
 void QgsGraduatedSymbolRendererModel::updateSymbology( bool resetModel )
@@ -444,11 +443,11 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer = QgsGraduatedSymbolRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsGraduatedSymbolRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsGraduatedSymbolRenderer( QLatin1String( "" ), QgsRangeList() );
+    mRenderer = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
   }
 
   // setup user interface
@@ -485,7 +484,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
-  mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  mGraduatedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
 
   methodComboBox->blockSignals( true );
   methodComboBox->addItem( QStringLiteral( "Color" ) );
@@ -536,7 +535,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   btnAdvanced->setMenu( advMenu );
 
   mHistogramWidget->setLayer( mLayer );
-  mHistogramWidget->setRenderer( mRenderer );
+  mHistogramWidget->setRenderer( mRenderer.get() );
   connect( mHistogramWidget, &QgsGraduatedHistogramWidget::rangesModified, this, &QgsGraduatedSymbolRendererWidget::refreshRanges );
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), mHistogramWidget, &QgsHistogramWidget::setSourceFieldExp );
 
@@ -549,20 +548,18 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
   mGraduatedSymbol->setOutputUnit( mSizeUnitWidget->unit() );
   mGraduatedSymbol->setMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
   updateGraduatedSymbolIcon();
-  mRenderer->updateSymbols( mGraduatedSymbol );
+  mRenderer->updateSymbols( mGraduatedSymbol.get() );
   refreshSymbolView();
 }
 
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
-  delete mRenderer;
   delete mModel;
-  delete mGraduatedSymbol;
 }
 
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -622,12 +619,11 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   // set source symbol
   if ( mRenderer->sourceSymbol() )
   {
-    delete mGraduatedSymbol;
-    mGraduatedSymbol = mRenderer->sourceSymbol()->clone();
+    mGraduatedSymbol.reset( mRenderer->sourceSymbol()->clone() );
     updateGraduatedSymbolIcon();
   }
 
-  mModel->setRenderer( mRenderer );
+  mModel->setRenderer( mRenderer.get() );
   viewGraduated->setModel( mModel );
 
   if ( mGraduatedSymbol )
@@ -756,8 +752,7 @@ void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *co
 void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
 {
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  delete mGraduatedSymbol;
-  mGraduatedSymbol = dlg->symbol()->clone();
+  mGraduatedSymbol.reset( dlg->symbol()->clone() );
 
   mSizeUnitWidget->blockSignals( true );
   mSizeUnitWidget->setUnit( mGraduatedSymbol->outputUnit() );
@@ -786,7 +781,7 @@ void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
   else
   {
     updateGraduatedSymbolIcon();
-    mRenderer->updateSymbols( mGraduatedSymbol );
+    mRenderer->updateSymbols( mGraduatedSymbol.get() );
   }
 
   refreshSymbolView();
@@ -866,14 +861,14 @@ void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
     return;
 
   mRenderer->updateColorRamp( ramp.release() );
-  mRenderer->updateSymbols( mGraduatedSymbol );
+  mRenderer->updateSymbols( mGraduatedSymbol.get() );
   refreshSymbolView();
 }
 
 void QgsGraduatedSymbolRendererWidget::reapplySizes()
 {
   mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
-  mRenderer->updateSymbols( mGraduatedSymbol );
+  mRenderer->updateSymbols( mGraduatedSymbol.get() );
   refreshSymbolView();
 }
 
@@ -893,7 +888,7 @@ void QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon()
   if ( !mGraduatedSymbol )
     return;
 
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mGraduatedSymbol, btnChangeGraduatedSymbol->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mGraduatedSymbol.get(), btnChangeGraduatedSymbol->iconSize() );
   btnChangeGraduatedSymbol->setIcon( icon );
 }
 
@@ -1005,7 +1000,7 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
 
 void QgsGraduatedSymbolRendererWidget::addClass()
 {
-  mModel->addClass( mGraduatedSymbol );
+  mModel->addClass( mGraduatedSymbol.get() );
   mHistogramWidget->refresh();
 }
 
@@ -1147,7 +1142,7 @@ void QgsGraduatedSymbolRendererWidget::refreshSymbolView()
 
 void QgsGraduatedSymbolRendererWidget::showSymbolLevels()
 {
-  showSymbolLevelsDialog( mRenderer );
+  showSymbolLevelsDialog( mRenderer.get() );
 }
 
 void QgsGraduatedSymbolRendererWidget::rowsMoved()
@@ -1190,7 +1185,7 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol ); // this should be only enabled for marker symbols
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol.get() ); // this should be only enabled for marker symbols
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {

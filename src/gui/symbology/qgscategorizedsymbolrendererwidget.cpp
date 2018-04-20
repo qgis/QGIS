@@ -304,7 +304,7 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
   if ( to == -1 ) to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
+    QgsDebugMsg( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t ) t--;
@@ -355,7 +355,6 @@ void QgsCategorizedSymbolRendererModel::sort( int column, Qt::SortOrder order )
     mRenderer->sortByLabel( order );
   }
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
-  QgsDebugMsg( "Done" );
 }
 
 void QgsCategorizedSymbolRendererModel::updateSymbology()
@@ -400,11 +399,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer = QgsCategorizedSymbolRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsCategorizedSymbolRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsCategorizedSymbolRenderer( QLatin1String( "" ), QgsCategoryList() );
+    mRenderer = qgis::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
   }
 
   QString attrName = mRenderer->classAttribute();
@@ -430,10 +429,10 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
     btnColorRamp->setRandomColorRamp();
   }
 
-  mCategorizedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  mCategorizedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
 
   mModel = new QgsCategorizedSymbolRendererModel( this );
-  mModel->setRenderer( mRenderer );
+  mModel->setRenderer( mRenderer.get() );
 
   // update GUI from renderer
   updateUiFromRenderer();
@@ -481,9 +480,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
 {
-  delete mRenderer;
   delete mModel;
-  delete mCategorizedSymbol;
 }
 
 void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
@@ -503,8 +500,7 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
   // set source symbol
   if ( mRenderer->sourceSymbol() )
   {
-    delete mCategorizedSymbol;
-    mCategorizedSymbol = mRenderer->sourceSymbol()->clone();
+    mCategorizedSymbol.reset( mRenderer->sourceSymbol()->clone() );
     updateCategorizedSymbolIcon();
   }
 
@@ -517,7 +513,7 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
 
 QgsFeatureRenderer *QgsCategorizedSymbolRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
@@ -559,7 +555,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 
 void QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon()
 {
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mCategorizedSymbol, btnChangeCategorizedSymbol->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mCategorizedSymbol.get(), btnChangeCategorizedSymbol->iconSize() );
   btnChangeCategorizedSymbol->setIcon( icon );
 }
 
@@ -675,7 +671,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 #endif
 
   QgsCategoryList cats;
-  _createCategories( cats, unique_vals, mCategorizedSymbol );
+  _createCategories( cats, unique_vals, mCategorizedSymbol.get() );
   bool deleteExisting = false;
 
   if ( !mOldClassificationAttribute.isEmpty() &&
@@ -738,7 +734,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   */
 
   // recreate renderer
-  QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
+  std::unique_ptr< QgsCategorizedSymbolRenderer > r = qgis::make_unique< QgsCategorizedSymbolRenderer >( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( ramp )
@@ -746,10 +742,9 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 
   if ( mModel )
   {
-    mModel->setRenderer( r );
+    mModel->setRenderer( r.get() );
   }
-  delete mRenderer;
-  mRenderer = r;
+  mRenderer = std::move( r );
   if ( ! keepExistingColors && ramp )
     applyColorRamp();
   emit widgetChanged();
@@ -859,7 +854,7 @@ void QgsCategorizedSymbolRendererWidget::refreshSymbolView()
 
 void QgsCategorizedSymbolRendererWidget::showSymbolLevels()
 {
-  showSymbolLevelsDialog( mRenderer );
+  showSymbolLevelsDialog( mRenderer.get() );
 }
 
 void QgsCategorizedSymbolRendererWidget::rowsMoved()
@@ -953,8 +948,7 @@ void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *
 void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
 {
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  delete mCategorizedSymbol;
-  mCategorizedSymbol = dlg->symbol()->clone();
+  mCategorizedSymbol.reset( dlg->symbol()->clone() );
 
   updateCategorizedSymbolIcon();
 
@@ -983,7 +977,7 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
     return;
   }
 
-  mRenderer->updateSymbols( mCategorizedSymbol );
+  mRenderer->updateSymbols( mCategorizedSymbol.get() );
   emit widgetChanged();
 }
 
@@ -1040,7 +1034,7 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
 
 void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mCategorizedSymbol ); // this should be only enabled for marker symbols
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mCategorizedSymbol.get() ); // this should be only enabled for marker symbols
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {

@@ -180,9 +180,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsCategorizedSymbolRenderer > mRenderer;
 
-    QgsSymbol *mCategorizedSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererModel *mModel = nullptr;
 
