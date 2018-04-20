@@ -21,7 +21,7 @@
 
 /**
  * \ingroup 3d
- * Class for storage of 3D vectors similar to QgsVector3D, with the difference that it uses double precision
+ * Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
  * instead of single precision floating point numbers.
  *
  * \since QGIS 3.0
@@ -76,47 +76,48 @@ class CORE_EXPORT QgsVector3D
     }
 
     //! Returns a new vector multiplied by scalar
-    QgsVector3D operator *(const double factor) const
+    QgsVector3D operator *( const double factor ) const
     {
 
-        return QgsVector3D( mX * factor, mY * factor, mZ * factor);
+      return QgsVector3D( mX * factor, mY * factor, mZ * factor );
     }
 
     //! Returns a new vector divided by scalar
-    QgsVector3D operator /( const double factor) const
+    QgsVector3D operator /( const double factor ) const
     {
-        return QgsVector3D( mX / factor, mY / factor, mZ / factor);
+      return QgsVector3D( mX / factor, mY / factor, mZ / factor );
     }
 
     //! Returns the dot product of two vectors
-    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2)
+    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2 )
     {
-            return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z();
+      return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z();
     }
 
     //! Returns the cross product of two vectors
-    static QgsVector3D crossProduct(const QgsVector3D& v1, const QgsVector3D& v2)
+    static QgsVector3D crossProduct( const QgsVector3D &v1, const QgsVector3D &v2 )
     {
-        return QgsVector3D(v1.y() * v2.z() - v1.z() * v2.y(),
-                        v1.z() * v2.x() - v1.x() * v2.z(),
-                        v1.x() * v2.y() - v1.y() * v2.x());
+      return QgsVector3D( v1.y() * v2.z() - v1.z() * v2.y(),
+                          v1.z() * v2.x() - v1.x() * v2.z(),
+                          v1.x() * v2.y() - v1.y() * v2.x() );
     }
 
     //! Returns the length of the vector
     double length() const
     {
-        return sqrt(mX * mX + mY * mY + mZ * mZ);
+      return sqrt( mX * mX + mY * mY + mZ * mZ );
     }
 
-    //! Normalizes the currect vector in place.
+    //! Normalizes the current vector in place.
     void normalize()
     {
-        double len = length();
-        if ( !qgsDoubleNear( len, 0.0 ) ) {
-            mX /= len;
-            mY /= len;
-            mZ /= len;
-        }
+      double len = length();
+      if ( !qgsDoubleNear( len, 0.0 ) )
+      {
+        mX /= len;
+        mY /= len;
+        mZ /= len;
+      }
     }
 
 
