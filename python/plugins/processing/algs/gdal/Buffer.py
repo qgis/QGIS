@@ -26,6 +26,7 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -57,11 +58,11 @@ class Buffer(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Buffer distance'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0,
-                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Buffer distance'),
+                                                         parentParameterName=self.INPUT,
+                                                         minValue=0.0,
+                                                         defaultValue=10.0))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Dissolve by attribute'),
                                                       None,
