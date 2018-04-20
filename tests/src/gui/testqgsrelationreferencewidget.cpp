@@ -46,6 +46,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
+    void testSetGetForeignKey();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -129,6 +130,8 @@ void TestQgsRelationReferenceWidget::init()
 
 void TestQgsRelationReferenceWidget::cleanup()
 {
+  QgsProject::instance()->removeMapLayer( mLayer1.get() );
+  QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilter()
@@ -136,7 +139,8 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
-  QgsRelationReferenceWidget w( new QWidget() );
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
   w.setRelation( *mRelation, true );
@@ -285,6 +289,23 @@ void TestQgsRelationReferenceWidget::testInvalidRelation()
   // initWidget with an invalid relation
   QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
   ww.initWidget( nullptr );
+}
+
+void TestQgsRelationReferenceWidget::testSetGetForeignKey()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  w.setForeignKey( 11 );
+  QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+
+  w.setForeignKey( 12 );
+  QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+
+  w.setForeignKey( QVariant( QVariant::Int ) );
+  Q_ASSERT( w.foreignKey().isNull() );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
