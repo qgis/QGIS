@@ -26,7 +26,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextformatwidget.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsfontbutton.h"
 
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )
@@ -34,8 +34,9 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mLegendTreeView = new QTreeView;
   mLegendTreeView->setRootIsDecorated( false );
 
-  mTextOnSymbolFormatButton = new QPushButton( tr( "Set Text Format…" ) );
-  connect( mTextOnSymbolFormatButton, &QPushButton::clicked, this, &QgsVectorLayerLegendWidget::openTextFormatWidget );
+  mTextOnSymbolFormatButton = new QgsFontButton( nullptr, tr( "Legend Text Format" ) );
+  mTextOnSymbolFormatButton->setText( tr( "Text Format" ) );
+  mTextOnSymbolFormatButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mTextOnSymbolFromExpressionButton = new QPushButton( tr( "Set Labels from Expression…" ) );
   connect( mTextOnSymbolFromExpressionButton, &QPushButton::clicked, this, &QgsVectorLayerLegendWidget::labelsFromExpression );
@@ -45,21 +46,29 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   QHBoxLayout *buttonsLayout = new QHBoxLayout;
   buttonsLayout->addWidget( mTextOnSymbolFormatButton );
   buttonsLayout->addWidget( mTextOnSymbolFromExpressionButton );
+  buttonsLayout->addStretch();
 
   QVBoxLayout *groupLayout = new QVBoxLayout;
   groupLayout->addWidget( mLegendTreeView );
   groupLayout->addLayout( buttonsLayout );
 
-  mTextOnSymbolGroupBox->setTitle( tr( "Text on Symbols" ) );
+  mTextOnSymbolGroupBox->setTitle( tr( "Text on symbols" ) );
   mTextOnSymbolGroupBox->setCheckable( true );
   mTextOnSymbolGroupBox->setLayout( groupLayout );
-  mTextOnSymbolGroupBox->setCollapsed( true );
+  mTextOnSymbolGroupBox->setCollapsed( false );
 
   QVBoxLayout *layout = new QVBoxLayout;
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mTextOnSymbolGroupBox );
   setLayout( layout );
 }
 
+void QgsVectorLayerLegendWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mCanvas = canvas;
+  mTextOnSymbolFormatButton->setMapCanvas( mCanvas );
+}
 
 void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 {
@@ -70,7 +79,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
     return;
 
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
-  mTextOnSymbolTextFormat = legend->textOnSymbolTextFormat();
+  mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
 }
 
@@ -116,7 +125,7 @@ void QgsVectorLayerLegendWidget::applyToLayer()
 {
   QgsDefaultVectorLayerLegend *legend = new QgsDefaultVectorLayerLegend( mLayer );
   legend->setTextOnSymbolEnabled( mTextOnSymbolGroupBox->isChecked() );
-  legend->setTextOnSymbolTextFormat( mTextOnSymbolTextFormat );
+  legend->setTextOnSymbolTextFormat( mTextOnSymbolFormatButton->textFormat() );
 
   QHash<QString, QString> content;
   if ( QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mLegendTreeView->model() ) )
@@ -133,25 +142,6 @@ void QgsVectorLayerLegendWidget::applyToLayer()
 
   mLayer->setLegend( legend );
 }
-
-
-void QgsVectorLayerLegendWidget::openTextFormatWidget()
-{
-  QgsTextFormatWidget *textOnSymbolFormatWidget = new QgsTextFormatWidget( mTextOnSymbolTextFormat );
-  QDialogButtonBox *dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  QVBoxLayout *layout = new QVBoxLayout;
-  layout->addWidget( textOnSymbolFormatWidget );
-  layout->addWidget( dialogButtonBox );
-  QDialog dlg;
-  connect( dialogButtonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-  connect( dialogButtonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  dlg.setLayout( layout );
-  if ( !dlg.exec() )
-    return;
-
-  mTextOnSymbolTextFormat = textOnSymbolFormatWidget->format();
-}
-
 
 void QgsVectorLayerLegendWidget::labelsFromExpression()
 {
