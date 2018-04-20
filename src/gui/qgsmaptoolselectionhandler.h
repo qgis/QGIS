@@ -107,40 +107,39 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
     QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
                                 QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
-    //! desctructor
+    //! destructor
     ~QgsMapToolSelectionHandler() override;
 
+    //! Configures QGIS interface - used to register selection radius widget
     void setInterface( QgisInterface *iface );
 
-    //! mSelectedGeometry getter
+    //! Returns most recently selected geometry (may be a point or a polygon)
     QgsGeometry selectedGeometry();
-    //! mSelectedGeometry setter
-    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
-    //! mSelectionMode getter
+    //! Sets the current selection mode
     SelectionMode selectionMode();
-    //! mSelectionMode setter
+    //! Returns the current selection mode
     void setSelectionMode( SelectionMode mode );
 
     //! Deactivates handler (when map tool gets deactivated)
     void deactivate();
 
-    //! Overridden mouse move event
+    //! Handles mouse move event from map tool
     void canvasMoveEvent( QgsMapMouseEvent *e );
-    //! Overridden mouse press event
+    //! Handles mouse press event from map tool
     void canvasPressEvent( QgsMapMouseEvent *e );
-    //! Overridden mouse releasae event
+    //! Handles mouse releasae event from map tool
     void canvasReleaseEvent( QgsMapMouseEvent *e );
-    //! Cancel selection - handles escape press event
+    //! Handles escape press event - returns true if the even has been processed
     bool keyReleaseEvent( QKeyEvent *e );
 
   signals:
-    //! emitted when mSelectedGeometry has been changed
+    //! emitted when a new geometry has been picked (selectedGeometry())
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private slots:
     //! update the rubber band from the input widget
-    void updateRubberband( const double &radius );
+    void updateRadiusRubberband( const double &radius );
 
     /**
      * triggered when the user input widget has a new value
@@ -153,29 +152,19 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
   private:
 
-    //! Mouse move event handling for simple selection
     void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
-    //! Mouse release event handling for simple selection
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
-    //! Mouse press event handling for simple selection
-    void selectFeaturesPressEvent();
+    void selectFeaturesPressEvent( QgsMapMouseEvent *e );
 
-    //! Mouse move event handling for polygon selection
     void selectPolygonMoveEvent( QgsMapMouseEvent *e );
-    //! Mouse press event handling for polygon selection
     void selectPolygonPressEvent( QgsMapMouseEvent *e );
 
-    //! Mouse move event handling for freehand selection
     void selectFreehandMoveEvent( QgsMapMouseEvent *e );
-    //! Mouse press event handling for freehand selection
     void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
 
-    //! Mouse move event handling for radius selection
     void selectRadiusMoveEvent( QgsMapMouseEvent *e );
-    //! Mouse press event handling for radius selection
     void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
 
-    //! Initialization of the rubberband
     void initRubberBand();
 
     QgsPointXY toMapCoordinates( QPoint point );
@@ -185,41 +174,40 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
+    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+
   private:
 
     QgsMapCanvas *mCanvas = nullptr;
 
+    //! QGIS interface - used to register selection radius widget
     QgisInterface *mQgisInterface = nullptr;
 
     //! the rubberband for selection visualization
-    QgsRubberBand *mSelectionRubberBand = nullptr;
+    std::unique_ptr<QgsRubberBand> mSelectionRubberBand;
 
-    //! stores exact selection geometry
+    //! Stores the most recent geometry (in map coordinates)
     QgsGeometry mSelectionGeometry;
 
+    //! Whether a geometry is being picked right now
     bool mSelectionActive = false;
-
-    bool mSelectFeatures = false;
 
     SelectionMode mSelectionMode;
 
+    //! Snap indicator used in radius selection mode
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
+    //! Initial point (in screen coordinates) when using simple selection
     QPoint mInitDragPos;
 
-    //! Center point for the radius
+    //! Center point for the radius when using radius selection
     QgsPointXY mRadiusCenter;
 
     //! Shows current angle value and allows numerical editing
     QgsDistanceWidget *mDistanceWidget = nullptr;
 
     QColor mFillColor;
-
     QColor mStrokeColor;
-
-    //! to destinguish right click for finishing selection and identify extedned menu
-    bool mJustFinishedSelection = false;
-
 };
 
 #endif

@@ -37,6 +37,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
+    void deactivate() override;
 
   private slots:
     void selectFeatures( Qt::KeyboardModifiers modifiers );

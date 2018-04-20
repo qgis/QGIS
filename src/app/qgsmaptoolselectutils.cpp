@@ -65,12 +65,10 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRe
   }
 }
 
-void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
-    QgsVectorLayer *vlayer,
-    QPoint point )
+QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsVectorLayer *vlayer )
 {
   int boxSize = 0;
-  if ( vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !vlayer || vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -81,10 +79,12 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
     //otherwise just use the click point for polys
     boxSize = 1;
   }
-  selectRect.setLeft( point.x() - boxSize );
-  selectRect.setRight( point.x() + boxSize );
-  selectRect.setTop( point.y() - boxSize );
-  selectRect.setBottom( point.y() + boxSize );
+
+  const QgsMapToPixel *transform = canvas->getCoordinateTransform();
+  QgsPointXY point = transform->transform( mapPoint );
+  QgsPointXY ll = transform->toMapCoordinates( point.x() - boxSize, point.y() + boxSize );
+  QgsPointXY ur = transform->toMapCoordinates( point.x() + boxSize, point.y() - boxSize );
+  return QgsRectangle( ll, ur );
 }
 
 void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )

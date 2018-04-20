@@ -75,39 +75,21 @@ void QgsMapToolSelect::keyReleaseEvent( QKeyEvent *e )
   QgsMapTool::keyReleaseEvent( e );
 }
 
+void QgsMapToolSelect::deactivate()
+{
+  mSelectionHandler->deactivate();
+  QgsMapTool::deactivate();
+}
+
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
-  if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple && mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+  if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
+       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
   {
     QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-    if ( !vlayer )
-      return;
-
-    QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
-    double sr = searchRadiusMU( mCanvas );
-    QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
-    mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ), modifiers );
+    QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
+    QgsMapToolSelectUtils::selectSingleFeature( mCanvas, QgsGeometry::fromRect( r ), modifiers );
   }
-
-  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
+  else
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
 }
-
-
-#if 0
-void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
-{
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( !vlayer )
-    return;
-
-  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  rubberBand.setFillColor( mFillColor );
-  rubberBand.setStrokeColor( mStrokeColor );
-  QRect selectRect( 0, 0, 0, 0 );
-  QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QgsGeometry selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers() );
-  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
-}
-#endif
