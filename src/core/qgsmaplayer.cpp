@@ -1166,7 +1166,6 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
 {
   QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
-  QgsDebugMsg( "loadNamedProperty" );
   resultFlag = false;
 
   QDomDocument myDocument( QStringLiteral( "qgis" ) );

@@ -416,7 +416,9 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   int index = 0;
   for ( const Entry &entry : entries )
   {
-    if ( entry.identifierValue == extraIdentifierValue && entry.identifierValue.isNull() == extraIdentifierValue.isNull() && entry.identifierValue.isValid() == extraIdentifierValue.isValid() )
+    if ( entry.identifierValue == extraIdentifierValue
+         && entry.identifierValue.isNull() == extraIdentifierValue.isNull()
+         && entry.identifierValue.isValid() == extraIdentifierValue.isValid() )
     {
       setExtraIdentifierValueIndex( index );
       break;
@@ -434,6 +436,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
     else
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();
+
     setExtraIdentifierValueIndex( 0 );
 
     reloadCurrentFeature();
