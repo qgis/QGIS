@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
   * Responsible for reading native mesh data
   *
   * \see QgsMeshSource
-  *
+  * \since QGIS 3.2
   */
 class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshSource
 {

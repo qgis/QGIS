@@ -26,12 +26,12 @@ bool QgsMeshMemoryDataProvider::isValid() const
 
 QString QgsMeshMemoryDataProvider::name() const
 {
-  return "mesh_memory";
+  return TEXT_PROVIDER_KEY;
 }
 
 QString QgsMeshMemoryDataProvider::description() const
 {
-  return "memory data provider for mesh layer";
+  return TEXT_PROVIDER_DESCRIPTION;
 }
 
 QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
@@ -41,7 +41,6 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
 
 QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri )
   : QgsMeshDataProvider( uri )
-  , mIsValid( false )
 {
   mIsValid = splitSections( uri );
 }
@@ -67,7 +66,7 @@ QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QStr
 
 bool QgsMeshMemoryDataProvider::splitSections( const QString &uri )
 {
-  QStringList sections = uri.split( "---", QString::SkipEmptyParts );
+  const QStringList sections = uri.split( QStringLiteral( "---" ), QString::SkipEmptyParts );
   if ( sections.size() != 2 )
   {
     setError( QgsError( QStringLiteral( "Invalid mesh definition, does not contain 2 sections" ),
@@ -85,10 +84,10 @@ bool QgsMeshMemoryDataProvider::addVertices( const QString &def )
 {
   QVector<QgsMeshVertex> vertices;
 
-  QStringList verticesCoords = def.split( "\n", QString::SkipEmptyParts );
+  const QStringList verticesCoords = def.split( '\n', QString::SkipEmptyParts );
   for ( int i = 0; i < verticesCoords.size(); ++i )
   {
-    QStringList coords = verticesCoords[i].split( ",", QString::SkipEmptyParts );
+    const QStringList coords = verticesCoords[i].split( ',', QString::SkipEmptyParts );
     if ( coords.size() != 2 )
     {
       setError( QgsError( QStringLiteral( "Invalid mesh definition, vertex definition does not contain x, y" ),
@@ -109,10 +108,10 @@ bool QgsMeshMemoryDataProvider::addFaces( const QString &def )
 {
   QVector<QgsMeshFace> faces;
 
-  QStringList facesVertices = def.split( "\n", QString::SkipEmptyParts );
+  const QStringList facesVertices = def.split( '\n', QString::SkipEmptyParts );
   for ( int i = 0; i < facesVertices.size(); ++i )
   {
-    QStringList vertices = facesVertices[i].split( ",", QString::SkipEmptyParts );
+    const QStringList vertices = facesVertices[i].split( ',', QString::SkipEmptyParts );
     if ( vertices.size() < 3 )
     {
       setError( QgsError( QStringLiteral( "Invalid mesh definition, face must contain at least 3 vertices" ),

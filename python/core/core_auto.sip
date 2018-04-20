@@ -377,6 +377,8 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasterprojector.sip
+%Include mesh/qgsmeshdataprovider.sip
+%Include mesh/qgsmeshlayer.sip
 %Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgspoint.sip
@@ -434,6 +436,3 @@
 %Include qgsuserprofilemanager.sip
 %Include symbology/qgsarrowsymbollayer.sip
 %Include qgsuserprofile.sip
-%Include mesh/qgsmeshdataprovider.sip
-%Include mesh/qgsmeshlayer.sip
-
