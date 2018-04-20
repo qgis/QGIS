@@ -303,7 +303,6 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
   qgsmaptoolselectionhandler.cpp
-  qgsmaptoolselectutils.cpp
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
   qgsmenuheader.cpp
@@ -749,7 +748,6 @@ SET(QGIS_GUI_HDRS
   qgsmaplayerconfigwidgetfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
-  qgsmaptoolselectutils.h
   qgsrubberband.h
   qgssnapindicator.h
   qgssqlcomposerdialog.h

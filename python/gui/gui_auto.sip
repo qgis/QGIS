@@ -13,7 +13,6 @@
 %Include qgsmaplayerconfigwidgetfactory.sip
 %Include qgsmapmouseevent.sip
 %Include qgsmaptip.sip
-%Include qgsmaptoolselectutils.sip
 %Include qgsrubberband.sip
 %Include qgssnapindicator.sip
 %Include qgstablewidgetitem.sip

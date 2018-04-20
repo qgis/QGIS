@@ -110,6 +110,10 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
 
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
+  resultsDialog()->clear();
+  connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
+  connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
   QgsGeometry geometry = mSelectionHandler->selectedGeometry();
   bool isSinglePoint = geometry.type() == QgsWkbTypes::PointGeometry;
 
@@ -120,18 +124,10 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
-  bool extendedMenu = false;
-  if ( isSinglePoint ) // && ( e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton )  // TODO: figure out
-  {
-    extendedMenu = true;
-  }
+  bool extendedMenu = isSinglePoint && mShowExtendedMenu;
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
-
-  resultsDialog()->clear();
-  connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
-  connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers );
 
@@ -176,7 +172,9 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  mShowExtendedMenu = e->modifiers() == Qt::ShiftModifier || e->button() == Qt::RightButton;
   mSelectionHandler->canvasReleaseEvent( e );
+  mShowExtendedMenu = false;
 }
 
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )

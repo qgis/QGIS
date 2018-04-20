@@ -64,11 +64,11 @@ void QgsMapToolSelectFeatures::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
   if ( mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
   {
-    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas, QgisApp::instance()->messageBar() );
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
     QgsPointXY point = mSelectionHandler->selectedGeometry().asPoint();
     double sr = searchRadiusMU( mCanvas );
     QgsRectangle r = toLayerCoordinates( vlayer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
     mSelectionHandler->setSelectedGeometry( QgsGeometry::fromRect( r ), modifiers );
   }
-  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers, QgisApp::instance()->messageBar() );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
 }

@@ -176,18 +176,12 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
     //! Initialization of the rubberband
     void initRubberBand();
 
-    //! mRadiusCenter getter
-    QgsPointXY radiusCenter() const;
-
     QgsPointXY toMapCoordinates( QPoint point );
 
     void createDistanceWidget();
     void deleteDistanceWidget();
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
-
-    //! perform selection using radius from rubberband
-    void selectFromRubberband( const Qt::KeyboardModifiers &modifiers );
 
   private:
 

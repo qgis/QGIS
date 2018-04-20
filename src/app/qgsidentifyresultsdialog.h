@@ -26,7 +26,6 @@
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
-#include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolselectionhandler.h"
 
 #include <QWidget>
@@ -40,7 +39,6 @@ class QCloseEvent;
 class QTreeWidgetItem;
 class QAction;
 class QMenu;
-class QToolButton;
 
 class QgsFeatureStore;
 class QgsVectorLayer;

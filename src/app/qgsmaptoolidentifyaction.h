@@ -77,7 +77,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
 
-    QgsMapToolSelectionHandler *mSelectionHandler;
+    QgsMapToolSelectionHandler *mSelectionHandler = nullptr;
+    bool mShowExtendedMenu = false;
 
     QgsIdentifyResultsDialog *resultsDialog();
 

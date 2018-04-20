@@ -101,6 +101,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselectfreehand.cpp
   qgsmaptoolselectpolygon.cpp
   qgsmaptoolselectradius.cpp
+  qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp

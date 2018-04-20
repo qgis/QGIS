@@ -23,53 +23,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
-#include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
-
-/*
-#include "qgsapplication.h"
-#include "qgsdistancearea.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeaturestore.h"
-#include "qgsfields.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptoolidentify.h"
-#include "qgsmaptopixel.h"
-#include "qgsmessageviewer.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsrubberband.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsrenderer.h"
-#include "qgsgeometryutils.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurve.h"
-#include "qgscoordinateutils.h"
-#include "qgsexception.h"
-#include "qgssettings.h"
-#include "qgsmaptoolselectutils.h"
-
-#include <QMouseEvent>
-#include <QCursor>
-#include <QPixmap>
-#include <QStatusBar>
-#include <QVariant>
-#include <QMenu>
-#include <qlabel.h>
-#include <qgsdoublespinbox.h>
-#include <qgisinterface.h>
-
-class QgisInterface;
-class QgsMapToolIdentifyAction;
-*/
 
 
 /// @cond private
@@ -250,7 +204,7 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
   {
     rect = QRect( e->pos(), mInitDragPos );
   }
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, rect, mSelectionRubberBand );
+  mSelectionRubberBand->setToCanvasRectangle( rect );
 }
 
 void QgsMapToolSelectionHandler::selectFeaturesReleaseEvent( QgsMapMouseEvent *e )
@@ -383,7 +337,6 @@ void QgsMapToolSelectionHandler::selectRadiusMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectRadiusReleaseEvent( QgsMapMouseEvent *e )
 {
-
   if ( e->button() == Qt::RightButton )
   {
     cancel();
@@ -431,12 +384,9 @@ void QgsMapToolSelectionHandler::createDistanceWidget()
 
   deleteDistanceWidget();
 
-  mDistanceWidget = new QgsDistanceWidget( QStringLiteral( "Selection radius:" ) );
-  if ( mQgisInterface )
-  {
-    mQgisInterface->addUserInputWidget( mDistanceWidget );
-    mDistanceWidget->setFocus( Qt::TabFocusReason );
-  }
+  mDistanceWidget = new QgsDistanceWidget( tr( "Selection radius:" ) );
+  mQgisInterface->addUserInputWidget( mDistanceWidget );
+  mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRubberband );
   connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectionHandler::radiusValueEntered );
@@ -453,13 +403,6 @@ void QgsMapToolSelectionHandler::deleteDistanceWidget()
   mDistanceWidget = nullptr;
 }
 
-void QgsMapToolSelectionHandler::selectFromRubberband( const Qt::KeyboardModifiers &modifiers )
-{
-  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionRubberBand->asGeometry(), modifiers, mQgisInterface->messageBar() );
-  cancel();
-  mSelectFeatures = true;
-}
-
 void QgsMapToolSelectionHandler::radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers )
 {
   updateRubberband( radius );
@@ -470,15 +413,10 @@ void QgsMapToolSelectionHandler::radiusValueEntered( const double &radius, const
 void QgsMapToolSelectionHandler::cancel()
 {
   deleteDistanceWidget();
-  mSelectionRubberBand->reset();
+  if ( mSelectionRubberBand )
+    mSelectionRubberBand->reset();
   mSelectionActive = false;
 }
-
-QgsPointXY QgsMapToolSelectionHandler::radiusCenter() const
-{
-  return mRadiusCenter;
-}
-
 
 void QgsMapToolSelectionHandler::updateRubberband( const double &radius )
 {

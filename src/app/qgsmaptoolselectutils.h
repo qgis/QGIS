@@ -17,7 +17,6 @@ email                : jpalmer at linz dot govt dot nz
 #define QGSMAPTOOLSELECTUTILS_H
 
 #include "qgsvectorlayer.h"
-#include "qgis_gui.h"
 #include <Qt>
 #include <QRect>
 #include <QPoint>
@@ -27,13 +26,6 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsGeometry;
 class QgsRubberBand;
-class QgsMessageBar;
-
-#ifdef SIP_RUN
-% ModuleHeaderCode
-#include "qgsmaptoolselectutils.h"
-% End
-#endif
 
 /**
   Namespace containing methods which are useful for the select maptool widgets
@@ -50,11 +42,10 @@ namespace QgsMapToolSelectUtils
    * \param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
-   * \param messageBar The instance is used when an warning/error message is reised.
    * \returns list of features which match search geometry and parameters
    * \since QGIS 2.16
    */
-  GUI_EXPORT QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar *messageBar );
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect );
 
   /**
     Selects the features within currently selected layer.
@@ -62,19 +53,17 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     \param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    \param messageBar The instance is used when an warning/error message is reised.
     \param selectBehavior behavior of select (ie replace selection, add to selection)
     \param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
     \param singleSelect only selects the closest feature to the selectGeometry.
     \since QGIS 2.16
   */
-  GUI_EXPORT void setSelectedFeatures( QgsMapCanvas *canvas,
-                                       const QgsGeometry &selectGeometry,
-                                       QgsMessageBar *messageBar,
-                                       QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
-                                       bool doContains = true,
-                                       bool singleSelect = false );
+  void setSelectedFeatures( QgsMapCanvas *canvas,
+                            const QgsGeometry &selectGeometry,
+                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                            bool doContains = true,
+                            bool singleSelect = false );
 
   /**
     Selects multiple matching features from within currently selected layer.
@@ -84,11 +73,10 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     \param modifiers Keyboard modifiers are used to determine the current selection
     operations (add, subtract, contains)
-    \param messageBar The instance is used when an warning/error message is reised.
     \since QGIS 2.16
     \see selectSingleFeature()
   */
-  GUI_EXPORT void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar );
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
 
   /**
     Selects a single feature from within currently selected layer.
@@ -98,18 +86,16 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     \param modifiers Keyboard modifiers are used to determine the current selection
     operations (add, subtract, contains)
-    \param messageBar The instance is used when an warning/error message is reised.
     \see selectMultipleFeatures()
   */
-  GUI_EXPORT void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar );
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
     \param canvas The map canvas used for getting the current layer
-    \param messageBar The instance is used when an warning/error message is reised.
     \returns QgsVectorLayer The layer
   */
-  GUI_EXPORT QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = nullptr );
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
 
   /**
   Expands a rectangle to a minimum size for selection based on the vector layer type
@@ -117,7 +103,7 @@ namespace QgsMapToolSelectUtils
   \param vlayer The vector layer layer
   \param point The point to expand the rectangle around
   */
-  GUI_EXPORT void expandSelectRectangle( QRect &selectRect, QgsVectorLayer *vlayer, QPoint point );
+  void expandSelectRectangle( QRect &selectRect, QgsVectorLayer *vlayer, QPoint point );
 
   /**
   Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords
@@ -125,7 +111,7 @@ namespace QgsMapToolSelectUtils
   \param selectRect The input rectangle in device coords
   \param rubberBand The rubberband that will be set in map units using the input rectangle
   */
-  GUI_EXPORT void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
-};
+  void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
+}
 
 #endif

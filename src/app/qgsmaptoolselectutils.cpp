@@ -17,6 +17,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include "qgsmaptoolselectutils.h"
 #include "qgsfeatureiterator.h"
+#include "qgisapp.h"
 #include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
@@ -28,31 +29,20 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
 
 #include <QMouseEvent>
 #include <QApplication>
 
-QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
+QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
   if ( !vlayer )
   {
-    QgsSettings settings;
-    int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    if ( messageBar )
-    {
-      messageBar->pushMessage(
-        QObject::tr( "No active vector layer" ),
-        QObject::tr( "To select features, choose a vector layer in the legend" ),
-        Qgis::Info,
-        timeout );
-    }
-    else
-    {
-      QgsDebugMsg( "No active vector layer to select features." );
-    }
-
+    QgisApp::instance()->messageBar()->pushMessage(
+      QObject::tr( "No active vector layer" ),
+      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      Qgis::Info,
+      QgisApp::instance()->messageTimeout() );
   }
   return vlayer;
 }
@@ -97,7 +87,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
   selectRect.setBottom( point.y() + boxSize );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
@@ -108,18 +98,18 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const 
     behavior = QgsVectorLayer::RemoveFromSelection;
 
   bool doContains = modifiers & Qt::AltModifier;
-  setSelectedFeatures( canvas, selectGeometry, messageBar, behavior, doContains );
+  setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas, messageBar );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true, messageBar );
+  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
   if ( selectedFeatures.isEmpty() )
   {
     if ( !( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier ) )
@@ -153,29 +143,29 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
 }
 
 void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
-    QgsMessageBar *messageBar, QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
+    QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas, messageBar );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect, messageBar );
+  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
   vlayer->selectByIds( selectedFeatures, selectBehavior );
 
   QApplication::restoreOverrideCursor();
 }
 
 
-QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar *messageBar )
+QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect )
 {
   QgsFeatureIds newSelectedFeatures;
 
   if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
     return newSelectedFeatures;
 
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas, messageBar );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return newSelectedFeatures;
 
@@ -226,13 +216,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugMsg( "Caught CRS exception " );
-    QgsSettings settings;
-    int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    messageBar->pushMessage(
+    QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
       Qgis::Warning,
-      timeout );
+      QgisApp::instance()->messageTimeout() );
     return newSelectedFeatures;
   }
 

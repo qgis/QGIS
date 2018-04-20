@@ -78,20 +78,6 @@ void QgsMapToolIdentify::canvasReleaseEvent( QgsMapMouseEvent *e )
   Q_UNUSED( e );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType )
-{
-  if ( geometry.type() == QgsWkbTypes::PointGeometry )
-  {
-    QPoint canvasPt = toCanvasCoordinates( geometry.asPoint() );
-    return identify( canvasPt.x(), canvasPt.y(), mode, layerType );
-  }
-  else
-  {
-    // TODO: handle polygon case
-    return QList<QgsMapToolIdentify::IdentifyResult>();
-  }
-}
-
 QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, const QList<QgsMapLayer *> &layerList, IdentifyMode mode )
 {
   return identify( x, y, mode, layerList, AllLayers );
@@ -104,9 +90,19 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
 QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
 {
+  return identify( QgsGeometry::fromPointXY( toMapCoordinates( QPoint( x, y ) ) ), mode, layerList, layerType );
+}
+
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType )
+{
+  return identify( geometry, mode, QList<QgsMapLayer *>(), layerType );
+}
+
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
+{
   QList<IdentifyResult> results;
 
-  mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  mLastGeometry = geometry;
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
@@ -120,6 +116,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == LayerSelection )
   {
+    QPoint canvasPt = toCanvasCoordinates( geometry.asPoint() );
+    int x = canvasPt.x(), y = canvasPt.y();
     QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType );
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
     return mIdentifyMenu->exec( results, globalPos );
@@ -135,7 +133,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
     }
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
+
+    identifyLayer( &results, layer, mLastGeometry, mLastExtent, mLastMapUnitsPerPixel, layerType );
   }
   else
   {
@@ -165,7 +164,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
-      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
+      if ( identifyLayer( &results, layer,  mLastGeometry, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
       {
         if ( mode == TopDownStopAtFirst )
           break;
@@ -193,13 +192,18 @@ void QgsMapToolIdentify::deactivate()
 
 bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType )
 {
+  return identifyLayer( results, layer, QgsGeometry::fromPointXY( point ), viewExtent, mapUnitsPerPixel, layerType );
+}
+
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType )
+{
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
-    return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), point, viewExtent, mapUnitsPerPixel );
+    return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel );
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), point );
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry );
   }
   else
   {
@@ -216,6 +220,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 {
   if ( !layer || !layer->isSpatial() )
     return false;
+
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
@@ -304,8 +309,10 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
       continue;
 
     featureCount++;
+
     if ( isSingleClick )
       derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
+
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
@@ -492,6 +499,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   }
 
   return derivedAttributes;
+}
+
+bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel )
+{
+  QgsPointXY point = geometry.asPoint();  // raster layers currently only support identification by point
+  return identifyRasterLayer( results, layer, point, viewExtent, mapUnitsPerPixel );
 }
 
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel )
@@ -733,7 +746,7 @@ QString QgsMapToolIdentify::formatArea( double area ) const
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
 {
   QList<IdentifyResult> results;
-  if ( identifyRasterLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel ) )
+  if ( identifyRasterLayer( &results, layer, mLastGeometry, mLastExtent, mLastMapUnitsPerPixel ) )
   {
     emit changedRasterResults( results );
   }
