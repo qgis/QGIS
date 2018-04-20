@@ -62,8 +62,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mClassificationModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSingleBandPseudoColorRendererWidget::mClassificationModeComboBox_currentIndexChanged );
 
   contextMenu = new QMenu( tr( "Options" ), this );
-  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
 
   mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -106,7 +106,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
 
   mClassificationModeComboBox->addItem( tr( "Continuous" ), QgsColorRampShader::Continuous );
-  mClassificationModeComboBox->addItem( tr( "Equal interval" ), QgsColorRampShader::EqualInterval );
+  mClassificationModeComboBox->addItem( tr( "Equal Interval" ), QgsColorRampShader::EqualInterval );
   mClassificationModeComboBox->addItem( tr( "Quantile" ), QgsColorRampShader::Quantile );
   mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( QgsColorRampShader::Continuous ) );
 

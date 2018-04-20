@@ -41,16 +41,16 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mCancelButton->hide();
 
   mContextMenu = new QMenu( tr( "Options" ), this );
-  mContextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  mContextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
-  mContextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
+  mContextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
+  mContextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  mContextMenu->addAction( tr( "Change Label…" ), this, SLOT( changeLabel() ) );
 
   mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
-  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
+  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load Classes from Layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
-  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load color map from file…" ) );
+  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load Color Map from File…" ) );
   connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
-  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export color map to file…" ) );
+  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export Color Map to File…" ) );
   connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
 
 
