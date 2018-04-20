@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include "qgisapp.h"
+#include "qgsclipboard.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsproject.h"
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 
 #include <QTableWidget>
 #include <QAction>
@@ -93,6 +95,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsStatisticalSummaryDockWidget::layerChanged );
   connect( mFieldExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsStatisticalSummaryDockWidget::fieldChanged );
   connect( mSelectedOnlyCheckBox, &QAbstractButton::toggled, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( mButtonCopy, &QAbstractButton::clicked, this, &QgsStatisticalSummaryDockWidget::copyStatistics );
   connect( mButtonRefresh, &QAbstractButton::clicked, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsStatisticalSummaryDockWidget::layersRemoved );
 
@@ -118,6 +121,34 @@ void QgsStatisticalSummaryDockWidget::fieldChanged()
   {
     mExpression = mFieldExpressionWidget->expression();
     refreshStatistics();
+  }
+}
+
+void QgsStatisticalSummaryDockWidget::copyStatistics()
+{
+  QStringList rows;
+  QStringList columns;
+  for ( int i = 0; i < mStatisticsTable->rowCount(); i++ )
+  {
+    for ( int j = 0; j < mStatisticsTable->columnCount(); j++ )
+    {
+      QTableWidgetItem *item =  mStatisticsTable->item( i, j );
+      columns += item->text();
+    }
+    rows += columns.join( QStringLiteral( "\t" ) );
+    columns.clear();
+  }
+
+  if ( !rows.isEmpty() )
+  {
+    QString text = QString( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
+                   mStatisticsTable->horizontalHeaderItem( 1 )->text(),
+                   rows.join( QStringLiteral( "\n" ) ) );
+    QString html = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
+    html.replace( QStringLiteral( "\t" ), QStringLiteral( "</td><td>" ) ).replace( QStringLiteral( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
+
+    QgsClipboard clipboard;
+    clipboard.setData( QStringLiteral( "text/html" ), html.toUtf8(), text );
   }
 }
 
