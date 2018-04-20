@@ -85,9 +85,6 @@ int QgsQuickFeatureModel::rowCount( const QModelIndex &parent ) const
 
 QVariant QgsQuickFeatureModel::data( const QModelIndex &index, int role ) const
 {
-  if ( mLayer )
-    qWarning() << "Get data " << mLayer->name();
-
   switch ( role )
   {
     case AttributeName:

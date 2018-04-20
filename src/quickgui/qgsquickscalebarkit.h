@@ -72,8 +72,8 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
 
   public:
     //! create new scale bar kit
-    explicit QgsQuickScaleBarKit( QObject *parent = 0 );
-    ~QgsQuickScaleBarKit();
+    explicit QgsQuickScaleBarKit( QObject *parent = nullptr );
+    ~QgsQuickScaleBarKit() = default;
 
     //! Set map settings
     void setMapSettings( QgsQuickMapSettings *mapSettings );

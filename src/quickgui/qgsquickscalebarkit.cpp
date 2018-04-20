@@ -22,6 +22,7 @@
 #include "qgsquickmapsettings.h"
 #include "qgsquickscalebarkit.h"
 #include "qgsquickutils.h"
+#include "qgsunittypes.h"
 
 QgsQuickScaleBarKit::QgsQuickScaleBarKit( QObject *parent )
   : QObject( parent )
@@ -88,11 +89,11 @@ void QgsQuickScaleBarKit::updateScaleBar()
   if ( dist > 1000.0 )
   {
     dist = dist / 1000.0; // meters to kilometers
-    mUnits = "km";
+    mUnits = QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers );
   }
   else
   {
-    mUnits = "m";
+    mUnits = QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters );
   }
 
   // we want to show nice round distances e.g. 200 km instead of e.g. 273 km

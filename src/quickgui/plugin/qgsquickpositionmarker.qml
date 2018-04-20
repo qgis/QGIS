@@ -41,7 +41,7 @@ Item {
     if (positionKit.hasPosition) {
       QgsQuick.Utils.qgsPointToString(positionKit.position, 3) // e.g -2.243, 45.441
     } else {
-      "GPS signal lost"
+      qsTr( "GPS signal lost" ).arg( layerName )
     }
   }
   property var gpsAccuracyLabel: {
@@ -49,7 +49,7 @@ Item {
       if (positionKit.hasPosition && positionKit.accuracy > 0) {
         QgsQuick.Utils.distanceToString(positionKit.accuracy, 0) // e.g 1 km or 15 m or 500 mm
       } else {
-        "GPS accuracy N/A"
+        qsTr( "GPS accuracy N/A" )
       }
     } else {
       ""

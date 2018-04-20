@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtDebug>
 #include <QCommandLineParser>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -26,7 +25,7 @@
 #include "qgslayertree.h"
 #include "qgsmessagelog.h"
 #include "qgsquickutils.h"
-
+#include "qgslogger.h"
 
 int main( int argc, char *argv[] )
 {
@@ -49,7 +48,7 @@ int main( int argc, char *argv[] )
   // 2) Load QGIS Project
   QString dataDir( TEST_DATA_DIR );  // defined in CMakeLists.txt
   QString projectFile = dataDir + "/quickapp_project.qgs";
-  qDebug() << "project file: " << projectFile;
+  QgsDebugMsg( QStringLiteral( "project file:  %1" ).arg( projectFile ) );
   QgsProject project;
   bool res = project.read( projectFile );
   Q_ASSERT( res );
@@ -68,22 +67,23 @@ int main( int argc, char *argv[] )
 
   if ( !component.errors().isEmpty() )
   {
-    qDebug( "%s", QgsApplication::showSettings().toLocal8Bit().data() );
+    QgsDebugMsg( QStringLiteral( "%s" ).arg( QgsApplication::showSettings().toLocal8Bit().data() ) );
 
-    qDebug() << "****************************************";
-    qDebug() << "*****        QML errors:           *****";
-    qDebug() << "****************************************";
-    for ( const QQmlError &error : component.errors() )
+    QgsDebugMsg( QStringLiteral( "****************************************" ) );
+    QgsDebugMsg( QStringLiteral( "*****        QML errors:           *****" ) );
+    QgsDebugMsg( QStringLiteral( "****************************************" ) );
+    const QList<QQmlError> errors = component.errors();
+    for ( const QQmlError &error : errors )
     {
-      qDebug() << "  " << error;
+      QgsDebugMsg( error.toString() );
     }
-    qDebug() << "****************************************";
-    qDebug() << "****************************************";
+    QgsDebugMsg( QStringLiteral( "****************************************" ) );
+    QgsDebugMsg( QStringLiteral( "****************************************" ) );
   }
 
-  if ( object == 0 )
+  if ( object == nullptr )
   {
-    qDebug() << "FATAL ERROR: unable to create main.qml";
+    QgsDebugMsg( QStringLiteral( "FATAL ERROR: unable to create main.qml" ) );
     return EXIT_FAILURE;
   }
 
