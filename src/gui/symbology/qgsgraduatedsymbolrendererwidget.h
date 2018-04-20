@@ -154,9 +154,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    QgsGraduatedSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
-    QgsSymbol *mGraduatedSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mGraduatedSymbol;
 
     int mRowSelected;
 
