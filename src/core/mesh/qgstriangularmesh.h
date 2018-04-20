@@ -54,7 +54,7 @@ class CORE_EXPORT QgsTriangularMesh
 
     /**
      * Construct triangular mesh from layer's native mesh and context
-     * \param layer QgsMeshLayer to get native mesh data
+     * \param nativeMesh QgsMesh to access native vertices and faces
      * \param context Rendering context to estimate number of triagles to create for an face
     */
     void update( QgsMesh *nativeMesh, QgsRenderContext *context );
