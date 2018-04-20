@@ -4003,6 +4003,11 @@ void QgsDxfExport::addGeometryGeneratorSymbolLayer( QgsSymbolV2RenderContext &ct
   QgsExpression geomExpr( gg->geometryExpression() );
   geomExpr.prepare( &expressionContext );
   QgsGeometry geom = geomExpr.evaluate( &expressionContext ).value<QgsGeometry>();
+  if ( geom.isEmpty() )
+  {
+    return;
+  }
+
   f.setGeometry( geom );
 
   QgsSymbolV2* symbol = gg->subSymbol();
