@@ -23,7 +23,6 @@
 
 QgsQuickMapSettings::QgsQuickMapSettings( QObject *parent )
   : QObject( parent )
-  , mProject( 0 )
 {
   // Connect signals for derived values
   connect( this, &QgsQuickMapSettings::destinationCrsChanged, this, &QgsQuickMapSettings::mapUnitsPerPixelChanged );

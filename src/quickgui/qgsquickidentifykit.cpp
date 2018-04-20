@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
@@ -24,7 +23,6 @@
 
 QgsQuickIdentifyKit::QgsQuickIdentifyKit( QObject *parent )
   : QObject( parent )
-  , mMapSettings( nullptr )
   , mSearchRadiusMm( 8 )
   , mFeaturesLimit( 100 )
 {

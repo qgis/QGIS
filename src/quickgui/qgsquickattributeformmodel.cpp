@@ -62,7 +62,7 @@ void QgsQuickAttributeFormModel::create()
   mSourceModel->create();
 }
 
-QVariant QgsQuickAttributeFormModel::attribute( const QString &name )
+QVariant QgsQuickAttributeFormModel::attribute( const QString &name ) const
 {
   return mSourceModel->attribute( name );
 }

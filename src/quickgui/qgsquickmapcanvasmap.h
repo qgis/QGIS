@@ -156,9 +156,9 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
 
     bool mPinching;
     QPoint mPinchStartPoint;
-    QgsMapRendererParallelJob *mJob;
-    QgsMapRendererCache *mCache;
-    QgsLabelingResults *mLabelingResults;
+    QgsMapRendererParallelJob *mJob = nullptr;
+    QgsMapRendererCache *mCache = nullptr;
+    QgsLabelingResults *mLabelingResults = nullptr;
     QImage mImage;
     QgsMapSettings mImageMapSettings;
     QTimer mRefreshTimer;

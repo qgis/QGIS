@@ -75,10 +75,10 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
     virtual QSGNode *updatePaintNode( QSGNode *n, UpdatePaintNodeData * ) override;
 
     QColor mColor;
-    QgsQuickFeatureModel *mModel;
-    bool mDirty;
+    QgsQuickFeatureModel *mModel = nullptr;
+    bool mDirty = false;
     unsigned int mWidth;
-    QgsQuickMapSettings *mMapSettings;
+    QgsQuickMapSettings *mMapSettings = nullptr;
 };
 
 #endif // QGSQUICKFEATUREHIGHLIGHT_H

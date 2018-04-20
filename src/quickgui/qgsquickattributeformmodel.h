@@ -52,7 +52,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
   public:
 
-    //! Feature fieds's roles
+    //! Feature fields's roles
     enum FeatureRoles
     {
       ElementType = Qt::UserRole + 1, //!< Element type
@@ -73,7 +73,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
     Q_ENUM( FeatureRoles )
 
-    //! create new attribute form model
+    //! Create new attribute form model
     QgsQuickAttributeFormModel( QObject *parent = nullptr );
 
     //! Return whether model has tabs layout
@@ -98,7 +98,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     Q_INVOKABLE void create();
 
     //! Return attribute value with name
-    Q_INVOKABLE QVariant attribute( const QString &name );
+    Q_INVOKABLE QVariant attribute( const QString &name ) const;
 
   signals:
     //! feature model changed

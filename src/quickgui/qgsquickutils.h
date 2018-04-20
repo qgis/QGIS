@@ -142,7 +142,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
   signals:
 
   private:
-    explicit QgsQuickUtils( QObject *parent = 0 );
+    explicit QgsQuickUtils( QObject *parent = nullptr );
     ~QgsQuickUtils();
 
     static QgsQuickUtils *sInstance;

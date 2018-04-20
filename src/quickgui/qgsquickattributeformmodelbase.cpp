@@ -23,16 +23,9 @@
 
 QgsQuickAttributeFormModelBase::QgsQuickAttributeFormModelBase( QObject *parent )
   : QStandardItemModel( 0, 1, parent )
-  , mFeatureModel( nullptr )
-  , mLayer( nullptr )
-  , mTemporaryContainer( nullptr )
 {
 }
 
-QgsQuickAttributeFormModelBase::~QgsQuickAttributeFormModelBase()
-{
-  delete mTemporaryContainer;
-}
 
 QHash<int, QByteArray> QgsQuickAttributeFormModelBase::roleNames() const
 {
@@ -127,7 +120,6 @@ void QgsQuickAttributeFormModelBase::onLayerChanged()
   if ( mLayer )
   {
     QgsAttributeEditorContainer *root;
-    delete mTemporaryContainer;
     mTemporaryContainer = nullptr;
 
     if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::TabLayout )
@@ -137,7 +129,7 @@ void QgsQuickAttributeFormModelBase::onLayerChanged()
     else
     {
       root = generateRootContainer();  //#spellok
-      mTemporaryContainer = root;
+      mTemporaryContainer.reset( root );
     }
 
     setHasTabs( !root->children().isEmpty() && QgsAttributeEditorElement::AeTypeContainer == root->children().first()->type() );
@@ -204,7 +196,7 @@ QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::generateRootContain
 
 QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::invisibleRootContainer() const
 {
-  return mTemporaryContainer ? mTemporaryContainer : mLayer->editFormConfig().invisibleRootContainer();
+  return mTemporaryContainer ? mTemporaryContainer.get() : mLayer->editFormConfig().invisibleRootContainer();
 }
 
 void QgsQuickAttributeFormModelBase::updateAttributeValue( QStandardItem *item )
@@ -348,7 +340,7 @@ bool QgsQuickAttributeFormModelBase::constraintsValid() const
   return mConstraintsValid;
 }
 
-QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name )
+QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
 {
   if ( !mLayer )
     return QVariant();

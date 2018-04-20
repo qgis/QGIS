@@ -23,9 +23,6 @@
 
 QgsQuickFeatureHighlight::QgsQuickFeatureHighlight( QQuickItem *parent )
   : QQuickItem( parent )
-  , mModel( nullptr )
-  , mDirty( false )
-  , mMapSettings( nullptr )
 {
   setFlags( QQuickItem::ItemHasContents );
   setAntialiasing( true );

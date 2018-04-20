@@ -27,7 +27,6 @@
 #include "qgis_quick.h"
 #include "qgsquickfeature.h"
 
-class QgsQuickProject;
 class QgsMapLayer;
 class QgsQuickMapSettings;
 class QgsVectorLayer;
@@ -103,8 +102,7 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     void featuresLimitChanged();
 
   private:
-    QgsQuickProject *mProject;
-    QgsQuickMapSettings *mMapSettings;
+    QgsQuickMapSettings *mMapSettings = nullptr;
 
     double searchRadiusMU( const QgsRenderContext &context ) const;
     double searchRadiusMU() const;

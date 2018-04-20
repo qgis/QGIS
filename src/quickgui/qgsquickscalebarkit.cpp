@@ -25,7 +25,6 @@
 
 QgsQuickScaleBarKit::QgsQuickScaleBarKit( QObject *parent )
   : QObject( parent )
-  , mMapSettings( 0 )
   , mPreferredWidth( 300 )
   , mWidth( mPreferredWidth )
   , mDistance( 0 )

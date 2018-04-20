@@ -54,7 +54,7 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
 
   public:
     explicit QgsQuickAttributeFormModelBase( QObject *parent = nullptr );
-    ~QgsQuickAttributeFormModelBase();
+    ~QgsQuickAttributeFormModelBase() = default;
 
     QHash<int, QByteArray> roleNames() const override;
 
@@ -72,7 +72,7 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
 
     bool constraintsValid() const;
 
-    QVariant attribute( const QString &name );
+    QVariant attribute( const QString &name ) const;
 
   signals:
     void featureModelChanged();
@@ -102,9 +102,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
 
     void setConstraintsValid( bool constraintsValid );
 
-    QgsQuickFeatureModel *mFeatureModel;
-    QgsVectorLayer *mLayer;
-    QgsAttributeEditorContainer *mTemporaryContainer;
+    QgsQuickFeatureModel *mFeatureModel = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    std::unique_ptr<QgsAttributeEditorContainer> mTemporaryContainer;
     bool mHasTabs;
 
     typedef QPair<QgsExpression, QVector<QStandardItem *> > VisibilityExpression;

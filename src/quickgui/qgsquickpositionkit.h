@@ -128,7 +128,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     // Simulated source
     bool mIsSimulated;
 
-    QGeoPositionInfoSource *mSource;
+    QGeoPositionInfoSource *mSource = nullptr;
 
   private:
     void replacePositionSource( QGeoPositionInfoSource *source );

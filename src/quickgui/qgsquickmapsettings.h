@@ -224,7 +224,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     void onReadProject( const QDomDocument &doc );
 
   private:
-    QgsProject *mProject;
+    QgsProject *mProject = nullptr;
     QgsMapSettings mMapSettings;
 
 };

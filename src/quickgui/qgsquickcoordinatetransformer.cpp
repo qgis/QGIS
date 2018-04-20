@@ -19,7 +19,6 @@
 
 QgsQuickCoordinateTransformer::QgsQuickCoordinateTransformer( QObject *parent )
   : QObject( parent )
-  , mMapSettings( nullptr )
 {
   mCoordinateTransform.setSourceCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
   mCoordinateTransform.setContext( QgsCoordinateTransformContext() );

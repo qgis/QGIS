@@ -110,7 +110,7 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
     void updateScaleBar();
 
   private:
-    QgsQuickMapSettings *mMapSettings;
+    QgsQuickMapSettings *mMapSettings = nullptr;
 
     int mPreferredWidth; // pixels
     int mWidth; // pixels
