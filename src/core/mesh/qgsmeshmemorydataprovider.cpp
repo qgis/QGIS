@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+///@cond PRIVATE
+
 #include "qgsmeshmemorydataprovider.h"
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mesh_memory" );
@@ -164,4 +166,4 @@ QgsMeshFace QgsMeshMemoryDataProvider::face( int index ) const
   return mFaces[index];
 }
 
-
+///@endcond

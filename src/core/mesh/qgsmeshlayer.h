@@ -46,9 +46,9 @@ struct QgsMesh;
  *
  * The main data providers supported by QGIS are listed below.
  *
- * \section providers Mesh data providers
+ * \section mesh_providers Mesh data providers
  *
- * \subsection memory Memory data providerType (mesh_memory)
+ * \subsection mesh_memory Memory data providerType (mesh_memory)
  *
  * The memory data provider is used to construct in memory data, for example scratch
  * data. There is no inherent persistent storage of the data. The data source uri is constructed.
