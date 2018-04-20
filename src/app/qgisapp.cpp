@@ -3947,6 +3947,9 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   QString layertype = layer->dataProvider()->storageType();
 
   QgsSublayersDialog::LayerDefinitionList list;
+  QMap< QString, int > mapLayerNameToCount;
+  bool uniqueNames = true;
+  int lastLayerId = -1;
   Q_FOREACH ( const QString& sublayer, sublayers )
   {
     // OGR provider returns items in this format:
@@ -3967,6 +3970,13 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
+      if ( lastLayerId != def.layerId )
+      {
+        int count = ++mapLayerNameToCount[def.layerName];
+        if ( count > 1 || def.layerName.isEmpty() )
+          uniqueNames = false;
+        lastLayerId = def.layerId;
+      }
       list << def;
     }
     else
@@ -4003,7 +4013,16 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
   {
     QString layerGeometryType = def.type;
-    QString composedURI = uri + "|layerid=" + QString::number( def.layerId );
+    QString composedURI = uri;
+    if ( uniqueNames )
+    {
+      composedURI += "|layername=" + def.layerName;
+    }
+    else
+    {
+      // Only use layerId if there are ambiguities with names
+      composedURI += "|layerid=" + QString::number( def.layerId );
+    }
 
     if ( !layerGeometryType.isEmpty() )
     {
