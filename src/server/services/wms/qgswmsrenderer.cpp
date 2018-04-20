@@ -1203,37 +1203,12 @@ namespace QgsWms
     }
     else
     {
-      QString featureInfoElemName = QgsServerProjectUtils::wmsFeatureInfoDocumentElement( *mProject );
-      if ( featureInfoElemName.isEmpty() )
-      {
-        featureInfoElemName = QStringLiteral( "GetFeatureInfoResponse" );
-      }
-      QString featureInfoElemNs = QgsServerProjectUtils::wmsFeatureInfoDocumentElementNs( *mProject );
-      if ( featureInfoElemNs.isEmpty() )
-      {
-        getFeatureInfoElement = result.createElement( featureInfoElemName );
-      }
-      else
-      {
-        getFeatureInfoElement = result.createElementNS( featureInfoElemNs, featureInfoElemName );
-      }
-      //feature info schema
-      QString featureInfoSchema = QgsServerProjectUtils::wmsFeatureInfoSchema( *mProject );
-      if ( !featureInfoSchema.isEmpty() )
-      {
-        getFeatureInfoElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-        getFeatureInfoElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), featureInfoSchema );
-      }
+      getFeatureInfoElement = result.createElement( QStringLiteral( "GetFeatureInfoResponse" ) );
     }
     result.appendChild( getFeatureInfoElement );
 
     //Render context is needed to determine feature visibility for vector layers
     QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
-
-    bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *mProject );
-
-    //layers can have assigned a different name for GetCapabilities
-    QHash<QString, QString> layerAliasMap = QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( *mProject );
 
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
@@ -1254,19 +1229,8 @@ namespace QgsWms
             layerElement = result.createElement( QStringLiteral( "Layer" ) );
             QString layerName = queryLayer;
 
-            //check if the layer is given a different name for GetFeatureInfo output
-            QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
-            if ( layerAliasIt != layerAliasMap.constEnd() )
-            {
-              layerName = layerAliasIt.value();
-            }
-
             layerElement.setAttribute( QStringLiteral( "name" ), layerName );
             getFeatureInfoElement.appendChild( layerElement );
-            if ( sia2045 ) //the name might not be unique after alias replacement
-            {
-              layerElement.setAttribute( QStringLiteral( "id" ), layer->id() );
-            }
           }
 
           if ( layer->type() == QgsMapLayer::VectorLayer )
@@ -1347,11 +1311,6 @@ namespace QgsWms
         bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( featuresRect->yMaximum(), 8 ) );
         getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
       }
-    }
-
-    if ( sia2045 && infoFormat == QgsWmsParameters::Format::XML )
-    {
-      convertFeatureInfoToSia2045( result );
     }
 
     return result;
@@ -1865,121 +1824,6 @@ namespace QgsWms
       return false;
 
     return true;
-  }
-
-  void QgsRenderer::convertFeatureInfoToSia2045( QDomDocument &doc ) const
-  {
-    QDomDocument SIAInfoDoc;
-    QDomElement infoDocElement = doc.documentElement();
-    QDomElement SIAInfoDocElement = SIAInfoDoc.importNode( infoDocElement, false ).toElement();
-    SIAInfoDoc.appendChild( SIAInfoDocElement );
-
-    QString currentAttributeName;
-    QString currentAttributeValue;
-    QDomElement currentAttributeElem;
-    QString currentLayerName;
-    QDomElement currentLayerElem;
-    QDomNodeList layerNodeList = infoDocElement.elementsByTagName( QStringLiteral( "Layer" ) );
-    for ( int i = 0; i < layerNodeList.size(); ++i )
-    {
-      currentLayerElem = layerNodeList.at( i ).toElement();
-      currentLayerName = currentLayerElem.attribute( QStringLiteral( "name" ) );
-
-      QDomElement currentFeatureElem;
-
-      QDomNodeList featureList = currentLayerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-      if ( featureList.isEmpty() )
-      {
-        //raster?
-        QDomNodeList attributeList = currentLayerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
-        QDomElement rasterLayerElem;
-        if ( !attributeList.isEmpty() )
-        {
-          rasterLayerElem = SIAInfoDoc.createElement( currentLayerName );
-        }
-        for ( int j = 0; j < attributeList.size(); ++j )
-        {
-          currentAttributeElem = attributeList.at( j ).toElement();
-          currentAttributeName = currentAttributeElem.attribute( QStringLiteral( "name" ) );
-          currentAttributeValue = currentAttributeElem.attribute( QStringLiteral( "value" ) );
-          QDomElement outAttributeElem = SIAInfoDoc.createElement( currentAttributeName );
-          QDomText outAttributeText = SIAInfoDoc.createTextNode( currentAttributeValue );
-          outAttributeElem.appendChild( outAttributeText );
-          rasterLayerElem.appendChild( outAttributeElem );
-        }
-        if ( !attributeList.isEmpty() )
-        {
-          SIAInfoDocElement.appendChild( rasterLayerElem );
-        }
-      }
-      else //vector
-      {
-        //property attributes
-        QSet<QString> layerPropertyAttributes;
-        QString currentLayerId = currentLayerElem.attribute( QStringLiteral( "id" ) );
-        if ( !currentLayerId.isEmpty() )
-        {
-          QgsMapLayer *currentLayer = mProject->mapLayer( currentLayerId );
-          if ( currentLayer )
-          {
-            QString WMSPropertyAttributesString = currentLayer->customProperty( QStringLiteral( "WMSPropertyAttributes" ) ).toString();
-            if ( !WMSPropertyAttributesString.isEmpty() )
-            {
-              QStringList propertyList = WMSPropertyAttributesString.split( QStringLiteral( "//" ) );
-              for ( auto propertyIt = propertyList.constBegin() ; propertyIt != propertyList.constEnd(); ++propertyIt )
-              {
-                layerPropertyAttributes.insert( *propertyIt );
-              }
-            }
-          }
-        }
-
-        QDomElement propertyRefChild; //child to insert the next property after (or
-        for ( int j = 0; j < featureList.size(); ++j )
-        {
-          QDomElement SIAFeatureElem = SIAInfoDoc.createElement( currentLayerName );
-          currentFeatureElem = featureList.at( j ).toElement();
-          QDomNodeList attributeList = currentFeatureElem.elementsByTagName( QStringLiteral( "Attribute" ) );
-
-          for ( int k = 0; k < attributeList.size(); ++k )
-          {
-            currentAttributeElem = attributeList.at( k ).toElement();
-            currentAttributeName = currentAttributeElem.attribute( QStringLiteral( "name" ) );
-            currentAttributeValue = currentAttributeElem.attribute( QStringLiteral( "value" ) );
-            if ( layerPropertyAttributes.contains( currentAttributeName ) )
-            {
-              QDomElement propertyElem = SIAInfoDoc.createElement( QStringLiteral( "property" ) );
-              QDomElement identifierElem = SIAInfoDoc.createElement( QStringLiteral( "identifier" ) );
-              QDomText identifierText = SIAInfoDoc.createTextNode( currentAttributeName );
-              identifierElem.appendChild( identifierText );
-              QDomElement valueElem = SIAInfoDoc.createElement( QStringLiteral( "value" ) );
-              QDomText valueText = SIAInfoDoc.createTextNode( currentAttributeValue );
-              valueElem.appendChild( valueText );
-              propertyElem.appendChild( identifierElem );
-              propertyElem.appendChild( valueElem );
-              if ( propertyRefChild.isNull() )
-              {
-                SIAFeatureElem.insertBefore( propertyElem, QDomNode() );
-                propertyRefChild = propertyElem;
-              }
-              else
-              {
-                SIAFeatureElem.insertAfter( propertyElem, propertyRefChild );
-              }
-            }
-            else
-            {
-              QDomElement SIAAttributeElem = SIAInfoDoc.createElement( currentAttributeName );
-              QDomText SIAAttributeText = SIAInfoDoc.createTextNode( currentAttributeValue );
-              SIAAttributeElem.appendChild( SIAAttributeText );
-              SIAFeatureElem.appendChild( SIAAttributeElem );
-            }
-          }
-          SIAInfoDocElement.appendChild( SIAFeatureElem );
-        }
-      }
-    }
-    doc = SIAInfoDoc;
   }
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
