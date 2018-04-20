@@ -246,7 +246,7 @@ QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( int currentLe
 }
 
 
-bool QgsRuleBasedRenderer::Rule::isFilterOK( QgsFeature &f, QgsRenderContext *context ) const
+bool QgsRuleBasedRenderer::Rule::isFilterOK( const QgsFeature &f, QgsRenderContext *context ) const
 {
   if ( ! mFilter || mElseRule )
     return true;
@@ -537,9 +537,9 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     return Filtered;
 }
 
-bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderContext *context )
+bool QgsRuleBasedRenderer::Rule::willRenderFeature( const QgsFeature &feature, QgsRenderContext *context )
 {
-  if ( !isFilterOK( feat, context ) )
+  if ( !isFilterOK( feature, context ) )
     return false;
 
   if ( mSymbol )
@@ -551,7 +551,7 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
     {
       if ( rule->children().isEmpty() )
       {
-        RuleList lst = rulesForFeature( feat, context, false );
+        RuleList lst = rulesForFeature( feature, context, false );
         lst.removeOne( rule );
 
         if ( lst.empty() )
@@ -561,10 +561,10 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
       }
       else
       {
-        return rule->willRenderFeature( feat, context );
+        return rule->willRenderFeature( feature, context );
       }
     }
-    else if ( rule->willRenderFeature( feat, context ) )
+    else if ( rule->willRenderFeature( feature, context ) )
     {
       return true;
     }
@@ -572,25 +572,25 @@ bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature &feat, QgsRenderC
   return false;
 }
 
-QgsSymbolList QgsRuleBasedRenderer::Rule::symbolsForFeature( QgsFeature &feat, QgsRenderContext *context )
+QgsSymbolList QgsRuleBasedRenderer::Rule::symbolsForFeature( const QgsFeature &feature, QgsRenderContext *context )
 {
   QgsSymbolList lst;
-  if ( !isFilterOK( feat, context ) )
+  if ( !isFilterOK( feature, context ) )
     return lst;
   if ( mSymbol )
     lst.append( mSymbol.get() );
 
   Q_FOREACH ( Rule *rule, mActiveChildren )
   {
-    lst += rule->symbolsForFeature( feat, context );
+    lst += rule->symbolsForFeature( feature, context );
   }
   return lst;
 }
 
-QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context )
+QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context )
 {
   QSet< QString> lst;
-  if ( !isFilterOK( feat, context ) )
+  if ( !isFilterOK( feature, context ) )
     return lst;
   lst.insert( mRuleKey );
 
@@ -599,7 +599,7 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
     bool validKey = false;
     if ( rule->isElse() )
     {
-      RuleList lst = rulesForFeature( feat, context, false );
+      RuleList lst = rulesForFeature( feature, context, false );
       lst.removeOne( rule );
 
       if ( lst.empty() )
@@ -607,23 +607,23 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( QgsFeature &feat
         validKey = true;
       }
     }
-    else if ( !rule->isElse( ) && rule->willRenderFeature( feat, context ) )
+    else if ( !rule->isElse( ) && rule->willRenderFeature( feature, context ) )
     {
       validKey = true;
     }
 
     if ( validKey )
     {
-      lst.unite( rule->legendKeysForFeature( feat, context ) );
+      lst.unite( rule->legendKeysForFeature( feature, context ) );
     }
   }
   return lst;
 }
 
-QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsFeature &feat, QgsRenderContext *context, bool onlyActive )
+QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( const QgsFeature &feature, QgsRenderContext *context, bool onlyActive )
 {
   RuleList lst;
-  if ( !isFilterOK( feat, context ) )
+  if ( !isFilterOK( feature, context ) )
     return lst;
 
   if ( mSymbol )
@@ -635,7 +635,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( QgsF
 
   Q_FOREACH ( Rule *rule, listChildren )
   {
-    lst += rule->rulesForFeature( feat, context, onlyActive );
+    lst += rule->rulesForFeature( feature, context, onlyActive );
   }
   return lst;
 }
@@ -838,13 +838,13 @@ QgsRuleBasedRenderer::~QgsRuleBasedRenderer()
 }
 
 
-QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   // not used at all
   return nullptr;
 }
 
-bool QgsRuleBasedRenderer::renderFeature( QgsFeature &feature,
+bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
     QgsRenderContext &context,
     int layer,
     bool selected,
@@ -970,7 +970,7 @@ void QgsRuleBasedRenderer::toSld( QDomDocument &doc, QDomElement &element, const
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
-QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context ) const
 {
   return mRootRule->symbols( context );
 }
@@ -1182,22 +1182,22 @@ QString QgsRuleBasedRenderer::dump() const
   return msg;
 }
 
-bool QgsRuleBasedRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsRuleBasedRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  return mRootRule->willRenderFeature( feat, &context );
+  return mRootRule->willRenderFeature( feature, &context );
 }
 
-QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  return mRootRule->symbolsForFeature( feat, &context );
+  return mRootRule->symbolsForFeature( feature, &context );
 }
 
-QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsRuleBasedRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  return mRootRule->symbolsForFeature( feat, &context );
+  return mRootRule->symbolsForFeature( feature, &context );
 }
 
-QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsRuleBasedRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return mRootRule->legendKeysForFeature( feature, &context );
 }

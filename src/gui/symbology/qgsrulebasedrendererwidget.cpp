@@ -342,10 +342,10 @@ QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRenderer::Rule *parentRule = mModel->ruleForIndex( parent );
-    QgsRuleBasedRenderer::RuleList &children = parentRule->children();
+    const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      symbolList.append( children[row]->symbol() );
+      symbolList.append( children.at( row )->symbol() );
     }
   }
 
@@ -360,10 +360,10 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRendererWidget::selectedRules()
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRenderer::Rule *parentRule = mModel->ruleForIndex( parent );
-    QgsRuleBasedRenderer::RuleList &children = parentRule->children();
+    const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      rl.append( children[row]->clone() );
+      rl.append( children.at( row )->clone() );
     }
   }
   return rl;
