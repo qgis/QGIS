@@ -90,7 +90,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;
 
-    bool mIsValid;
+    bool mIsValid = false;
 };
 
 ///@endcond

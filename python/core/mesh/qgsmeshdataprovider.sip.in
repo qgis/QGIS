@@ -69,6 +69,8 @@ Base class for providing data for :py:class:`QgsMeshLayer`
 Responsible for reading native mesh data
 
 .. seealso:: :py:class:`QgsMeshSource`
+
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode

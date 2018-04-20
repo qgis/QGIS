@@ -38,7 +38,10 @@ struct CORE_EXPORT QgsMesh
 };
 
 /**
+ * \ingroup core
+ *
  * Triangular/Derived Mesh
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsTriangularMesh
