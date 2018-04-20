@@ -27,6 +27,7 @@
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "qgsmaptoolselectionhandler.h"
 
 #include <QWidget>
 #include <QList>
@@ -181,6 +182,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void activateLayer( QgsMapLayer * );
 
+    void selectionModeChanged();
+
   public slots:
     //! Remove results
     void clear();
@@ -286,7 +289,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void showHelp();
 
-    QgsMapToolSelectionHandler::SelectionMode mSelectionMode;
+    QgsMapToolSelectionHandler::SelectionMode mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
 
     void setSelectionMode();
 

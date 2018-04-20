@@ -115,7 +115,7 @@ namespace QgsMapToolSelectUtils
   Expands a rectangle to a minimum size for selection based on the vector layer type
   \param selectRect The QRect to expand
   \param vlayer The vector layer layer
-  \param vlayer The point to expand the rectangle around
+  \param point The point to expand the rectangle around
   */
   GUI_EXPORT void expandSelectRectangle( QRect &selectRect, QgsVectorLayer *vlayer, QPoint point );
 

@@ -13,11 +13,10 @@
 
 
 
-
-class QgsMapToolSelectionHandler: QObject
+class QgsMapToolSelectionHandler : QObject
 {
 %Docstring
- Map tool for selecting geometry in layers
+ Utility class for handling various methods to create geometry for selection in layers.
 
 .. versionadded:: 3.2
 %End
@@ -39,92 +38,20 @@ class QgsMapToolSelectionHandler: QObject
       SelectRadius
     };
 
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
+                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple,
+                                QgisInterface *iface = 0 );
 %Docstring
 constructor
 %End
 
     ~QgsMapToolSelectionHandler();
 
-    QgisInterface *mQgisInterface;
-
-    void canvasMoveEvent( QgsMapMouseEvent *e );
-%Docstring
-Overridden mouse move event
-%End
-    void canvasPressEvent( QgsMapMouseEvent *e );
-%Docstring
-Overridden mouse press event
-%End
-    void canvasReleaseEvent( QgsMapMouseEvent *e );
-%Docstring
-Overridden mouse releasae event
-%End
-    bool escapeSelection( QKeyEvent *e );
-%Docstring
-Cancel selection - handles escape press event
-%End
-
-    void deactivate();
-%Docstring
-To deactivate handler often within map tool deactivation.
-%End
-
-    void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse move event handling for simple selection
-%End
-    void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse release event handling for simple selection
-%End
-    void selectFeaturesPressEvent();
-%Docstring
-Mouse press event handling for simple selection
-%End
-
-    void selectPolygonMoveEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse move event handling for polygon selection
-%End
-    void selectPolygonPressEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse press event handling for polygon selection
-%End
-
-    void selectFreehandMoveEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse move event handling for freehand selection
-%End
-    void selectFreehandReleaseEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse press event handling for freehand selection
-%End
-
-    void selectRadiusMoveEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse move event handling for radius selection
-%End
-    void selectRadiusReleaseEvent( QgsMapMouseEvent *e );
-%Docstring
-Mouse press event handling for radius selection
-%End
-
-    void initRubberBand();
-%Docstring
-Initialization of the rubberband
-%End
-
-    void setIface( QgisInterface *iface );
-%Docstring
-Interface variable setter - needed for messages
-%End
-
     QgsGeometry selectedGeometry();
 %Docstring
 mSelectedGeometry getter
 %End
-    void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 %Docstring
 mSelectedGeometry setter
 %End
@@ -138,37 +65,26 @@ mSelectionMode getter
 mSelectionMode setter
 %End
 
-    bool selectionActive();
+    void deactivate();
 %Docstring
-mSelectionActive getter
+Deactivates handler (when map tool gets deactivated)
 %End
 
-    QgsRubberBand *selectionRubberBand();
+    void canvasMoveEvent( QgsMapMouseEvent *e );
 %Docstring
-mSelectionRubberBand getter
+Overridden mouse move event
 %End
-    void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
+    void canvasPressEvent( QgsMapMouseEvent *e );
 %Docstring
-mSelectionRubberBand setter
+Overridden mouse press event
 %End
-
-    bool justFinishedSelection() const;
+    void canvasReleaseEvent( QgsMapMouseEvent *e );
 %Docstring
-mJustFinishedSelection getter
+Overridden mouse releasae event
 %End
-    void setJustFinishedSelection( bool justFinishedSelection );
+    bool keyReleaseEvent( QKeyEvent *e );
 %Docstring
-mJustFinishedSelection setter
-%End
-
-    QgsPointXY radiusCenter() const;
-%Docstring
-mRadiusCenter getter
-%End
-
-    QPoint initDragPos() const;
-%Docstring
-mInitDragPos getter
+Cancel selection - handles escape press event
 %End
 
   signals:

@@ -20,9 +20,7 @@
 #include "qgsfields.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
-#include "qgspolygon.h"
 #include "qgsunittypes.h"
-#include "qgsmaptoolselectionhandler.h"
 
 #include <QObject>
 #include <QPointer>
@@ -122,9 +120,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param y y coordinates of mouseEvent
     \param mode Identification mode. Can use Qgis default settings or a defined mode.
     \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    \param selectionMode IdentifySelection. Defines which selection mode has been used for identification.
     \returns a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
+
+    // geometry is in map coordinates
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+
 
     /**
      * return a pointer to the identify menu which will be used in layer selection mode
@@ -151,23 +152,17 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param mode Identification mode. Can use Qgis default settings or a defined mode.
     \param layerList Performs the identification within the given list of layers.
     \param layerType Only performs identification in a certain type of layers (raster, vector).
-    \param selectionMode IdentifySelection. Defines which selection mode has been used for the identification.
     \returns a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
-
-    /**
-     * Identifies features in the given vector layer and saves results to the passed list of results*/
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
-
-    QgsMapToolSelectionHandler *mSelectionHandler;
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
 
   private:
 
@@ -218,7 +213,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QgsRectangle mLastExtent;
 
     int mCoordinatePrecision;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )

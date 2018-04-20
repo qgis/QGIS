@@ -340,7 +340,6 @@ void QgsIdentifyResultsDialog::initSelectionModes()
 QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mCanvas( canvas )
-  , mSelectionMode( QgsMapToolSelectionHandler::SelectSimple )
 {
   setupUi( this );
   connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );

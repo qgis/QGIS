@@ -40,6 +40,7 @@ class QSystemTrayIcon;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
+class QgisInterface;
 class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
@@ -691,7 +692,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
 
-    QgisAppInterface *getQgisInterface();
+    QgisInterface *qgisInterface();
 
   public slots:
     //! save current vector layer

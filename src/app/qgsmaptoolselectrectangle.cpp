@@ -29,26 +29,24 @@
 #include <QMouseEvent>
 #include <QRect>
 
-class QgisApp;
 
 QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mToolName = tr( "Select features" );
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Select ) );
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );
+
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple, QgisApp::instance()->qgisInterface() );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
 }
 
 QgsMapToolSelectFeatures::~QgsMapToolSelectFeatures()
 {
-  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFeatures::selectFeatures );
   delete mSelectionHandler;
 }
 
 void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
   mSelectionHandler->canvasPressEvent( e );
 }
 

@@ -104,7 +104,7 @@ Expands a rectangle to a minimum size for selection based on the vector layer ty
 
 :param selectRect: The QRect to expand
 :param vlayer: The vector layer layer
-:param vlayer: The point to expand the rectangle around
+:param point: The point to expand the rectangle around
 %End
 
   void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );

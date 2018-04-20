@@ -33,7 +33,7 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 #include <QApplication>
 
-QgsVectorLayer  *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
+QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
   if ( !vlayer )
@@ -57,7 +57,7 @@ QgsVectorLayer  *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *can
   return vlayer;
 }
 
-void  QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
+void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
 {
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
   QgsPointXY ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
@@ -75,7 +75,7 @@ void  QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectR
   }
 }
 
-void  QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
+void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
     QgsVectorLayer *vlayer,
     QPoint point )
 {
@@ -97,7 +97,7 @@ void  QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
   selectRect.setBottom( point.y() + boxSize );
 }
 
-void   QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
@@ -111,7 +111,7 @@ void   QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, cons
   setSelectedFeatures( canvas, selectGeometry, messageBar, behavior, doContains );
 }
 
-void  QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers, QgsMessageBar *messageBar )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas, messageBar );
   if ( !vlayer )
@@ -152,7 +152,7 @@ void  QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qg
   QApplication::restoreOverrideCursor();
 }
 
-void  QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
+void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
     QgsMessageBar *messageBar, QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas, messageBar );
@@ -168,7 +168,7 @@ void  QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qg
 }
 
 
-QgsFeatureIds  QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar *messageBar )
+QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect, QgsMessageBar *messageBar )
 {
   QgsFeatureIds newSelectedFeatures;
 

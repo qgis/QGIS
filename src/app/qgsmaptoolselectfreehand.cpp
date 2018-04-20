@@ -22,21 +22,19 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgisapp.h"
 
 #include <QMouseEvent>
-class QgsMapToolSelectionHandler;
 
 
 QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectFreehand );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectFreehand, QgisApp::instance()->qgisInterface() );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFreehand::selectFeatures );
 
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
 {
-  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectFreehand::selectFeatures );
   delete mSelectionHandler;
 }
 
@@ -52,10 +50,9 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectFreehand::keyReleaseEvent( QKeyEvent *e )
 {
-  if ( mSelectionHandler->escapeSelection( e ) )
-  {
+  if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
-  }
+
   QgsMapTool::keyReleaseEvent( e );
 }
 

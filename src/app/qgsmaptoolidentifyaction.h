@@ -25,10 +25,10 @@
 
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
+class QgsMapToolSelectionHandler;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureStore;
-class QgsRubberBand;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -43,7 +43,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-
     QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
     ~QgsMapToolIdentifyAction() override;
@@ -61,10 +60,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
-    void handleOnCanvasRelease( QgsMapMouseEvent *e );
-
-    void identifyOnGeometryChange( int x, int y, IdentifyMode mode );
-
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -76,9 +71,13 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
   private slots:
     void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
+    void identifyFromGeometry();
+
   private:
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
+
+    QgsMapToolSelectionHandler *mSelectionHandler;
 
     QgsIdentifyResultsDialog *resultsDialog();
 
@@ -87,9 +86,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void setClickContextScope( const QgsPointXY &point );
 
     void keyReleaseEvent( QKeyEvent *e ) override;
-
-    //! Method called when
-    void identifyFromGeometry();
 
     friend class TestQgsMapToolIdentifyAction;
 };

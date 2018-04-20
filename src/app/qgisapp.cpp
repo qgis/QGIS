@@ -12591,7 +12591,7 @@ void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
   mBookMarksDockWidget->zoomToBookmarkIndex( index );
 }
 
-QgisAppInterface *QgisApp::getQgisInterface()
+QgisInterface *QgisApp::qgisInterface()
 {
   return mQgisInterface;
 }

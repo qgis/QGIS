@@ -23,27 +23,23 @@ email                : jpalmer at linz dot govt dot nz
 
 #include <QMouseEvent>
 
-class QgsMapToolSelectionHandler;
-
 
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   mCursor = Qt::ArrowCursor;
-  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectPolygon );
+  mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectPolygon, QgisApp::instance()->qgisInterface() );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 {
-  disconnect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelectPolygon::selectFeatures );
   delete mSelectionHandler;
 }
 
 void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  mSelectionHandler->selectPolygonPressEvent( e );
-  //mSelectionHandler->canvasPressEvent( e );
+  mSelectionHandler->canvasPressEvent( e );
 }
 
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )

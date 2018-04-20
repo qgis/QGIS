@@ -16,32 +16,20 @@
 #ifndef QGSMAPTOOLSELECTIONHANDLER_H
 #define QGSMAPTOOLSELECTIONHANDLER_H
 
-#include "qgsfeature.h"
-#include "qgsfields.h"
-#include "qgsmaptool.h"
-#include "qgspointxy.h"
-#include "qgspolygon.h"
-#include "qgsunittypes.h"
-#include "qgsrubberband.h"
-
 #include <QObject>
-#include <QPointer>
-#include "qgis_gui.h"
+#include <QWidget>
 
-class QgsRasterLayer;
-class QgsVectorLayer;
-class QgsMapLayer;
-class QgsMapCanvas;
-class QgsHighlight;
-class QgsDistanceArea;
-class QgsDistanceWidget;
+#include "qgis_gui.h"
+#include "qgsgeometry.h"
 
 class QHBoxLayout;
+class QKeyEvent;
 
-class QgsDoubleSpinBox;
-class QgsRubberBand;
-class QgsSnapIndicator;
 class QgisInterface;
+class QgsDoubleSpinBox;
+class QgsMapCanvas;
+class QgsMapMouseEvent;
+class QgsRubberBand;
 
 #ifndef SIP_RUN
 
@@ -68,24 +56,16 @@ class QgsDistanceWidget : public QWidget
     //! distance getter
     double distance();
 
-    //! editor getter
-    QgsDoubleSpinBox *editor() {return mDistanceSpinBox;}
-
   signals:
     //! distance changed signal
     void distanceChanged( double distance );
     //! distanceEditingFinished signal
     void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
-    //! addDistanceWidget signal
-    void addDistanceWidget();
     //! distanceEditingCanceled signal
     void distanceEditingCanceled();
 
   protected:
-    bool eventFilter( QObject *obj, QEvent *ev ) override;
-
-  private slots:
-    void distanceSpinBoxValueChanged( double distance );
+    virtual bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private:
     QHBoxLayout *mLayout = nullptr;
@@ -99,10 +79,10 @@ class QgsDistanceWidget : public QWidget
 
 /**
  * \ingroup gui
-  \brief Map tool for selecting geometry in layers
-  \since QGIS 3.2"
-*/
-class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
+ * \brief Utility class for handling various methods to create geometry for selection in layers.
+ * \since QGIS 3.2
+ */
+class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 {
     Q_OBJECT
 
@@ -123,12 +103,25 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
+                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple,
+                                QgisInterface *iface = nullptr );
 
     //! desctructor
     ~QgsMapToolSelectionHandler() override;
 
-    QgisInterface *mQgisInterface = nullptr;
+    //! mSelectedGeometry getter
+    QgsGeometry selectedGeometry();
+    //! mSelectedGeometry setter
+    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+
+    //! mSelectionMode getter
+    SelectionMode selectionMode();
+    //! mSelectionMode setter
+    void setSelectionMode( SelectionMode mode );
+
+    //! Deactivates handler (when map tool gets deactivated)
+    void deactivate();
 
     //! Overridden mouse move event
     void canvasMoveEvent( QgsMapMouseEvent *e );
@@ -137,10 +130,26 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! Overridden mouse releasae event
     void canvasReleaseEvent( QgsMapMouseEvent *e );
     //! Cancel selection - handles escape press event
-    bool escapeSelection( QKeyEvent *e );
+    bool keyReleaseEvent( QKeyEvent *e );
 
-    //! To deactivate handler often within map tool deactivation.
-    void deactivate();
+  signals:
+    //! emitted when mSelectedGeometry has been changed
+    void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+
+  private slots:
+    //! update the rubber band from the input widget
+    void updateRubberband( const double &radius );
+
+    /**
+     * triggered when the user input widget has a new value
+     * either programmatically (from the mouse event) or entered by the user
+     */
+    void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
+
+    //! cancel selecting (between two click events)
+    void cancel();
+
+  private:
 
     //! Mouse move event handling for simple selection
     void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
@@ -167,56 +176,22 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
     //! Initialization of the rubberband
     void initRubberBand();
 
-    //! Interface variable setter - needed for messages
-    void setIface( QgisInterface *iface );
-
-    //! mSelectedGeometry getter
-    QgsGeometry selectedGeometry();
-    //! mSelectedGeometry setter
-    void setSelectedGeometry( QgsGeometry geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
-
-    //! mSelectionMode getter
-    SelectionMode selectionMode();
-    //! mSelectionMode setter
-    void setSelectionMode( SelectionMode mode );
-
-    //! mSelectionActive getter
-    bool selectionActive();
-
-    //! mSelectionRubberBand getter
-    QgsRubberBand *selectionRubberBand();
-    //! mSelectionRubberBand setter
-    void setSelectionRubberBand( QgsRubberBand *selectionRubberBand );
-
-    //! mJustFinishedSelection getter
-    bool justFinishedSelection() const;
-    //! mJustFinishedSelection setter
-    void setJustFinishedSelection( bool justFinishedSelection );
-
     //! mRadiusCenter getter
     QgsPointXY radiusCenter() const;
 
-    //! mInitDragPos getter
-    QPoint initDragPos() const;
+    QgsPointXY toMapCoordinates( QPoint point );
 
-  signals:
-    //! emitted when mSelectedGeometry has been changed
-    void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    void createDistanceWidget();
+    void deleteDistanceWidget();
 
-  private slots:
-    //! update the rubber band from the input widget
-    void updateRubberband( const double &radius );
+    void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
-    /**
-    * triggered when the user input widget has a new value
-    * either programmatically (from the mouse event) or entered by the user
-    */
-    void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
-
-    //! cancel selecting (between two click events)
-    void cancel();
+    //! perform selection using radius from rubberband
+    void selectFromRubberband( const Qt::KeyboardModifiers &modifiers );
 
   private:
+
+    QgisInterface *mQgisInterface = nullptr;
 
     //! the rubberband for selection visualization
     QgsRubberBand *mSelectionRubberBand = nullptr;
@@ -230,7 +205,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     SelectionMode mSelectionMode;
 
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     QPoint mInitDragPos;
 
@@ -246,16 +221,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler: public QObject
 
     //! to destinguish right click for finishing selection and identify extedned menu
     bool mJustFinishedSelection = false;
-
-    QgsPointXY toMapCoordinates( QPoint point );
-
-    void createRotationWidget();
-    void deleteRotationWidget();
-
-    void updateRadiusFromEdge( QgsPointXY &radiusEdge );
-
-    //! perform selection using radius from rubberband
-    void selectFromRubberband( const Qt::KeyboardModifiers &modifiers );
 
 };
 
