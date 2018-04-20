@@ -114,7 +114,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.layersTree.clear()
         rows = value.split(';')
         for i, r in enumerate(rows):
-            v = r.split(',')
+            v = r.split('::~::')
             self.addLayerData(v[0], v[1])
 
             comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
