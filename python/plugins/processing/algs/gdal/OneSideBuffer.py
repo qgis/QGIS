@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
@@ -62,10 +63,10 @@ class OneSideBuffer(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Buffer distance'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Buffer distance'),
+                                                         defaultValue=10,
+                                                         parentParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterEnum(self.BUFFER_SIDE,
                                                      self.tr('Buffer side'),
                                                      options=self.bufferSides,
