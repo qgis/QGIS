@@ -22,6 +22,7 @@ Item {
   property color bgColor: "white"
   property color separatorColor: "gray"
   property int separatorSize: 1 * QgsQuick.Utils.dp
+  property bool unreadMessages: false
 
   id: item
 
@@ -52,5 +53,19 @@ Item {
         width: table.width
       }
     }
+  }
+
+  Connections {
+    target: model
+
+    onRowsInserted: {
+      if ( !visible )
+        unreadMessages = true
+    }
+  }
+
+  onVisibleChanged: {
+    if ( visible )
+      unreadMessages = false
   }
 }
