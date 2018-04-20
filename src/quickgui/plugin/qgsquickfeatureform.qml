@@ -37,9 +37,9 @@ Item {
   property bool allowRememberAttribute: false // when adding new feature, add checkbox to be able to save the same value for the next feature as default
   property QgsQuick.Project project
 
-  property var saveBtnIcon: QgsQuick.Utils.getThemeIcon( "ic_save_white" )
-  property var deleteBtnIcon: QgsQuick.Utils.getThemeIcon( "ic_delete_forever_white" )
-  property var closeBtnIcon: QgsQuick.Utils.getThemeIcon( "ic_clear_white" )
+  property var saveButtonIcon: QgsQuick.Utils.getThemeIcon( "ic_save_white" )
+  property var deleteButtonIcon: QgsQuick.Utils.getThemeIcon( "ic_delete_forever_white" )
+  property var closeButtonIcon: QgsQuick.Utils.getThemeIcon( "ic_clear_white" )
 
   property FeatureFormStyling style: FeatureFormStyling {}
 
@@ -362,7 +362,7 @@ Item {
         visible: form.state !== "ReadOnly"
 
         contentItem: Image {
-            source: form.saveBtnIcon
+            source: form.saveButtonIcon
             sourceSize: Qt.size(width, height)
         }
 
@@ -386,7 +386,7 @@ Item {
         visible: form.state === "Edit"
 
         contentItem: Image {
-            source: form.deleteBtnIcon
+            source: form.deleteButtonIcon
             sourceSize: Qt.size(width, height)
         }
 
@@ -431,7 +431,7 @@ Item {
         Layout.preferredHeight: form.style.toolbutton.size
 
         contentItem: Image {
-            source: form.closeBtnIcon
+            source: form.closeButtonIcon
             sourceSize: Qt.size(width, height)
         }
 

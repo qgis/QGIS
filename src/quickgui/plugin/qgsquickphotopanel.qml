@@ -31,9 +31,9 @@ Drawer {
   property color borderColor: "black"
 
   // icons:
-  property var captureBtnIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
-  property var okBtnIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
-  property var cancelBtnIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
+  property var captureButtonIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
+  property var okButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
+  property var cancelButtonIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
 
 
   id: photoPanel
@@ -98,7 +98,7 @@ Drawer {
       autoOrientation: true
 
       Rectangle {
-        id: captureBtn
+        id: captureButton
         property int borderWidth: 10 * QgsQuick.Utils.dp
         width: parent.width/20
         height: parent.width/20
@@ -125,12 +125,12 @@ Drawer {
         }
 
         Image {
-          id: captureBtnImage
+          id: captureButtonImage
           fillMode: Image.PreserveAspectFit
           anchors.centerIn: parent
-          sourceSize.height: captureBtn.height/2
-          height: captureBtn.height/2
-          source: photoPanel.captureBtnIcon
+          sourceSize.height: captureButton.height/2
+          height: captureButton.height/2
+          source: photoPanel.captureButtonIcon
         }
 
       }
@@ -143,7 +143,7 @@ Drawer {
 
         // Cancel button
         Rectangle {
-          id: cancelBtn
+          id: cancelButton
           visible: camera.imageCapture.capturedImagePath != ""
 
           property int borderWidth: 10 * QgsQuick.Utils.dp
@@ -152,7 +152,7 @@ Drawer {
           color: photoPanel.bgColor
           border.color: photoPanel.borderColor
           anchors.right: parent.right
-          anchors.top: confirmBtn.bottom
+          anchors.top: confirmButton.bottom
           border.width: borderWidth
           radius: width*0.5
           antialiasing: true
@@ -171,15 +171,15 @@ Drawer {
           Image {
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
-            sourceSize.height: captureBtn.height/2
-            height: captureBtn.height/2
-            source: photoPanel.cancelBtnIcon
+            sourceSize.height: captureButton.height/2
+            height: captureButton.height/2
+            source: photoPanel.cancelButtonIcon
           }
         }
 
         // OK button
         Rectangle {
-          id: confirmBtn
+          id: confirmButton
           visible: camera.imageCapture.capturedImagePath != ""
 
           property int borderWidth: 10 * QgsQuick.Utils.dp
@@ -209,9 +209,9 @@ Drawer {
           Image {
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
-            sourceSize.height: captureBtn.height/2
-            height: captureBtn.height/2
-            source: photoPanel.okBtnIcon
+            sourceSize.height: captureButton.height/2
+            height: captureButton.height/2
+            source: photoPanel.okButtonIcon
           }
         }
       }
