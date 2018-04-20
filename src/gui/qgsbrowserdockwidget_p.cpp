@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "qgsbrowserdockwidget_p.h"
 
+#include <memory>
+
 #include <QAbstractTextDocumentLayout>
 #include <QHeaderView>
 #include <QTreeView>
@@ -143,7 +145,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     QgsDebugMsg( "creating raster layer" );
     // should copy code from addLayer() to split uri ?
-    QgsRasterLayer *layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
     if ( layer )
     {
       if ( layer->isValid() )
@@ -151,13 +153,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
-      delete layer;
     }
   }
   else if ( type == QgsMapLayer::MeshLayer )
   {
     QgsDebugMsg( "creating mesh layer" );
-    QgsMeshLayer *layer = new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
     if ( layer )
     {
       if ( layer->isValid() )
@@ -165,13 +166,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
-      delete layer;
     }
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
     QgsDebugMsg( "creating vector layer" );
-    QgsVectorLayer *layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+    std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
     if ( layer )
     {
       if ( layer->isValid() )
@@ -179,7 +179,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
-      delete layer;
     }
   }
   else if ( type == QgsMapLayer::PluginLayer )
