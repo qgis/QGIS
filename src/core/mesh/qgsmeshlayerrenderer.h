@@ -23,6 +23,8 @@ class QgsSymbol;
 
 #define SIP_NO_FILE
 
+#include <memory>
+
 #include "qgis.h"
 
 #include "qgsmaplayerrenderer.h"
@@ -42,11 +44,11 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     //! Ctor
     QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context );
 
-    ~QgsMeshLayerRenderer() override;
+    ~QgsMeshLayerRenderer() override = default;
     bool render() override;
 
   private:
-    void renderMesh( QgsSymbol *symbol, const QVector<QgsMeshFace> &faces );
+    void renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces );
 
 
   protected:
@@ -57,15 +59,13 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsTriangularMesh mTriangularMesh;
 
     // copy from mesh layer
-    QgsSymbol *mNativeMeshSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;
 
     // copy from mesh layer
-    QgsSymbol *mTriangularMeshSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mTriangularMeshSymbol = nullptr;
 
     // rendering context
     QgsRenderContext &mContext;
-
-
 };
 
 

@@ -38,7 +38,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   QgsSymbolLayerList l1;
   l1 << new QgsSimpleFillSymbolLayer( Qt::white, Qt::NoBrush, Qt::black, Qt::SolidLine, 1.0 );
-  mNativeMeshSymbol = new QgsFillSymbol( l1 );
+  mNativeMeshSymbol.reset( new QgsFillSymbol( l1 ) );
 
 
   toggleTriangularMeshRendering( false );
@@ -49,16 +49,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
 QgsMeshLayer::~QgsMeshLayer()
 {
-  clearMeshes();
-
   if ( mDataProvider )
     delete mDataProvider;
-
-  if ( mNativeMeshSymbol )
-    delete mNativeMeshSymbol;
-
-  if ( mTriangularMeshSymbol )
-    delete mTriangularMeshSymbol;
 }
 
 QgsMeshDataProvider *QgsMeshLayer::dataProvider()
@@ -95,31 +87,41 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
-QgsMesh *QgsMeshLayer::nativeMesh() SIP_SKIP {return mNativeMesh;}
+QgsMesh *QgsMeshLayer::nativeMesh() SIP_SKIP
+{
+  return mNativeMesh.get();
+}
 
-QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP {return mTriangularMesh;}
 
-QgsSymbol *QgsMeshLayer::nativeMeshSymbol() {return mNativeMeshSymbol;}
+QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
+{
+  return mTriangularMesh.get();
+}
 
-QgsSymbol *QgsMeshLayer::triangularMeshSymbol() {return mTriangularMeshSymbol;}
+QgsSymbol *QgsMeshLayer::nativeMeshSymbol()
+{
+  return mNativeMeshSymbol.get();
+}
+
+QgsSymbol *QgsMeshLayer::triangularMeshSymbol()
+{
+  return mTriangularMeshSymbol.get();
+}
 
 void QgsMeshLayer::toggleTriangularMeshRendering( bool toggle )
 {
   if ( toggle && mTriangularMeshSymbol )
     return;
 
-  if ( mTriangularMeshSymbol )
-    delete mTriangularMeshSymbol;
-
   if ( toggle )
   {
     QgsSymbolLayerList l2;
     l2 << new QgsSimpleFillSymbolLayer( Qt::white, Qt::NoBrush, Qt::red, Qt::SolidLine, 0.26 );
-    mTriangularMeshSymbol = new QgsFillSymbol( l2 );
+    mTriangularMeshSymbol.reset( new QgsFillSymbol( l2 ) );
   }
   else
   {
-    mTriangularMeshSymbol = nullptr;
+    mTriangularMeshSymbol.reset();
   }
   triggerRepaint();
 }
@@ -128,7 +130,7 @@ void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );
 
-  mNativeMesh = new QgsMesh();
+  mNativeMesh.reset( new QgsMesh() );
 
   if ( !( dataProvider() && dataProvider()->isValid() ) )
     return;
@@ -150,13 +152,14 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 {
   if ( !mNativeMesh )
   {
+    // lazy loading of mesh data
     fillNativeMesh();
   }
 
   if ( !mTriangularMesh )
-    mTriangularMesh = new QgsTriangularMesh();
+    mTriangularMesh.reset( new QgsTriangularMesh() );
 
-  triangularMesh()->update( mNativeMesh, &rendererContext );
+  mTriangularMesh->update( mNativeMesh.get(), &rendererContext );
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 
@@ -177,25 +180,12 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   return true;
 }
 
-void QgsMeshLayer::clearMeshes()
-{
-  if ( mTriangularMesh )
-    delete mTriangularMesh;
-
-  if ( mNativeMesh )
-    delete mNativeMesh;
-
-}
-
 bool QgsMeshLayer::setDataProvider( QString const &provider )
 {
-  clearMeshes();
+  Q_ASSERT( !mDataProvider ); //called from ctor
 
   mProviderKey = provider;
   QString dataSource = mDataSource;
-
-  if ( mDataProvider )
-    delete mDataProvider;
 
   mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
   if ( !mDataProvider )

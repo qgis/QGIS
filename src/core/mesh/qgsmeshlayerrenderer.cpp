@@ -40,26 +40,14 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   // make copies for symbols
   if ( layer->nativeMeshSymbol() )
   {
-    mNativeMeshSymbol = layer->nativeMeshSymbol()->clone();
+    mNativeMeshSymbol.reset( layer->nativeMeshSymbol()->clone() );
   }
 
   if ( layer->triangularMeshSymbol() )
   {
-    mTriangularMeshSymbol = layer->triangularMeshSymbol()->clone();
+    mTriangularMeshSymbol.reset( layer->triangularMeshSymbol()->clone() );
   }
 }
-
-
-QgsMeshLayerRenderer::~QgsMeshLayerRenderer()
-{
-  if ( mNativeMeshSymbol )
-    delete mNativeMeshSymbol;
-
-  if ( mTriangularMeshSymbol )
-    delete mTriangularMeshSymbol;
-}
-
-
 
 bool QgsMeshLayerRenderer::render()
 {
@@ -69,7 +57,7 @@ bool QgsMeshLayerRenderer::render()
   return true;
 }
 
-void QgsMeshLayerRenderer::renderMesh( QgsSymbol *symbol, const QVector<QgsMeshFace> &faces )
+void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces )
 {
   if ( !symbol )
     return;
