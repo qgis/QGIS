@@ -45,9 +45,9 @@ class CORE_EXPORT QgsTriangularMesh
 {
   public:
     //! Ctor
-    QgsTriangularMesh();
+    QgsTriangularMesh() = default;
     //! Dtor
-    ~QgsTriangularMesh();
+    ~QgsTriangularMesh() = default;
 
     /**
      * Construct triangular mesh from layer's native mesh and context

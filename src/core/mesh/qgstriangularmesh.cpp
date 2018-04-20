@@ -19,14 +19,6 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
 
-QgsTriangularMesh::QgsTriangularMesh( )
-{
-}
-
-QgsTriangularMesh::~QgsTriangularMesh()
-{
-}
-
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
@@ -41,7 +33,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
-    QgsMeshVertex vertex = nativeMesh->vertices[i];
+    const QgsMeshVertex &vertex = nativeMesh->vertices.at( i );
     if ( transform.isValid() )
     {
       QgsPointXY mapPoint = transform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
@@ -59,7 +51,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   // CREATE TRIANGULAR MESH
   for ( int i = 0; i < nativeMesh->faces.size(); ++i )
   {
-    QgsMeshFace face = nativeMesh->faces[i] ;
+    const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
     if ( face.size() == 3 )
     {
       // triangle

@@ -18,6 +18,8 @@
 #ifndef QGSMESHLAYER_H
 #define QGSMESHLAYER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"
@@ -152,28 +154,26 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 #endif
 
   private:
-    //! Clear native and triangular mesh
-    void clearMeshes();
     void fillNativeMesh();
 
   private:
-    //! Pointer to native mesh structure, used as cache for rendering
-    QgsMesh *mNativeMesh = nullptr;
-
-    //! Pointer to derived mesh structure
-    QgsTriangularMesh *mTriangularMesh = nullptr;
-
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
     QgsMeshDataProvider *mDataProvider = nullptr;
 
     //! Data provider key
     QString mProviderKey;
 
+    //! Pointer to native mesh structure, used as cache for rendering
+    std::unique_ptr<QgsMesh> mNativeMesh;
+
+    //! Pointer to derived mesh structure
+    std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
+
     //! rendering native mesh
-    QgsSymbol *mNativeMeshSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mNativeMeshSymbol;
 
     //! rendering triangular mesh
-    QgsSymbol *mTriangularMeshSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mTriangularMeshSymbol;
 };
 
 #endif //QGSMESHLAYER_H
