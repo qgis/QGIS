@@ -402,7 +402,17 @@ class CORE_EXPORT QgsDxfExport
     //! @note added in 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    /** Returns scale factor for conversion to map units
+     * @param scaleDenominator the map scale denominator
+     * @param symbolUnits the symbol output units
+     * @param mapUnits the map units
+     * @param mapUnitsPerPixel Map units per pixel*/
+    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits, double mapUnitsPerPixel = 1.0 );
+    /** Clips value to scale minimum/maximum
+        @param value the value to clip
+        @param scale the scale dependent minimum/maximum values
+        @param pixelToMMFactor pixels per mm*/
+    void clipValueToMapUnitScale( double& value, const QgsMapUnitScale& scale, double pixelToMMFactor ) const;
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
@@ -467,6 +477,13 @@ class CORE_EXPORT QgsDxfExport
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsSymbolV2::OutputUnit u );
 
     void addFeature( QgsSymbolV2RenderContext &ctx, const QgsCoordinateTransform *ct, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    /** Writes geometry generator symbol layer
+        @param ctx the symbol render context
+        @param ct the coordinate transform
+        @param layer the layer name
+        @param symbolLayer the symbollayer to write to the dxf file
+        @param allSymbolLayers if true, all symbol layers of the subsymbol are writeen. If false, only the first one is written*/
+    void addGeometryGeneratorSymbolLayer( QgsSymbolV2RenderContext &ctx, const QgsCoordinateTransform *ct, const QString &layer, QgsSymbolLayerV2 *symbolLayer, bool allSymbolLayers );
 
     //returns dxf palette index from symbol layer color
     static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, QgsSymbolV2RenderContext &ctx );
