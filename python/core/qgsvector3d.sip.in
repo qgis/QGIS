@@ -11,7 +11,7 @@
 class QgsVector3D
 {
 %Docstring
-Class for storage of 3D vectors similar to QgsVector3D, with the difference that it uses double precision
+Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
 instead of single precision floating point numbers.
 
 .. versionadded:: 3.0
@@ -60,16 +60,16 @@ Sets vector coordinates
 
     QgsVector3D operator-( const QgsVector3D &other ) const;
 
-    QgsVector3D operator *(const double factor) const;
+    QgsVector3D operator *( const double factor ) const;
 
-    QgsVector3D operator /( const double factor) const;
+    QgsVector3D operator /( const double factor ) const;
 
-    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2);
+    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
 %Docstring
 Returns the dot product of two vectors
 %End
 
-    static QgsVector3D crossProduct(const QgsVector3D& v1, const QgsVector3D& v2);
+    static QgsVector3D crossProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
 %Docstring
 Returns the cross product of two vectors
 %End
@@ -81,7 +81,7 @@ Returns the length of the vector
 
     void normalize();
 %Docstring
-Normalizes the currect vector in place.
+Normalizes the current vector in place.
 %End
 
 
