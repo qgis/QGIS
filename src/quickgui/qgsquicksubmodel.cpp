@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsquicksubmodel.h"
-#include <QDebug>
 
 QgsQuickSubModel::QgsQuickSubModel( QObject *parent )
   : QAbstractItemModel( parent )

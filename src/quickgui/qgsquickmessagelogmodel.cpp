@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
-
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

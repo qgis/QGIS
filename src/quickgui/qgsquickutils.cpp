@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFile>

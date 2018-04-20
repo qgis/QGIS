@@ -15,7 +15,6 @@
 
 #include <QSize>
 #include <QPoint>
-#include <QDebug>
 
 #include "qgsdistancearea.h"
 #include "qgspointxy.h"
