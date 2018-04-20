@@ -26,7 +26,9 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayer)
 from qgis.analysis import QgsNativeAlgorithms
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -120,6 +122,41 @@ class WrappersTest(unittest.TestCase):
 
     def testDistance(self):
         self.checkConstructWrapper(QgsProcessingParameterDistance('test'), DistanceWidgetWrapper)
+
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        dlg = AlgorithmDialog(alg)
+        param = QgsProcessingParameterDistance('test')
+        wrapper = DistanceWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # test units
+        widget.show()
+
+        # crs values
+        widget.setUnitParameterValue('EPSG:3111')
+        self.assertEqual(widget.label.text(), 'meters')
+        self.assertFalse(widget.warning_label.isVisible())
+        widget.setUnitParameterValue('EPSG:4326')
+        self.assertEqual(widget.label.text(), 'degrees')
+        self.assertTrue(widget.warning_label.isVisible())
+        widget.setUnitParameterValue(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(widget.label.text(), 'meters')
+        self.assertFalse(widget.warning_label.isVisible())
+        widget.setUnitParameterValue(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(widget.label.text(), 'degrees')
+        self.assertTrue(widget.warning_label.isVisible())
+
+        # layer values
+        vl = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int", "vl", "memory")
+        widget.setUnitParameterValue(vl)
+        self.assertEqual(widget.label.text(), 'meters')
+        self.assertFalse(widget.warning_label.isVisible())
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=pk:int", "vl", "memory")
+        widget.setUnitParameterValue(vl)
+        self.assertEqual(widget.label.text(), 'degrees')
+        self.assertTrue(widget.warning_label.isVisible())
+
+        widget.deleteLater()
 
     def testNumber(self):
         self.checkConstructWrapper(QgsProcessingParameterNumber('test'), NumberWidgetWrapper)
