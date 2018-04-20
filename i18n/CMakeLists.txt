@@ -30,6 +30,7 @@ qgis_ca.ts
 qgis_cs.ts
 qgis_da.ts
 qgis_de.ts
+qgis_de_CH.ts
 qgis_el.ts
 qgis_eo.ts
 qgis_es.ts
