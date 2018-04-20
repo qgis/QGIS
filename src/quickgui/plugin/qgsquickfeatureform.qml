@@ -164,8 +164,7 @@ Item {
            * The main form content area
            */
           Rectangle {
-            width: parent.width
-            height: parent.height
+            anchors.fill: parent
             color: form.style.backgroundColor
             opacity: form.style.backgroundOpacity
           }
