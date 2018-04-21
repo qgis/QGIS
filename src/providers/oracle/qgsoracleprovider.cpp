@@ -1367,7 +1367,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        QVariant value = attributevec[ fieldId[i] ];
+        QVariant value = attributevec.value( fieldId[i], QVariant() );
 
         QString v;
         if ( value.isNull() )
