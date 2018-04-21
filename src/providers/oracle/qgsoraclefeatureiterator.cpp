@@ -301,16 +301,16 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
         if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
         {
-          // couldn't use sdo_filter earlier
-          if ( !mSource->mHasSpatialIndex )
+          // even if we could use sdo_filter earlier, we still need to double-check the results
+          // as sdo_filter can return results outside the filter (it's only a first-pass
+          // filtering operation!)
+
+          // only want features which intersect with bbox
+          if ( !feature.geometry()->boundingBox().intersects( mRequest.filterRect() ) )
           {
-            // only intersect with bbox
-            if ( !feature.geometry()->boundingBox().intersects( mRequest.filterRect() ) )
-            {
-              // skip feature that don't intersect with our rectangle
-              QgsDebugMsg( "no bbox intersect" );
-              continue;
-            }
+            // skip feature that don't intersect with our rectangle
+            QgsDebugMsg( "no bbox intersect" );
+            continue;
           }
         }
         else if ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex )
