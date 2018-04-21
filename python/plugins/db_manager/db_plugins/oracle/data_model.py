@@ -25,13 +25,14 @@ The content of this file is based on
 from builtins import str
 
 from qgis.PyQt.QtCore import QTime
-
+from qgis.core import QgsMessageLog
 from ..data_model import (TableDataModel,
                           SqlResultModel,
                           SqlResultModelAsync,
                           SqlResultModelTask,
                           BaseTableModel)
 from ..plugin import DbError
+from ..plugin import BaseError
 
 
 class ORTableDataModel(TableDataModel):
