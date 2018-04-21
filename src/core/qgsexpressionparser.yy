@@ -17,6 +17,7 @@
 #include <qglobal.h>
 #include <QList>
 #include <cstdlib>
+#include "qgslogger.h"
 #include "expression/qgsexpression.h"
 #include "expression/qgsexpressionnode.h"
 #include "expression/qgsexpressionnodeimpl.h"
@@ -67,6 +68,14 @@ struct expression_parser_context
 #define YYERROR_VERBOSE 1
 
 #define BINOP(x, y, z)  new QgsExpressionNodeBinaryOperator(x, y, z)
+
+void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
+{
+  node->parserFirstLine = yyloc->first_line;
+  node->parserFirstColumn = yyloc->first_column;
+  node->parserLastLine = yyloc->last_line;
+  node->parserLastColumn = yyloc->last_column;
+}
 
 %}
 
@@ -221,6 +230,7 @@ expression:
             YYERROR;
           }
           $$ = new QgsExpressionNodeFunction(fnIndex, $3);
+          addParserLocation(&@1, $$);
         }
 
     | FUNCTION '(' ')'
@@ -246,6 +256,7 @@ expression:
             YYERROR;
           }
           $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
+          addParserLocation(&@1, $$);
         }
 
     | expression IN '(' exp_list ')'     { $$ = new QgsExpressionNodeInOperator($1, $4, false);  }

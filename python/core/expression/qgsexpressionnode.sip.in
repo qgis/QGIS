@@ -228,6 +228,13 @@ work like for example resolving a column name to an attribute index.
 .. versionadded:: 2.12
 %End
 
+    int parserFirstLine;
+
+    int parserFirstColumn;
+
+    int parserLastLine;
+
+    int parserLastColumn;
 
   protected:
 
