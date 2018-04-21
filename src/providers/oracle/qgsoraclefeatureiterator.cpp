@@ -160,7 +160,13 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     if ( !whereClause.isEmpty() )
       whereClause += " AND ";
 
+    whereClause += '(';
+
     whereClause += QgsOracleConn::databaseTypeFilter( "FEATUREREQUEST", mSource->mGeometryColumn, mSource->mRequestedGeomType );
+
+    if ( mRequest.filterRect().isNull() )
+      whereClause += QString( " OR %1 IS NULL" ).arg( mSource->mGeometryColumn );
+    whereClause += ')';
   }
 
   if ( !mSource->mSqlWhereClause.isEmpty() )
