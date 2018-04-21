@@ -172,7 +172,13 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     if ( !whereClause.isEmpty() )
       whereClause += QStringLiteral( " AND " );
 
+    whereClause += '(';
+
     whereClause += QgsOracleConn::databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mSource->mGeometryColumn, mSource->mRequestedGeomType );
+
+    if ( mFilterRect.isNull() )
+      whereClause += QStringLiteral( " OR %1 IS NULL" ).arg( mSource->mGeometryColumn );
+    whereClause += ')';
   }
 
   if ( !mSource->mSqlWhereClause.isEmpty() )
