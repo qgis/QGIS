@@ -109,7 +109,7 @@ fi
 trap cleanup EXIT
 
 echo Saving translations
-files="$files $(find python -name "*.ts") src/plugins/plugin_template/plugingui.cpp src/plugins/plugin_template/plugin.cpp"
+files="$files $(find python -name "*.ts")"
 [ $action = push ] && files="$files i18n/qgis_*.ts"
 tar --remove-files -cf i18n/backup.tar $files
 
