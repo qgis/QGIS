@@ -308,22 +308,22 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         if ( !feature.hasGeometry() )
         {
-          QgsDebugMsg( QStringLiteral( "no geometry to intersect" ) );
+          QgsDebugMsgLevel( QStringLiteral( "no geometry to intersect" ), 4 );
           continue;
         }
 
         if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
         {
-          // couldn't use sdo_filter earlier
-          if ( !mSource->mHasSpatialIndex )
+          // even if we could use sdo_filter earlier, we still need to double-check the results
+          // as sdo_filter can return results outside the filter (it's only a first-pass
+          // filtering operation!)
+
+          // only want features which intersect with bbox
+          if ( !feature.geometry().boundingBox().intersects( mFilterRect ) )
           {
-            // only intersect with bbox
-            if ( !feature.geometry().boundingBox().intersects( mFilterRect ) )
-            {
-              // skip feature that don't intersect with our rectangle
-              QgsDebugMsg( QStringLiteral( "no bbox intersect" ) );
-              continue;
-            }
+            // skip feature that don't intersect with our rectangle
+            QgsDebugMsgLevel( QStringLiteral( "no bbox intersect" ), 4 );
+            continue;
           }
         }
         else if ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex )
@@ -332,7 +332,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           if ( !feature.geometry().intersects( mFilterRect ) )
           {
             // skip feature that don't intersect with our rectangle
-            QgsDebugMsg( QStringLiteral( "no exact intersect" ) );
+            QgsDebugMsgLevel( QStringLiteral( "no exact intersect" ), 4 );
             continue;
           }
         }
