@@ -60,22 +60,20 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)
         query = QSqlQuery(self.conn)
-        query.exec_(sql)
+        self.assertTrue(query.exec_(sql),  sql + ': ' + query.lastError().text())
         query.finish()
-        if not ignore_errors:
-            self.assertTrue(query.isValid(), sql + ': ' + query.lastError().text())
 
     # disabled: WIP
     def disabled_getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE "QGIS"."EDIT_DATA"', ignore_errors=True)
-        self.execSQLCommand("""CREATE TABLE QGIS.EDIT_DATA ("pk" INTEGER, "cnt" INTEGER);""")
+        self.execSQLCommand("""CREATE TABLE QGIS.EDIT_DATA ("pk" INTEGER PRIMARY KEY, "cnt" INTEGER, "name" VARCHAR2(100), "name2" VARCHAR2(100), "num_char" VARCHAR2(100), GEOM SDO_GEOMETRY)""")
         self.execSQLCommand("""INSERT INTO QGIS.EDIT_DATA ("pk", "cnt", "name", "name2", "num_char", GEOM)
       SELECT 5, -200, NULL, 'NuLl', '5', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-71.123, 78.23, NULL), NULL, NULL) from dual
   UNION ALL SELECT 3,  300, 'Pear', 'PEaR', '3', NULL from dual
   UNION ALL SELECT 1,  100, 'Orange', 'oranGe', '1', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-70.332, 66.33, NULL), NULL, NULL) from dual
   UNION ALL SELECT 2,  200, 'Apple', 'Apple', '2', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-68.2, 70.8, NULL), NULL, NULL) from dual
-  UNION ALL SELECT 4,  400, 'Honey', 'Honey', '4', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-65.32, 78.3, NULL), NULL, NULL) from dual;""")
+  UNION ALL SELECT 4,  400, 'Honey', 'Honey', '4', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-65.32, 78.3, NULL), NULL, NULL) from dual""")
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."EDIT_DATA" (GEOM) sql=',
             'test', 'oracle')
