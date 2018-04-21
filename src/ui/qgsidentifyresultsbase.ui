@@ -341,9 +341,6 @@
   </action>
 
 <action name="mActionSelectFeatures">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
@@ -356,9 +353,6 @@
    </property>
   </action>
   <action name="mActionSelectPolygon">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
@@ -368,9 +362,6 @@
    </property>
   </action>
   <action name="mActionSelectFreehand">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelectFreehand.svg</normaloff>:/images/themes/default/mActionSelectFreehand.svg</iconset>
@@ -380,9 +371,6 @@
    </property>
   </action>
   <action name="mActionSelectRadius">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelectRadius.svg</normaloff>:/images/themes/default/mActionSelectRadius.svg</iconset>
