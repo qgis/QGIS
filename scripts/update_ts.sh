@@ -111,7 +111,7 @@ trap cleanup EXIT
 echo Saving translations
 files="$files $(find python -name "*.ts")"
 [ $action = push ] && files="$files i18n/qgis_*.ts"
-tar --remove-files -cf i18n/backup.tar $files
+[ -n "${files## }" ] && tar --remove-files -cf i18n/backup.tar $files
 
 if [ $action = push ]; then
 	echo Pulling source from transifex...
