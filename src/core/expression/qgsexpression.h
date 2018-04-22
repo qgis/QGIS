@@ -136,6 +136,11 @@ class CORE_EXPORT QgsExpression
       ParserErrorType errorType = ParserErrorType::Unknown;
 
       /**
+       * The message for the error at this location.
+       */
+      QString errorMsg;
+
+      /**
        * The first line that contained the error in the parser.
        * Depending on the error sometimes this doesn't mean anything.
        */
@@ -221,7 +226,7 @@ class CORE_EXPORT QgsExpression
      * Returns parser error details including location of error.
      * \since QGIS 3.0
      */
-    ParserError parserError() const;
+    QList<QgsExpression::ParserError> parserErrors() const;
 
     //! Returns root node of the expression. Root node is null is parsing has failed
     const QgsExpressionNode *rootNode() const;

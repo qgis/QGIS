@@ -354,6 +354,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
   private:
     int FUNCTION_MARKER_ID = 25;
+    void createErrorMarkers( QList<QgsExpression::ParserError> errors );
     void createMarkers( const QgsExpressionNode *node );
     void clearFunctionMarkers();
     void clearErrors();
