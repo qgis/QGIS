@@ -125,7 +125,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 // tokens for conditional expressions
 %token CASE WHEN THEN ELSE END
 
-%token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL VARIABLE NAMED_NODE
+%token <text> STRING COLUMN_REF FUNCTION NAME SPECIAL_COL VARIABLE NAMED_NODE
 
 %token COMMA
 
@@ -203,7 +203,7 @@ expression:
     | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
     | NOT expression                  { $$ = new QgsExpressionNodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
-    | FUNCTION '(' exp_list ')'
+    | NAME '(' exp_list ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
           delete $1;
@@ -240,7 +240,7 @@ expression:
           addParserLocation(&@1, $$);
         }
 
-    | FUNCTION '(' ')'
+    | NAME '(' ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
           delete $1;
@@ -276,7 +276,7 @@ expression:
     | CASE when_then_clauses ELSE expression END  { $$ = new QgsExpressionNodeCondition($2,$4); }
 
     // columns
-    | COLUMN_REF                  { $$ = new QgsExpressionNodeColumnRef( *$1 ); delete $1; }
+    | NAME                  { $$ = new QgsExpressionNodeColumnRef( *$1 ); delete $1; }
 
     // special columns (actually functions with no arguments)
     | SPECIAL_COL

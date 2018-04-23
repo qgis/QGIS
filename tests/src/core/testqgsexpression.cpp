@@ -206,7 +206,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "invalid character" ) << "@" << false;
       QTest::newRow( "invalid column reference" ) << "my col" << false;
       QTest::newRow( "invalid binary operator" ) << "1+" << false;
-      QTest::newRow( "invalid function no params" ) << "cos" << false;
+      QTest::newRow( "invalid function not known no args" ) << "watwat()" << false;
       QTest::newRow( "invalid function not known" ) << "coz(1)" << false;
       QTest::newRow( "invalid operator IN" ) << "n in p" << false;
       QTest::newRow( "empty node list" ) << "1 in ()" << false;

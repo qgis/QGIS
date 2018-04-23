@@ -220,7 +220,7 @@ string      "'"{str_char}*"'"
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
-{deprecated_function} { TEXT; return FUNCTION; }
+{deprecated_function} { TEXT; return NAME; }
 
 {named_node} { TEXT_FILTER(stripNamedText); return NAMED_NODE; }
 
@@ -228,9 +228,9 @@ string      "'"{str_char}*"'"
 
 {variable}        { TEXT; return VARIABLE; }
 
-{column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
+{column_ref}         { TEXT; return NAME; }
 
-{column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
+{column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return NAME; }
 
 {white}    /* skip blanks and tabs */
 
