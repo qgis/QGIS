@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessing,
@@ -74,31 +75,31 @@ class buildvrt(GdalAlgorithm):
                 return 'vrt'
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
-                                                               self.tr('Input layers'),
+                                                               QCoreApplication.translate("ParameterVrtDestination", 'Input layers'),
                                                                QgsProcessing.TypeRaster))
         self.addParameter(QgsProcessingParameterEnum(self.RESOLUTION,
-                                                     self.tr('Resolution'),
+                                                     QCoreApplication.translate("ParameterVrtDestination", 'Resolution'),
                                                      options=self.RESOLUTION_OPTIONS,
                                                      defaultValue=0))
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        self.tr('Layer stack'),
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Layer stack'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
-                                                        self.tr('Allow projection difference'),
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Allow projection difference'),
                                                         defaultValue=False))
-        self.addParameter(ParameterVrtDestination(self.OUTPUT, self.tr('Virtual')))
+        self.addParameter(ParameterVrtDestination(self.OUTPUT, QCoreApplication.translate("ParameterVrtDestination", 'Virtual')))
 
     def name(self):
         return 'buildvirtualraster'
 
     def displayName(self):
-        return self.tr('Build Virtual Raster')
+        return QCoreApplication.translate("buildvrt", 'Build Virtual Raster')
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'vrt.png'))
 
     def group(self):
-        return self.tr('Raster miscellaneous')
+        return QCoreApplication.translate("buildvrt", 'Raster miscellaneous')
 
     def groupId(self):
         return 'rastermiscellaneous'

@@ -163,7 +163,7 @@ class ParametersPanel(BASE, WIDGET):
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
             if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                 check = QCheckBox()
-                check.setText(self.tr('Open output file after running algorithm'))
+                check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
                 check.setChecked(True)
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
