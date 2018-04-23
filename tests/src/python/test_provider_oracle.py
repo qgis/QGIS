@@ -60,7 +60,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)
         query = QSqlQuery(self.conn)
-        self.assertTrue(query.exec_(sql),  sql + ': ' + query.lastError().text())
+        self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
         query.finish()
 
     # disabled: WIP
