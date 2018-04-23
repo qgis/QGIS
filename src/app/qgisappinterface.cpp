@@ -659,6 +659,7 @@ void QgisAppInterface::cacheloadForm( const QString& uifile )
   if ( file.open( QFile::ReadOnly ) )
   {
     QUiLoader loader;
+    loader.clearPluginPaths();
 
     QFileInfo fi( uifile );
     loader.setWorkingDirectory( fi.dir() );

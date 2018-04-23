@@ -1109,6 +1109,7 @@ void QgsAttributeForm::init()
     if ( file.open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
+      loader.clearPluginPaths();
 
       QFileInfo fi( mLayer->editFormConfig()->uiForm() );
       loader.setWorkingDirectory( fi.dir() );
