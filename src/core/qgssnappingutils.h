@@ -53,7 +53,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
   public:
 
     //! Constructor for QgsSnappingUtils
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true );
     ~QgsSnappingUtils() override;
 
     // main actions
@@ -159,6 +159,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     QgsSnappingConfig config() const;
 
+    /**
+     * Set if invisible features must be snapped or not.
+     *
+     * \param enableIt Enable or not this feature
+     *
+     * \since QGIS 3.2
+     */
+    void setEnableSnappingForInvisibleFeature( bool enableIt );
+
   public slots:
 
     /**
@@ -242,6 +251,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing = false;
+
+    //! Disable or not the snapping on all features. By default is always true except for non visible features on map canvas.
+    bool mEnableSnappingForInvisibleFeature = true;
 };
 
 

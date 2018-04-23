@@ -18,6 +18,8 @@
 #include "qgssnappingutils.h"
 #include "qgis_gui.h"
 
+#include "qgsmaptool.h"
+
 class QgsMapCanvas;
 
 class QProgressDialog;
@@ -42,6 +44,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
     void canvasMapSettingsChanged();
     void canvasTransformContextChanged();
     void canvasCurrentLayerChanged();
+    void canvasMapToolChanged();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
