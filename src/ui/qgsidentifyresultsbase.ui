@@ -339,11 +339,10 @@
     <string>Print Selected HTML Response</string>
    </property>
   </action>
-
-<action name="mActionSelectFeatures">
+  <action name="mActionSelectFeatures">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Feature(s)</string>
@@ -355,7 +354,7 @@
   <action name="mActionSelectPolygon">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Features by Polygon</string>
@@ -364,7 +363,7 @@
   <action name="mActionSelectFreehand">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectFreehand.svg</normaloff>:/images/themes/default/mActionSelectFreehand.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Features by Freehand</string>
@@ -373,14 +372,12 @@
   <action name="mActionSelectRadius">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRadius.svg</normaloff>:/images/themes/default/mActionSelectRadius.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Features by Radius</string>
    </property>
   </action>
-
-
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

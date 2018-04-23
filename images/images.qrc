@@ -649,6 +649,10 @@
         <file>themes/default/mActionNewReport.svg</file>
         <file>themes/default/mIconReport.svg</file>
         <file>themes/default/downloading_svg.svg</file>
+        <file>themes/default/mActionIdentifyByFreehand.svg</file>
+        <file>themes/default/mActionIdentifyByPolygon.svg</file>
+        <file>themes/default/mActionIdentifyByRadius.svg</file>
+        <file>themes/default/mActionIdentifyByRectangle.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -2048,7 +2048,7 @@ void QgsIdentifyResultsDialog::setSelectionMode()
     emit selectionModeChanged();
 }
 
-QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode()
+QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode() const
 {
   return mSelectionMode;
 }

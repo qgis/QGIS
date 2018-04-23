@@ -168,7 +168,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
      */
     QgsExpressionContextScope expressionContextScope() const;
 
-    QgsMapToolSelectionHandler::SelectionMode selectionMode();
+    QgsMapToolSelectionHandler::SelectionMode selectionMode() const;
 
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
