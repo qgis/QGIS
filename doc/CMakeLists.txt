@@ -99,6 +99,8 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins
+      ${CMAKE_SOURCE_DIR}/src/quickgui
+      ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
     IF(WITH_SERVER_PLUGINS)

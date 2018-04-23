@@ -33,11 +33,17 @@ RUN  apt-get update \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
     libqt53drender5 \
+    libqt5concurrent5 \
     libqt5opengl5-dev \
+    libqt5positioning5 \
+    libqt5qml5 \
+    libqt5quick5 \
+    libqt5quickcontrols2-5 \
     libqt5scintilla2-dev \
     libqt5sql5-sqlite \
     libqt5svg5-dev \
     libqt5webkit5-dev \
+    libqt5xml5 \
     libqt5xmlpatterns5-dev \
     libqwt-qt5-dev \
     libspatialindex-dev \

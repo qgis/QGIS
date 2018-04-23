@@ -71,6 +71,8 @@ IF(WITH_CORE)
 
   SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
+  SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
@@ -312,6 +314,15 @@ IF(WITH_CORE)
   ENDIF (WITH_3D)
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  IF (WITH_QUICK)
+    FIND_PACKAGE(Qt5Qml REQUIRED)
+    FIND_PACKAGE(Qt5Quick REQUIRED)
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        FIND_PACKAGE(Qt5AndroidExtras)
+    ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        FIND_PACKAGE(QtQmlTools REQUIRED)
+    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+  ENDIF (WITH_QUICK)
 
   IF(WITH_QTWEBKIT)
     SET(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
@@ -362,6 +373,9 @@ ENDIF(WITH_CORE)
 
 # build our version of astyle
 SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+
+# QML
+SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
 #############################################################
 # testing
@@ -503,6 +517,7 @@ IF (WITH_CORE)
     SET (DEFAULT_DATA_SUBDIR    .)
     SET (DEFAULT_PLUGIN_SUBDIR  plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include)
+    SET (DEFAULT_QML_SUBDIR     qml)
 
     SET (DEFAULT_SERVER_MODULE_SUBDIR server)
 
@@ -573,6 +588,7 @@ IF (WITH_CORE)
       SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
       SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
       SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+      SET (DEFAULT_QML_SUBDIR     qml)
 
       # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
       SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
@@ -600,6 +616,7 @@ IF (WITH_CORE)
       SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
       SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
       SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+      SET (DEFAULT_QML_SUBDIR     qml)
 
       SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
     ENDIF (APPLE)
@@ -648,12 +665,13 @@ SET (QGIS_LIBEXEC_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR} CACHE STRING "Subdirectory wh
 SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
 SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
 SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
+SET (QGIS_QML_SUBDIR     ${DEFAULT_QML_SUBDIR}     CACHE STRING "Subdirectory where qml files/libraries will be installed")
 
 SET (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
 
 # mark *_SUBDIR variables as advanced as this is not something
 # that an average user would use
-MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
+MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR QGIS_QML_SUBDIR)
 
 # full paths for the installation
 SET (QGIS_BIN_DIR     ${QGIS_BIN_SUBDIR})
@@ -663,6 +681,7 @@ SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
 SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
 SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
 SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
+SET (QGIS_QML_DIR     ${QGIS_QML_SUBDIR})
 
 SET (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
 
