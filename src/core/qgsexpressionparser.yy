@@ -209,8 +209,6 @@ expression:
           delete $1;
           if (fnIndex == -1)
           {
-            // this should not actually happen because already in lexer we check whether an identifier is a known function
-            // (if the name is not known the token is parsed as a column)
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
             exp_error(&yyloc, parser_ctx, "Function is not known");
@@ -246,8 +244,6 @@ expression:
           delete $1;
           if (fnIndex == -1)
           {
-            // this should not actually happen because already in lexer we check whether an identifier is a known function
-            // (if the name is not known the token is parsed as a column)
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
             exp_error(&yyloc, parser_ctx, "Function is not known");
