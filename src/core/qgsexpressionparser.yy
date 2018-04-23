@@ -125,7 +125,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 // tokens for conditional expressions
 %token CASE WHEN THEN ELSE END
 
-%token <text> STRING COLUMN_REF FUNCTION NAME SPECIAL_COL VARIABLE NAMED_NODE
+%token <text> STRING COLUMN_REF NAME SPECIAL_COL VARIABLE NAMED_NODE
 
 %token COMMA
 
@@ -273,6 +273,7 @@ expression:
 
     // columns
     | NAME                  { $$ = new QgsExpressionNodeColumnRef( *$1 ); delete $1; }
+    | COLUMN_REF                  { $$ = new QgsExpressionNodeColumnRef( *$1 ); delete $1; }
 
     // special columns (actually functions with no arguments)
     | SPECIAL_COL

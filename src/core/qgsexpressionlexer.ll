@@ -128,16 +128,16 @@ non_ascii    [\x80-\xFF]
 
 col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
-column_ref  {col_first}{col_next}*
+identifier  {col_first}{col_next}*
 
 deprecated_function "$"[xXyY]_?[aA][tT]
-special_col "$"{column_ref}
-variable "@"{column_ref}
+special_col "$"{identifier}
+variable "@"{identifier}
 
-named_node {column_ref}{white}*":="{white}*
+named_node {identifier}{white}*":="{white}*
 
 col_str_char  "\"\""|[^\"]
-column_ref_quoted  "\""{col_str_char}*"\""
+identifier_quoted  "\""{col_str_char}*"\""
 
 dig         [0-9]
 num_int     {dig}+
@@ -228,9 +228,9 @@ string      "'"{str_char}*"'"
 
 {variable}        { TEXT; return VARIABLE; }
 
-{column_ref}         { TEXT; return NAME; }
+{identifier}         { TEXT; return NAME; }
 
-{column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return NAME; }
+{identifier_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
 
