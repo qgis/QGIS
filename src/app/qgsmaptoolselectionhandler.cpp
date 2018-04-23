@@ -19,7 +19,7 @@
 #include <QKeyEvent>
 #include <QLabel>
 
-#include "qgisinterface.h"
+#include "qgisapp.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
@@ -102,19 +102,12 @@ QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, Qg
   , mCanvas( canvas )
   , mSelectionMode( selectionMode )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
-  , mFillColor( QColor( 254, 178, 76, 63 ) )
-  , mStrokeColor( QColor( 254, 58, 29, 100 ) )
 {
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
 {
   cancel();
-}
-
-void QgsMapToolSelectionHandler::setInterface( QgisInterface *iface )
-{
-  mQgisInterface = iface;
 }
 
 void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -362,7 +355,7 @@ void QgsMapToolSelectionHandler::initRubberBand()
 
 void QgsMapToolSelectionHandler::createDistanceWidget()
 {
-  if ( !mCanvas || !mQgisInterface )
+  if ( !mCanvas )
   {
     return;
   }
@@ -370,7 +363,7 @@ void QgsMapToolSelectionHandler::createDistanceWidget()
   deleteDistanceWidget();
 
   mDistanceWidget = new QgsDistanceWidget( tr( "Selection radius:" ) );
-  mQgisInterface->addUserInputWidget( mDistanceWidget );
+  QgisApp::instance()->addUserInputWidget( mDistanceWidget );
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRadiusRubberband );
@@ -438,7 +431,7 @@ void QgsMapToolSelectionHandler::updateRadiusFromEdge( QgsPointXY &radiusEdge )
   }
 }
 
-QgsGeometry QgsMapToolSelectionHandler::selectedGeometry()
+QgsGeometry QgsMapToolSelectionHandler::selectedGeometry() const
 {
   return mSelectionGeometry;
 }
@@ -454,7 +447,7 @@ void QgsMapToolSelectionHandler::setSelectionMode( SelectionMode mode )
   mSelectionMode = mode;
 }
 
-QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::selectionMode()
+QgsMapToolSelectionHandler::SelectionMode QgsMapToolSelectionHandler::selectionMode() const
 {
   return mSelectionMode;
 }

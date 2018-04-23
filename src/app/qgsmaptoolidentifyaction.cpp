@@ -204,11 +204,6 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapToolIdentify::deactivate();
 }
 
-void QgsMapToolIdentifyAction::setInterface( QgisInterface *iface )
-{
-  mSelectionHandler->setInterface( iface );
-}
-
 QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();

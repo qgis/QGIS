@@ -38,11 +38,6 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
   setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
 }
 
-void QgsMapToolSelect::setInterface( QgisInterface *iface )
-{
-  mSelectionHandler->setInterface( iface );
-}
-
 void QgsMapToolSelect::setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
   mSelectionHandler->setSelectionMode( selectionMode );

@@ -19,20 +19,16 @@
 #include <QObject>
 #include <QWidget>
 
-#include "qgis_gui.h"
 #include "qgsgeometry.h"
 
 class QHBoxLayout;
 class QKeyEvent;
 
-class QgisInterface;
 class QgsDoubleSpinBox;
 class QgsMapCanvas;
 class QgsMapMouseEvent;
 class QgsRubberBand;
 class QgsSnapIndicator;
-
-#ifndef SIP_RUN
 
 /// @cond private
 
@@ -75,15 +71,13 @@ class QgsDistanceWidget : public QWidget
 
 /// @endcond
 
-#endif
-
 
 /**
  * \ingroup gui
  * \brief Utility class for handling various methods to create geometry for selection in layers.
  * \since QGIS 3.2
  */
-class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
+class QgsMapToolSelectionHandler : public QObject
 {
     Q_OBJECT
 
@@ -110,14 +104,11 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
     //! destructor
     ~QgsMapToolSelectionHandler() override;
 
-    //! Configures QGIS interface - used to register selection radius widget
-    void setInterface( QgisInterface *iface );
-
     //! Returns most recently selected geometry (may be a point or a polygon)
-    QgsGeometry selectedGeometry();
+    QgsGeometry selectedGeometry() const;
 
     //! Sets the current selection mode
-    SelectionMode selectionMode();
+    SelectionMode selectionMode() const;
     //! Returns the current selection mode
     void setSelectionMode( SelectionMode mode );
 
@@ -180,9 +171,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
     QgsMapCanvas *mCanvas = nullptr;
 
-    //! QGIS interface - used to register selection radius widget
-    QgisInterface *mQgisInterface = nullptr;
-
     //! the rubberband for selection visualization
     std::unique_ptr<QgsRubberBand> mSelectionRubberBand;
 
@@ -206,8 +194,8 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
     //! Shows current angle value and allows numerical editing
     QgsDistanceWidget *mDistanceWidget = nullptr;
 
-    QColor mFillColor;
-    QColor mStrokeColor;
+    QColor mFillColor = QColor( 254, 178, 76, 63 );
+    QColor mStrokeColor = QColor( 254, 58, 29, 100 );
 };
 
 #endif

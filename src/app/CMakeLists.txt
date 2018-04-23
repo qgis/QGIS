@@ -97,6 +97,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
+  qgsmaptoolselectionhandler.cpp
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
@@ -307,6 +308,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselect.h
+  qgsmaptoolselectionhandler.h
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolsplitparts.h

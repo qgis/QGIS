@@ -61,8 +61,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
-    void setInterface( QgisInterface *iface );
-
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );

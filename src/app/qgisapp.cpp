@@ -1311,13 +1311,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files
   QgsApplication::setFileOpenEventReceiver( this );
 
-  // finish initialization of map tools that need access to QGIS interface
-  mMapTools.mSelectFeatures->setInterface( mQgisInterface );
-  mMapTools.mSelectPolygon->setInterface( mQgisInterface );
-  mMapTools.mSelectFreehand->setInterface( mQgisInterface );
-  mMapTools.mSelectRadius->setInterface( mQgisInterface );
-  mMapTools.mIdentify->setInterface( mQgisInterface );
-
 #ifdef ANDROID
   toggleFullScreen();
 #endif

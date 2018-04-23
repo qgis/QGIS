@@ -31,8 +31,6 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 
     void setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode );
 
-    void setInterface( QgisInterface *iface );
-
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
