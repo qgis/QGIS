@@ -42,7 +42,7 @@ QGeoPositionInfoSource  *QgsQuickPositionKit::gpsSource()
                                , "QgsQuick"
                                , Qgis::Warning );
     delete source;
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -76,18 +76,17 @@ void QgsQuickPositionKit::replacePositionSource( QGeoPositionInfoSource *source 
 
   if ( mSource )
   {
-    disconnect( mSource, 0, this, 0 );
+    disconnect( mSource, nullptr, this, nullptr );
     delete mSource;
-    mSource = 0;
+    mSource = nullptr;
   }
 
   mSource = source;
 
   if ( mSource )
   {
-    connect( mSource, SIGNAL( positionUpdated( QGeoPositionInfo ) ),
-             this, SLOT( positionUpdated( QGeoPositionInfo ) ) );
-    connect( mSource, SIGNAL( updateTimeout() ), this, SLOT( onUpdateTimeout() ) );
+    connect( mSource, &QGeoPositionInfoSource::positionUpdated, this, &QgsQuickPositionKit::positionUpdated );
+    connect( mSource, &QGeoPositionInfoSource::updateTimeout, this,  &QgsQuickPositionKit::onUpdateTimeout );
     mSource->startUpdates();
 
     QgsDebugMsg( QStringLiteral( "Position source changed: %1" ).arg( mSource->sourceName() ) );

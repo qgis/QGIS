@@ -31,11 +31,10 @@ QgsQuickScaleBarKit::QgsQuickScaleBarKit( QObject *parent )
   , mDistance( 0 )
   , mUnits( "" )
 {
-  connect( this, SIGNAL( mapSettingsChanged() ), this, SLOT( updateScaleBar() ) );
-  connect( this, SIGNAL( preferredWidthChanged() ), this, SLOT( updateScaleBar() ) );
+  connect( this, &QgsQuickScaleBarKit::mapSettingsChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+  connect( this, &QgsQuickScaleBarKit::preferredWidthChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
 }
 
-QgsQuickScaleBarKit::~QgsQuickScaleBarKit() {}
 
 
 void QgsQuickScaleBarKit::setMapSettings( QgsQuickMapSettings *mapSettings )
@@ -46,7 +45,7 @@ void QgsQuickScaleBarKit::setMapSettings( QgsQuickMapSettings *mapSettings )
   // If we have already something connected, disconnect it!
   if ( mMapSettings )
   {
-    disconnect( mMapSettings, 0, this, 0 );
+    disconnect( mMapSettings, nullptr, this, nullptr );
   }
 
   mMapSettings = mapSettings;
@@ -54,12 +53,12 @@ void QgsQuickScaleBarKit::setMapSettings( QgsQuickMapSettings *mapSettings )
   // Connect all signals to change scale bar when needed!
   if ( mMapSettings )
   {
-    connect( mMapSettings, SIGNAL( extentChanged() ), this, SLOT( updateScaleBar() ) );
-    connect( mMapSettings, SIGNAL( destinationCrsChanged() ), this, SLOT( updateScaleBar() ) );
-    connect( mMapSettings, SIGNAL( mapUnitsPerPixelChanged() ), this, SLOT( updateScaleBar() ) );
-    connect( mMapSettings, SIGNAL( visibleExtentChanged() ), this, SLOT( updateScaleBar() ) );
-    connect( mMapSettings, SIGNAL( outputSizeChanged() ), this, SLOT( updateScaleBar() ) );
-    connect( mMapSettings, SIGNAL( outputDpiChanged() ), this, SLOT( updateScaleBar() ) );
+    connect( mMapSettings, &QgsQuickMapSettings::extentChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+    connect( mMapSettings, &QgsQuickMapSettings::destinationCrsChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+    connect( mMapSettings, &QgsQuickMapSettings::mapUnitsPerPixelChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+    connect( mMapSettings, &QgsQuickMapSettings::visibleExtentChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+    connect( mMapSettings, &QgsQuickMapSettings::outputSizeChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
+    connect( mMapSettings, &QgsQuickMapSettings::outputDpiChanged, this, &QgsQuickScaleBarKit::updateScaleBar );
   }
 
   emit mapSettingsChanged();
@@ -89,11 +88,11 @@ void QgsQuickScaleBarKit::updateScaleBar()
   if ( dist > 1000.0 )
   {
     dist = dist / 1000.0; // meters to kilometers
-    mUnits = QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers );
+    mUnits = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceKilometers );
   }
   else
   {
-    mUnits = QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters );
+    mUnits = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters );
   }
 
   // we want to show nice round distances e.g. 200 km instead of e.g. 273 km

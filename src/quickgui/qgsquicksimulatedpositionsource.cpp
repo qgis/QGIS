@@ -25,7 +25,7 @@ QgsQuickSimulatedPositionSource::QgsQuickSimulatedPositionSource( QObject *paren
   , mLongitude( longitude )
   , mLatitude( latitude )
 {
-  connect( mTimer, SIGNAL( timeout() ), this, SLOT( readNextPosition() ) );
+  connect( mTimer, &QTimer::timeout, this, &QgsQuickSimulatedPositionSource::readNextPosition );
 }
 
 void QgsQuickSimulatedPositionSource::startUpdates()
