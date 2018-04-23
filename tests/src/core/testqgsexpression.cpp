@@ -281,10 +281,10 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), true );
-      QCOMPARE( exp.parserError().firstLine, firstLine );
-      QCOMPARE( exp.parserError().firstColumn, firstColumn );
-      QCOMPARE( exp.parserError().lastLine, lastLine );
-      QCOMPARE( exp.parserError().lastColumn, lastColumn );
+      QCOMPARE( exp.parserErrors().first().firstLine, firstLine );
+      QCOMPARE( exp.parserErrors().first().firstColumn, firstColumn );
+      QCOMPARE( exp.parserErrors().first().lastLine, lastLine );
+      QCOMPARE( exp.parserErrors().first().lastColumn, lastColumn );
     }
 
     void parsing_with_locale()

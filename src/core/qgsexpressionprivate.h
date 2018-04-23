@@ -44,7 +44,7 @@ class QgsExpressionPrivate
       , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
       , mParserErrorString( other.mParserErrorString )
       , mEvalErrorString( other.mEvalErrorString )
-      , mParserError( other.mParserError )
+      , mParserErrors( other.mParserErrors )
       , mExp( other.mExp )
       , mCalc( other.mCalc )
       , mDistanceUnit( other.mDistanceUnit )
@@ -63,7 +63,7 @@ class QgsExpressionPrivate
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    QgsExpression::ParserError mParserError;
+    QList<QgsExpression::ParserError> mParserErrors;
 
     QString mExp;
 

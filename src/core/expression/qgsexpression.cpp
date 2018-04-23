@@ -26,7 +26,7 @@
 
 
 // from parser
-extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QgsExpression::ParserError &parserError );
+extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
@@ -99,7 +99,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserError );
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
   d->mEvalErrorString = QString();
   d->mExp = expression;
 }
@@ -195,7 +195,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserError );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -247,7 +247,7 @@ bool QgsExpression::isValid() const
 
 bool QgsExpression::hasParserError() const
 {
-  return !d->mParserErrorString.isNull();
+  return d->mParserErrors.count() > 0;
 }
 
 QString QgsExpression::parserErrorString() const
@@ -255,9 +255,9 @@ QString QgsExpression::parserErrorString() const
   return d->mParserErrorString;
 }
 
-QgsExpression::ParserError QgsExpression::parserError() const
+QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
 {
-  return d->mParserError;
+  return d->mParserErrors;
 }
 
 QSet<QString> QgsExpression::referencedColumns() const
@@ -343,7 +343,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserError );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
   }
 
   if ( !d->mRootNode )

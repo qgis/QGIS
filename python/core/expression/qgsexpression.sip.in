@@ -79,6 +79,8 @@ Implicit sharing was added in 2.14
 
       ParserErrorType errorType;
 
+      QString errorMsg;
+
       int firstLine;
 
       int firstColumn;
@@ -133,7 +135,7 @@ Returns true if an error occurred when parsing the input expression
 Returns parser error
 %End
 
-    ParserError parserError() const;
+    QList<QgsExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
 
