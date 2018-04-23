@@ -65,9 +65,22 @@
         <item>
          <widget class="QRadioButton" name="radioSrcProtocol">
           <property name="text">
-           <string>Protoco&amp;l</string>
+           <string>Protoco&amp;l: HTTP(S), cloud, etc.</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -113,21 +126,8 @@
       <string>Protocol</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0" rowspan="2">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>&amp;URI</string>
-        </property>
-        <property name="buddy">
-         <cstring>protocolURI</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" rowspan="2">
+      <item row="0" column="1">
        <widget class="QComboBox" name="cmbProtocolTypes"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="protocolURI"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
@@ -136,7 +136,59 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelProtocolURI">
+        <property name="text">
+         <string>&amp;URI</string>
+        </property>
+        <property name="buddy">
+         <cstring>protocolURI</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="protocolURI"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelBucket">
+        <property name="text">
+         <string>Bucket or container</string>
+        </property>
+        <property name="buddy">
+         <cstring>mBucket</cstring>
+        </property>
+       </widget>       
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mBucket"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelKey">
+        <property name="text">
+         <string>Object key</string>
+        </property>
+        <property name="buddy">
+         <cstring>mKey</cstring>
+        </property>
+       </widget>       
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="mKey"/>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QLabel" name="mAuthWarning">
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
        <widget class="QGroupBox" name="mAuthGroupBox">
         <property name="title">
          <string>Authentication</string>

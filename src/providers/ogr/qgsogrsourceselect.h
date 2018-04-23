@@ -27,8 +27,9 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include "ui_qgsogrsourceselectbase.h"
 #include <QDialog>
+
+#include "ui_qgsogrsourceselectbase.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
@@ -58,6 +59,9 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     QString encoding();
     //! Returns the connection type
     QString dataSourceType();
+    //! Returns whether the protocol is a cloud type
+    bool isProtocolCloudType();
+
   private:
     //! Stores the file vector filters */
     QString mVectorFileFilter;
@@ -90,6 +94,8 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void setSelectedConnectionType();
     //! Sets the selected connection
     void setSelectedConnection();
+    //! Sets protocol-related widget visibility
+    void setProtocolWidgetsVisibility();
 
     void radioSrcFile_toggled( bool checked );
     void radioSrcDirectory_toggled( bool checked );
@@ -100,6 +106,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void btnDelete_clicked();
     void cmbDatabaseTypes_currentIndexChanged( const QString &text );
     void cmbConnections_currentIndexChanged( const QString &text );
+    void cmbProtocolTypes_currentIndexChanged( const QString &text );
     void showHelp();
 
   private:
