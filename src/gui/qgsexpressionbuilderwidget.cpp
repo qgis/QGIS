@@ -143,6 +143,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setIndicatorHoverStyle( QgsCodeEditor::DotsIndicator, FUNCTION_MARKER_ID );
 
   connect( txtExpressionString, &QgsCodeEditorSQL::indicatorClicked, this, &QgsExpressionBuilderWidget::indicatorClicked );
+
+  setExpectedOutputFormat( QString() );
 }
 
 
@@ -595,6 +597,17 @@ QString QgsExpressionBuilderWidget::expressionText()
 void QgsExpressionBuilderWidget::setExpressionText( const QString &expression )
 {
   txtExpressionString->setText( expression );
+}
+
+QString QgsExpressionBuilderWidget::expectedOutputFormat()
+{
+  return lblExpected->text();
+}
+
+void QgsExpressionBuilderWidget::setExpectedOutputFormat( const QString &expected )
+{
+  lblExpected->setText( expected );
+  mExpectedOutputFrame->setVisible( !expected.isNull() );
 }
 
 void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )

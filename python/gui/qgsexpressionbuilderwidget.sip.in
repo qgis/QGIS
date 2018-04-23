@@ -153,6 +153,26 @@ Gets the expression string that has been set in the expression area.
 Sets the expression string for the widget
 %End
 
+    QString expectedOutputFormat();
+%Docstring
+The set expected format string. This is pure text format and no expression validation
+is done against it.
+
+:return: The expected value format.
+%End
+
+    void setExpectedOutputFormat( const QString &expected );
+%Docstring
+The set expected format string. This is pure text format and no expression validation
+is done against it.
+
+:param expected: The expected value format for the expression.
+
+.. note::
+
+   Only a UI hint and not used for expression validation.
+%End
+
     QgsExpressionContext expressionContext() const;
 %Docstring
 Returns the expression context for the widget. The context is used for the expression

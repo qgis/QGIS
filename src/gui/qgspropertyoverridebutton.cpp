@@ -596,6 +596,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
                               : mProperty.asExpression();
 
   QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, QStringLiteral( "generic" ), context );
+  d.setExpectedOutputFormat( mInputDescription );
   if ( d.exec() == QDialog::Accepted )
   {
     mExpressionString = d.expressionText().trimmed();
