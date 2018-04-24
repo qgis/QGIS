@@ -83,6 +83,7 @@ RUN  apt-get update \
     qt3d-scene2d-plugin \
     qt5keychain-dev \
     qtbase5-dev \
+    qtdeclarative5-dev-tools \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \

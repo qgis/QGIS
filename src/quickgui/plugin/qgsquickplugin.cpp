@@ -43,8 +43,6 @@ static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
 
 void QgisQuickPlugin::registerTypes( const char *uri )
 {
-  QgsDebugMsg( QStringLiteral( "REGISTERING QQmlExtensionInterface: QgisQuick" ) );
-
   qRegisterMetaType< QList<QgsMapLayer *> >( "QList<QgsMapLayer*>" );
   qRegisterMetaType< QgsAttributes > ( "QgsAttributes" );
   qRegisterMetaType< QgsCoordinateReferenceSystem >( "QgsCoordinateReferenceSystem" );

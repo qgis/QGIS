@@ -65,5 +65,7 @@
 
 #cmakedefine QGISDEBUG
 
+#cmakedefine HAVE_QUICK
+
 #endif
 

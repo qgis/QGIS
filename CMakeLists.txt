@@ -322,6 +322,9 @@ IF(WITH_CORE)
     ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
         FIND_PACKAGE(QtQmlTools REQUIRED)
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+
+    # following variable is used in qgsconfig.h
+    SET (HAVE_QUICK TRUE)
   ENDIF (WITH_QUICK)
 
   IF(WITH_QTWEBKIT)

@@ -64,10 +64,10 @@ QString QgsQuickUtils::dumpScreenInfo() const
   double sizeY = static_cast<double>( height ) / dpiY * 25.4;
 
   QString msg;
-  msg += QStringLiteral( "screen resolution: %1x%2 px\n" ).arg( width, height );
-  msg += QStringLiteral( "screen DPI: %1x%2\n" ).arg( dpiX,  dpiY );
-  msg += QStringLiteral( "screen size: %1x%2 mm\n" ).arg( QString::number( sizeX, 'f', 0 ), QString::number( sizeY, 'f', 0 ) );
-  msg += QStringLiteral( "screen density: %1" ).arg( mScreenDensity );
+  msg += tr( "screen resolution: %1x%2 px\n" ).arg( width, height );
+  msg += tr( "screen DPI: %1x%2\n" ).arg( dpiX,  dpiY );
+  msg += tr( "screen size: %1x%2 mm\n" ).arg( QString::number( sizeX, 'f', 0 ), QString::number( sizeY, 'f', 0 ) );
+  msg += tr( "screen density: %1" ).arg( mScreenDensity );
   return msg;
 }
 

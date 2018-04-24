@@ -436,7 +436,8 @@ Returns the path with utility executables (help viewer, crssync, ...)
 
     static QString qmlImportPath();
 %Docstring
-Returns the path where QML components are installed for QGIS Quick library
+Returns the path where QML components are installed for QGIS Quick library. Returns
+empty string when QGIS is built without Quick support
 
 .. versionadded:: 3.2
 %End

@@ -206,7 +206,9 @@ void QgsApplication::init( QString profileFolder )
 #else
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
+#if defined( HAVE_QUICK )
     ABISYM( mQmlImportPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_QML_SUBDIR + '/';
+#endif
   }
   else
   {
@@ -398,7 +400,9 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
   }
   ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIB_SUBDIR + '/';
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+#if defined( HAVE_QUICK )
   ABISYM( mQmlImportPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_QML_SUBDIR + '/';
+#endif
 }
 
 void QgsApplication::setPluginPath( const QString &pluginPath )

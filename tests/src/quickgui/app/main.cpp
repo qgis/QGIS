@@ -58,10 +58,6 @@ int main( int argc, char *argv[] )
   engine.rootContext()->setContextProperty( "__project", &project );
   engine.rootContext()->setContextProperty( "__layers", QVariant::fromValue( project.layerTreeRoot()->layerOrder() ) );
 
-  // Set simulated position for desktop builds
-  bool use_simulated_position = true;
-  engine.rootContext()->setContextProperty( "__use_simulated_position", use_simulated_position );
-
   QQmlComponent component( &engine, QUrl( QStringLiteral( "qrc:/main.qml" ) ) );
   QObject *object = component.create();
 
@@ -89,8 +85,7 @@ int main( int argc, char *argv[] )
 
   // Add some data for debugging if needed
   QgsApplication::messageLog()->logMessage( QgsQuickUtils::instance()->dumpScreenInfo() );
-  QgsApplication::messageLog()->logMessage( "data directory: " + dataDir );
-  QgsApplication::messageLog()->logMessage( "All up and running" );
+  QgsDebugMsg( QStringLiteral( "data directory: %1" ).arg( dataDir ) );
 
   return app.exec();
 }

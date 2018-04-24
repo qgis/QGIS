@@ -406,7 +406,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString libexecPath();
 
     /**
-     * Returns the path where QML components are installed for QGIS Quick library
+     * Returns the path where QML components are installed for QGIS Quick library. Returns
+     * empty string when QGIS is built without Quick support
+     *
      * \since QGIS 3.2
      */
     static QString qmlImportPath();
