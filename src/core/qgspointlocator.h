@@ -285,7 +285,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
-    QgsFeatureIds mFeatureIds;
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;

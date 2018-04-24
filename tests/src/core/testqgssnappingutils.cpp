@@ -136,7 +136,6 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m.hasVertex() );
 
       u.setEnableSnappingForInvisibleFeature( true );
-      mVL->styleChanged();
       m = u.snapToMap( QPoint( 2, 2 ) );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );

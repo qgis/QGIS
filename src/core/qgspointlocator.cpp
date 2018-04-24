@@ -637,9 +637,6 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
   connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
   connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsPointLocator::onGeometryChanged );
   connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsPointLocator::destroyIndex );
-  connect( mLayer, &QgsVectorLayer::rendererChanged, this, &QgsPointLocator::destroyIndex );
-  connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
-  connect( mLayer, &QgsVectorLayer::layerModified, this, &QgsPointLocator::destroyIndex );
 }
 
 
@@ -669,6 +666,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext &context )
 {
   mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( context ) );
 
+  connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   destroyIndex();
 }
 
@@ -740,10 +738,10 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     if ( !f.hasGeometry() )
       continue;
 
-    if ( ctx && renderer )
+    if ( filter && ctx && renderer )
     {
       ctx->expressionContext().setFeature( f );
-      if ( filter && !renderer->willRenderFeature( f, *ctx ) )
+      if ( !renderer->willRenderFeature( f, *ctx ) )
       {
         continue;
       }
