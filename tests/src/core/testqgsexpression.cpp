@@ -206,7 +206,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "invalid character" ) << "@" << false;
       QTest::newRow( "invalid column reference" ) << "my col" << false;
       QTest::newRow( "invalid binary operator" ) << "1+" << false;
-      QTest::newRow( "invalid function no params" ) << "cos" << false;
+      QTest::newRow( "invalid function not known no args" ) << "watwat()" << false;
       QTest::newRow( "invalid function not known" ) << "coz(1)" << false;
       QTest::newRow( "invalid operator IN" ) << "n in p" << false;
       QTest::newRow( "empty node list" ) << "1 in ()" << false;
@@ -1362,10 +1362,12 @@ class TestQgsExpression: public QObject
       fields.append( QgsField( QStringLiteral( "x1" ) ) );
       fields.append( QgsField( QStringLiteral( "x2" ) ) );
       fields.append( QgsField( QStringLiteral( "foo" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "sin" ), QVariant::Int ) );
 
       QgsFeature f;
-      f.initAttributes( 3 );
+      f.initAttributes( 4 );
       f.setAttribute( 2, QVariant( 20 ) );
+      f.setAttribute( 3, QVariant( 10 ) );
 
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
 
@@ -1385,6 +1387,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp2.hasEvalError(), true );
       QVariant res2 = exp2.evaluate( &context );
       QCOMPARE( res2.type(), QVariant::Invalid );
+
+      // Has field called sin and function
+      QgsExpression exp3( QStringLiteral( "sin" ) );
+      prepareRes = exp3.prepare( &context );
+      QCOMPARE( prepareRes, true );
+      QCOMPARE( exp3.hasEvalError(), false );
+      res = exp3.evaluate( &context );
+      QCOMPARE( res.type(), QVariant::Int );
+      QCOMPARE( res.toInt(), 10 );
+
+      QgsExpression exp4( QStringLiteral( "sin(3.14)" ) );
+      prepareRes = exp4.prepare( &context );
+      QCOMPARE( prepareRes, true );
+      QCOMPARE( exp4.hasEvalError(), false );
+      res = exp4.evaluate( &context );
+      QCOMPARE( res.toInt(), 0 );
     }
 
     void eval_feature_id()
