@@ -469,6 +469,25 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
+    def test_wms_GetLegendGraphic_EmptyLegend(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_contextual_legend.qgs',
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "QGIS%20Server%20Hello%20World",
+            "FORMAT": "image/png",
+            "HEIGHT": "840",
+            "WIDTH": "1226",
+            "BBOX": "10.38450,-49.6370,73.8183,42.9461",
+            "SRS": "EPSG:4326",
+            "SCALE": "15466642"
+        }.items())])
+
+        h, r = self._execute_request(qs)
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
+
 
 if __name__ == '__main__':
     unittest.main()
