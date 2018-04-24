@@ -230,7 +230,7 @@ string      "'"{str_char}*"'"
 
 {identifier}         { TEXT; return NAME; }
 
-{identifier_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
+{identifier_quoted}  { TEXT_FILTER(stripColumnRef); return QUOTED_COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
 
