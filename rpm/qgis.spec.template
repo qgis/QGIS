@@ -12,6 +12,12 @@
 %define builddate %(date '+%a %b %d %Y')
 %endif
 
+%if 0%{?fedora} >= 28
+%define grass grass74
+%else
+%define grass grass72
+%endif
+
 Name:           qgis
 Version:        %{_version}
 Release:        %{_relver}%{?dist}
@@ -203,7 +209,7 @@ gzip ChangeLog
       -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
       -D WITH_BINDINGS:BOOL=TRUE \
       -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7=%{_libdir}/grass72 \
+      -D GRASS_PREFIX7=%{_libdir}/%{grass} \
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \
