@@ -31,26 +31,11 @@
 #include "qgsquickutils.h"
 #include "qgsunittypes.h"
 
-QgsQuickUtils *QgsQuickUtils::sInstance = nullptr;
-
-QgsQuickUtils *QgsQuickUtils::instance()
-{
-  if ( !sInstance )
-  {
-    QgsDebugMsg( QStringLiteral( "QgsQuickUtils created: %1" ).arg( long( QThread::currentThreadId() ) ) );
-    sInstance = new QgsQuickUtils();
-  }
-  return sInstance;
-}
 
 QgsQuickUtils::QgsQuickUtils( QObject *parent )
   : QObject( parent )
+  , mScreenDensity( calculateScreenDensity() )
 {
-  // calculate screen density for calculation of real pixel sizes from density-independent pixels
-  int dpiX = QApplication::desktop()->physicalDpiX();
-  int dpiY = QApplication::desktop()->physicalDpiY();
-  int dpi = dpiX < dpiY ? dpiX : dpiY; // In case of asymmetrical DPI. Improbable
-  mScreenDensity = dpi / 160.;  // 160 DPI is baseline for density-independent pixels in Android
 }
 
 QString QgsQuickUtils::dumpScreenInfo() const
@@ -64,8 +49,8 @@ QString QgsQuickUtils::dumpScreenInfo() const
   double sizeY = static_cast<double>( height ) / dpiY * 25.4;
 
   QString msg;
-  msg += tr( "screen resolution: %1x%2 px\n" ).arg( width, height );
-  msg += tr( "screen DPI: %1x%2\n" ).arg( dpiX,  dpiY );
+  msg += tr( "screen resolution: %1x%2 px\n" ).arg( width ).arg( height );
+  msg += tr( "screen DPI: %1x%2\n" ).arg( dpiX ).arg( dpiY );
   msg += tr( "screen size: %1x%2 mm\n" ).arg( QString::number( sizeX, 'f', 0 ), QString::number( sizeY, 'f', 0 ) );
   msg += tr( "screen density: %1" ).arg( mScreenDensity );
   return msg;
@@ -74,4 +59,13 @@ QString QgsQuickUtils::dumpScreenInfo() const
 qreal QgsQuickUtils::screenDensity() const
 {
   return mScreenDensity;
+}
+
+qreal QgsQuickUtils::calculateScreenDensity()
+{
+  // calculate screen density for calculation of real pixel sizes from density-independent pixels
+  int dpiX = QApplication::desktop()->physicalDpiX();
+  int dpiY = QApplication::desktop()->physicalDpiY();
+  int dpi = dpiX < dpiY ? dpiX : dpiY; // In case of asymmetrical DPI. Improbable
+  return dpi / 160.;  // 160 DPI is baseline for density-independent pixels in Android
 }

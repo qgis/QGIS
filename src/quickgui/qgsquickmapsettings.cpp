@@ -42,7 +42,7 @@ void QgsQuickMapSettings::setProject( QgsProject *project )
   // If we have already something connected, disconnect it!
   if ( mProject )
   {
-    disconnect( mProject, nullptr, this, nullptr );
+    mProject->disconnect( this );
   }
 
   mProject = project;
@@ -51,14 +51,7 @@ void QgsQuickMapSettings::setProject( QgsProject *project )
   if ( mProject )
   {
     connect( mProject, &QgsProject::readProject, this, &QgsQuickMapSettings::onReadProject );
-
-    // TODO: we have a problem here, since project can have alread .qgs loaded, so
-    // we are unable to get DOM to reload project settings for the canvas
-    // fortunately setProject is used only once at the very beginning of the run,
-    // so it should work ....
     setDestinationCrs( mProject->crs() );
-
-    // Set Context too
     mMapSettings.setTransformContext( mProject->transformContext() );
   }
   else
@@ -216,9 +209,6 @@ double QgsQuickMapSettings::rotation() const
 
 void QgsQuickMapSettings::setRotation( double rotation )
 {
-  if ( qgsDoubleNear( rotation, mMapSettings.rotation() ) )
-    return;
-
-  mMapSettings.setRotation( rotation );
-  emit rotationChanged();
+  if ( !qgsDoubleNear( rotation, 0 ) )
+    QgsMessageLog::logMessage( tr( "Map Canvas rotation is not supported. Resetting from %1 to 0." ).arg( rotation ) );
 }

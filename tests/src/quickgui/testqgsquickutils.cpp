@@ -30,12 +30,23 @@ class TestQgsQuickUtils: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void screen_density();
+
+    void dump_screen_info();
+
+  private:
+    QgsQuickUtils utils;
 };
 
 void TestQgsQuickUtils::screen_density()
 {
-  QVERIFY( QgsQuickUtils::instance()->screenDensity() > 50 );
-  QVERIFY( QgsQuickUtils::instance()->screenDensity() < 600 );
+  qreal dp = utils.screenDensity();
+  QVERIFY( ( dp > 0 ) && ( dp < 1000 ) );
+}
+
+void TestQgsQuickUtils::dump_screen_info()
+{
+  qreal dp = utils.screenDensity();
+  QVERIFY( utils.dumpScreenInfo().contains( QStringLiteral( "%1" ).arg( dp ) ) );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )

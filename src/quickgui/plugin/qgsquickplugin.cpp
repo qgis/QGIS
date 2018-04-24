@@ -38,7 +38,7 @@ static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
 {
   Q_UNUSED( engine )
   Q_UNUSED( scriptEngine )
-  return QgsQuickUtils::instance();  // the object will be owned by QML engine and destroyed by the engine on exit
+  return new QgsQuickUtils();  // the object will be owned by QML engine and destroyed by the engine on exit
 }
 
 void QgisQuickPlugin::registerTypes( const char *uri )

@@ -19,28 +19,16 @@
 
 #include <QObject>
 #include <QString>
-#include <QUrl>
-#include <QtPositioning/QGeoCoordinate>
 
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsmessagelog.h"
-#include "qgspoint.h"
-#include "qgspointxy.h"
-
-#include "qgsquickmapsettings.h"
 #include "qgis_quick.h"
-
-
-class QgsFeature;
-class QgsVectorLayer;
-class QgsCoordinateReferenceSystem;
 
 /**
  * \ingroup quick
  *
- * Singleton encapsulating the common utilies for QgsQuick library.
+ * Encapsulating the common utilies for QgsQuick library.
  *
+ * \note QML Type: Utils (Singleton)
  *
  * \since QGIS 3.2
  */
@@ -56,29 +44,31 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * 1dp is approximately 0.16mm. When screen has 160 DPI (baseline), the value of "dp" is 1.
       * On high DPI screen the value will be greater, e.g. 1.5.
+      *
+      * This is a readonly property.
       */
     Q_PROPERTY( qreal dp READ screenDensity CONSTANT )
 
   public:
-    //! return instance of the QgsQuickUtils singleton
-    static QgsQuickUtils *instance();
-
-    //! Calculated density of the screen - see "dp" property for more details
-    qreal screenDensity() const;
-
-    //! Returns a string with information about screen size and resolution - useful for debugging
-    QString dumpScreenInfo() const;
-
-  signals:
-
-  private:
-    explicit QgsQuickUtils( QObject *parent = nullptr );
+    //! Create new utilities
+    QgsQuickUtils( QObject *parent = nullptr );
+    //! dtor
     ~QgsQuickUtils() = default;
 
-    static QgsQuickUtils *sInstance;
+    //! \copydoc QgsQuickUtils::dp
+    qreal screenDensity() const;
+
+    /**
+     * Returns a string with information about screen size and resolution
+     *
+     * Useful to log for debugging of graphical problems on various display sizes
+     */
+    QString dumpScreenInfo() const;
+
+  private:
+    static qreal calculateScreenDensity();
 
     qreal mScreenDensity;
-
 };
 
 #endif // QGSQUICKUTILS_H
