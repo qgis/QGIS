@@ -135,11 +135,6 @@ qgis:densifygeometriesgivenaninterval: >
 
   The distance is expressed in the same units used by the layer CRS.
 
-qgis:difference: >
-  This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained.
-
-  Attributes are not modified.
-
 qgis:dissolve: >
   This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be dissolved.
 
@@ -510,10 +505,6 @@ qgis:sumlinelengths: >
   This algorithm takes a polygon layer and a line layer and measures the total length of lines and the total number of them that cross each polygon.
 
   The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and count of the lines across each polygon. The names of these two fields can be configured in the algorithm parameters.
-
-qgis:symmetricaldifference: >
-  This algorithm creates a layer containing features from both the Input and Difference layers but with the overlapping areas between the two layers removed. The attribute table of the Symmetrical Difference layer contains attributes from both the Input and Difference layers.
-
 
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.

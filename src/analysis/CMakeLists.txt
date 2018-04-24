@@ -27,6 +27,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
@@ -73,6 +74,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
@@ -80,6 +82,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwedgebuffers.cpp
 
   processing/qgsnativealgorithms.cpp
+  processing/qgsoverlayutils.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
