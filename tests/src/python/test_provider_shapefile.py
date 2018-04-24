@@ -600,6 +600,21 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(vl.dataProvider().createAttributeIndex(100))
         self.assertTrue(vl.dataProvider().createAttributeIndex(1))
 
+    def testNoShx(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+
+        # delete the shx!
+        os.remove(os.path.join(tmpdir, 'shapefile.shx'))
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        # make sure we can still load it - ogr should automatically re-create the shx
+        vl = QgsVectorLayer('{}'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
     def testCreateSpatialIndex(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)

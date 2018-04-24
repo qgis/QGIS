@@ -431,6 +431,8 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
 
   QgsSettings settings;
   CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+  // be forgiving and always restore missing SHX files if they are absent
+  CPLSetConfigOption( "SHAPE_RESTORE_SHX", "YES" );
 
 #ifndef QT_NO_NETWORKPROXY
   setupProxy();
@@ -3922,6 +3924,7 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
+
 
   if ( mFilePath.startsWith( QLatin1String( "MySQL:" ) ) && !mLayerName.isEmpty() && !mFilePath.endsWith( ",tables=" + mLayerName ) )
   {
