@@ -196,10 +196,10 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
-          if ( intersectGeom.wkbType() == QgsWkbTypes::GeometryCollection )
+          if ( QgsWkbTypes::flatType( intersectGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
           {
-            QVector<QgsGeometry> geomCollection = intersectGeom.asGeometryCollection();
-            for ( const QgsGeometry &part : qgis::as_const( geomCollection ) )
+            const QVector<QgsGeometry> geomCollection = intersectGeom.asGeometryCollection();
+            for ( const QgsGeometry &part : geomCollection )
             {
               if ( part.type() == QgsWkbTypes::PointGeometry )
               {
@@ -214,18 +214,15 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
               }
             }
           }
-          else
+          else if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
           {
-            if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+            if ( intersectGeom.isMultipart() )
             {
-              if ( intersectGeom.isMultipart() )
-              {
-                points = intersectGeom.asMultiPoint();
-              }
-              else
-              {
-                points.append( intersectGeom.asPoint() );
-              }
+              points = intersectGeom.asMultiPoint();
+            }
+            else
+            {
+              points.append( intersectGeom.asPoint() );
             }
           }
           for ( const QgsPointXY &j : qgis::as_const( points ) )
