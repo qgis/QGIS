@@ -16,7 +16,6 @@ Name:           qgis
 Version:        %{_version}
 Release:        %{_relver}%{?dist}
 Summary:        A user friendly Open Source Geographic Information System
-Group:          Applications/Engineering
 
 License:        GPLv3+ with exceptions
 URL:            http://www.qgis.org
@@ -115,7 +114,6 @@ and USGS ASCII DEM.
 
 %package devel
 Summary:        Development Libraries for the QGIS
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
@@ -123,7 +121,6 @@ Development packages for QGIS including the C header files.
 
 %package grass
 Summary:        GRASS Support Libraries for QGIS
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 # The plug-in requires more than just the grass-libs.
@@ -144,7 +141,6 @@ Provides: %{name}-python%{?_isa} = %{version}-%{release}
 Obsoletes: %{name}-python < %{version}-%{release}
 Obsoletes: python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires: gdal-python3
 Requires: python3-future
@@ -163,7 +159,6 @@ Python integration and plug-ins for QGIS.
 
 %package server
 Summary:        FCGI-based OGC web map server
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       mod_fcgid
 Provides: mapserver = %{version}-%{release}
