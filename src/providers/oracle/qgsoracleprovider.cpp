@@ -1391,7 +1391,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       }
     }
 
-    mFeaturesCounted += flist.size();
+    if ( mFeaturesCounted >= 0 )
+      mFeaturesCounted += flist.size();
   }
   catch ( OracleException &e )
   {
