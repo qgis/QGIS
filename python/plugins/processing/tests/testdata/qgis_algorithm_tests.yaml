@@ -4989,34 +4989,6 @@ tests:
             __all__:
               precision: 7
 
-  - algorithm: qgis:union
-    name: Union simple
-    params:
-      INPUT:
-        name: custom/polygon_mask.gml
-        type: vector
-      OVERLAY:
-        name: custom/for_union.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/union.gml
-        type: vector
-
-  - algorithm: qgis:difference
-    name: Difference test
-    params:
-      INPUT:
-        name: custom/for_union.gml
-        type: vector
-      OVERLAY:
-        name: custom/polygon_mask.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/difference.gml
-        type: vector
-
   - algorithm: native:projectpointcartesian
     name: Project points cartesian
     params:
