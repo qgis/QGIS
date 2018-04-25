@@ -57,7 +57,6 @@ from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Difference import Difference
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -134,7 +133,6 @@ from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
-from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
@@ -175,7 +173,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
-                Difference(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -252,7 +249,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 SumLines(),
-                SymmetricalDifference(),
                 TextToFloat(),
                 TinInterpolation(),
                 TopoColor(),

@@ -5258,4 +5258,74 @@ tests:
         name: expected/wedge_buffers.gml
         type: vector
 
+  - algorithm: native:difference
+    name: Test Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_a_b.gml
+        type: vector
+        pk: id_a
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:difference
+    name: Test Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_b_a.gml
+        type: vector
+        pk: id_b
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_a_b.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_b_a.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
 # See ../README.md for a description of the file format
