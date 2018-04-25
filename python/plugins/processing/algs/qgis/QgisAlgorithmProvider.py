@@ -137,7 +137,6 @@ from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
-from .Union import Union
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorSplit import VectorSplit
@@ -253,7 +252,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),
-                Union(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
                 VectorSplit(),

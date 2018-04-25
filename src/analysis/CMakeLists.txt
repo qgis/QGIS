@@ -78,6 +78,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmwedgebuffers.cpp
 
