@@ -83,6 +83,10 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         geom = geom.difference( geomB );
       }
 
+      // if geomB covers the whole source geometry, we get an empty geometry collection
+      if ( geom.isEmpty() )
+        continue;
+
       const QgsAttributes attrsA( featA.attributes() );
       switch ( outputAttrs )
       {
@@ -100,6 +104,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       }
 
       QgsFeature outFeat;
+      geom.convertToMultiType();
       outFeat.setGeometry( geom );
       outFeat.setAttributes( attrs );
       sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
