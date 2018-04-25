@@ -3880,12 +3880,20 @@ void QgisApp::createMapTips()
   mpMapTipsTimer = new QTimer( mMapCanvas );
   // connect the timer to the maptips slot
   connect( mpMapTipsTimer, &QTimer::timeout, this, &QgisApp::showMapTip );
-  // set the interval to 0.850 seconds - timer will be started next time the mouse moves
-  mpMapTipsTimer->setInterval( 850 );
+  // set the delay to 0.850 seconds or time defined in the Settings
+  // timer will be started next time the mouse moves
+  QgsSettings settings;
+  int timerInterval = settings.value( "qgis/mapTipsDelay", 850 ).toInt();
+  mpMapTipsTimer->setInterval( timerInterval );
   mpMapTipsTimer->setSingleShot( true );
 
   // Create the maptips object
   mpMaptip = new QgsMapTip();
+}
+
+void QgisApp::setMapTipsDelay( int timerInterval )
+{
+  mpMapTipsTimer->setInterval( timerInterval );
 }
 
 void QgisApp::createDecorations()

@@ -966,6 +966,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the snapping Options
     void snappingOptions();
 
+    void setMapTipsDelay( int timerInterval );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
