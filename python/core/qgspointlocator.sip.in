@@ -73,7 +73,7 @@ Configure extent - if not null, it will index only that area
 .. versionadded:: 2.14
 %End
 
-    void setRenderContext( const QgsRenderContext &context );
+    void setRenderContext( const QgsRenderContext *context );
 %Docstring
 Configure render context  - if not null, it will use to index only visible feature
 

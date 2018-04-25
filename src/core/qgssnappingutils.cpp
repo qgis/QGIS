@@ -363,7 +363,10 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
       QgsPointLocator *loc = locatorForLayer( vl );
 
       if ( !mEnableSnappingForInvisibleFeature )
-        loc->setRenderContext( QgsRenderContext::fromMapSettings( mMapSettings ) );
+      {
+        QgsRenderContext ctx = QgsRenderContext::fromMapSettings( mMapSettings );
+        loc->setRenderContext( &ctx );
+      }
 
       if ( mStrategy == IndexExtent )
       {

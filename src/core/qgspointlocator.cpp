@@ -663,12 +663,19 @@ void QgsPointLocator::setExtent( const QgsRectangle *extent )
   destroyIndex();
 }
 
-void QgsPointLocator::setRenderContext( const QgsRenderContext &context )
+void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 {
-  mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( context ) );
+  disconnect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
 
-  connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   destroyIndex();
+  mContext.reset( nullptr );
+
+  if ( context )
+  {
+    mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *context ) );
+    connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
+  }
+
 }
 
 bool QgsPointLocator::init( int maxFeaturesToIndex )

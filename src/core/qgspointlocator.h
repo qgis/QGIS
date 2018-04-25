@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Configure render context  - if not null, it will use to index only visible feature
      * \since QGIS 3.2
      */
-    void setRenderContext( const QgsRenderContext &context );
+    void setRenderContext( const QgsRenderContext *context );
 
     /**
      * The type of a snap result or the filter type for a snap request.
