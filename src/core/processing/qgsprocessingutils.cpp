@@ -111,6 +111,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
       case QgsMapLayer::PluginLayer:
         return true;
+      case QgsMapLayer::MeshLayer:
+        return false;
     }
     return true;
   } ), layers.end() );

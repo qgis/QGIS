@@ -422,7 +422,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       TableLayer,
       Database,
       Table,
-      Plugin     //!< Added in 2.10
+      Plugin,    //!< Added in 2.10
+      Mesh       //!< Added in 3.2
     };
 
     Q_ENUM( LayerType );
@@ -498,6 +499,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
+    //! Return icon for mesh layer type
+    static QIcon iconMesh();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }

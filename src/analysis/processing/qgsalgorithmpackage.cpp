@@ -142,6 +142,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         feedback->pushDebugInfo( QObject::tr( "Packaging plugin layers is not supported." ) );
         errored = true;
         break;
+
+      case QgsMapLayer::MeshLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging mesh layers is not supported." ) );
+        errored = true;
+        break;
     }
   }
 

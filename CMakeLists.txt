@@ -95,6 +95,12 @@ IF(WITH_CORE)
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
   ENDIF()
 
+  # try to configure and build MDAL support
+  SET (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
+  IF (NOT WITH_INTERNAL_MDAL)
+    SET (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
+  ENDIF (NOT WITH_INTERNAL_MDAL)
+
   # try to configure and build POSTGRESQL support
   SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
   IF (WITH_POSTGRESQL)
@@ -257,6 +263,10 @@ IF(WITH_CORE)
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
   ENDIF (WITH_POSTGRESQL)
+
+  IF (NOT WITH_INTERNAL_MDAL)
+    FIND_PACKAGE(MDAL REQUIRED) # MDAL provider
+  ENDIF (NOT WITH_INTERNAL_MDAL)
 
   FIND_PACKAGE(SpatiaLite REQUIRED)
 

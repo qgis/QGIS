@@ -59,6 +59,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       sipType = sipType_QgsRasterDataProvider;
     }
+    else if ( qobject_cast<QgsMeshDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshDataProvider;
+    }
     else
     {
       sipType = 0;

@@ -85,6 +85,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
         case QgsMapLayer::PluginLayer:
           sipType = sipType_QgsPluginLayer;
           break;
+        case QgsMapLayer::MeshLayer:
+          sipType = sipType_QgsMeshLayer;
+          break;
         default:
           sipType = nullptr;
           break;
@@ -100,7 +103,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer
+      PluginLayer,
+      MeshLayer      //!< Added in 3.2
     };
 
     /**
