@@ -274,6 +274,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
     //! Storage manager

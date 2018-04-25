@@ -636,6 +636,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsPointLocator::onFeatureAdded );
   connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
   connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsPointLocator::onGeometryChanged );
+  connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsPointLocator::onAttributeValueChanged );
   connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsPointLocator::destroyIndex );
 }
 
@@ -834,6 +835,30 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     if ( !f.hasGeometry() )
       return;
 
+    std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+    QgsRenderContext *ctx = nullptr;
+    if ( mContext )
+    {
+      mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+      ctx = mContext.get();
+      if ( renderer && ctx )
+      {
+        bool pass = false;
+        renderer->startRender( *ctx, mLayer->fields() );
+
+        ctx->expressionContext().setFeature( f );
+        if ( !renderer->willRenderFeature( f, *ctx ) )
+        {
+          pass = true;
+        }
+
+        renderer->stopRender( *ctx );
+        renderer.release();
+        if ( pass )
+          return;
+      }
+    }
+
     if ( mTransform.isValid() )
     {
       try
@@ -880,6 +905,14 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   Q_UNUSED( geom );
+  onFeatureDeleted( fid );
+  onFeatureAdded( fid );
+}
+
+void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  Q_UNUSED( idx );
+  Q_UNUSED( value );
   onFeatureDeleted( fid );
   onFeatureAdded( fid );
 }
