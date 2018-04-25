@@ -84,6 +84,7 @@ RUN  apt-get update \
     qt5keychain-dev \
     qtbase5-dev \
     qtdeclarative5-dev-tools \
+    qtdeclarative5-qtquick2-plugin \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \
