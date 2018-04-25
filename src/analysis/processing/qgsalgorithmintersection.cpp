@@ -17,6 +17,7 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
+#include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
 
@@ -87,50 +88,12 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );
 
-  QgsFields fieldListA;
-  QList<int> fieldIndicesA;
-  if ( !fieldsA.isEmpty() )
-  {
-    for ( const QString &f : fieldsA )
-    {
-      int idxA = sourceA->fields().lookupField( f );
-      if ( idxA >= 0 )
-      {
-        fieldIndicesA.append( idxA );
-        fieldListA.append( sourceA->fields()[idxA] );
-      }
-    }
-  }
-  else
-  {
-    fieldListA = sourceA->fields();
-    for ( int i = 0; i < fieldListA.count(); ++i )
-      fieldIndicesA.append( i );
-  }
+  QList<int> fieldIndicesA = QgsOverlayUtils::fieldNamesToIndices( fieldsA, sourceA->fields() );
+  QList<int> fieldIndicesB = QgsOverlayUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
 
-  QgsFields fieldListB;
-  QList<int> fieldIndicesB;
-  if ( !fieldsB.isEmpty() )
-  {
-    for ( const QString &f : fieldsB )
-    {
-      int idxB = sourceB->fields().lookupField( f );
-      if ( idxB >= 0 )
-      {
-        fieldIndicesB.append( idxB );
-        fieldListB.append( sourceB->fields()[idxB] );
-      }
-    }
-  }
-  else
-  {
-    fieldListB = sourceB->fields();
-    for ( int i = 0; i < fieldListB.count(); ++i )
-      fieldIndicesB.append( i );
-  }
-
-
-  QgsFields outputFields = QgsProcessingUtils::combineFields( fieldListA, fieldListB );
+  QgsFields outputFields = QgsProcessingUtils::combineFields(
+                             QgsOverlayUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
+                             QgsOverlayUtils::indicesToFields( fieldIndicesB, sourceB->fields() ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs() ) );
@@ -138,96 +101,10 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
-  request.setDestinationCrs( sourceA->sourceCrs(), context.transformContext() );
-
-  QgsFeature outFeat;
-  QgsSpatialIndex indexB( sourceB->getFeatures( request ), feedback );
-
-  double total = 100.0 / ( sourceA->featureCount() ? sourceA->featureCount() : 1 );
   int count = 0;
+  int total = sourceA->featureCount();
 
-  QgsFeature featA;
-  QgsFeatureIterator fitA = sourceA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldIndicesA ) );
-  while ( fitA.nextFeature( featA ) )
-  {
-    if ( feedback->isCanceled() )
-      break;
-
-    if ( !featA.hasGeometry() )
-      continue;
-
-    QgsGeometry geom( featA.geometry() );
-    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
-
-    QgsFeatureRequest request;
-    request.setFilterFids( intersects );
-    request.setDestinationCrs( sourceA->sourceCrs(), context.transformContext() );
-    request.setSubsetOfAttributes( fieldIndicesB );
-
-    std::unique_ptr< QgsGeometryEngine > engine;
-    if ( !intersects.isEmpty() )
-    {
-      // use prepared geometries for faster intersection tests
-      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-      engine->prepareGeometry();
-    }
-
-    QgsAttributes outAttributes( outputFields.count() );
-    const QgsAttributes attrsA( featA.attributes() );
-    for ( int i = 0; i < fieldIndicesA.count(); ++i )
-      outAttributes[i] = attrsA[fieldIndicesA[i]];
-
-    QgsFeature featB;
-    QgsFeatureIterator fitB = sourceB->getFeatures( request );
-    while ( fitB.nextFeature( featB ) )
-    {
-      if ( feedback->isCanceled() )
-        break;
-
-      QgsGeometry tmpGeom( featB.geometry() );
-      if ( !engine->intersects( tmpGeom.constGet() ) )
-        continue;
-
-      QgsGeometry intGeom = geom.intersection( tmpGeom );
-
-      if ( intGeom.isNull() )
-      {
-        // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
-        throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), intGeom.lastError() ) );
-      }
-
-      // Intersection of geometries may give use also geometries we do not want in our results.
-      // For example, two square polygons touching at the corner have a point as the intersection, but no area.
-      // In other cases we may get a mixture of geometries in the output - we want to keep only the expected types.
-      if ( QgsWkbTypes::flatType( intGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
-      {
-        // try to filter out irrelevant parts with different geometry type than what we want
-        intGeom.convertGeometryCollectionToSubclass( QgsWkbTypes::geometryType( geomType ) );
-        if ( intGeom.isEmpty() )
-          continue;
-      }
-
-      if ( QgsWkbTypes::geometryType( intGeom.wkbType() ) != QgsWkbTypes::geometryType( geomType ) )
-      {
-        // we can't make use of this resulting geometry
-        continue;
-      }
-
-      const QgsAttributes attrsB( featB.attributes() );
-      for ( int i = 0; i < fieldIndicesB.count(); ++i )
-        outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
-
-      intGeom.convertToMultiType();
-      outFeat.setGeometry( intGeom );
-      outFeat.setAttributes( outAttributes );
-      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
-    }
-
-    ++count;
-    feedback->setProgress( int( count * total ) );
-  }
+  QgsOverlayUtils::intersection( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, fieldIndicesA, fieldIndicesB );
 
   return outputs;
 }

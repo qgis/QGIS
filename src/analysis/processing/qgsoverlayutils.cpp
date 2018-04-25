@@ -120,4 +120,131 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   }
 }
 
+
+void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
+{
+  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
+  int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
+
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
+
+  QgsFeature outFeat;
+  QgsSpatialIndex indexB( sourceB.getFeatures( request ), feedback );
+
+  if ( totalCount == 0 )
+    totalCount = 1;  // avoid division by zero
+
+  QgsFeature featA;
+  QgsFeatureIterator fitA = sourceA.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldIndicesA ) );
+  while ( fitA.nextFeature( featA ) )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    if ( !featA.hasGeometry() )
+      continue;
+
+    QgsGeometry geom( featA.geometry() );
+    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+
+    QgsFeatureRequest request;
+    request.setFilterFids( intersects );
+    request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
+    request.setSubsetOfAttributes( fieldIndicesB );
+
+    std::unique_ptr< QgsGeometryEngine > engine;
+    if ( !intersects.isEmpty() )
+    {
+      // use prepared geometries for faster intersection tests
+      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+      engine->prepareGeometry();
+    }
+
+    QgsAttributes outAttributes( attrCount );
+    const QgsAttributes attrsA( featA.attributes() );
+    for ( int i = 0; i < fieldIndicesA.count(); ++i )
+      outAttributes[i] = attrsA[fieldIndicesA[i]];
+
+    QgsFeature featB;
+    QgsFeatureIterator fitB = sourceB.getFeatures( request );
+    while ( fitB.nextFeature( featB ) )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      QgsGeometry tmpGeom( featB.geometry() );
+      if ( !engine->intersects( tmpGeom.constGet() ) )
+        continue;
+
+      QgsGeometry intGeom = geom.intersection( tmpGeom );
+
+      if ( intGeom.isNull() )
+      {
+        // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
+        throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), intGeom.lastError() ) );
+      }
+
+      // Intersection of geometries may give use also geometries we do not want in our results.
+      // For example, two square polygons touching at the corner have a point as the intersection, but no area.
+      // In other cases we may get a mixture of geometries in the output - we want to keep only the expected types.
+      if ( QgsWkbTypes::flatType( intGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+      {
+        // try to filter out irrelevant parts with different geometry type than what we want
+        intGeom.convertGeometryCollectionToSubclass( geometryType );
+        if ( intGeom.isEmpty() )
+          continue;
+      }
+
+      if ( QgsWkbTypes::geometryType( intGeom.wkbType() ) != geometryType )
+      {
+        // we can't make use of this resulting geometry
+        continue;
+      }
+
+      const QgsAttributes attrsB( featB.attributes() );
+      for ( int i = 0; i < fieldIndicesB.count(); ++i )
+        outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
+
+      intGeom.convertToMultiType();
+      outFeat.setGeometry( intGeom );
+      outFeat.setAttributes( outAttributes );
+      sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
+    }
+
+    ++count;
+    feedback->setProgress( count / ( double ) totalCount * 100. );
+  }
+}
+
+
+QList<int> QgsOverlayUtils::fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields )
+{
+  QList<int> indices;
+  if ( !fieldNames.isEmpty() )
+  {
+    for ( const QString &f : fieldNames )
+    {
+      int idx = fields.lookupField( f );
+      if ( idx >= 0 )
+        indices.append( idx );
+    }
+  }
+  else
+  {
+    for ( int i = 0; i < fields.count(); ++i )
+      indices.append( i );
+  }
+  return indices;
+}
+
+QgsFields QgsOverlayUtils::indicesToFields( const QList<int> &indices, const QgsFields &fields )
+{
+  QgsFields fieldsSubset;
+  for ( int i : indices )
+    fieldsSubset.append( fields.at( i ) );
+  return fieldsSubset;
+}
+
 ///@endcond PRIVATE
