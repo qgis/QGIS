@@ -7355,7 +7355,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     if ( !allFeaturesInView )
     {
       // for extra safety to make sure we are not removing geometries by accident
-      int res = QMessageBox::warning( mMapCanvas, tr( "Delete features" ),
+      int res = QMessageBox::warning( mMapCanvas, tr( "Delete %1 features on layer \"%2\"" ).arg( QString::number( vlayer->selectedFeatureCount() ), vlayer->name() ),
                                       tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
                                       QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
