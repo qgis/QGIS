@@ -701,6 +701,17 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   return rule;
 }
 
+QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::descendants() const
+{
+  RuleList l;
+  for ( QgsRuleBasedRenderer::Rule *c : mChildren )
+  {
+    l += c;
+    l += c->descendants();
+  }
+  return l;
+}
+
 QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, QgsWkbTypes::GeometryType geomType )
 {
   if ( ruleElem.localName() != QLatin1String( "Rule" ) )

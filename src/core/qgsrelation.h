@@ -296,7 +296,7 @@ class CORE_EXPORT QgsRelation
     % MethodCode
     const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
     sipRes = new QMap< QString, QString >();
-    Q_FOREACH ( const QgsRelation::FieldPair &pair, pairs )
+    for ( const QgsRelation::FieldPair &pair : pairs )
     {
       sipRes->insert( pair.first, pair.second );
     }

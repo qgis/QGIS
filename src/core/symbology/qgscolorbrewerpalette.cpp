@@ -291,3 +291,56 @@ const char *QgsColorBrewerPalette::BREWER_STRING =
   "PuBuGn-7-246,239,247 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,100,80\n"
   "PuBuGn-8-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,100,80\n"
   "PuBuGn-9-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,108,89 1,70,54";
+
+QList<QColor> QgsColorBrewerPalette::listSchemeColors( const QString &schemeName, int colors )
+{
+  QList<QColor> pal;
+  QString palette( BREWER_STRING );
+  const QStringList list = palette.split( QChar( '\n' ) );
+  for ( const QString &entry : list )
+  {
+    QStringList items = entry.split( QChar( '-' ) );
+    if ( items.count() != 3 || items[0] != schemeName || items[1].toInt() != colors )
+      continue;
+    const QStringList colors = items[2].split( QChar( ' ' ) );
+    for ( const QString &clr : colors )
+    {
+      pal << QgsSymbolLayerUtils::parseColor( clr );
+    }
+  }
+  return pal;
+}
+
+QStringList QgsColorBrewerPalette::listSchemes()
+{
+  QStringList schemes;
+
+  QString palette( BREWER_STRING );
+  const QStringList list = palette.split( QChar( '\n' ) );
+  for ( const QString &entry : list )
+  {
+    QStringList items = entry.split( QChar( '-' ) );
+    if ( items.count() != 3 )
+      continue;
+    if ( !schemes.contains( items[0] ) )
+      schemes << items[0];
+  }
+  return schemes;
+}
+
+QList<int> QgsColorBrewerPalette::listSchemeVariants( const QString &schemeName )
+{
+  QList<int> variants;
+
+  QString palette( BREWER_STRING );
+  const QStringList list = palette.split( QChar( '\n' ) );
+  for ( const QString &entry : list )
+  {
+    QStringList items = entry.split( QChar( '-' ) );
+    if ( items.count() != 3 || items[0] != schemeName )
+      continue;
+    variants << items[1].toInt();
+  }
+
+  return variants;
+}

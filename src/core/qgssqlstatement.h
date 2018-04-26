@@ -301,7 +301,7 @@ class CORE_EXPORT QgsSQLStatement
         int count() const { return mList.count(); }
 
         //! Accept visitor
-        void accept( QgsSQLStatement::Visitor &v ) const { Q_FOREACH ( QgsSQLStatement::Node *node, mList ) { node->accept( v ); } }
+        void accept( QgsSQLStatement::Visitor &v ) const;
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
         QgsSQLStatement::NodeList *clone() const SIP_FACTORY;

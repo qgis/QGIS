@@ -251,6 +251,14 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
 ///////////////////////////////////////////////
 // nodes
 
+void QgsSQLStatement::NodeList::accept( QgsSQLStatement::Visitor &v ) const
+{
+  for ( QgsSQLStatement::Node *node : mList )
+  {
+    node->accept( v );
+  }
+}
+
 QgsSQLStatement::NodeList *QgsSQLStatement::NodeList::clone() const
 {
   NodeList *nl = new NodeList;
