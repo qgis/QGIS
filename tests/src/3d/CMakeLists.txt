@@ -32,7 +32,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
 )
 
 #note for tests we should not include the moc of our
