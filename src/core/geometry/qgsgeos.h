@@ -124,6 +124,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /**
      * Adds a new island polygon to a multipolygon feature
+     * \param geometry geometry to add part to
      * \param newPart part to add. Ownership is NOT transferred.
      * \returns OperationResult a result code: success or reason of failure
      */
@@ -342,15 +343,17 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /**
      * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+     * \param geometry geometry to convert to GEOS representation
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
     static geos::unique_ptr asGeos( const QgsGeometry &geometry, double precision = 0 );
 
     /**
      * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+     * \param geometry geometry to convert to GEOS representation
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
-    static geos::unique_ptr asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
+    static geos::unique_ptr asGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
