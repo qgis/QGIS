@@ -17,6 +17,7 @@
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgswkbptr.h"
+#include "qgsgeos.h"
 #include <QPolygonF>
 
 
@@ -132,8 +133,7 @@ void TestQgsGeometryImport::pointGeos()
   GEOSCoordSeq_setY( coord, 0, y );
   GEOSGeometry *geosPt = GEOSGeom_createPoint( coord );
 
-  QgsGeometry geom;
-  geom.fromGeos( geosPt );
+  QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
 
   QgsPointXY geomPt = geom.asPoint();
@@ -218,8 +218,7 @@ void TestQgsGeometryImport::linestringGeos()
     GEOSCoordSeq_setY( coord, i, pt.y() );
   }
   GEOSGeometry *geosLine = GEOSGeom_createLineString( coord );
-  QgsGeometry geom;
-  geom.fromGeos( geosLine );
+  QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
 
   QgsPolylineXY polyline = geom.asPolyline();

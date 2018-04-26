@@ -13,8 +13,6 @@
 
 
 
-
-
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QVector<QgsPoint> QgsPolyline;
@@ -230,14 +228,12 @@ need to be segmentized to convert to a standard Polygon geometry.
 %End
 
 
-
     void fromWkb( const QByteArray &wkb );
 %Docstring
 Set the geometry, feeding in the buffer containing OGC Well-Known Binary
 
 .. versionadded:: 3.0
 %End
-
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
@@ -605,7 +601,6 @@ Adds a new part to this geometry.
 
 :return: OperationResult a result code: success or reason of failure
 %End
-
 
     OperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
 %Docstring
@@ -1539,7 +1534,6 @@ was performed on the geometry.
 
 .. versionadded:: 3.0
 %End
-
 
     static QgsGeometry fromQPointF( QPointF point );
 %Docstring

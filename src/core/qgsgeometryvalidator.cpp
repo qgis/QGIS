@@ -218,8 +218,8 @@ void QgsGeometryValidator::run()
     case QgsGeometry::ValidatorGeos:
     {
       char *r = nullptr;
-      geos::unique_ptr g0( mGeometry.exportToGeos() );
-      GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
+      geos::unique_ptr g0 = QgsGeos::asGeos( mGeometry );
+      GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
       if ( !g0 )
       {
         emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: could not produce geometry for GEOS (check log window)" ) ) );

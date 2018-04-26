@@ -185,6 +185,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsformannotation.h"
+#include "qgsgeos.h"
 #include "qgsguiutils.h"
 #include "qgshtmlannotation.h"
 #include "qgsprojectionselectiondialog.h"

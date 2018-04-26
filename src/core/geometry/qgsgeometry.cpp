@@ -304,17 +304,6 @@ void QgsGeometry::fromWkb( const QByteArray &wkb )
   reset( QgsGeometryFactory::geomFromWkb( ptr ) );
 }
 
-GEOSGeometry *QgsGeometry::exportToGeos( double precision ) const
-{
-  if ( !d->geometry )
-  {
-    return nullptr;
-  }
-
-  return QgsGeos::asGeos( d->geometry.get(), precision ).release();
-}
-
-
 QgsWkbTypes::Type QgsGeometry::wkbType() const
 {
   if ( !d->geometry )
@@ -354,12 +343,6 @@ bool QgsGeometry::isMultipart() const
     return false;
   }
   return QgsWkbTypes::isMultiType( d->geometry->wkbType() );
-}
-
-void QgsGeometry::fromGeos( GEOSGeometry *geos )
-{
-  reset( QgsGeos::fromGeos( geos ) );
-  GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), geos );
 }
 
 QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, int &beforeVertex, int &afterVertex, double &sqrDist ) const
@@ -763,23 +746,6 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
     newPoly->removeInteriorRings( minimumRingArea );
     return QgsGeometry( std::move( newPoly ) );
   }
-}
-
-QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
-{
-  if ( !d->geometry )
-  {
-    return QgsGeometry::InvalidBaseGeometry;
-  }
-  if ( !newPart )
-  {
-    return QgsGeometry::AddPartNotMultiGeometry;
-  }
-
-  detach();
-
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeos::fromGeos( newPart );
-  return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( geom ) );
 }
 
 QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
@@ -2644,11 +2610,6 @@ void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output 
   {
     convertToPolyline( rings[i], output[i] );
   }
-}
-
-GEOSContextHandle_t QgsGeometry::getGEOSHandler()
-{
-  return QgsGeos::getGEOSHandler();
 }
 
 QgsGeometry QgsGeometry::fromQPointF( QPointF point )

@@ -85,7 +85,7 @@ FeaturePart::~FeaturePart()
 void FeaturePart::extractCoords( const GEOSGeometry *geom )
 {
   const GEOSCoordSequence *coordSeq = nullptr;
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );
 
@@ -1602,7 +1602,7 @@ void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition * > &lPos, doubl
   if ( !mGeos )
     createGeosGeom();
 
-  GEOSContextHandle_t ctxt = geosContext();
+  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
   int geomType = GEOSGeomTypeId_r( ctxt, mGeos );
 
   double sizeCost = 0;
@@ -1661,7 +1661,7 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
 
   try
   {
-    return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    return ( GEOSPreparedTouches_r( QgsGeos::getGEOSHandler(), preparedGeom(), p2->mGeos ) == 1 );
   }
   catch ( GEOSException &e )
   {
@@ -1677,7 +1677,7 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
   if ( !other->mGeos )
     other->createGeosGeom();
 
-  GEOSContextHandle_t ctxt = geosContext();
+  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSGeometry *g1 = GEOSGeom_clone_r( ctxt, mGeos );
