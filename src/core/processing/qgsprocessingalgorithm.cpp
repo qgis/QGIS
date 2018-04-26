@@ -420,7 +420,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
 
 QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QString( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QStringLiteral( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
 
   // Hey kids, let's all be thread safe! It's the fun thing to do!
@@ -477,7 +477,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
 QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
-  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QString( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QStringLiteral( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
 
   if ( mLocalContext )
@@ -726,7 +726,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   QgsExpressionContext prevContext = context.expressionContext();
   QgsExpressionContext algContext = prevContext;
 
-  algContext.appendScopes( createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( mSource.get() ) ).takeScopes() );
+  algContext.appendScopes( createExpressionContext( parameters, context, mSource.get() ).takeScopes() );
   context.setExpressionContext( algContext );
 
   long count = mSource->featureCount();
