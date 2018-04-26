@@ -74,7 +74,7 @@
          <widget class="QWidget" name="layoutWidget_1">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QFrame" name="frame">
+            <widget class="QFrame" name="frame1">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>

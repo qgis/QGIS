@@ -3037,7 +3037,7 @@
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_39">
+                     <spacer name="horizontalSpacer_391">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -3078,7 +3078,7 @@
                  <property name="title">
                   <string>Map Tips</string>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_22">
+                 <layout class="QHBoxLayout" name="horizontalLayout_221">
                   <item>
                    <widget class="QLabel" name="textLabel1_16">
                     <property name="sizePolicy">

@@ -37,7 +37,7 @@
       <property name="title">
        <string>Source type</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout1">
        <item>
         <widget class="QRadioButton" name="radioSrcFile">
          <property name="text">
@@ -110,7 +110,7 @@
       <property name="title">
        <string>Protocol</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_21">
        <item row="0" column="1">
         <widget class="QComboBox" name="cmbProtocolTypes"/>
        </item>
