@@ -32,7 +32,6 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   mLineEdit = new QgsSpinBoxLineEdit();
 
   // By default, group separator is off
-  setLocale( QLocale( QgsApplication::locale( ) ) );
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
