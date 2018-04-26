@@ -25,9 +25,12 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-  connect( project, &QgsProject::readProject, this, &QgsRelationManager::readProject );
-  connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
-  connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
+  if ( mProject )
+  {
+    connect( project, &QgsProject::readProject, this, &QgsRelationManager::readProject );
+    connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
+    connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
+  }
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
