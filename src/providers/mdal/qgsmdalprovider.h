@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #ifndef QGSMDALPROVIDER_H
-#define QGSGDALPROVIDER_H
+#define QGSMDALPROVIDER_H
 
 #include <QString>
 
@@ -59,5 +59,4 @@ class QgsMdalProvider : public QgsMeshDataProvider
     MeshH mMeshH;
 };
 
-#endif
-
+#endif // QGSMDALPROVIDER_H
