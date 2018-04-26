@@ -23,12 +23,17 @@
 #include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include "pointset.h"
-#include "labelposition.h"
 #include "qgspallabeling.h"
 #include "rtree.hpp"
 
 class QgsPointXY;
+
+#ifndef SIP_RUN
+namespace pal
+{
+  class LabelPosition;
+}
+#endif
 
 /**
  * \ingroup core
