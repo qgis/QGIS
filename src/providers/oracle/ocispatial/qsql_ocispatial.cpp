@@ -2207,7 +2207,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
         }
 
         case SQLT_FLT:
-          memcpy( &( ( *list )[r] ), data + r * columns[i].maxLen, sizeof( double ) );
+          ( *list )[r] =  *reinterpret_cast<double *>( data + r * columns[i].maxLen );
           break;
 
         case SQLT_STR:
