@@ -196,7 +196,25 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
-          if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+          if ( QgsWkbTypes::flatType( intersectGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+          {
+            const QVector<QgsGeometry> geomCollection = intersectGeom.asGeometryCollection();
+            for ( const QgsGeometry &part : geomCollection )
+            {
+              if ( part.type() == QgsWkbTypes::PointGeometry )
+              {
+                if ( part.isMultipart() )
+                {
+                  points = part.asMultiPoint();
+                }
+                else
+                {
+                  points.append( part.asPoint() );
+                }
+              }
+            }
+          }
+          else if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
           {
             if ( intersectGeom.isMultipart() )
             {
@@ -206,13 +224,12 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
             {
               points.append( intersectGeom.asPoint() );
             }
-
-            for ( const QgsPointXY &j : qgis::as_const( points ) )
-            {
-              outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
-              outFeature.setAttributes( outAttributes );
-              sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
-            }
+          }
+          for ( const QgsPointXY &j : qgis::as_const( points ) )
+          {
+            outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
+            outFeature.setAttributes( outAttributes );
+            sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
           }
         }
       }

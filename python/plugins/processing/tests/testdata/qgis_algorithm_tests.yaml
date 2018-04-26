@@ -1681,6 +1681,20 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:lineintersections
+    name: Line intersections with geometry collection
+    params:
+      INPUT:
+        name: custom/line_intersection_collection1.gml
+        type: vector
+      INTERSECT:
+        name: custom/line_intersection_collection2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection_collection.gml
+        type: vector
+
   - algorithm: qgis:sumlinelengths
     name: Sum line lengths
     params:
