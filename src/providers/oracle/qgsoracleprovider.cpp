@@ -1301,7 +1301,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QVariant value = attributevec[ fieldId[i] ];
 
         QString v;
-        if ( !value.isValid() || value.isNull() )
+        if ( value.isNull() )
         {
           if ( mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
           {
