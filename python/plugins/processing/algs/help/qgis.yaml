@@ -530,10 +530,6 @@ qgis:truncatetable: >
 
   Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
 
-qgis:union: >
-  This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features.
-
-
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
 

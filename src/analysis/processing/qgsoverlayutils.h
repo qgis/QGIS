@@ -16,12 +16,15 @@
 #ifndef QGSOVERLAYUTILS_H
 #define QGSOVERLAYUTILS_H
 
+#include <QList>
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
 
 class QgsFeatureSource;
 class QgsFeatureSink;
+class QgsFields;
 class QgsProcessingContext;
 class QgsProcessingFeedback;
 
@@ -37,6 +40,8 @@ namespace QgsOverlayUtils
   };
 
   void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, DifferenceOutput outputAttrs );
+
+  void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
 
 }
 

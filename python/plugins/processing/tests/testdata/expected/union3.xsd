@@ -10,12 +10,26 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="for_union" type="ogr:for_union_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="for_union_Type">
+<xs:element name="union3" type="ogr:union3_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="union3_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:PolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="id_a" nillable="true" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:maxLength value="255"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="id_b" nillable="true" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:maxLength value="255"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>

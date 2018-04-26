@@ -482,6 +482,8 @@ class TestQgsProcessing: public QObject
     void convertCompatible();
     void create();
     void combineFields();
+    void fieldNamesToIndices();
+    void indicesToFields();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
     void supportsNonFileBasedOutput();
@@ -6163,6 +6165,45 @@ void TestQgsProcessing::combineFields()
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "NEW" ) );
   QCOMPARE( res.at( 2 ).name(), QStringLiteral( "name_2" ) );
   QCOMPARE( res.at( 3 ).name(), QStringLiteral( "new_2" ) );
+}
+
+void TestQgsProcessing::fieldNamesToIndices()
+{
+  QgsFields fields;
+  fields.append( QgsField( "name" ) );
+  fields.append( QgsField( "address" ) );
+  fields.append( QgsField( "age" ) );
+
+  QList<int> indices1 = QgsProcessingUtils::fieldNamesToIndices( QStringList(), fields );
+  QCOMPARE( indices1, QList<int>() << 0 << 1 << 2 );
+
+  QList<int> indices2 = QgsProcessingUtils::fieldNamesToIndices( QStringList() << "address" << "age", fields );
+  QCOMPARE( indices2, QList<int>() << 1 << 2 );
+
+  QList<int> indices3 = QgsProcessingUtils::fieldNamesToIndices( QStringList() << "address" << "agegege", fields );
+  QCOMPARE( indices3, QList<int>() << 1 );
+}
+
+void TestQgsProcessing::indicesToFields()
+{
+  QgsFields fields;
+  fields.append( QgsField( "name" ) );
+  fields.append( QgsField( "address" ) );
+  fields.append( QgsField( "age" ) );
+
+  QList<int> indices1 = QList<int>() << 0 << 1 << 2;
+  QgsFields fields1 = QgsProcessingUtils::indicesToFields( indices1, fields );
+  QCOMPARE( fields1, fields );
+
+  QList<int> indices2 = QList<int>() << 1;
+  QgsFields fields2expected;
+  fields2expected.append( QgsField( "address" ) );
+  QgsFields fields2 = QgsProcessingUtils::indicesToFields( indices2, fields );
+  QCOMPARE( fields2, fields2expected );
+
+  QList<int> indices3;
+  QgsFields fields3 = QgsProcessingUtils::indicesToFields( indices3, fields );
+  QCOMPARE( fields3, QgsFields() );
 }
 
 void TestQgsProcessing::stringToPythonLiteral()
