@@ -3055,11 +3055,10 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
   return new QgsProcessingParameterFeatureSource( name, description, types, def, isOptional );
 }
 
-QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
+QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
   , mDataType( type )
 {
-
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterFeatureSink::clone() const
@@ -3251,9 +3250,10 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
   return new QgsProcessingParameterFeatureSink( name, description, type, definition, isOptional );
 }
 
-QgsProcessingParameterRasterDestination::QgsProcessingParameterRasterDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
-{}
+QgsProcessingParameterRasterDestination::QgsProcessingParameterRasterDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
+{
+}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterRasterDestination::clone() const
 {
@@ -3331,8 +3331,8 @@ QgsProcessingParameterRasterDestination *QgsProcessingParameterRasterDestination
 }
 
 
-QgsProcessingParameterFileDestination::QgsProcessingParameterFileDestination( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
+QgsProcessingParameterFileDestination::QgsProcessingParameterFileDestination( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
   , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
@@ -3492,8 +3492,9 @@ QgsProcessingParameterFolderDestination *QgsProcessingParameterFolderDestination
   return new QgsProcessingParameterFolderDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mCreateByDefault( createByDefault )
 {
 
 }
@@ -3529,8 +3530,8 @@ void QgsProcessingDestinationParameter::setCreateByDefault( bool createByDefault
   mCreateByDefault = createByDefault;
 }
 
-QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
+QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
   , mDataType( type )
 {
 
