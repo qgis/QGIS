@@ -218,33 +218,4 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   }
 }
 
-
-QList<int> QgsOverlayUtils::fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields )
-{
-  QList<int> indices;
-  if ( !fieldNames.isEmpty() )
-  {
-    for ( const QString &f : fieldNames )
-    {
-      int idx = fields.lookupField( f );
-      if ( idx >= 0 )
-        indices.append( idx );
-    }
-  }
-  else
-  {
-    for ( int i = 0; i < fields.count(); ++i )
-      indices.append( i );
-  }
-  return indices;
-}
-
-QgsFields QgsOverlayUtils::indicesToFields( const QList<int> &indices, const QgsFields &fields )
-{
-  QgsFields fieldsSubset;
-  for ( int i : indices )
-    fieldsSubset.append( fields.at( i ) );
-  return fieldsSubset;
-}
-
 ///@endcond PRIVATE

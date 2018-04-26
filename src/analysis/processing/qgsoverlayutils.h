@@ -43,9 +43,6 @@ namespace QgsOverlayUtils
 
   void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
 
-  QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
-
-  QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
 }
 
 ///@endcond PRIVATE

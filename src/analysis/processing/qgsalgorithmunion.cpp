@@ -79,8 +79,8 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  QList<int> fieldIndicesA = QgsOverlayUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
-  QList<int> fieldIndicesB = QgsOverlayUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
+  QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
+  QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
 
   int count = 0;
   int total = sourceA->featureCount() * 2 + sourceB->featureCount();

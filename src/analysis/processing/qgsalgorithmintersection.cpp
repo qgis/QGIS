@@ -88,12 +88,12 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );
 
-  QList<int> fieldIndicesA = QgsOverlayUtils::fieldNamesToIndices( fieldsA, sourceA->fields() );
-  QList<int> fieldIndicesB = QgsOverlayUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
+  QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( fieldsA, sourceA->fields() );
+  QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
 
   QgsFields outputFields = QgsProcessingUtils::combineFields(
-                             QgsOverlayUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
-                             QgsOverlayUtils::indicesToFields( fieldIndicesB, sourceB->fields() ) );
+                             QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
+                             QgsProcessingUtils::indicesToFields( fieldIndicesB, sourceB->fields() ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs() ) );
