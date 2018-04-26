@@ -20,6 +20,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgsidentifymenu.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -252,6 +253,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   int featureCount = 0;
 
   QgsFeatureList featureList;
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
@@ -273,6 +275,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
         QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
         if ( ct.isValid() )
           selectionGeom.transform( ct );
+
+        // use prepared geometry for faster intersection test
+        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
       }
     }
 
@@ -280,7 +285,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      if ( isPointOrRectangle || selectionGeom.intersects( f.geometry() ) )
+      if ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) )
         featureList << QgsFeature( f );
     }
   }

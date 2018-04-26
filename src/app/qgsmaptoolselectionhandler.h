@@ -180,7 +180,7 @@ class QgsMapToolSelectionHandler : public QObject
     //! Whether a geometry is being picked right now
     bool mSelectionActive = false;
 
-    SelectionMode mSelectionMode;
+    SelectionMode mSelectionMode = SelectSimple;
 
     //! Snap indicator used in radius selection mode
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

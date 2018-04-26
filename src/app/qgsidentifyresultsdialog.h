@@ -256,7 +256,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
     QgsExpressionContextScope mExpressionContextScope;
-    QToolButton *mSelectModeButton;
+    QToolButton *mSelectModeButton = nullptr;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
