@@ -209,7 +209,7 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uin
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size )
 {
   const int header_size = SpatialiteBlobHeader::LENGTH;
-  const int wkb_size = static_cast< const int >( size - header_size );
+  const int wkb_size = static_cast< int >( size - header_size );
   char *wkb = new char[wkb_size];
 
   uint32_t osize = 0;
