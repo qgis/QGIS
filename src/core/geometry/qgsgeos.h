@@ -23,6 +23,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometry.h"
 #include <geos_c.h>
 
+#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
+#define GEOSGeometry struct GEOSGeom_t
+#define GEOSCoordSequence struct GEOSCoordSeq_t
+#endif
+
 class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
@@ -105,6 +110,24 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
+
+    /**
+     * Creates a new QgsGeometry object, feeding in a geometry in GEOS format.
+     * This class will take ownership of the buffer.
+     */
+    static QgsGeometry geometryFromGeos( GEOSGeometry *geos );
+
+    /**
+     * Creates a new QgsGeometry object, feeding in a geometry in GEOS format.
+     */
+    static QgsGeometry geometryFromGeos( geos::unique_ptr geos );
+
+    /**
+     * Adds a new island polygon to a multipolygon feature
+     * \param newPart part to add. Ownership is NOT transferred.
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    static QgsGeometry::OperationResult addPart( QgsGeometry &geometry, GEOSGeometry *newPart );
 
     void geometryChanged() override;
     void prepareGeometry() override;
@@ -315,6 +338,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
     static std::unique_ptr< QgsPolygon > fromGeosPolygon( const GEOSGeometry *geos );
+
+
+    /**
+     * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+     * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     */
+    static geos::unique_ptr asGeos( const QgsGeometry &geometry, double precision = 0 );
+
+    /**
+     * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+     * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     */
     static geos::unique_ptr asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
