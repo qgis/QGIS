@@ -306,6 +306,23 @@ class TestQgsServerWMS(QgsServerTestBase):
         for request in ('GetCapabilities',):
             self.wms_inspire_request_compare(request)
 
+    def test_wms_getcapabilities_without_title(self):
+        # Empty title in project leads to a Layer element without Name, Title
+        # and Abstract tags. However, it should still have a CRS and a BBOX
+        # according to OGC specifications tests.
+        project = os.path.join(self.testdata_path, "test_project_without_title.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetCapabilities",
+            "STYLES": ""
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+
+        self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
+
     def test_wms_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
