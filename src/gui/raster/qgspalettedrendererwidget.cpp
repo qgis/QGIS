@@ -803,9 +803,6 @@ void QgsPalettedRendererModel::deleteAll()
   emit classesChanged();
 }
 
-///@endcond PRIVATE
-
-
 void QgsPalettedRendererClassGatherer::run()
 {
   mWasCanceled = false;
@@ -841,3 +838,5 @@ void QgsPalettedRendererClassGatherer::run()
 
   emit collectedClasses();
 }
+
+///@endcond PRIVATE
