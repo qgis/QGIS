@@ -145,7 +145,8 @@ void QgsQuickMapCanvasMap::renderJobUpdated()
 
 void QgsQuickMapCanvasMap::renderJobFinished()
 {
-  Q_FOREACH ( const QgsMapRendererJob::Error &error, mJob->errors() )
+  const QgsMapRendererJob::Errors errors = mJob->errors();
+  for ( const QgsMapRendererJob::Error &error : errors )
   {
     QgsMessageLog::logMessage( QStringLiteral( "%1 :: %2" ).arg( error.layerID, error.message ), tr( "Rendering" ) );
   }
@@ -327,13 +328,14 @@ void QgsQuickMapCanvasMap::onLayersChanged()
   if ( mMapSettings->extent().isEmpty() )
     zoomToFullExtent();
 
-  Q_FOREACH ( const QMetaObject::Connection &conn, mLayerConnections )
+  for ( const QMetaObject::Connection &conn : qgis::as_const( mLayerConnections ) )
   {
     disconnect( conn );
   }
   mLayerConnections.clear();
 
-  Q_FOREACH ( QgsMapLayer *layer, mMapSettings->layers() )
+  const QList<QgsMapLayer *> layers = mMapSettings->layers();
+  for ( QgsMapLayer *layer : layers )
   {
     mLayerConnections << connect( layer, &QgsMapLayer::repaintRequested, this, &QgsQuickMapCanvasMap::refresh );
   }
@@ -363,7 +365,8 @@ void QgsQuickMapCanvasMap::zoomToFullExtent()
 {
   Q_ASSERT( mMapSettings );
   QgsRectangle extent;
-  Q_FOREACH ( QgsMapLayer *layer, mMapSettings->layers() )
+  const QList<QgsMapLayer *> layers = mMapSettings->layers();
+  for ( QgsMapLayer *layer : layers )
   {
     if ( mMapSettings->destinationCrs() != layer->crs() )
     {

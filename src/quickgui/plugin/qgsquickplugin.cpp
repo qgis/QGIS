@@ -55,11 +55,11 @@ void QgisQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
-  qmlRegisterType< QgsRelationManager >( uri, 0, 1, "RelationManager" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
 
+  qmlRegisterUncreatableType< QgsRelationManager >( uri, 0, 1, "RelationManager", "The relation manager is available from the Project. Try `qgisProject.relationManager`" );
   qmlRegisterUncreatableType< QgsMessageLog >( uri, 0, 1, "QgsMessageLog", "Expose MessageLevel" );
 }
 
