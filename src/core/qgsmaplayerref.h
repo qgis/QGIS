@@ -171,7 +171,8 @@ struct _LayerRef
 
     if ( project && !name.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *l, project->mapLayersByName( name ) )
+      const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
+      for ( QgsMapLayer *l : layers )
       {
         if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
         {

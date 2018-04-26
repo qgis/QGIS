@@ -238,7 +238,7 @@ The second element of each pair are the field names of the matching primary key.
 %MethodCode
     const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
     sipRes = new QMap< QString, QString >();
-    Q_FOREACH ( const QgsRelation::FieldPair &pair, pairs )
+    for ( const QgsRelation::FieldPair &pair : pairs )
     {
       sipRes->insert( pair.first, pair.second );
     }
