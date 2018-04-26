@@ -322,7 +322,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   if ( !geom )
     return false;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
 
   GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );

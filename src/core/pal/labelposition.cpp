@@ -203,7 +203,7 @@ bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
 
   try
   {
-    if ( GEOSPreparedIntersects_r( geosContext(), geometry, mGeos ) == 1 )
+    if ( GEOSPreparedIntersects_r( QgsGeos::getGEOSHandler(), geometry, mGeos ) == 1 )
     {
       return true;
     }
@@ -228,7 +228,7 @@ bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
 
   try
   {
-    if ( GEOSPreparedContains_r( geosContext(), geometry, mGeos ) != 1 )
+    if ( GEOSPreparedContains_r( QgsGeos::getGEOSHandler(), geometry, mGeos ) != 1 )
     {
       return false;
     }
@@ -280,7 +280,7 @@ bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
   if ( !lp->mGeos )
     lp->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
@@ -513,7 +513,7 @@ bool LabelPosition::crossesLine( PointSet *line ) const
   if ( !line->mGeos )
     line->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
@@ -542,7 +542,7 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
@@ -580,7 +580,7 @@ bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
@@ -611,7 +611,7 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   double cost = 0;
   try
   {

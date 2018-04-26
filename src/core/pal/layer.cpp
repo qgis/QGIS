@@ -126,7 +126,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     throw InternalException::UnknownGeometry();
   }
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   bool featureGeomIsObstacleGeom = !lf->obstacleGeometry();
 
@@ -418,7 +418,7 @@ int Layer::connectedFeatureId( QgsFeatureId featureId ) const
 
 void Layer::chopFeaturesAtRepeatDistance()
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   QLinkedList<FeaturePart *> newFeatureParts;
   while ( !mFeatureParts.isEmpty() )
   {

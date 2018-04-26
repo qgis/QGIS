@@ -27,16 +27,16 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsgeos.h"
 #include <cmath>
 #include <set>
 #include <map>
 
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
-  GEOSGeometry *geosGeom = geom.exportToGeos();
+  geos::unique_ptr geosGeom = QgsGeos::asGeos( geom );
   if ( geosGeom )
   {
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
     return true;
   }
   return false;
@@ -485,7 +485,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
 
   int i = 0;
   ErrorList errorList;
-  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   // could be enabled for lines and points too
   // so duplicate rule may be removed?
@@ -542,13 +542,13 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
 
         QgsGeometry polyGeom = QgsGeometry::fromPolygonXY( polygon );
 
-        geomList.push_back( polyGeom.exportToGeos() );
+        geomList.push_back( QgsGeos::asGeos( polyGeom ).release() );
       }
 
     }
     else
     {
-      geomList.push_back( g1.exportToGeos() );
+      geomList.push_back( QgsGeos::asGeos( g1 ).release() );
     }
   }
 
@@ -576,9 +576,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
   GEOSGeometry *unionGeom = GEOSUnionCascaded_r( geosctxt, collection );
   //delete[] geomArray;
 
-  QgsGeometry test;
-  test.fromGeos( unionGeom );
-
+  QgsGeometry test = QgsGeos::geometryFromGeos( unionGeom );
 
   //qDebug() << "wktmerged - " << test.exportToWkt();
 
@@ -764,11 +762,11 @@ ErrorList topolTest::checkValid( QgsVectorLayer *layer1, QgsVectorLayer *layer2,
       continue;
     }
 
-    GEOSGeometry *gGeos = g.exportToGeos();
+    geos::unique_ptr gGeos = QgsGeos::asGeos( g );
     if ( !gGeos )
       continue;
 
-    if ( !GEOSisValid_r( QgsGeometry::getGEOSHandler(), gGeos ) )
+    if ( !GEOSisValid_r( QgsGeos::getGEOSHandler(), gGeos.get() ) )
     {
       QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;
@@ -777,7 +775,6 @@ ErrorList topolTest::checkValid( QgsVectorLayer *layer1, QgsVectorLayer *layer2,
       TopolErrorValid *err = new TopolErrorValid( r, g, fls );
       errorList << err;
     }
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), gGeos );
   }
 
   return errorList;
