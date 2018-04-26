@@ -1819,9 +1819,12 @@ which are used for the destination for layers output by an algorithm.
   public:
 
     QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingDestinationParameter.
+
+If ``createByDefault`` is false and the parameter is ``optional``, then the destination
+output will not be created by default.
 %End
 
     virtual bool isDestination() const;
@@ -1900,9 +1903,12 @@ A parameter which represents the destination feature sink for features created b
   public:
 
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
+
+If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+output will not be created by default.
 %End
 
     static QString typeName();
@@ -1978,9 +1984,12 @@ created by the algorithm.
   public:
 
     QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false, bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterVectorDestination.
+
+If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+output will not be created by default.
 %End
 
     static QString typeName();
@@ -2050,9 +2059,13 @@ created by the algorithm.
 
     QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterRasterDestination.
+
+If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+output will not be created by default.
 %End
 
     static QString typeName();
@@ -2094,9 +2107,13 @@ created by the algorithm.
     QgsProcessingParameterFileDestination( const QString &name, const QString &description = QString(),
                                            const QString &fileFilter = QString(),
                                            const QVariant &defaultValue = QVariant(),
-                                           bool optional = false );
+                                           bool optional = false,
+                                           bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterFileDestination.
+
+If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+output will not be created by default.
 %End
 
     static QString typeName();

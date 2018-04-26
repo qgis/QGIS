@@ -1758,9 +1758,12 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
 
     /**
      * Constructor for QgsProcessingDestinationParameter.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then the destination
+     * output will not be created by default.
      */
     QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 
     bool isDestination() const override { return true; }
     QVariantMap toVariantMap() const override;
@@ -1835,9 +1838,12 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
     /**
      * Constructor for QgsProcessingParameterFeatureSink.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1900,9 +1906,12 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 
     /**
      * Constructor for QgsProcessingParameterVectorDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false, bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1961,10 +1970,14 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
 
     /**
      * Constructor for QgsProcessingParameterRasterDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1996,11 +2009,15 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
 
     /**
      * Constructor for QgsProcessingParameterFileDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterFileDestination( const QString &name, const QString &description = QString(),
                                            const QString &fileFilter = QString(),
                                            const QVariant &defaultValue = QVariant(),
-                                           bool optional = false );
+                                           bool optional = false,
+                                           bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
