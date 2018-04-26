@@ -48,6 +48,7 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
@@ -819,6 +820,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "raster" ) )
   {
     mapLayer = new QgsRasterLayer;
+  }
+  else if ( type == QLatin1String( "mesh" ) )
+  {
+    mapLayer = new QgsMeshLayer;
   }
   else if ( type == QLatin1String( "plugin" ) )
   {

@@ -1198,6 +1198,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
+     * Called by writeLayerXML(), used by children to encode provider's specific data
+     * source to project files
+     *
+     * \since QGIS 3.2
+     */
+    virtual QString encodeSource( const QgsReadWriteContext &context ) const;
+
+
+    /**
      * Read custom properties from project file.
       \param layerNode note to read from
       \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/

@@ -1378,6 +1378,15 @@ Called by writeLayerXML(), used by children to write state specific to them to
 project files.
 %End
 
+    virtual QString encodeSource( const QgsReadWriteContext &context ) const;
+%Docstring
+Called by writeLayerXML(), used by children to encode provider's specific data
+source to project files
+
+.. versionadded:: 3.2
+%End
+
+
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring
 Read custom properties from project file.

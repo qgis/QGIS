@@ -1717,7 +1717,47 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg, context );
-} // bool QgsVectorLayer::writeXml
+}
+
+QString QgsVectorLayer::encodeSource( const QgsReadWriteContext &context ) const
+{
+  QString src = source();
+
+  // TODO: what about postgres, mysql and others, they should not go through writePath()
+  if ( providerType() == QLatin1String( "spatialite" ) )
+  {
+    QgsDataSourceUri uri( src );
+    QString database = context.pathResolver().writePath( uri.database() );
+    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
+    src = uri.uri();
+  }
+  else if ( providerType() == QLatin1String( "ogr" ) )
+  {
+    QStringList theURIParts = src.split( '|' );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+    src = theURIParts.join( QStringLiteral( "|" ) );
+  }
+  else if ( providerType() == QLatin1String( "gpx" ) )
+  {
+    QStringList theURIParts = src.split( '?' );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+    src = theURIParts.join( QStringLiteral( "?" ) );
+  }
+  else if ( providerType() == QLatin1String( "delimitedtext" ) )
+  {
+    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+    urlDest.setQueryItems( urlSource.queryItems() );
+    src = QString::fromLatin1( urlDest.toEncoded() );
+  }
+  else if ( providerType() == QLatin1String( "memory" ) )
+  {
+    // Refetch the source from the provider, because adding fields actually changes the source for this provider.
+    src = dataProvider()->dataSourceUri();
+  }
+
+  return src;
+} // bool QgsVectorLayer::encodedSource
 
 
 void QgsVectorLayer::resolveReferences( QgsProject *project )

@@ -25,6 +25,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsproviderregistry.h"
+#include "qgsreadwritecontext.h"
 #include "qgstriangularmesh.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
@@ -180,9 +181,71 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   return true;
 }
 
+QString QgsMeshLayer::encodeSource( const QgsReadWriteContext &context ) const
+{
+  QString src = source();
+  src = context.pathResolver().writePath( src );
+  return src;
+}
+
+bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
+{
+  Q_UNUSED( context );
+
+  QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsMeshLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
+
+  //process provider key
+  QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
+
+  if ( pkeyNode.isNull() )
+  {
+    mProviderKey.clear();
+  }
+  else
+  {
+    QDomElement pkeyElt = pkeyNode.toElement();
+    mProviderKey = pkeyElt.text();
+  }
+
+  if ( !setDataProvider( mProviderKey ) )
+  {
+    return false;
+  }
+
+  return mValid; // should be true if read successfully
+}
+
+bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  // first get the layer element so that we can append the type attribute
+  QDomElement mapLayerNode = layer_node.toElement();
+
+  if ( mapLayerNode.isNull() || ( "maplayer" != mapLayerNode.nodeName() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    return false;
+  }
+
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mesh" ) );
+
+  // add provider node
+  if ( mDataProvider )
+  {
+    QDomElement provider  = document.createElement( QStringLiteral( "provider" ) );
+    QDomText providerText = document.createTextNode( providerType() );
+    provider.appendChild( providerText );
+    layer_node.appendChild( provider );
+  }
+
+  // renderer specific settings
+  QString errorMsg;
+  return writeSymbology( layer_node, document, errorMsg, context );
+}
+
 bool QgsMeshLayer::setDataProvider( QString const &provider )
 {
-  Q_ASSERT( !mDataProvider ); //called from ctor
+  if ( mDataProvider )
+    delete mDataProvider;
 
   mProviderKey = provider;
   QString dataSource = mDataSource;

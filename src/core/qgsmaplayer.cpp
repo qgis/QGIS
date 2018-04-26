@@ -41,6 +41,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmeshlayer.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
@@ -340,6 +341,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
     }
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
+  else if ( provider == QLatin1String( "mdal" ) )
+  {
+    mDataSource = context.pathResolver().readPath( mDataSource );
+  }
   else
   {
     bool handled = false;
@@ -599,117 +604,10 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-
-  QString src = source();
-
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  // TODO: what about postgres, mysql and others, they should not go through writePath()
-  if ( vlayer && vlayer->providerType() == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    QString database = context.pathResolver().writePath( uri.database() );
-    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
-    src = uri.uri();
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "|" ) );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "?" ) );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-    urlDest.setQueryItems( urlSource.queryItems() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "memory" ) )
-  {
-    // Refetch the source from the provider, because adding fields actually changes the source for this provider.
-    src = vlayer->dataProvider()->dataSourceUri();
-  }
-  else
-  {
-    bool handled = false;
-
-    if ( !vlayer )
-    {
-      const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
-      // Update path for subdataset
-      if ( rlayer && rlayer->providerType() == QLatin1String( "gdal" ) )
-      {
-        if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
-        {
-          // NETCDF:filename:variable
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "NETCDF:(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 1 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
-            handled = true;
-          }
-        }
-        else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
-        {
-          // HDF4_SDS:subdataset_type:file_name:subdataset_index
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 2 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 3 );
-            handled = true;
-          }
-        }
-        else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
-        {
-          // HDF5:file_name:subdataset
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "HDF5:(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 1 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
-            handled = true;
-          }
-        }
-        else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
-        {
-          // NITF_IM:0:filename
-          // RADARSAT_2_CALIB:?:filename
-          QRegExp r( "([^:]+):([^:]+):(.+)" );
-          if ( r.exactMatch( src ) )
-          {
-            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().writePath( r.cap( 3 ) );
-            handled = true;
-          }
-        }
-      }
-    }
-
-    if ( !handled )
-      src = context.pathResolver().writePath( src );
-  }
-
+  QString src = encodeSource( context );
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
-
   layerElement.appendChild( dataSource );
-
 
   // layer name
   QDomElement layerName = document.createElement( QStringLiteral( "layername" ) );
@@ -846,6 +744,12 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
+}
+
+QString QgsMapLayer::encodeSource( const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context );
+  return source();
 } // void QgsMapLayer::writeXml
 
 void QgsMapLayer::resolveReferences( QgsProject *project )

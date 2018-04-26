@@ -100,6 +100,12 @@ QgsMeshLayer cannot be copied.
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
+    virtual QString encodeSource( const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
+
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
 
     QString providerType() const;
 %Docstring
