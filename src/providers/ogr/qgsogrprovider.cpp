@@ -2425,6 +2425,7 @@ QString createFilters( const QString &type )
     bool kmlFound = false;
     bool dwgFound = false;
     bool dgnFound = false;
+
     for ( int i = 0; i < OGRGetDriverCount(); ++i )
     {
       driver = OGRGetDriver( i );

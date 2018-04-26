@@ -69,22 +69,30 @@ class TestQgsMapToolAdvancedDigitizingUtils
       mMapTool->cadCanvasMoveEvent( &e );
     }
 
-    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       QgsMapMouseEvent e1( mMapTool->canvas(), QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
+
+      if ( snap )
+        e1.snapPoint();
+
       mMapTool->cadCanvasPressEvent( &e1 );
     }
 
-    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       QgsMapMouseEvent e2( mMapTool->canvas(), QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
+
+      if ( snap )
+        e2.snapPoint();
+
       mMapTool->cadCanvasReleaseEvent( &e2 );
     }
 
-    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
-      mousePress( mapX, mapY, button, stateKey );
-      mouseRelease( mapX, mapY, button, stateKey );
+      mousePress( mapX, mapY, button, stateKey, snap );
+      mouseRelease( mapX, mapY, button, stateKey, snap );
     }
 
     void keyClick( int key )

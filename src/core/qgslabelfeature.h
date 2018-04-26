@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"
+#include "qgsgeos.h"
 #include "qgsmargins.h"
 
 namespace pal
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsLabelFeature
   public:
 
     //! Create label feature, takes ownership of the geometry instance
-    QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size );
+    QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
     //! Clean up geometry and curved label info (if present)
     virtual ~QgsLabelFeature();
 
@@ -62,7 +63,7 @@ class CORE_EXPORT QgsLabelFeature
     QgsFeatureId id() const { return mId; }
 
     //! Get access to the associated geometry
-    GEOSGeometry *geometry() const { return mGeometry; }
+    GEOSGeometry *geometry() const { return mGeometry.get(); }
 
     /**
      * Sets the label's obstacle geometry, if different to the feature geometry.
@@ -73,14 +74,14 @@ class CORE_EXPORT QgsLabelFeature
      * \since QGIS 2.14
      * \see obstacleGeometry()
      */
-    void setObstacleGeometry( GEOSGeometry *obstacleGeom );
+    void setObstacleGeometry( geos::unique_ptr obstacleGeom );
 
     /**
      * Returns the label's obstacle geometry, if different to the feature geometry.
      * \since QGIS 2.14
      * \see setObstacleGeometry()
      */
-    GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry; }
+    GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry.get(); }
 
     /**
      * Sets the label's permissible zone geometry. If set, the feature's label MUST be fully contained
@@ -109,7 +110,7 @@ class CORE_EXPORT QgsLabelFeature
      * \since QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
-    const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }
+    const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
 
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
@@ -363,9 +364,9 @@ class CORE_EXPORT QgsLabelFeature
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
     //! Geometry of the feature to be labelled
-    GEOSGeometry *mGeometry = nullptr;
+    geos::unique_ptr mGeometry;
     //! Optional geometry to use for label obstacles, if different to mGeometry
-    GEOSGeometry *mObstacleGeometry = nullptr;
+    geos::unique_ptr mObstacleGeometry;
     //! Optional geometry to use for label's permissible zone
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
@@ -414,10 +415,10 @@ class CORE_EXPORT QgsLabelFeature
   private:
 
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
-    GEOSGeometry *mPermissibleZoneGeos = nullptr;
+    geos::unique_ptr mPermissibleZoneGeos;
 
     // TODO - not required when QgsGeometry caches geos preparedness
-    const GEOSPreparedGeometry *mPermissibleZoneGeosPrepared = nullptr;
+    geos::prepared_unique_ptr mPermissibleZoneGeosPrepared;
 
 };
 

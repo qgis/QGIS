@@ -1301,11 +1301,14 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QVariant value = attributevec.value( fieldId[i], QVariant() );
 
         QString v;
-        if ( !value.isValid() )
+        if ( value.isNull() )
         {
-          QgsField fld = field( fieldId[i] );
-          v = paramValue( defaultValues[i], defaultValues[i] );
-          features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          if ( mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
+          {
+            QgsField fld = field( fieldId[i] );
+            v = paramValue( defaultValues[i], defaultValues[i] );
+            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          }
         }
         else
         {
@@ -1388,7 +1391,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       }
     }
 
-    mFeaturesCounted += flist.size();
+    if ( mFeaturesCounted >= 0 )
+      mFeaturesCounted += flist.size();
   }
   catch ( OracleException &e )
   {

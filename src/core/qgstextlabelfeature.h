@@ -29,7 +29,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
-    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size );
+    QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
 
     //! Clean up
     ~QgsTextLabelFeature() override;

@@ -1497,7 +1497,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     geom = QgsGeometry( geom.constGet()->boundary() );
   }
 
-  GEOSGeometry *geos_geom_clone = nullptr;
+  geos::unique_ptr geos_geom_clone;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry() ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry() );
@@ -1505,7 +1505,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     if ( geom.isNull() )
       return;
   }
-  geos_geom_clone = geom.exportToGeos();
+  geos_geom_clone = QgsGeos::asGeos( geom );
 
   if ( isObstacle )
   {
@@ -1546,10 +1546,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     }
   }
 
-  GEOSGeometry *geosObstacleGeomClone = nullptr;
+  geos::unique_ptr geosObstacleGeomClone;
   if ( obstacleGeometry )
   {
-    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
+    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }
 
 
@@ -1832,7 +1832,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   //  feature to the layer
-  QgsTextLabelFeature *lf = new QgsTextLabelFeature( f.id(), geos_geom_clone, QSizeF( labelX, labelY ) );
+  QgsTextLabelFeature *lf = new QgsTextLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   mFeatsRegPal++;
 
   *labelFeature = lf;
@@ -1850,7 +1850,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   ( *labelFeature )->setPermissibleZone( permissibleZone );
   if ( geosObstacleGeomClone )
   {
-    ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
+    ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
 
     if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
@@ -2005,20 +2005,20 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderConte
     geom = simplifier.simplify( geom );
   }
 
-  GEOSGeometry *geos_geom_clone = nullptr;
+  geos::unique_ptr geos_geom_clone;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
   }
-  geos_geom_clone = geom.exportToGeos();
+  geos_geom_clone = QgsGeos::asGeos( geom );
 
   if ( !geos_geom_clone )
     return; // invalid geometry
 
   //  feature to the layer
-  *obstacleFeature = new QgsLabelFeature( f.id(), geos_geom_clone, QSizeF( 0, 0 ) );
+  *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
   mFeatsRegPal++;
 }

@@ -117,14 +117,14 @@ PointSet::PointSet( const PointSet &ps )
 
   if ( ps.mGeos )
   {
-    mGeos = GEOSGeom_clone_r( geosContext(), ps.mGeos );
+    mGeos = GEOSGeom_clone_r( QgsGeos::getGEOSHandler(), ps.mGeos );
     mOwnsGeom = true;
   }
 }
 
 void PointSet::createGeosGeom() const
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   bool needClose = false;
   if ( type == GEOS_POLYGON && ( !qgsDoubleNear( x[0], x[ nbPoints - 1] ) || !qgsDoubleNear( y[0], y[ nbPoints - 1 ] ) ) )
@@ -171,14 +171,14 @@ const GEOSPreparedGeometry *PointSet::preparedGeom() const
 
   if ( !mPreparedGeom )
   {
-    mPreparedGeom = GEOSPrepare_r( geosContext(), mGeos );
+    mPreparedGeom = GEOSPrepare_r( QgsGeos::getGEOSHandler(), mGeos );
   }
   return mPreparedGeom;
 }
 
 void PointSet::invalidateGeos()
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
     GEOSGeom_destroy_r( geosctxt, mGeos );
   GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
@@ -189,7 +189,7 @@ void PointSet::invalidateGeos()
 
 PointSet::~PointSet()
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   if ( mGeos && mOwnsGeom )
   {
@@ -242,7 +242,7 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
 
 bool PointSet::containsPoint( double x, double y ) const
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
@@ -699,7 +699,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   if ( !mGeos )
     return 0;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
@@ -748,7 +748,7 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
 
   try
   {
-    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
     geos::unique_ptr centroidGeom( GEOSGetCentroid_r( geosctxt, mGeos ) );
     if ( centroidGeom )
     {
@@ -832,7 +832,7 @@ double PointSet::length() const
   if ( !mGeos )
     return -1;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   try
   {
