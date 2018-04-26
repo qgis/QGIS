@@ -518,8 +518,10 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // add geometry column
   if ( layer->isSpatial() )
   {
+    const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
+
     QString geomType;
-    switch ( layer->wkbType() )
+    switch ( QgsWkbTypes::flatType( sourceWkbType ) )
     {
       case QgsWkbTypes::Point:
         geomType = QStringLiteral( "POINT" );
@@ -540,13 +542,31 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         geomType = QStringLiteral( "MULTIPOLYGON" );
         break;
       default:
-        showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
+        showWarning( tr( "Layer %1 has unsupported WkbType %2 not supported" ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
         break;
     };
-    QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
-                         .arg( tableName )
-                         .arg( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) ? layer->crs().authid().mid( 5 ).toLong() : 0 )
-                         .arg( geomType );
+
+    QString zmInfo = QStringLiteral( "XY" );
+
+    if ( QgsWkbTypes::hasZ( sourceWkbType ) )
+      zmInfo += 'Z';
+    if ( QgsWkbTypes::hasM( sourceWkbType ) )
+      zmInfo += 'M';
+
+    QString epsgCode;
+
+    if ( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
+    {
+      epsgCode = layer->crs().authid().mid( 5 );
+    }
+    else
+    {
+      epsgCode = '0';
+      showWarning( tr( "Layer %1 has unsupported Coordinate Reference System (%2)." ).arg( layer->name(), layer->crs().authid() ) );
+    }
+
+    QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', '%4')" )
+                         .arg( tableName, epsgCode, geomType, zmInfo );
 
     // create spatial index
     QString sqlCreateIndex = QStringLiteral( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
