@@ -46,6 +46,7 @@ class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
+class QgsNetworkContentFetcherRegistry;
 
 /**
  * \ingroup core
@@ -587,6 +588,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSvgCache *svgCache();
 
     /**
+     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+     * within SVG files.
+     * \since QGIS 3.2
+     */
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+
+    /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
@@ -802,6 +810,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsNetworkContentFetcherRegistry *mNetworkContentFertcherRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;

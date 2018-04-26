@@ -643,6 +643,14 @@ within SVG files.
 .. versionadded:: 3.0
 %End
 
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+%Docstring
+Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+within SVG files.
+
+.. versionadded:: 3.2
+%End
+
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 %Docstring
 Returns the application's symbol layer registry, used for managing symbol layers.
