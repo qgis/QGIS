@@ -18,6 +18,7 @@
 
 #include "qgsmaptool.h"
 #include "qgis_app.h"
+#include "qgsmaptoolselectionhandler.h"
 
 class QgsMapCanvas;
 class QMouseEvent;
@@ -28,12 +29,19 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
   public:
     QgsMapToolSelect( QgsMapCanvas *canvas );
 
-    //! Overridden mouse release event
+    void setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode );
+
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
+    void deactivate() override;
+
+  private slots:
+    void selectFeatures( Qt::KeyboardModifiers modifiers );
 
   private:
-    QColor mFillColor;
-    QColor mStrokeColor;
+    std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
 };
 
 #endif

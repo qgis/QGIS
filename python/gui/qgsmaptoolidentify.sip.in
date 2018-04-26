@@ -108,6 +108,16 @@ this has been made private and two publics methods are offered
 :return: a list of IdentifyResult*
 %End
 
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+%Docstring
+Performs identification based on a geometry (in map coordinates)
+%End
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType );
+%Docstring
+Performs identification based on a geometry (in map coordinates)
+%End
+
+
     QgsIdentifyMenu *identifyMenu();
 %Docstring
 return a pointer to the identify menu which will be used in layer selection mode

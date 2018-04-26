@@ -20,6 +20,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgsidentifymenu.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -90,9 +91,19 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
 QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
 {
+  return identify( QgsGeometry::fromPointXY( toMapCoordinates( QPoint( x, y ) ) ), mode, layerList, layerType );
+}
+
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType )
+{
+  return identify( geometry, mode, QList<QgsMapLayer *>(), layerType );
+}
+
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType )
+{
   QList<IdentifyResult> results;
 
-  mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  mLastGeometry = geometry;
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
@@ -106,6 +117,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == LayerSelection )
   {
+    QPoint canvasPt = toCanvasCoordinates( geometry.asPoint() );
+    int x = canvasPt.x(), y = canvasPt.y();
     QList<IdentifyResult> results = identify( x, y, TopDownAll, layerList, layerType );
     QPoint globalPos = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
     return mIdentifyMenu->exec( results, globalPos );
@@ -122,7 +135,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    identifyLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType );
+    identifyLayer( &results, layer, mLastGeometry, mLastExtent, mLastMapUnitsPerPixel, layerType );
   }
   else
   {
@@ -152,7 +165,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
-      if ( identifyLayer( &results, layer,  mLastPoint, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
+      if ( identifyLayer( &results, layer,  mLastGeometry, mLastExtent, mLastMapUnitsPerPixel, layerType ) )
       {
         if ( mode == TopDownStopAtFirst )
           break;
@@ -178,15 +191,20 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType )
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType )
+{
+  return identifyLayer( results, layer, QgsGeometry::fromPointXY( point ), viewExtent, mapUnitsPerPixel, layerType );
+}
+
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType )
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
-    return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), point, viewExtent, mapUnitsPerPixel );
+    return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel );
   }
   else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
-    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), point );
+    return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry );
   }
   else
   {
@@ -194,7 +212,12 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
+{
+  return identifyVectorLayer( results, layer, QgsGeometry::fromPointXY( point ) );
+}
+
+bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry )
 {
   if ( !layer || !layer->isSpatial() )
     return false;
@@ -209,33 +232,62 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
-  commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+  QgsGeometry selectionGeom = geometry;
+  bool isPointOrRectangle;
+  QgsPointXY point;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  if ( isSingleClick )
+  {
+    isPointOrRectangle = true;
+    point = selectionGeom.asPoint();
+
+    commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
+    commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
+  }
+  else
+  {
+    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+  }
 
   int featureCount = 0;
 
   QgsFeatureList featureList;
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
   try
   {
-    // create the search rectangle
-    double searchRadius = searchRadiusMU( mCanvas );
-
     QgsRectangle r;
-    r.setXMinimum( point.x() - searchRadius );
-    r.setXMaximum( point.x() + searchRadius );
-    r.setYMinimum( point.y() - searchRadius );
-    r.setYMaximum( point.y() + searchRadius );
+    if ( isSingleClick )
+    {
+      double sr = searchRadiusMU( mCanvas );
+      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+    }
+    else
+    {
+      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
 
-    r = toLayerCoordinates( layer, r );
+      if ( !isPointOrRectangle )
+      {
+        QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+        if ( ct.isValid() )
+          selectionGeom.transform( ct );
+
+        // use prepared geometry for faster intersection test
+        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+      }
+    }
 
     QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
     while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    {
+      if ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) )
+        featureList << QgsFeature( f );
+    }
   }
   catch ( QgsCsException &cse )
   {
@@ -268,7 +320,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
     featureCount++;
 
-    derivedAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
+    if ( isSingleClick )
+      derivedAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
@@ -456,6 +509,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   }
 
   return derivedAttributes;
+}
+
+bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel )
+{
+  QgsPointXY point = geometry.asPoint();  // raster layers currently only support identification by point
+  return identifyRasterLayer( results, layer, point, viewExtent, mapUnitsPerPixel );
 }
 
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel )
@@ -697,7 +756,7 @@ QString QgsMapToolIdentify::formatArea( double area ) const
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
 {
   QList<IdentifyResult> results;
-  if ( identifyRasterLayer( &results, layer, mLastPoint, mLastExtent, mLastMapUnitsPerPixel ) )
+  if ( identifyRasterLayer( &results, layer, mLastGeometry, mLastExtent, mLastMapUnitsPerPixel ) )
   {
     emit changedRasterResults( results );
   }

@@ -123,6 +123,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType );
+
+
     /**
      * return a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized
@@ -160,6 +166,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
   private:
+
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
 
     /**
      * Desired units for distance display.
@@ -200,8 +210,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;
     QString formatYCoordinate( const QgsPointXY &canvasPoint ) const;
 
-    // Last point in canvas CRS
-    QgsPointXY mLastPoint;
+    // Last geometry (point or polygon) in map CRS
+    QgsGeometry mLastGeometry;
 
     double mLastMapUnitsPerPixel;
 
