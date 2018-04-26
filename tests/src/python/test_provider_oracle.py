@@ -63,7 +63,6 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
         query.finish()
 
-    # disabled: WIP
     def getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE "QGIS"."EDIT_DATA"', ignore_errors=True)
@@ -79,7 +78,6 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'test', 'oracle')
         return vl
 
-    # disabled: WIP
     def getEditableLayer(self):
         return self.getSource()
 
