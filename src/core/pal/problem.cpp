@@ -290,7 +290,7 @@ void Problem::init_sol_falp()
       {
         list->insert( label, mLabelPositions.at( label )->getNumOverlaps() );
       }
-      catch ( pal::InternalException::Full )
+      catch ( pal::InternalException::Full & )
       {
         continue;
       }

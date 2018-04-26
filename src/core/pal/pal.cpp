@@ -468,7 +468,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll )
     else
       prob->popmusic();
   }
-  catch ( InternalException::Empty )
+  catch ( InternalException::Empty & )
   {
     return QList<LabelPosition *>();
   }
