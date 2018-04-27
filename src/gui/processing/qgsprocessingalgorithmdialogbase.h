@@ -86,6 +86,16 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
   public:
 
     /**
+     * Log format options.
+     * \since QGIS 3.2
+     */
+    enum LogFormat
+    {
+      FormatPlainText, //!< Plain text file (.txt)
+      FormatHtml, //!< HTML file (.html)
+    };
+
+    /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
     QgsProcessingAlgorithmDialogBase( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
@@ -144,6 +154,14 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     virtual QVariantMap getParameterValues() const;
 
+    /**
+     * Saves the log contents to a text file (specified by the file \a path), in
+     * the given \a format.
+     * \since QGIS 3.2
+     * \see saveLog()
+     */
+    void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
+
   public slots:
 
     void accept() override;
@@ -190,6 +208,25 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * from this dialog.
      */
     QDialog *createProgressDialog();
+
+    /**
+     * Clears the current log contents.
+     * \since QGIS 3.2
+     */
+    void clearLog();
+
+    /**
+     * Opens a dialog allowing users to save the current log contents.
+     * \since QGIS 3.2
+     * \see saveLogToFile()
+     */
+    void saveLog();
+
+    /**
+     * Copies the current log contents to the clipboard.
+     * \since QGIS 3.2
+     */
+    void copyLogToClipboard();
 
   protected:
 

@@ -51,6 +51,7 @@ class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorith
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureRequest request() const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
@@ -62,6 +63,12 @@ class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorith
     mutable QgsFields mFields;
     QStringList mGroupedFieldNames;
     QgsAttributeList mGroupedFields;
+
+    QString mSortExpressionString;
+    bool mSortAscending = true;
+    bool mSortNullsFirst = false;
+
+
 };
 
 ///@endcond PRIVATE

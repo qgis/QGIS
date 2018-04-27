@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgssnappingconfig.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
@@ -65,6 +66,7 @@ class TestQgsMapToolAddFeature : public QObject
     void testTracing();
     void testTracingWithOffset();
     void testZ();
+    void testZMSnapping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -74,6 +76,7 @@ class TestQgsMapToolAddFeature : public QObject
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerPointZM = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -139,7 +142,20 @@ void TestQgsMapToolAddFeature::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ ); //<< mLayerPolygon << mLayerPoint );
+  // make layer for snapping
+  mLayerPointZM = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:27700" ), QStringLiteral( "layer point ZM" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointZM->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZM );
+
+  mLayerPointZM->startEditing();
+  QgsFeature pointF;
+  QString pointWktZM = "PointZM(6 6 3 4)";
+  pointF.setGeometry( QgsGeometry::fromWkt( pointWktZM ) );
+
+  mLayerPointZM->addFeature( pointF );
+  QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM ); //<< mLayerPolygon << mLayerPoint );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -352,6 +368,33 @@ void TestQgsMapToolAddFeature::testZ()
   mCanvas->setCurrentLayer( mLayerLine );
 }
 
+void TestQgsMapToolAddFeature::testZMSnapping()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // snap a on a layer with ZM support
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->is3D(), false );
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->isMeasure(), false );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
 
 QGSTEST_MAIN( TestQgsMapToolAddFeature )
 #include "testqgsmaptooladdfeature.moc"

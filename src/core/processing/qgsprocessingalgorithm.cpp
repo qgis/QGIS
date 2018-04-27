@@ -732,7 +732,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   long count = mSource->featureCount();
 
   QgsFeature f;
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest(), sourceFlags() );
+  QgsFeatureIterator it = mSource->getFeatures( request(), sourceFlags() );
 
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;

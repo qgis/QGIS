@@ -39,6 +39,7 @@ from qgis.core import (QgsFields,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
@@ -75,10 +76,10 @@ class RegularPoints(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Input extent'), optional=False))
-        self.addParameter(QgsProcessingParameterNumber(self.SPACING,
-                                                       self.tr('Point spacing/count'), QgsProcessingParameterNumber.Double, 100, False, 0.000001, 999999999.999999999))
-        self.addParameter(QgsProcessingParameterNumber(self.INSET,
-                                                       self.tr('Initial inset from corner (LH side)'), QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 9999.9999))
+        self.addParameter(QgsProcessingParameterDistance(self.SPACING,
+                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001, 999999999.999999999))
+        self.addParameter(QgsProcessingParameterDistance(self.INSET,
+                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0, 9999.9999))
         self.addParameter(QgsProcessingParameterBoolean(self.RANDOMIZE,
                                                         self.tr('Apply random offset to point spacing'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.IS_SPACING,

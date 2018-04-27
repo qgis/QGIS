@@ -57,7 +57,6 @@ from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Difference import Difference
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -79,7 +78,6 @@ from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
-from .Intersection import Intersection
 from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
@@ -135,12 +133,10 @@ from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
-from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
-from .Union import Union
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorSplit import VectorSplit
@@ -176,7 +172,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
-                Difference(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -198,7 +193,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
-                Intersection(),
                 KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
@@ -254,12 +248,10 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 SumLines(),
-                SymmetricalDifference(),
                 TextToFloat(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),
-                Union(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
                 VectorSplit(),

@@ -38,6 +38,15 @@ only when editing in the line edit is finished (focus lost, enter key pressed).
 define the title used in the expression dialog
 %End
 
+    void appendScope( QgsExpressionContextScope *scope /Transfer/ );
+%Docstring
+Appends a scope to the current expression context.
+
+:param scope: The scope to add.
+
+.. versionadded:: 3.2
+%End
+
     const QString expressionDialogTitle();
 %Docstring
 return the title used for the expression dialog

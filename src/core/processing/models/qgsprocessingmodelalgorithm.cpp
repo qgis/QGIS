@@ -96,6 +96,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
       QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
+      QString expressionText;
       QVariantList paramParts;
       Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramSources )
       {
@@ -122,9 +123,19 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
             paramParts << exp.evaluate( &expressionContext );
             break;
           }
+          case QgsProcessingModelChildParameterSource::ExpressionText:
+          {
+            expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+            break;
+          }
         }
       }
-      if ( paramParts.count() == 1 )
+
+      if ( ! expressionText.isEmpty() )
+      {
+        childParams.insert( def->name(), expressionText );
+      }
+      else if ( paramParts.count() == 1 )
         childParams.insert( def->name(), paramParts.at( 0 ) );
       else
         childParams.insert( def->name(), paramParts );
@@ -464,6 +475,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
     };
@@ -508,6 +520,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
 
@@ -555,6 +568,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
 

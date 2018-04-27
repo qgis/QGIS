@@ -452,6 +452,7 @@ class TestQgsProcessing: public QObject
     void parameterMatrix();
     void parameterLayerList();
     void parameterNumber();
+    void parameterDistance();
     void parameterRange();
     void parameterRasterLayer();
     void parameterEnum();
@@ -481,6 +482,8 @@ class TestQgsProcessing: public QObject
     void convertCompatible();
     void create();
     void combineFields();
+    void fieldNamesToIndices();
+    void indicesToFields();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
     void supportsNonFileBasedOutput();
@@ -2997,6 +3000,89 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->flags(), def->flags() );
   QVERIFY( !fromCode->defaultValue().isValid() );
   QCOMPARE( fromCode->layerType(), def->layerType() );
+}
+
+void TestQgsProcessing::parameterDistance()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterDistance > def( new QgsProcessingParameterDistance( "non_optional", QString(), 5, QStringLiteral( "parent" ), false ) );
+  QCOMPARE( def->parentParameterName(), QStringLiteral( "parent" ) );
+  def->setParentParameterName( QStringLiteral( "parent2" ) );
+  QCOMPARE( def->parentParameterName(), QStringLiteral( "parent2" ) );
+  QVERIFY( def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1,2" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string representing a number
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1.1" ) );
+  double number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+
+  // double
+  params.insert( "non_optional", 1.1 );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+  // int
+  params.insert( "non_optional", 1 );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 1, 0.001 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a number, and nothing you can do will make me one" ) );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QCOMPARE( number, 5.0 );
+
+  // with min value
+  def->setMinimum( 11 );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( 25 ) );
+  QVERIFY( def->checkValueIsAcceptable( "21.1" ) );
+  // with max value
+  def->setMaximum( 21 );
+  QVERIFY( !def->checkValueIsAcceptable( 35 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "31.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( 15 ) );
+  QVERIFY( def->checkValueIsAcceptable( "11.1" ) );
+
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "1.1" ), context ), QStringLiteral( "1.1" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterDistance fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.minimum(), def->minimum() );
+  QCOMPARE( fromMap.maximum(), def->maximum() );
+  QCOMPARE( fromMap.dataType(), def->dataType() );
+  QCOMPARE( fromMap.parentParameterName(), QStringLiteral( "parent2" ) );
+  def.reset( dynamic_cast< QgsProcessingParameterDistance *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterDistance *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterDistance( "optional", QString(), 5.4, QStringLiteral( "parent" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 5.4, 0.001 );
+  // unconvertible string
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 5.4, 0.001 );
 }
 
 void TestQgsProcessing::parameterNumber()
@@ -6079,6 +6165,45 @@ void TestQgsProcessing::combineFields()
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "NEW" ) );
   QCOMPARE( res.at( 2 ).name(), QStringLiteral( "name_2" ) );
   QCOMPARE( res.at( 3 ).name(), QStringLiteral( "new_2" ) );
+}
+
+void TestQgsProcessing::fieldNamesToIndices()
+{
+  QgsFields fields;
+  fields.append( QgsField( "name" ) );
+  fields.append( QgsField( "address" ) );
+  fields.append( QgsField( "age" ) );
+
+  QList<int> indices1 = QgsProcessingUtils::fieldNamesToIndices( QStringList(), fields );
+  QCOMPARE( indices1, QList<int>() << 0 << 1 << 2 );
+
+  QList<int> indices2 = QgsProcessingUtils::fieldNamesToIndices( QStringList() << "address" << "age", fields );
+  QCOMPARE( indices2, QList<int>() << 1 << 2 );
+
+  QList<int> indices3 = QgsProcessingUtils::fieldNamesToIndices( QStringList() << "address" << "agegege", fields );
+  QCOMPARE( indices3, QList<int>() << 1 );
+}
+
+void TestQgsProcessing::indicesToFields()
+{
+  QgsFields fields;
+  fields.append( QgsField( "name" ) );
+  fields.append( QgsField( "address" ) );
+  fields.append( QgsField( "age" ) );
+
+  QList<int> indices1 = QList<int>() << 0 << 1 << 2;
+  QgsFields fields1 = QgsProcessingUtils::indicesToFields( indices1, fields );
+  QCOMPARE( fields1, fields );
+
+  QList<int> indices2 = QList<int>() << 1;
+  QgsFields fields2expected;
+  fields2expected.append( QgsField( "address" ) );
+  QgsFields fields2 = QgsProcessingUtils::indicesToFields( indices2, fields );
+  QCOMPARE( fields2, fields2expected );
+
+  QList<int> indices3;
+  QgsFields fields3 = QgsProcessingUtils::indicesToFields( indices3, fields );
+  QCOMPARE( fields3, QgsFields() );
 }
 
 void TestQgsProcessing::stringToPythonLiteral()

@@ -50,6 +50,13 @@ Constructor for QgsTextFormatWidget.
 Returns the current formatting settings defined by the widget.
 %End
 
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the current formatting settings
+
+.. versionadded:: 3.2
+%End
+
   public slots:
 
     void setDockMode( bool enabled );

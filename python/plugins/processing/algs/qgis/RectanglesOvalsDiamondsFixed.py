@@ -31,6 +31,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterDistance,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -68,10 +69,10 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                                                               [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterEnum(self.SHAPE,
                                                      self.tr('Buffer shape'), options=self.shapes))
-        self.addParameter(QgsProcessingParameterNumber(self.WIDTH, self.tr('Width'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
-        self.addParameter(QgsProcessingParameterNumber(self.HEIGHT, self.tr('Height'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
+        self.addParameter(QgsProcessingParameterDistance(self.WIDTH, self.tr('Width'), parentParameterName=self.INPUT,
+                                                         minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
+        self.addParameter(QgsProcessingParameterDistance(self.HEIGHT, self.tr('Height'), parentParameterName=self.INPUT,
+                                                         minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.ROTATION, self.tr('Rotation'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0, maxValue=360.0, optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,

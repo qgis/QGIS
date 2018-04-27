@@ -210,6 +210,21 @@ non-duplicate name.
    be truncated when saving to these formats.
 %End
 
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+%Docstring
+Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
+If the list of field names is empty, it is assumed that all fields are required.
+
+.. versionadded:: 3.2
+%End
+
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+%Docstring
+Returns a subset of fields based on the indices of desired fields.
+
+.. versionadded:: 3.2
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

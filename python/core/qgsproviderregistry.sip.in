@@ -162,6 +162,7 @@ buildSupportedRasterFileFilter to a string, which is then returned.
 
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
 %End
+
     virtual QString databaseDrivers() const;
 %Docstring
 Return a string containing the available database drivers

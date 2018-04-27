@@ -67,7 +67,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
      * \returns true if the rendering was OK
      */
-    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
     /**
      * The actual rendering will take place here.
@@ -85,27 +85,27 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Proxy that will call this method on the embedded renderer.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * Proxy that will call this method on the embedded renderer.
      */
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     //! Creates a renderer out of an XML, for loading
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
       bool selected;
       bool drawMarkers;
       int layer;
-      FeatureDecoration( QgsFeature &a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
+      FeatureDecoration( const QgsFeature &a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
         : feature( a_feature )
         , selected( a_selected )
         , drawMarkers( a_drawMarkers )

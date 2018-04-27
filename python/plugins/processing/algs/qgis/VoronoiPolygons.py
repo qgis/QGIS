@@ -37,6 +37,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
@@ -68,8 +69,8 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=9999999999, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterDistance(self.BUFFER, self.tr('Buffer region'), parentParameterName=self.INPUT,
+                                                         minValue=0.0, maxValue=9999999999, defaultValue=0.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
 

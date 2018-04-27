@@ -1423,7 +1423,11 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
   setDependencies( sources );
 
-  setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+  QgsMapLayerLegend *legend = QgsMapLayerLegend::defaultVectorLegend( this );
+  QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
+  if ( !legendElem.isNull() )
+    legend->readXml( legendElem, context );
+  setLegend( legend );
 
   // read extent
   if ( mReadExtentFromXml )
@@ -1687,6 +1691,14 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     dataDependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dataDependenciesElement );
+
+  // legend
+  if ( legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( document, context );
+    if ( !legendElement.isNull() )
+      layer_node.appendChild( legendElement );
+  }
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );

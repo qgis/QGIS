@@ -501,6 +501,22 @@ tests:
         name: expected/autoincrement_grouped.gml
         type: vector
 
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with sorting)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      SORT_ASCENDING: true
+      SORT_EXPRESSION: 99-id
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_sort.gml
+        type: vector
+
   - algorithm: native:dissolve
     name: Dissolve using field
     params:
@@ -1665,6 +1681,20 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:lineintersections
+    name: Line intersections with geometry collection
+    params:
+      INPUT:
+        name: custom/line_intersection_collection1.gml
+        type: vector
+      INTERSECT:
+        name: custom/line_intersection_collection2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection_collection.gml
+        type: vector
+
   - algorithm: qgis:sumlinelengths
     name: Sum line lengths
     params:
@@ -1699,7 +1729,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1716,7 +1746,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1732,7 +1762,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       METHOD: '0'
       ROWS: 300
@@ -1752,7 +1782,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       METHOD: '1'
       ROWS: 300
@@ -4973,34 +5003,6 @@ tests:
             __all__:
               precision: 7
 
-  - algorithm: qgis:union
-    name: Union simple
-    params:
-      INPUT:
-        name: custom/polygon_mask.gml
-        type: vector
-      OVERLAY:
-        name: custom/for_union.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/union.gml
-        type: vector
-
-  - algorithm: qgis:difference
-    name: Difference test
-    params:
-      INPUT:
-        name: custom/for_union.gml
-        type: vector
-      OVERLAY:
-        name: custom/polygon_mask.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/difference.gml
-        type: vector
-
   - algorithm: native:projectpointcartesian
     name: Project points cartesian
     params:
@@ -5190,5 +5192,162 @@ tests:
       native:filter_1:OUTPUT_big:
         name: expected/filter_points_big.gml
         type: vector
+
+  - algorithm: native:intersection
+    name: Test Intersection (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/wedge_buffers.gml
+        type: vector
+
+  - algorithm: native:difference
+    name: Test Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_a_b.gml
+        type: vector
+        pk: id_a
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:difference
+    name: Test Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_b_a.gml
+        type: vector
+        pk: id_b
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_a_b.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_b_a.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
 
 # See ../README.md for a description of the file format

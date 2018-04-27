@@ -50,6 +50,7 @@
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
 #include "qgsproject.h"
+#include "qgslinesegment.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -152,6 +153,8 @@ class TestQgsGeometry : public QObject
     void minimalEnclosingCircle( );
     void splitGeometry();
     void snappedToGrid();
+
+    void convertGeometryCollectionToSubclass();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -1155,6 +1158,121 @@ void TestQgsGeometry::circularString()
   QgsPointSequence pts;
   l1.points( pts );
   QVERIFY( pts.empty() );
+
+  // from 3 points
+  QgsCircularString from3Pts( QgsPoint( 1, 2 ), QgsPoint( 21, 22 ), QgsPoint( 31, 2 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  from3Pts = QgsCircularString( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ), QgsPoint( QgsWkbTypes::PointZ, 21, 22, 23 ),
+                                QgsPoint( QgsWkbTypes::PointZ, 31, 2, 33 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).z(), 3.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).z(), 23.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).z(), 33.0 );
+  from3Pts = QgsCircularString( QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ), QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 23 ),
+                                QgsPoint( QgsWkbTypes::PointM, 31, 2, 0, 33 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).m(), 3.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).m(), 23.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).m(), 33.0 );
+  from3Pts = QgsCircularString( QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 23, 24 ),
+                                QgsPoint( QgsWkbTypes::PointZM, 31, 2, 33, 34 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).z(), 3.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).m(), 4.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).z(), 23.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).m(), 24.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).z(), 33.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).m(), 34.0 );
+
+  // from 2 points and center
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( 1, 2 ), QgsPoint( 31, 2 ), QgsPoint( 21, 2 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( 1, 2 ), QgsPoint( 31, 2 ), QgsPoint( 21, 2 ), false );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), -18.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ), QgsPoint( QgsWkbTypes::PointZ, 32, 2, 33 ),
+             QgsPoint( QgsWkbTypes::PointZ, 21, 2, 23 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).z(), 3.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).z(), 23.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 32.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).z(), 33.0 );
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ), QgsPoint( QgsWkbTypes::PointM, 31, 2, 0, 33 ),
+             QgsPoint( QgsWkbTypes::PointM, 21, 2, 0, 23 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).m(), 3.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).m(), 23.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).m(), 33.0 );
+  from3Pts = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ), QgsPoint( QgsWkbTypes::PointZM, 31, 2, 33, 34 ),
+             QgsPoint( QgsWkbTypes::PointZM, 21, 2, 23, 24 ) );
+  QCOMPARE( from3Pts.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( from3Pts.numPoints(), 3 );
+  QCOMPARE( from3Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from3Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).z(), 3.0 );
+  QCOMPARE( from3Pts.pointN( 0 ).m(), 4.0 );
+  QCOMPARE( from3Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from3Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).z(), 23.0 );
+  QCOMPARE( from3Pts.pointN( 1 ).m(), 24.0 );
+  QCOMPARE( from3Pts.xAt( 2 ), 31.0 );
+  QCOMPARE( from3Pts.yAt( 2 ), 2.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).z(), 33.0 );
+  QCOMPARE( from3Pts.pointN( 2 ).m(), 34.0 );
 
   //setPoints
   QgsCircularString l2;
@@ -2693,6 +2811,53 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromVector3D.xAt( 1 ), 30.0 );
   QCOMPARE( fromVector3D.yAt( 1 ), 40.0 );
   QCOMPARE( fromVector3D.zAt( 1 ), 200.0 );
+
+  // from 2 points
+  QgsLineString from2Pts( QgsPoint( 1, 2 ), QgsPoint( 21, 22 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ), QgsPoint( QgsWkbTypes::PointZ, 21, 22, 23 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.zAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.zAt( 1 ), 23.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ), QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 23 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.mAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.mAt( 1 ), 23.0 );
+  from2Pts = QgsLineString( QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 23, 24 ) );
+  QCOMPARE( from2Pts.wkbType(), QgsWkbTypes::LineStringZM );
+  QCOMPARE( from2Pts.numPoints(), 2 );
+  QCOMPARE( from2Pts.xAt( 0 ), 1.0 );
+  QCOMPARE( from2Pts.yAt( 0 ), 2.0 );
+  QCOMPARE( from2Pts.zAt( 0 ), 3.0 );
+  QCOMPARE( from2Pts.mAt( 0 ), 4.0 );
+  QCOMPARE( from2Pts.xAt( 1 ), 21.0 );
+  QCOMPARE( from2Pts.yAt( 1 ), 22.0 );
+  QCOMPARE( from2Pts.zAt( 1 ), 23.0 );
+  QCOMPARE( from2Pts.mAt( 1 ), 24.0 );
+
+  // from lineSegment
+  QgsLineString fromSegment( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) );
+  QCOMPARE( fromSegment.wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( fromSegment.numPoints(), 2 );
+  QCOMPARE( fromSegment.xAt( 0 ), 1.0 );
+  QCOMPARE( fromSegment.yAt( 0 ), 2.0 );
+  QCOMPARE( fromSegment.xAt( 1 ), 3.0 );
+  QCOMPARE( fromSegment.yAt( 1 ), 4.0 );
 
   //addVertex
   QgsLineString l2;
@@ -16511,6 +16676,28 @@ void TestQgsGeometry::snappedToGrid()
     std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
     QCOMPARE( snapped->asWkt(), QStringLiteral( "CompoundCurve ((59 402, 68 415),CircularString (68 415, 27 505, 27 406))" ) );
   }
+}
+
+void TestQgsGeometry::convertGeometryCollectionToSubclass()
+{
+  QgsGeometry gc0 = QgsGeometry::fromWkt( QStringLiteral( "GeometryCollection(Point(1 1), Polygon((2 2, 3 3, 2 3, 2 2)))" ) );
+
+  QgsGeometry gc1 = gc0;
+  QVERIFY( gc1.convertGeometryCollectionToSubclass( QgsWkbTypes::PointGeometry ) );
+  QCOMPARE( gc1.asWkt(), QStringLiteral( "MultiPoint ((1 1))" ) );
+
+  QgsGeometry gc2 = gc0;
+  QVERIFY( gc2.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry ) );
+  QCOMPARE( gc2.asWkt(), QStringLiteral( "MultiPolygon (((2 2, 3 3, 2 3, 2 2)))" ) );
+
+  QgsGeometry gc3 = gc0;
+  QVERIFY( gc3.convertGeometryCollectionToSubclass( QgsWkbTypes::LineGeometry ) );
+  QCOMPARE( gc3.asWkt(), QStringLiteral( "MultiLineString ()" ) );  // I think this is not correct, WKT should be "MultiLineString Empty"
+  QVERIFY( gc3.isEmpty() );
+
+  // trying to convert a geometry that is not a geometry collection
+  QgsGeometry wrong = QgsGeometry::fromWkt( QStringLiteral( "Point(1 2)" ) );
+  QVERIFY( !wrong.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

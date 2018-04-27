@@ -33,6 +33,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink)
@@ -69,10 +70,10 @@ class PoleOfInaccessibility(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
                                                               [QgsProcessing.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE,
-                                                       self.tr('Tolerance (layer units)'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=1.0, minValue=0.0))
+        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE,
+                                                         self.tr('Tolerance (layer units)'),
+                                                         parentParameterName=self.INPUT,
+                                                         defaultValue=1.0, minValue=0.0))
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Point'), QgsProcessing.TypeVectorPoint))

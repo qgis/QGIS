@@ -36,6 +36,7 @@ class TestQgsGeometryUtils: public QObject
     void testLeftOfLine();
     void testSegmentMidPoint_data();
     void testSegmentMidPoint();
+    void testSegmentMidPointCenter();
     void testCircleLength_data();
     void testCircleLength();
     void testNormalizedAngle_data();
@@ -57,6 +58,7 @@ class TestQgsGeometryUtils: public QObject
     void testCoefficients();
     void testPerpendicularSegment();
     void testClosestPoint();
+    void testlinesIntersection3D();
     void testSegmentIntersection();
     void testLineCircleIntersection();
     void testCircleCircleIntersection();
@@ -211,6 +213,33 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * DBL_EPSILON );
+}
+
+void TestQgsGeometryUtils::testSegmentMidPointCenter()
+{
+  QgsPoint mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ), false );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 9, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 9.292893, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 19 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 11.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 21 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21, 3, 4 ), QgsPoint( 11, 20, 5, 6 ), QgsPoint( 10, 20, 7, 8 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QCOMPARE( mid.z(), 7.0 );
+  QCOMPARE( mid.m(), 8.0 );
 }
 
 void TestQgsGeometryUtils::testCircleLength_data()
@@ -666,6 +695,44 @@ void TestQgsGeometryUtils::testClosestPoint()
   QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
   QGSCOMPARENEAR( pt4.m(), 1, 0.0001 );
+}
+
+void TestQgsGeometryUtils::testlinesIntersection3D()
+{
+  QgsVector3D x;
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 1, 10 ), QgsVector3D( 3, 2, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 2, 10 ), QgsVector3D( 3, 1, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 5, 5, 5 ), QgsVector3D( 0, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 0, 5, 0 ), QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 5, 5 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 5.0, 5.0 ) );
+
 }
 
 void TestQgsGeometryUtils::testSegmentIntersection()

@@ -76,6 +76,7 @@ class QgsMapToolAddFeature;
 class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
+class QgsMapToolSelect;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -965,6 +966,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows the snapping Options
     void snappingOptions();
+
+    void setMapTipsDelay( int timerInterval );
 
   protected:
 
@@ -1962,11 +1965,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mReshapeFeatures = nullptr;
         QgsMapTool *mSplitFeatures = nullptr;
         QgsMapTool *mSplitParts = nullptr;
-        QgsMapTool *mSelect = nullptr;
-        QgsMapTool *mSelectFeatures = nullptr;
-        QgsMapTool *mSelectPolygon = nullptr;
-        QgsMapTool *mSelectFreehand = nullptr;
-        QgsMapTool *mSelectRadius = nullptr;
+        QgsMapToolSelect *mSelectFeatures = nullptr;
+        QgsMapToolSelect *mSelectPolygon = nullptr;
+        QgsMapToolSelect *mSelectFreehand = nullptr;
+        QgsMapToolSelect *mSelectRadius = nullptr;
         QgsMapTool *mVertexAdd = nullptr;
         QgsMapTool *mVertexMove = nullptr;
         QgsMapTool *mVertexDelete = nullptr;

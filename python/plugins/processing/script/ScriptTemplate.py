@@ -6,6 +6,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
+import processing
 
 
 class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
@@ -46,14 +47,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'duplicatevectorlayer'
+        return 'myscript'
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr('Duplicate a vector layer')
+        return self.tr('My Script')
 
     def group(self):
         """
@@ -143,6 +144,23 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
 
             # Update the progress bar
             feedback.setProgress(int(current * total))
+
+        # To run another Processing algorithm as part of this algorithm, you can use
+        # processing.run(...). Make sure you pass the current context and feedback
+        # to processing.run to ensure that all temporary layer outputs are available
+        # to the executed algorithm, and that the executed algorithm can send feedback
+        # reports to the user (and correctly handle cancelation and progress reports!)
+        if False:
+            buffered_layer = processing.run("native:buffer", param={
+                'INPUT': dest_id,
+                'DISTANCE': 1.5,
+                'SEGMENTS': 5,
+                'END_CAP_STYLE': 0,
+                'JOIN_STYLE': 0,
+                'MITER_LIMIT': 2,
+                'DISSOLVE': False,
+                'OUTPUT': 'memory:'
+            }, context=context, feedback=feedback)['OUTPUT']
 
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some

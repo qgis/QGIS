@@ -26,7 +26,6 @@
 #include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
-#include "geos_c.h"
 
 class QgsGeometryCheckError;
 class QgsFeaturePool;

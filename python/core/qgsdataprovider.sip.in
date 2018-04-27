@@ -38,6 +38,10 @@ to generic QgsVectorDataProvider's) depends on it.
     {
       sipType = sipType_QgsRasterDataProvider;
     }
+    else if ( qobject_cast<QgsMeshDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshDataProvider;
+    }
     else
     {
       sipType = 0;

@@ -26,6 +26,8 @@
 #include "qgscurve.h"
 #include "qgscompoundcurve.h"
 
+class QgsLineSegment2D;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsgeometry.cpp.
@@ -64,12 +66,24 @@ class CORE_EXPORT QgsLineString: public QgsCurve
                    const QVector<double> &m = QVector<double>() );
 
     /**
+     * Constructs a linestring with a single segment from \a p1 to \a p2.
+     * \since QGIS 3.2
+     */
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+
+    /**
      * Construct a linestring from list of points.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<QgsPointXY> &points );
+
+    /**
+     * Construct a linestring from a single 2d line segment.
+     * \since QGIS 3.2
+     */
+    explicit QgsLineString( const QgsLineSegment2D &segment );
 
     bool equals( const QgsCurve &other ) const override;
 

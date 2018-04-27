@@ -30,7 +30,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
@@ -76,6 +75,7 @@ SET(TESTS
  testqgsrastercalculator.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
+ testqgsninecellfilters.cpp
     )
 
 FOREACH(TESTSRC ${TESTS})

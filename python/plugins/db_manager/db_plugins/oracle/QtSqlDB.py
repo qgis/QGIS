@@ -144,7 +144,7 @@ class QtSqlDBCursor(object):
         return self.qry.seek(row)
 
     def fetchone(self):
-        if not next(self.qry):
+        if not self.qry.next():
             return None
 
         row = []

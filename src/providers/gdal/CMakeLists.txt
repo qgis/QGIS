@@ -21,11 +21,13 @@ ENDIF ()
 
 INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -33,7 +35,8 @@ INCLUDE_DIRECTORIES (
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 QT5_WRAP_CPP(GDAL_MOC_SRCS ${GDAL_MOC_HDRS})

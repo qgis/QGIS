@@ -128,6 +128,8 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::extractAsParts( const QgsGeometry 
 std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCurve *curve, bool useCompoundCurves ) const
 {
   std::vector<QgsGeometry> parts;
+  if ( !curve )
+    return parts;
   switch ( QgsWkbTypes::flatType( curve->wkbType() ) )
   {
     case QgsWkbTypes::LineString:

@@ -192,6 +192,11 @@ class ORDatabase(Database):
         from .data_model import ORSqlResultModel
         return ORSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import ORSqlResultModelAsync
+
+        return ORSqlResultModelAsync(self, sql, parent)
+
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,
                    avoidSelectById=False, filter=""):

@@ -3812,3 +3812,57 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
 
   return new QgsProcessingParameterBand( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional );
 }
+
+//
+// QgsProcessingParameterDistance
+//
+
+QgsProcessingParameterDistance::QgsProcessingParameterDistance( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentParameterName, bool optional, double minValue, double maxValue )
+  : QgsProcessingParameterNumber( name, description, Double, defaultValue, optional, minValue, maxValue )
+  , mParentParameterName( parentParameterName )
+{
+
+}
+
+QgsProcessingParameterDistance *QgsProcessingParameterDistance::clone() const
+{
+  return new QgsProcessingParameterDistance( *this );
+}
+
+QString QgsProcessingParameterDistance::type() const
+{
+  return typeName();
+}
+
+QStringList QgsProcessingParameterDistance::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentParameterName.isEmpty() )
+    depends << mParentParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterDistance::parentParameterName() const
+{
+  return mParentParameterName;
+}
+
+void QgsProcessingParameterDistance::setParentParameterName( const QString &parentParameterName )
+{
+  mParentParameterName = parentParameterName;
+}
+
+QVariantMap QgsProcessingParameterDistance::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterNumber::toVariantMap();
+  map.insert( QStringLiteral( "parent" ), mParentParameterName );
+  return map;
+}
+
+bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterNumber::fromVariantMap( map );
+  mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
+  return true;
+}
+

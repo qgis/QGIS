@@ -78,9 +78,8 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
                   QStringLiteral( "METHOD" ),
                   QObject::tr( "Simplification method" ),
                   methods, false, 0 ) );
-  std::unique_ptr< QgsProcessingParameterNumber > tolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
-      1.0, false, 0, 10000000.0 );
+  std::unique_ptr< QgsProcessingParameterDistance > tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
+      QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

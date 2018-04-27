@@ -52,6 +52,16 @@ QString QgsExpressionBuilderDialog::expressionText()
   return builder->expressionText();
 }
 
+QString QgsExpressionBuilderDialog::expectedOutputFormat()
+{
+  return builder->expectedOutputFormat();
+}
+
+void QgsExpressionBuilderDialog::setExpectedOutputFormat( const QString &expected )
+{
+  builder->setExpectedOutputFormat( expected );
+}
+
 QgsExpressionContext QgsExpressionBuilderDialog::expressionContext() const
 {
   return builder->expressionContext();

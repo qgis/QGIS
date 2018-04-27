@@ -928,6 +928,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setMetadata( const QgsProjectMetadata &metadata );
 
+    /**
+     * Returns a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    QSet<QgsMapLayer *> requiredLayers() const;
+
+    /**
+     * Configures a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );

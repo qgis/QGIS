@@ -43,7 +43,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputMapLayer,
-                       QgsProcessingOutputMultipleLayers)
+                       QgsProcessingOutputMultipleLayers,
+                       QgsProcessingFeedback)
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -119,8 +120,6 @@ class Processing(object):
             feedback = QgsProcessingFeedback()
 
         if alg is None:
-            # fix_print_with_import
-            print('Error: Algorithm not found\n')
             msg = Processing.tr('Error: Algorithm {0} not found\n').format(algOrName)
             feedback.reportError(msg)
             raise QgsProcessingException(msg)
@@ -129,9 +128,7 @@ class Processing(object):
         for param in alg.parameterDefinitions():
             if param.name() not in parameters:
                 if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                    # fix_print_with_import
                     msg = Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name())
-                    print('Error: Missing parameter value for parameter %s.' % param.name())
                     feedback.reportError(msg)
                     raise QgsProcessingException(msg)
 
@@ -140,15 +137,11 @@ class Processing(object):
 
         ok, msg = alg.checkParameterValues(parameters, context)
         if not ok:
-            # fix_print_with_import
-            print('Unable to execute algorithm\n' + str(msg))
             msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
             feedback.reportError(msg)
             raise QgsProcessingException(msg)
 
         if not alg.validateInputCrs(parameters, context):
-            print('Warning: Not all input layers use the same CRS.\n' +
-                  'This can cause unexpected results.')
             feedback.pushInfo(
                 Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
 

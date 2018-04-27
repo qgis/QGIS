@@ -2492,6 +2492,26 @@ static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContex
   return result;
 }
 
+static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( fGeom.constGet() );
+  if ( !pt )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `wedge_buffer` requires a point value for the center." ) );
+    return QVariant();
+  }
+
+  double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double width = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  double outerRadius = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  double innerRadius = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+
+  QgsGeometry geom = QgsGeometry::createWedgeBuffer( *pt, azimuth, width, outerRadius, innerRadius );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3622,6 +3642,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Vector" );
       case QgsMapLayer::RasterLayer:
         return QCoreApplication::translate( "expressions", "Raster" );
+      case QgsMapLayer::MeshLayer:
+        return QCoreApplication::translate( "expressions", "Mesh" );
       case QgsMapLayer::PluginLayer:
         return QCoreApplication::translate( "expressions", "Plugin" );
     }
@@ -4272,6 +4294,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "within" ), 2, fcnWithin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "translate" ), 3, fcnTranslate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), -1, fcnBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "wedge_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "center" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "outer_radius" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "inner_radius" ), true, 0.0 ), fcnWedgeBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )

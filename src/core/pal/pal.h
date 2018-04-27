@@ -35,6 +35,7 @@
 
 #include "qgis_core.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgspallabeling.h"
 #include <QList>
 #include <iostream>
@@ -48,9 +49,6 @@ class QgsAbstractLabelProvider;
 
 namespace pal
 {
-  //! Get GEOS context handle to be used in all GEOS library calls with reentrant API
-  GEOSContextHandle_t geosContext();
-
   class Layer;
   class LabelPosition;
   class PalStat;

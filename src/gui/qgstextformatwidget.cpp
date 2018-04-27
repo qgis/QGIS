@@ -828,6 +828,11 @@ QgsTextFormat QgsTextFormatWidget::format() const
   return format;
 }
 
+void QgsTextFormatWidget::setFormat( const QgsTextFormat &format )
+{
+  updateWidgetForFormat( format );
+}
+
 void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
 {
   mLabelingOptionsListWidget->blockSignals( true );

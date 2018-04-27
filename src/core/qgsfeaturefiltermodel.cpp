@@ -448,16 +448,10 @@ QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &featu
   QgsVectorLayer *layer = mSourceLayer;
   QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
-  QgsConditionalStyle style;
-
-  if ( mEntryStylesMap.contains( fid ) )
-  {
-    style = mEntryStylesMap.value( fid );
-  }
 
   auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
 
-  if ( mDisplayExpression.isField() )
+  if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
     QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
@@ -465,10 +459,11 @@ QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &featu
     const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
 
     styles += matchingFieldStyles;
-
-    style = QgsConditionalStyle::compressStyles( styles );
-    mEntryStylesMap.insert( fid, style );
   }
+
+  QgsConditionalStyle style;
+  style = QgsConditionalStyle::compressStyles( styles );
+  mEntryStylesMap.insert( fid, style );
 
   return style;
 }

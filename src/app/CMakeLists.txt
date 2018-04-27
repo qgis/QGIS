@@ -97,10 +97,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
-  qgsmaptoolselectrectangle.cpp
-  qgsmaptoolselectfreehand.cpp
-  qgsmaptoolselectpolygon.cpp
-  qgsmaptoolselectradius.cpp
+  qgsmaptoolselectionhandler.cpp
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
@@ -133,6 +130,7 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
+  qgsvectorlayerlegendwidget.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -309,11 +307,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
-  qgsmaptoolselectfreehand.h
   qgsmaptoolselect.h
-  qgsmaptoolselectpolygon.h
-  qgsmaptoolselectradius.h
-  qgsmaptoolselectrectangle.h
+  qgsmaptoolselectionhandler.h
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolsplitparts.h
@@ -361,6 +356,7 @@ SET (QGIS_APP_MOC_HDRS
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgsundowidget.h
+  qgsvectorlayerlegendwidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
   qgshandlebadlayers.h
@@ -597,6 +593,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory

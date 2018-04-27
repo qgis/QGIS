@@ -31,7 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
-
+#include "mesh/qgsmeshmemorydataprovider.h"
 
 // typedefs for provider plugin functions of interest
 typedef QString providerkey_t();
@@ -87,6 +87,7 @@ void QgsProviderRegistry::init()
 {
   // add standard providers
   mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
+  mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription(), &QgsMeshMemoryDataProvider::createProvider );
 
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );

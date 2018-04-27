@@ -41,18 +41,18 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
 
   contextMenu->addSeparator();
-  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor() ) );
-  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeSymbolOpacity() ) );
-  contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeSymbolColor() ) );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeSymbolOpacity() ) );
+  contextMenu->addAction( tr( "Change Output Unit…" ), this, SLOT( changeSymbolUnit() ) );
 
   if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
   {
-    contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
+    contextMenu->addAction( tr( "Change Width…" ), this, SLOT( changeSymbolWidth() ) );
   }
   else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
-    contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
-    contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
+    contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
+    contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
 }
 

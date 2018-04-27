@@ -52,6 +52,17 @@ Constructor for QgsVector taking x and y component values.
     double length() const;
 %Docstring
 Returns the length of the vector.
+
+.. seealso:: :py:func:`lengthSquared`
+%End
+
+    double lengthSquared() const;
+%Docstring
+Returns the length of the vector.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`length`
 %End
 
     double x() const;
@@ -83,6 +94,14 @@ Returns the angle of the vector in radians.
 Returns the angle between this vector and another vector in radians.
 %End
 
+    double crossProduct( QgsVector v ) const;
+%Docstring
+Returns the 2D cross product of this vector and another vector ``v``. (This is sometimes
+referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
+
+.. versionadded:: 3.2
+%End
+
     QgsVector rotateBy( double rot ) const;
 %Docstring
 Rotates the vector by a specified angle.
@@ -101,6 +120,7 @@ Will throw a QgsException if called on a vector with length of 0.
     bool operator!=( QgsVector other ) const;
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
@@ -106,6 +107,18 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
   }
   owner = true;
   return new QgsRasterLayer( uri, name, providerKey );
+}
+
+QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "mesh" ) )
+  {
+    error = QObject::tr( "%1: Not a mesh layer." ).arg( name );
+    return nullptr;
+  }
+  owner = true;
+  return new QgsMeshLayer( uri, name, providerKey );
 }
 
 // -----

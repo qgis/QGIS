@@ -206,6 +206,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterMultipleLayers;
     else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
       sipType = sipType_QgsProcessingParameterNumber;
+    else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
+      sipType = sipType_QgsProcessingParameterDistance;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
@@ -1232,6 +1234,58 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
     double mMin = -DBL_MAX + 1;
     double mMax = DBL_MAX;
     Type mDataType = Integer;
+};
+
+/**
+ * \class QgsProcessingParameterDistance
+ * \ingroup core
+ * A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+ * to determine what units the distance values are in.
+  * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterDistance.
+     */
+    explicit QgsProcessingParameterDistance( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        const QString &parentParameterName = QString(),
+        bool optional = false,
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "distance" ); }
+
+    QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+
 };
 
 /**

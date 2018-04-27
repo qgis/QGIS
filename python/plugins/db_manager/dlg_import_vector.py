@@ -68,6 +68,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # updates of UI
         self.setupWorkingMode(self.mode)
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
+        self.widgetSourceSrid.setCrs(QgsProject.instance().crs())
+        self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
@@ -210,9 +212,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.editGeomColumn.setText(geom)
 
         srcCrs = self.inLayer.crs()
-        srid = srcCrs.postgisSrid() if srcCrs.isValid() else 4326
-        self.editSourceSrid.setText("%s" % srid)
-        self.editTargetSrid.setText("%s" % srid)
+        if not srcCrs.isValid():
+            srcCrs = QgsCoordinateReferenceSystem(4326)
+        self.widgetSourceSrid.setCrs(srcCrs)
+        self.widgetTargetSrid.setCrs(srcCrs)
 
         return True
 
@@ -270,27 +273,23 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         # sanity checks
         if self.inLayer is None:
-            QMessageBox.information(self, self.tr("Import to database"), self.tr("Input layer missing or not valid"))
+            QMessageBox.critical(self, self.tr("Import to Database"), self.tr("Input layer missing or not valid."))
             return
 
         if self.cboTable.currentText() == "":
-            QMessageBox.information(self, self.tr("Import to database"), self.tr("Output table name is required"))
+            QMessageBox.critical(self, self.tr("Import to Database"), self.tr("Output table name is required."))
             return
 
         if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-            try:
-                sourceSrid = self.editSourceSrid.text()
-            except ValueError:
-                QMessageBox.information(self, self.tr("Import to database"),
-                                        self.tr("Invalid source srid: must be an integer"))
+            if not self.widgetSourceSrid.crs().isValid():
+                QMessageBox.critical(self, self.tr("Import to Database"),
+                                     self.tr("Invalid source srid: must be a valid crs."))
                 return
 
         if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-            try:
-                targetSrid = self.editTargetSrid.text()
-            except ValueError:
-                QMessageBox.information(self, self.tr("Import to database"),
-                                        self.tr("Invalid target srid: must be an integer"))
+            if not self.widgetTargetSrid.crs().isValid():
+                QMessageBox.critical(self, self.tr("Import to Database"),
+                                     self.tr("Invalid target srid: must be a valid crs."))
                 return
 
         with OverrideCursor(Qt.WaitCursor):
@@ -344,13 +343,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
                 outCrs = QgsCoordinateReferenceSystem()
                 if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-                    targetSrid = int(self.editTargetSrid.text())
-                    outCrs = QgsCoordinateReferenceSystem(targetSrid)
+                    outCrs = self.widgetTargetSrid.crs()
 
                 # update input layer crs and encoding
                 if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-                    sourceSrid = int(self.editSourceSrid.text())
-                    inCrs = QgsCoordinateReferenceSystem(sourceSrid)
+                    inCrs = self.widgetSourceSrid.crs()
                     self.inLayer.setCrs(inCrs)
 
                 if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
@@ -372,7 +369,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         if ret != 0:
             output = QgsMessageViewer()
-            output.setTitle(self.tr("Import to database"))
+            output.setTitle(self.tr("Import to Database"))
             output.setMessageAsPlainText(self.tr("Error {0}\n{1}").format(ret, errMsg))
             output.showMessage()
             return
@@ -383,7 +380,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         self.db.connection().reconnect()
         self.db.refresh()
-        QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
+        QMessageBox.information(self, self.tr("Import to Database"), self.tr("Import was successful."))
         return QDialog.accept(self)
 
     def closeEvent(self, event):

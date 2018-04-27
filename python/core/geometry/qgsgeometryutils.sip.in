@@ -270,9 +270,25 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
 
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos );
 %Docstring
-Calculates midpoint on circle passing through p1 and p2, closest to
-given coordinate. Z dimension is supported and is retrieved from the
+Calculates midpoint on circle passing through ``p1`` and ``p2``, closest to
+the given coordinate ``mousePos``. Z dimension is supported and is retrieved from the
 first 3D point amongst ``p1`` and ``p2``.
+
+.. seealso:: :py:func:`segmentMidPointFromCenter`
+%End
+
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
+%Docstring
+Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
+with the specified ``center`` coordinate.
+
+If ``useShortestArc`` is true, then the midpoint returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
+to ``p2`` will be used (i.e. winding the other way around the circle).
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`segmentMidPoint`
 %End
 
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -363,7 +379,8 @@ clockwise from the north direction.
 
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 %Docstring
-Angle between two linear segments
+Calculates the average angle (in radians) between the two linear segments from
+(``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
 %End
 
     static double averageAngle( double a1, double a2 );
@@ -489,6 +506,77 @@ Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defin
 :param s2: The segment end point
 
 :return: A line (segment) from p to perpendicular point on segment [s1, s2]
+%End
+
+
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22 );
+%Docstring
+An algorithm to calculate the shortest distance between two skew lines.
+
+:param P1: is the first point of the first line,
+:param P12: is the second point on the first line,
+:param P2: is the first point on the second line,
+:param P22: is the second point on the second line.
+
+:return: the shortest distance
+%End
+
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1  /Out/,
+                                     double epsilon = 0.0001 );
+%Docstring
+A method to project one skew line onto another.
+
+:param P1: is a first point that belonds to first skew line,
+:param P12: is the second point that belongs to first skew line,
+:param P2: is the first point that belongs to second skew line,
+:param P22: is the second point that belongs to second skew line,
+:param X1: is the result projection point of line P2P22 onto line P1P12,
+:param epsilon: the tolerance to use.
+
+:return: true if such point exists, false - otherwise.
+%End
+
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection  /Out/ );
+%Docstring
+An algorithm to calculate an (approximate) intersection of two lines in 3D.
+
+:param La1: is the first point on the first line,
+:param La2: is the second point on the first line,
+:param Lb1: is the first point on the second line,
+:param Lb2: is the second point on the second line,
+:param intersection: is the result intersection, of it can be found.
+
+:return: true if the intersection can be found, false - otherwise.
+example:
+.. code-block:: python
+
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );

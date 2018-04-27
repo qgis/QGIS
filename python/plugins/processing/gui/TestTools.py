@@ -42,6 +42,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterString,
@@ -224,7 +225,7 @@ def createTest(text):
             params[param.name()] = token
         elif isinstance(param, QgsProcessingParameterBoolean):
             params[param.name()] = token
-        elif isinstance(param, QgsProcessingParameterNumber):
+        elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance)):
             if param.dataType() == QgsProcessingParameterNumber.Integer:
                 params[param.name()] = int(token)
             else:

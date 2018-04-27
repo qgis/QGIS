@@ -63,17 +63,17 @@ QgsTranslateAlgorithm *QgsTranslateAlgorithm::createInstance() const
 
 void QgsTranslateAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > xOffset = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_X" ),
-      QObject::tr( "Offset distance (x-axis)" ), QgsProcessingParameterNumber::Double,
-      0.0 );
+  std::unique_ptr< QgsProcessingParameterDistance > xOffset = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_X" ),
+      QObject::tr( "Offset distance (x-axis)" ),
+      0.0, QStringLiteral( "INPUT" ) );
   xOffset->setIsDynamic( true );
   xOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_X" ), QObject::tr( "Offset distance (x-axis)" ), QgsPropertyDefinition::Double ) );
   xOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( xOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > yOffset = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_Y" ),
-      QObject::tr( "Offset distance (y-axis)" ), QgsProcessingParameterNumber::Double,
-      0.0 );
+  std::unique_ptr< QgsProcessingParameterDistance > yOffset = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_Y" ),
+      QObject::tr( "Offset distance (y-axis)" ),
+      0.0, QStringLiteral( "INPUT" ) );
   yOffset->setIsDynamic( true );
   yOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Y" ), QObject::tr( "Offset distance (y-axis)" ), QgsPropertyDefinition::Double ) );
   yOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

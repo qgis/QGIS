@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovider.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
+typedef QVector<int> QgsMeshFace; //list of vertex indexes
+
+class QgsMeshSource /Abstract/
+{
+%Docstring
+Mesh is a  collection of vertices and faces in 2D or 3D space
+- vertex - XY(Z) point (in the mesh's coordinate reference system)
+- faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+
+Base on the underlying data provider/format, whole mesh is either stored in memory or
+read on demand
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    virtual ~QgsMeshSource();
+
+    virtual int vertexCount() const = 0;
+%Docstring
+ Return number of vertices in the native mesh
+
+:return: Number of vertices in the mesh
+%End
+
+    virtual int faceCount() const = 0;
+%Docstring
+ Return number of faces in the native mesh
+
+:return: Number of faces in the mesh
+%End
+
+    virtual QgsMeshVertex vertex( int index ) const = 0;
+%Docstring
+ Factory for mesh vertex with index
+
+:return: new mesh vertex on index
+%End
+
+    virtual QgsMeshFace face( int index ) const = 0;
+%Docstring
+ Factory for mesh face with index
+
+:return: new mesh face on index
+%End
+};
+
+class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource
+{
+%Docstring
+Base class for providing data for :py:class:`QgsMeshLayer`
+
+Responsible for reading native mesh data
+
+.. seealso:: :py:class:`QgsMeshSource`
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDataProvider( const QString &uri = QString() );
+%Docstring
+Ctor
+%End
+
+    virtual QgsRectangle extent() const;
+%Docstring
+Returns the extent of the layer
+
+:return: QgsRectangle containing the extent of the layer
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovider.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

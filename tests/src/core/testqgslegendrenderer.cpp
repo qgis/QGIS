@@ -122,6 +122,7 @@ class TestQgsLegendRenderer : public QObject
     void testDiagramAttributeLegend();
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
+    void testTextOnSymbol();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -772,6 +773,50 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
 
   QgsLayerTree *root = new QgsLayerTree();
   root->addLayer( vlDataDefinedSize );
+
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  delete root;
+}
+
+void TestQgsLegendRenderer::testTextOnSymbol()
+{
+  QString testName = QStringLiteral( "legend_text_on_symbol" );
+
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
+
+  QgsCategoryList cats;
+  QgsFillSymbol *sym_1 = new QgsFillSymbol();
+  sym_1->setColor( Qt::red );
+  cats << QgsRendererCategory( 1, sym_1, QStringLiteral( "Red" ) );
+  QgsFillSymbol *sym_2 = new QgsFillSymbol();
+  sym_2->setColor( Qt::green );
+  cats << QgsRendererCategory( 2, sym_2, QStringLiteral( "Green" ) );
+  QgsFillSymbol *sym_3 = new QgsFillSymbol();
+  sym_3->setColor( Qt::blue );
+  cats << QgsRendererCategory( 3, sym_3, QStringLiteral( "Blue" ) );
+  QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( QStringLiteral( "test_attr" ), cats );
+  vl->setRenderer( r );
+
+  QgsDefaultVectorLayerLegend *legend = new QgsDefaultVectorLayerLegend( vl );
+  legend->setTextOnSymbolEnabled( true );
+  QHash<QString, QString> content;
+  content["0"] = "Rd";
+  content["2"] = "Bl";
+  legend->setTextOnSymbolContent( content );
+  QgsTextFormat textFormat;
+  textFormat.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Roman" ) ) );
+  textFormat.setSize( 9 );
+  legend->setTextOnSymbolTextFormat( textFormat );
+  vl->setLegend( legend );
+
+  QgsLayerTree *root = new QgsLayerTree();
+  root->addLayer( vl );
 
   QgsLayerTreeModel legendModel( root );
 

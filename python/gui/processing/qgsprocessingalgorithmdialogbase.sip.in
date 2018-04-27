@@ -28,6 +28,12 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 %End
   public:
 
+    enum LogFormat
+    {
+      FormatPlainText,
+      FormatHtml,
+    };
+
     QgsProcessingAlgorithmDialogBase( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
@@ -95,6 +101,16 @@ slots in this dialog.
 Returns the parameter values for the algorithm to run in the dialog.
 %End
 
+    void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
+%Docstring
+Saves the log contents to a text file (specified by the file ``path``), in
+the given ``format``.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`saveLog`
+%End
+
   public slots:
 
     virtual void accept();
@@ -141,6 +157,29 @@ Pushes a console info string to the dialog's log.
 %Docstring
 Creates a modal progress dialog showing progress and log messages
 from this dialog.
+%End
+
+    void clearLog();
+%Docstring
+Clears the current log contents.
+
+.. versionadded:: 3.2
+%End
+
+    void saveLog();
+%Docstring
+Opens a dialog allowing users to save the current log contents.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`saveLogToFile`
+%End
+
+    void copyLogToClipboard();
+%Docstring
+Copies the current log contents to the clipboard.
+
+.. versionadded:: 3.2
 %End
 
   protected:

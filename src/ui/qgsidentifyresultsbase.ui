@@ -339,6 +339,45 @@
     <string>Print Selected HTML Response</string>
    </property>
   </action>
+  <action name="mActionSelectFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by area or single click</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Radius</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

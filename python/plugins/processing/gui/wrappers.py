@@ -34,6 +34,7 @@ from copy import deepcopy
 
 from qgis.core import (
     QgsApplication,
+    QgsUnitTypes,
     QgsCoordinateReferenceSystem,
     QgsExpression,
     QgsExpressionContextGenerator,
@@ -53,6 +54,7 @@ from qgis.core import (
     QgsProcessingParameterFile,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
+    QgsProcessingParameterDistance,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
     QgsProcessingParameterString,
@@ -62,6 +64,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterMapLayer,
     QgsProcessingParameterBand,
+    QgsProcessingParameterDistance,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
@@ -103,7 +106,7 @@ from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 
-from processing.gui.NumberInputPanel import NumberInputPanel, ModelerNumberInputPanel
+from processing.gui.NumberInputPanel import NumberInputPanel, ModelerNumberInputPanel, DistanceInputPanel
 from processing.gui.RangePanel import RangePanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
@@ -342,6 +345,7 @@ class CrsWidgetWrapper(WidgetWrapper):
             else:
                 widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
 
+            widget.crsChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
 
     def selectProjection(self):
@@ -752,6 +756,42 @@ class NumberWidgetWrapper(WidgetWrapper):
         self.widget.setDynamicLayer(wrapper.value())
 
 
+class DistanceWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            widget = DistanceInputPanel(self.param)
+            widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
+        else:
+            return ModelerNumberInputPanel(self.param, self.dialog)
+
+    def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
+        self.widget.setValue(value)
+
+    def value(self):
+        return self.widget.getValue()
+
+    def postInitialize(self, wrappers):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            for wrapper in wrappers:
+                if wrapper.param.name() == self.param.dynamicLayerParameterName():
+                    self.widget.setDynamicLayer(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.dynamicLayerChanged)
+                if wrapper.param.name() == self.param.parentParameterName():
+                    self.widget.setUnitParameterValue(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.parentParameterChanged)
+
+    def dynamicLayerChanged(self, wrapper):
+        self.widget.setDynamicLayer(wrapper.value())
+
+    def parentParameterChanged(self, wrapper):
+        self.widget.setUnitParameterValue(wrapper.value())
+
+
 class RangeWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
@@ -1133,7 +1173,7 @@ class StringWidgetWrapper(WidgetWrapper):
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType(
-                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
+                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterDistance, QgsProcessingParameterFile,
                  QgsProcessingParameterField, QgsProcessingParameterExpression],
                 [QgsProcessingOutputString, QgsProcessingOutputFile])
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
@@ -1224,7 +1264,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
                 widget.setExpression(self.param.defaultValue())
         else:
             strings = self.dialog.getAvailableValuesOfType(
-                [QgsProcessingParameterExpression, QgsProcessingParameterString, QgsProcessingParameterNumber],
+                [QgsProcessingParameterExpression, QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterDistance],
                 (QgsProcessingOutputString, QgsProcessingOutputNumber))
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             widget = QComboBox()
@@ -1540,7 +1580,7 @@ class BandWidgetWrapper(WidgetWrapper):
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            fields = self.dialog.getAvailableValuesOfType([QgsProcessingParameterBand, QgsProcessingParameterNumber],
+            fields = self.dialog.getAvailableValuesOfType([QgsProcessingParameterBand, QgsProcessingParameterDistance, QgsProcessingParameterNumber],
                                                           [QgsProcessingOutputNumber])
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 widget.addItem(self.NOT_SET, self.NOT_SET_OPTION)
@@ -1644,6 +1684,8 @@ class WidgetWrapperFactory:
             wrapper = MultipleLayerWidgetWrapper
         elif param.type() == 'number':
             wrapper = NumberWidgetWrapper
+        elif param.type() == 'distance':
+            wrapper = DistanceWidgetWrapper
         elif param.type() == 'raster':
             wrapper = RasterWidgetWrapper
         elif param.type() == 'enum':

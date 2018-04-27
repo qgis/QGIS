@@ -135,11 +135,6 @@ qgis:densifygeometriesgivenaninterval: >
 
   The distance is expressed in the same units used by the layer CRS.
 
-qgis:difference: >
-  This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained.
-
-  Attributes are not modified.
-
 qgis:dissolve: >
   This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be dissolved.
 
@@ -225,11 +220,6 @@ qgis:importintopostgis: >
   This algorithm imports a vector layer into a PostGIS database, creating a new table.
 
   Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
-
-qgis:intersection: >
-  This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
-
-  Attributes are not modified.
 
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
@@ -516,10 +506,6 @@ qgis:sumlinelengths: >
 
   The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and count of the lines across each polygon. The names of these two fields can be configured in the algorithm parameters.
 
-qgis:symmetricaldifference: >
-  This algorithm creates a layer containing features from both the Input and Difference layers but with the overlapping areas between the two layers removed. The attribute table of the Symmetrical Difference layer contains attributes from both the Input and Difference layers.
-
-
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
@@ -543,10 +529,6 @@ qgis:truncatetable: >
   This algorithm truncates a layer, by deleting all features from within the layer.
 
   Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
-
-qgis:union: >
-  This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features.
-
 
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.

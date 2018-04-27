@@ -252,6 +252,33 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
 
+    /**
+     * First line in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserFirstLine = 0;
+
+    /**
+     * First column in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserFirstColumn = 0;
+
+    /**
+     * Last line in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserLastLine = 0;
+
+    /**
+     * Last column in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserLastColumn = 0;
 
   protected:
 

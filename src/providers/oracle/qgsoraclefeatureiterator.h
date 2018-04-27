@@ -71,13 +71,13 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    bool openQuery( QString whereClause, QVariantList args, bool showLog = true );
+    bool openQuery( const QString &whereClause, const QVariantList &args, bool showLog = true );
 
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
-    bool mRewind;
-    bool mExpressionCompiled;
-    bool mFetchGeometry;
+    bool mRewind = false;
+    bool mExpressionCompiled = false;
+    bool mFetchGeometry = false;
     QgsAttributeList mAttributeList;
     QString mSql;
     QVariantList mArgs;

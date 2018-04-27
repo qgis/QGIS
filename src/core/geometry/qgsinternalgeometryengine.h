@@ -18,8 +18,12 @@
 
 #define SIP_NO_FILE
 
+#include "qgspointxy.h"
+
 class QgsGeometry;
 class QgsAbstractGeometry;
+class QgsLineString;
+class QgsLineSegment2D;
 
 /**
  * \ingroup core
@@ -101,5 +105,103 @@ class QgsInternalGeometryEngine
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
 };
+
+/**
+ * A 2D ray which extends from an origin point to an infinite distance in a given direction.
+ * \ingroup core
+ * \since QGIS 3.2
+ * \note not available in Python bindings
+ */
+class CORE_EXPORT QgsRay2D
+{
+  public:
+
+    /**
+     * Constructor for a ray starting at the given \a origin and extending an infinite distance
+     * in the specified \a direction.
+     */
+    QgsRay2D( const QgsPointXY &origin, QgsVector direction )
+      : origin( origin )
+      , direction( direction )
+    {}
+
+    /**
+     * Finds the closest intersection point of the ray and a line \a segment.
+     *
+     * If found, the intersection point will be stored in \a intersectPoint.
+     *
+     * Returns true if the ray intersects the line segment.
+     */
+    bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
+
+  private:
+
+    QgsPointXY origin;
+    QgsVector direction;
+};
+
+///@cond PRIVATE
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares two line segments based on their distance from a given point
+ * Assumes: (1) the line segments are intersected by some ray from the origin
+ *          (2) the line segments do not intersect except at their endpoints
+ *          (3) no line segment is collinear with the origin
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsLineSegmentDistanceComparer
+{
+  public:
+
+    /**
+     * Constructor for QgsLineSegmentDistanceComparer, comparing points
+     * to the specified \a origin point.
+     */
+    explicit QgsLineSegmentDistanceComparer( const QgsPointXY &origin )
+      : mOrigin( origin )
+    {}
+
+    /**
+     * Checks whether the line segment \a ab is closer to the origin than the
+     * line segment \a cd.
+     * \param ab line segment: left hand side of the comparison operator
+     * \param cd line segment: right hand side of the comparison operator
+     * \returns true if ab < cd (ab is closer than cd) to origin
+     */
+    bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
+
+  private:
+
+    QgsPointXY mOrigin;
+
+};
+
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares angles from an origin to points clockwise, starting at the positive y-axis.
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsClockwiseAngleComparer
+{
+  public:
+    explicit QgsClockwiseAngleComparer( const QgsPointXY &origin )
+      : mVertex( origin )
+    {}
+
+    bool operator()( const QgsPointXY &a, const QgsPointXY &b ) const;
+
+  private:
+
+    QgsPointXY mVertex;
+
+};
+
+///@endcond PRIVATE
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

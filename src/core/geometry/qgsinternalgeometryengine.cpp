@@ -22,7 +22,7 @@
 #include "qgsmulticurve.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
-
+#include "qgslinesegment.h"
 
 #include <QTransform>
 #include <memory>
@@ -389,10 +389,12 @@ QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tole
 
   std::unique_ptr< QgsLineString > best( ring->clone() );
 
+  QVector< QgsVector > /* yep */ motions;
+  motions.reserve( numPoints );
+
   for ( int it = 0; it < iterations; ++it )
   {
-    QVector< QgsVector > /* yep */ motions;
-    motions.reserve( numPoints );
+    motions.resize( 0 ); // avoid re-allocations
 
     // first loop through an calculate all motions
     QgsPoint a;
@@ -708,3 +710,151 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry( densifyGeometry( mGeometry, -1, distance ) );
   }
 }
+
+///@cond PRIVATE
+//
+// QgsLineSegmentDistanceComparer
+//
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const
+{
+  Q_ASSERT_X( ab.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "AB must not be collinear with the origin." );
+  Q_ASSERT_X( cd.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "CD must not be collinear with the origin." );
+
+  // flip the segments so that if there are common endpoints,
+  // they will be the segment's start points
+  if ( ab.end() == cd.start() || ab.end() == cd.end() )
+    ab.reverse();
+  if ( ab.start() == cd.end() )
+    cd.reverse();
+
+  // cases with common endpoints
+  if ( ab.start() == cd.start() )
+  {
+    const int oad = QgsGeometryUtils::leftOfLine( cd.endX(), cd.endY(), mOrigin.x(), mOrigin.y(), ab.startX(), ab.startY() );
+    const int oab = ab.pointLeftOfLine( mOrigin );
+    if ( ab.end() == cd.end() || oad != oab )
+      return false;
+    else
+      return ab.pointLeftOfLine( cd.end() ) != oab;
+  }
+  else
+  {
+    // cases without common endpoints
+    const int cda = cd.pointLeftOfLine( ab.start() );
+    const int cdb = cd.pointLeftOfLine( ab.end() );
+    if ( cdb == 0 && cda == 0 )
+    {
+      return mOrigin.sqrDist( ab.start() ) < mOrigin.sqrDist( cd.start() );
+    }
+    else if ( cda == cdb || cda == 0 || cdb == 0 )
+    {
+      const int cdo = cd.pointLeftOfLine( mOrigin );
+      return cdo == cda || cdo == cdb;
+    }
+    else
+    {
+      const int abo = ab.pointLeftOfLine( mOrigin );
+      return abo != ab.pointLeftOfLine( cd.start() );
+    }
+  }
+}
+
+//
+// QgsClockwiseAngleComparer
+//
+
+bool QgsClockwiseAngleComparer::operator()( const QgsPointXY &a, const QgsPointXY &b ) const
+{
+  const bool aIsLeft = a.x() < mVertex.x();
+  const bool bIsLeft = b.x() < mVertex.x();
+  if ( aIsLeft != bIsLeft )
+    return bIsLeft;
+
+  if ( qgsDoubleNear( a.x(), mVertex.x() ) && qgsDoubleNear( b.x(), mVertex.x() ) )
+  {
+    if ( a.y() >= mVertex.y() || b.y() >= mVertex.y() )
+    {
+      return b.y() < a.y();
+    }
+    else
+    {
+      return a.y() < b.y();
+    }
+  }
+  else
+  {
+    const QgsVector oa = a - mVertex;
+    const QgsVector ob = b - mVertex;
+    const double det = oa.crossProduct( ob );
+    if ( qgsDoubleNear( det, 0.0 ) )
+    {
+      return oa.lengthSquared() < ob.lengthSquared();
+    }
+    else
+    {
+      return det < 0;
+    }
+  }
+}
+
+///@endcond PRIVATE
+
+//
+// QgsRay2D
+//
+
+bool QgsRay2D::intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const
+{
+  const QgsVector ao = origin - segment.start();
+  const QgsVector ab = segment.end() - segment.start();
+  const double det = ab.crossProduct( direction );
+  if ( qgsDoubleNear( det, 0.0 ) )
+  {
+    const int abo = segment.pointLeftOfLine( origin );
+    if ( abo != 0 )
+    {
+      return false;
+    }
+    else
+    {
+      const double distA = ao * direction;
+      const double distB = ( origin - segment.end() ) * direction;
+
+      if ( distA > 0 && distB > 0 )
+      {
+        return false;
+      }
+      else
+      {
+        if ( ( distA > 0 ) != ( distB > 0 ) )
+          intersectPoint = origin;
+        else if ( distA > distB ) // at this point, both distances are negative
+          intersectPoint = segment.start(); // hence the nearest point is A
+        else
+          intersectPoint = segment.end();
+        return true;
+      }
+    }
+  }
+  else
+  {
+    const double u = ao.crossProduct( direction ) / det;
+    if ( u < 0.0 || 1.0 < u )
+    {
+      return false;
+    }
+    else
+    {
+      const double t = -ab.crossProduct( ao ) / det;
+      intersectPoint = origin + direction * t;
+      return qgsDoubleNear( t, 0.0 ) || t > 0;
+    }
+  }
+}
+

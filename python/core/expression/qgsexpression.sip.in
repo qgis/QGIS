@@ -66,6 +66,30 @@ Implicit sharing was added in 2.14
 %End
   public:
 
+    struct ParserError
+    {
+      enum ParserErrorType
+      {
+        Unknown,
+        FunctionUnknown,
+        FunctionWrongArgs,
+        FunctionInvalidParams,
+        FunctionNamedArgsError
+      };
+
+      ParserErrorType errorType;
+
+      QString errorMsg;
+
+      int firstLine;
+
+      int firstColumn;
+
+      int lastLine;
+
+      int lastColumn;
+    };
+
     QgsExpression( const QString &expr );
 %Docstring
 Creates a new expression based on the provided string.
@@ -109,6 +133,13 @@ Returns true if an error occurred when parsing the input expression
     QString parserErrorString() const;
 %Docstring
 Returns parser error
+%End
+
+    QList<QgsExpression::ParserError> parserErrors() const;
+%Docstring
+Returns parser error details including location of error.
+
+.. versionadded:: 3.0
 %End
 
     const QgsExpressionNode *rootNode() const;
@@ -338,6 +369,15 @@ Additional substitutions can be passed through the substitutionMap parameter
 and area conversion
 
 .. versionadded:: 2.12
+%End
+
+    static QSet<QString> referencedVariables( const QString &text );
+%Docstring
+This function returns variables in each expression between [% and %].
+
+:param text: The source string in which variables should be searched.
+
+.. versionadded:: 3.2
 %End
 
     static double evaluateToDouble( const QString &text, const double fallbackValue );

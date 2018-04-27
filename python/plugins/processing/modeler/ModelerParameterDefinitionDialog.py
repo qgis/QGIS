@@ -43,6 +43,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -197,8 +198,8 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
             self.verticalLayout.addWidget(self.datatypeCombo)
-        elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, QgsProcessingParameterNumber)):
+        elif (self.paramType == parameters.PARAMETER_NUMBER or self.paramType == parameters.PARAMETER_DISTANCE or
+              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
             self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
             self.minTextBox = QLineEdit()
             self.verticalLayout.addWidget(self.minTextBox)
@@ -295,7 +296,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.setLayout(self.verticalLayout)
 
     def accept(self):
-        description = str(self.nameTextBox.text())
+        description = self.nameTextBox.text()
         if description.strip() == '':
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                 self.tr('Invalid parameter name'))
@@ -360,7 +361,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name, description,
                 self.datatypeCombo.currentData())
         elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, QgsProcessingParameterNumber)):
+              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
             try:
                 self.param = QgsProcessingParameterNumber(name, description, QgsProcessingParameterNumber.Double,
                                                           self.defaultTextBox.text())
@@ -410,7 +411,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(typeId))
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
-            self.param.setDescription(name)
+            self.param.setDescription(description)
             self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():

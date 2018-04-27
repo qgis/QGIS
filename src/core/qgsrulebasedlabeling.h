@@ -203,7 +203,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBasedLabeling::RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedLabeling::RuleList descendants() const;
 
         /**
          * The parent rule

@@ -29,11 +29,11 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void stopRender( QgsRenderContext &context );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
 
@@ -41,7 +41,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
 
    symbolForFeature2 in Python bindings
 %End
-    virtual QgsSymbolList symbols( QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 %Docstring
 

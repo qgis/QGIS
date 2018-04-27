@@ -136,6 +136,7 @@
 %Include qgstestutils.sip
 %Include qgsziputils.sip
 %Include qgsvector.sip
+%Include qgsvector3d.sip
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
 %Include auth/qgsauthmanager.sip
@@ -270,6 +271,7 @@
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
 %Include geometry/qgsgeometryutils.sip
+%Include geometry/qgslinesegment.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
 %Include geometry/qgsmultilinestring.sip
@@ -376,6 +378,8 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasterprojector.sip
+%Include mesh/qgsmeshdataprovider.sip
+%Include mesh/qgsmeshlayer.sip
 %Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgspoint.sip

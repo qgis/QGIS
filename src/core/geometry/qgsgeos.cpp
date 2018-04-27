@@ -25,6 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgslogger.h"
 #include "qgspolygon.h"
+#include "qgsgeometryeditutils.h"
 #include <limits>
 #include <cstdio>
 
@@ -131,6 +132,44 @@ QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )
   , mPrecision( precision )
 {
   cacheGeos();
+}
+
+QgsGeometry QgsGeos::geometryFromGeos( GEOSGeometry *geos )
+{
+  QgsGeometry g( QgsGeos::fromGeos( geos ) );
+  GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), geos );
+  return g;
+}
+
+QgsGeometry QgsGeos::geometryFromGeos( geos::unique_ptr geos )
+{
+  QgsGeometry g( QgsGeos::fromGeos( geos.get() ) );
+  return g;
+}
+
+geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision )
+{
+  if ( geometry.isNull() )
+  {
+    return nullptr;
+  }
+
+  return asGeos( geometry.constGet(), precision );
+}
+
+QgsGeometry::OperationResult QgsGeos::addPart( QgsGeometry &geometry, GEOSGeometry *newPart )
+{
+  if ( geometry.isNull() )
+  {
+    return QgsGeometry::InvalidBaseGeometry;
+  }
+  if ( !newPart )
+  {
+    return QgsGeometry::AddPartNotMultiGeometry;
+  }
+
+  std::unique_ptr< QgsAbstractGeometry > geom = fromGeos( newPart );
+  return QgsGeometryEditUtils::addPart( geometry.get(), std::move( geom ) );
 }
 
 void QgsGeos::geometryChanged()

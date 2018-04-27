@@ -241,6 +241,19 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
 
+    /**
+     * Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
+     * If the list of field names is empty, it is assumed that all fields are required.
+     * \since QGIS 3.2
+     */
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+
+    /**
+     * Returns a subset of fields based on the indices of desired fields.
+     * \since QGIS 3.2
+     */
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

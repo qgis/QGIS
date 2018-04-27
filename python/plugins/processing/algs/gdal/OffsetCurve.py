@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
@@ -53,10 +54,10 @@ class OffsetCurve(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Offset distance (left-sided: positive, right-sided: negative)'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Offset distance (left-sided: positive, right-sided: negative)'),
+                                                         parentParameterName=self.INPUT,
+                                                         defaultValue=10))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),

@@ -174,6 +174,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setExpressionText( const QString &expression );
 
     /**
+     * The set expected format string. This is pure text format and no expression validation
+     * is done against it.
+     * \returns The expected value format.
+     */
+    QString expectedOutputFormat();
+
+    /**
+     * The set expected format string. This is pure text format and no expression validation
+     * is done against it.
+     * \param expected The expected value format for the expression.
+     * \note Only a UI hint and not used for expression validation.
+     */
+    void setExpectedOutputFormat( const QString &expected );
+
+    /**
      * Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \see setExpressionContext
@@ -307,6 +322,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   private slots:
+    void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
     void showContextMenu( QPoint );
     void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
@@ -352,9 +368,15 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void showEvent( QShowEvent *e ) override;
 
   private:
+    int FUNCTION_MARKER_ID = 25;
+    void createErrorMarkers( QList<QgsExpression::ParserError> errors );
+    void createMarkers( const QgsExpressionNode *node );
+    void clearFunctionMarkers();
+    void clearErrors();
     void runPythonCode( const QString &code );
     void updateFunctionTree();
     void fillFieldValues( const QString &fieldName, int countLimit );
+    QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
 

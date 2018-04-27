@@ -411,6 +411,21 @@ A combination of when and then. Simple as that.
 Get a deep copy of this WhenThen combination.
 %End
 
+        QgsExpressionNode *whenExp() const;
+%Docstring
+The expression that makes the WHEN part of the condition.
+
+:return: The expression node that makes the WHEN part of the condition check.
+%End
+
+
+        QgsExpressionNode *thenExp() const;
+%Docstring
+The expression node that makes the THEN result part of the condition.
+
+:return: The expression node that makes the THEN result part of the condition.
+%End
+
       private:
         WhenThen( const QgsExpressionNodeCondition::WhenThen &rh );
     };
@@ -432,6 +447,20 @@ Create a new node with the given list of ``conditions`` and an optional ``elseEx
 
     virtual QString dump() const;
 
+
+    WhenThenList conditions() const;
+%Docstring
+The list of WHEN THEN expression parts of the expression.
+
+:return: The list of WHEN THEN expression parts of the expression.
+%End
+
+    QgsExpressionNode *elseExp() const;
+%Docstring
+The ELSE expression used for the condition.
+
+:return: The ELSE expression used for the condition.
+%End
 
     virtual QSet<QString> referencedColumns() const;
 
