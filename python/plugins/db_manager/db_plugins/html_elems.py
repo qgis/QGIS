@@ -38,6 +38,8 @@ class HtmlContent:
 
         if isinstance(self.data, str):
             html = unicode(self.data, encoding='utf-8', errors='replace')
+        elif isinstance(self.data, unicode):
+            html = self.data
         else:
             html = unicode(self.data)
         html = html.replace("\n", "<br>")
