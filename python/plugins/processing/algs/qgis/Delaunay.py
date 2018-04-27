@@ -79,6 +79,8 @@ class Delaunay(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = QgsFields()
         fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))

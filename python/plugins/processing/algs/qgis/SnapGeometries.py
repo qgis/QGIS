@@ -29,6 +29,7 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -87,8 +88,13 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         reference_source = self.parameterAsSource(parameters, self.REFERENCE_LAYER, context)
+        if reference_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.REFERENCE_LAYER))
+
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
         mode = self.parameterAsEnum(parameters, self.BEHAVIOR, context)
 

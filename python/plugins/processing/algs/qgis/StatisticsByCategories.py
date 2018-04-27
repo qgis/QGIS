@@ -30,6 +30,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsDateTimeStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsFields,
@@ -88,6 +89,9 @@ class StatisticsByCategories(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         value_field_name = self.parameterAsString(parameters, self.VALUES_FIELD_NAME, context)
         category_field_names = self.parameterAsFields(parameters, self.CATEGORIES_FIELD_NAME, context)
 

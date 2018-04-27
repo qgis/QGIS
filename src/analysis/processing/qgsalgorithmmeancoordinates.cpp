@@ -75,7 +75,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString weightFieldName = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
   QString uniqueFieldName = parameterAsString( parameters, QStringLiteral( "UID" ), context );

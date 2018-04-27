@@ -35,6 +35,7 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
@@ -128,6 +129,9 @@ class BasicStatisticsForField(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field = source.fields().at(source.fields().lookupField(field_name))
 

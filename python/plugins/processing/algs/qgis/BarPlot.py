@@ -31,6 +31,7 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
+                       QgsProcessingException,
                        QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -72,6 +73,8 @@ class BarPlot(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)

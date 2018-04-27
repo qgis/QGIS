@@ -88,9 +88,12 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( QObject::tr( "Same layer given for both hubs and spokes" ) );
 
   std::unique_ptr< QgsProcessingFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
+  if ( !hubSource )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "HUBS" ) ) );
+
   std::unique_ptr< QgsProcessingFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
   if ( !hubSource || !spokeSource )
-    throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SPOKES" ) ) );
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
   int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );

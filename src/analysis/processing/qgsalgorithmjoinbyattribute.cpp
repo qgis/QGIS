@@ -94,9 +94,12 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !input )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   std::unique_ptr< QgsProcessingFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
-  if ( !input || !input2 )
-    throw QgsProcessingException( QObject::tr( "Could not load source layers" ) );
+  if ( !input2 )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
 
   QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );

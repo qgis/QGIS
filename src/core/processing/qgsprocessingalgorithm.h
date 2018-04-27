@@ -744,6 +744,32 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
+    /**
+     * Returns a user-friendly string to use as an error when a source parameter could
+     * not be loaded.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid source parameter name.
+     *
+     * \since QGIS 3.2
+     *
+     * \see invalidSinkError()
+     */
+    static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
+
+    /**
+     * Returns a user-friendly string to use as an error when a sink parameter could
+     * not be created.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid source parameter name.
+     *
+     * \since QGIS 3.2
+     *
+     * \see invalidSourceError()
+     */
+    static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
+
   private:
 
     QgsProcessingProvider *mProvider = nullptr;

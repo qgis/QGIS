@@ -31,7 +31,8 @@ import plotly.graph_objs as go
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingException)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
@@ -80,6 +81,9 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
         zfieldname = self.parameterAsString(parameters, self.ZFIELD, context)

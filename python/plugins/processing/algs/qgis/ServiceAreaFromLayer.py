@@ -42,6 +42,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointXY,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterEnum,
@@ -177,7 +178,13 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
+        if startPoints is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.START_POINTS))
+
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
 

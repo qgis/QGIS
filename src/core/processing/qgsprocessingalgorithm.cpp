@@ -91,7 +91,16 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
     if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
     {
       if ( message )
-        *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
+      {
+        // TODO QGIS 4 - move the message handling to the parameter subclasses (but this
+        // requires a change in signature for the virtual checkValueIsAcceptable method)
+        if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
+          *message = invalidSourceError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterFeatureSink::typeName() )
+          *message = invalidSinkError( parameters, def->name() );
+        else
+          *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
+      }
       return false;
     }
   }
@@ -633,6 +642,60 @@ QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parame
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    {
+      QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
+      var = fromVar.source;
+    }
+    if ( var.canConvert<QgsProperty>() )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not create destination layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+      var = fromVar.sink;
+    }
+    if ( var.canConvert<QgsProperty>() )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not create destination layer for %1: %2" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
+  }
+}
+
 bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
 {
   if ( !parameter->isDestination() )
@@ -712,7 +775,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
 {
   mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mSource )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
@@ -766,3 +829,4 @@ QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
 {
   return QgsFeatureRequest();
 }
+

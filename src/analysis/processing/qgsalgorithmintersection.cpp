@@ -77,11 +77,11 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 {
   std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !sourceA )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
   if ( !sourceB )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for OVERLAY" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
   QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 

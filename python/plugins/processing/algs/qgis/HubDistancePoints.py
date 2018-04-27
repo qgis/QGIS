@@ -98,7 +98,13 @@ class HubDistancePoints(QgisAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         point_source = self.parameterAsSource(parameters, self.INPUT, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
+        if hub_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]

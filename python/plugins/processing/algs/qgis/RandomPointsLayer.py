@@ -95,6 +95,9 @@ class RandomPointsLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 

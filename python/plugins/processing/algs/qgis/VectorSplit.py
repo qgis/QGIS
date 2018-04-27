@@ -33,6 +33,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
+                       QgsProcessingException,
                        QgsProcessingOutputMultipleLayers,
                        QgsExpression,
                        QgsFeatureRequest)
@@ -78,6 +79,9 @@ class VectorSplit(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         directory = self.parameterAsString(parameters, self.OUTPUT, context)
 

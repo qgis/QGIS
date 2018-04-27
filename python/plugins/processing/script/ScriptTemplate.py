@@ -3,6 +3,7 @@
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
                        QgsFeatureSink,
+                       QgsProcessingException,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
@@ -120,6 +121,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             self.INPUT,
             context
         )
+
+        # If source was not found, throw an exception to indicate that the algorithm
+        # encountered a fatal error. The exception text can be any string, but in this
+        # case we use the pre-built invalidSourceError method to return a standard
+        # helper text for when a source cannot be evaluated
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         (sink, dest_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,

@@ -77,6 +77,9 @@ class GeometryConvert(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         index = self.parameterAsEnum(parameters, self.TYPE, context)
 
         if index == 0:

@@ -746,6 +746,32 @@ Evaluates the parameter with matching ``name`` to a range of values.
 Evaluates the parameter with matching ``name`` to a list of fields.
 %End
 
+    static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a source parameter could
+not be loaded.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the invalid source parameter name.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`invalidSinkError`
+%End
+
+    static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a sink parameter could
+not be created.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the invalid source parameter name.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`invalidSourceError`
+%End
+
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };

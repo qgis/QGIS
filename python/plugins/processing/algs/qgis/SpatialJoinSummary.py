@@ -43,6 +43,7 @@ from qgis.core import (NULL,
                        QgsStringStatisticalSummary,
                        QgsProcessing,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -151,7 +152,13 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         join_source = self.parameterAsSource(parameters, self.JOIN, context)
+        if join_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
         summaries = [self.statistics[i][0] for i in

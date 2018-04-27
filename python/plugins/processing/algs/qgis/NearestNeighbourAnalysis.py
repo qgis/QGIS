@@ -35,6 +35,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingOutputNumber,
@@ -91,6 +92,9 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
         spatialIndex = QgsSpatialIndex(source, feedback)

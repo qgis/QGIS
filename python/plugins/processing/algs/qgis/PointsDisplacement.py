@@ -32,6 +32,7 @@ from qgis.core import (QgsFeatureSink,
                        QgsSpatialIndex,
                        QgsRectangle,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
@@ -78,6 +79,9 @@ class PointsDisplacement(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         proximity = self.parameterAsDouble(parameters, self.PROXIMITY, context)
         radius = self.parameterAsDouble(parameters, self.DISTANCE, context)
         horizontal = self.parameterAsBool(parameters, self.HORIZONTAL, context)

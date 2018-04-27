@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingUtils,
                        QgsProcessingParameterFileDestination)
@@ -74,6 +75,9 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
 
