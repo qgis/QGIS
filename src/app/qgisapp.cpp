@@ -4222,7 +4222,7 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr><tr>" );
 
-#if PJ_VERSION >= 500
+#if PROJ_HAS_INFO
     PJ_INFO info = proj_info();
     versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
     versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + info.version + "</td>";
