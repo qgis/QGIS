@@ -169,7 +169,7 @@ void QgsAttributesFormProperties::initLayoutConfig()
   mEditorLayoutComboBox_currentIndexChanged( mEditorLayoutComboBox->currentIndex() );
 
   QgsEditFormConfig cfg = mLayer->editFormConfig();
-  mEditFormLineEdit->setText( cfg.uiForm( QgsEditFormConfig::Original ) );
+  mEditFormLineEdit->setText( cfg.uiForm() );
 }
 
 void QgsAttributesFormProperties::initInitPython()

@@ -27,6 +27,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
@@ -1118,21 +1119,21 @@ void QgsAttributeForm::init()
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
     QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
-    QFile file( mLayer->editFormConfig().uiForm( QgsEditFormConfig::LocalCopy ) );
-
-    if ( file.open( QFile::ReadOnly ) )
+    const QString path = mLayer->editFormConfig().uiForm();
+    QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
+    if ( file->isReadable() && file->open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( file );
+      QFileInfo fi( file->fileName() );
       loader.setWorkingDirectory( fi.dir() );
-      formWidget = loader.load( &file, this );
+      formWidget = loader.load( file, this );
       if ( formWidget )
       {
         formWidget->setWindowFlags( Qt::Widget );
         layout->addWidget( formWidget );
         formWidget->show();
-        file.close();
+        file->close();
         mButtonBox = findChild<QDialogButtonBox *>();
         createWrappers();
 

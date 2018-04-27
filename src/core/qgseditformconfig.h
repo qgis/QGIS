@@ -94,15 +94,6 @@ class CORE_EXPORT QgsEditFormConfig
     };
 
     /**
-     * The FormPath enum determines the path of the custom UI form
-     */
-    enum FormPath
-    {
-      Original, //!< User entered directory or URL
-      LocalCopy //!< If the Original is an URL, this is for the local copy of the file
-    };
-
-    /**
      * Copy constructor
      *
      * \since QGIS 3.0
@@ -145,11 +136,9 @@ class CORE_EXPORT QgsEditFormConfig
     void setLayout( EditorLayout editorLayout );
 
     /**
-     * \brief Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout
-     * If the form is from a URL and \a path is Original, the original URL
-     * of the UI form is returned instead of the local copy.
+     * \brief Get path or URL to the .ui form. Only meaningful with EditorLayout::UiFileLayout
      */
-    QString uiForm( FormPath path = LocalCopy ) const;
+    QString uiForm() const;
 
     /**
      * Set path to the .ui form.

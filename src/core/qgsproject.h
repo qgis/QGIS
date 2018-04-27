@@ -1351,9 +1351,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsCoordinateTransformContext mTransformContext;
 
-    // local temporary copies of downloaded UI form files
-    QList<QPointer<QTemporaryFile>> mUiFormLocalCopies;
-
     QgsProjectMetadata mMetadata;
 
     friend class QgsProjectDirtyBlocker;

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
-#include "qgsnetworkcontentfetcher.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
@@ -147,64 +147,21 @@ void QgsEditFormConfig::setLayout( QgsEditFormConfig::EditorLayout editorLayout 
     d->mConfiguredRootContainer = true;
 }
 
-QString QgsEditFormConfig::uiForm( FormPath path ) const
+QString QgsEditFormConfig::uiForm() const
 {
-  if ( path == Original && !d->mUiFormUrl.isEmpty() )
-    return d->mUiFormUrl;
-  else
-    return d->mUiFormPath;
+  return d->mUiFormPath;
 }
 
 bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
 {
-  bool success = false;
-
-  if ( !ui.isEmpty() && ui == d->mUiFormUrl && !d->mUiFormPath.isEmpty() )
-  {
-    // do not download again if URL did not change and was correctly loaded before
-    return success;
-  }
-
-  // if the ui points to a URL make a local copy
-  QString formPath = ui;
-  QString formUrl = QString();
+  Q_UNUSED( errMsg );
   if ( !ui.isEmpty() && !QUrl::fromUserInput( ui ).isLocalFile() )
   {
-    formPath = QString();
-    formUrl = ui;
-
-    QgsNetworkContentFetcher fetcher;
-    QEventLoop loop;
-    QObject::connect( &fetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
-    fetcher.fetchContent( QUrl( ui ) );
-
-    //wait until form is fetched
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-    QNetworkReply *reply = fetcher.reply();
-    if ( reply && reply->error() == QNetworkReply::NoError )
-    {
-      QTemporaryFile *localFile = new QTemporaryFile( QStringLiteral( "XXXXXX.ui" ) );
-      if ( localFile->open() )
-      {
-        localFile->write( reply->readAll() );
-        localFile->close();
-        success = true;
-        QgsProject::instance()->addUiFormLocalCopy( localFile );
-        formPath = localFile->fileName();
-      }
-    }
-    if ( !success && errMsg )
-    {
-      *errMsg = QStringLiteral( "Could not load UI from %1 (%2)" ).arg( ui ).arg( reply->errorString() );
-    }
-  }
-  else
-  {
-    success = true;
+    // any existing download will not be restarted!
+    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( ui, QgsNetworkContentFetcherRegistry::DownloadImmediately );
   }
 
-  if ( formPath.isEmpty() )
+  if ( ui.isEmpty() )
   {
     setLayout( GeneratedLayout );
   }
@@ -212,10 +169,9 @@ bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
   {
     setLayout( UiFileLayout );
   }
-  d->mUiFormPath = formPath;
-  d->mUiFormUrl = formUrl;
+  d->mUiFormPath = ui;
 
-  return success;
+  return true;
 }
 
 bool QgsEditFormConfig::readOnly( int idx ) const
@@ -452,7 +408,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   QDomDocument doc( node.ownerDocument() );
 
   QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
-  QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm( Original ) ) );
+  QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 

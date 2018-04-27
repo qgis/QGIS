@@ -64,12 +64,6 @@ Constructor for TabData
       CodeSourceEnvironment
     };
 
-    enum FormPath
-    {
-      Original,
-      LocalCopy
-    };
-
     QgsEditFormConfig( const QgsEditFormConfig &o );
 %Docstring
 Copy constructor
@@ -115,11 +109,9 @@ Get the active layout style for the attribute editor for this layer
 Set the active layout style for the attribute editor for this layer
 %End
 
-    QString uiForm( FormPath path = LocalCopy ) const;
+    QString uiForm() const;
 %Docstring
- Get path to the .ui form. Only meaningful with EditorLayout.UiFileLayout
-If the form is from a URL and ``path`` is Original, the original URL
-of the UI form is returned instead of the local copy.
+ Get path or URL to the .ui form. Only meaningful with EditorLayout.UiFileLayout
 %End
 
     bool setUiForm( const QString &ui, QString *errMsg /Out/ = 0 );

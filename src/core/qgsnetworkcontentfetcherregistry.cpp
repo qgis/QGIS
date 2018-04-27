@@ -128,7 +128,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   return content;
 }
 
-const QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePathOrUrl )
+QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePathOrUrl )
 {
   QFile *file = nullptr;
   QString path = filePathOrUrl;

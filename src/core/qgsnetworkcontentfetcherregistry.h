@@ -159,7 +159,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \brief Returns a QFile from a local file or to a temporary file previously fetched by the registry
      * \param filePathOrUrl can either be a local file path or a remote content which has previously been fetched
      */
-    const QFile *localFile( const QString &filePathOrUrl );
+    QFile *localFile( const QString &filePathOrUrl );
 #endif
 
     /**
