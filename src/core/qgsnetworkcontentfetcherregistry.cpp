@@ -3,7 +3,7 @@
                              -------------------
     begin                : April, 2018
     copyright            : (C) 2018 by Denis Rouzaud
-    email                : denis.rouzaud@gmail.com
+    email                : denis@opengis.ch
 
  ***************************************************************************/
 
@@ -28,66 +28,78 @@ QgsNetworkContentFetcherRegistry::QgsNetworkContentFetcherRegistry()
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
-  QMap<QUrl, FetchedContent>::const_iterator it = mFileRegistry.constBegin();
+  QMap<QUrl, QgsFetchedContent *>::const_iterator it = mFileRegistry.constBegin();
   for ( ; it != mFileRegistry.constEnd(); ++it )
   {
-    it.value().mFile->deleteLater();
+    it.value()->mFile->close();
+    delete it.value()->mFile;
   }
+  mFileRegistry.clear();
 }
 
-const QgsNetworkContentFetcherTask *QgsNetworkContentFetcherRegistry::fetch( const QUrl &url, const bool reload )
+const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &url, const FetchingMode &fetchingMode )
 {
   if ( mFileRegistry.contains( url ) )
   {
-    if ( !reload )
-    {
-      return mFileRegistry.value( url ).mFetchingTask;
-    }
-    else
-    {
-      FetchedContent content = mFileRegistry.take( url );
-      if ( content.mFetchingTask )
-      {
-        content.mFetchingTask->cancel();
-      }
-      if ( content.mFile )
-      {
-        content.mFile->deleteLater();
-      }
-    }
+    return mFileRegistry.value( url );
   }
 
+  QgsFetchedContent *content = new QgsFetchedContent( nullptr, QgsFetchedContent::NotStarted );
   QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url );
-  QgsApplication::instance()->taskManager()->addTask( fetcher );
-  mFileRegistry.insert( url,
-                        FetchedContent( nullptr,
-                                        QgsNetworkContentFetcherRegistry::Downloading ) );
+
+  QObject::connect( content, &QgsFetchedContent::downloadStarted, this, [ = ]( const bool redownload )
+  {
+    QMutexLocker locker( &mMutex );
+    if ( mFileRegistry.contains( url ) && redownload )
+    {
+      const QgsFetchedContent *content = mFileRegistry[url];
+      if ( mFileRegistry.value( url )->status() == QgsFetchedContent::Downloading && content->mFetchingTask )
+      {
+        content->mFetchingTask->cancel();
+      }
+      if ( content->mFile )
+      {
+        content->mFile->deleteLater();
+        mFileRegistry[url]->setFilePath( QStringLiteral() );
+      }
+    }
+    if ( ( mFileRegistry.contains( url ) && mFileRegistry.value( url )->status() == QgsFetchedContent::NotStarted ) || redownload )
+    {
+      QgsApplication::instance()->taskManager()->addTask( fetcher );
+    }
+  } );
 
   QObject::connect( fetcher, &QgsNetworkContentFetcherTask::fetched, this, [ = ]()
   {
+    QMutexLocker locker( &mMutex );
     QNetworkReply *reply = fetcher->reply();
-    FetchedContent content = mFileRegistry.take( url );
+    QgsFetchedContent *content = mFileRegistry.value( url );
     if ( reply->error() == QNetworkReply::NoError )
     {
-      content.setFile( new QTemporaryFile( QStringLiteral( "XXXXXX" ) ) );
-      content.mFile->write( reply->readAll() );
-      content.setStatus( Finished );
+      QTemporaryFile *tf = new QTemporaryFile( QStringLiteral( "XXXXXX" ) );
+      content->setFile( tf );
+      tf->open();
+      content->mFile->write( reply->readAll() );
+      // Qt docs notes that on some system if fileName is not called before close, file might get deleted
+      content->setFilePath( tf->fileName() );
+      tf->close();
+      content->setStatus( QgsFetchedContent::Finished );
     }
     else
     {
-      content.setStatus( Failed );
-      content.setError( reply->error() );
+      content->setStatus( QgsFetchedContent::Failed );
+      content->setError( reply->error() );
+      content->setFilePath( QStringLiteral() );
     }
-    mFileRegistry.insert( url, content );
+    content->emitFetched();
   } );
 
+  if ( fetchingMode == DownloadImmediately )
+    content->download();
+  mFileRegistry.insert( url, content );
 
-  return fetcher;
+  return content;
 }
 
 
 
-QgsNetworkContentFetcherRegistry::FetchedContent QgsNetworkContentFetcherRegistry::file( const QUrl &url )
-{
-  return mFileRegistry.value( url );
-}

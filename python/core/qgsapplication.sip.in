@@ -645,8 +645,7 @@ within SVG files.
 
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
 %Docstring
-Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
-within SVG files.
+Returns the application's network content registry used for fetching temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End

@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcherregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsFetchedContent : QObject
+{
+%Docstring
+FetchedContent holds useful information about a network content being fetched
+
+.. seealso:: :py:class:`QgsNetworkContentFetcherRegistry`
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkcontentfetcherregistry.h"
+%End
+  public:
+    enum ContentStatus
+    {
+      NotStarted,
+      Downloading,
+      Finished,
+      Failed
+    };
+
+    explicit QgsFetchedContent( QTemporaryFile *file = 0, ContentStatus status = NotStarted );
+%Docstring
+Constructs a FetchedContent with pointer to the downloaded file and status of the download
+%End
+
+
+    const QString filePath() const;
+%Docstring
+Return the path to the local file, an empty string if the file is not accessible yet.
+%End
+
+    ContentStatus status() const;
+%Docstring
+Return the status of the download
+%End
+
+    QNetworkReply::NetworkError error() const;
+%Docstring
+Return the potential error of the download
+%End
+
+  public slots:
+
+    void download( bool redownload = false );
+%Docstring
+ Start the download
+
+:param redownload: if set to true, it will restart any achieved or pending download.
+%End
+
+  signals:
+    void fetched();
+%Docstring
+Sent when the file is fetched and accessible
+%End
+
+    void downloadStarted( const bool redownload );
+%Docstring
+Sent went the download actually starts
+%End
+
+};
+
+class QgsNetworkContentFetcherRegistry : QObject
+{
+%Docstring
+ Registry for temporary fetched files
+
+This provides a simple way of downloading and accessing
+remote files during QGIS application running.
+
+.. seealso:: :py:class:`QgsFetchedContent`
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkcontentfetcherregistry.h"
+%End
+  public:
+    enum FetchingMode
+    {
+      DownloadLater,
+      DownloadImmediately,
+    };
+
+    explicit QgsNetworkContentFetcherRegistry();
+%Docstring
+Create the registry for temporary downloaded files
+%End
+
+    ~QgsNetworkContentFetcherRegistry();
+
+    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode &fetchingMode = DownloadLater );
+%Docstring
+ Initialize a download for the given URL
+
+:param url: the URL to be fetched
+:param fetchingMode: defines if the download will start immediately or shall be manually triggered
+
+.. note::
+
+   If the download starts immediately, it will not redownload any already fetched or currently fetching file.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcherregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

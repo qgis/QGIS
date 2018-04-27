@@ -1667,7 +1667,7 @@ QgsSvgCache *QgsApplication::svgCache()
 
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
-  return members()->mNetworkContentFertcherRegistry;
+  return members()->mNetworkContentFetcherRegistry;
 }
 
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
@@ -1749,7 +1749,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
-  mNetworkContentFertcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -1773,7 +1773,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSvgCache;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
-  delete mNetworkContentFertcherRegistry;
+  delete mNetworkContentFetcherRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

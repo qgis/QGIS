@@ -588,8 +588,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSvgCache *svgCache();
 
     /**
-     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
-     * within SVG files.
+     * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
@@ -810,7 +809,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
-      QgsNetworkContentFetcherRegistry *mNetworkContentFertcherRegistry = nullptr;
+      QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
