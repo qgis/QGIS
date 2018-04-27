@@ -31,6 +31,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsGeometry,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterCrs,
@@ -86,6 +87,8 @@ class PointsLayerFromTable(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = source.fields()
         x_field_index = fields.lookupField(self.parameterAsString(parameters, self.XFIELD, context))

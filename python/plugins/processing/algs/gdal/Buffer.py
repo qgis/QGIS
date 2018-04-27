@@ -32,6 +32,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -103,7 +104,10 @@ class Buffer(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+        fields = source.fields()
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)

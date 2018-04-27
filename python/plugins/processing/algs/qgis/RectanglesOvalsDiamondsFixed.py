@@ -32,6 +32,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterDistance,
+                       QgsProcessingException,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -93,6 +94,9 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         shape = self.parameterAsEnum(parameters, self.SHAPE, context)
         width = self.parameterAsDouble(parameters, self.WIDTH, context)
         height = self.parameterAsDouble(parameters, self.HEIGHT, context)

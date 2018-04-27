@@ -86,6 +86,9 @@ class PoleOfInaccessibility(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
         fields = source.fields()

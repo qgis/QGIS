@@ -37,6 +37,7 @@ from qgis.core import (QgsFeature,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -87,7 +88,12 @@ class SumLines(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         line_source = self.parameterAsSource(parameters, self.LINES, context)
+        if line_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.LINES))
+
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
 
         length_field_name = self.parameterAsString(parameters, self.LEN_FIELD, context)
         count_field_name = self.parameterAsString(parameters, self.COUNT_FIELD, context)

@@ -35,6 +35,7 @@ from qgis.core import (QgsFields,
                        QgsGeometry,
                        QgsProcessing,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -131,7 +132,13 @@ class SpatialJoin(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         join_source = self.parameterAsSource(parameters, self.JOIN, context)
+        if join_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)

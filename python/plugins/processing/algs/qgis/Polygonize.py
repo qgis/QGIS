@@ -33,6 +33,7 @@ from qgis.core import (QgsFields,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
@@ -72,6 +73,9 @@ class Polygonize(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         if self.parameterAsBool(parameters, self.KEEP_FIELDS, context):
             fields = source.fields()
         else:

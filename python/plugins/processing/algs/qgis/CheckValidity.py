@@ -39,6 +39,7 @@ from qgis.core import (QgsSettings,
                        QgsWkbTypes,
                        QgsFields,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -121,6 +122,8 @@ class CheckValidity(QgisAlgorithm):
 
     def doCheck(self, method, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         (valid_output_sink, valid_output_dest_id) = self.parameterAsSink(parameters, self.VALID_OUTPUT, context,
                                                                          source.fields(), source.wkbType(), source.sourceCrs())

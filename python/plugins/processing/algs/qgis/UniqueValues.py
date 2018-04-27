@@ -37,6 +37,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsFields,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -92,6 +93,9 @@ class UniqueValues(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_names = self.parameterAsFields(parameters, self.FIELDS, context)
 
         fields = QgsFields()

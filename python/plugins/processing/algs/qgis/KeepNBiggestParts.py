@@ -31,6 +31,7 @@ from operator import itemgetter
 from qgis.core import (QgsGeometry,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
@@ -72,6 +73,9 @@ class KeepNBiggestParts(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
+
         parts = self.parameterAsInt(parameters, self.PARTS, context)
 
         fields = source.fields()

@@ -108,6 +108,9 @@ class RandomPointsPolygons(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 

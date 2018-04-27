@@ -4220,6 +4220,19 @@ void TestQgsProcessing::parameterFeatureSource()
   //optional with direct layer default
   def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessing::TypeVectorAnyGeometry, QVariant::fromValue( v1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def.get(), params,  context )->id(), v1->id() );
+
+  // invalidSourceError
+  params.clear();
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "MISSING" ) ), QStringLiteral( "Could not load source layer for MISSING: no value specified for parameter" ) );
+  params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "my layer" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QgsProperty::fromValue( "my prop layer" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QgsProcessingFeatureSourceDefinition( QStringLiteral( "my prop layer" ) ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( v1 ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: invalid value" ) );
+
 }
 
 void TestQgsProcessing::parameterFeatureSink()

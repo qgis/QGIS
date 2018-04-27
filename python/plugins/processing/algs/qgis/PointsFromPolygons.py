@@ -36,6 +36,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsProcessingParameterBand,
                        QgsPoint,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
@@ -74,6 +75,8 @@ class PointsFromPolygons(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_VECTOR, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         rasterPath = raster_layer.source()

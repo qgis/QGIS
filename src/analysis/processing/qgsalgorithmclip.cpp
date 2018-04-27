@@ -71,11 +71,11 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > maskSource( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
   if ( !maskSource )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for OVERLAY" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );

@@ -131,6 +131,9 @@ class Aggregate(QgisAlgorithm):
 
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         group_by = self.parameterAsExpression(parameters, self.GROUP_BY, context)
         aggregates = self.parameterAsAggregates(parameters, self.AGGREGATES, context)
 

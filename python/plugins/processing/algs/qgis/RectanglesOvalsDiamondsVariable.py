@@ -33,6 +33,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -102,6 +103,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         shape = self.parameterAsEnum(parameters, self.SHAPE, context)
 
         width_field = self.parameterAsString(parameters, self.WIDTH, context)

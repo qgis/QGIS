@@ -40,6 +40,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsField,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterField,
@@ -160,7 +161,13 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
+        if startPoints is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.START_POINTS))
+
         endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 

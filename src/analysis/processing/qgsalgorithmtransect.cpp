@@ -110,7 +110,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( source.get() ) );
 

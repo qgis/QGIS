@@ -72,7 +72,7 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString nonNullSinkId;
   std::unique_ptr< QgsFeatureSink > nonNullSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, nonNullSinkId, source->fields(),

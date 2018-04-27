@@ -176,6 +176,8 @@ class Heatmap(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         radius = self.parameterAsDouble(parameters, self.RADIUS, context)
         kernel_shape = self.parameterAsEnum(parameters, self.KERNEL, context)

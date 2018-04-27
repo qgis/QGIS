@@ -77,6 +77,9 @@ class ExtractSpecificVertices(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         fields = source.fields()
         fields.append(QgsField('vertex_pos', QVariant.Int))
         fields.append(QgsField('vertex_index', QVariant.Int))

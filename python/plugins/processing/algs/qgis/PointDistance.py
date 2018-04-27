@@ -41,6 +41,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
@@ -108,8 +109,14 @@ class PointDistance(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         source_field = self.parameterAsString(parameters, self.INPUT_FIELD, context)
         target_source = self.parameterAsSource(parameters, self.TARGET, context)
+        if target_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.TARGET))
+
         target_field = self.parameterAsString(parameters, self.TARGET_FIELD, context)
         same_source_and_target = parameters[self.INPUT] == parameters[self.TARGET]
         matType = self.parameterAsEnum(parameters, self.MATRIX_TYPE, context)

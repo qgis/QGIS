@@ -82,6 +82,9 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         buf = self.parameterAsDouble(parameters, self.BUFFER, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())

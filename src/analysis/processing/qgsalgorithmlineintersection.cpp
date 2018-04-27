@@ -80,11 +80,11 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
 {
   std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !sourceA )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
   if ( !sourceB )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INTERSECT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
 
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );

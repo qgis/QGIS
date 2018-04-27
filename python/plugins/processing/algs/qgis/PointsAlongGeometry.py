@@ -36,6 +36,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingUtils,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
@@ -90,6 +91,9 @@ class PointsAlongGeometry(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         start_offset = self.parameterAsDouble(parameters, self.START_OFFSET, context)
         end_offset = self.parameterAsDouble(parameters, self.END_OFFSET, context)

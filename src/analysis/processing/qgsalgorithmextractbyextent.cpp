@@ -68,7 +68,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
   bool clip = parameterAsBool( parameters, QStringLiteral( "CLIP" ), context );

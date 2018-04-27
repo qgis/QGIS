@@ -40,6 +40,7 @@ from qgis.core import (NULL,
                        QgsFeatureSink,
                        QgsDistanceArea,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
@@ -92,6 +93,9 @@ class ExportGeometryInfo(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         wkb_type = source.wkbType()

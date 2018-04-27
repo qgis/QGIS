@@ -91,6 +91,9 @@ class FieldsPyculator(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
         width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)

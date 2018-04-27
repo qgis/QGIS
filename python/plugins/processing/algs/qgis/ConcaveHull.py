@@ -79,6 +79,9 @@ class ConcaveHull(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
+        if layer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
         holes = self.parameterAsBool(parameters, self.HOLES, context)
         no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)

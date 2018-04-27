@@ -90,7 +90,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    throw QgsProcessingException( QObject::tr( "Could not open input layer or feature source for parameter INPUT." ) );
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   for ( Output *output : qgis::as_const( mOutputs ) )
