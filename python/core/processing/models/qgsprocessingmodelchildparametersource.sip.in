@@ -29,6 +29,7 @@ Source for the value of a parameter for a child algorithm within a model.
       ChildOutput,
       StaticValue,
       Expression,
+      ExpressionText,
     };
 
     QgsProcessingModelChildParameterSource();
@@ -49,6 +50,8 @@ Returns a new QgsProcessingModelChildParameterSource which takes its value from 
 .. seealso:: :py:func:`fromChildOutput`
 
 .. seealso:: :py:func:`fromExpression`
+
+.. seealso:: :py:func:`fromExpressionText`
 %End
 
     static QgsProcessingModelChildParameterSource fromModelParameter( const QString &parameterName );
@@ -60,6 +63,8 @@ Returns a new QgsProcessingModelChildParameterSource which takes its value from 
 .. seealso:: :py:func:`fromChildOutput`
 
 .. seealso:: :py:func:`fromExpression`
+
+.. seealso:: :py:func:`fromExpressionText`
 %End
 
     static QgsProcessingModelChildParameterSource fromChildOutput( const QString &childId, const QString &outputName );
@@ -71,6 +76,8 @@ Returns a new QgsProcessingModelChildParameterSource which takes its value from 
 .. seealso:: :py:func:`fromModelParameter`
 
 .. seealso:: :py:func:`fromExpression`
+
+.. seealso:: :py:func:`fromExpressionText`
 %End
 
     static QgsProcessingModelChildParameterSource fromExpression( const QString &expression );
@@ -85,6 +92,29 @@ executed by the model.
 .. seealso:: :py:func:`fromChildOutput`
 
 .. seealso:: :py:func:`fromModelParameter`
+
+.. seealso:: :py:func:`fromExpressionText`
+
+.. versionadded:: 3.2
+%End
+
+    static QgsProcessingModelChildParameterSource fromExpressionText( const QString &text );
+%Docstring
+Returns a new QgsProcessingModelChildParameterSource which takes its
+value from a text with expressions. Expressions are evaluated just before
+the child algorithm executes, and can use functions available
+in its expression context to include results calculated from the child
+algorithms already executed by the model.
+
+.. seealso:: :py:func:`fromStaticValue`
+
+.. seealso:: :py:func:`fromChildOutput`
+
+.. seealso:: :py:func:`fromModelParameter`
+
+.. seealso:: :py:func:`fromExpression`
+
+.. versionadded:: 3.2
 %End
 
     Source source() const;
@@ -171,6 +201,29 @@ in its expression context to include results calculated from the child algorithm
 executed by the model.
 
 .. seealso:: :py:func:`expression`
+%End
+
+    QString expressionText() const;
+%Docstring
+Returns the source's text with expressions. This is only used when the
+source() is ExpressionText.
+
+.. seealso:: :py:func:`setExpressionText`
+
+.. versionadded:: 3.2
+%End
+
+    void setExpressionText( const QString &text );
+%Docstring
+Sets the source's text containing expressions. Calling this will also
+change the source() to ExpressionText. Expressions are evaluated just
+before the child algorithm executes, and can use functions available
+in its expression context to include results calculated from the child
+algorithms already executed by the model.
+
+.. seealso:: :py:func:`expressionText`
+
+.. versionadded:: 3.2
 %End
 
     QVariant toVariant() const;

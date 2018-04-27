@@ -371,6 +371,15 @@ and area conversion
 .. versionadded:: 2.12
 %End
 
+    static QSet<QString> referencedVariables( const QString &text );
+%Docstring
+This function returns variables in each expression between [% and %].
+
+:param text: The source string in which variables should be searched.
+
+.. versionadded:: 3.2
+%End
+
     static double evaluateToDouble( const QString &text, const double fallbackValue );
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant double

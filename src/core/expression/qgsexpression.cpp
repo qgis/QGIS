@@ -477,6 +477,28 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   return expr_action;
 }
 
+QSet<QString> QgsExpression::referencedVariables( const QString &text )
+{
+  QSet<QString> variables;
+  int index = 0;
+  while ( index < text.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( text, index );
+    if ( pos < 0 )
+      break;
+
+    index = pos + rx.matchedLength();
+    QString to_replace = rx.cap( 1 ).trimmed();
+
+    QgsExpression exp( to_replace );
+    variables.unite( exp.referencedVariables() );
+  }
+
+  return variables;
+}
+
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
   bool ok;
