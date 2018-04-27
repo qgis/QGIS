@@ -76,14 +76,12 @@ QMap<QString, QString> QgsServerRequest::parameters() const
     typedef QPair<QString, QString> pair_t;
 
     QUrlQuery query( mUrl );
+    query.setQuery( query.query().replace( '+', QStringLiteral( "%20" ) ) );
+
     QList<pair_t> items = query.queryItems( QUrl::FullyDecoded );
     Q_FOREACH ( const pair_t &pair, items )
     {
-      // prepare the value
-      QString value = pair.second;
-      value.replace( '+', ' ' );
-
-      mParams.insert( pair.first.toUpper(), value );
+      mParams.insert( pair.first.toUpper(), pair.second );
     }
     mDecoded = true;
   }

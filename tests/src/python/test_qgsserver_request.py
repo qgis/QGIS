@@ -48,6 +48,11 @@ class QgsServerRequestTest(unittest.TestCase):
         for k, v in request.headers().items():
             self.assertEqual(parameters[k], v)
 
+    def test_requestParametersDecoding(self):
+        """Test request parameters decoding"""
+        request = QgsServerRequest('http://somesite.com/somepath?parm1=val1%20%2B+val2', QgsServerRequest.GetMethod)
+        self.assertEqual(request.parameters()['PARM1'], 'val1 + val2')
+
     def test_requestUrl(self):
         """Test url"""
         request = QgsServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod)
