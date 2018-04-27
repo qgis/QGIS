@@ -30,18 +30,18 @@ tests:
         type: vector
 
   - algorithm: saga:addrastervaluestopoints
-    name: Add raster values to point simple
+    name: Simple add raster values to points
     params:
       GRIDS:
         params:
-        - name: raster.tif
+        - name: dem.tif
           type: raster
         type: multi
       RESAMPLING: 0
       SHAPES:
-        name: custom/points_over.gml
+        name: custom/points_over.shp
         type: vector
     results:
       RESULT:
-        name: expected/saga/add_grids_to_points.gml
+        name: expected/saga/add_grid_to_points.shp
         type: vector
