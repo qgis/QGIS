@@ -48,10 +48,6 @@ extern "C"
 #include <spatialite.h>
 }
 
-// TODO: DEBUG
-#include <QDebug>
-// END
-
 #define CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE "isOfflineEditable"
 #define CUSTOM_PROPERTY_REMOTE_SOURCE "remoteSource"
 #define CUSTOM_PROPERTY_REMOTE_PROVIDER "remoteProvider"
