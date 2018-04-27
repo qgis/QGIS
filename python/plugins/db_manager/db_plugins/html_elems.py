@@ -36,7 +36,14 @@ class HtmlContent:
         if hasattr(self.data, 'toHtml'):
             return self.data.toHtml()
 
-        html = unicode(self.data).replace("\n", "<br>")
+        if isinstance(self.data, str):
+            html = unicode(self.data, encoding='utf-8', errors='replace')
+        elif isinstance(self.data, unicode):
+            html = self.data
+        else:
+            html = unicode(self.data)
+        html = html.replace("\n", "<br>")
+
         return html
 
     def hasContents(self):
