@@ -144,6 +144,8 @@ class ConcaveHull(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                layer.fields(), QgsWkbTypes.Polygon, layer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():

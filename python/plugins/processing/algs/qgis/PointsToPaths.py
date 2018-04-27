@@ -129,6 +129,8 @@ class PointsToPaths(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, output_wkb, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         points = dict()
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([group_field_index, order_field_index]), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)

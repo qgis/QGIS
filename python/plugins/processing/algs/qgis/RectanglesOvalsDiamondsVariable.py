@@ -115,6 +115,8 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         width = source.fields().lookupField(width_field)
         height = source.fields().lookupField(height_field)

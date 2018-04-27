@@ -83,6 +83,8 @@ class Polygonize(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         allLinesList = []
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))

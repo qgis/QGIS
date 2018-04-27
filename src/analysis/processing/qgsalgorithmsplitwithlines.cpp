@@ -81,7 +81,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
                                           QgsWkbTypes::multiType( source->wkbType() ),  source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;

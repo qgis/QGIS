@@ -261,6 +261,8 @@ class SpatialJoinSummary(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # do the join
         predicates = [self.predicates[i][0] for i in self.parameterAsEnums(parameters, self.PREDICATE, context)]

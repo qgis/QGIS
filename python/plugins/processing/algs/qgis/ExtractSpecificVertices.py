@@ -98,6 +98,8 @@ class ExtractSpecificVertices(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         vertex_indices_string = self.parameterAsString(parameters, self.VERTICES, context)
         indices = []

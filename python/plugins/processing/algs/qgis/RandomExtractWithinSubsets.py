@@ -111,6 +111,8 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         selran = []
         total = 100.0 / (featureCount * len(unique)) if featureCount else 1

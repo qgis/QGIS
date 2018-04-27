@@ -783,7 +783,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
                                           outputWkbType( mSource->wkbType() ),
                                           outputCrs( mSource->sourceCrs() ) ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // prepare expression context for feature iteration
   QgsExpressionContext prevContext = context.expressionContext();

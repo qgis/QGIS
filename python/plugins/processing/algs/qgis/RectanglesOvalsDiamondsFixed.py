@@ -105,6 +105,8 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if shape == 0:
             self.rectangles(sink, source, width, height, rotation, feedback)

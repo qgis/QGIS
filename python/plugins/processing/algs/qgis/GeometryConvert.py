@@ -111,6 +111,8 @@ class GeometryConvert(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), newType, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

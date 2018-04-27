@@ -142,7 +142,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
                                           input->wkbType(), input->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
   // cache attributes of input2

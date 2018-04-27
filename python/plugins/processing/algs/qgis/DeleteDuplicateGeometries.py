@@ -65,6 +65,8 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0

@@ -97,6 +97,8 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

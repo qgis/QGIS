@@ -103,6 +103,8 @@ class RandomExtract(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         total = 100.0 / featureCount if featureCount else 1
         for i, feat in enumerate(features):

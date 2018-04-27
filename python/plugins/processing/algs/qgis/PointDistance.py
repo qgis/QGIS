@@ -167,6 +167,8 @@ class PointDistance(QgisAlgorithm):
         out_wkb = QgsWkbTypes.multiType(source.wkbType()) if matType == 0 else source.wkbType()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, out_wkb, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
@@ -256,6 +258,8 @@ class PointDistance(QgisAlgorithm):
 
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                        fields, source.wkbType(), source.sourceCrs())
+                if sink is None:
+                    raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
             data = [inFeat[inField]]
             for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs(), context.transformContext())):

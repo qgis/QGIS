@@ -39,6 +39,7 @@ from qgis.core import (QgsFields,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
@@ -108,6 +109,8 @@ class RegularPoints(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if randomize:
             seed()
