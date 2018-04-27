@@ -542,7 +542,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         geomType = QStringLiteral( "MULTIPOLYGON" );
         break;
       default:
-        showWarning( tr( "Layer %1 has unsupported WkbType %2 not supported" ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
+        showWarning( tr( "Layer %1 has unsupported geometry type %2." ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
         break;
     };
 
