@@ -28,3 +28,20 @@ tests:
       BUFFER:
         name: expected/saga/buffer_polys.shp
         type: vector
+
+  - algorithm: saga:addrastervaluestopoints
+    name: Add raster values to point simple
+    params:
+      GRIDS:
+        params:
+        - name: raster.tif
+          type: raster
+        type: multi
+      RESAMPLING: 0
+      SHAPES:
+        name: custom/points_over.gml
+        type: vector
+    results:
+      RESULT:
+        name: expected/saga/add_grids_to_points.gml
+        type: vector
