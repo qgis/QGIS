@@ -189,7 +189,8 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
     if addButton:
         global algorithmsToolbar
         if algorithmsToolbar is None:
-            algorithmsToolbar = iface.addToolBar('ProcessingAlgorithms')
+            algorithmsToolbar = iface.addToolBar(Processing.tr('Processing Algorithms'))
+            algorithmsToolbar.setToolTip(Processing.tr('Processing Algorithms Toolbar'))
         algorithmsToolbar.addAction(action)
 
 
