@@ -1755,6 +1755,10 @@ QString QgsVectorLayer::encodeSource( const QgsReadWriteContext &context ) const
     // Refetch the source from the provider, because adding fields actually changes the source for this provider.
     src = dataProvider()->dataSourceUri();
   }
+  else
+  {
+    src = context.pathResolver().writePath( src );
+  }
 
   return src;
 } // bool QgsVectorLayer::encodedSource
