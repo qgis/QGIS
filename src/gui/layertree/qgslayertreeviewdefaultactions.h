@@ -66,7 +66,16 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
-    QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
+    /**
+     * \deprecated since QGIS 3.2, use actionMoveOutOfGroup()
+     */
+    Q_DECL_DEPRECATED QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \see moveOutOfGroup()
+     * \since QGIS 3.2
+     */
+    QAction *actionMoveOutOfGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
      * \see moveToTop()
@@ -106,7 +115,17 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     void zoomToSelection();
     void zoomToGroup();
-    void makeTopLevel();
+
+    /**
+     * \deprecated since QGIS 3.2, use moveOutOfGroup()
+     */
+    Q_DECL_DEPRECATED void makeTopLevel();
+
+    /**
+     * Moves selected layer(s) out of the group(s) and places this/these above the group(s)
+     * \since QGIS 3.2
+     */
+    void moveOutOfGroup();
 
     /**
      * Moves selected layer(s) and/or group(s) to the top of the layer panel
