@@ -118,7 +118,16 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas
 QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Move to Top-level" ), parent );
+  Q_NOWARN_DEPRECATED_PUSH
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::makeTopLevel );
+  Q_NOWARN_DEPRECATED_POP
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveOutOfGroup( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move Out of &Group" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveOutOfGroup );
   return a;
 }
 
@@ -384,6 +393,29 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
     parentGroup->removeChildNode( l );
   }
 }
+
+
+void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
+{
+  const QList< QgsLayerTreeLayer * >  selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+  {
+    QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
+    if ( !parentGroup || parentGroup == rootGroup )
+      continue;
+    QgsLayerTreeGroup *tempGroup = parentGroup;
+    while ( tempGroup->parent() != rootGroup )
+    {
+      tempGroup = qobject_cast<QgsLayerTreeGroup *>( tempGroup->parent() );
+    }
+    QgsLayerTreeLayer *clonedLayer = l->clone();
+    int insertIdx = rootGroup->children().indexOf( tempGroup );
+    rootGroup->insertChildNode( insertIdx, clonedLayer );
+    parentGroup->removeChildNode( l );
+  }
+}
+
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {

@@ -178,7 +178,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator();
 
       if ( node->parent() != mView->layerTreeModel()->rootGroup() )
-        menu->addAction( actions->actionMakeTopLevel( menu ) );
+        menu->addAction( actions->actionMoveOutOfGroup( menu ) );
 
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
