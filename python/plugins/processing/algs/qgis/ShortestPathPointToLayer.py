@@ -191,6 +191,8 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, network.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         directionField = -1
         if directionFieldName:

@@ -88,6 +88,8 @@ class VoronoiPolygons(QgisAlgorithm):
         buf = self.parameterAsDouble(parameters, self.BUFFER, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         outFeat = QgsFeature()
         extent = source.sourceExtent()

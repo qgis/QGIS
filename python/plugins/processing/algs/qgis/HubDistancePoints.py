@@ -115,6 +115,8 @@ class HubDistancePoints(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, point_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
 

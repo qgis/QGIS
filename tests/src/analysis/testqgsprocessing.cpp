@@ -4346,6 +4346,17 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( !QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeFile ).hasGeometry() );
   QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVector ).hasGeometry() );
 
+  // invalidSinkError
+  QVariantMap params;
+  QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "MISSING" ) ), QStringLiteral( "Could not create destination layer for MISSING: no value specified for parameter" ) );
+  params.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: d:/test.shp" ) );
+  params.insert( QStringLiteral( "OUTPUT" ), QgsProperty::fromValue( QStringLiteral( "d:/test2.shp" ) ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: d:/test2.shp" ) );
+  params.insert( QStringLiteral( "OUTPUT" ), QgsProcessingOutputLayerDefinition( QStringLiteral( "d:/test3.shp" ) ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: d:/test3.shp" ) );
+  params.insert( QStringLiteral( "OUTPUT" ), QgsProcessingFeatureSourceDefinition( QStringLiteral( "source" ) ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: invalid value" ) );
 }
 
 void TestQgsProcessing::parameterVectorOut()

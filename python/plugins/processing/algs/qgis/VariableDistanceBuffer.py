@@ -125,6 +125,8 @@ class VariableDistanceBuffer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         buff.buffering(feedback, context, sink, 0, field, True, source, dissolve, segments, end_cap_style,
                        join_style, miter_limit)

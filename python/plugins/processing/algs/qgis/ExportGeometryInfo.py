@@ -123,6 +123,8 @@ class ExportGeometryInfo(QgisAlgorithm):
         fields = QgsProcessingUtils.combineFields(fields, new_fields)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         coordTransform = None
 

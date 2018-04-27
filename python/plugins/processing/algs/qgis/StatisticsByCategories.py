@@ -197,6 +197,8 @@ class StatisticsByCategories(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if field_type == 'none':
             self.saveCounts(values, sink, feedback)

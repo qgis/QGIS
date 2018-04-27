@@ -96,7 +96,7 @@ QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &pa
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputWkbType, featureSource->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
   QgsFeatureIterator fi = featureSource->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );

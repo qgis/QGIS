@@ -92,6 +92,8 @@ class PointsFromLines(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, raster_layer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)

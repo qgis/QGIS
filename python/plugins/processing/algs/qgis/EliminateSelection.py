@@ -103,6 +103,8 @@ class EliminateSelection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                inLayer.fields(), inLayer.wkbType(), inLayer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         for aFeat in inLayer.getFeatures():
             if feedback.isCanceled():

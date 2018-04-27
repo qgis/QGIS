@@ -156,6 +156,8 @@ class Grid(QgisAlgorithm):
             outputWkb = QgsWkbTypes.Polygon
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, outputWkb, crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if idx == 0:
             self._pointGrid(

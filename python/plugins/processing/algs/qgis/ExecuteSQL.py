@@ -158,6 +158,8 @@ class ExecuteSQL(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                vLayer.fields(), vLayer.wkbType() if geometry_type != 1 else 1, vLayer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = vLayer.getFeatures()
         total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0

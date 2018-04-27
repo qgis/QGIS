@@ -80,7 +80,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), outType, featureSource->sourceCrs() ) );
 
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsGeometry clipGeom = parameterAsExtentGeometry( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
 

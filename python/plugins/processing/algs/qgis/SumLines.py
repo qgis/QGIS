@@ -108,6 +108,8 @@ class SumLines(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         spatialIndex = QgsSpatialIndex(line_source.getFeatures(
             QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)

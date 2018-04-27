@@ -126,6 +126,8 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())

@@ -224,6 +224,8 @@ class Aggregate(QgisAlgorithm):
                                                self.fields,
                                                QgsWkbTypes.multiType(source.wkbType()),
                                                source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # Calculate aggregates on memory layers
         if len(keys):

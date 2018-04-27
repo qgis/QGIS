@@ -100,6 +100,8 @@ class FindProjection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # make intersection tests nice and fast
         engine = QgsGeometry.createGeometryEngine(target_geom.constGet())

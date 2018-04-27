@@ -138,6 +138,13 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             source.sourceCrs()
         )
 
+        # If sink was not created, throw an exception to indicate that the algorithm
+        # encountered a fatal error. The exception text can be any string, but in this
+        # case we use the pre-built invalidSinkError method to return a standard
+        # helper text for when a sink cannot be evaluated
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
         # Compute the number of steps to display within the progress bar and
         # get features from source
         total = 100.0 / source.featureCount() if source.featureCount() else 0

@@ -142,7 +142,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, QgsWkbTypes::Point,  sourceA->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs(), context.transformContext() ) ), feedback );
   QgsFeature outFeature;

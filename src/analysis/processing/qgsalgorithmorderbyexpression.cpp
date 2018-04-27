@@ -81,7 +81,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   QString sinkId;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   long count = source->featureCount();
   double step = count > 0 ? 100.0 / count : 1;

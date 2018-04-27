@@ -95,6 +95,8 @@ class PoleOfInaccessibility(QgisAlgorithm):
         fields.append(QgsField('dist_pole', QVariant.Double))
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

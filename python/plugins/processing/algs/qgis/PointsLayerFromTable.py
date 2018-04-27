@@ -110,6 +110,8 @@ class PointsLayerFromTable(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, target_crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)

@@ -133,7 +133,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
                                           outputWkb, source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( QObject::tr( "Could not create destination layer for OUTPUT" ) );;
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsFeatureIterator features = source->getFeatures( );
 
