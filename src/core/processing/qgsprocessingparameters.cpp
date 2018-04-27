@@ -2582,14 +2582,24 @@ QgsProcessingParameterDefinition *QgsProcessingParameterVectorLayer::clone() con
   return new QgsProcessingParameterVectorLayer( *this );
 }
 
-bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &var, QgsProcessingContext *context ) const
+bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
-  if ( !var.isValid() )
+  if ( !v.isValid() )
     return mFlags & FlagOptional;
+
+  QVariant var = v;
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( var ) ) )
@@ -2899,7 +2909,15 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
   if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) ) )
   {
@@ -3081,7 +3099,15 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( var.type() != QVariant::String )
@@ -3274,7 +3300,15 @@ bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVar
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( var.type() != QVariant::String )
@@ -3357,7 +3391,15 @@ bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVaria
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( var.type() != QVariant::String )
@@ -3465,7 +3507,15 @@ bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVar
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( var.type() != QVariant::String )
@@ -3555,7 +3605,15 @@ bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVar
 
   if ( var.canConvert<QgsProperty>() )
   {
-    return true;
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( var.type() != QVariant::String )
