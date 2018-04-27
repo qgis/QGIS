@@ -59,7 +59,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 #ifndef SIP_RUN
     //! Return a pointer to the local file, a null pointer if the file is not accessible yet.
-    const QFile *file() const {return mFile;}
+    QFile *file() const {return mFile;}
 #endif
 
     //! Return the path to the local file, an empty string if the file is not accessible yet.
@@ -138,6 +138,8 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
     const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode &fetchingMode = DownloadLater );
+
+    QString localPath( const QString &filePathOrUrl );
 
   private:
     QMap<QUrl, QgsFetchedContent *> mFileRegistry;

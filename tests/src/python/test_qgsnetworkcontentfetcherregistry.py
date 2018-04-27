@@ -70,8 +70,9 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
             app.processEvents()
 
     def testFetchGoodUrl(self):
+        url = 'http://localhost:' + str(self.port) + '/qgis_local_server/index.html'
         registry = QgsApplication.networkContentFetcherRegistry()
-        content = registry.fetch(QUrl('http://localhost:' + str(self.port) + '/qgis_local_server/index.html'))
+        content = registry.fetch(QUrl(url))
         self.loaded = False
 
         def check_reply():
@@ -85,8 +86,10 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
         while not self.loaded:
             app.processEvents()
 
+        self.assertEqual(registry.localPath(url), content.filePath())
+
         # create new content with same URL
-        contentV2 = registry.fetch(QUrl('http://localhost:' + str(self.port) + '/qgis_local_server/index.html'))
+        contentV2 = registry.fetch(QUrl(url))
         self.assertEqual(contentV2.status(), QgsFetchedContent.Finished)
 
     def testFetchReloadUrl(self):
@@ -123,6 +126,18 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
             app.processEvents()
 
         os.remove('qgis_local_server/simple_content.txt')
+
+    def testLocalPath(self):
+        registry = QgsApplication.networkContentFetcherRegistry()
+        filePath = 'qgis_local_server/index.html'
+        self.assertEqual(registry.localPath(filePath), filePath)
+
+        # a non existent download shall return untouched the path
+        self.assertEqual(registry.localPath('xxxx'), 'xxxx')
+
+        # an existent but unfinished download should return an empty path
+        content = registry.fetch(QUrl('xxxx'))
+        self.assertEqual(registry.localPath('xxxx'), '')
 
 
 if __name__ == "__main__":

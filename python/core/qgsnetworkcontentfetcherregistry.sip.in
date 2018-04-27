@@ -120,6 +120,8 @@ Create the registry for temporary downloaded files
    If the download starts immediately, it will not redownload any already fetched or currently fetching file.
 %End
 
+    QString localPath( const QString &filePathOrUrl );
+
 };
 
 /************************************************************************

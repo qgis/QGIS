@@ -101,5 +101,32 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   return content;
 }
 
+QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUrl )
+{
+  QString path = filePathOrUrl;
+
+  if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
+  {
+    if ( mFileRegistry.contains( QUrl( path ) ) )
+    {
+      const QgsFetchedContent *content = mFileRegistry.value( QUrl( path ) );
+      if ( content->status() == QgsFetchedContent::Finished && !content->filePath().isEmpty() )
+      {
+        path = content->filePath();
+      }
+      else
+      {
+        // if the file is not downloaded yet or has failed, return empty string
+        path = QStringLiteral();
+      }
+    }
+    else
+    {
+      // if registry doesn't contain the URL, keep path unchanged
+    }
+  }
+  return path;
+}
+
 
 
