@@ -46,7 +46,7 @@ class CORE_EXPORT QgsTolerance
       //! Map (project) units. Added in 2.8
       ProjectUnits
     };
-    Q_ENUM( UnitType );
+    Q_ENUM( UnitType )
 
     /**
      * Static function to get vertex tolerance value.

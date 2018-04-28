@@ -62,7 +62,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       ForeignTable, // f
       PartitionedTable // p - PostgreSQL 10
     };
-    Q_ENUM( Relkind );
+    Q_ENUM( Relkind )
 
     /**
      * Import a vector layer into the database

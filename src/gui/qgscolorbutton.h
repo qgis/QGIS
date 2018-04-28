@@ -67,7 +67,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
       ShowDialog = 0, //!< Show a color picker dialog when clicked
       SignalOnly //!< Emit colorClicked signal only, no dialog
     };
-    Q_ENUM( Behavior );
+    Q_ENUM( Behavior )
 
     /**
      * Construct a new color ramp button.

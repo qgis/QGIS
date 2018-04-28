@@ -57,7 +57,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
 
-    Q_ENUM( Mode );
+    Q_ENUM( Mode )
 
     /**
      * Construct a new font button.

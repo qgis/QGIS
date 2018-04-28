@@ -71,7 +71,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
       WARNING = 1,
       CRITICAL = 2
     };
-    Q_ENUM( MessageLevel );
+    Q_ENUM( MessageLevel )
 
     /**
      * \brief init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
