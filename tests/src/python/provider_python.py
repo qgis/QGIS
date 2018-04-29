@@ -99,6 +99,7 @@ class PyFeatureSource(QgsAbstractFeatureSource):
         # NOTE: this is the same as PyProvider.getFeatures
         return PyFeatureIterator(self, request)
 
+
 class PyProvider(QgsVectorDataProvider):
 
     next_feature_id = 1
@@ -164,13 +165,15 @@ class PyProvider(QgsVectorDataProvider):
 
     def addFeatures(self, flist, flags=None):
         # bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
-        result = False
+        added = False
         for f in flist:
             f.setId(self.next_feature_id)
             self._features[self.next_feature_id] = f
             self.next_feature_id += 1
-            result = True
-        return result
+            added = True
+        if added:
+            self.updateExtents()
+        return added, flist
 
     def deleteFeatures(self, ids):
         #bool deleteFeatures( const QgsFeatureIds &id ) override;
@@ -179,6 +182,8 @@ class PyProvider(QgsVectorDataProvider):
             if id in self._features:
                 del self._features[id]
                 removed = True
+        if removed:
+            self.updateExtents()
         return removed
 
     def addAttributes(self, attrs):
@@ -189,8 +194,8 @@ class PyProvider(QgsVectorDataProvider):
                 for f in self._features.values():
                     old_attrs = f.attributes()
                     old_attrs.app
-                    old_attrs.append( None )
-                    f.setAttributes( old_attrs )
+                    old_attrs.append(None)
+                    f.setAttributes(old_attrs)
             return True
         except:
             return False
@@ -200,14 +205,14 @@ class PyProvider(QgsVectorDataProvider):
         result = True
         for key, new_name in renamedAttributes:
             fieldIndex = key
-            if  fieldIndex < 0 or fieldIndex >= lself._fields.count():
+            if fieldIndex < 0 or fieldIndex >= lself._fields.count():
                 result = false
                 continue
-            if new_name in self._fields.indexFromName( new_name ) >= 0:
+            if new_name in self._fields.indexFromName(new_name) >= 0:
                 #field name already in use
                 result = False
                 continue
-            self._fields[ fieldIndex ].setName( new_name );
+            self._fields[fieldIndex].setName(new_name)
         return True
 
     def deleteAttributes(self, attributes):
@@ -216,11 +221,11 @@ class PyProvider(QgsVectorDataProvider):
 
         # delete attributes one-by-one with decreasing index
         for idx in attrIdx:
-            self._fields.remove( idx )
+            self._fields.remove(idx)
             for f in self._features:
                 attr = f.attributes()
-                attr.remove( idx )
-                f.setAttributes( attr )
+                attr.remove(idx)
+                f.setAttributes(attr)
         return True
 
     def changeAttributeValues(self, attr_map):
@@ -257,7 +262,7 @@ class PyProvider(QgsVectorDataProvider):
 
     def capabilities(self):
         #QgsVectorDataProvider::Capabilities capabilities() const override;
-        return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.CreateSpatialIndex | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
+        return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
 
     #/* Implementation of functions from QgsDataProvider */
 
@@ -267,21 +272,21 @@ class PyProvider(QgsVectorDataProvider):
 
     def extent(self):
         #QgsRectangle extent() const override;
-        if self._extent.isEmpty() and not self._features.isEmpty():
+        if self._extent.isEmpty() and not self._features:
             self._extent.setMinimal()
             if self._subset_string.isEmpty():
                 # fast way - iterate through all features
                 for feat in self._features.values():
                     if feat.hasGeometry():
-                        self._extent.combineExtentWith( feat.geometry().boundingBox() )
+                        self._extent.combineExtentWith(feat.geometry().boundingBox())
             else:
-                for f in self.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( [] ) ):
+                for f in self.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])):
                     if f.hasGeometry():
-                        self._extent.combineExtentWith( f.geometry().boundingBox() )
-        
-        elif self._features.isEmpty() :
-           self._extent.setMinimal();
-        return mExtent;       
+                        self._extent.combineExtentWith(f.geometry().boundingBox())
+
+        elif self._features:
+            self._extent.setMinimal()
+        return self._extent
 
     def updateExtents(self):
         #void updateExtents() override;
@@ -294,4 +299,3 @@ class PyProvider(QgsVectorDataProvider):
     def crs(self):
         #QgsCoordinateReferenceSystem crs() const override;
         return QgsCoordinateReferenceSystem(4326)
-

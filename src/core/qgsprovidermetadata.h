@@ -79,8 +79,8 @@ class CORE_EXPORT QgsProviderMetadata
       PyObject *sipResObj;
       SIP_BLOCK_THREADS
 
-      sipResObj = sipCallMethod( NULL, a2, "N", new QString( dataSource ), sipType_QString, NULL );
-      Py_DECREF( a2 );
+      sipResObj = sipCallMethod( NULL, a2, "D", new QString( dataSource ), sipType_QString, NULL );
+
       if ( sipResObj )
       {
         // Py_DECREF(sipResObj);
