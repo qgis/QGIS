@@ -2152,12 +2152,6 @@ QgsSlider        {#qgis_api_break_3_0_QgsSlider}
 - The protected valueChanged slot was removed.
 
 
-QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}
-----------
-
-- Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.
-- Signature for snapPoint() has changed.
-
 QgsSnappingUtils        {#qgis_api_break_3_0_QgsSnappingUtils}
 ----------------
 
