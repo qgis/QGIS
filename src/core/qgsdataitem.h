@@ -84,7 +84,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Custom, //!< Custom item type
     };
 
-    Q_ENUM( Type );
+    Q_ENUM( Type )
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populating,   //!< Creating children in separate thread (populating or refreshing)
       Populated     //!< Children created
     };
-    Q_ENUM( State );
+    Q_ENUM( State )
 
     //! \since QGIS 2.8
     State state() const;
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Mesh       //!< Added in 3.2
     };
 
-    Q_ENUM( LayerType );
+    Q_ENUM( LayerType )
 
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 

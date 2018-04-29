@@ -53,7 +53,7 @@ class CORE_EXPORT QgsUnitTypes
       DistanceMillimeters, //!< Millimeters
       DistanceUnknownUnit, //!< Unknown distance unit
     };
-    Q_ENUM( DistanceUnit );
+    Q_ENUM( DistanceUnit )
 
     /**
      * Types of distance units
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsUnitTypes
       AreaSquareMillimeters, //! Square millimeters
       AreaUnknownUnit, //!< Unknown areal unit
     };
-    Q_ENUM( AreaUnit );
+    Q_ENUM( AreaUnit )
 
     //! Units of angles
     enum AngleUnit
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsUnitTypes
       AngleTurn, //!< Turn/revolutions
       AngleUnknownUnit, //!< Unknown angle unit
     };
-    Q_ENUM( AngleUnit );
+    Q_ENUM( AngleUnit )
 
     //! Rendering size units
     enum RenderUnit
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsUnitTypes
       RenderUnknownUnit, //!< Mixed or unknown units
       RenderMetersInMapUnits, //!< Meters value as Map units
     };
-    Q_ENUM( RenderUnit );
+    Q_ENUM( RenderUnit )
 
     //! Layout measurement units
     enum LayoutUnit
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsUnitTypes
       LayoutPicas, //!< Typographic picas
       LayoutPixels //!< Pixels
     };
-    Q_ENUM( LayoutUnit );
+    Q_ENUM( LayoutUnit )
 
     //! Types of layout units
     enum LayoutUnitType

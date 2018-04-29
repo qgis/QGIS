@@ -81,7 +81,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Database            = 1 << 2,
       Net                 = 1 << 3  // Internet source
     };
-    Q_ENUM( DataCapability );
+    Q_ENUM( DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.
