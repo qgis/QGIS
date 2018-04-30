@@ -86,6 +86,11 @@ Emitted when the download actually starts
 Emitted when download is canceled.
 %End
 
+    void taskCompleted();
+%Docstring
+Emitted when the download is finished (although file not accessible yet)
+%End
+
 };
 
 class QgsNetworkContentFetcherRegistry : QObject
@@ -118,7 +123,7 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode &fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode fetchingMode = DownloadLater );
 %Docstring
  Initialize a download for the given URL
 

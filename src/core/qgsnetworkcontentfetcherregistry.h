@@ -29,7 +29,8 @@
 
 class QTemporaryFile;
 
-class QgsNetworkContentFetcherTask;
+#include "qgstaskmanager.h"
+#include "qgsnetworkcontentfetchertask.h"
 
 
 /**
@@ -94,15 +95,14 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     //! Emitted when download is canceled.
     void cancelTriggered();
 
+    //! Emitted when the download is finished (although file not accessible yet)
+    void taskCompleted();
+
   private:
-    void setFile( QTemporaryFile *file ) {mFile = file;}
-    void setStatus( ContentStatus status ) {mStatus = status;}
-    void setError( QNetworkReply::NetworkError error ) {mError = error;}
-    void setFilePath( const QString &filePath ) {mFilePath = filePath;}
     void emitFetched() {emit fetched();}
     QTemporaryFile *mFile;
     QString mFilePath = QStringLiteral();
-    QgsNetworkContentFetcherTask *mFetchingTask;
+    QgsNetworkContentFetcherTask *mFetchingTask = nullptr;
     ContentStatus mStatus;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
 
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode &fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode fetchingMode = DownloadLater );
 
 #ifndef SIP_RUN
 

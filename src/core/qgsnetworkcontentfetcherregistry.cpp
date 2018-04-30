@@ -19,7 +19,6 @@
 #include "qgsnetworkcontentfetcherregistry.h"
 
 #include "qgsapplication.h"
-#include "qgsnetworkcontentfetchertask.h"
 
 QgsNetworkContentFetcherRegistry::QgsNetworkContentFetcherRegistry()
   : QObject()
@@ -37,7 +36,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   mFileRegistry.clear();
 }
 
-const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &url, const FetchingMode &fetchingMode )
+const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &url, const FetchingMode fetchingMode )
 {
   QMutexLocker locker( &mMutex );
   if ( mFileRegistry.contains( url ) )
@@ -46,23 +45,29 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   }
 
   QgsFetchedContent *content = new QgsFetchedContent( nullptr, QgsFetchedContent::NotStarted );
-  content->mFetchingTask = new QgsNetworkContentFetcherTask( url );
 
   // start
   QObject::connect( content, &QgsFetchedContent::downloadStarted, this, [ = ]( const bool redownload )
   {
-    QMutexLocker locker( &mMutex );
-    if ( mFileRegistry.contains( url ) && redownload )
+    if ( redownload && content->status() == QgsFetchedContent::Downloading )
     {
-      QgsFetchedContent *content = mFileRegistry[url];
-      if ( mFileRegistry.value( url )->status() == QgsFetchedContent::Downloading )
       {
-        content->cancel();
+        QMutexLocker locker( &mMutex );
+        if ( content->mFetchingTask )
+          disconnect( content->mFetchingTask, &QgsNetworkContentFetcherTask::fetched, content, &QgsFetchedContent::taskCompleted );
       }
+      // no locker when calling cancel!
+      content->cancel();
     }
-    if ( ( mFileRegistry.contains( url ) && mFileRegistry.value( url )->status() == QgsFetchedContent::NotStarted ) || redownload )
+    QMutexLocker locker( &mMutex );
+    if ( redownload ||
+         content->status() == QgsFetchedContent::NotStarted ||
+         content->status() == QgsFetchedContent::Failed )
     {
+      content->mFetchingTask = new QgsNetworkContentFetcherTask( url );
+      connect( content->mFetchingTask, &QgsNetworkContentFetcherTask::fetched, content, &QgsFetchedContent::taskCompleted );
       QgsApplication::instance()->taskManager()->addTask( content->mFetchingTask );
+      content->mStatus = QgsFetchedContent::Downloading;
     }
   } );
 
@@ -70,47 +75,56 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   QObject::connect( content, &QgsFetchedContent::cancelTriggered, this, [ = ]()
   {
     QMutexLocker locker( &mMutex );
-    if ( content->mFetchingTask->canCancel() )
+    if ( content->mFetchingTask && content->mFetchingTask->canCancel() )
     {
       content->mFetchingTask->cancel();
     }
     if ( content->mFile )
     {
       content->mFile->deleteLater();
-      mFileRegistry[url]->setFilePath( QStringLiteral() );
+      content->mFilePath = QString();
     }
   } );
 
   // finished
-  QObject::connect( content->mFetchingTask, &QgsNetworkContentFetcherTask::fetched, this, [ = ]()
+  connect( content, &QgsFetchedContent::taskCompleted, this, [ = ]()
   {
     QMutexLocker locker( &mMutex );
-    QNetworkReply *reply = content->mFetchingTask->reply();
-    QgsFetchedContent *content = mFileRegistry.value( url );
-    if ( reply->error() == QNetworkReply::NoError )
+    if ( !content->mFetchingTask || !content->mFetchingTask->reply() )
     {
-      QTemporaryFile *tf = new QTemporaryFile( QStringLiteral( "XXXXXX" ) );
-      content->setFile( tf );
-      tf->open();
-      content->mFile->write( reply->readAll() );
-      // Qt docs notes that on some system if fileName is not called before close, file might get deleted
-      content->setFilePath( tf->fileName() );
-      tf->close();
-      content->setStatus( QgsFetchedContent::Finished );
+      // if no reply, it has been canceled
+      content->mStatus = QgsFetchedContent::Failed;
+      content->mError = QNetworkReply::OperationCanceledError;
+      content->mFilePath = QString();
     }
     else
     {
-      content->setStatus( QgsFetchedContent::Failed );
-      content->setError( reply->error() );
-      content->setFilePath( QStringLiteral() );
+      QNetworkReply *reply = content->mFetchingTask->reply();
+      if ( reply->error() == QNetworkReply::NoError )
+      {
+        QTemporaryFile *tf = new QTemporaryFile( QStringLiteral( "XXXXXX" ) );
+        content->mFile = tf;
+        tf->open();
+        content->mFile->write( reply->readAll() );
+        // Qt docs notes that on some system if fileName is not called before close, file might get deleted
+        content->mFilePath = tf->fileName();
+        tf->close();
+        content->mStatus = QgsFetchedContent::Finished;
+      }
+      else
+      {
+        content->mStatus = QgsFetchedContent::Failed;
+        content->mError = reply->error();
+        content->mFilePath = QString();
+      }
     }
     content->emitFetched();
   } );
 
+  mFileRegistry.insert( url, content );
+
   if ( fetchingMode == DownloadImmediately )
     content->download();
-
-  mFileRegistry.insert( url, content );
 
   return content;
 }
@@ -162,7 +176,7 @@ QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUr
       else
       {
         // if the file is not downloaded yet or has failed, return empty string
-        path = QStringLiteral();
+        path = QString();
       }
     }
     else
