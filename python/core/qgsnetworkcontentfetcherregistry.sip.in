@@ -65,15 +65,25 @@ Return the potential error of the download
 :param redownload: if set to true, it will restart any achieved or pending download.
 %End
 
+    void cancel();
+%Docstring
+ Cancel the download operation
+%End
+
   signals:
     void fetched();
 %Docstring
-Sent when the file is fetched and accessible
+Emitted when the file is fetched and accessible
 %End
 
     void downloadStarted( const bool redownload );
 %Docstring
-Sent went the download actually starts
+Emitted when the download actually starts
+%End
+
+    void cancelTriggered();
+%Docstring
+Emitted when download is canceled.
 %End
 
 };

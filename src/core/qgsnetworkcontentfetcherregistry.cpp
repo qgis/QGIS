@@ -39,40 +39,53 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 
 const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &url, const FetchingMode &fetchingMode )
 {
+  QMutexLocker locker( &mMutex );
   if ( mFileRegistry.contains( url ) )
   {
     return mFileRegistry.value( url );
   }
 
   QgsFetchedContent *content = new QgsFetchedContent( nullptr, QgsFetchedContent::NotStarted );
-  QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url );
+  content->mFetchingTask = new QgsNetworkContentFetcherTask( url );
 
+  // start
   QObject::connect( content, &QgsFetchedContent::downloadStarted, this, [ = ]( const bool redownload )
   {
     QMutexLocker locker( &mMutex );
     if ( mFileRegistry.contains( url ) && redownload )
     {
-      const QgsFetchedContent *content = mFileRegistry[url];
-      if ( mFileRegistry.value( url )->status() == QgsFetchedContent::Downloading && content->mFetchingTask )
+      QgsFetchedContent *content = mFileRegistry[url];
+      if ( mFileRegistry.value( url )->status() == QgsFetchedContent::Downloading )
       {
-        content->mFetchingTask->cancel();
-      }
-      if ( content->mFile )
-      {
-        content->mFile->deleteLater();
-        mFileRegistry[url]->setFilePath( QStringLiteral() );
+        content->cancel();
       }
     }
     if ( ( mFileRegistry.contains( url ) && mFileRegistry.value( url )->status() == QgsFetchedContent::NotStarted ) || redownload )
     {
-      QgsApplication::instance()->taskManager()->addTask( fetcher );
+      QgsApplication::instance()->taskManager()->addTask( content->mFetchingTask );
     }
   } );
 
-  QObject::connect( fetcher, &QgsNetworkContentFetcherTask::fetched, this, [ = ]()
+  // cancel
+  QObject::connect( content, &QgsFetchedContent::cancelTriggered, this, [ = ]()
   {
     QMutexLocker locker( &mMutex );
-    QNetworkReply *reply = fetcher->reply();
+    if ( content->mFetchingTask )
+    {
+      content->mFetchingTask->cancel();
+    }
+    if ( content->mFile )
+    {
+      content->mFile->deleteLater();
+      mFileRegistry[url]->setFilePath( QStringLiteral() );
+    }
+  } );
+
+  // finished
+  QObject::connect( content->mFetchingTask, &QgsNetworkContentFetcherTask::fetched, this, [ = ]()
+  {
+    QMutexLocker locker( &mMutex );
+    QNetworkReply *reply = content->mFetchingTask->reply();
     QgsFetchedContent *content = mFileRegistry.value( url );
     if ( reply->error() == QNetworkReply::NoError )
     {
@@ -96,6 +109,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
 
   if ( fetchingMode == DownloadImmediately )
     content->download();
+
   mFileRegistry.insert( url, content );
 
   return content;

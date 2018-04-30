@@ -79,12 +79,20 @@ class CORE_EXPORT QgsFetchedContent : public QObject
      */
     void download( bool redownload = false ) {emit downloadStarted( redownload );}
 
+    /**
+     * @brief Cancel the download operation
+     */
+    void cancel() {emit cancelTriggered();}
+
   signals:
-    //! Sent when the file is fetched and accessible
+    //! Emitted when the file is fetched and accessible
     void fetched();
 
-    //! Sent went the download actually starts
+    //! Emitted when the download actually starts
     void downloadStarted( const bool redownload );
+
+    //! Emitted when download is canceled.
+    void cancelTriggered();
 
   private:
     void setFile( QTemporaryFile *file ) {mFile = file;}
