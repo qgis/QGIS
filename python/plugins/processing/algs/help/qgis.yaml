@@ -550,3 +550,9 @@ qgis:voronoipolygons: >
 
 qgis:zonalstatistics:
 
+
+qgis:definecurrentprojection: >
+  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
+
+  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
+
