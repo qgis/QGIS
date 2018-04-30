@@ -130,7 +130,13 @@ Create the registry for temporary downloaded files
    If the download starts immediately, it will not redownload any already fetched or currently fetching file.
 %End
 
+
     QString localPath( const QString &filePathOrUrl );
+%Docstring
+ Returns the path to a local file or to a temporary file previously fetched by the registry
+
+:param filePathOrUrl: can either be a local file path or a remote content which has previously been fetched
+%End
 
 };
 

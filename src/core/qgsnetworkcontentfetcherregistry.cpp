@@ -70,7 +70,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   QObject::connect( content, &QgsFetchedContent::cancelTriggered, this, [ = ]()
   {
     QMutexLocker locker( &mMutex );
-    if ( content->mFetchingTask )
+    if ( content->mFetchingTask->canCancel() )
     {
       content->mFetchingTask->cancel();
     }
@@ -113,6 +113,37 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QUrl &ur
   mFileRegistry.insert( url, content );
 
   return content;
+}
+
+const QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePathOrUrl )
+{
+  QFile *file = nullptr;
+  QString path = filePathOrUrl;
+
+  if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
+  {
+    if ( mFileRegistry.contains( QUrl( path ) ) )
+    {
+      const QgsFetchedContent *content = mFileRegistry.value( QUrl( path ) );
+      if ( content->status() == QgsFetchedContent::Finished && !content->file() )
+      {
+        file = content->file();
+      }
+      else
+      {
+        // if the file is not downloaded yet or has failed, return nullptr
+      }
+    }
+    else
+    {
+      // if registry doesn't contain the URL, return nullptr
+    }
+  }
+  else
+  {
+    file = new QFile( filePathOrUrl );
+  }
+  return file;
 }
 
 QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUrl )
