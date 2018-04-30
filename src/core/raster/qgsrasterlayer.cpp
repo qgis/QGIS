@@ -1625,7 +1625,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
 QString QgsRasterLayer::encodeSource( const QgsReadWriteContext &context ) const
 {
-  QString src;
+  QString src = source();
   bool handled = false;
 
   // Update path for subdataset
