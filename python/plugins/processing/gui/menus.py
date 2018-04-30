@@ -67,11 +67,11 @@ defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
                            'native:convexhull': geoprocessingToolsMenu,
-                           'qgis:intersection': geoprocessingToolsMenu,
-                           'qgis:union': geoprocessingToolsMenu,
-                           'qgis:symmetricaldifference': geoprocessingToolsMenu,
+                           'native:intersection': geoprocessingToolsMenu,
+                           'native:union': geoprocessingToolsMenu,
+                           'native:symmetricaldifference': geoprocessingToolsMenu,
                            'native:clip': geoprocessingToolsMenu,
-                           'qgis:difference': geoprocessingToolsMenu,
+                           'native:difference': geoprocessingToolsMenu,
                            'native:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
 geometryToolsMenu = vectorMenu + "/" + Processing.tr('G&eometry Tools')
