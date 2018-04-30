@@ -87,9 +87,11 @@
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
         <file>themes/default/algorithms/mAlgorithmMeanCoordinates.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMergeLayers.svg</file>
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
         <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
         <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSplitLayer.svg</file>
         <file>themes/default/algorithms/mAlgorithmSymmetricalDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmUnion.svg</file>
         <file>themes/default/cap_flat.svg</file>
