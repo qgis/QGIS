@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsMessageLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -132,6 +132,11 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
 
 
 def initializeMenus():
+    for m in defaultMenuEntries.keys():
+        alg = QgsApplication.processingRegistry().algorithmById(m)
+        if alg is None or alg.id() != m:
+            QgsMessageLog.logMessage(Processing.tr('Invalid algorithm ID for menu: {}').format(m), Processing.tr('Processing'))
+
     for provider in QgsApplication.processingRegistry().providers():
         for alg in provider.algorithms():
             d = defaultMenuEntries.get(alg.id(), "")
