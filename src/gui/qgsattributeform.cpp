@@ -2011,6 +2011,9 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
 
 void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 {
+  if ( !eww.layer()->fields().exists( eww.fieldIdx() ) )
+    return;
+
   QgsFeature formFeature;
   QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
   QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
