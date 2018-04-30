@@ -842,10 +842,11 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     if ( !f.hasGeometry() )
       return;
 
-    std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
-    QgsRenderContext *ctx = nullptr;
     if ( mContext )
     {
+      std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+      QgsRenderContext *ctx = nullptr;
+
       mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
       ctx = mContext.get();
       if ( renderer && ctx )
@@ -920,8 +921,11 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 {
   Q_UNUSED( idx );
   Q_UNUSED( value );
-  onFeatureDeleted( fid );
-  onFeatureAdded( fid );
+  if ( mContext )
+  {
+    onFeatureDeleted( fid );
+    onFeatureAdded( fid );
+  }
 }
 
 
