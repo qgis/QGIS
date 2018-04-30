@@ -154,4 +154,5 @@ def execAlgorithmDialog(algOrName, parameters={}):
         canvas.setMapTool(prevMapTool)
 
     results = dlg.results()
+    dlg.close()
     return results
