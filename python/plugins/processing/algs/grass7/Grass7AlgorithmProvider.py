@@ -132,7 +132,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.getThemeIcon("/providerGrass.svg")
 
     def svgIconPath(self):
-        return QgsApplication.iconPath("providerGrass.svg")
+        return QgsApplication.iconPath("/providerGrass.svg")
 
     def supportsNonFileBasedOutput(self):
         """
