@@ -5,5 +5,5 @@ QgsProcessingParameterFeatureSource|YFIELD|y - Values|5|None|False
 QgsProcessingParameterEnum|USE_X|Use x -Values|[0] No;[1] Yes|False|0
 QgsProcessingParameterFeatureSource|XFIELD|x - Values|5|None|False
 QgsProcessingParameterString|FORMEL|Formula
-QgsProcessingParameterNumber|ITER|Iterationen|QgsProcessingParameterNumber.Integer|1000|False| 1|None
-QgsProcessingParameterNumber|LAMDA|Max Lamda|QgsProcessingParameterNumber.Double|10000.000000|False| 1.000000|None
+QgsProcessingParameterNumber|ITER|Iterationen|QgsProcessingParameterNumber.Integer|1000|False|1|None
+QgsProcessingParameterNumber|LAMDA|Max Lamda|QgsProcessingParameterNumber.Double|10000.000000|False|1.000000|None

@@ -6,6 +6,6 @@ QgsProcessingParameterRasterDestination|OPENNESS|Openness
 QgsProcessingParameterRasterDestination|SLOPE|Slope
 QgsProcessingParameterVectorDestination|CONTOURS|Contours
 QgsProcessingParameterEnum|METHOD|Method|[0] Topography;[1] Morphology|False|0
-QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
+QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False|0.000000|None
 QgsProcessingParameterBoolean|CONTOUR_LINES|Contour Lines|True
-QgsProcessingParameterNumber|EQUIDISTANCE|Equidistance|QgsProcessingParameterNumber.Double|50.000000|False| 0.000000|None
+QgsProcessingParameterNumber|EQUIDISTANCE|Equidistance|QgsProcessingParameterNumber.Double|50.000000|False|0.000000|None
