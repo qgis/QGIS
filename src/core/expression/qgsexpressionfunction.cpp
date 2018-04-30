@@ -2512,6 +2512,40 @@ static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionC
   return result;
 }
 
+static QVariant fcnTaperedBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.type() != QgsWkbTypes::LineGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `tapered_buffer` requires a line geometry." ) );
+    return QVariant();
+  }
+
+  double startWidth = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double endWidth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  int segments = static_cast< int >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
+
+  QgsGeometry geom = fGeom.taperedBuffer( startWidth, endWidth, segments );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
+static QVariant fcnBufferByM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.type() != QgsWkbTypes::LineGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `buffer_by_m` requires a line geometry." ) );
+    return QVariant();
+  }
+
+  int segments = static_cast< int >( QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
+
+  QgsGeometry geom = fGeom.variableWidthBufferByM( segments );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -4299,6 +4333,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "outer_radius" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "inner_radius" ), true, 0.0 ), fcnWedgeBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "tapered_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "start_width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "end_width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
+                                            , fcnTaperedBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "buffer_by_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
+                                            , fcnBufferByM, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
