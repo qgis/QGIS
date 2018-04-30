@@ -77,11 +77,17 @@
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCentroids.svg</file>
         <file>themes/default/algorithms/mAlgorithmClip.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCollect.svg</file>
         <file>themes/default/algorithms/mAlgorithmConvexHull.svg</file>
         <file>themes/default/algorithms/mAlgorithmDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
+        <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
         <file>themes/default/algorithms/mAlgorithmSymmetricalDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmUnion.svg</file>
         <file>themes/default/cap_flat.svg</file>
