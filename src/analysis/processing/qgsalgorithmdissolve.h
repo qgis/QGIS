@@ -72,6 +72,8 @@ class QgsCollectAlgorithm : public QgsCollectorAlgorithm
   public:
 
     QgsCollectAlgorithm() = default;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCollect.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCollect.svg" ) ); }
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;

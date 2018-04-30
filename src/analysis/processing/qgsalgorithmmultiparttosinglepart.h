@@ -34,6 +34,8 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
   public:
 
     QgsMultipartToSinglepartAlgorithm() = default;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QString outputName() const override;

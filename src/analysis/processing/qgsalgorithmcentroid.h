@@ -34,6 +34,8 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsCentroidAlgorithm() = default;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
