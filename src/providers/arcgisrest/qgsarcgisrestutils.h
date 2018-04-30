@@ -61,6 +61,8 @@ class QgsArcGisRestUtils
     static Qt::PenStyle parseEsriLineStyle( const QString &style );
     static Qt::BrushStyle parseEsriFillStyle( const QString &style );
 
+    static QDateTime parseDateTime( const QVariant &value );
+
     static QUrl parseUrl( const QUrl &url );
 };
 
