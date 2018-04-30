@@ -26,6 +26,8 @@
 #include "qgssnappingconfig.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgssettings.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
@@ -75,19 +77,13 @@ class TestQgsSnappingUtils : public QObject
       QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       f1.setGeometry( polygonGeom );
       f1.setAttribute( idx, QVariant( 2 ) );
-
-      polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
-      polygon << polyline;
-      polygonGeom = QgsGeometry::fromPolygonXY( polygon );
-      f2.setGeometry( polygonGeom );
-      f2.setAttribute( idx, QVariant( 20 ) );
       QgsFeatureList flist;
-      flist << f1 << f2;
-
+      flist << f1;
 
       mVL->dataProvider()->addFeatures( flist );
 
       QgsProject::instance()->addMapLayer( mVL );
+
     }
 
     void cleanupTestCase()
@@ -97,12 +93,76 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapModeCurrent()
     {
-      QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
-      QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
-      QgsRendererCategory c1( 2, s1, "f1", true );
-      QgsRendererCategory c2( 20, s2, "f2", false );
-      QgsCategoryList cl;
-      cl << c1 << c2;
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      u.setCurrentLayer( mVL );
+
+      // first try with no snapping enabled
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( false );
+      snappingConfig.setTolerance( 10 );
+      snappingConfig.setUnits( QgsTolerance::Pixels );
+      snappingConfig.setMode( QgsSnappingConfig::ActiveLayer );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m0 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( !m0.isValid() );
+      QVERIFY( !m0.hasVertex() );
+
+      // now enable snapping
+      snappingConfig.setEnabled( true );
+      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 0, 100 ) );
+      QVERIFY( !m2.isValid() );
+      QVERIFY( !m2.hasVertex() );
+
+      // do not consider edges in the following test - on 32-bit platforms
+      // result was an edge match very close to (1,0) instead of being exactly (1,0)
+
+      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      u.setConfig( snappingConfig );
+
+      // test with filtering
+      FilterExcludePoint myFilter( QgsPointXY( 1, 0 ) );
+      QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
+      QVERIFY( !m3.isValid() );
+    }
+
+    void testSnapInvisible()
+    {
+      QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
+      renderer->setClassAttribute( QStringLiteral( "fld" ) );
+      renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ), QStringLiteral( "2" ) ) );
+      mVL->setRenderer( renderer );
+
+      //create legend with symbology nodes for categorized renderer
+      QgsLayerTree *root = new QgsLayerTree();
+      QgsLayerTreeLayer *n = new QgsLayerTreeLayer( mVL );
+      root->addChildNode( n );
+      QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
+      m->refreshLayerLegend( n );
+
+      //test that all nodes are initially checked
+      QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+      QCOMPARE( nodes.length(), 1 );
+      Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+      {
+        QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
+      }
+
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 100, 100 ) );
@@ -131,32 +191,22 @@ class TestQgsSnappingUtils : public QObject
       snappingConfig.setType( QgsSnappingConfig::Vertex );
       u.setConfig( snappingConfig );
 
-      QgsPointLocator::Match m = u.snapToMap( QPoint( 11, 11 ) );
-      QVERIFY( !m.isValid() );
-      QVERIFY( !m.hasVertex() );
+      QgsPointLocator::Match m5 = u.snapToMap( QPoint( 2, 2 ) );
+      QVERIFY( m5.isValid() );
+      QVERIFY( m5.hasVertex() );
+      QCOMPARE( m5.point(), QgsPointXY( 0, 1 ) );
 
-      u.setEnableSnappingForInvisibleFeature( true );
-      m = u.snapToMap( QPoint( 2, 2 ) );
-      QVERIFY( m.isValid() );
-      QVERIFY( m.hasVertex() );
-      QCOMPARE( m.point(), QgsPointXY( 0, 1 ) );
+      //uncheck all and test that all nodes are unchecked
+      static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
+      Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+      {
+        QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
+      }
+      mVL->dataChanged(); /* refresh index */
 
-      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 0, 100 ) );
-      QVERIFY( !m2.isValid() );
-      QVERIFY( !m2.hasVertex() );
-
-      // do not consider edges in the following test - on 32-bit platforms
-      // result was an edge match very close to (1,0) instead of being exactly (1,0)
-
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
-      u.setConfig( snappingConfig );
-
-      // test with filtering
-      FilterExcludePoint myFilter( QgsPointXY( 1, 0 ) );
-      QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
-      QVERIFY( !m3.isValid() );
-
-
+      m5 = u.snapToMap( QPoint( 2, 2 ) );
+      QVERIFY( !m5.isValid() );
+      QVERIFY( !m5.hasVertex() );
     }
 
     void testSnapModeAll()
