@@ -108,7 +108,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
     QStringList fields = url.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
-      QString name = fields.at( i );
+      QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
       QVariant::Type type = QVariant::String;
       QVariant::Type subType = QVariant::Invalid;
       QString typeName( QStringLiteral( "string" ) );
