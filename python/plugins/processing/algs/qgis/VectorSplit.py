@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingUtils,
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -70,6 +71,12 @@ class VectorSplit(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
         self.addOutput(QgsProcessingOutputMultipleLayers(self.OUTPUT_LAYERS, self.tr('Output layers')))
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSplitLayer.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSplitLayer.svg")
 
     def name(self):
         return 'splitvectorlayer'
