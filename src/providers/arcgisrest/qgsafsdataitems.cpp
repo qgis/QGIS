@@ -95,18 +95,25 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
+  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
   }
-  QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData[QStringLiteral( "spatialReference" )].toMap() ).authid();
+  const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
-  foreach ( const QVariant &layerInfo, serviceData["layers"].toList() )
+  const QVariantList layerInfoList = serviceData[QStringLiteral( "layers" )].toList();
+  for ( const QVariant &layerInfo : layerInfoList )
   {
-    QVariantMap layerInfoMap = layerInfo.toMap();
-    QString id = layerInfoMap[QStringLiteral( "id" )].toString();
-    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, mUrl + "/" + id, layerInfoMap[QStringLiteral( "name" )].toString(), authid );
+    const QVariantMap layerInfoMap = layerInfo.toMap();
+    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    {
+      // group layer - do not show as it is not possible to load
+      // TODO - show nested groups
+      continue;
+    }
+    const QString id = layerInfoMap.value( QStringLiteral( "id" ) ).toString();
+    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, mUrl + "/" + id, layerInfoMap.value( QStringLiteral( "name" ) ).toString(), authid );
     layers.append( layer );
   }
 
