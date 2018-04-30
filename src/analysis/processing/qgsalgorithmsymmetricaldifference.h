@@ -26,7 +26,8 @@ class QgsSymmetricalDifferenceAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsSymmetricalDifferenceAlgorithm() = default;
-
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSymmetricalDifference.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSymmetricalDifference.svg" ) ); }
     virtual QString name() const override;
     virtual QString displayName() const override;
     virtual QString group() const override;

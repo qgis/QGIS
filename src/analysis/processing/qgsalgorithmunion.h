@@ -27,7 +27,8 @@ class QgsUnionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsUnionAlgorithm() = default;
-
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
     virtual QString name() const override;
     virtual QString displayName() const override;
     virtual QString group() const override;

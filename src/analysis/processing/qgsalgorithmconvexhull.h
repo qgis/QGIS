@@ -35,6 +35,8 @@ class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsConvexHullAlgorithm() = default;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmConvexHull.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmConvexHull.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
