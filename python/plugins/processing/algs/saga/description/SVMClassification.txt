@@ -21,4 +21,4 @@ QgsProcessingParameterNumber|CACHE_SIZE|Cache Size|QgsProcessingParameterNumber.
 QgsProcessingParameterNumber|EPS|Epsilon|QgsProcessingParameterNumber.Double|0.001000|False|None|None
 QgsProcessingParameterBoolean|SHRINKING|Shrinking|False
 QgsProcessingParameterBoolean|PROBABILITY|Probability Estimates|False
-QgsProcessingParameterNumber|CROSSVAL|Cross Validation|QgsProcessingParameterNumber.Integer|1|False| 1|None
+QgsProcessingParameterNumber|CROSSVAL|Cross Validation|QgsProcessingParameterNumber.Integer|1|False|1|None

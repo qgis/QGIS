@@ -11,4 +11,4 @@ QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
 QgsProcessingParameterBoolean|INTERCEPT|Intercept|True
 QgsProcessingParameterEnum|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise|False|3
-QgsProcessingParameterNumber|P_VALUE|Significance Level|QgsProcessingParameterNumber.Double|5.000000|False| 0.000000| 100.000000
+QgsProcessingParameterNumber|P_VALUE|Significance Level|QgsProcessingParameterNumber.Double|5.000000|False|0.000000|100.000000

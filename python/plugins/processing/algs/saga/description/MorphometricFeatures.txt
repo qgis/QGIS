@@ -11,9 +11,9 @@ QgsProcessingParameterRasterDestination|LONGC|Longitudinal Curvature
 QgsProcessingParameterRasterDestination|CROSC|Cross-Sectional Curvature
 QgsProcessingParameterRasterDestination|MAXIC|Maximum Curvature
 QgsProcessingParameterRasterDestination|MINIC|Minimum Curvature
-QgsProcessingParameterNumber|SIZE|Scale Radius (Cells)|QgsProcessingParameterNumber.Integer|5|False| 1|None
+QgsProcessingParameterNumber|SIZE|Scale Radius (Cells)|QgsProcessingParameterNumber.Integer|5|False|1|None
 QgsProcessingParameterNumber|TOL_SLOPE|Slope Tolerance|QgsProcessingParameterNumber.Double|1.000000|False|None|None
 QgsProcessingParameterNumber|TOL_CURVE|Curvature Tolerance|QgsProcessingParameterNumber.Double|0.000100|False|None|None
-QgsProcessingParameterNumber|EXPONENT|Distance Weighting Exponent|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000| 4.000000
+QgsProcessingParameterNumber|EXPONENT|Distance Weighting Exponent|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|4.000000
 QgsProcessingParameterNumber|ZSCALE|Vertical Scaling|QgsProcessingParameterNumber.Double|1.000000|False|None|None
 QgsProcessingParameterBoolean|CONSTRAIN|Constrain|False

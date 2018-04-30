@@ -8,5 +8,5 @@ QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNum
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells|False|0
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
 QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Target Grid
-QgsProcessingParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|QgsProcessingParameterNumber.Integer|13|False| 5|None
-QgsProcessingParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|QgsProcessingParameterNumber.Integer|19|False| 3|None
+QgsProcessingParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|QgsProcessingParameterNumber.Integer|13|False|5|None
+QgsProcessingParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|QgsProcessingParameterNumber.Integer|19|False|3|None

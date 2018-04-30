@@ -17,4 +17,4 @@ QgsProcessingParameterRasterDestination|CHNL_BASE|Channel Network Base Level
 QgsProcessingParameterRasterDestination|CHNL_DIST|Channel Network Distance
 QgsProcessingParameterRasterDestination|VALL_DEPTH|Valley Depth
 QgsProcessingParameterRasterDestination|RSP|Relative Slope Position
-QgsProcessingParameterNumber|THRESHOLD|Channel Density|QgsProcessingParameterNumber.Integer|5|False| 1|None
+QgsProcessingParameterNumber|THRESHOLD|Channel Density|QgsProcessingParameterNumber.Integer|5|False|1|None
