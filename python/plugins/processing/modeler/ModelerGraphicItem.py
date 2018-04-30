@@ -75,8 +75,17 @@ class ModelerGraphicItem(QGraphicsItem):
             self.pixmap = None
             self.text = element.name()
         else:
+            if element.algorithm().svgIconPath():
+                svg = QSvgRenderer(element.algorithm().svgIconPath())
+                size = svg.defaultSize()
+                self.picture = QPicture()
+                painter = QPainter(self.picture)
+                painter.scale(16 / size.width(), 16 / size.width())
+                svg.render(painter)
+                self.pixmap = None
+            else:
+                self.pixmap = element.algorithm().icon().pixmap(15, 15)
             self.text = element.description()
-            self.pixmap = element.algorithm().icon().pixmap(15, 15)
         self.arrows = []
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
