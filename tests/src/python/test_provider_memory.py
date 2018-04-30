@@ -275,6 +275,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
         self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
 
+    def testFromUriWithEncodedField(self):
+        """Test we can construct the mem provider from a uri when a field name is encoded"""
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=test%2Ffield:integer'),
+            'test',
+            'memory')
+        self.assertTrue(layer.isValid())
+        self.assertEqual([f.name() for f in layer.fields()], ['name', 'test/field'])
+
     def testSaveFields(self):
         # Create a new memory layer with no fields
         myMemoryLayer = QgsVectorLayer(
@@ -398,6 +408,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("date", QVariant.Date))
         fields.append(QgsField("datetime", QVariant.DateTime))
         fields.append(QgsField("time", QVariant.Time))
+        fields.append(QgsField("#complex_name", QVariant.String))
+        fields.append(QgsField("complex/name", QVariant.String))
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())

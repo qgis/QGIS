@@ -72,7 +72,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
     {
       lengthPrecision = QStringLiteral( "(%1)" ).arg( field.length() );
     }
-    parts << QStringLiteral( "field=%1:%2%3" ).arg( field.name(), memoryLayerFieldType( field.type() ), lengthPrecision );
+    parts << QStringLiteral( "field=%1:%2%3" ).arg( QString( QUrl::toPercentEncoding( field.name() ) ), memoryLayerFieldType( field.type() ), lengthPrecision );
   }
 
   QString uri = geomType + '?' + parts.join( '&' );
