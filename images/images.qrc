@@ -85,6 +85,8 @@
         <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMeanCoordinates.svg</file>
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
         <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
         <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
