@@ -76,6 +76,14 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmClip.svg</file>
+        <file>themes/default/algorithms/mAlgorithmConvexHull.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDifference.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
+        <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSymmetricalDifference.svg</file>
+        <file>themes/default/algorithms/mAlgorithmUnion.svg</file>
         <file>themes/default/cap_flat.svg</file>
         <file>themes/default/cap_round.svg</file>
         <file>themes/default/cap_square.svg</file>
