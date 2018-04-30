@@ -506,6 +506,21 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
   return doc.object().toVariantMap();
 }
 
+QDateTime QgsArcGisRestUtils::parseDateTime( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QDateTime();
+  bool ok = false;
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
+  if ( !ok )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
+    return QDateTime();
+  }
+  else
+    return dt;
+}
+
 QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )
 {
   QUrl modifiedUrl( url );

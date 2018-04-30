@@ -46,6 +46,8 @@ class QgsArcGisRestUtils
     static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
     static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
 
+    static QDateTime parseDateTime( const QVariant &value );
+
     static QUrl parseUrl( const QUrl &url );
 };
 

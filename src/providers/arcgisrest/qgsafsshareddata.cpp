@@ -107,7 +107,15 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
           // ensure that null values are mapped correctly for PyQGIS
           attribute = QVariant( QVariant::Int );
         }
-        mFields.at( idx ).convertCompatible( attribute );
+
+        // date/datetime fields must be converted
+        if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
+          attribute = QgsArcGisRestUtils::parseDateTime( attribute );
+
+        if ( !mFields.at( idx ).convertCompatible( attribute ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
+        }
         attributes[idx] = attribute;
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
         {
