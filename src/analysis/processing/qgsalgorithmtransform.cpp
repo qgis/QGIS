@@ -47,7 +47,7 @@ QString QgsTransformAlgorithm::displayName() const
 
 QStringList QgsTransformAlgorithm::tags() const
 {
-  return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' );
+  return QObject::tr( "transform,reprojection,crs,srs,warp" ).split( ',' );
 }
 
 QString QgsTransformAlgorithm::group() const
