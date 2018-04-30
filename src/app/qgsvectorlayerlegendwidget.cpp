@@ -90,7 +90,7 @@ void QgsVectorLayerLegendWidget::populateLegendTreeView( const QHash<QString, QS
   model->setColumnCount( 2 );
   model->setHorizontalHeaderLabels( QStringList() << tr( "Symbol" ) << tr( "Text" ) );
 
-  const QgsLegendSymbolList lst = mLayer->renderer()->legendSymbolItems();
+  const QgsLegendSymbolList lst = mLayer->renderer() ? mLayer->renderer()->legendSymbolItems() : QgsLegendSymbolList();
   for ( const QgsLegendSymbolItem &symbolItem : lst )
   {
     if ( !symbolItem.symbol() )
