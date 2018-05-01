@@ -155,30 +155,34 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   if ( ok )
   {
     int featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
-    mGatherer = new QgsStatisticsValueGatherer( mLayer, fit, featureCount, sourceFieldExp );
+    std::unique_ptr< QgsStatisticsValueGatherer > gatherer = qgis::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
     switch ( mFieldType )
     {
       case DataType::Numeric:
-        connect( mGatherer, &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateNumericStatistics );
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateNumericStatistics );
         break;
       case DataType::String:
-        connect( mGatherer, &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateStringStatistics );
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateStringStatistics );
         break;
       case DataType::DateTime:
-        connect( mGatherer, &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateDateTimeStatistics );
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateDateTimeStatistics );
         break;
       default:
-        break;
+        //don't know how to handle stats for this field!
+        mStatisticsTable->setRowCount( 0 );
+        return;
     }
-    connect( mGatherer, &QgsStatisticsValueGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
-    connect( mCancelButton, &QPushButton::clicked, mGatherer, &QgsStatisticsValueGatherer::cancel );
+    connect( gatherer.get(), &QgsStatisticsValueGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
+    connect( gatherer.get(), &QgsStatisticsValueGatherer::taskTerminated, this, &QgsStatisticalSummaryDockWidget::gathererFinished );
+    connect( mCancelButton, &QPushButton::clicked, gatherer.get(), &QgsStatisticsValueGatherer::cancel );
     mCalculatingProgressBar->setMinimum( 0 );
     mCalculatingProgressBar->setMaximum( featureCount > 0 ? 100 : 0 );
     mCalculatingProgressBar->setValue( 0 );
     mCancelButton->show();
     mCalculatingProgressBar->show();
 
-    QgsApplication::taskManager()->addTask( mGatherer );
+    mGatherer = gatherer.get();
+    QgsApplication::taskManager()->addTask( gatherer.release() );
   }
 }
 
