@@ -2419,10 +2419,9 @@ void QgisApp::refreshProfileMenu()
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
     std::unique_ptr< QgsUserProfile > namedProfile( userProfileManager()->profileForName( name ) );
-    QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), mConfigMenu );
+    QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), profileGroup );
     action->setToolTip( namedProfile->folder() );
     action->setCheckable( true );
-    profileGroup->addAction( action );
     mConfigMenu->addAction( action );
 
     if ( name == activeName )
