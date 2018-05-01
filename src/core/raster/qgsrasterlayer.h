@@ -388,8 +388,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QString encodeSource( const QgsReadWriteContext &context ) const override;
-
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
   private:
     //! \brief Initialize default values
     void init();

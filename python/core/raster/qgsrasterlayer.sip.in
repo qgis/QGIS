@@ -347,8 +347,9 @@ In a world file, this is normally the first row (without the sign).
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual QString encodeSource( const QgsReadWriteContext &context ) const;
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
+    virtual QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const;
 
 };
 

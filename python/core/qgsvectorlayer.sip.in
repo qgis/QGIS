@@ -748,7 +748,9 @@ Write vector layer specific state to project file Dom node.
    Called by :py:func:`QgsMapLayer.writeXml()`
 %End
 
-    virtual QString encodeSource( const QgsReadWriteContext &context ) const;
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
 
 
     virtual void resolveReferences( QgsProject *project );

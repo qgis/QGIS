@@ -1719,9 +1719,9 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   return writeSymbology( layer_node, document, errorMsg, context );
 }
 
-QString QgsVectorLayer::encodeSource( const QgsReadWriteContext &context ) const
+QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
-  QString src = source();
+  QString src( source );
 
   // TODO: what about postgres, mysql and others, they should not go through writePath()
   if ( providerType() == QLatin1String( "spatialite" ) )
@@ -1761,7 +1761,195 @@ QString QgsVectorLayer::encodeSource( const QgsReadWriteContext &context ) const
   }
 
   return src;
-} // bool QgsVectorLayer::encodedSource
+}
+
+QString QgsVectorLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
+{
+  QString src( source );
+
+  if ( provider == QLatin1String( "spatialite" ) )
+  {
+    QgsDataSourceUri uri( src );
+    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
+    src = uri.uri();
+  }
+  else if ( provider == QLatin1String( "ogr" ) )
+  {
+    QStringList theURIParts = src.split( '|' );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+    src = theURIParts.join( QStringLiteral( "|" ) );
+  }
+  else if ( provider == QLatin1String( "gpx" ) )
+  {
+    QStringList theURIParts = src.split( '?' );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+    src = theURIParts.join( QStringLiteral( "?" ) );
+  }
+  else if ( provider == QLatin1String( "delimitedtext" ) )
+  {
+    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
+
+    if ( !src.startsWith( QLatin1String( "file:" ) ) )
+    {
+      QUrl file = QUrl::fromLocalFile( src.left( src.indexOf( '?' ) ) );
+      urlSource.setScheme( QStringLiteral( "file" ) );
+      urlSource.setPath( file.path() );
+    }
+
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+    urlDest.setQueryItems( urlSource.queryItems() );
+    src = QString::fromLatin1( urlDest.toEncoded() );
+  }
+  else if ( provider == QLatin1String( "wms" ) )
+  {
+    // >>> BACKWARD COMPATIBILITY < 1.9
+    // For project file backward compatibility we must support old format:
+    // 1. mode: <url>
+    //    example: http://example.org/wms?
+    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
+    //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
+    //    example: featureCount=10,http://example.org/wms?
+    //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
+    // This is modified version of old QgsWmsProvider::parseUri
+    // The new format has always params crs,format,layers,styles and that params
+    // should not appear in old format url -> use them to identify version
+    // XYZ tile layers do not need to contain crs,format params, but they have type=xyz
+    if ( !src.contains( QLatin1String( "type=" ) ) &&
+         !src.contains( QLatin1String( "crs=" ) ) && !src.contains( QLatin1String( "format=" ) ) )
+    {
+      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
+      QgsDataSourceUri uri;
+      if ( !src.startsWith( QLatin1String( "http:" ) ) )
+      {
+        QStringList parts = src.split( ',' );
+        QStringListIterator iter( parts );
+        while ( iter.hasNext() )
+        {
+          QString item = iter.next();
+          if ( item.startsWith( QLatin1String( "username=" ) ) )
+          {
+            uri.setParam( QStringLiteral( "username" ), item.mid( 9 ) );
+          }
+          else if ( item.startsWith( QLatin1String( "password=" ) ) )
+          {
+            uri.setParam( QStringLiteral( "password" ), item.mid( 9 ) );
+          }
+          else if ( item.startsWith( QLatin1String( "tiled=" ) ) )
+          {
+            // in < 1.9 tiled= may apper in to variants:
+            // tiled=width;height - non tiled mode, specifies max width and max height
+            // tiled=width;height;resolutions-1;resolution2;... - tile mode
+
+            QStringList params = item.mid( 6 ).split( ';' );
+
+            if ( params.size() == 2 ) // non tiled mode
+            {
+              uri.setParam( QStringLiteral( "maxWidth" ), params.takeFirst() );
+              uri.setParam( QStringLiteral( "maxHeight" ), params.takeFirst() );
+            }
+            else if ( params.size() > 2 ) // tiled mode
+            {
+              // resolutions are no more needed and size limit is not used for tiles
+              // we have to tell to the provider however that it is tiled
+              uri.setParam( QStringLiteral( "tileMatrixSet" ), QLatin1String( "" ) );
+            }
+          }
+          else if ( item.startsWith( QLatin1String( "featureCount=" ) ) )
+          {
+            uri.setParam( QStringLiteral( "featureCount" ), item.mid( 13 ) );
+          }
+          else if ( item.startsWith( QLatin1String( "url=" ) ) )
+          {
+            uri.setParam( QStringLiteral( "url" ), item.mid( 4 ) );
+          }
+          else if ( item.startsWith( QLatin1String( "ignoreUrl=" ) ) )
+          {
+            uri.setParam( QStringLiteral( "ignoreUrl" ), item.mid( 10 ).split( ';' ) );
+          }
+        }
+      }
+      else
+      {
+        uri.setParam( QStringLiteral( "url" ), src );
+      }
+      src = uri.encodedUri();
+      // At this point, the URI is obviously incomplete, we add additional params
+      // in QgsRasterLayer::readXml
+    }
+    // <<< BACKWARD COMPATIBILITY < 1.9
+  }
+  else if ( provider == QLatin1String( "mdal" ) )
+  {
+    src = context.pathResolver().readPath( src );
+  }
+  else
+  {
+    bool handled = false;
+
+    if ( provider == QLatin1String( "gdal" ) )
+    {
+      if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
+      {
+        // NETCDF:filename:variable
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "NETCDF:(.+):([^:]+)" );
+        if ( r.exactMatch( src ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          src = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
+      {
+        // HDF4_SDS:subdataset_type:file_name:subdataset_index
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+        if ( r.exactMatch( src ) )
+        {
+          QString filename = r.cap( 2 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 3 );
+          handled = true;
+        }
+      }
+      else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
+      {
+        // HDF5:file_name:subdataset
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF5:(.+):([^:]+)" );
+        if ( r.exactMatch( src ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          src = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+      {
+        // NITF_IM:0:filename
+        // RADARSAT_2_CALIB:?:filename
+        QRegExp r( "([^:]+):([^:]+):(.+)" );
+        if ( r.exactMatch( src ) )
+        {
+          src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().readPath( r.cap( 3 ) );
+          handled = true;
+        }
+      }
+    }
+
+    if ( !handled )
+      src = context.pathResolver().readPath( src );
+  }
+
+  return src;
+}
+
 
 
 void QgsVectorLayer::resolveReferences( QgsProject *project )

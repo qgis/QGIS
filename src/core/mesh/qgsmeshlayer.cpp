@@ -181,10 +181,23 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   return true;
 }
 
-QString QgsMeshLayer::encodeSource( const QgsReadWriteContext &context ) const
+QString QgsMeshLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
-  QString src = source();
-  src = context.pathResolver().writePath( src );
+  QString src( source );
+  if ( provider == QLatin1String( "mdal" ) )
+  {
+    src = context.pathResolver().readPath( src );
+  }
+  return src;
+}
+
+QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QString src( source );
+  if ( providerType() == QLatin1String( "mdal" ) )
+  {
+    src = context.pathResolver().writePath( src );
+  }
   return src;
 }
 
