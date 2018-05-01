@@ -188,10 +188,16 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 
 void QgsStatisticalSummaryDockWidget::gathererFinished()
 {
-  mGatherer = nullptr;
-  mCalculatingProgressBar->setValue( -1 );
-  mCancelButton->hide();
-  mCalculatingProgressBar->hide();
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer == mGatherer )
+  {
+    mGatherer = nullptr;
+    mCalculatingProgressBar->setValue( -1 );
+    mCancelButton->hide();
+    mCalculatingProgressBar->hide();
+  }
 }
 
 void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
