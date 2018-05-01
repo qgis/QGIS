@@ -559,7 +559,7 @@ class FixedTableWidgetWrapper(WidgetWrapper):
         return FixedTablePanel(self.param)
 
     def setValue(self, value):
-        pass
+        self.widget.setValue(value)
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:

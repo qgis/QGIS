@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.testing import start_app, unittest
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
+                       QgsProcessingParameterMatrix,
                        QgsVectorLayer)
 from qgis.analysis import QgsNativeAlgorithms
 
@@ -155,6 +156,25 @@ class WrappersTest(unittest.TestCase):
         widget.setUnitParameterValue(vl)
         self.assertEqual(widget.label.text(), 'degrees')
         self.assertTrue(widget.warning_label.isVisible())
+
+        widget.deleteLater()
+
+    def testMatrix(self):
+        self.checkConstructWrapper(QgsProcessingParameterMatrix('test'), FixedTableWidgetWrapper)
+
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        dlg = AlgorithmDialog(alg)
+        param = QgsProcessingParameterMatrix('test', 'test', 2, True, ['x', 'y'], [['a', 'b'], ['c', 'd']])
+        wrapper = FixedTableWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # check that default value is initially set
+        self.assertEqual(wrapper.value(), [['a', 'b'], ['c', 'd']])
+
+        # test widget
+        widget.show()
+        wrapper.setValue([[1, 2], [3, 4]])
+        self.assertEqual(wrapper.value(), [[1, 2], [3, 4]])
 
         widget.deleteLater()
 
