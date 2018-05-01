@@ -5930,30 +5930,36 @@ void QgisApp::openTemplate( const QString &fileName )
     return;
   }
 
-  QString title;
-  if ( !uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout ) )
-  {
-    return;
-  }
-
-  QgsLayoutDesignerDialog *designer = createNewPrintLayout( title );
-  if ( !designer )
-  {
-    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not create print layout" ), Qgis::Warning );
-    return;
-  }
-
-  bool loadedOk = false;
   QDomDocument templateDoc;
-  if ( templateDoc.setContent( &templateFile, false ) )
+  if ( !templateDoc.setContent( &templateFile, false ) )
   {
-    designer->currentLayout()->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
-    designer->activate();
+    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not load template file" ), Qgis::Warning );
+    return;
   }
 
-  if ( !loadedOk )
+  QString title;
+  QDomElement layoutElem = templateDoc.documentElement();
+  if ( !layoutElem.isNull() )
+    title = layoutElem.attribute( QStringLiteral( "name" ) );
+
+  if ( !uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout, title ) )
   {
-    designer->close();
+    return;
+  }
+
+  //create new layout object
+  std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+  bool loadedOk = false;
+  layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
+  if ( loadedOk )
+  {
+    layout->setName( title );
+
+    openLayoutDesignerDialog( layout.get() );
+    QgsProject::instance()->layoutManager()->addLayout( layout.release() );
+  }
+  else
+  {
     messageBar()->pushMessage( tr( "Load template" ), tr( "Could not load template file" ), Qgis::Warning );
   }
 }
