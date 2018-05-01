@@ -238,6 +238,60 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         myCount = myLayer.featureCount()
         self.assertEqual(myCount, 6)
 
+    # undo stack
+    def testUndoStack(self):
+        layer = createLayerWithOnePoint()
+        layer.startEditing()
+
+        self.assertEqual(layer.undoStack().count(), 0)
+        self.assertEqual(layer.undoStack().index(), 0)
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(layer.undoStack().count(), 1)
+        self.assertEqual(layer.undoStack().index(), 1)
+        self.assertEqual(layer.featureCount(), 2)
+
+        layer.undoStack().undo()
+        self.assertEqual(layer.undoStack().count(), 1)
+        self.assertEqual(layer.undoStack().index(), 0)
+        self.assertEqual(layer.featureCount(), 1)
+
+        layer.undoStack().redo()
+        self.assertEqual(layer.undoStack().count(), 1)
+        self.assertEqual(layer.undoStack().index(), 1)
+        self.assertEqual(layer.featureCount(), 2)
+
+        # macro commands
+        layer.beginEditCommand("Test command 1")
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.addFeatures([f]))
+        layer.endEditCommand()
+        self.assertEqual(layer.undoStack().count(), 2)
+        self.assertEqual(layer.undoStack().index(), 2)
+        self.assertEqual(layer.featureCount(), 4)
+
+        layer.undoStack().undo()
+        self.assertEqual(layer.undoStack().count(), 2)
+        self.assertEqual(layer.undoStack().index(), 1)
+        self.assertEqual(layer.featureCount(), 2)
+
+        layer.undoStack().redo()
+        self.assertEqual(layer.undoStack().count(), 2)
+        self.assertEqual(layer.undoStack().index(), 2)
+        self.assertEqual(layer.featureCount(), 4)
+
+        # throw away a macro command
+        layer.beginEditCommand("Test command 1")
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(layer.featureCount(), 6)
+        layer.destroyEditCommand()
+        self.assertEqual(layer.undoStack().count(), 2)
+        self.assertEqual(layer.undoStack().index(), 2)
+        self.assertEqual(layer.featureCount(), 4)
+
     # ADD FEATURE
 
     def test_AddFeature(self):

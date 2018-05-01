@@ -32,6 +32,7 @@
 #include <QDomNode>
 #include <QVector>
 #include <QStringBuilder>
+#include <QUndoCommand>
 
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -3005,6 +3006,15 @@ void QgsVectorLayer::destroyEditCommand()
   }
   undoStack()->endMacro();
   undoStack()->undo();
+
+  // it's not directly possible to pop the last command off the stack (the destroyed one)
+  // and delete, so we add a dummy obsolete command to force this to occur.
+  // Pushing the new command deletes the destroyed one, and since the new
+  // command is obsolete it's automatically deleted by the undo stack.
+  std::unique_ptr< QUndoCommand > command = qgis::make_unique< QUndoCommand >();
+  command->setObsolete( true );
+  undoStack()->push( command.release() );
+
   mEditCommandActive = false;
   mDeletedFids.clear();
   emit editCommandDestroyed();
