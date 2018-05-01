@@ -167,7 +167,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
   QgsCoordinateReferenceSystem crs;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
   {
-    if ( def->type() == QStringLiteral( "layer" ) || def->type() == QStringLiteral( "raster" ) )
+    if ( def->type() == QgsProcessingParameterMapLayer::typeName() || def->type() == QgsProcessingParameterRasterLayer::typeName() )
     {
       QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( def, parameters, context );
       if ( layer )
@@ -183,7 +183,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         }
       }
     }
-    else if ( def->type() == QStringLiteral( "source" ) )
+    else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
     {
       std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
@@ -199,7 +199,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         }
       }
     }
-    else if ( def->type() == QStringLiteral( "multilayer" ) )
+    else if ( def->type() == QgsProcessingParameterMultipleLayers::typeName() )
     {
       QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
       Q_FOREACH ( QgsMapLayer *layer, layers )
@@ -216,6 +216,32 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
           foundCrs = true;
           crs = layer->crs();
         }
+      }
+    }
+    else if ( def->type() == QgsProcessingParameterExtent::typeName() )
+    {
+      QgsCoordinateReferenceSystem extentCrs = QgsProcessingParameters::parameterAsExtentCrs( def, parameters, context );
+      if ( foundCrs && extentCrs.isValid() && crs != extentCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && extentCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = extentCrs;
+      }
+    }
+    else if ( def->type() == QgsProcessingParameterPoint::typeName() )
+    {
+      QgsCoordinateReferenceSystem pointCrs = QgsProcessingParameters::parameterAsPointCrs( def, parameters, context );
+      if ( foundCrs && pointCrs.isValid() && crs != pointCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && pointCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = pointCrs;
       }
     }
   }

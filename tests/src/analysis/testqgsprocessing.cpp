@@ -255,6 +255,24 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       addParameter( new QgsProcessingParameterMultipleLayers( "p5" ) );
       parameters.insert( "p5", QVariantList() << layer4326->id() << r1->id() );
       QVERIFY( !validateInputCrs( parameters, context ) );
+
+      // extent
+      parameters.clear();
+      parameters.insert( "p1", QVariant::fromValue( layer3111 ) );
+      addParameter( new QgsProcessingParameterExtent( "extent" ) );
+      parameters.insert( "extent", QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+      QVERIFY( !validateInputCrs( parameters, context ) );
+      parameters.insert( "extent", QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
+      QVERIFY( validateInputCrs( parameters, context ) );
+
+      // point
+      parameters.clear();
+      parameters.insert( "p1", QVariant::fromValue( layer3111 ) );
+      addParameter( new QgsProcessingParameterPoint( "point" ) );
+      parameters.insert( "point", QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+      QVERIFY( !validateInputCrs( parameters, context ) );
+      parameters.insert( "point", QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
+      QVERIFY( validateInputCrs( parameters, context ) );
     }
 
     void runAsPythonCommandChecks()
