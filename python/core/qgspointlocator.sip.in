@@ -73,6 +73,13 @@ Configure extent - if not null, it will index only that area
 .. versionadded:: 2.14
 %End
 
+    void setRenderContext( const QgsRenderContext *context );
+%Docstring
+Configure render context  - if not null, it will use to index only visible feature
+
+.. versionadded:: 3.2
+%End
+
     enum Type
     {
       Invalid,
@@ -198,7 +205,6 @@ Override of edgesInRect that construct rectangle from a center point and toleran
 %Docstring
 find out if the point is in any polygons
 %End
-
 
     int cachedGeometryCount() const;
 %Docstring

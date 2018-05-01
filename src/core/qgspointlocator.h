@@ -18,12 +18,15 @@
 
 class QgsPointXY;
 class QgsVectorLayer;
+class QgsFeatureRenderer;
+class QgsRenderContext;
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
@@ -91,6 +94,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * \since QGIS 2.14
      */
     void setExtent( const QgsRectangle *extent );
+
+    /**
+     * Configure render context  - if not null, it will use to index only visible feature
+     * \since QGIS 3.2
+     */
+    void setRenderContext( const QgsRenderContext *context );
 
     /**
      * The type of a snap result or the filter type for a snap request.
@@ -251,8 +260,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPointXY &point );
 
-    //
-
     /**
      * Return how many geometries are cached in the index
      * \since QGIS 2.14
@@ -267,6 +274,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
     //! Storage manager
@@ -278,10 +286,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
+
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer *mLayer = nullptr;
     QgsRectangle *mExtent = nullptr;
+
+    std::unique_ptr<QgsRenderContext> mContext;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

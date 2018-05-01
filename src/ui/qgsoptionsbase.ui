@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>7</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -349,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>839</height>
+                <width>411</width>
+                <height>662</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -654,11 +654,11 @@
                     </property>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="mDataSourceManagerNonModal">
-                      <property name="text">
-                       <string>Modeless data source manager dialog</string>
-                      </property>
                       <property name="toolTip">
                        <string>A modeless dialog allows you to interact with QGIS main window and dialogs.</string>
+                      </property>
+                      <property name="text">
+                       <string>Modeless data source manager dialog</string>
                       </property>
                      </widget>
                     </item>
@@ -1040,8 +1040,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1110</height>
+                <width>437</width>
+                <height>1011</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1576,8 +1576,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>826</height>
+                <width>443</width>
+                <height>312</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1743,8 +1743,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>826</height>
+                <width>393</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2111,8 +2111,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1110</height>
+                <width>541</width>
+                <height>866</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2862,8 +2862,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>826</height>
+                <width>449</width>
+                <height>195</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3173,8 +3173,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>826</height>
+                <width>515</width>
+                <height>527</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3617,8 +3617,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>826</height>
+                <width>124</width>
+                <height>230</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3785,8 +3785,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>889</height>
+                <width>862</width>
+                <height>838</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4008,39 +4008,75 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="title">
                   <string>Snapping</string>
                  </property>
-                 <layout class="QGridLayout" name="_10">
-                  <item row="6" column="5">
-                   <widget class="QgsColorButton" name="mSnappingMarkerColorButton"/>
-                  </item>
-                  <item row="1" column="1" colspan="6">
+                 <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="0" column="0" colspan="4">
                    <widget class="QCheckBox" name="mSnappingEnabledDefault">
                     <property name="text">
                      <string>Enable snapping by default</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
-                   <widget class="QLabel" name="label_49">
-                    <property name="text">
-                     <string>Display main dialog as (restart required)</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
-                   <widget class="QLabel" name="label_2">
-                    <property name="text">
-                     <string>Snapping marker color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
+                  <item row="1" column="0">
                    <widget class="QLabel" name="mDefaultSnapModeLabel">
                     <property name="text">
                      <string>Default snap mode</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="6">
+                  <item row="1" column="1">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>273</width>
+                      <height>19</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="mDefaultSnapModeComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel">
+                    <property name="text">
+                     <string>Default snapping tolerance</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>241</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
+                    <property name="decimals">
+                     <number>5</number>
+                    </property>
+                    <property name="maximum">
+                     <double>99999999.989999994635582</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
                    <widget class="QComboBox" name="mDefaultSnappingToleranceComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -4060,7 +4096,14 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </item>
                    </widget>
                   </item>
-                  <item row="4" column="4">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
+                    <property name="text">
+                     <string>Search radius for vertex edits</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
                    <spacer>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -4073,30 +4116,17 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </spacer>
                   </item>
-                  <item row="3" column="3" colspan="2">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                  <item row="3" column="2">
+                   <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
+                    <property name="decimals">
+                     <number>5</number>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>241</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="2" column="5" colspan="2">
-                   <widget class="QComboBox" name="mDefaultSnapModeComboBox">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                    <property name="maximum">
+                     <double>99999999.989999994635582</double>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="6">
+                  <item row="3" column="3">
                    <widget class="QComboBox" name="mSearchRadiusVertexEditComboBox">
                     <item>
                      <property name="text">
@@ -4110,60 +4140,37 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </item>
                    </widget>
                   </item>
-                  <item row="4" column="5">
-                   <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
-                    <property name="decimals">
-                     <number>5</number>
-                    </property>
-                    <property name="maximum">
-                     <double>99999999.989999994635582</double>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_49">
+                    <property name="text">
+                     <string>Display main dialog as (restart required)</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="5">
-                   <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
-                    <property name="decimals">
-                     <number>5</number>
-                    </property>
-                    <property name="maximum">
-                     <double>99999999.989999994635582</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2" colspan="3">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>311</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="5" column="5" colspan="2">
+                  <item row="4" column="2">
                    <widget class="QComboBox" name="mSnappingMainDialogComboBox"/>
                   </item>
-                  <item row="4" column="1" colspan="3">
-                   <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="label_2">
                     <property name="text">
-                     <string>Search radius for vertex edits</string>
+                     <string>Snapping marker color</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="1" colspan="2">
-                   <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel">
-                    <property name="text">
-                     <string>Default snapping tolerance</string>
-                    </property>
-                   </widget>
+                  <item row="5" column="2">
+                   <widget class="QgsColorButton" name="mSnappingMarkerColorButton"/>
                   </item>
-                  <item row="7" column="1" colspan="6">
+                  <item row="6" column="0" colspan="4">
                    <widget class="QCheckBox" name="mSnappingTooltipsCheckbox">
                     <property name="text">
                      <string>Show snapping tooltips</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0" colspan="4">
+                   <widget class="QCheckBox" name="mEnableSnappingOnInvisibleFeatureCheckbox">
+                    <property name="text">
+                     <string>Enable snapping on invisible features (not shown on the map canvas)</string>
                     </property>
                    </widget>
                   </item>
@@ -4380,8 +4387,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>623</height>
+                <width>390</width>
+                <height>539</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4649,8 +4656,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>435</width>
-                <height>402</height>
+                <width>862</width>
+                <height>838</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4818,8 +4825,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>655</width>
-                <height>768</height>
+                <width>862</width>
+                <height>838</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5587,7 +5594,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
   <tabstop>mSnappingMainDialogComboBox</tabstop>
   <tabstop>mSnappingMarkerColorButton</tabstop>
-  <tabstop>mSnappingTooltipsCheckbox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
@@ -5635,7 +5641,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
