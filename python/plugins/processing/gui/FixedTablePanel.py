@@ -56,11 +56,16 @@ class FixedTablePanel(BASE, WIDGET):
 
         self.btnSelect.clicked.connect(self.showFixedTableDialog)
 
+    def updateSummaryText(self):
+        self.leText.setText(self.tr('Fixed table {0}x{1}').format(
+            len(self.table), len(self.param.headers())))
+
+    def setValue(self, value):
+        self.table = value
+        self.updateSummaryText()
+
     def showFixedTableDialog(self):
         dlg = FixedTableDialog(self.param, self.table)
         dlg.exec_()
         if dlg.rettable is not None:
-            self.table = dlg.rettable
-
-        self.leText.setText(self.tr('Fixed table {0}x{1}').format(
-            len(self.table), len(self.param.headers())))
+            self.setValue(dlg.rettable)

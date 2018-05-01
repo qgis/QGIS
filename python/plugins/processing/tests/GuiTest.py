@@ -26,7 +26,10 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsCoordinateReferenceSystem,
+                       QgsProcessingParameterMatrix,
+                       QgsVectorLayer)
 from qgis.analysis import QgsNativeAlgorithms
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -115,11 +118,33 @@ class WrappersTest(unittest.TestCase):
     def testSource(self):
         self.checkConstructWrapper(QgsProcessingParameterFeatureSource('test'), FeatureSourceWidgetWrapper)
 
-    def testSource(self):
-        self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
-
     def testMapLayer(self):
         self.checkConstructWrapper(QgsProcessingParameterMapLayer('test'), MapLayerWidgetWrapper)
+
+    def testMatrix(self):
+        self.checkConstructWrapper(QgsProcessingParameterMatrix('test'), FixedTableWidgetWrapper)
+
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        dlg = AlgorithmDialog(alg)
+        param = QgsProcessingParameterMatrix('test', 'test', 2, True, ['x', 'y'], [['a', 'b'], ['c', 'd']])
+        wrapper = FixedTableWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # check that default value is initially set
+        self.assertEqual(wrapper.value(), [['a', 'b'], ['c', 'd']])
+
+        # test widget
+        widget.show()
+        wrapper.setValue([[1, 2], [3, 4]])
+        self.assertEqual(wrapper.value(), [[1, 2], [3, 4]])
+
+        widget.deleteLater()
+
+    def testNumber(self):
+        self.checkConstructWrapper(QgsProcessingParameterNumber('test'), NumberWidgetWrapper)
+
+    def testBand(self):
+        self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
 
 
 if __name__ == '__main__':
