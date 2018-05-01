@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
@@ -43,6 +44,9 @@ class ClipVectorByMask(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagSupportsBatch | QgsProcessingAlgorithm.FlagRequiresMatchingCrs # cannot cancel!
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
