@@ -3655,6 +3655,9 @@ QStringList QgsSymbolLayerUtils::listSvgFilesAt( const QString &directory )
 
 QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver )
 {
+  if ( name.isEmpty() )
+    return QString();
+
   // we might have a full path...
   if ( QFileInfo::exists( name ) )
     return QFileInfo( name ).canonicalFilePath();
