@@ -3253,7 +3253,7 @@ void QgisApp::setupConnections()
   } );
 
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged,
-           this, [ = ]
+           mMapCanvas, [ = ]
   {
     mMapCanvas->setLabelingEngineSettings( QgsProject::instance()->labelingEngineSettings() );
   } );
