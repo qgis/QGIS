@@ -563,14 +563,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QStringList listSvgFilesAt( const QString &directory );
 
     /**
-     * Get SVG symbol's path from its name.
-     *  If the name is not absolute path the file is searched in SVG paths specified
-     *  in settings svg/searchPathsForSVG.
+     * Determines an SVG symbol's path from its \a name.
+     * If \a name is not an absolute path the file is scanned for in the SVG paths specified
+     * in settings svg/searchPathsForSVG.
+     * \see svgSymbolPathToName()
      */
-    static QString svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver );
+    static QString svgSymbolNameToPath( const QString &name, const QgsPathResolver &pathResolver );
 
-    //! Get SVG symbols's name from its path
-    static QString svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver );
+    /**
+     * Determines an SVG symbol's name from its \a path.
+     * \see svgSymbolNameToPath()
+     */
+    static QString svgSymbolPathToName( const QString &path, const QgsPathResolver &pathResolver );
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
