@@ -3460,6 +3460,22 @@ tests:
           geometry:
             precision: 5
 
+  - algorithm: qgis:zonalhistogram
+    name: zonal histogram
+    params:
+      COLUMN_PREFIX: HISTO_
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_VECTOR:
+        name: zones.gml
+        type: vector
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/zones_histogram.gml
+        type: vector
+
   - algorithm: native:fixgeometries
     name: Fix geometries
     params:

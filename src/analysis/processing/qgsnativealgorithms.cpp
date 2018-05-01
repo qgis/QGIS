@@ -79,6 +79,7 @@
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalueindex.h"
 #include "qgsalgorithmwedgebuffers.h"
+#include "qgsalgorithmzonalhistogram.h"
 
 
 ///@cond PRIVATE
@@ -186,6 +187,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
+  addAlgorithm( new QgsZonalHistogramAlgorithm() );
 }
 
 
