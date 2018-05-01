@@ -212,6 +212,7 @@ void TestQgsProject::testPathResolverSvg()
   QString layerPath = dataDir + "/points.shp";
 
   QVERIFY( QgsSymbolLayerUtils::svgSymbolNameToPath( QString(), QgsPathResolver() ).isEmpty() );
+  QVERIFY( QgsSymbolLayerUtils::svgSymbolPathToName( QString(), QgsPathResolver() ).isEmpty() );
 
   // build a project with 3 layers, each having a simple renderer with SVG marker
   // - existing SVG file in project dir
@@ -235,6 +236,7 @@ void TestQgsProject::testPathResolverSvg()
   QVERIFY( QFileInfo::exists( ourSvgPath ) );  // should exist now
 
   QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "transport/transport_airport.svg" ), QgsPathResolver() );
+  QCOMPARE( QgsSymbolLayerUtils::svgSymbolPathToName( librarySvgPath, QgsPathResolver() ), QStringLiteral( "transport/transport_airport.svg" ) );
 
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
   _useRendererWithSvgSymbol( layer1, ourSvgPath );
