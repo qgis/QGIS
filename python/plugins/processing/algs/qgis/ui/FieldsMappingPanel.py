@@ -328,17 +328,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.setLayer(layer)
         if layer is None:
             return
-        if self.model.rowCount() == 0:
-            self.on_resetButton_clicked()
-            return
-        dlg = QMessageBox(self)
-        dlg.setText(self.tr("Do you want to reset the field mapping?"))
-        dlg.setStandardButtons(
-            QMessageBox.StandardButtons(QMessageBox.Yes |
-                                        QMessageBox.No))
-        dlg.setDefaultButton(QMessageBox.No)
-        if dlg.exec_() == QMessageBox.Yes:
-            self.on_resetButton_clicked()
+        self.on_resetButton_clicked()
 
     def value(self):
         return self.model.mapping()
