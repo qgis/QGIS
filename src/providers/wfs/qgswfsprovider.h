@@ -150,6 +150,9 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     friend class QgsWFSFeatureSource;
 
+    // Q4 has no QDateTime::timeZone()
+    // see http://www.qtcentre.org/threads/22422-Timezone-offset
+    QTime getTimeZoneDiff( const QDateTime &dateTime, bool &isNegative );
   protected:
 
     //! String used to define a subset of the layer
