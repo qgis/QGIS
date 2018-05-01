@@ -614,16 +614,20 @@ Return a list of all available svg files
 Return a list of svg files at the specified directory
 %End
 
-    static QString svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver );
+    static QString svgSymbolNameToPath( const QString &name, const QgsPathResolver &pathResolver );
 %Docstring
-Get SVG symbol's path from its name.
-If the name is not absolute path the file is searched in SVG paths specified
+Determines an SVG symbol's path from its ``name``.
+If ``name`` is not an absolute path the file is scanned for in the SVG paths specified
 in settings svg/searchPathsForSVG.
+
+.. seealso:: :py:func:`svgSymbolPathToName`
 %End
 
-    static QString svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver );
+    static QString svgSymbolPathToName( const QString &path, const QgsPathResolver &pathResolver );
 %Docstring
-Get SVG symbols's name from its path
+Determines an SVG symbol's name from its ``path``.
+
+.. seealso:: :py:func:`svgSymbolNameToPath`
 %End
 
     static QPointF polygonCentroid( const QPolygonF &points );
