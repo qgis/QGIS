@@ -81,7 +81,7 @@ class FixedTableDialog(BASE, WIDGET):
         # Populate table
         for i in range(rows):
             for j in range(cols):
-                item = QStandardItem(table[i][j])
+                item = QStandardItem(str(table[i][j]))
                 model.setItem(i, j, item)
         self.tblView.setModel(model)
 
