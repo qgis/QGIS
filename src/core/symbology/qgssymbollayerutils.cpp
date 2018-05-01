@@ -3653,15 +3653,16 @@ QStringList QgsSymbolLayerUtils::listSvgFilesAt( const QString &directory )
 
 }
 
-QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver )
+QString QgsSymbolLayerUtils::svgSymbolNameToPath( const QString &n, const QgsPathResolver &pathResolver )
 {
-  if ( name.isEmpty() )
+  if ( n.isEmpty() )
     return QString();
 
   // we might have a full path...
-  if ( QFileInfo::exists( name ) )
-    return QFileInfo( name ).canonicalFilePath();
+  if ( QFileInfo::exists( n ) )
+    return QFileInfo( n ).canonicalFilePath();
 
+  QString name = n;
   // or it might be an url...
   if ( name.contains( QLatin1String( "://" ) ) )
   {
@@ -3715,12 +3716,15 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
   return pathResolver.readPath( name );
 }
 
-QString QgsSymbolLayerUtils::svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver )
+QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPathResolver &pathResolver )
 {
-  if ( !QFileInfo::exists( path ) )
-    return path;
+  if ( p.isEmpty() )
+    return QString();
 
-  path = QFileInfo( path ).canonicalFilePath();
+  if ( !QFileInfo::exists( p ) )
+    return p;
+
+  QString path = QFileInfo( p ).canonicalFilePath();
 
   QStringList svgPaths = QgsApplication::svgPaths();
 
