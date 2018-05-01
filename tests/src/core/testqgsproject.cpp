@@ -212,6 +212,8 @@ void TestQgsProject::testPathResolverSvg()
   QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString layerPath = dataDir + "/points.shp";
 
+  QVERIFY( QgsSymbolLayerUtils::svgSymbolNameToPath( QString(), QgsPathResolver() ).isEmpty() );
+
   // build a project with 3 layers, each having a simple renderer with SVG marker
   // - existing SVG file in project dir
   // - existing SVG file in QGIS dir
