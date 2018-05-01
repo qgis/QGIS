@@ -679,8 +679,17 @@
                         </item>
                         <item row="1" column="1" colspan="3">
                          <widget class="QgsDoubleSpinBox" name="mBarWidthSpinBox">
+                          <property name="decimals">
+                           <number>5</number>
+                          </property>
                           <property name="minimum">
                            <double>0.010000000000000</double>
+                          </property>
+                          <property name="maximum">
+                           <double>99999.990000000005239</double>
+                          </property>
+                          <property name="singleStep">
+                           <double>0.200000000000000</double>
                           </property>
                           <property name="value">
                            <double>5.000000000000000</double>
