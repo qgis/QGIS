@@ -153,6 +153,12 @@ class TestCase(_TestCase):
                 if 'skip' in cmp:
                     continue
 
+                if use_asserts:
+                    _TestCase.assertIn(
+                        self,
+                        field_expected.name(),
+                        feats[1].fields().names())
+
                 attr_result = feats[1][field_expected.name()]
                 field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
 
