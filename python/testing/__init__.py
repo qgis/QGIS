@@ -130,7 +130,7 @@ class TestCase(_TestCase):
                     self,
                     geom0,
                     geom1,
-                    'Features {}/{} differ in geometry: \n\n {}\n\n vs \n\n {}'.format(
+                    'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
                         feats[0].id(),
                         feats[1].id(),
                         geom0,
@@ -157,7 +157,7 @@ class TestCase(_TestCase):
                     _TestCase.assertIn(
                         self,
                         field_expected.name().lower(),
-                        (name.lower() for name in feats[1].fields().names()))
+                        [name.lower() for name in feats[1].fields().names()])
 
                 attr_result = feats[1][field_expected.name()]
                 field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
