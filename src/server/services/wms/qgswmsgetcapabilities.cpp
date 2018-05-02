@@ -1205,6 +1205,13 @@ namespace QgsWms
       QDomElement abstractElement = layerElement.firstChildElement( QStringLiteral( "Abstract" ) );
       QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
 
+      if ( CRSPrecedingElement.isNull() )
+      {
+        // keyword list element is never empty
+        const QDomElement keyElement = layerElement.firstChildElement( QStringLiteral( "KeywordList" ) );
+        CRSPrecedingElement = keyElement;
+      }
+
       //In case the number of advertised CRS is constrained
       if ( !constrainedCrsList.isEmpty() )
       {
