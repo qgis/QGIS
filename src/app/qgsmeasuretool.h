@@ -35,8 +35,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
 
-    ~QgsMeasureTool() override;
-
     Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! returns whether measuring distance or area
