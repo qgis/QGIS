@@ -56,14 +56,6 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureTool::updateSettings );
 }
 
-QgsMeasureTool::~QgsMeasureTool()
-{
-  delete mDialog;
-  delete mRubberBand;
-  delete mRubberBandPoints;
-}
-
-
 QVector<QgsPointXY> QgsMeasureTool::points()
 {
   return mPoints;
