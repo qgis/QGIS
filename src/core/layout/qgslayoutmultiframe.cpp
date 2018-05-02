@@ -94,7 +94,7 @@ QList<QgsLayoutFrame *> QgsLayoutMultiFrame::frames() const
 
 void QgsLayoutMultiFrame::recalculateFrameSizes()
 {
-  if ( mFrameItems.empty() )
+  if ( mFrameItems.empty() || mLayout->pageCollection()->pageCount() == 0 )
   {
     return;
   }
