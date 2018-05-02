@@ -1037,7 +1037,7 @@ QString QgsWFSProvider::convertToXML( const QVariant& value )
       bool negative = true;
       QTime tz = getTimeZoneDiff( dt, negative );
       valueStr = QString( "%1%2%3" )
-                 .arg( dt.toString( "yyyy-MM-ddTHH:mm:ss" ) )
+                 .arg( dt.toString( "yyyy-MM-ddTHH:mm:ss.zzz" ) )
                  .arg( negative ? "-" : "+" )
                  .arg( tz.toString( "HH:mm" ) );
     }
@@ -1113,11 +1113,11 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       nameElem.appendChild( nameText );
       propertyElem.appendChild( nameElem );
 
-      QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
       if ( attMapIt.value().isValid() && !attMapIt.value().isNull() )
       {
         // WFS does not support :nil='true'
         // if value is NULL, do not add value element
+        QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
         QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
         valueElem.appendChild( valueText );
         propertyElem.appendChild( valueElem );
