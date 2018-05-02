@@ -18,7 +18,7 @@ import re
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate, QDateTime
 
 from qgis.core import (
     QgsVectorLayer,
@@ -27,7 +27,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsApplication,
     QgsSettings,
-    QgsRectangle
+    QgsRectangle,
+    NULL
 )
 from qgis.testing import (start_app,
                           unittest
