@@ -105,11 +105,17 @@ def getParameterFromString(s):
             if clazz == QgsProcessingParameterRasterLayer:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+            elis clazz == QgsProcessingParameterBand:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterVectorLayer:
                 if len(params) > 2:
                     params[2] = [int(p) for p in params[2].split(';')]
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterMapLayer:
+                if len(params) > 3:
+                    params[3[ = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterBoolean:
                 if len(params) > 2:
                     params[2] = True if params[2].lower() == 'true' else False
@@ -130,6 +136,9 @@ def getParameterFromString(s):
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterExtent:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterExpression:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterEnum:
