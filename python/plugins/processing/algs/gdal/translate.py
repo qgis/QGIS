@@ -113,7 +113,10 @@ class translate(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
 
         arguments = []
 
@@ -122,7 +125,7 @@ class translate(GdalAlgorithm):
             arguments.append('-a_srs')
             arguments.append(crs.authid())
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-a_nodata')
             arguments.append(nodata)
 

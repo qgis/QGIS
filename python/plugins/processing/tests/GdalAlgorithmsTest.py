@@ -28,6 +28,7 @@ __revision__ = ':%H$'
 import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.translate import translate
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
                        QgsApplication,
@@ -91,7 +92,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         parameters = {'INPUT': 'testmem'}
         feedback = QgsProcessingFeedback()
         # check that memory layer is automatically saved out to shape when required by GDAL algorithms
-        ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, executing=True)
+        ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
+                                                                   executing=True)
         self.assertTrue(ogr_data_path)
         self.assertTrue(ogr_data_path.endswith('.shp'))
         self.assertTrue(os.path.exists(ogr_data_path))
@@ -180,8 +182,75 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(name, 't')
 
         # PostgreSQL provider
-        name = GdalUtils.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+        name = GdalUtils.ogrLayerName(
+            'port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
         self.assertEqual(name, 'city_data.edge')
+
+    def testGdalTranslate(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        translate_alg = translate()
+        translate_alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'NODATA': 9999,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_nodata 9999.0 ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'NODATA': 0,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_nodata 0.0 ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with target srs
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'TARGET_CRS': 'EPSG:3111',
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_srs EPSG:3111 ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with target srs
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'TARGET_CRS': 'EPSG:3111',
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_srs EPSG:3111 ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with copy subdatasets
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'COPY_SUBDATASETS': True,
+                                              'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdal_translate',
+             '-sds ' +
+             '-ot Float32 -of GTiff ' +
+             source + ' ' +
+             'd:/temp/check.tif'])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
@@ -198,7 +267,6 @@ class TestGdalOgrToPostGis(unittest.TestCase):
 
     # See https://issues.qgis.org/issues/15706
     def test_getConnectionString(self):
-
         obj = OgrToPostGis()
         obj.initAlgorithm({})
 
