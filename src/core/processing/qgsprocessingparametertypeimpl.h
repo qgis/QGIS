@@ -116,6 +116,36 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
 };
 
 /**
+ * An expression parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
+class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingParameterType
+{
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterExpression( name );
+    }
+
+    virtual QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "An expression parameter, to add custom expressions based on layer fields." );
+    }
+
+    virtual QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Expression" );
+    }
+
+    virtual QString id() const override
+    {
+      return QStringLiteral( "expression" );
+    }
+};
+
+/**
  * A crs parameter for processing algorithms.
  *
  * \since QGIS 3.2

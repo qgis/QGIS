@@ -25,6 +25,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
   addParameterType( new QgsProcessingParameterTypeBoolean() );
+  addParameterType( new QgsProcessingParameterTypeExpression() );
   addParameterType( new QgsProcessingParameterTypeCrs() );
   addParameterType( new QgsProcessingParameterTypeRange() );
   addParameterType( new QgsProcessingParameterTypePoint() );
@@ -42,6 +43,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeFeatureSource() );
   addParameterType( new QgsProcessingParameterTypeNumber() );
   addParameterType( new QgsProcessingParameterTypeDistance() );
+  addParameterType( new QgsProcessingParameterTypeBand() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
