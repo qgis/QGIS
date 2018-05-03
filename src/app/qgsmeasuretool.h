@@ -35,13 +35,15 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
 
+    ~QgsMeasureTool() override;
+
     Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! returns whether measuring distance or area
-    bool measureArea() { return mMeasureArea; }
+    bool measureArea() const { return mMeasureArea; }
 
     //! When we have added our last point, and not following
-    bool done() { return mDone; }
+    bool done() const { return mDone; }
 
     //! Reset and start new
     void restart();
@@ -50,29 +52,19 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QVector<QgsPointXY> points();
+    QVector<QgsPointXY> points() const;
 
     // Inherited from QgsMapTool
 
-    //! Mouse move event for overriding
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-
-    //! Mouse press event for overriding
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
-
-    //! Mouse release event for overriding
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
-    //! called when set as currently active map tool
     void activate() override;
-
-    //! called when map tool is being deactivated
     void deactivate() override;
-
     void keyPressEvent( QKeyEvent *e ) override;
 
   public slots:
-    //! updates the projections we're using
+    //! Updates the projections we're using
     void updateSettings();
 
   protected:
@@ -87,15 +79,17 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! Rubberband widget tracking the added nodes to line
     QgsRubberBand *mRubberBandPoints = nullptr;
 
-    //! indicates whether we're measuring distances or areas
-    bool mMeasureArea;
+    //! Indicates whether we're measuring distances or areas
+    bool mMeasureArea = false;
 
-    //! indicates whether we've just done a right mouse click
-    bool mDone;
+    //! Indicates whether we've just done a right mouse click
+    bool mDone = true;
 
-    //! indicates whether we've recently warned the user about having the wrong
-    // project projection
-    bool mWrongProjectProjection;
+    /**
+     * Indicates whether we've recently warned the user about having the wrong
+     * project projection.
+     */
+    bool mWrongProjectProjection = false;
 
     //! Destination CoordinateReferenceSystem used by the MapCanvas
     QgsCoordinateReferenceSystem mDestinationCrs;
