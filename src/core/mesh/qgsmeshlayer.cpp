@@ -233,7 +233,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
-  if ( mapLayerNode.isNull() || ( "maplayer" != mapLayerNode.nodeName() ) )
+  if ( mapLayerNode.isNull() || ( QLatin1String( "maplayer" ) != mapLayerNode.nodeName() ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
     return false;
