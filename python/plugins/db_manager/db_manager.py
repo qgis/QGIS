@@ -393,7 +393,7 @@ class DBManager(QMainWindow):
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # create database tree
-        self.dock = QDockWidget("Tree", self)
+        self.dock = QDockWidget(self.tr("Tree"), self)
         self.dock.setObjectName("DB_Manager_DBView")
         self.dock.setFeatures(QDockWidget.DockWidgetMovable)
         self.tree = DBTree(self)
@@ -418,7 +418,7 @@ class DBManager(QMainWindow):
         self.setMenuBar(self.menuBar)
 
         # create toolbar
-        self.toolBar = QToolBar("Default", self)
+        self.toolBar = QToolBar(self.tr("Default"), self)
         self.toolBar.setObjectName("DB_Manager_ToolBar")
         self.addToolBar(self.toolBar)
 
