@@ -54,7 +54,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
       if ( ok )
       {
         // TODO: make the format configurable!
-        result = QLocale::system().toString( val, 'f', precision );
+        result = QLocale().toString( val, 'f', precision );
       }
     }
   }
@@ -65,7 +65,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
     double val( value.toInt( &ok ) );
     if ( ok )
     {
-      result =  QLocale::system().toString( val, 'f', 0 );
+      result =  QLocale().toString( val, 'f', 0 );
     }
   }
   else if ( ( field.type() == QVariant::LongLong ) &&
@@ -75,7 +75,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
     double val( value.toLongLong( &ok ) );
     if ( ok )
     {
-      result =  QLocale::system().toString( val, 'f', 0 );
+      result =  QLocale().toString( val, 'f', 0 );
     }
   }
   else
