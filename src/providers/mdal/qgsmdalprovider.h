@@ -60,4 +60,3 @@ class QgsMdalProvider : public QgsMeshDataProvider
 };
 
 #endif //QGSMDALPROVIDER_H
-

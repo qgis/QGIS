@@ -1378,6 +1378,35 @@ Called by writeLayerXML(), used by children to write state specific to them to
 project files.
 %End
 
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+%Docstring
+Called by writeLayerXML(), used by derived classes to encode provider's specific data
+source to project files. Typically resolving absolute or relative paths, usernames and
+passwords or drivers prefixes ("HDF5:")
+
+:param source: data source to encode, typically :py:func:`QgsMapLayer.source()`
+:param context: writing context (e.g. for conversion between relative and absolute paths)
+
+:return: encoded source, typically to be written in the dom element "datasource"
+
+.. versionadded:: 3.2
+%End
+
+    virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
+%Docstring
+Called by readLayerXML(), used by derived classes to decode provider's specific data
+source from project files. Typically resolving absolute or relative paths, usernames and
+passwords or drivers prefixes ("HDF5:")
+
+:param source: data source to decode, typically read from layer's dom element "datasource"
+:param dataProvider: string identification of data provider (e.g. "ogr"), typically read from layer's dom element
+:param context: reading context (e.g. for conversion between relative and absolute paths)
+
+:return: decoded source, typically to be used as the layer's datasource
+
+.. versionadded:: 3.2
+%End
+
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring
 Read custom properties from project file.

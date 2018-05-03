@@ -47,9 +47,11 @@ class TestQgsMeshLayer : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void test_write_read_project();
     void test_data_provider();
     void test_extent();
 };
+
 
 void TestQgsMeshLayer::initTestCase()
 {
@@ -118,6 +120,25 @@ void TestQgsMeshLayer::test_extent()
 {
   QCOMPARE( mMemoryLayer->dataProvider()->extent(), mMemoryLayer->extent() );
   QCOMPARE( mMdalLayer->dataProvider()->extent(), mMdalLayer->extent() );
+}
+
+void TestQgsMeshLayer::test_write_read_project()
+{
+  QgsProject prj;
+  prj.addMapLayer( mMemoryLayer->clone() );
+  prj.addMapLayer( mMdalLayer->clone() );
+
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  prj.setFileName( f.fileName() );
+  prj.write();
+
+  QgsProject prj2;
+  prj2.setFileName( f.fileName() );
+  QVERIFY( prj2.read() );
+  QVector<QgsMapLayer *> layers = prj2.layers<QgsMapLayer *>();
+  QVERIFY( layers.size() == 2 );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

@@ -114,6 +114,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     //! Return the provider type for this layer
     QString providerType() const;
