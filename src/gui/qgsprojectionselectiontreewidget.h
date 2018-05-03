@@ -235,6 +235,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     //! Show the user a warning if the srs database could not be found
     void showDBMissingWarning( const QString &fileName );
+
+    enum Roles
+    {
+      RoleDeprecated = Qt::UserRole,
+    };
+
     // List view nodes for the tree view of projections
     //! User defined projections node
     QTreeWidgetItem *mUserProjList = nullptr;
@@ -302,8 +308,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void cbxHideDeprecated_stateChanged();
-    void leSearch_textChanged( const QString & );
+    void updateFilter();
 };
 
 #endif
