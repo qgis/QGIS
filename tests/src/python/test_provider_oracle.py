@@ -49,6 +49,8 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
         cls.conn.setDatabaseName('10.0.0.2/orcl')
+        if 'QGIS_ORACLETEST_DBNAME' in os.environ:
+            cls.conn.setDatabaseName('QGIS_ORACLETEST_DBNAME')
         cls.conn.setUserName('QGIS')
         cls.conn.setPassword('qgis')
         assert cls.conn.open()
@@ -151,6 +153,10 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(features[1].geometry().exportToWkt(), 'PointZ (1 2 3)')
         self.assertEqual(features[2].geometry().exportToWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
         self.assertEqual(features[3].geometry().exportToWkt(), 'MultiPoint ((1 2),(3 4))')
+        self.assertEqual(features[4].geometry().exportToWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
+        self.assertEqual(features[5].geometry().exportToWkt(), 'Point (1 2)')
+        self.assertEqual(features[6].geometry().exportToWkt(), 'Point (3 4)')
+        self.assertEqual(features[7].geometry().exportToWkt(), 'Point (5 6)')
 
     def testCurves(self):
         vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=LINESTRING sql=' %
