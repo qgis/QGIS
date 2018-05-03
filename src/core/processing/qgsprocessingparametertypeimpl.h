@@ -86,6 +86,36 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
 };
 
 /**
+ * A generic map layer parameter for processing algorithms.
+ *
+ * \since QGIS 3.2
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType()
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParameterType
+{
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMapLayer( name );
+    }
+
+    virtual QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A generic map layer parameter, which accepts either vector or raster layers." );
+    }
+
+    virtual QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Map Layer" );
+    }
+
+    virtual QString id() const override
+    {
+      return QStringLiteral( "maplayer" );
+    }
+};
+
+/**
  * A boolean parameter for processing algorithms.
  *
  * \since QGIS 3.2
