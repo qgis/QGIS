@@ -18,7 +18,7 @@ from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
                        QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter, QgsSettings)
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -243,6 +243,8 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
 
         fieldFormatter = QgsRangeFieldFormatter()
 
+        QLocale.setDefault(QLocale.c())
+
         # Precision is ignored for integers and longlongs
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123000')
@@ -272,18 +274,17 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0.127')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0.127')
 
-        QgsSettings().setValue("locale/overrideFlag", True)
-        QgsSettings().setValue("locale/userLocale", 'it')
+        QLocale.setDefault(QLocale('it'))
 
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
-                         '9999999')  # no scientific notation for integers!
+                         '9.999.999')  # scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123.000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9.999.999')  # scientific notation for long longs!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
-        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123.000,00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0,00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123,00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0,12')

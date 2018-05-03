@@ -371,7 +371,7 @@
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_5">
                       <property name="text">
-                       <string>Locale to use instead</string>
+                       <string>User Interface Translation</string>
                       </property>
                      </widget>
                     </item>
@@ -392,6 +392,9 @@
                   </item>
                   <item>
                    <widget class="QLabel" name="lblSystemLocale">
+                    <property name="toolTip">
+                     <string>This locale is used for number representation.</string>
+                    </property>
                     <property name="text">
                      <string>Detected active locale on your system</string>
                     </property>
