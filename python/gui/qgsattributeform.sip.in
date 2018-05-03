@@ -139,7 +139,7 @@ on all attribute widgets.
 
   signals:
 
- void attributeChanged( const QString &attribute, const QVariant &value );
+ void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated/;
 %Docstring
 Notifies about changes of attributes
 
