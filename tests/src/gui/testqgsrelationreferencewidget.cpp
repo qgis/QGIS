@@ -298,14 +298,21 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   w.setRelation( *mRelation, true );
   w.init();
 
+  QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
+
   w.setForeignKey( 11 );
   QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
+  QCOMPARE( spy.count(), 1 );
 
   w.setForeignKey( 12 );
   QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
+  QCOMPARE( spy.count(), 2 );
 
   w.setForeignKey( QVariant( QVariant::Int ) );
   Q_ASSERT( w.foreignKey().isNull() );
+  QCOMPARE( spy.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
