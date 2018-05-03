@@ -49,20 +49,25 @@
  * - SimplifyMethod for geometries to fetch
  *
  * The options may be chained, e.g.:
- *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest::ExactIntersect)
+ *
+ * \code{.py}
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
+ * \endcode
  *
  * Examples:
- * - fetch all features:
- *     QgsFeatureRequest()
- * - fetch all features, only one attribute
- *     QgsFeatureRequest().setSubsetOfAttributes(QStringList("myfield"), provider->fieldMap())
- * - fetch all features, without geometries
- *     QgsFeatureRequest().setFlags(QgsFeatureRequest::NoGeometry)
- * - fetch only features from particular extent
- *     QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
- * - fetch only one feature
- *     QgsFeatureRequest().setFilterFid(45)
  *
+ * \code{.py}
+ *   # fetch all features:
+ *   QgsFeatureRequest()
+ *   # fetch all features, only one attribute
+ *   QgsFeatureRequest().setSubsetOfAttributes(['myfield'], layer.fields())
+ *   # fetch all features, without geometries
+ *   QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+ *   # fetch only features from particular extent
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
+ *   # fetch only one feature
+ *   QgsFeatureRequest().setFilterFid(45)
+ * \endcode
  */
 class CORE_EXPORT QgsFeatureRequest
 {
