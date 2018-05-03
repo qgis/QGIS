@@ -394,9 +394,9 @@ QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
   return requestedAttrs;
 }
 
-void QgsFeatureFilterModel::setExtraIdentifierValueIndex( int index )
+void QgsFeatureFilterModel::setExtraIdentifierValueIndex( int index, bool force )
 {
-  if ( mExtraIdentifierValueIndex == index )
+  if ( mExtraIdentifierValueIndex == index && !force )
     return;
 
   mExtraIdentifierValueIndex = index;
@@ -437,7 +437,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();
 
-    setExtraIdentifierValueIndex( 0 );
+    setExtraIdentifierValueIndex( 0, true );
 
     reloadCurrentFeature();
   }
@@ -535,8 +535,16 @@ void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdenti
   if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
     return;
 
-  setExtraIdentifierValueUnguarded( extraIdentifierValue );
+  if ( mIsSettingExtraIdentifierValue )
+    return;
+
+  mIsSettingExtraIdentifierValue = true;
 
   mExtraIdentifierValue = extraIdentifierValue;
+
+  setExtraIdentifierValueUnguarded( extraIdentifierValue );
+
+  mIsSettingExtraIdentifierValue = false;
+
   emit extraIdentifierValueChanged();
 }
