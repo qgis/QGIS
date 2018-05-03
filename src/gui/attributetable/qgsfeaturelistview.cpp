@@ -342,7 +342,10 @@ void QgsFeatureListView::ensureEditSelection()
          || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
        && mModel->rowCount() )
   {
-    mCurrentEditSelectionModel->select( mModel->mapToMaster( mModel->index( 0, 0 ) ), QItemSelectionModel::Select );
+    QTimer::singleShot( 0, this, [ this ]()
+    {
+      setEditSelection( mModel->mapToMaster( mModel->index( 0, 0 ) ), QItemSelectionModel::ClearAndSelect );
+    } );
   }
 }
 
