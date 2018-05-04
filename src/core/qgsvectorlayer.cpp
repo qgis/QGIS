@@ -3102,7 +3102,9 @@ void QgsVectorLayer::destroyEditCommand()
   // Pushing the new command deletes the destroyed one, and since the new
   // command is obsolete it's automatically deleted by the undo stack.
   std::unique_ptr< QUndoCommand > command = qgis::make_unique< QUndoCommand >();
+#if QT_VERSION >= 0x050900
   command->setObsolete( true );
+#endif
   undoStack()->push( command.release() );
 
   mEditCommandActive = false;
