@@ -142,7 +142,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     /**
      * Convert a map coordinate to screen pixel coordinates
      *
-     * \param p A coordinate in map coordinates
+     * \param point A coordinate in map coordinates
      *
      * \return A coordinate in pixel / screen space
      */
@@ -152,7 +152,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     /**
      * Convert a screen coordinate to a map coordinate
      *
-     * \param p A coordinate in pixel / screen coordinates
+     * \param point A coordinate in pixel / screen coordinates
      *
      * \return A coordinate in map coordinates
      */
