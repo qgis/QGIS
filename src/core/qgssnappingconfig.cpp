@@ -111,6 +111,7 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
          && mTolerance == other.mTolerance
          && mUnits == other.mUnits
          && mIntersectionSnapping == other.mIntersectionSnapping
+         && mEditVerticesOnAllLayers == other.mEditVerticesOnAllLayers
          && mIndividualLayerSettings == other.mIndividualLayerSettings;
 }
 
@@ -118,6 +119,7 @@ void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
   bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  const bool editAllLayers = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_edit_vertices_on_all_layers_enabled" ), true ).toBool();
   SnappingMode mode = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_mode" ),  AllLayers );
   if ( mode == 0 )
   {
@@ -130,6 +132,7 @@ void QgsSnappingConfig::reset()
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),  Qgis::DEFAULT_SNAP_UNITS );
 
   // assign main (standard) config
+  mEditVerticesOnAllLayers = editAllLayers;
   mEnabled = enabled;
   mMode = mode;
   mType = type;
@@ -237,6 +240,16 @@ void QgsSnappingConfig::setIntersectionSnapping( bool enabled )
   mIntersectionSnapping = enabled;
 }
 
+bool QgsSnappingConfig::editVerticesOnAllLayers() const
+{
+  return mEditVerticesOnAllLayers;
+}
+
+void QgsSnappingConfig::setEditVerticesOnAllLayers( bool enabled )
+{
+  mEditVerticesOnAllLayers = enabled;
+}
+
 QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const
 {
   return mIndividualLayerSettings;
@@ -271,6 +284,7 @@ bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
          || mType != other.mType
          || mTolerance != other.mTolerance
          || mUnits != other.mUnits
+         || mEditVerticesOnAllLayers != other.mEditVerticesOnAllLayers
          || mIndividualLayerSettings != other.mIndividualLayerSettings;
 }
 
@@ -300,6 +314,9 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "intersection-snapping" ) ) )
     mIntersectionSnapping = snapSettingsElem.attribute( QStringLiteral( "intersection-snapping" ) ) == QLatin1String( "1" );
+
+  if ( snapSettingsElem.hasAttribute( QStringLiteral( "edit-vertices-on-all-layers" ) ) )
+    mEditVerticesOnAllLayers = snapSettingsElem.attribute( QStringLiteral( "edit-vertices-on-all-layers" ) ) == QLatin1String( "1" );
 
   // do not clear the settings as they must be automatically synchronized with current layers
   QDomNodeList nodes = snapSettingsElem.elementsByTagName( QStringLiteral( "individual-layer-settings" ) );
@@ -344,6 +361,7 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
   snapSettingsElem.setAttribute( QStringLiteral( "unit" ), ( int )mUnits );
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
+  snapSettingsElem.setAttribute( QStringLiteral( "edit-vertices-on-all-layers" ), QString::number( mEditVerticesOnAllLayers ) );
 
   QDomElement ilsElement = doc.createElement( QStringLiteral( "individual-layer-settings" ) );
   QHash<QgsVectorLayer *, IndividualLayerSettings>::const_iterator layerIt = mIndividualLayerSettings.constBegin();
