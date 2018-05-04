@@ -54,10 +54,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     enum Role
     {
-      SortRole = Qt::UserRole + 1, //!< Role used for sorting
-      FeatureIdRole,               //!< Get the feature id of the feature in this row
-      FieldIndexRole,              //!< Get the field index of this column
-      UserRole                     //!< Start further roles starting from this role
+      FeatureIdRole = Qt::UserRole, //!< Get the feature id of the feature in this row
+      FieldIndexRole,               //!< Get the field index of this column
+      UserRole,                     //!< Start further roles starting from this role
+      // Insert new values here, SortRole needs to be the last one
+      SortRole,                     //!< Roles used for sorting start here
     };
 
   public:
@@ -203,7 +204,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * \param expression The expression to cache
      */
-    void prefetchSortData( const QString &expression );
+    void prefetchSortData( const QString &expression, unsigned long cacheIndex = 0 );
 
     /**
      * The expression which was used to fill the sorting cache
@@ -329,7 +330,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
   private:
     QgsVectorLayerCache *mLayerCache = nullptr;
-    int mFieldCount;
+    int mFieldCount = 0;
 
     mutable QgsFeature mFeat;
 
@@ -363,13 +364,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsFeatureRequest mFeatureRequest;
 
-    //! The currently cached column
-    QgsExpression mSortCacheExpression;
-    QgsAttributeList mSortCacheAttributes;
-    //! If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression
-    int mSortFieldIndex;
-    //! Allows caching of one value per column (used for sorting)
-    QHash<QgsFeatureId, QVariant> mSortCache;
+    struct SortCache
+    {
+      //! If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression
+      int sortFieldIndex;
+      //! The currently cached column
+      QgsExpression sortCacheExpression;
+      QgsAttributeList sortCacheAttributes;
+      //! Allows caching of one value per column (used for sorting)
+      QHash<QgsFeatureId, QVariant> sortCache;
+    };
+
+    std::vector<SortCache> mSortCaches;
 
     /**
      * Holds the bounds of changed cells while an update operation is running
@@ -382,7 +388,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsAttributeEditorContext mEditorContext;
 
-    int mExtraColumns;
+    int mExtraColumns = 0;
 
     friend class TestQgsAttributeTable;
 

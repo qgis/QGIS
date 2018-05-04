@@ -28,10 +28,11 @@ Is mostly referred to as "master model" within this doc and the source.
   public:
     enum Role
     {
-      SortRole,
       FeatureIdRole,
       FieldIndexRole,
-      UserRole
+      UserRole,
+      // Insert
+      SortRole,
     };
 
   public:
@@ -190,7 +191,7 @@ Specify -1 as column to invalidate the cache
 :param column: The column index of the field to catch
 %End
 
-    void prefetchSortData( const QString &expression );
+    void prefetchSortData( const QString &expression, unsigned long cacheIndex = 0 );
 %Docstring
 Prefetches the entire data for one expression. Based on this cached information
 the sorting can later be done in a performant way.
