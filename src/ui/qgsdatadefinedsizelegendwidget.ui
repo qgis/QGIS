@@ -148,6 +148,12 @@
    </item>
    <item>
     <widget class="QTreeView" name="viewLayerTree">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="headerHidden">
       <bool>true</bool>
      </property>
