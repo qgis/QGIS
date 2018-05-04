@@ -470,12 +470,17 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
 
+    const bool allLayers = canvas()->snappingUtils()->config().editVerticesOnAllLayers();
+
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
+        continue;
+
+      if ( !allLayers && vlayer != currentVectorLayer() )
         continue;
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
@@ -691,7 +696,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   }
 
   // if there is no match from the current layer, try to use any editable vector layer
-  if ( !m.isValid() )
+  if ( !m.isValid() && oldConfig.editVerticesOnAllLayers() )
   {
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )

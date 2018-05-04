@@ -194,6 +194,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   tracingMenu->addAction( widgetAction );
   mEnableTracingAction->setMenu( tracingMenu );
 
+  // vertex tool may select vertices from all layers
+  mEditVerticesAllLayersAction = new QAction( tr( "Edit vertices of all editable layers at once" ), this );
+  mEditVerticesAllLayersAction->setCheckable( true );
+  mEditVerticesAllLayersAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconEditVerticesAllLayers.svg" ) ) );
+  mEditVerticesAllLayersAction->setToolTip( tr( "The vertex editor tool allows to edit vertices from many layers at once. This option allows to restore previous behavior, ie only edit active layer. Useful with transaction groups and database trigger design interfering with multi layer editing" ) );
+  mEditVerticesAllLayersAction->setObjectName( QStringLiteral( "EditVerticesAllLayersAction" ) );
+  connect( mEditVerticesAllLayersAction, &QAction::toggled, this, &QgsSnappingWidget::enableEditVerticesOnAllLayers );
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
@@ -221,6 +229,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     tb->addAction( mTopologicalEditingAction );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
+    tb->addAction( mEditVerticesAllLayersAction );
   }
   else
   {
@@ -248,6 +257,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     interButton->setDefaultAction( mIntersectionSnappingAction );
     interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
+
+    QToolButton *editButton = new QToolButton();
+    editButton->addAction( mEditVerticesAllLayersAction );
+    editButton->setDefaultAction( mEditVerticesAllLayersAction );
+    editButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    layout->addWidget( editButton );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
@@ -343,6 +358,11 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
   }
 
+  if ( config.editVerticesOnAllLayers() != mEditVerticesAllLayersAction->isChecked() )
+  {
+    mEditVerticesAllLayersAction->setChecked( config.editVerticesOnAllLayers() );
+  }
+
   toggleSnappingWidgets( config.enabled() );
 }
 
@@ -398,6 +418,12 @@ void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
   mConfig.setIntersectionSnapping( enabled );
+  mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::enableEditVerticesOnAllLayers( bool enabled )
+{
+  mConfig.setEditVerticesOnAllLayers( enabled );
   mProject->setSnappingConfig( mConfig );
 }
 
