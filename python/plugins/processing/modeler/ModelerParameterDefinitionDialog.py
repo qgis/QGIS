@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.exceptions import UndefinedParameterException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,6 +26,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
+
+from qgis.PyQt.QtCore import (Qt,
+                              QByteArray,
+                              QCoreApplication)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QVBoxLayout,
+                                 QLabel,
+                                 QLineEdit,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QDialogButtonBox,
+                                 QMessageBox)
 
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
 from qgis.core import (QgsApplication,
@@ -54,19 +65,10 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBand
                        )
-from qgis.PyQt.QtCore import (Qt,
-                              QByteArray,
-                              QCoreApplication)
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QVBoxLayout,
-                                 QLabel,
-                                 QLineEdit,
-                                 QComboBox,
-                                 QCheckBox,
-                                 QDialogButtonBox,
-                                 QMessageBox)
 
+from processing.gui.enummodelerwidget import EnumModelerWidget
 from processing.core import parameters
+from processing.modeler.exceptions import UndefinedParameterException
 
 
 class ModelerParameterDefinitionDialog(QDialog):
@@ -273,6 +275,14 @@ class ModelerParameterDefinitionDialog(QDialog):
             else:
                 self.selector.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
             self.verticalLayout.addWidget(self.selector)
+        elif self.paramType == parameters.PARAMETER_ENUM or \
+                isinstance(self.param, QgsProcessingParameterEnum):
+            self.widget = EnumModelerWidget(self)
+            if self.param is not None:
+                self.widget.setOptions(self.param.options())
+                self.widget.setDefault(int(self.param.defaultValue()))
+                self.widget.setAllowMultiple(bool(self.param.allowMultiple()))
+            self.verticalLayout.addWidget(self.widget)
 
         self.verticalLayout.addSpacing(20)
         self.requiredCheck = QCheckBox()
@@ -400,6 +410,9 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_CRS or
               isinstance(self.param, QgsProcessingParameterCrs)):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
+        if (self.paramType == parameters.PARAMETER_ENUM or
+                isinstance(self.param, QgsProcessingParameterEnum)):
+            self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOption())
         else:
             if self.paramType:
                 typeId = self.paramType
