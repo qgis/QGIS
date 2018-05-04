@@ -281,7 +281,8 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( mFeature ); // TODO : make this async
   updateAttributeEditorFrame( mFeature );
-  emit foreignKeyChanged( foreignKey() );
+
+  emitForeignKeyChanged( foreignKey() );
 }
 
 void QgsRelationReferenceWidget::deleteForeignKey()
@@ -304,18 +305,16 @@ void QgsRelationReferenceWidget::deleteForeignKey()
       nullText = tr( "%1 (no selection)" ).arg( nullValue );
     }
     mLineEdit->setText( nullText );
-    mForeignKey = QVariant();
+    mForeignKey = QVariant( QVariant::Int );
     mFeature.setValid( false );
   }
   else
   {
-    mComboBox->setIdentifierValue( QVariant() );
-
-
+    mComboBox->setIdentifierValue( QVariant( QVariant::Int ) );
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
-  emit foreignKeyChanged( QVariant( QVariant::Int ) );
+  emitForeignKeyChanged( QVariant( QVariant::Int ) );
 }
 
 QgsFeature QgsRelationReferenceWidget::referencedFeature() const
@@ -667,7 +666,8 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
   mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
   highlightFeature( mFeature );
   updateAttributeEditorFrame( mFeature );
-  emit foreignKeyChanged( mFeature.attribute( mReferencedFieldIdx ) );
+
+  emitForeignKeyChanged( mComboBox->identifierValue() );
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature &feature )
@@ -898,5 +898,14 @@ void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb 
     }
 
     ccb = cb;
+  }
+}
+
+void QgsRelationReferenceWidget::emitForeignKeyChanged( const QVariant &foreignKey )
+{
+  if ( foreignKey != mForeignKey || foreignKey.isNull() != mForeignKey.isNull() )
+  {
+    mForeignKey = foreignKey;
+    emit foreignKeyChanged( foreignKey );
   }
 }
