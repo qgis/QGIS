@@ -1,4 +1,3 @@
-
 /***************************************************************************
  qgsquickmapcanvas.qml
   --------------------------------------
@@ -20,8 +19,32 @@ import QgsQuick 0.1 as QgsQuick
 
 Item {
   id: mapArea
+
+  /**
+   * The mapSettings property contains configuration for rendering of the map.
+   *
+   * It should be used as a primary source of map settings (and project) for
+   * all other components in the application.
+   *
+   * This is a readonly property.
+   *
+   * See also QgsQuickMapCanvasMap::mapSettings
+   */
   property alias mapSettings: mapCanvasWrapper.mapSettings
+
+  /**
+   * The isRendering property is set to true while a rendering job is pending for this map canvas map.
+   * It can be used to show a notification icon about an ongoing rendering job.
+   *
+   * This is a readonly property.
+   *
+   * See also QgsQuickMapCanvasMap::mapSettings
+   */
   property alias isRendering: mapCanvasWrapper.isRendering
+
+  /**
+   * When the incrementalRendering property is set to true, the automatic refresh of map canvas during rendering is allowed.
+   */
   property alias incrementalRendering: mapCanvasWrapper.incrementalRendering
 
   signal clicked(var mouse)
