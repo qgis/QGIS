@@ -67,7 +67,7 @@ ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_QUICK_PLUGIN_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
 ENDIF(MSVC)
 
-SET(QGIS_QUICK_PLUGIN_RUNTIME_DIR ${QGIS_OUTPUT_DIRECTORY}/${QGIS_QML_SUBDIR}/QgisQuick)
+SET(QGIS_QUICK_PLUGIN_RUNTIME_DIR ${QGIS_OUTPUT_DIRECTORY}/${QGIS_QML_SUBDIR}/QgsQuick)
 
 ADD_LIBRARY(qgis_quick_plugin MODULE
     ${QGIS_QUICK_PLUGIN_SRC}
@@ -93,25 +93,25 @@ IF(QMLPLUGINDUMP_FOUND)
   # To create typeinfo file, no qml files must be in the directory, otherwise
   # bunch of "QObject: Cannot create children for a parent that is in a different thread." errors
   # appear and typeinfo file is not generated
-  SET(QGIS_QUICK_TYPEINFO_GENERATE_DIR ${CMAKE_CURRENT_BINARY_DIR}/QgisQuick)
+  SET(QGIS_QUICK_TYPEINFO_GENERATE_DIR ${CMAKE_CURRENT_BINARY_DIR}/QgsQuick)
 
   # Extract QML Types Info from our QML plugin. This is useful for development with Qt Creator as it allows
   # Qt Creator understand also the C++ classes registered in the plugin and thus available in QML code
-  SET(QGIS_QUICK_PLUGIN_TYPEINFO ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/qgisquick.qmltypes)
+  SET(QGIS_QUICK_PLUGIN_TYPEINFO ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/qgsquick.qmltypes)
   ADD_CUSTOM_COMMAND(
       TARGET qgis_quick_plugin
       COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:qgis_quick_plugin> ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${QMLPLUGINDUMP_EXECUTABLE}
-      ARGS QgisQuick 0.1 . -v --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
+      ARGS QgsQuick 0.1 . -v --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
       POST_BUILD
   )
 ENDIF()
 
 # Installation
-SET(QUICK_PLUGIN_INSTALL_DIR ${QGIS_QML_DIR}/QgisQuick)
+SET(QUICK_PLUGIN_INSTALL_DIR ${QGIS_QML_DIR}/QgsQuick)
 INSTALL(TARGETS qgis_quick_plugin
   RUNTIME DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}
   LIBRARY DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}

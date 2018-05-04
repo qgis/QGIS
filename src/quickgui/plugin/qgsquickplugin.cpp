@@ -41,7 +41,7 @@ static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
   return new QgsQuickUtils();  // the object will be owned by QML engine and destroyed by the engine on exit
 }
 
-void QgisQuickPlugin::registerTypes( const char *uri )
+void QgsQuickPlugin::registerTypes( const char *uri )
 {
   qRegisterMetaType< QList<QgsMapLayer *> >( "QList<QgsMapLayer*>" );
   qRegisterMetaType< QgsAttributes > ( "QgsAttributes" );

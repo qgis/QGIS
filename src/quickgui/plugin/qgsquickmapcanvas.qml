@@ -16,7 +16,7 @@
 import QtQuick 2.3
 import QtQuick.Controls 2.2
 import QtQml 2.2
-import QgisQuick 0.1 as QgsQuick
+import QgsQuick 0.1 as QgsQuick
 
 Item {
   id: mapArea

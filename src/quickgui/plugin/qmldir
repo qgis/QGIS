@@ -10,9 +10,9 @@
 # (at your option) any later version.
 
 
-module QgisQuick
+module QgsQuick
 plugin qgis_quick_plugin
 
 MapCanvas 0.1 qgsquickmapcanvas.qml
 
-typeinfo qgisquick.qmltypes
+typeinfo qgsquick.qmltypes

@@ -14,7 +14,7 @@
  ***************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 2.2
-import QgisQuick 0.1 as QgsQuick
+import QgsQuick 0.1 as QgsQuick
 import "."
 
 ApplicationWindow {
