@@ -146,7 +146,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      *
      * \return A coordinate in pixel / screen space
      */
-    Q_INVOKABLE QPointF coordinateToScreen( const QgsPoint &p ) const;
+    Q_INVOKABLE QPointF coordinateToScreen( const QgsPoint &point ) const;
 
 
     /**
@@ -156,7 +156,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      *
      * \return A coordinate in map coordinates
      */
-    Q_INVOKABLE QgsPoint screenToCoordinate( const QPointF &p ) const;
+    Q_INVOKABLE QgsPoint screenToCoordinate( const QPointF &point ) const;
 
     //! \copydoc QgsMapSettings::setTransformContext()
     void setTransformContext( const QgsCoordinateTransformContext &context );

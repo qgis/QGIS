@@ -12,13 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include <QDesktopWidget>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
 #include <QString>
-#include <QThread>
 
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"

@@ -47,7 +47,7 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qRegisterMetaType< QgsAttributes > ( "QgsAttributes" );
   qRegisterMetaType< QgsCoordinateReferenceSystem >( "QgsCoordinateReferenceSystem" );
   qRegisterMetaType< QgsCoordinateTransformContext >( "QgsCoordinateTransformContext" );
-  qRegisterMetaType< QgsFeature > ( "QgsFeature " );
+  qRegisterMetaType< QgsFeature > ( "QgsFeature" );
   qRegisterMetaType< QgsFeatureId > ( "QgsFeatureId" );
   qRegisterMetaType< QgsPoint >( "QgsPoint" );
   qRegisterMetaType< QgsPointXY >( "QgsPointXY" );

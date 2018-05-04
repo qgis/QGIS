@@ -109,16 +109,16 @@ QgsRectangle QgsQuickMapSettings::visibleExtent() const
   return mMapSettings.visibleExtent();
 }
 
-QPointF QgsQuickMapSettings::coordinateToScreen( const QgsPoint &p ) const
+QPointF QgsQuickMapSettings::coordinateToScreen( const QgsPoint &point ) const
 {
-  QgsPointXY pt( p.x(), p.y() );
+  QgsPointXY pt( point.x(), point.y() );
   QgsPointXY pp = mMapSettings.mapToPixel().transform( pt );
   return pp.toQPointF();
 }
 
-QgsPoint QgsQuickMapSettings::screenToCoordinate( const QPointF &p ) const
+QgsPoint QgsQuickMapSettings::screenToCoordinate( const QPointF &point ) const
 {
-  const QgsPointXY pp = mMapSettings.mapToPixel().toMapCoordinates( p.toPoint() );
+  const QgsPointXY pp = mMapSettings.mapToPixel().toMapCoordinates( point.toPoint() );
   return QgsPoint( pp );
 }
 
