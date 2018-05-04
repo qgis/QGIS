@@ -2402,18 +2402,12 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return false;
   }
 
-  if ( iType == gtPoint && nElems == 0 )
+  if ( iType == gtPoint &&
+       sdoind->_atomic == OCI_IND_NOTNULL &&
+       sdoind->point.x == OCI_IND_NOTNULL &&
+       sdoind->point.y == OCI_IND_NOTNULL )
   {
     Q_ASSERT( nOrds == 0 );
-
-    if ( sdoind->_atomic != OCI_IND_NOTNULL ||
-         sdoind->point.x != OCI_IND_NOTNULL ||
-         sdoind->point.y != OCI_IND_NOTNULL )
-    {
-      qDebug() << "null point";
-      v = QVariant();
-      return true;
-    }
 
     double x, y, z = 0.0;
     if ( !getValue( &sdoobj->point.x, x ) )
