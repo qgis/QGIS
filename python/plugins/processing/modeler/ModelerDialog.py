@@ -144,6 +144,7 @@ class ModelerDialog(BASE, WIDGET):
 
         def _mimeDataAlgorithm(items):
             item = items[0]
+            mimeData = None
             if isinstance(item, TreeAlgorithmItem):
                 mimeData = QMimeData()
                 mimeData.setText(item.alg.commandLineName())

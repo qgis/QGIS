@@ -278,7 +278,6 @@ class ConfigDialog(BASE, WIDGET):
                                             self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
                         return
                 setting.save(qsettings)
-        Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
         updateMenus()
         QApplication.restoreOverrideCursor()

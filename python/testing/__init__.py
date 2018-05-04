@@ -31,7 +31,7 @@ import difflib
 import functools
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
+from qgis.core import QgsApplication, QgsFeatureRequest
 
 try:
     from nose2.compat import unittest
@@ -105,7 +105,7 @@ class TestCase(_TestCase):
                 attr_result = feats[1][field_expected.name()]
                 field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
-                    cmp = compare['fields'][field1.name()]
+                    cmp = compare['fields'][field_expected.name()]
                 except KeyError:
                     try:
                         cmp = compare['fields']['__all__']
@@ -224,6 +224,7 @@ def expectedFailure(*args):
             return wrapper
 
         return realExpectedFailure
+
 
 # Patch unittest
 unittest.TestCase = TestCase
