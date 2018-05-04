@@ -39,5 +39,9 @@ void QgsAttributeFormRelationEditorWidget::createSearchWidgetWrappers( const Qgs
 
 QString QgsAttributeFormRelationEditorWidget::currentFilterExpression() const
 {
-  return mSearchWidget->expression();
+  QString filterExpression;
+  if ( mSearchWidget )
+    filterExpression = mSearchWidget->expression();
+
+  return filterExpression;
 }
