@@ -30,7 +30,6 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeCrs() );
   addParameterType( new QgsProcessingParameterTypeRange() );
   addParameterType( new QgsProcessingParameterTypePoint() );
-  addParameterType( new QgsProcessingParameterTypeEnum() );
   addParameterType( new QgsProcessingParameterTypeExtent() );
   addParameterType( new QgsProcessingParameterTypeMatrix() );
   addParameterType( new QgsProcessingParameterTypeFile() ) ;
