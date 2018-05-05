@@ -121,6 +121,9 @@ class contour(GdalAlgorithm):
     def groupId(self):
         return 'rasterextraction'
 
+    def commandName(self):
+        return 'gdal_contour'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
@@ -159,4 +162,4 @@ class contour(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(output)
 
-        return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

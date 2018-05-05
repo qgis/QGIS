@@ -154,6 +154,9 @@ class gdal2tiles(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
+    def commandName(self):
+        return 'gdal2tiles'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
 

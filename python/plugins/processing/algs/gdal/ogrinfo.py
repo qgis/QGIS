@@ -69,9 +69,11 @@ class ogrinfo(GdalAlgorithm):
     def groupId(self):
         return 'vectormiscellaneous'
 
+    def commandName(self):
+        return 'ogrinfo'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = ['ogrinfo']
-        arguments.append('-al')
+        arguments = [self.commandName(), '-al']
 
         if self.parameterAsBool(parameters, self.SUMMARY_ONLY, context):
             arguments.append('-so')

@@ -95,6 +95,9 @@ class ColorRelief(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdaldem'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['color-relief']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -115,4 +118,4 @@ class ColorRelief(GdalAlgorithm):
 
         arguments.append(self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1])
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

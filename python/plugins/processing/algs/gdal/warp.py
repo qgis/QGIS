@@ -158,6 +158,9 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
+    def commandName(self):
+        return 'gdalwarp'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -217,4 +220,4 @@ class warp(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
