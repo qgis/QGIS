@@ -50,8 +50,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsProcessingContext,
                        QgsProcessingUtils,
                        QgsProcessingFeedback)
-
-from qgis.testing import _UnexpectedSuccess
+from qgis.analysis import (QgsNativeAlgorithms)
+from qgis.testing import (_UnexpectedSuccess,
+                          start_app,
+                          unittest)
 from utilities import unitTestDataPath
 
 import processing
@@ -314,6 +316,38 @@ class AlgorithmsTest(object):
 
                 for rule in expected_result.get('rules', []):
                     self.assertRegex(data, rule)
+
+
+class GenericAlgorithmsTest(unittest.TestCase):
+    """
+    General (non-provider specific) algorithm tests
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        start_app()
+        from processing.core.Processing import Processing
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        cls.cleanup_paths = []
+
+    @classmethod
+    def tearDownClass(cls):
+        from processing.core.Processing import Processing
+        Processing.deinitialize()
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
+
+    def testAlgorithmCompliance(self):
+        for p in QgsApplication.processingRegistry().providers():
+            print('testing provider {}'.format(p.id()))
+            for a in p.algorithms():
+                print('testing algorithm {}'.format(a.id()))
+                self.check_algorithm(a)
+
+    def check_algorithm(self, alg):
+        # check that calling helpUrl() works without error
+        alg.helpUrl()
 
 
 if __name__ == '__main__':

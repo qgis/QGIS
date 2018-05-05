@@ -119,6 +119,9 @@ class ClipRasterByMask(GdalAlgorithm):
     def groupId(self):
         return 'rasterextraction'
 
+    def commandName(self):
+        return 'gdalwarp'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
 
@@ -159,4 +162,4 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

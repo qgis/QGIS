@@ -76,6 +76,9 @@ class rgb2pct(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
+    def commandName(self):
+        return 'rgb2pct'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-n')

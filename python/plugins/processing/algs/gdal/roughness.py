@@ -85,6 +85,9 @@ class roughness(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdaldem'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['roughness']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -107,4 +110,4 @@ class roughness(GdalAlgorithm):
             arguments.append('-co')
             arguments.append(options)
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
