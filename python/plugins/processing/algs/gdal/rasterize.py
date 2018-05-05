@@ -192,8 +192,8 @@ class rasterize(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.ALL_TOUCH, context):
             arguments.append('-at')
 
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        if nodata:
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
             arguments.append('-a_nodata')
             arguments.append(nodata)
 

@@ -138,7 +138,10 @@ class proximity(GdalAlgorithm):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         distance = self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)
         replaceValue = self.parameterAsDouble(parameters, self.REPLACE, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -158,7 +161,7 @@ class proximity(GdalAlgorithm):
             arguments.append('-maxdist')
             arguments.append(str(distance))
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-nodata')
             arguments.append(str(nodata))
 

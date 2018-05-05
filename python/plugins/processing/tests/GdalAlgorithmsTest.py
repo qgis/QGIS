@@ -30,8 +30,19 @@ from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
+from processing.algs.gdal.gdal2tiles import gdal2tiles
 from processing.algs.gdal.contour import contour
+from processing.algs.gdal.GridAverage import GridAverage
+from processing.algs.gdal.GridDataMetrics import GridDataMetrics
+from processing.algs.gdal.GridInverseDistance import GridInverseDistance
+from processing.algs.gdal.GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
+from processing.algs.gdal.GridLinear import GridLinear
+from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
+from processing.algs.gdal.proximity import proximity
+from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.translate import translate
+from processing.algs.gdal.warp import warp
+
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
                        QgsApplication,
@@ -389,6 +400,355 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-b 1 -a elev -i 5.0 -snodata 0.0 -f "GPKG" ' +
              source + ' ' +
              '"d:/temp/check.gpkg"'])
+
+    def testGdal2Tiles(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = gdal2tiles()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average ' +
+             source + ' ' +
+             'd:/temp/'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': -9999,
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -a -9999.0 ' +
+             source + ' ' +
+             'd:/temp/'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -a 0.0 ' +
+             source + ' ' +
+             'd:/temp/'])
+
+    def testGridAverage(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridAverage()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a average:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a average:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a average:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testGridDataMetrics(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridDataMetrics()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testGridInverseDistance(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridInverseDistance()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdist:power=2.0:smothing=0.0:radius1=0.0:radius2=0.0:angle=0.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdist:power=2.0:smothing=0.0:radius1=0.0:radius2=0.0:angle=0.0:max_points=0:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdist:power=2.0:smothing=0.0:radius1=0.0:radius2=0.0:angle=0.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testGridInverseDistanceNearestNeighbour(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridInverseDistanceNearestNeighbor()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testGridLinear(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridLinear()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a linear:radius=-1.0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a linear:radius=-1.0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a linear:radius=-1.0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testGridNearestNeighbour(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'points.gml')
+        alg = GridNearestNeighbor()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a nearest:radius1=0.0:radius2=0.0:angle=0.0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a nearest:radius1=0.0:radius2=0.0:angle=0.0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_grid',
+             '-l points -a nearest:radius1=0.0:radius2=0.0:angle=0.0:nodata=0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testProximity(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = proximity()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_proximity.py',
+             '-srcband 1 -distunits PIXEL -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'BAND': 2,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_proximity.py',
+             '-srcband 2 -distunits PIXEL -nodata 9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'BAND': 1,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_proximity.py',
+             '-srcband 1 -distunits PIXEL -nodata 0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testRasterize(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        alg = rasterize()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'FIELD': 'id',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_rasterize',
+             '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'FIELD': 'id',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_rasterize',
+             '-l polys2 -a id -ts 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'FIELD': 'id',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_rasterize',
+             '-l polys2 -a id -ts 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testWarp(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = warp()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 9999,
+                                    'CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-t_srs EPSG:4326 -dstnodata 9999.0 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-t_srs EPSG:4326 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
