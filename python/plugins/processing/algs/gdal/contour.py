@@ -127,7 +127,10 @@ class contour(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         offset = self.parameterAsDouble(parameters, self.OFFSET, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -150,7 +153,7 @@ class contour(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-snodata {}'.format(nodata))
 
         if offset:
