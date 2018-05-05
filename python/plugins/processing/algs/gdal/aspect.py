@@ -96,6 +96,9 @@ class aspect(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdaldem'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['aspect']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -127,4 +130,4 @@ class aspect(GdalAlgorithm):
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

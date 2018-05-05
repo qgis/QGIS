@@ -69,6 +69,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     def test_definition_file(self):
         return 'gdal_algorithm_tests.yaml'
 
+    def testCommandName(self):
+        # Test that algorithms report a valid commandName
+        p = QgsApplication.processingRegistry().providerById('gdal')
+        for a in p.algorithms():
+            self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
+
     def testGetOgrCompatibleSourceFromMemoryLayer(self):
         # create a memory layer and add to project and context
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",

@@ -105,6 +105,9 @@ class gdaladdo(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
+    def commandName(self):
+        return 'gdaladdo'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         fileName = inLayer.source()
@@ -128,4 +131,4 @@ class gdaladdo(GdalAlgorithm):
 
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return ['gdaladdo', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

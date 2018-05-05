@@ -73,6 +73,9 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return 'rasterprojections'
 
+    def commandName(self):
+        return 'gdal_edit'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         fileName = inLayer.source()
