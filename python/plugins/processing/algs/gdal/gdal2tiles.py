@@ -189,8 +189,8 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-s')
             arguments.append(crs.authid())
 
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        if nodata:
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
             arguments.append('-a')
             arguments.append(str(nodata))
 

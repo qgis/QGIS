@@ -166,7 +166,10 @@ class warp(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         resolution = self.parameterAsDouble(parameters, self.TARGET_RESOLUTION, context)
 
         arguments = []
@@ -178,7 +181,7 @@ class warp(GdalAlgorithm):
             arguments.append('-t_srs')
             arguments.append(targetCrs.authid())
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-dstnodata')
             arguments.append(str(nodata))
 
