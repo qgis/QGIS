@@ -36,6 +36,7 @@ import unittest
 
 # Get a backup, we will patch this one later
 _TestCase = unittest.TestCase
+unittest.util._MAX_LENGTH = 2000
 
 
 class TestCase(_TestCase):
