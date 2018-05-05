@@ -87,6 +87,9 @@ class sieve(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
 
+    def commandName(self):
+        return 'gdal_sieve'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-st')

@@ -85,6 +85,9 @@ class polygonize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
+    def commandName(self):
+        return 'gdal_polygonize'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)

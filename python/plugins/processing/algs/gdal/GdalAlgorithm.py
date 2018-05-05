@@ -32,7 +32,9 @@ from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingContext,
+                       QgsProcessingFeedback)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -136,11 +138,11 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def commandName(self):
         parameters = {}
-        for output in self.outputs:
-            output.setValue("dummy")
         for param in self.parameterDefinitions():
             parameters[param.name()] = "1"
-        name = self.getConsoleCommands(parameters)[0]
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        name = self.getConsoleCommands(parameters, context, feedback, executing=False)[0]
         if name.endswith(".py"):
             name = name[:-3]
         return name

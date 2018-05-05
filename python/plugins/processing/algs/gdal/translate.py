@@ -110,6 +110,9 @@ class translate(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
+    def commandName(self):
+        return 'gdal_translate'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -145,4 +148,4 @@ class translate(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
