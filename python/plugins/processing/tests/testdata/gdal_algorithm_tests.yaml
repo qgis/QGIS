@@ -61,7 +61,6 @@ tests:
       MASK:
         name: custom/polygon_mask.gml
         type: vector
-      NODATA: 0.0
       OPTIONS: ''
     results:
       OUTPUT:

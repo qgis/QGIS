@@ -28,6 +28,9 @@ __revision__ = ':%H$'
 import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
+from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
+from processing.algs.gdal.contour import contour
 from processing.algs.gdal.translate import translate
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
@@ -37,6 +40,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProject,
+                       QgsRectangle,
                        QgsProcessingUtils,
                        QgsProcessingFeatureSourceDefinition)
 import nose2
@@ -192,6 +196,15 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             'port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
         self.assertEqual(name, 'city_data.edge')
 
+    def testOgrConnectionStringAndFormat(self):
+        context = QgsProcessingContext()
+        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.shp', context)
+        self.assertEqual(output, '"d:/test/test.shp"')
+        self.assertEqual(outputFormat, '"ESRI Shapefile"')
+        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.mif', context)
+        self.assertEqual(output, '"d:/test/test.mif"')
+        self.assertEqual(outputFormat, '"MapInfo File"')
+
     def testGdalTranslate(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -257,6 +270,125 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-ot Float32 -of GTiff ' +
              source + ' ' +
              'd:/temp/check.tif'])
+
+    def testClipRasterByExtent(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = ClipRasterByExtent()
+        alg.initAlgorithm()
+        extent = QgsRectangle(1, 2, 3, 4)
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'EXTENT': extent,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-projwin 0.0 0.0 0.0 0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'EXTENT': extent,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-projwin 0.0 0.0 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'EXTENT': extent,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testClipRasterByMask(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'polys.gml')
+        alg = ClipRasterByMask()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MASK': mask,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-ot Float32 -of JPEG -cutline ' +
+             mask + ' -crop_to_cutline ' + source + ' ' +
+             'd:/temp/check.jpg'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MASK': mask,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-ot Float32 -of JPEG -cutline ' +
+             mask + ' -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MASK': mask,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-ot Float32 -of JPEG -cutline ' +
+             mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testContour(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = contour()
+        alg.initAlgorithm()
+
+        # with no NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'FIELD_NAME': 'elev',
+                                    'INTERVAL': 5,
+                                    'OUTPUT': 'd:/temp/check.shp'}, context, feedback),
+            ['gdal_contour',
+             '-b 1 -a elev -i 5.0 -f "ESRI Shapefile" ' +
+             source + ' ' +
+             '"d:/temp/check.shp"'])
+        # with NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'FIELD_NAME': 'elev',
+                                    'INTERVAL': 5,
+                                    'NODATA': 9999,
+                                    'OUTPUT': 'd:/temp/check.shp'}, context, feedback),
+            ['gdal_contour',
+             '-b 1 -a elev -i 5.0 -snodata 9999.0 -f "ESRI Shapefile" ' +
+             source + ' ' +
+             '"d:/temp/check.shp"'])
+        # with "0" NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'FIELD_NAME': 'elev',
+                                    'INTERVAL': 5,
+                                    'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.gpkg'}, context, feedback),
+            ['gdal_contour',
+             '-b 1 -a elev -i 5.0 -snodata 0.0 -f "GPKG" ' +
+             source + ' ' +
+             '"d:/temp/check.gpkg"'])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):

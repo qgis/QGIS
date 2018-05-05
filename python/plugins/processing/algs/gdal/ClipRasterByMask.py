@@ -127,7 +127,10 @@ class ClipRasterByMask(GdalAlgorithm):
 
         maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -153,7 +156,7 @@ class ClipRasterByMask(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
 
         if options:
