@@ -219,12 +219,16 @@ def getParameterFromString(s):
             elif clazz == QgsProcessingParameterFileDestination:
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFolderDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRasterDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterVectorDestination:
                 if len(params) > 2:
                     try:
@@ -233,6 +237,8 @@ def getParameterFromString(s):
                         params[2] = getattr(QgsProcessing, params[2].split(".")[1])
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
 
             param = clazz(*params)
             if isAdvanced:
