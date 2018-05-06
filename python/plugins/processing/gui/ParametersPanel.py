@@ -30,6 +30,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from functools import partial
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
@@ -164,7 +165,14 @@ class ParametersPanel(BASE, WIDGET):
             if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                 check = QCheckBox()
                 check.setText(self.tr('Open output file after running algorithm'))
-                check.setChecked(True)
+
+                def skipOutputChanged(checkbox, skipped):
+                    checkbox.setEnabled(not skipped)
+                    if skipped:
+                        checkbox.setChecked(False)
+                check.setChecked(not widget.outputIsSkipped())
+                check.setEnabled(not widget.outputIsSkipped())
+                widget.skipOutputChanged.connect(partial(skipOutputChanged, check))
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 
