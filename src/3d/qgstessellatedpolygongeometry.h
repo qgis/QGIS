@@ -46,6 +46,11 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     void setInvertNormals( bool invert ) { mInvertNormals = invert; }
 
+    //! Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+    bool addBackFaces() const { return mAddBackFaces; }
+    //! Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+    void setAddBackFaces( bool add ) { mAddBackFaces = add; }
+
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
     void setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
 
@@ -57,6 +62,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
 
     bool mWithNormals = true;
     bool mInvertNormals = false;
+    bool mAddBackFaces = false;
 };
 
 #endif // QGSTESSELLATEDPOLYGONGEOMETRY_H

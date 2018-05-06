@@ -66,11 +66,12 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
   , mInvertNormals( invertNormals )
+  , mAddBackFaces( addBackFaces )
 {
   mStride = 3 * sizeof( float );
   if ( addNormals )
@@ -368,6 +369,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
+
+    if ( mAddBackFaces )
+    {
+      // the same triangle with reversed order of coordinates and inverted normal
+      for ( int i = 2; i >= 0; i-- )
+      {
+        exterior->pointAt( i, pt, vt );
+        mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
+        if ( mAddNormals )
+          mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+      }
+    }
   }
   else
   {
@@ -475,6 +488,24 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           mData << fx << fz << -fy;
           if ( mAddNormals )
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
+        }
+
+        if ( mAddBackFaces )
+        {
+          // the same triangle with reversed order of coordinates and inverted normal
+          for ( int j = 2; j >= 0; --j )
+          {
+            p2t::Point *p = t->GetPoint( j );
+            QVector4D pt( p->x, p->y, z[p], 0 );
+            if ( toOldBase )
+              pt = *toOldBase * pt;
+            const double fx = pt.x() - mOriginX + pt0.x();
+            const double fy = pt.y() - mOriginY + pt0.y();
+            const double fz = pt.z() + extrusionHeight + pt0.z();
+            mData << fx << fz << -fy;
+            if ( mAddNormals )
+              mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+          }
         }
       }
     }
