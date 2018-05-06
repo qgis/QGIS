@@ -3423,6 +3423,16 @@ void TestQgsProcessing::parameterRasterLayer()
   // optional with direct layer
   def.reset( new QgsProcessingParameterRasterLayer( "optional", QString(), QVariant::fromValue( r1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def.get(), params, context )->id(), r1->id() );
+
+  // invalidRasterError
+  params.clear();
+  QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "MISSING" ) ), QStringLiteral( "Could not load source layer for MISSING: no value specified for parameter" ) );
+  params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "my layer" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QgsProperty::fromValue( "my prop layer" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( v1 ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: invalid value" ) );
 }
 
 void TestQgsProcessing::parameterEnum()
