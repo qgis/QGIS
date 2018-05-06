@@ -77,7 +77,7 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load raster layer" ) );
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
 
   mInterface.reset( layer->dataProvider()->clone() );
   mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mBand );
