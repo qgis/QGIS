@@ -64,6 +64,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterMapLayer,
     QgsProcessingParameterBand,
+    QgsProcessingParameterMatrix,
     QgsProcessingParameterDistance,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
@@ -556,19 +557,26 @@ class FileWidgetWrapper(WidgetWrapper):
 class FixedTableWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        return FixedTablePanel(self.param)
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            return FixedTablePanel(self.param)
+        else:
+            self.combobox = QComboBox()
+            values = self.dialog.getAvailableValuesOfType(QgsProcessingParameterMatrix)
+            for v in values:
+                self.combobox.addItem(self.dialog.resolveValueDescription(v), v)
+            return self.combobox
 
     def setValue(self, value):
-        self.widget.setValue(value)
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            self.widget.setValue(value)
+        else:
+            self.setComboValue(value, combobox=self.combobox)
 
     def value(self):
-        if self.dialogType == DIALOG_MODELER:
-            table = self.widget.table
-            if not bool(table) and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                raise InvalidParameterValue()
-            return ParameterFixedTable.tableToString(table)
-        else:
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return self.widget.table
+        else:
+            return self.comboValue(combobox=self.combobox)
 
 
 class MultipleLayerWidgetWrapper(WidgetWrapper):
@@ -959,40 +967,53 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
 class EnumWidgetWrapper(WidgetWrapper):
 
     def createWidget(self, useCheckBoxes=False, columns=1):
-        self._useCheckBoxes = useCheckBoxes
-        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
-            return CheckboxesPanel(options=self.param.options(),
-                                   multiple=self.param.allowMultiple(),
-                                   columns=columns)
-        if self.param.allowMultiple():
-            return MultipleInputPanel(options=self.param.options())
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            self._useCheckBoxes = useCheckBoxes
+            if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+                return CheckboxesPanel(options=self.param.options(),
+                                       multiple=self.param.allowMultiple(),
+                                       columns=columns)
+            if self.param.allowMultiple():
+                return MultipleInputPanel(options=self.param.options())
+            else:
+                widget = QComboBox()
+                for i, option in enumerate(self.param.options()):
+                    widget.addItem(option, i)
+                if self.param.defaultValue():
+                    widget.setCurrentIndex(widget.findData(self.param.defaultValue()))
+                return widget
         else:
-            widget = QComboBox()
-            for i, option in enumerate(self.param.options()):
-                widget.addItem(option, i)
-            if self.param.defaultValue():
-                widget.setCurrentIndex(widget.findData(self.param.defaultValue()))
-            return widget
+            self.combobox = QComboBox()
+            values = self.dialog.getAvailableValuesOfType(QgsProcessingParameterEnum)
+            for v in values:
+                self.combobox.addItem(self.dialog.resolveValueDescription(v), v)
+            return self.combobox
 
     def setValue(self, value):
         if value is None or value == NULL:
             return
 
-        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
-            self.widget.setValue(value)
-            return
-        if self.param.allowMultiple():
-            self.widget.setSelectedItems(value)
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+                self.widget.setValue(value)
+                return
+            if self.param.allowMultiple():
+                self.widget.setSelectedItems(value)
+            else:
+                self.widget.setCurrentIndex(self.widget.findData(value))
         else:
-            self.widget.setCurrentIndex(self.widget.findData(value))
+            self.setComboValue(value, combobox=self.combobox)
 
     def value(self):
-        if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
-        if self.param.allowMultiple():
-            return self.widget.selectedoptions
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
+                return self.widget.value()
+            if self.param.allowMultiple():
+                return self.widget.selectedoptions
+            else:
+                return self.widget.currentData()
         else:
-            return self.widget.currentData()
+            return self.comboValue(combobox=self.combo)
 
 
 class FeatureSourceWidgetWrapper(WidgetWrapper):
