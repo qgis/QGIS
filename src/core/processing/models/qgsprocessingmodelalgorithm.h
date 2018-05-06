@@ -403,6 +403,17 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     bool loadVariant( const QVariant &model );
 
+    /**
+     * Checks whether the output vector type given by \a outputType is compatible
+     * with the list of acceptable data types specified by \a acceptableDataTypes.
+     * Returns true if vector output is compatible.
+     *
+     * \note This method is intended to be "permissive" rather than "restrictive".
+     * I.e. we only reject outputs which we know can NEVER be acceptable, but
+     * if there's doubt then we default to returning true.
+     */
+    static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
+
     friend class TestQgsProcessing;
 };
 
