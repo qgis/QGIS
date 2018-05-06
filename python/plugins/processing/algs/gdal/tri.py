@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterString,
@@ -89,6 +90,9 @@ class tri(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['TRI']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)

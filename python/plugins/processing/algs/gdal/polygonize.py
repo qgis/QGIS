@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QFileInfo
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterString,
@@ -91,6 +92,9 @@ class polygonize(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)

@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
@@ -111,7 +112,11 @@ class sieve(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
         arguments.append(out)
 
         commands = []

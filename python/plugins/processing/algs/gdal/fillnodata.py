@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterNumber,
@@ -116,7 +117,11 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
         arguments.append(out)
 
         commands = []

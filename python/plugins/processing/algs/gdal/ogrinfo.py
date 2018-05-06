@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import (QgsProcessingParameterVectorLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -81,6 +82,9 @@ class ogrinfo(GdalAlgorithm):
             arguments.append('-nomd')
 
         inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         connectionString = GdalUtils.ogrConnectionString(inLayer.source(), context)
         arguments.append(connectionString)
         return arguments

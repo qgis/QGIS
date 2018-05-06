@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -110,6 +111,9 @@ class ClipRasterByExtent(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException('Invalid input layer {}'.format(parameters[self.INPUT] if self.INPUT in parameters else 'INPUT'))
+
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)

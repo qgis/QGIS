@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -97,7 +98,11 @@ class gdalinfo(GdalAlgorithm):
             arguments.append('-nogcp')
         if self.parameterAsBool(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
