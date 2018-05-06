@@ -132,6 +132,7 @@ class TestQgsTessellator : public QObject
     void asMultiPolygon();
     void testBadCoordinates();
     void testIssue17745();
+    void testCrashSelfIntersection();
 
   private:
 };
@@ -297,6 +298,19 @@ void TestQgsTessellator::testIssue17745()
   QgsTessellator t( 0, 0, true );
   QgsPolygon p;
   bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
+  QVERIFY( resWktRead );
+
+  t.addPolygon( p, 0 );   // must not crash - that's all we test here
+}
+
+void TestQgsTessellator::testCrashSelfIntersection()
+{
+  // this is a polygon where we get self-intersecting exterior ring that would crash poly2tri if not skipped
+
+  QgsTessellator t( 0, 0, true );
+  QgsPolygon p;
+  bool resWktRead = p.fromWkt( "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 -1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))" );
+
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );   // must not crash - that's all we test here
