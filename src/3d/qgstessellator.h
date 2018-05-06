@@ -39,7 +39,7 @@ class _3D_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false );
+    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -58,6 +58,7 @@ class _3D_EXPORT QgsTessellator
     double mOriginX, mOriginY;
     bool mAddNormals;
     bool mInvertNormals;
+    bool mAddBackFaces;
     QVector<float> mData;
     int mStride;
 };

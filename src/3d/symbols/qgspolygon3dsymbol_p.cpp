@@ -200,6 +200,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
 
   mGeometry = new QgsTessellatedPolygonGeometry;
   mGeometry->setInvertNormals( symbol.invertNormals() );
+  mGeometry->setAddBackFaces( symbol.addBackFaces() );
   mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
