@@ -419,9 +419,12 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_CRS or
               isinstance(self.param, QgsProcessingParameterCrs)):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
-        if (self.paramType == parameters.PARAMETER_ENUM or
+        elif (self.paramType == parameters.PARAMETER_ENUM or
                 isinstance(self.param, QgsProcessingParameterEnum)):
             self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOption())
+        elif (self.paramType == parameters.PARAMETER_MATRIX or
+                isinstance(self.param, QgsProcessingParameterMatrix)):
+            self.param = QgsProcessingParameterMatrix(name, description, hasFixedNumberRows=self.widget.fixedRows(), headers=self.widget.headers(), defaultValue=self.widget.value())
         else:
             if self.paramType:
                 typeId = self.paramType
