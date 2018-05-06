@@ -52,7 +52,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsPointXY,
                        QgsProject,
                        QgsRectangle,
-                       QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition)
 import nose2
 import os
@@ -89,6 +89,18 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
             self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
+
+    def testNoParameters(self):
+        # Test that algorithms throw QgsProcessingExceptions and not base Python
+        # exceptions when no parameters specified
+        p = QgsApplication.processingRegistry().providerById('gdal')
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        for a in p.algorithms():
+            try:
+                a.getConsoleCommands({}, context, feedback)
+            except QgsProcessingException:
+                pass
 
     def testGetOgrCompatibleSourceFromMemoryLayer(self):
         # create a memory layer and add to project and context

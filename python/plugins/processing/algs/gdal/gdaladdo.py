@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
@@ -110,6 +111,9 @@ class gdaladdo(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         fileName = inLayer.source()
 
         arguments = []

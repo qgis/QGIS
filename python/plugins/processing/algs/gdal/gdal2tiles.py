@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
@@ -219,6 +220,9 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-n')
 
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 

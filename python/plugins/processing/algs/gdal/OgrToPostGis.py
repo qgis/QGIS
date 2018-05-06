@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
@@ -189,6 +190,9 @@ class OgrToPostGis(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        if not layername:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context).authid()
