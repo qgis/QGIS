@@ -67,6 +67,7 @@ from qgis.core import (QgsApplication,
                        )
 
 from processing.gui.enummodelerwidget import EnumModelerWidget
+from processing.gui.matrixmodelerwidget import MatrixModelerWidget
 from processing.core import parameters
 from processing.modeler.exceptions import UndefinedParameterException
 
@@ -282,6 +283,14 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.widget.setOptions(self.param.options())
                 self.widget.setDefault(int(self.param.defaultValue()))
                 self.widget.setAllowMultiple(bool(self.param.allowMultiple()))
+            self.verticalLayout.addWidget(self.widget)
+        elif self.paramType == parameters.PARAMETER_MATRIX or \
+                isinstance(self.param, QgsProcessingParameterMatrix):
+            self.widget = MatrixModelerWidget(self)
+            if self.param is not None:
+                self.widget.setValue(self.param.defaultValue())
+                self.widget.setHeaders(self.param.headers())
+                self.widget.setFixedRows(self.param.hasFixedNumberRows())
             self.verticalLayout.addWidget(self.widget)
 
         self.verticalLayout.addSpacing(20)
