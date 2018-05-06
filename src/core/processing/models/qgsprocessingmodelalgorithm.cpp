@@ -688,9 +688,9 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
 
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer || vectorOut->dataType() == QgsProcessing::TypeVector
-                    || vectorOut->dataType() == QgsProcessing::TypeVectorAnyGeometry ) )
+            if ( !vectorOutputIsCompatibleType( dataTypes, vectorOut->dataType() ) )
             {
+              //unacceptable output
               continue;
             }
           }
@@ -886,6 +886,23 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   updateDestinationParameters();
 
   return true;
+}
+
+bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType )
+{
+  // This method is intended to be "permissive" rather than "restrictive".
+  // I.e. we only reject outputs which we know can NEVER be acceptable, but
+  // if there's doubt then we default to returning true.
+  return ( acceptableDataTypes.empty()
+           || acceptableDataTypes.contains( outputType )
+           || outputType == QgsProcessing::TypeMapLayer
+           || outputType == QgsProcessing::TypeVector
+           || outputType == QgsProcessing::TypeVectorAnyGeometry
+           || acceptableDataTypes.contains( QgsProcessing::TypeVector )
+           || acceptableDataTypes.contains( QgsProcessing::TypeMapLayer )
+           || ( acceptableDataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && ( outputType == QgsProcessing::TypeVectorPoint ||
+                outputType == QgsProcessing::TypeVectorLine ||
+                outputType == QgsProcessing::TypeVectorPolygon ) ) );
 }
 
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
