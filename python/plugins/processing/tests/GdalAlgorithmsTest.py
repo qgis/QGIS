@@ -561,7 +561,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             alg.getConsoleCommands({'INPUT': source,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_grid',
-             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
@@ -570,7 +570,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'NODATA': 9999,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_grid',
-             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=9999.0 -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
@@ -579,7 +579,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'NODATA': 0,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_grid',
-             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+             '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
