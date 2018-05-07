@@ -1593,7 +1593,7 @@
      <normaloff>:/images/themes/default/mActionInOverview.svg</normaloff>:/images/themes/default/mActionInOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Add to Overview</string>
+    <string>Show in Overview</string>
    </property>
   </action>
   <action name="mActionAddAllToOverview">
@@ -1602,7 +1602,7 @@
      <normaloff>:/images/themes/default/mActionAddAllToOverview.svg</normaloff>:/images/themes/default/mActionAddAllToOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Add All to Overview</string>
+    <string>Show All in Overview</string>
    </property>
   </action>
   <action name="mActionRemoveAllFromOverview">
@@ -1611,7 +1611,7 @@
      <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Remove All from Overview</string>
+    <string>Hide All from Overview</string>
    </property>
   </action>
   <action name="mActionShowAllLayers">
