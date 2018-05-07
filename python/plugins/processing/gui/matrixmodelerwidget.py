@@ -122,7 +122,7 @@ class MatrixModelerWidget(BASE, WIDGET):
         headers = []
         model = self.tblView.model()
         for i in range(model.columnCount()):
-            headers.append(model.headerData(i, Qt.Horizontal))
+            headers.append(str(model.headerData(i, Qt.Horizontal)))
 
         return headers
 
@@ -133,5 +133,5 @@ class MatrixModelerWidget(BASE, WIDGET):
     def fixedRows(self):
         return self.chkFixedRows.isChecked()
 
-    def setFixedRows(self):
-        self.chkFixedRows.setChecked(True)
+    def setFixedRows(self, fixedRows):
+        self.chkFixedRows.setChecked(fixedRows)
