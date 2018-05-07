@@ -26,11 +26,11 @@ from builtins import next
 from builtins import str
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject, QgsApplication, QgsTask
+from qgis.core import QgsProject, QgsApplication, QgsTask, QgsSettings
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -53,19 +53,22 @@ import re
 
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
+    QUERY_HISTORY_LIMIT = 20
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
         self.mainWindow = parent
         self.iface = iface
         self.db = db
+        self.dbType = db.connection().typeNameString()
+        self.connectionName = db.connection().connectionName()
         self.filter = ""
         self.modelAsync = None
         self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
-            self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
+            self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
 
         self.defaultLayerName = 'QueryLayer'
 
@@ -78,6 +81,17 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+
+        settings = QgsSettings()
+        self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
+        if self.connectionName not in self.history:
+            self.history[self.connectionName] = []
+
+        self.queryHistoryWidget.setVisible(False)
+        self.queryHistoryTableWidget.verticalHeader().hide()
+        self.queryHistoryTableWidget.doubleClicked.connect(self.insertQueryInEditor)
+        self.populateQueryHistory()
+        self.btnQueryHistory.toggled.connect(self.showHideQueryHistory)
 
         self.btnCancel.setText(self.tr("Cancel (ESC)"))
         self.btnCancel.setEnabled(False)
@@ -139,6 +153,45 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.queryBuilderBtn.clicked.connect(self.displayQueryBuilder)
 
         self.presetName.textChanged.connect(self.nameChanged)
+
+    def insertQueryInEditor(self, item):
+        sql = item.data(Qt.DisplayRole)
+        self.editSql.insertText(sql)
+
+    def showHideQueryHistory(self, visible):
+        self.queryHistoryWidget.setVisible(visible)
+
+    def populateQueryHistory(self):
+        self.queryHistoryTableWidget.clearContents()
+        self.queryHistoryTableWidget.setRowCount(0)
+        dictlist = self.history[self.connectionName]
+
+        if not dictlist:
+            return
+
+        for i in range(len(dictlist)):
+            self.queryHistoryTableWidget.insertRow(0)
+            queryItem = QTableWidgetItem(dictlist[i]['query'])
+            rowsItem = QTableWidgetItem(str(dictlist[i]['rows']))
+            durationItem = QTableWidgetItem(str(dictlist[i]['secs']))
+            self.queryHistoryTableWidget.setItem(0, 0, queryItem)
+            self.queryHistoryTableWidget.setItem(0, 1, rowsItem)
+            self.queryHistoryTableWidget.setItem(0, 2, durationItem)
+
+        self.queryHistoryTableWidget.resizeColumnsToContents()
+        self.queryHistoryTableWidget.resizeRowsToContents()
+
+    def writeQueryHistory(self, sql, affectedRows, secs):
+        if len(self.history[self.connectionName]) >= self.QUERY_HISTORY_LIMIT:
+            self.history[self.connectionName].pop(0)
+
+        settings = QgsSettings()
+        self.history[self.connectionName].append({'query': sql,
+                                                  'rows': affectedRows,
+                                                  'secs': secs})
+        settings.setValue('DB_Manager/queryHistory/' + self.dbType, self.history)
+
+        self.populateQueryHistory()
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
@@ -236,12 +289,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 quotedCols = []
 
                 self.viewResult.setModel(model)
-                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+                self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
                 for col in cols:
                     quotedCols.append(self.db.connector.quoteId(col))
 
                 self.setColumnCombos(cols, quotedCols)
+
+                self.writeQueryHistory(self.modelAsync.task.sql, model.affectedRows(), model.secs())
                 self.update()
             elif not self.modelAsync.canceled:
                 DlgDbError.showError(self.modelAsync.error, self)
