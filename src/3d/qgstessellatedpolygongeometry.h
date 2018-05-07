@@ -46,9 +46,16 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     void setInvertNormals( bool invert ) { mInvertNormals = invert; }
 
-    //! Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+    /**
+     * Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+     * \since QGIS 3.2
+     */
     bool addBackFaces() const { return mAddBackFaces; }
-    //! Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+
+    /**
+     * Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+     * \since QGIS 3.2
+     */
     void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
