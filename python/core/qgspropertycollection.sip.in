@@ -386,7 +386,7 @@ will remove the property from the collection.
 
     void setProperty( int key, const QVariant &value );
 %Docstring
-Convience method, creates a QgsStaticProperty and stores it within the collection.
+Convenience method, creates a QgsStaticProperty and stores it within the collection.
 
 :param key: integer key for property. Any existing property with the same key will be deleted
 and replaced by this property. The intended use case is that a context specific enum is cast to

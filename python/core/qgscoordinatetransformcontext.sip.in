@@ -94,7 +94,7 @@ required for transformations for that source or destination.
         int destinationTransformId );
 %Docstring
 Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
-from the the specified ``sourceCrs`` to the specified ``destinationCrs``.
+from the specified ``sourceCrs`` to the specified ``destinationCrs``.
 
 If either ``sourceTransformId`` or ``destinationTransformId`` is -1, then no datum transform is
 required for transformations for that source or destination.

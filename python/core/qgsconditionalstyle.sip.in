@@ -127,7 +127,7 @@ Special value of \@value is replaced at run time with the check value
 
     void setFont( const QFont &value );
 %Docstring
- Set the font for the the style
+ Set the font for the style
 
 :param value: QFont to be used for text
 %End
