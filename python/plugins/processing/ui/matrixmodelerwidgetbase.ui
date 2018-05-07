@@ -28,6 +28,9 @@
    </property>
    <item row="0" column="0" rowspan="8">
     <widget class="QTableView" name="tblView">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
