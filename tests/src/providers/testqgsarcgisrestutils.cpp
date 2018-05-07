@@ -37,6 +37,7 @@ class TestQgsArcGisRestUtils : public QObject
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
     void testMapEsriFieldType();
+    void testParseSpatialReference();
     void testMapEsriGeometryType();
     void testParseEsriFillStyle();
     void testParseEsriLineStyle();
@@ -87,6 +88,18 @@ void TestQgsArcGisRestUtils::testMapEsriFieldType()
   // not valid fields
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QVariant::Invalid );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "xxx" ) ), QVariant::Invalid );
+}
+
+void TestQgsArcGisRestUtils::testParseSpatialReference()
+{
+  QVariantMap map;
+  map.insert(
+    QStringLiteral( "wkt" ),
+    QStringLiteral( "PROJCS[\"NewJTM\",GEOGCS[\"GCS_ETRF_1989\",DATUM[\"D_ETRF_1989\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",40000.0],PARAMETER[\"False_Northing\",70000.0],PARAMETER[\"Central_Meridian\",-2.135],PARAMETER[\"Scale_Factor\",0.9999999],PARAMETER[\"Latitude_Of_Origin\",49.225],UNIT[\"Meter\",1.0]]" ) );
+
+  QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( map );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"WGS 84\",DATUM[\"unknown\",SPHEROID[\"WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",49.225],PARAMETER[\"central_meridian\",-2.135],PARAMETER[\"scale_factor\",0.9999999],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",70000],UNIT[\"Meter\",1]]" ) );
 }
 
 void TestQgsArcGisRestUtils::testMapEsriGeometryType()
