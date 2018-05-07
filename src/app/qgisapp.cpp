@@ -11737,16 +11737,22 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   dlg->resize( 580, 512 );
   if ( dlg->exec() )
   {
-    if ( reply )
+    if ( reply && !reply->isFinished() )
     {
       QgsDebugMsg( QString( "All SSL errors ignored for %1" ).arg( hostport ) );
       reply->ignoreSslErrors();
     }
   }
+  else
+  {
+    reply->abort();
+    reply->close();
+    reply->deleteLater();
+  }
   dlg->deleteLater();
 
   // restart network request timeout timer
-  if ( reply )
+  if ( reply && !reply->isFinished() )
   {
     QSettings s;
     QTimer *timer = reply->findChild<QTimer *>( "timeoutTimer" );

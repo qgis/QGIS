@@ -20,6 +20,7 @@
 
 #include <QDialog>
 #include <QSslError>
+#include <QUrl>
 #include "ui_qgsauthsslerrorsdialog.h"
 
 class QNetworkReply;
@@ -47,7 +48,6 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
                             const QString &hostport = QString() );
     ~QgsAuthSslErrorsDialog();
 
-
   private slots:
     void loadUnloadCertificate( bool load );
 
@@ -68,6 +68,18 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     void on_grpbxSslErrors_collapsedStateChanged( bool collapsed );
 
+#ifdef Q_OS_WIN
+    void widgetAllowAddCAsToKeystore( QList<QSslError> &errors );
+    void on_btnAddCainCAs_clicked();
+    void blinkImportCAsButton();
+
+  signals:
+    /** Emitted when a set of sslErrors has bee found that need
+        to activate button to import CAs in windows keystore
+        using external browser */
+    void sslErrorsCAtoImport( QList<QSslError> &errors );
+#endif // Q_OS_WIN
+
   private:
     void populateErrorsList();
 
@@ -79,6 +91,8 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
     QList<QSslError> mSslErrors;
     QString mDigest;
     QString mHostPort;
+    QUrl mUrl;
+
 };
 
 #endif // QGSAUTHSSLERRORSDIALOG_H

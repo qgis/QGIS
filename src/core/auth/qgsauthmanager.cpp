@@ -1602,6 +1602,21 @@ bool QgsAuthManager::initSslCaches()
   return res;
 }
 
+bool QgsAuthManager::rebuildSslCaches()
+{
+  // do, incidentally, the same of initSslCaches but it is semantically different!
+  // initSslCaches have to be called only one time, this method can be colled
+  // different times
+  bool res = true;
+  res = res && rebuildCaCertsCache();
+  res = res && rebuildCertTrustCache();
+  res = res && rebuildTrustedCaCertsCache();
+  res = res && rebuildIgnoredSslErrorCache();
+
+  QgsDebugMsg( QString( "rebuild of SSL caches %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
+  return res;
+}
+
 bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslKey &key )
 {
   QMutexLocker locker( mMutex );
