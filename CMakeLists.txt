@@ -410,6 +410,12 @@ SET(CMAKE_CXX_STANDARD 11)
 #############################################################
 # enable warnings
 
+# Block compilation when using API deprecated in Qt <= 4.8
+# TODO - bump to min Qt version we support!
+ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x040800)
+# Warn on ALL use of deprecated Qt API, so we make porting to future Qt releases easier
+ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
+
 IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)

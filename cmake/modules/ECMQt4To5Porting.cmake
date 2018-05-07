@@ -35,10 +35,6 @@
 
 include(MacroAddFileDependencies)
 
-# Portability helpers.
-
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
-
 # get the Qt plugins directory
 GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
 EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
