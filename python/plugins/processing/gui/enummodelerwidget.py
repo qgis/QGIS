@@ -110,5 +110,5 @@ class EnumModelerWidget(BASE, WIDGET):
         if item:
             item.setCheckState(Qt.Checked)
 
-    def setAllowMultiple(self):
-        self.chkAllowMultiple.setChecked(True)
+    def setAllowMultiple(self, allowMultiple):
+        self.chkAllowMultiple.setChecked(allowMultiple)
