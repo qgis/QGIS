@@ -134,9 +134,9 @@ WId Session::windowId() const
 	// On Qt5, requesting window IDs breaks QQuickWidget and the likes,
 	// for example, see the following bug reports:
 	//
-	// https://bugreports.qt-project.org/browse/QTBUG-41779
-	// https://bugreports.qt-project.org/browse/QTBUG-40765
-	// https://bugreports.qt-project.org/browse/QTBUG-41942
+	// https://bugreports.qt.io/browse/QTBUG-41779
+	// https://bugreports.qt.io/browse/QTBUG-40765
+	// https://bugreports.qt.io/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
   return 0;
