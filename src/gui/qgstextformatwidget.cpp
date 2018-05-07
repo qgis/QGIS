@@ -1020,7 +1020,7 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
   mFontCapitalsComboBox->addItem( tr( "All uppercase" ), QVariant( 1 ) );
   mFontCapitalsComboBox->addItem( tr( "All lowercase" ), QVariant( 2 ) );
   // Small caps doesn't work right with QPainterPath::addText()
-  // https://bugreports.qt-project.org/browse/QTBUG-13965
+  // https://bugreports.qt.io/browse/QTBUG-13965
 //  mFontCapitalsComboBox->addItem( tr( "Small caps" ), QVariant( 3 ) );
   mFontCapitalsComboBox->addItem( tr( "Capitalize first letter" ), QVariant( 4 ) );
 }
