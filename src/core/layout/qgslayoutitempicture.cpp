@@ -839,12 +839,12 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
   {
     if ( mRotationMap )
     {
-      disconnectMap( mRotationMap );
+      disconnectMap( mRotationMap.data() );
     }
     if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
     {
-      connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      connect( mRotationMap.data(), &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      connect( mRotationMap.data(), &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     }
   }
 
