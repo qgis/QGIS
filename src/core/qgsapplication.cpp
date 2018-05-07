@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
 #include "qgsactionscoperegistry.h"
@@ -1664,6 +1665,11 @@ QgsSvgCache *QgsApplication::svgCache()
   return members()->mSvgCache;
 }
 
+QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
+{
+  return members()->mNetworkContentFetcherRegistry;
+}
+
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
   return members()->mSymbolLayerRegistry;
@@ -1743,6 +1749,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
+  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -1766,6 +1773,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSvgCache;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
+  delete mNetworkContentFetcherRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
