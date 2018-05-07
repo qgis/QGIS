@@ -734,8 +734,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
   if ( !scalePaths.isEmpty() )
   {
-    const QStringList ScalesList = scalePaths.split( ',' );
-    for ( const QString &scale : ScalesList )
+    const QStringList scalesList = scalePaths.split( ',' );
+    for ( const QString &scale : scalesList )
     {
       addScaleToScaleList( scale );
     }
