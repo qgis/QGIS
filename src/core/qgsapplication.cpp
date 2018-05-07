@@ -572,7 +572,7 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
     if ( app->devicePixelRatio() >= 2 )
     {
       scale *= app->devicePixelRatio();
-      activeX = activeY = 5;
+      activeX = activeY = 8;
     }
 #endif
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
