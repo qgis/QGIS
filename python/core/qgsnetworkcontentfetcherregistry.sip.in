@@ -39,6 +39,8 @@ FetchedContent holds useful information about a network content being fetched
 %Docstring
 Constructs a FetchedContent with pointer to the downloaded file and status of the download
 %End
+    ~QgsFetchedContent();
+
 
 
     const QString filePath() const;

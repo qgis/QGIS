@@ -30,8 +30,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   QMap<QUrl, QgsFetchedContent *>::const_iterator it = mFileRegistry.constBegin();
   for ( ; it != mFileRegistry.constEnd(); ++it )
   {
-    it.value()->mFile->close();
-    delete it.value()->mFile;
+    delete it.value();
   }
   mFileRegistry.clear();
 }
@@ -136,6 +135,7 @@ const QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePat
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {
+    QMutexLocker locker( &mMutex );
     if ( mFileRegistry.contains( QUrl( path ) ) )
     {
       const QgsFetchedContent *content = mFileRegistry.value( QUrl( path ) );
@@ -166,6 +166,7 @@ QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUr
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {
+    QMutexLocker locker( &mMutex );
     if ( mFileRegistry.contains( QUrl( path ) ) )
     {
       const QgsFetchedContent *content = mFileRegistry.value( QUrl( path ) );

@@ -57,6 +57,12 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     explicit QgsFetchedContent( QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
       : QObject(), mFile( file ), mStatus( status ) {}
 
+    ~QgsFetchedContent()
+    {
+      mFile->close();
+      delete mFile;
+    }
+
 
 #ifndef SIP_RUN
     //! Return a pointer to the local file, a null pointer if the file is not accessible yet.
