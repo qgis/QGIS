@@ -50,11 +50,11 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  connect( actionSave, &QAction::triggered, this, &QgsCustomizationDialog::actionSave_triggered );
-  connect( actionLoad, &QAction::triggered, this, &QgsCustomizationDialog::actionLoad_triggered );
-  connect( actionExpandAll, &QAction::triggered, this, &QgsCustomizationDialog::actionExpandAll_triggered );
-  connect( actionCollapseAll, &QAction::triggered, this, &QgsCustomizationDialog::actionCollapseAll_triggered );
-  connect( actionSelectAll, &QAction::triggered, this, &QgsCustomizationDialog::actionSelectAll_triggered );
+  connect( btnSave, &QAbstractButton::clicked, this, &QgsCustomizationDialog::actionSave_triggered );
+  connect( btnLoad, &QAbstractButton::clicked, this, &QgsCustomizationDialog::actionLoad_triggered );
+  connect( btnExpandAll, &QAbstractButton::clicked, this, &QgsCustomizationDialog::actionExpandAll_triggered );
+  connect( btnCollapseAll, &QAbstractButton::clicked, this, &QgsCustomizationDialog::actionCollapseAll_triggered );
+  connect( btnSelectAll, &QAbstractButton::clicked, this, &QgsCustomizationDialog::actionSelectAll_triggered );
   connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled );
 
   init();
@@ -198,7 +198,12 @@ void QgsCustomizationDialog::reset()
   bool enabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
   mCustomizationEnabledCheckBox->setChecked( enabled );
   treeWidget->setEnabled( enabled );
-  toolBar->setEnabled( enabled );
+  btnCatch->setEnabled( enabled );
+  btnSave->setEnabled( enabled );
+  btnLoad->setEnabled( enabled );
+  btnCollapseAll->setEnabled( enabled );
+  btnExpandAll->setEnabled( enabled );
+  btnSelectAll->setEnabled( enabled );
 }
 
 void QgsCustomizationDialog::ok()
@@ -229,7 +234,7 @@ void QgsCustomizationDialog::actionSave_triggered( bool checked )
   QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this,
-                     tr( "Choose a customization INI file" ),
+                     tr( "Save a Customization INI File" ),
                      lastDir, tr( "Customization files (*.ini)" ) );
 
   if ( fileName.isEmpty() )
@@ -256,7 +261,7 @@ void QgsCustomizationDialog::actionLoad_triggered( bool checked )
   QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this,
-                     tr( "Choose a customization INI file" ),
+                     tr( "Choose a Customization INI File" ),
                      lastDir, tr( "Customization files (*.ini)" ) );
 
   if ( fileName.isEmpty() )
@@ -292,7 +297,12 @@ void QgsCustomizationDialog::actionSelectAll_triggered( bool checked )
 void QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled( bool checked )
 {
   treeWidget->setEnabled( checked );
-  toolBar->setEnabled( checked );
+  btnCatch->setEnabled( checked );
+  btnSave->setEnabled( checked );
+  btnLoad->setEnabled( checked );
+  btnCollapseAll->setEnabled( checked );
+  btnExpandAll->setEnabled( checked );
+  btnSelectAll->setEnabled( checked );
 }
 
 void QgsCustomizationDialog::init()
@@ -384,7 +394,7 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
   Q_UNUSED( e );
-  if ( !actionCatch->isChecked() )
+  if ( !btnCatch->isChecked() )
     return false;
 
   QString path = widgetPath( widget );
@@ -480,11 +490,11 @@ QString QgsCustomizationDialog::widgetPath( QWidget *widget, const QString &path
 
 void QgsCustomizationDialog::setCatch( bool on )
 {
-  actionCatch->setChecked( on );
+  btnCatch->setChecked( on );
 }
 bool QgsCustomizationDialog::catchOn()
 {
-  return actionCatch->isChecked();
+  return btnCatch->isChecked();
 }
 
 void QgsCustomizationDialog::showHelp()
