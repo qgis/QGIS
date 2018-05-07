@@ -98,7 +98,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
                                                        self.tr('Maximum number of data points to use'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        minValue=0,
-                                                       defaultValue=0))
+                                                       defaultValue=12))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_POINTS,
                                                        self.tr('Minimum number of data points to use'),
                                                        type=QgsProcessingParameterNumber.Integer,
