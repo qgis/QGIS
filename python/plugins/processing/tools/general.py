@@ -154,4 +154,6 @@ def execAlgorithmDialog(algOrName, parameters={}):
         canvas.setMapTool(prevMapTool)
 
     results = dlg.results()
+    # make sure the dialog is destroyed and not only hidden on pressing Esc
+    dlg.close()
     return results

@@ -318,6 +318,8 @@ class FieldsMappingPanel(BASE, WIDGET):
             delegate)
 
     def setLayer(self, layer):
+        if self.model.layer() == layer:
+            return
         self.model.setLayer(layer)
         if layer is None:
             return
