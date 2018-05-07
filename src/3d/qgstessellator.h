@@ -55,10 +55,10 @@ class _3D_EXPORT QgsTessellator
     std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const;
 
   private:
-    double mOriginX, mOriginY;
-    bool mAddNormals;
-    bool mInvertNormals;
-    bool mAddBackFaces;
+    double mOriginX = 0, mOriginY = 0;
+    bool mAddNormals = false;
+    bool mInvertNormals = false;
+    bool mAddBackFaces = false;
     QVector<float> mData;
     int mStride;
 };
