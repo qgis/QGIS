@@ -335,8 +335,11 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QV
     spatialReference = QStringLiteral( "EPSG:%1" ).arg( spatialReference );
   QgsCoordinateReferenceSystem crs;
   crs.createFromString( spatialReference );
-  if ( crs.authid().startsWith( QLatin1String( "USER:" ) ) )
-    crs.createFromString( QStringLiteral( "EPSG:4326" ) ); // If we can't recognize the SRS, fall back to WGS84
+  if ( !crs.isValid() )
+  {
+    // If not spatial reference, just use WGS84
+    crs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  }
   return crs;
 }
 

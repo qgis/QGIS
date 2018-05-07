@@ -47,7 +47,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   mSharedData->mDataSource = QgsDataSourceUri( uri );
 
   // Set CRS
-  mSharedData->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
+  mSharedData->mSourceCRS.createFromString( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
