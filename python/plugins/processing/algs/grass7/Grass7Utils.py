@@ -35,6 +35,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
+from processing.core.GeoAlgorithm import GeoAlgorithm
 
 
 class Grass7Utils:
@@ -270,6 +271,8 @@ class Grass7Utils:
         if isWindows():
             Grass7Utils.createGrass7Script(commands)
             command = ['cmd.exe', '/C ', Grass7Utils.grassScriptFilename()]
+            command = GeoAlgorithm.setConsoleCommandEncoding(command)
+
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc7'
             env['GISRC'] = gisrc

@@ -567,7 +567,7 @@ def ogrLayerName(uri):
     if not ly:
         return None
     name = ly.GetName()
-    return name
+    return unicode(name, 'utf-8')
 
 
 class VectorWriter:

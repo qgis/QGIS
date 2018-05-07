@@ -255,6 +255,7 @@ class GrassUtils:
         if isWindows():
             GrassUtils.createGrassScript(commands)
             command = ['cmd.exe', '/C ', GrassUtils.grassScriptFilename()]
+
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc'
             env['GISRC'] = gisrc

@@ -30,6 +30,7 @@ import os.path
 import traceback
 import subprocess
 import copy
+import encodings
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
@@ -42,7 +43,7 @@ from processing.core.parameters import ParameterRaster, ParameterVector, Paramet
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
-from processing.tools.system import setTempOutput
+from processing.tools.system import setTempOutput, isWindows
 from processing.algs.help import shortHelp
 
 
@@ -116,6 +117,14 @@ class GeoAlgorithm:
         if text is not None:
             text = self._formatHelp(text)
         return text
+
+    @staticmethod
+    def setConsoleCommandEncoding(commands=[]):
+        if isWindows():
+            encoding = ProcessingConfig.getSetting(ProcessingConfig.WINDOWS_DEFAULT_CODEPAGE)
+            setEncodingCommand = ['chcp', '{}'.format(encoding), '&&']
+            commands = setEncodingCommand + commands
+        return commands
 
     def processAlgorithm(self, progress):
         """Here goes the algorithm itself.
@@ -261,7 +270,7 @@ class GeoAlgorithm:
             for line in lines:
                 script += line
             exec(script, ns)
-        except Exception, e:
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    "Error in hook script: " + str(e))
             # A wrong script should not cause problems, so we swallow

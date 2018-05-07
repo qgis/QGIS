@@ -32,6 +32,8 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import NULL
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
+from processing.tools.system import isWindows
+import encodings
 
 
 class SettingsWatcher(QObject):
@@ -64,6 +66,8 @@ class ProcessingConfig:
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
     SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
     MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
+    #if isWindows():
+    WINDOWS_DEFAULT_CODEPAGE = 'WINDOWS_DEFAULT_CODEPAGE'
 
     settings = {}
     settingIcons = {}
@@ -164,6 +168,13 @@ class ProcessingConfig:
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
             ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
             valuetype=Setting.SELECTION, options=extensions))
+        if isWindows():
+            sortedEncodigs = sorted(encodings.aliases.aliases.keys())
+            ProcessingConfig.addSetting(Setting(
+                ProcessingConfig.tr('General'),
+                ProcessingConfig.WINDOWS_DEFAULT_CODEPAGE,
+                ProcessingConfig.tr('Window default code page identifier'), '1252',
+                valuetype=Setting.SELECTION, options=sortedEncodigs))
 
     @staticmethod
     def setGroupIcon(group, icon):
