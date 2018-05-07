@@ -290,9 +290,12 @@ signal        """
         if value == 'memory:' or not value:
             self.saveToTemporary()
         elif isinstance(value, QgsProcessingOutputLayerDefinition):
-            self.leText.setText(value.sink.staticValue())
+            if value.sink.staticValue() == 'memory:':
+                self.saveToTemporary()
+            else:
+                self.leText.setText(value.sink.staticValue())
+                self.use_temporary = False
             self.encoding = value.createOptions['fileEncoding']
-            self.use_temporary = False
         else:
             self.leText.setText(value)
             self.use_temporary = False
