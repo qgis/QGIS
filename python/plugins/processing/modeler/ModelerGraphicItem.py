@@ -233,6 +233,7 @@ class ModelerGraphicItem(QGraphicsItem):
                 model_output = child_alg.modelOutput(self.element.name())
                 model_output.setDescription(dlg.param.description())
                 model_output.setDefaultValue(dlg.param.defaultValue())
+                model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
                 self.model.updateDestinationParameters()
 
     def updateAlgorithm(self, alg):

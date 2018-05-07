@@ -786,6 +786,8 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       // Even if an output was hidden in a child algorithm, we want to show it here for the final
       // outputs.
       param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
+      if ( outputIt->isMandatory() )
+        param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );

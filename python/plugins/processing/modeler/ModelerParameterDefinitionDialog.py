@@ -443,34 +443,29 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name=name,
                 description=self.param.description(),
                 type=self.param.dataType(),
-                defaultValue=self.defaultWidget.getValue(),
-                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+                defaultValue=self.defaultWidget.getValue())
         elif (isinstance(self.param, QgsProcessingParameterFileDestination)):
             self.param = QgsProcessingParameterFileDestination(
                 name=name,
                 description=self.param.description(),
                 fileFilter=self.param.fileFilter(),
-                defaultValue=str(self.defaultWidget.getValue()),
-                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+                defaultValue=str(self.defaultWidget.getValue()))
         elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
             self.param = QgsProcessingParameterFolderDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=str(self.defaultWidget.getValue()),
-                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+                defaultValue=str(self.defaultWidget.getValue()))
         elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
             self.param = QgsProcessingParameterRasterDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=str(self.defaultWidget.getValue()),
-                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+                defaultValue=str(self.defaultWidget.getValue()))
         elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
             self.param = QgsProcessingParameterVectorDestination(
                 name=name,
                 description=self.param.description(),
                 type=self.param.dataType(),
-                defaultValue=str(self.defaultWidget.getValue()),
-                optional=self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+                defaultValue=str(self.defaultWidget.getValue()))
 
         else:
             if self.paramType:
@@ -488,6 +483,8 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         if not self.requiredCheck.isChecked():
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
+        else:
+            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagOptional)
 
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
