@@ -83,13 +83,14 @@ class EnumModelerWidget(BASE, WIDGET):
 
         return items
 
-    def defaultOption(self):
+    def defaultOptions(self):
+        options = []
         model = self.lstItems.model()
         for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
-                return i
-        return None
+                options.append(i)
+        return options if len(options) > 0 else None
 
     def allowMultiple(self):
         return self.chkAllowMultiple.isChecked()
