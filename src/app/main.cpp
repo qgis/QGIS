@@ -960,7 +960,7 @@ int main( int argc, char *argv[] )
   }
   else
   {
-    // We are either running from build dir bundle, or launching Mach-O binary directly.
+    // We are either running from build dir bundle, or launching Mach-O binary directly.  //#spellok
     // Add system Qt plugins, since they are not bundled, and not always referenced by default.
     // An app bundled with QGIS_MACAPP_BUNDLE = 0 will still have Plugins/qgis in it.
     // Note: Don't always prepend.

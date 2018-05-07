@@ -334,7 +334,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     void setProperty( int key, const QgsProperty &property );
 
     /**
-     * Convience method, creates a QgsStaticProperty and stores it within the collection.
+     * Convenience method, creates a QgsStaticProperty and stores it within the collection.
      * \param key integer key for property. Any existing property with the same key will be deleted
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
