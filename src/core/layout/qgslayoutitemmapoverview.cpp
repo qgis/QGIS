@@ -217,8 +217,8 @@ void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
   //disconnect old map
   if ( mFrameMap )
   {
-    disconnect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
-    disconnect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    disconnect( mFrameMap.data(), &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    disconnect( mFrameMap.data(), &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
   mFrameMap = map;
   //connect to new map signals
@@ -240,8 +240,8 @@ void QgsLayoutItemMapOverview::connectSignals()
 
   if ( mFrameMap )
   {
-    connect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
-    connect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    connect( mFrameMap.data(), &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    connect( mFrameMap.data(), &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
 }
 

@@ -537,8 +537,8 @@ void TestQgsTaskManager::subTask()
   }
 
   QSignalSpy parentTerminated( parent, &QgsTask::taskTerminated );
-  QSignalSpy subTerminated( subTask, &QgsTask::taskTerminated );
-  QSignalSpy subsubTerminated( subsubTask, &QgsTask::taskTerminated );
+  QSignalSpy subTerminated( subTask.data(), &QgsTask::taskTerminated );
+  QSignalSpy subsubTerminated( subsubTask.data(), &QgsTask::taskTerminated );
 
   subsubTask->terminate();
   while ( subsubTask->status() == QgsTask::Running
@@ -577,8 +577,8 @@ void TestQgsTaskManager::subTask()
   QCOMPARE( ( int )subTask->status(), ( int )QgsTask::Running );
 
   QSignalSpy parentFinished( parent, &QgsTask::taskCompleted );
-  QSignalSpy subFinished( subTask, &QgsTask::taskCompleted );
-  QSignalSpy subsubFinished( subsubTask, &QgsTask::taskCompleted );
+  QSignalSpy subFinished( subTask.data(), &QgsTask::taskCompleted );
+  QSignalSpy subsubFinished( subsubTask.data(), &QgsTask::taskCompleted );
 
   subsubTask->finish();
   while ( subsubTask->status() == QgsTask::Running

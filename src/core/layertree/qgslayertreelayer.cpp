@@ -69,8 +69,8 @@ void QgsLayerTreeLayer::attachToLayer()
   if ( !mRef )
     return;
 
-  connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
-  connect( mRef.layer, &QgsMapLayer::willBeDeleted, this, &QgsLayerTreeLayer::layerWillBeDeleted );
+  connect( mRef.layer.data(), &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
+  connect( mRef.layer.data(), &QgsMapLayer::willBeDeleted, this, &QgsLayerTreeLayer::layerWillBeDeleted );
 }
 
 

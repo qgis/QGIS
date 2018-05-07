@@ -93,7 +93,7 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
 
   if ( mLayout )
   {
-    connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
+    connect( mLayout.data(), &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
     connect( &mLayout->reportContext(), &QgsLayoutReportContext::changed, this, &QgsLayoutObject::refresh );
   }
 }

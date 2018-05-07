@@ -1367,7 +1367,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     } );
 
   }
-  connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
+  connect( mLayout.data(), &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
 }
