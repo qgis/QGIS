@@ -90,11 +90,6 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     cachedItem->setCheckState( Qt::Checked );
 
     QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap[QStringLiteral( "spatialReference" )].toMap() );
-    if ( !crs.isValid() )
-    {
-      // If not spatial reference, just use WGS84
-      crs.createFromString( QStringLiteral( "EPSG:4326" ) );
-    }
     mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
 
     mModel->appendRow( QList<QStandardItem *>() << idItem << nameItem << abstractItem << cachedItem << filterItem );
