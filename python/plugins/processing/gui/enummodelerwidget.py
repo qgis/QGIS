@@ -30,6 +30,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from qgis.core import QgsApplication
 
@@ -46,7 +47,7 @@ class EnumModelerWidget(BASE, WIDGET):
 
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
-        self.btnClear.setIcon(QgsApplication.getThemeIcon('/mIconClearText.svg'))
+        self.btnClear.setIcon(QgsApplication.getThemeIcon('console/iconClearConsole.svg'))
 
         self.btnAdd.clicked.connect(self.addItem)
         self.btnRemove.clicked.connect(lambda: self.removeItems())
@@ -87,7 +88,9 @@ class EnumModelerWidget(BASE, WIDGET):
 
     def removeItems(self, removeAll=False):
         if removeAll:
-            self.lstItems.model().clear()
+            res = QMessageBox.question(self, self.tr('Clear?'), self.tr('Are you sure you want to delete all items?'))
+            if res == QMessageBox.Yes:
+                self.lstItems.model().clear()
         else:
             self.lstItems.setUpdatesEnabled(False)
             indexes = sorted(self.lstItems.selectionModel().selectedIndexes())

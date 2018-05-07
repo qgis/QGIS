@@ -30,7 +30,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
-from qgis.PyQt.QtWidgets import QInputDialog
+from qgis.PyQt.QtWidgets import QInputDialog, QMessageBox
 
 from qgis.core import QgsApplication
 
@@ -49,7 +49,7 @@ class MatrixModelerWidget(BASE, WIDGET):
         self.btnRemoveColumn.setIcon(QgsApplication.getThemeIcon('/mActionDeleteAttribute.svg'))
         self.btnAddRow.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemoveRow.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
-        self.btnClear.setIcon(QgsApplication.getThemeIcon('/mIconClearText.svg'))
+        self.btnClear.setIcon(QgsApplication.getThemeIcon('console/iconClearConsole.svg'))
 
         self.btnAddColumn.clicked.connect(self.addColumn)
         self.btnRemoveColumn.clicked.connect(self.removeColumns)
@@ -86,7 +86,9 @@ class MatrixModelerWidget(BASE, WIDGET):
         self.tblView.setUpdatesEnabled(True)
 
     def clearTable(self, removeAll=False):
-        self.tblView.model().clear()
+        res = QMessageBox.question(self, self.tr('Clear?'), self.tr('Are you sure you want to clear table?'))
+        if res == QMessageBox.Yes:
+            self.tblView.model().clear()
 
     def changeHeader(self, index):
         txt, ok = QInputDialog.getText(self, self.tr("Enter column name"), self.tr("Column name"))
