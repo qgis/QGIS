@@ -67,7 +67,7 @@ class PostGisDBConnector(DBConnector):
             self.connection = psycopg2.connect(expandedConnInfo)
         except self.connection_error_types() as e:
             # get credentials if cached or asking to the user no more than 3 times
-            err = unicode(e)
+            err = str(e)
             uri = self.uri()
             conninfo = uri.connectionInfo(False)
 
@@ -89,7 +89,7 @@ class PostGisDBConnector(DBConnector):
                 except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
-                    err = unicode(e)
+                    err = str(e)
                 finally:
                     # clear certs for each time trying to connect
                     self._clearSslTempCertsIfAny(newExpandedConnInfo)
