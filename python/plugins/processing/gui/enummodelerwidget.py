@@ -55,12 +55,37 @@ class EnumModelerWidget(BASE, WIDGET):
 
         self.lstItems.setModel(QStandardItemModel())
 
+        self.lstItems.model().itemChanged.connect(self.onItemChanged)
+
+    def onItemChanged(self, item):
+        model = self.lstItems.model()
+        checkedItem = None
+        for i in range(model.rowCount()):
+            itm = model.item(i)
+            if itm.checkState() == Qt.Checked and itm.data() == Qt.Checked:
+                checkedItem = i
+                break
+
+        model.blockSignals(True)
+        if checkedItem is None:
+            item.setData(item.checkState())
+        else:
+            if self.chkAllowMultiple.isChecked():
+                item.setData(item.checkState())
+            else:
+                model.item(checkedItem).setCheckState(Qt.Unchecked)
+                model.item(checkedItem).setData(Qt.Unchecked)
+
+                item.setData(item.checkState())
+        model.blockSignals(False)
+
     def addItem(self):
         model = self.lstItems.model()
 
         item = QStandardItem('new item')
         item.setCheckable(True)
         item.setDropEnabled(False)
+        item.setData(Qt.Unchecked)
 
         model.appendRow(item)
 
@@ -103,6 +128,7 @@ class EnumModelerWidget(BASE, WIDGET):
             item = QStandardItem(i)
             item.setCheckable(True)
             item.setDropEnabled(False)
+            item.setData(Qt.Unchecked)
 
             model.appendRow(item)
 
@@ -113,6 +139,7 @@ class EnumModelerWidget(BASE, WIDGET):
             item = model.item(i)
             if item:
                 item.setCheckState(Qt.Checked)
+                item.setData(Qt.Checked)
 
     def setAllowMultiple(self, allowMultiple):
         self.chkAllowMultiple.setChecked(allowMultiple)
