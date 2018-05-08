@@ -81,6 +81,7 @@ astyleit() {
 	scripts/doxygen_space.pl "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"
+	rm -f "$modified.sortinc"
 }
 
 for f in "$@"; do
