@@ -134,6 +134,18 @@ void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
   resizeToMinimumWidth();
 }
 
+QgsTextFormat QgsLayoutItemScaleBar::textFormat() const
+{
+  return mSettings.textFormat();
+}
+
+void QgsLayoutItemScaleBar::setTextFormat( const QgsTextFormat &format )
+{
+  mSettings.setTextFormat( format );
+  refreshItemSize();
+  emit changed();
+}
+
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
 {
   if ( !mStyle )
@@ -376,13 +388,17 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   //get default composer font from settings
   QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+  QgsTextFormat format;
   QFont f;
   if ( !defaultFontString.isEmpty() )
   {
     f.setFamily( defaultFontString );
   }
-  f.setPointSizeF( 12.0 );
-  mSettings.setFont( f );
+  format.setFont( f );
+  format.setSize( 12.0 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+
+  mSettings.setTextFormat( format );
 
   mSettings.setUnits( QgsUnitTypes::DistanceUnknownUnit );
   refreshItemSize();
@@ -546,17 +562,19 @@ QString QgsLayoutItemScaleBar::style() const
 
 QFont QgsLayoutItemScaleBar::font() const
 {
-  return mSettings.font();
+  return mSettings.textFormat().font();
 }
 
 void QgsLayoutItemScaleBar::setFont( const QFont &font )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   mSettings.setFont( font );
+  Q_NOWARN_DEPRECATED_POP
   refreshItemSize();
   emit changed();
 }
 
-bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScaleBarElem, QDomDocument &doc, const QgsReadWriteContext & ) const
+bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScaleBarElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
   composerScaleBarElem.setAttribute( QStringLiteral( "height" ), QString::number( mSettings.height() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "labelBarSpace" ), QString::number( mSettings.labelBarSpace() ) );
@@ -569,7 +587,10 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mSettings.mapUnitsPerScaleBarUnit() ) );
-  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mSettings.font(), doc, QStringLiteral( "scaleBarFont" ) ) );
+
+  QDomElement textElem = mSettings.textFormat().writeXml( doc, rwContext );
+  composerScaleBarElem.appendChild( textElem );
+
   composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mSettings.lineWidth() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "unitLabel" ), mSettings.unitLabel() );
   composerScaleBarElem.setAttribute( QStringLiteral( "unitType" ), QgsUnitTypes::encodeUnit( mSettings.units() ) );
@@ -614,21 +635,13 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.lineColor().alpha() ) );
   composerScaleBarElem.appendChild( strokeColorElem );
 
-  //font color
-  QDomElement fontColorElem = doc.createElement( QStringLiteral( "textColor" ) );
-  fontColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.fontColor().red() ) );
-  fontColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mSettings.fontColor().green() ) );
-  fontColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mSettings.fontColor().blue() ) );
-  fontColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.fontColor().alpha() ) );
-  composerScaleBarElem.appendChild( fontColorElem );
-
   //alignment
   composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mSettings.alignment() ) ) );
 
   return true;
 }
 
-bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
+bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
   mSettings.setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
   mSettings.setLabelBarSpace( itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
@@ -645,12 +658,32 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setUnitLabel( itemElem.attribute( QStringLiteral( "unitLabel" ) ) );
   mSettings.setLineJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
   mSettings.setLineCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
-  QFont f;
-  if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
+
+  QDomNodeList textFormatNodeList = itemElem.elementsByTagName( QStringLiteral( "text-style" ) );
+  if ( !textFormatNodeList.isEmpty() )
   {
-    f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
+    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    mSettings.textFormat().readXml( textFormatElem, context );
   }
-  mSettings.setFont( f );
+  else
+  {
+    QFont f;
+    if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
+    {
+      f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
+    }
+    mSettings.textFormat().setFont( f );
+    if ( f.pointSizeF() > 0 )
+    {
+      mSettings.textFormat().setSize( f.pointSizeF() );
+      mSettings.textFormat().setSizeUnit( QgsUnitTypes::RenderPoints );
+    }
+    else if ( f.pixelSize() > 0 )
+    {
+      mSettings.textFormat().setSize( f.pixelSize() );
+      mSettings.textFormat().setSizeUnit( QgsUnitTypes::RenderPixels );
+    }
+  }
 
   //colors
   //fill color
@@ -743,14 +776,14 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mSettings.setFontColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
+      mSettings.textFormat().setColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
     }
   }
-  else
+  else if ( itemElem.hasAttribute( QStringLiteral( "fontColor" ) ) )
   {
     QColor c;
     c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-    mSettings.setFontColor( c );
+    mSettings.textFormat().setColor( c );
   }
 
   //style

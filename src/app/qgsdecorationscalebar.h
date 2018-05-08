@@ -64,8 +64,8 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     QColor mColor;
     //! The scale bar otuline color
     QColor mOutlineColor;
-    //! The scale bar font
-    QFont mFont;
+
+    QgsTextFormat mTextFormat;
 
     QgsScaleBarSettings mSettings;
 
