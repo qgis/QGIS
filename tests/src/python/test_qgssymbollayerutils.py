@@ -14,7 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsSymbolLayerUtils, QgsMarkerSymbol
+from qgis.core import (QgsSymbolLayerUtils,
+                       QgsMarkerSymbol,
+                       QgsArrowSymbolLayer)
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSizeF, QPointF
 from qgis.testing import unittest, start_app
@@ -51,6 +53,60 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # bad string
         s2 = QgsSymbolLayerUtils.decodePoint('')
         self.assertEqual(s2, QPointF())
+
+    def testDecodeArrowHeadType(self):
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(0)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('single')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('   SINGLE   ')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(1)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadReversed)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('reversed')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadReversed)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(2)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadDouble)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('double')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadDouble)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('xxxxx')
+        self.assertFalse(ok)
+        type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(34)
+        self.assertFalse(ok)
+
+    def testDecodeArrowType(self):
+        type, ok = QgsSymbolLayerUtils.decodeArrowType(0)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType('plain')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType('   PLAIN   ')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType(1)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowLeftHalf)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType('lefthalf')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowLeftHalf)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType(2)
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowRightHalf)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType('righthalf')
+        self.assertTrue(ok)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowRightHalf)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType('xxxxx')
+        self.assertFalse(ok)
+        type, ok = QgsSymbolLayerUtils.decodeArrowType(34)
+        self.assertFalse(ok)
 
     def testSymbolToFromMimeData(self):
         """

@@ -371,6 +371,56 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+QgsArrowSymbolLayer::HeadType QgsSymbolLayerUtils::decodeArrowHeadType( const QVariant &value, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+
+  bool intOk = false;
+  QString s = value.toString().toLower().trimmed();
+  if ( s == QLatin1String( "single" ) )
+    return QgsArrowSymbolLayer::HeadSingle;
+  else if ( s == QLatin1String( "reversed" ) )
+    return QgsArrowSymbolLayer::HeadReversed;
+  else if ( s == QLatin1String( "double" ) )
+    return QgsArrowSymbolLayer::HeadDouble;
+  else if ( value.toInt() == 1 )
+    return QgsArrowSymbolLayer::HeadReversed;
+  else if ( value.toInt() == 2 )
+    return QgsArrowSymbolLayer::HeadDouble;
+  else if ( value.toInt( &intOk ) == 0 && intOk )
+    return QgsArrowSymbolLayer::HeadSingle;
+
+  if ( ok )
+    *ok = false;
+  return QgsArrowSymbolLayer::HeadSingle;
+}
+
+QgsArrowSymbolLayer::ArrowType QgsSymbolLayerUtils::decodeArrowType( const QVariant &value, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+
+  bool intOk = false;
+  QString s = value.toString().toLower().trimmed();
+  if ( s == QLatin1String( "plain" ) )
+    return QgsArrowSymbolLayer::ArrowPlain;
+  else if ( s == QLatin1String( "lefthalf" ) )
+    return QgsArrowSymbolLayer::ArrowLeftHalf;
+  else if ( s == QLatin1String( "righthalf" ) )
+    return QgsArrowSymbolLayer::ArrowRightHalf;
+  else if ( value.toInt() == 1 )
+    return QgsArrowSymbolLayer::ArrowLeftHalf;
+  else if ( value.toInt() == 2 )
+    return QgsArrowSymbolLayer::ArrowRightHalf;
+  else if ( value.toInt( &intOk ) == 0 && intOk )
+    return QgsArrowSymbolLayer::ArrowPlain;
+
+  if ( ok )
+    *ok = false;
+  return QgsArrowSymbolLayer::ArrowPlain;
+}
+
 QString QgsSymbolLayerUtils::encodePoint( QPointF point )
 {
   return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );

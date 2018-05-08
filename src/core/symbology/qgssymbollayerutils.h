@@ -29,6 +29,7 @@
 #include "qgis.h"
 #include "qgsmapunitscale.h"
 #include "qgscolorramp.h"
+#include "qgsarrowsymbollayer.h"
 
 class QgsExpression;
 class QgsPathResolver;
@@ -86,6 +87,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
+
+    /**
+     * Decodes a \a value representing an arrow head type.
+     * \since QGIS 3.2
+     */
+    static QgsArrowSymbolLayer::HeadType decodeArrowHeadType( const QVariant &value, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Decodes a \a value representing an arrow type.
+     * \since QGIS 3.2
+     */
+    static QgsArrowSymbolLayer::ArrowType decodeArrowType( const QVariant &value, bool *ok SIP_OUT = nullptr );
 
     /**
      * Encodes a QPointF to a string.
