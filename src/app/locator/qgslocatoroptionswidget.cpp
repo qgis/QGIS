@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslocatoroptionswidget.h"
+
 #include "qgslocatorwidget.h"
 #include "qgssettings.h"
 
@@ -119,7 +120,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
           return filterForIndex( index )->displayName();
 
         case Prefix:
-          return filterForIndex( index )->prefix();
+          return mPrefixes.value( filterForIndex( index ), mLocator->customPrefix( filterForIndex( index ) ) );
 
         case Active:
         case Default:
@@ -165,6 +166,28 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
   switch ( role )
   {
+    case Qt::EditRole:
+    {
+      switch ( index.column() )
+      {
+        case Name:
+        case Active:
+        case Default:
+          return false;
+
+        case Prefix:
+        {
+          QString prefix = value.toString();
+          if ( prefix.isEmpty() )
+            return false;
+          mPrefixes.insert( filterForIndex( index ), prefix );
+          emit dataChanged( index, index );
+          return true;
+        }
+      }
+    }
+
+
     case Qt::CheckStateRole:
     {
       bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
@@ -203,7 +226,10 @@ Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
   switch ( index.column() )
   {
     case Name:
+      break;
+
     case Prefix:
+      flags = flags | Qt::ItemIsEditable;
       break;
 
     case Active:
@@ -242,6 +268,12 @@ void QgsLocatorFiltersModel::commitChanges()
 {
   QgsSettings settings;
 
+  QHash< QgsLocatorFilter *, QString >::const_iterator itp = mPrefixes.constBegin();
+  for ( ; itp != mPrefixes.constEnd(); ++itp )
+  {
+    QgsLocatorFilter *filter = itp.key();
+    mLocator->setCustomPrefix( filter, itp.value() );
+  }
   QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
   for ( ; it != mEnabledChanges.constEnd(); ++it )
   {

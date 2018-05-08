@@ -38,6 +38,8 @@ call to fetchResults().
 %End
   public:
 
+    static const QList<QString> CORE_FILTERS;
+
     QgsLocator( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLocator.
@@ -82,6 +84,16 @@ Returns a map of prefix to filter, for all registered filters
 with valid prefixes.
 
 .. seealso:: :py:func:`filters`
+%End
+
+    void setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix );
+%Docstring
+Sets the custom prefix for a filter
+%End
+
+    QString customPrefix( QgsLocatorFilter *filter ) const;
+%Docstring
+Returns the custom prefix for a filter if defined, its regular prefix otherwise
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );

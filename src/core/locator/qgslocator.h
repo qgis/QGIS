@@ -57,6 +57,8 @@ class CORE_EXPORT QgsLocator : public QObject
 
   public:
 
+    static const QList<QString> CORE_FILTERS;
+
     /**
      * Constructor for QgsLocator.
      */
@@ -99,6 +101,16 @@ class CORE_EXPORT QgsLocator : public QObject
      * \see filters()
      */
     QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+
+    /**
+      * Sets the custom prefix for a filter
+      */
+    void setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix );
+
+    /**
+     * Returns the custom prefix for a filter if defined, its regular prefix otherwise
+     */
+    QString customPrefix( QgsLocatorFilter *filter ) const;
 
     /**
      * Triggers the background fetching of filter results for a specified search \a string.

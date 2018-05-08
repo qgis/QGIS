@@ -20,6 +20,14 @@
 #include <QtConcurrent>
 #include <functional>
 
+const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiteral( "actions" )
+    <<  QStringLiteral( "processing_alg" )
+    <<  QStringLiteral( "layertree" )
+    <<  QStringLiteral( "layouts" )
+    <<  QStringLiteral( "features" )
+    <<  QStringLiteral( "calculator" )
+    <<  QStringLiteral( "bookmarks" );
+
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
 {
@@ -52,31 +60,47 @@ QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
   return mPrefixedFilters;
 }
 
+void QgsLocator::setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix )
+{
+  if ( filter )
+  {
+    QgsSettings().setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), prefix, QgsSettings::Section::Gui );
+    QString oldPrefix = mPrefixedFilters.key( filter );
+    if ( !oldPrefix.isEmpty() )
+      mPrefixedFilters.remove( oldPrefix );
+
+    mPrefixedFilters.insert( prefix, filter );
+  }
+}
+
+QString QgsLocator::customPrefix( QgsLocatorFilter *filter ) const
+{
+  return mPrefixedFilters.key( filter, QString() );
+}
+
 void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 {
   mFilters.append( filter );
   filter->setParent( this );
 
-  if ( !filter->prefix().isEmpty() )
-  {
-    if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
-         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
-         || filter->name() == QStringLiteral( "features" ) || filter->name() == QStringLiteral( "calculator" )
-         || filter->name() == QStringLiteral( "bookmarks" ) )
-    {
-      //inbuilt filter, no prefix check
-      mPrefixedFilters.insert( filter->prefix(), filter );
-    }
-    else if ( filter->prefix().length() >= 3 )
-    {
-      mPrefixedFilters.insert( filter->prefix(), filter );
-    }
-  }
-
   // restore settings
   QgsSettings settings;
   bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
   bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
+  QString customPrefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+
+  if ( !customPrefix.isEmpty() )
+  {
+    if ( CORE_FILTERS.contains( filter->name() ) )
+    {
+      //inbuilt filter, no prefix check
+      mPrefixedFilters.insert( customPrefix, filter );
+    }
+    else if ( customPrefix.length() >= 3 || customPrefix != filter->prefix() )
+    {
+      mPrefixedFilters.insert( customPrefix, filter );
+    }
+  }
 
   filter->setEnabled( enabled );
   filter->setUseWithoutPrefix( byDefault );
