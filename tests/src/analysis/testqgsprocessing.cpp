@@ -1371,17 +1371,9 @@ void TestQgsProcessing::createIndex()
   // selected features check, but none selected
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
-  bool caught = false;
-  try
-  {
-    index = QgsSpatialIndex( *source );
-    ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
-  }
-  catch ( ... )
-  {
-    caught = true;
-  }
-  QVERIFY( caught );
+  index = QgsSpatialIndex( *source );
+  ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() );
 
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
