@@ -893,7 +893,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
             bbox.box = invAxisBbox;
           }
 
-          layerProperty.boundingBoxes << bbox;
+          layerProperty.boundingBoxes.push_front( bbox );
         }
         else
         {
