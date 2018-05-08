@@ -24,7 +24,7 @@
 #include "qgssettings.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
-
+#include "qgssymbollayerutils.h"
 
 class TestQgsProject : public QObject
 {

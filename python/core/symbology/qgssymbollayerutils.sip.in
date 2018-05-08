@@ -55,6 +55,20 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static QgsArrowSymbolLayer::HeadType decodeArrowHeadType( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``value`` representing an arrow head type.
+
+.. versionadded:: 3.2
+%End
+
+    static QgsArrowSymbolLayer::ArrowType decodeArrowType( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``value`` representing an arrow type.
+
+.. versionadded:: 3.2
+%End
+
     static QString encodePoint( QPointF point );
 %Docstring
 Encodes a QPointF to a string.

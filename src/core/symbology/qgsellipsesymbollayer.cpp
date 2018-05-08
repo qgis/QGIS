@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QSet>

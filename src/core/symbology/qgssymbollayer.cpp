@@ -25,6 +25,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontext.h"
+#include "qgssymbollayerutils.h"
 
 #include <QSize>
 #include <QPainter>

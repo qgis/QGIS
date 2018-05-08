@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsarrowsymbollayer.h"
+#include "qgssymbollayerutils.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
 {
@@ -648,10 +649,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( headType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadType, context.renderContext().expressionContext() );
-    int h = exprVal.toInt( &ok );
+    HeadType h = QgsSymbolLayerUtils::decodeArrowHeadType( exprVal, &ok );
     if ( ok )
     {
-      mComputedHeadType = static_cast<HeadType>( h );
+      mComputedHeadType = h;
     }
   }
 
@@ -659,10 +660,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( arrowType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowType, context.renderContext().expressionContext() );
-    int h = exprVal.toInt( &ok );
+    ArrowType h = QgsSymbolLayerUtils::decodeArrowType( exprVal, &ok );
     if ( ok )
     {
-      mComputedArrowType = static_cast<ArrowType>( h );
+      mComputedArrowType = h;
     }
   }
 }
