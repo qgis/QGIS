@@ -1403,6 +1403,14 @@ class CORE_EXPORT QgsTextRenderer
                           TextPart part, bool drawAsOutlines = true );
 
     /**
+     * Returns the font metrics for the given text \a format, when rendered
+     * in the specified render \a context. The font metrics will take into account
+     * all scaling required by the render context.
+     * \since QGIS 3.2
+     */
+    static QFontMetricsF fontMetrics( const QgsRenderContext &context, const QgsTextFormat &format );
+
+    /**
      * Returns the width of a text based on a given format.
      * \param context render context
      * \param format text format
