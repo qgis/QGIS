@@ -268,7 +268,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 16.734000, 0.001 );
 
-  // no conversion of cartesian lengths between unit types
+  // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -342,7 +342,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QCOMPARE( perimeter, 79.711 );
 
-  // no conversion of cartesian lengths between unit types
+  // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -418,7 +418,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
 
-  // no conversion of cartesian lengths between unit types
+  // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
