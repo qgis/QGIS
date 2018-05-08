@@ -1235,6 +1235,8 @@ of rendered text.
 .. seealso:: :py:func:`setFont`
 
 .. seealso:: :py:func:`namedStyle`
+
+.. seealso:: :py:func:`toQFont`
 %End
 
     QFont scaledFont( const QgsRenderContext &context ) const;
@@ -1262,6 +1264,8 @@ of rendered text.
 .. seealso:: :py:func:`font`
 
 .. seealso:: :py:func:`setNamedStyle`
+
+.. seealso:: :py:func:`fromQFont`
 %End
 
     QString namedStyle() const;
@@ -1445,6 +1449,28 @@ Returns new mime data representing the text format settings.
 Caller takes responsibility for deleting the returned object.
 
 .. seealso:: :py:func:`fromMimeData`
+%End
+
+    static QgsTextFormat fromQFont( const QFont &font );
+%Docstring
+Returns a text format matching the settings from an input ``font``.
+Unlike setFont(), this method also handles the size and size units
+from ``font``.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`toQFont`
+%End
+
+    QFont toQFont() const;
+%Docstring
+Returns a QFont matching the relevant settings from this text format.
+Unlike font(), this method also handles the size and size units
+from the text format.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`fromQFont`
 %End
 
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
