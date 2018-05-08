@@ -323,7 +323,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     if ( isSingleClick )
       derivedAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
-    derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
+    derivedAttributes.insert( tr( "Feature ID" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), feature, derivedAttributes ) );
   }
@@ -425,12 +425,24 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     derivedAttributes.insert( tr( "Part number" ), str );
   }
 
+  QgsUnitTypes::DistanceUnit cartesianDistanceUnits = QgsUnitTypes::unitType( layer->crs().mapUnits() ) == QgsUnitTypes::unitType( displayDistanceUnits() )
+      ? displayDistanceUnits() : layer->crs().mapUnits();
+  QgsUnitTypes::AreaUnit cartesianAreaUnits = QgsUnitTypes::unitType( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) ) == QgsUnitTypes::unitType( displayAreaUnits() )
+      ? displayAreaUnits() : QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
+
   if ( geometryType == QgsWkbTypes::LineGeometry )
   {
     double dist = calc.measureLength( feature.geometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
-    QString str = formatDistance( dist );
-    derivedAttributes.insert( tr( "Length" ), str );
+    QString str;
+    if ( ellipsoid != GEO_NONE )
+    {
+      str = formatDistance( dist );
+      derivedAttributes.insert( tr( "Length (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+    }
+    str = formatDistance( feature.geometry().constGet()->length()
+                          * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
+    derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
 
     const QgsAbstractGeometry *geom = feature.geometry().constGet();
     if ( geom )
@@ -460,13 +472,26 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   {
     double area = calc.measureArea( feature.geometry() );
     area = calc.convertAreaMeasurement( area, displayAreaUnits() );
-    QString str = formatArea( area );
-    derivedAttributes.insert( tr( "Area" ), str );
+    QString str;
+    if ( ellipsoid != GEO_NONE )
+    {
+      str = formatArea( area );
+      derivedAttributes.insert( tr( "Area (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+    }
+    str = formatArea( feature.geometry().area()
+                      * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), cartesianAreaUnits ), cartesianAreaUnits );
+    derivedAttributes.insert( tr( "Area (Cartesian)" ), str );
 
-    double perimeter = calc.measurePerimeter( feature.geometry() );
-    perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
-    str = formatDistance( perimeter );
-    derivedAttributes.insert( tr( "Perimeter" ), str );
+    if ( ellipsoid != GEO_NONE )
+    {
+      double perimeter = calc.measurePerimeter( feature.geometry() );
+      perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
+      str = formatDistance( perimeter );
+      derivedAttributes.insert( tr( "Perimeter (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+    }
+    str = formatDistance( feature.geometry().constGet()->perimeter()
+                          * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
+    derivedAttributes.insert( tr( "Perimeter (Cartesian)" ), str );
 
     str = QLocale::system().toString( feature.geometry().constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
@@ -739,18 +764,28 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
 
 QString QgsMapToolIdentify::formatDistance( double distance ) const
 {
-  QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
-
-  return QgsDistanceArea::formatDistance( distance, 3, displayDistanceUnits(), baseUnit );
+  return formatDistance( distance, displayDistanceUnits() );
 }
 
 QString QgsMapToolIdentify::formatArea( double area ) const
 {
+  return formatArea( area, displayAreaUnits() );
+}
+
+QString QgsMapToolIdentify::formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const
+{
   QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
-  return QgsDistanceArea::formatArea( area, 3, displayAreaUnits(), baseUnit );
+  return QgsDistanceArea::formatDistance( distance, 3, unit, baseUnit );
+}
+
+QString QgsMapToolIdentify::formatArea( double area, QgsUnitTypes::AreaUnit unit ) const
+{
+  QgsSettings settings;
+  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+
+  return QgsDistanceArea::formatArea( area, 3, unit, baseUnit );
 }
 
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
