@@ -70,7 +70,7 @@ Toggle the link between classes boundaries
 
     QList<int> selectedClasses();
 %Docstring
-return a list of indexes for the classes under selection
+Returns a list of indexes for the classes under selection
 %End
     QgsRangeList selectedRanges();
 
@@ -78,6 +78,10 @@ return a list of indexes for the classes under selection
     void changeRange( int rangeIdx );
 
     void changeSelectedSymbols();
+    void applyChangeToSymbol();
+%Docstring
+Applies current symbol to selected ranges, or to all ranges if none is selected
+%End
 
     virtual QList<QgsSymbol *> selectedSymbols();
 
