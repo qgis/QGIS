@@ -1,0 +1,11 @@
+diff a/include/QtCrypto/qca_basic.h b/include/QtCrypto/qca_basic.h
+--- a/include/QtCrypto/qca_basic.h
++++ b/include/QtCrypto/qca_basic.h
+@@ -34,6 +34,7 @@
+ #define QCA_BASIC_H
+ 
+ #include "qca_core.h"
++#include <QIODevice>
+ 
+ // Qt5 comes with QStringLiteral for wrapping string literals, which Qt4 does
+ // not have. It is needed if the headers are built with QT_NO_CAST_FROM_ASCII.
