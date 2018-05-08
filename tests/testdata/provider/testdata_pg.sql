@@ -76,6 +76,14 @@ INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
 (4, NULL)
 ;
 
+
+CREATE TABLE qgis_test.array_tbl (id serial PRIMARY KEY, location int[], geom geometry(Point,3857));
+
+INSERT INTO qgis_test.array_tbl (location, geom) VALUES ('{1, 2, 3}', 'srid=3857;Point(913209.0358 5606025.2373)'::geometry);
+INSERT INTO qgis_test.array_tbl (location, geom) VALUES ('{}', 'srid=3857;Point(913214.6741 5606017.8743)'::geometry);
+INSERT INTO qgis_test.array_tbl (geom) VALUES ('srid=3857;Point(913204.9128 5606011.4565)'::geometry);
+
+
 -- Provider check with compound key
 
 CREATE TABLE qgis_test."someDataCompound" (
