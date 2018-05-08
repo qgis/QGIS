@@ -47,7 +47,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Show labels</string>
+         <string>Single labels</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
