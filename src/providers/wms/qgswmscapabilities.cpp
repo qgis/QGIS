@@ -896,14 +896,14 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           bool inheritedOverwritten = false;
           for ( int i = 0; i < layerProperty.boundingBoxes.size(); i++ )
           {
-              if ( layerProperty.boundingBoxes[i].crs == bbox.crs )
-              {
-                  layerProperty.boundingBoxes[i] = bbox;
-                  inheritedOverwritten = true;
-              }
+            if ( layerProperty.boundingBoxes[i].crs == bbox.crs )
+            {
+              layerProperty.boundingBoxes[i] = bbox;
+              inheritedOverwritten = true;
+            }
           }
           if ( ! inheritedOverwritten )
-              layerProperty.boundingBoxes << bbox;
+            layerProperty.boundingBoxes << bbox;
         }
         else
         {
