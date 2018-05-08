@@ -1178,7 +1178,7 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
   // symbology SVG renderer only supports size^2 scaling, so we only use the x size spinbox
   mShapeSizeYLabel->setVisible( !isSVG );
   mShapeSizeYSpnBx->setVisible( !isSVG );
-  mShapeSizeYDDBtn->setVisible( !isSVG );
+  mShapeSizeYDDBtn->setVisible( !isSVG && mWidgetMode == Labeling );
   mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
@@ -1421,8 +1421,8 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 
   mShapeRadiusUnitWidget->setVisible( show );
 
-  mShapeRadiusDDBtn->setVisible( show );
-  mShapeRadiusUnitsDDBtn->setVisible( show );
+  mShapeRadiusDDBtn->setVisible( show && mWidgetMode == Labeling );
+  mShapeRadiusUnitsDDBtn->setVisible( show  && mWidgetMode == Labeling );
 }
 
 void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
@@ -1430,7 +1430,7 @@ void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
   mShapePenStyleLabel->setVisible( show );
   mShapePenStyleCmbBx->setVisible( show );
 
-  mShapePenStyleDDBtn->setVisible( show );
+  mShapePenStyleDDBtn->setVisible( show && mWidgetMode == Labeling );
 }
 
 void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
