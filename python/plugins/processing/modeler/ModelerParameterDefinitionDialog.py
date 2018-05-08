@@ -281,7 +281,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.widget = EnumModelerWidget(self)
             if self.param is not None:
                 self.widget.setOptions(self.param.options())
-                self.widget.setDefault(int(self.param.defaultValue()))
+                self.widget.setDefault(self.param.defaultValue())
                 self.widget.setAllowMultiple(bool(self.param.allowMultiple()))
             self.verticalLayout.addWidget(self.widget)
         elif self.paramType == parameters.PARAMETER_MATRIX or \

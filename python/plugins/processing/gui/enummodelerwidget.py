@@ -55,33 +55,11 @@ class EnumModelerWidget(BASE, WIDGET):
 
         self.lstItems.setModel(QStandardItemModel())
 
-        self.lstItems.clicked.connect(self.handleCheckbox)
-
-    def handleCheckbox(self, index):
-        model = self.lstItems.model()
-        clickedItem = model.itemFromIndex(index)
-
-        prevIndex = None
-        for i in range(model.rowCount()):
-            if model.item(i).checkState() == Qt.Checked:
-                prevIndex = i
-                break
-
-        if prevIndex is None:
-            clickedItem.setCheckState(Qt.Checked)
-        else:
-            if self.chkAllowMultiple.isChecked():
-                clickedItem.setCheckState(Qt.Checked)
-            else:
-                model.item(prevIndex).setCheckState(Qt.Unchecked)
-                clickedItem.setCheckState(Qt.Checked)
-
     def addItem(self):
         model = self.lstItems.model()
 
         item = QStandardItem('new item')
         item.setCheckable(True)
-        item.setCheckState(Qt.Unchecked)
         item.setDropEnabled(False)
 
         model.appendRow(item)
@@ -122,24 +100,19 @@ class EnumModelerWidget(BASE, WIDGET):
     def setOptions(self, options):
         model = self.lstItems.model()
         for i in options:
-            item = QStandardItem()
+            item = QStandardItem(i)
             item.setCheckable(True)
-            item.setCheckState(Qt.Unchecked)
             item.setDropEnabled(False)
 
             model.appendRow(item)
 
-    def setDefault(self, index):
+    def setDefault(self, indexes):
         model = self.lstItems.model()
-        item = model.item(index, 0)
-        if item:
-            item.setCheckState(Qt.Checked)
+
+        for i in indexes:
+            item = model.item(i)
+            if item:
+                item.setCheckState(Qt.Checked)
 
     def setAllowMultiple(self, allowMultiple):
         self.chkAllowMultiple.setChecked(allowMultiple)
-
-        model = self.lstItems.model()
-        for i in range(model.rowCount()):
-            if model.item(i).checkState() == Qt.Checked:
-                model.item(i).setCheckState(Qt.Unchecked)
-                break
