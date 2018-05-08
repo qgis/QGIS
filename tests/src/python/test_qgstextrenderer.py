@@ -29,7 +29,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRectangle,
                        QgsRenderChecker,
                        QgsBlurEffect)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
@@ -435,6 +435,31 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setSizeUnit(QgsUnitTypes.RenderInches)
         qfont = s.toQFont()
         self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
+
+    def testFontMetrics(self):
+        """
+        Test calculating font metrics from scaled text formats
+        """
+        s = QgsTextFormat()
+        f = getTestFont()
+        s.setFont(f)
+        s.setSize(12)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        string = 'xxxxxxxxxxxxxxxxxxxxxx'
+
+        # calculated expected width
+        f = s.toQFont()
+        expected = QFontMetricsF(f).width(string)
+        scale = expected / 416.625
+
+        context = QgsRenderContext()
+        context.setScaleFactor(1)
+        metrics = QgsTextRenderer.fontMetrics(context, s)
+        self.assertAlmostEqual(metrics.width(string), 51.9 * scale, -1)
+        context.setScaleFactor(2)
+        metrics = QgsTextRenderer.fontMetrics(context, s)
+        self.assertAlmostEqual(metrics.width(string), 104.15 * scale, -1)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

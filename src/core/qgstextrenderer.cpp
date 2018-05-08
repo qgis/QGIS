@@ -1873,6 +1873,11 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
   }
 }
 
+QFontMetricsF QgsTextRenderer::fontMetrics( const QgsRenderContext &context, const QgsTextFormat &format )
+{
+  return QFontMetricsF( format.scaledFont( context ) );
+}
+
 void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
 {
   QPainter *p = context.painter();
