@@ -57,7 +57,10 @@ class MatrixModelerWidget(BASE, WIDGET):
         self.btnRemoveRow.clicked.connect(self.removeRows)
         self.btnClear.clicked.connect(self.clearTable)
 
-        self.tblView.setModel(QStandardItemModel())
+        items = [QStandardItem('0')]
+        model = QStandardItemModel()
+        model.appendColumn(items)
+        self.tblView.setModel(model)
 
         self.tblView.horizontalHeader().sectionDoubleClicked.connect(self.changeHeader)
 
