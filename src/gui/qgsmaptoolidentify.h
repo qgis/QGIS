@@ -199,6 +199,18 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      */
     QString formatArea( double area ) const;
 
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatArea()
+     */
+    QString formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const;
+
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatDistance()
+     */
+    QString formatArea( double area, QgsUnitTypes::AreaUnit unit ) const;
+
     QMap< QString, QString > featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 
     /**
