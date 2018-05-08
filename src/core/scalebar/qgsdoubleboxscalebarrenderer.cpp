@@ -28,7 +28,10 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
   QPainter *painter = context.painter();
 
-  double barTopPosition = context.convertToPainterUnits( QgsLayoutUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
+  double barTopPosition = fontMetrics.ascent() + scaledLabelBarSpace + scaledBoxContentSpace;
   double segmentHeight = context.convertToPainterUnits( settings.height() / 2, QgsUnitTypes::RenderMillimeters );
 
   painter->save();
@@ -41,7 +44,7 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
   bool useColor = true; //alternate brush color/white
 
-  double xOffset = context.convertToPainterUnits( firstLabelXOffset( settings ), QgsUnitTypes::RenderMillimeters );
+  double xOffset = firstLabelXOffset( settings, context );
 
   QList<double> positions = segmentPositions( scaleContext, settings );
   QList<double> widths = segmentWidths( scaleContext, settings );

@@ -1031,7 +1031,9 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   {
     f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
   }
+  Q_NOWARN_DEPRECATED_PUSH
   layoutItem->setFont( f );
+  Q_NOWARN_DEPRECATED_POP
 
   //colors
   //fill color
@@ -1124,14 +1126,18 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       layoutItem->setFontColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   else
   {
     QColor c;
     c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    Q_NOWARN_DEPRECATED_PUSH
     layoutItem->setFontColor( c );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   //style

@@ -74,9 +74,18 @@ Draws default scalebar labels using the specified ``settings`` and ``scaleContex
 Returns the text used for the first label in the scalebar.
 %End
 
-    double firstLabelXOffset( const QgsScaleBarSettings &settings ) const;
+ double firstLabelXOffset( const QgsScaleBarSettings &settings ) const /Deprecated/;
 %Docstring
 Returns the x-offset (in millimeters) used for the first label in the scalebar.
+
+.. deprecated:: Use the version with QgsRenderContext instead.
+%End
+
+    double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context ) const;
+%Docstring
+Returns the x-offset (in render context painter units) used for the first label in the scalebar.
+
+.. versionadded:: 3.2
 %End
 
     QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
