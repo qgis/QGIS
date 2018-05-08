@@ -392,6 +392,50 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.readXml(parent, QgsReadWriteContext())
         self.assertTrue(f.fontFound())
 
+    def testFromQFont(self):
+        qfont = getTestFont()
+        qfont.setPointSizeF(16.5)
+        qfont.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+
+        format = QgsTextFormat.fromQFont(qfont)
+        self.assertEqual(format.font().family(), qfont.family())
+        self.assertEqual(format.font().letterSpacing(), 3.0)
+        self.assertEqual(format.size(), 16.5)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPoints)
+
+        qfont.setPixelSize(12)
+        format = QgsTextFormat.fromQFont(qfont)
+        self.assertEqual(format.size(), 12.0)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
+
+    def testToQFont(self):
+        s = QgsTextFormat()
+        f = getTestFont()
+        f.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+        s.setFont(f)
+        s.setNamedStyle('Italic')
+        s.setSize(5.5)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        qfont = s.toQFont()
+        self.assertEqual(qfont.family(), f.family())
+        self.assertEqual(qfont.pointSizeF(), 5.5)
+        self.assertEqual(qfont.letterSpacing(), 3.0)
+
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        qfont = s.toQFont()
+        self.assertEqual(qfont.pixelSize(), 5)
+
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        qfont = s.toQFont()
+        self.assertAlmostEqual(qfont.pointSizeF(), 14.17, 2)
+
+        s.setSizeUnit(QgsUnitTypes.RenderInches)
+        qfont = s.toQFont()
+        self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
+
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'

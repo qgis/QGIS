@@ -1055,6 +1055,7 @@ class CORE_EXPORT QgsTextFormat
      * \see scaledFont()
      * \see setFont()
      * \see namedStyle()
+     * \see toQFont()
      */
     QFont font() const;
 
@@ -1075,6 +1076,7 @@ class CORE_EXPORT QgsTextFormat
      * \param font desired font
      * \see font()
      * \see setNamedStyle()
+     * \see fromQFont()
      */
     void setFont( const QFont &font );
 
@@ -1223,6 +1225,24 @@ class CORE_EXPORT QgsTextFormat
      * \see fromMimeData()
      */
     QMimeData *toMimeData() const SIP_FACTORY;
+
+    /**
+     * Returns a text format matching the settings from an input \a font.
+     * Unlike setFont(), this method also handles the size and size units
+     * from \a font.
+     * \since QGIS 3.2
+     * \see toQFont()
+     */
+    static QgsTextFormat fromQFont( const QFont &font );
+
+    /**
+     * Returns a QFont matching the relevant settings from this text format.
+     * Unlike font(), this method also handles the size and size units
+     * from the text format.
+     * \since QGIS 3.2
+     * \see fromQFont()
+     */
+    QFont toQFont() const;
 
     /**
      * Attempts to parse the provided mime \a data as a QgsTextFormat.
