@@ -16,6 +16,8 @@
 #ifndef QGSQUICKMAPCANVASMAP_H
 #define QGSQUICKMAPCANVASMAP_H
 
+#include <memory>
+
 #include <QtQuick/QQuickItem>
 #include <QFutureSynchronizer>
 #include <QTimer>
@@ -89,7 +91,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
   public:
     //! Create map canvas map
     QgsQuickMapCanvasMap( QQuickItem *parent = nullptr );
-    ~QgsQuickMapCanvasMap();
+    ~QgsQuickMapCanvasMap() = default;
 
     virtual QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 
@@ -183,7 +185,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void updateTransform();
     void zoomToFullExtent();
 
-    QgsQuickMapSettings *mMapSettings;
+    std::unique_ptr<QgsQuickMapSettings> mMapSettings;
     bool mPinching = false;
     QPoint mPinchStartPoint;
     QgsMapRendererParallelJob *mJob = nullptr;

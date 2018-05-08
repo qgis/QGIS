@@ -37,8 +37,8 @@ QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   connect( &mRefreshTimer, &QTimer::timeout, this, &QgsQuickMapCanvasMap::refreshMap );
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsQuickMapCanvasMap::renderJobUpdated );
 
-  connect( mMapSettings, &QgsQuickMapSettings::extentChanged, this, &QgsQuickMapCanvasMap::onExtentChanged );
-  connect( mMapSettings, &QgsQuickMapSettings::layersChanged, this, &QgsQuickMapCanvasMap::onLayersChanged );
+  connect( mMapSettings.get(), &QgsQuickMapSettings::extentChanged, this, &QgsQuickMapCanvasMap::onExtentChanged );
+  connect( mMapSettings.get(), &QgsQuickMapSettings::layersChanged, this, &QgsQuickMapCanvasMap::onLayersChanged );
 
   connect( this, &QgsQuickMapCanvasMap::renderStarting, this, &QgsQuickMapCanvasMap::isRenderingChanged );
   connect( this, &QgsQuickMapCanvasMap::mapCanvasRefreshed, this, &QgsQuickMapCanvasMap::isRenderingChanged );
@@ -50,22 +50,13 @@ QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   setFlags( QQuickItem::ItemHasContents );
 }
 
-QgsQuickMapCanvasMap::~QgsQuickMapCanvasMap()
-{
-  Q_ASSERT( mMapSettings );
-  delete mMapSettings;
-  mMapSettings = nullptr;
-}
-
 QgsQuickMapSettings *QgsQuickMapCanvasMap::mapSettings() const
 {
-  Q_ASSERT( mMapSettings );
-  return mMapSettings;
+  return mMapSettings.get();
 }
 
 void QgsQuickMapCanvasMap::zoom( QPointF center, qreal scale )
 {
-  Q_ASSERT( mMapSettings );
   QgsRectangle extent = mMapSettings->extent();
   QgsPoint oldCenter( extent.center() );
   QgsPoint mousePos( mMapSettings->screenToCoordinate( center ) );
@@ -79,7 +70,6 @@ void QgsQuickMapCanvasMap::zoom( QPointF center, qreal scale )
 
 void QgsQuickMapCanvasMap::pan( QPointF oldPos, QPointF newPos )
 {
-  Q_ASSERT( mMapSettings );
   QgsPoint start = mMapSettings->screenToCoordinate( oldPos.toPoint() );
   QgsPoint end = mMapSettings->screenToCoordinate( newPos.toPoint() );
 
@@ -99,8 +89,6 @@ void QgsQuickMapCanvasMap::pan( QPointF oldPos, QPointF newPos )
 
 void QgsQuickMapCanvasMap::refreshMap()
 {
-  Q_ASSERT( mMapSettings );
-
   stopRendering(); // if any...
 
   QgsMapSettings mapSettings = mMapSettings->mapSettings();
@@ -194,7 +182,6 @@ void QgsQuickMapCanvasMap::onWindowChanged( QQuickWindow *window )
 
 void QgsQuickMapCanvasMap::onScreenChanged( QScreen *screen )
 {
-  Q_ASSERT( mMapSettings );
   if ( screen )
     mMapSettings->setOutputDpi( screen->physicalDotsPerInch() );
 }
@@ -209,7 +196,6 @@ void QgsQuickMapCanvasMap::onExtentChanged()
 
 void QgsQuickMapCanvasMap::updateTransform()
 {
-  Q_ASSERT( mMapSettings );
   QgsMapSettings currentMapSettings = mMapSettings->mapSettings();
   QgsMapToPixel mtp = currentMapSettings.mapToPixel();
 
@@ -317,7 +303,6 @@ QSGNode *QgsQuickMapCanvasMap::updatePaintNode( QSGNode *oldNode, QQuickItem::Up
 void QgsQuickMapCanvasMap::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
 {
   Q_UNUSED( oldGeometry )
-  Q_ASSERT( mMapSettings );
   // The Qt documentation advices to call the base method here.
   // However, this introduces instabilities and heavy performance impacts on Android.
   // It seems on desktop disabling it prevents us from downsizing the window...
@@ -330,7 +315,6 @@ void QgsQuickMapCanvasMap::geometryChanged( const QRectF &newGeometry, const QRe
 
 void QgsQuickMapCanvasMap::onLayersChanged()
 {
-  Q_ASSERT( mMapSettings );
   if ( mMapSettings->extent().isEmpty() )
     zoomToFullExtent();
 
@@ -369,7 +353,6 @@ void QgsQuickMapCanvasMap::stopRendering()
 
 void QgsQuickMapCanvasMap::zoomToFullExtent()
 {
-  Q_ASSERT( mMapSettings );
   QgsRectangle extent;
   const QList<QgsMapLayer *> layers = mMapSettings->layers();
   for ( QgsMapLayer *layer : layers )
@@ -391,7 +374,6 @@ void QgsQuickMapCanvasMap::zoomToFullExtent()
 
 void QgsQuickMapCanvasMap::refresh()
 {
-  Q_ASSERT( mMapSettings );
   if ( mMapSettings->outputSize().isNull() )
     return;  // the map image size has not been set yet
 
