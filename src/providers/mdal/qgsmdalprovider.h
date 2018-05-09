@@ -17,6 +17,7 @@
 #define QGSMDALPROVIDER_H
 
 #include <QString>
+#include <QVector>
 
 #include <mdal.h>
 
@@ -55,8 +56,19 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshVertex vertex( int index ) const override;
     QgsMeshFace face( int index ) const override;
 
+
+    bool addDataset( const QString &uri ) override;
+    int datasetCount() const override;
+    bool datasetHasScalarData( int index ) const override;
+    bool datasetIsOnVertices( int index ) const override;
+    QgsMeshDatasetMetadata datasetMetadata( int index ) const override;
+    QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
+    bool datasetIsValid( int index ) const override;
   private:
+    void refreshDatasets();
+
     MeshH mMeshH;
+    QVector<DatasetH> mDatasets;
 };
 
 #endif //QGSMDALPROVIDER_H

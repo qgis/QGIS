@@ -58,6 +58,9 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     // copy from mesh layer
     QgsTriangularMesh mTriangularMesh;
 
+    // copy of the scalar dataset
+
+
     // copy from mesh layer
     std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;
 

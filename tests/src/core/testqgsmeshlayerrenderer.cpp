@@ -49,19 +49,30 @@ class TestQgsMeshRenderer : public QObject
     TestQgsMeshRenderer() = default;
 
   private:
+    QString mDataDir;
     QgsMeshLayer *mMemoryLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
+    void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     bool imageCheck( const QString &testType );
+    QString readFile( const QString &fname ) const;
+
 
     void test_native_mesh_rendering();
     void test_triangular_mesh_rendering();
+    void test_vertex_scalar_dataset_rendering();
 };
+
+void TestQgsMeshRenderer::init()
+{
+  mMemoryLayer->toggleTriangularMeshRendering( false );
+  mMemoryLayer->setActiveScalarDataset();
+  mMemoryLayer->setActiveVectorDataset();
+}
 
 void TestQgsMeshRenderer::initTestCase()
 {
@@ -69,26 +80,36 @@ void TestQgsMeshRenderer::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  myDataDir += "/mesh";
+  mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  mDataDir += "/mesh";
 
   mMapSettings = new QgsMapSettings();
 
   // Memory layer
-  QFile f( myDataDir + "/quad_and_triangle.txt" );
-  QVERIFY( f.open( QIODevice::ReadOnly | QIODevice::Text ) );
-  QString uri( f.readAll() );
-  QVERIFY( !uri.isEmpty() );
-  mMemoryLayer = new QgsMeshLayer( uri, "Triangle and Quad Memory", "mesh_memory" );
+  mMemoryLayer = new QgsMeshLayer( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
+  mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_scalar.txt" ) );
+  mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_vector.txt" ) );
+  mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_scalar.txt" ) );
+  mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_vector.txt" ) );
   QVERIFY( mMemoryLayer->isValid() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
   mMapSettings->setLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
 }
+
 void TestQgsMeshRenderer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+QString TestQgsMeshRenderer::readFile( const QString &fname ) const
+{
+  QString uri;
+  QFile f( mDataDir + fname );
+  if ( f.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    uri = f.readAll();
+  return uri;
 }
 
 bool TestQgsMeshRenderer::imageCheck( const QString &testType )
@@ -117,6 +138,17 @@ void TestQgsMeshRenderer::test_triangular_mesh_rendering()
   mMemoryLayer->toggleTriangularMeshRendering( true );
   QVERIFY( mMemoryLayer->triangularMeshSymbol() != nullptr );
   QVERIFY( imageCheck( "quad_and_triangle_triangular_mesh" ) );
+}
+
+void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
+{
+  int ds = 0;
+  mMemoryLayer->setActiveScalarDataset( ds );
+  QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
+  QVERIFY( metadata["name"] == "VertexScalarDataset" );
+
+  // TODO!
+  // QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset" ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

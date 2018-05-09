@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshdataprovider.h"
+#include "qgis.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri )
   : QgsDataProvider( uri )
@@ -37,4 +38,101 @@ QgsRectangle QgsMeshDataProvider::extent() const
   }
   return rec;
 
+}
+
+QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
+{
+  setX( x );
+  setY( y );
+}
+
+QgsMeshDatasetValue::QgsMeshDatasetValue( double scalar )
+{
+  set( scalar );
+}
+
+void QgsMeshDatasetValue::setNodata( bool nodata )
+{
+  mIsNodata = nodata;
+}
+
+bool QgsMeshDatasetValue::isNodata() const
+{return mIsNodata;}
+
+bool QgsMeshDatasetValue::isScalar() const
+{
+  return mIsScalar;
+}
+
+double QgsMeshDatasetValue::scalar() const
+{
+  if ( isNodata() )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  if ( isScalar() )
+  {
+    return mX;
+  }
+  else
+  {
+    return std::sqrt( ( mX ) * ( mX ) + ( mY ) * ( mY ) );
+  }
+}
+
+void QgsMeshDatasetValue::set( double scalar )
+{
+  setX( scalar );
+  mIsScalar = true;
+}
+
+void QgsMeshDatasetValue::setX( double x )
+{
+  mX = x;
+  if ( std::isnan( x ) )
+  {
+    mIsNodata = true;
+  }
+}
+
+void QgsMeshDatasetValue::setY( double y )
+{
+  mY = y;
+  if ( std::isnan( y ) )
+  {
+    mIsScalar = true;
+  }
+}
+
+double QgsMeshDatasetValue::x() const
+{
+  return mX;
+}
+
+double QgsMeshDatasetValue::y() const
+{
+  return mY;
+}
+
+bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue &other ) const
+{
+  bool equal = true;
+  if ( isNodata() )
+    equal = other.isNodata();
+  else
+  {
+    if ( isScalar() )
+    {
+      equal &= other.isScalar();
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+    }
+    else
+    {
+      equal &= !other.isScalar();
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+    }
+  }
+  return equal;
 }

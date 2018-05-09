@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <string>
+
 #include "qgsmdalprovider.h"
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -45,6 +47,7 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri )
 {
   QByteArray curi = uri.toAscii();
   mMeshH = MDAL_LoadMesh( curi.constData() );
+  refreshDatasets();
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -89,6 +92,91 @@ QgsMeshFace QgsMdalProvider::face( int index ) const
     face.push_back( vertex_index );
   }
   return face;
+}
+
+/*----------------------------------------------------------------------------------------------*/
+
+bool QgsMdalProvider::addDataset( const QString &uri )
+{
+  std::string str = uri.toStdString();
+  MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+  refreshDatasets();
+  return true;
+}
+
+int QgsMdalProvider::datasetCount() const
+{
+  return MDAL_M_datasetCount( mMeshH );
+}
+
+bool QgsMdalProvider::datasetHasScalarData( int index ) const
+{
+  Q_ASSERT( index < mDatasets.length() );
+  DatasetH dataset = mDatasets[index];
+  return MDAL_D_hasScalarData( dataset );
+}
+
+bool QgsMdalProvider::datasetIsOnVertices( int index ) const
+{
+  Q_ASSERT( index < mDatasets.length() );
+  DatasetH dataset = mDatasets[index];
+  return MDAL_D_isOnVertices( dataset );
+}
+
+QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int index ) const
+{
+  Q_ASSERT( index < mDatasets.length() );
+  DatasetH dataset = mDatasets[index];
+  QgsMeshDatasetMetadata meta;
+
+  int n = MDAL_D_metadataCount( dataset );
+  for ( int i = 0; i < n; ++i )
+  {
+    QString key = MDAL_D_metadataKey( dataset, i );
+    QString value = MDAL_D_metadataValue( dataset, i );
+    meta[key] = value;
+  }
+
+  return meta;
+}
+
+QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIndex ) const
+{
+  Q_ASSERT( datasetIndex < mDatasets.length() );
+  DatasetH dataset = mDatasets[datasetIndex];
+
+  QgsMeshDatasetValue val;
+
+  if ( datasetHasScalarData( datasetIndex ) )
+  {
+    val.setX( MDAL_D_value( dataset, valueIndex ) );
+  }
+  else
+  {
+    val.setX( MDAL_D_valueX( dataset, valueIndex ) );
+    val.setY( MDAL_D_valueX( dataset, valueIndex ) );
+  }
+
+  return val;
+}
+
+bool QgsMdalProvider::datasetIsValid( int index ) const
+{
+  Q_ASSERT( index < mDatasets.length() );
+  DatasetH dataset = mDatasets[index];
+  return MDAL_D_isValid( dataset );
+}
+
+
+void QgsMdalProvider::refreshDatasets()
+{
+  mDatasets.clear();
+  int n = MDAL_M_datasetCount( mMeshH );
+  for ( int i = 0; i < n; ++i )
+  {
+    DatasetH dataset = MDAL_M_dataset( mMeshH, i );
+    mDatasets.push_back( dataset );
+  }
 }
 
 /*----------------------------------------------------------------------------------------------*/

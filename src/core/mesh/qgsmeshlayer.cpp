@@ -127,6 +127,20 @@ void QgsMeshLayer::toggleTriangularMeshRendering( bool toggle )
   triggerRepaint();
 }
 
+void QgsMeshLayer::setActiveScalarDataset( int index )
+{
+  Q_ASSERT( dataProvider()->datasetCount() > index );
+  if ( dataProvider()->datasetHasScalarData( index ) )
+    mActiveScalarDataset = index;
+}
+
+void QgsMeshLayer::setActiveVectorDataset( int index )
+{
+  Q_ASSERT( dataProvider()->datasetCount() > index );
+  if ( !dataProvider()->datasetHasScalarData( index ) )
+    mActiveVectorDataset = index;
+}
+
 void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );

@@ -52,6 +52,8 @@ E.g. to create mesh with one quad and one triangle
         );
         QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
 
+Add datasets by adding them through data provider, :py:func:`QgsMeshDatasetSource.addDataset`
+
 \subsection mdal MDAL data provider (mdal)
 
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
@@ -132,6 +134,9 @@ Returns a line symbol used for rendering of triangular (derived) mesh.
 %Docstring
 Toggle rendering of triangular (derived) mesh. Off by default
 %End
+
+    void setActiveScalarDataset( int index = -1 );
+    void setActiveVectorDataset( int index = -1 );
 
   private: // Private methods
     QgsMeshLayer( const QgsMeshLayer &rhs );

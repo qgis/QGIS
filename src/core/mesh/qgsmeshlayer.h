@@ -70,6 +70,8 @@ struct QgsMesh;
  *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
  * \endcode
  *
+ * Add datasets by adding them through data provider, \see QgsMeshDatasetSource::addDataset()
+ *
  * \subsection mdal MDAL data provider (mdal)
  *
  * Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
@@ -140,6 +142,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Toggle rendering of triangular (derived) mesh. Off by default
     void toggleTriangularMeshRendering( bool toggle );
 
+    void setActiveScalarDataset( int index = -1 );
+    void setActiveVectorDataset( int index = -1 );
+
   private: // Private methods
 
     /**
@@ -178,6 +183,12 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! rendering triangular mesh
     std::unique_ptr<QgsSymbol> mTriangularMeshSymbol;
+
+    //! TODO
+    int mActiveScalarDataset = -1;
+
+    //! TODO
+    int mActiveVectorDataset = -1;
 };
 
 #endif //QGSMESHLAYER_H

@@ -25,9 +25,54 @@
 
 #include <QVector>
 #include <QString>
+#include <QMap>
+#include <limits>
 
-typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
-typedef QVector<int> QgsMeshFace; //list of vertex indexes
+//! xyz coords of vertex
+typedef QgsPoint QgsMeshVertex;
+
+//! List of vertex indexes
+typedef QVector<int> QgsMeshFace;
+
+//! Dataset's metadata key:value map
+typedef QMap<QString, QString> QgsMeshDatasetMetadata;
+
+/**
+ * \ingroup core
+ *
+ * QgsMeshDatasetValue is a vector or a scalar value on vertex or face of the mesh with
+ * support of nodata values
+ *
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsMeshDatasetValue
+{
+    Q_GADGET
+
+  public:
+    QgsMeshDatasetValue( double x,
+                         double y );
+    QgsMeshDatasetValue( double scalar );
+    QgsMeshDatasetValue( ) = default;
+
+    ~QgsMeshDatasetValue() = default;
+    void setNodata( bool nodata = true );
+    bool isNodata() const;
+    bool isScalar() const;
+    double scalar() const; //length for vectors, value for scalars
+    void set( double scalar );
+    void setX( double x );
+    void setY( double y ) ;
+    double x() const;
+    double y() const;
+    bool operator==( const QgsMeshDatasetValue &other ) const;
+
+  private:
+    double mX  = std::numeric_limits<double>::quiet_NaN();
+    double mY  = std::numeric_limits<double>::quiet_NaN();
+    bool mIsNodata = true;
+    bool mIsScalar = true;
+};
 
 /**
  * \ingroup core
@@ -73,14 +118,66 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
 
 /**
  * \ingroup core
-  * Base class for providing data for QgsMeshLayer
-  *
-  * Responsible for reading native mesh data
-  *
-  * \see QgsMeshSource
-  * \since QGIS 3.2
-  */
-class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshSource
+ * Dataset is a  collection of vector or scalar values on vertices or faces of the mesh
+ *
+ * Base on the underlying data provider/format, whole dataset is either stored in memory or
+ * read on demand
+ *
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
+{
+  public:
+    //! Dtor
+    virtual ~QgsMeshDatasetSource() = default;
+
+    /**
+     * \brief Associate dataset with the mesh
+     */
+    virtual bool addDataset( const QString &uri ) = 0;
+
+    /**
+     * \brief Return number of datasets loaded
+     */
+    virtual int datasetCount() const = 0;
+
+    /**
+     * \brief Whether dataset has scalar data associated
+     */
+    virtual bool datasetHasScalarData( int index ) const = 0;
+
+    /**
+     * \brief Whether dataset is on vertices
+     */
+    virtual bool datasetIsOnVertices( int index ) const = 0;
+
+    /**
+     * \brief Return dataset metadata
+     */
+    virtual QgsMeshDatasetMetadata datasetMetadata( int index ) const = 0;
+
+    /**
+     * \brief Return value associated with the index from the dataset
+     */
+    virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
+
+    /**
+     * \brief Return whether dataset is valid
+     */
+    virtual bool datasetIsValid( int index ) const = 0;
+};
+
+
+/**
+ * \ingroup core
+ * Base class for providing data for QgsMeshLayer
+ *
+ * Responsible for reading native mesh data
+ *
+ * \see QgsMeshSource
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshSource, public QgsMeshDatasetSource
 {
     Q_OBJECT
 

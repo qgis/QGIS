@@ -10,8 +10,44 @@
 
 
 
-typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
-typedef QVector<int> QgsMeshFace; //list of vertex indexes
+typedef QgsPoint QgsMeshVertex;
+
+typedef QVector<int> QgsMeshFace;
+
+typedef QMap<QString, QString> QgsMeshDatasetMetadata;
+
+class QgsMeshDatasetValue
+{
+%Docstring
+
+QgsMeshDatasetValue is a vector or a scalar value on vertex or face of the mesh with
+support of nodata values
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDatasetValue( double x,
+                         double y );
+    QgsMeshDatasetValue( double scalar );
+    QgsMeshDatasetValue( );
+
+    ~QgsMeshDatasetValue();
+    void setNodata( bool nodata = true );
+    bool isNodata() const;
+    bool isScalar() const;
+    double scalar() const; //length for vectors, value for scalars
+    void set( double scalar );
+    void setX( double x );
+    void setY( double y );
+    double x() const;
+    double y() const;
+    bool operator==( const QgsMeshDatasetValue &other ) const;
+
+};
 
 class QgsMeshSource /Abstract/
 {
@@ -61,7 +97,61 @@ read on demand
 %End
 };
 
-class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource
+class QgsMeshDatasetSource /Abstract/
+{
+%Docstring
+Dataset is a  collection of vector or scalar values on vertices or faces of the mesh
+
+Base on the underlying data provider/format, whole dataset is either stored in memory or
+read on demand
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    virtual ~QgsMeshDatasetSource();
+
+    virtual bool addDataset( const QString &uri ) = 0;
+%Docstring
+ Associate dataset with the mesh
+%End
+
+    virtual int datasetCount() const = 0;
+%Docstring
+ Return number of datasets loaded
+%End
+
+    virtual bool datasetHasScalarData( int index ) const = 0;
+%Docstring
+ Whether dataset has scalar data associated
+%End
+
+    virtual bool datasetIsOnVertices( int index ) const = 0;
+%Docstring
+ Whether dataset is on vertices
+%End
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( int index ) const = 0;
+%Docstring
+ Return dataset metadata
+%End
+
+    virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
+%Docstring
+ Return value associated with the index from the dataset
+%End
+
+    virtual bool datasetIsValid( int index ) const = 0;
+%Docstring
+ Return whether dataset is valid
+%End
+};
+
+
+class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource, QgsMeshDatasetSource
 {
 %Docstring
 Base class for providing data for :py:class:`QgsMeshLayer`
