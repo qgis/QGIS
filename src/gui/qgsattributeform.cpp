@@ -1121,7 +1121,7 @@ void QgsAttributeForm::init()
     QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
     const QString path = mLayer->editFormConfig().uiForm();
     QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
-    if ( file->isReadable() && file->open( QFile::ReadOnly ) )
+    if ( file && file->open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 

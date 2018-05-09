@@ -22,7 +22,6 @@ import os
 from qgis.testing import unittest, start_app
 from qgis.core import QgsNetworkContentFetcherRegistry, QgsFetchedContent, QgsApplication
 from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 import socketserver
 import threading
@@ -55,7 +54,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
 
     def testFetchBadUrl(self):
         registry = QgsApplication.networkContentFetcherRegistry()
-        content = registry.fetch(QUrl('http://x'))
+        content = registry.fetch('http://x')
         self.loaded = False
 
         def check_reply():
@@ -72,7 +71,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
     def testFetchGoodUrl(self):
         url = 'http://localhost:' + str(self.port) + '/qgis_local_server/index.html'
         registry = QgsApplication.networkContentFetcherRegistry()
-        content = registry.fetch(QUrl(url))
+        content = registry.fetch(url)
         self.loaded = False
 
         def check_reply():
@@ -89,7 +88,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
         self.assertEqual(registry.localPath(url), content.filePath())
 
         # create new content with same URL
-        contentV2 = registry.fetch(QUrl(url))
+        contentV2 = registry.fetch(url)
         self.assertEqual(contentV2.status(), QgsFetchedContent.Finished)
 
     def testFetchReloadUrl(self):
@@ -99,7 +98,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
             self.file_content = content
 
         registry = QgsApplication.networkContentFetcherRegistry()
-        content = registry.fetch(QUrl('http://localhost:' + str(self.port) + '/qgis_local_server/simple_content.txt'))
+        content = registry.fetch('http://localhost:' + str(self.port) + '/qgis_local_server/simple_content.txt')
         self.loaded = False
         writeSimpleFile('my initial content')
 
@@ -136,7 +135,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
         self.assertEqual(registry.localPath('xxxx'), 'xxxx')
 
         # an existent but unfinished download should return an empty path
-        content = registry.fetch(QUrl('xxxx'))
+        content = registry.fetch('xxxx')
         self.assertEqual(registry.localPath('xxxx'), '')
 
 
