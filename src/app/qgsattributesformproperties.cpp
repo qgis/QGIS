@@ -17,6 +17,7 @@
 #include "qgsattributetypedialog.h"
 #include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
+#include "qgisapp.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

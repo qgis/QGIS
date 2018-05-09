@@ -54,8 +54,8 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     };
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
-    explicit QgsFetchedContent( QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
-      : QObject(), mFile( file ), mStatus( status ) {}
+    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
+      : QObject(), mUrl( url ), mFile( file ), mStatus( status ) {}
 
     ~QgsFetchedContent()
     {
@@ -84,36 +84,27 @@ class CORE_EXPORT QgsFetchedContent : public QObject
      * \brief Start the download
      * \param redownload if set to true, it will restart any achieved or pending download.
      */
-    void download( bool redownload = false ) {emit downloadStarted( redownload );}
+    void download( bool redownload = false );
 
     /**
      * @brief Cancel the download operation
      */
-    void cancel() {emit cancelTriggered();}
+    void cancel();
 
   signals:
     //! Emitted when the file is fetched and accessible
     void fetched();
 
-    //! Emitted when the download actually starts
-    void downloadStarted( const bool redownload );
-
-    //! Emitted when download is canceled.
-    void cancelTriggered();
-
-    //! Emitted when the download is finished (although file not accessible yet)
+  private slots:
     void taskCompleted();
 
   private:
-    void emitFetched() {emit fetched();}
+    QString mUrl;
     QTemporaryFile *mFile = nullptr;
     QString mFilePath;
     QgsNetworkContentFetcherTask *mFetchingTask = nullptr;
     ContentStatus mStatus = NotStarted;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
-
-    // allow modification of task and file from main class
-    friend class QgsNetworkContentFetcherRegistry;
 };
 
 /**
@@ -151,7 +142,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QUrl &url, const FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, const FetchingMode fetchingMode = DownloadLater );
 
 #ifndef SIP_RUN
 
@@ -159,7 +150,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \brief Returns a QFile from a local file or to a temporary file previously fetched by the registry
      * \param filePathOrUrl can either be a local file path or a remote content which has previously been fetched
      */
-    const QFile *localFile( const QString &filePathOrUrl );
+    QFile *localFile( const QString &filePathOrUrl );
 #endif
 
     /**
@@ -169,10 +160,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
     QString localPath( const QString &filePathOrUrl );
 
   private:
-    QMap<QUrl, QgsFetchedContent *> mFileRegistry;
-
-    //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
-    mutable QMutex mMutex;
+    QMap<QString, QgsFetchedContent *> mFileRegistry;
 
 };
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
@@ -153,7 +154,13 @@ QString QgsEditFormConfig::uiForm() const
 
 void QgsEditFormConfig::setUiForm( const QString &ui )
 {
-  if ( ui.isEmpty() || ui.isNull() )
+  if ( !ui.isEmpty() && !QUrl::fromUserInput( ui ).isLocalFile() )
+  {
+    // any existing download will not be restarted!
+    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( ui, QgsNetworkContentFetcherRegistry::DownloadImmediately );
+  }
+
+  if ( ui.isEmpty() )
   {
     setLayout( GeneratedLayout );
   }
@@ -268,7 +275,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    d->mUiFormPath = context.pathResolver().readPath( e.text() );
+    setUiForm( context.pathResolver().readPath( e.text() ) );
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
