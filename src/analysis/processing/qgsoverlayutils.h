@@ -43,6 +43,16 @@ namespace QgsOverlayUtils
 
   void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
 
+  /**
+   * Copies features from the source to the sink and resolves overlaps: for each pair of overlapping features A and B
+   * it will produce:
+   * 1. a feature with geometry A - B with A's attributes
+   * 2. a feature with geometry B - A with B's attributes
+   * 3. two features with geometry intersection(A, B) - one with A's attributes, one with B's attributes.
+   *
+   * As a result, for all pairs of features in the output, a pair either havs no common interior or their interior is the same.
+   */
+  void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
 }
 
 ///@endcond PRIVATE
