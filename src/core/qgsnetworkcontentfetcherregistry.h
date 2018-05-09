@@ -106,10 +106,10 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
   private:
     void emitFetched() {emit fetched();}
-    QTemporaryFile *mFile;
-    QString mFilePath = QStringLiteral();
+    QTemporaryFile *mFile = nullptr;
+    QString mFilePath;
     QgsNetworkContentFetcherTask *mFetchingTask = nullptr;
-    ContentStatus mStatus;
+    ContentStatus mStatus = NotStarted;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
 
     // allow modification of task and file from main class
