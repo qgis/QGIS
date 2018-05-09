@@ -106,8 +106,7 @@ class gdalcalc(GdalAlgorithm):
             noData = unicode(noData)
 
         arguments = []
-        arguments.append('--calc')
-        arguments.append('"' + formula + '"')
+        arguments.append('--calc "{}"'.format(formula))
         arguments.append('--format')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('--type')
