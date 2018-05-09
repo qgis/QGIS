@@ -754,6 +754,11 @@ void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
   mGraduatedSymbol.reset( dlg->symbol()->clone() );
 
+  applyChangeToSymbol();
+}
+
+void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
+{
   mSizeUnitWidget->blockSignals( true );
   mSizeUnitWidget->setUnit( mGraduatedSymbol->outputUnit() );
   mSizeUnitWidget->setMapUnitScale( mGraduatedSymbol->mapUnitScale() );
@@ -780,7 +785,6 @@ void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
   }
   else
   {
-    updateGraduatedSymbolIcon();
     mRenderer->updateSymbols( mGraduatedSymbol.get() );
   }
 
@@ -874,13 +878,30 @@ void QgsGraduatedSymbolRendererWidget::reapplySizes()
 
 void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 {
-  QgsSymbol *newSymbol = mGraduatedSymbol->clone();
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setContext( mContext );
+  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.get(), mStyle, mLayer, panel );
+    dlg->setContext( mContext );
 
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
-  openPanel( dlg );
+    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon );
+    panel->openPanel( dlg );
+  }
+  else
+  {
+    QgsSymbolSelectorDialog dlg( newSymbol.get(), mStyle, mLayer, panel );
+    if ( !dlg.exec() || !newSymbol )
+    {
+      return;
+    }
+
+    mGraduatedSymbol = std::move( newSymbol );
+    updateGraduatedSymbolIcon();
+    applyChangeToSymbol();
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon()
@@ -952,13 +973,28 @@ void QgsGraduatedSymbolRendererWidget::changeSelectedSymbols()
 
 void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
-  QgsSymbol *newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setContext( mContext );
+  std::unique_ptr< QgsSymbol > newSymbol( mRenderer->ranges()[rangeIdx].symbol()->clone() );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.get(), mStyle, mLayer, panel );
+    dlg->setContext( mContext );
+    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
+    openPanel( dlg );
+  }
+  else
+  {
+    QgsSymbolSelectorDialog dlg( newSymbol.get(), mStyle, mLayer, panel );
+    dlg.setContext( mContext );
+    if ( !dlg.exec() || !newSymbol )
+    {
+      return;
+    }
 
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
-  openPanel( dlg );
+    mGraduatedSymbol = std::move( newSymbol );
+    applyChangeToSymbol();
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
