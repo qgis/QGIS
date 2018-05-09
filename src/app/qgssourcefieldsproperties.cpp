@@ -192,7 +192,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
       break;
 
     case QgsFields::OriginJoin:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
+      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
       break;
 
     default:
@@ -433,4 +433,3 @@ void QgsSourceFieldsProperties::updateButtons()
     }
   }
 }
-

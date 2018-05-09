@@ -201,7 +201,7 @@
              </property>
              <property name="icon">
               <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
+               <normaloff>:/images/themes/default/propertyicons/transparency.svg</normaloff>:/images/themes/default/propertyicons/transparency.svg</iconset>
              </property>
             </item>
             <item>
