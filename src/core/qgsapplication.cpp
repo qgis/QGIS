@@ -91,6 +91,7 @@ QString ABISYM( QgsApplication::mPluginPath );
 QString ABISYM( QgsApplication::mPkgDataPath );
 QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
+QString ABISYM( QgsApplication::mQmlImportPath );
 QString ABISYM( QgsApplication::mThemeName );
 QString ABISYM( QgsApplication::mUIThemeName );
 QString ABISYM( QgsApplication::mProfilePath );
@@ -205,6 +206,9 @@ void QgsApplication::init( QString profileFolder )
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
 #else
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+#endif
+#if defined( HAVE_QUICK )
+    ABISYM( mQmlImportPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_QML_SUBDIR + '/';
 #endif
   }
   else
@@ -397,6 +401,9 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
   }
   ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIB_SUBDIR + '/';
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+#if defined( HAVE_QUICK )
+  ABISYM( mQmlImportPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_QML_SUBDIR + '/';
+#endif
 }
 
 void QgsApplication::setPluginPath( const QString &pluginPath )
@@ -1000,6 +1007,11 @@ QString QgsApplication::libraryPath()
 QString QgsApplication::libexecPath()
 {
   return ABISYM( mLibexecPath );
+}
+
+QString QgsApplication::qmlImportPath()
+{
+  return ABISYM( mQmlImportPath );
 }
 
 QgsApplication::endian_t QgsApplication::endian()
