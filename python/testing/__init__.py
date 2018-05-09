@@ -104,6 +104,11 @@ class TestCase(_TestCase):
         except KeyError:
             precision = 14
 
+        try:
+            topo_equal_check = compare['geometry']['topo_equal_check']
+        except KeyError:
+            topo_equal_check = False
+
         def sort_by_pk_or_fid(f):
             if 'pk' in kwargs and kwargs['pk'] is not None:
                 key = kwargs['pk']
@@ -118,27 +123,13 @@ class TestCase(_TestCase):
         result_features = sorted(layer_result.getFeatures(request), key=sort_by_pk_or_fid)
 
         for feats in zip(expected_features, result_features):
-            if feats[0].hasGeometry():
-                geom0 = feats[0].geometry().constGet().asWkt(precision)
-            else:
-                geom0 = None
-            if feats[1].hasGeometry():
-                geom1 = feats[1].geometry().constGet().asWkt(precision)
-            else:
-                geom1 = None
-            if use_asserts:
-                _TestCase.assertEqual(
-                    self,
-                    geom0,
-                    geom1,
-                    'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
-                        feats[0].id(),
-                        feats[1].id(),
-                        geom0,
-                        geom1
-                    )
-                )
-            elif geom0 != geom1:
+
+            eq = self.checkGeometriesEqual(feats[0].geometry(),
+                                           feats[1].geometry(),
+                                           feats[0].id(),
+                                           feats[1].id(),
+                                           use_asserts, precision, topo_equal_check)
+            if not eq and use_asserts:
                 return False
 
             for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
@@ -214,6 +205,34 @@ class TestCase(_TestCase):
                 )
                 diff = list(diff)
                 self.assertEqual(0, len(diff), ''.join(diff))
+
+    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
+        """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
+        or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
+        order of vertices) """
+        if not geom0.isNull() and not geom1.isNull():
+            if topo_equal_check:
+                equal = geom0.isGeosEqual(geom1)
+            else:
+                equal = geom0.constGet().asWkt(precision) == geom1.constGet().asWkt(precision)
+        elif geom0.isNull() and geom1.isNull():
+            equal = True
+        else:
+            equal = False
+
+        if use_asserts:
+            _TestCase.assertTrue(
+                self,
+                equal,
+                'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
+                    geom0_id,
+                    geom1_id,
+                    geom0.constGet().asWkt(precision) if geom0 is not None else 'NULL',
+                    geom1.constGet().asWkt(precision) if geom1 is not None else 'NULL'
+                )
+            )
+        else:
+            return equal
 
 
 class _UnexpectedSuccess(Exception):
