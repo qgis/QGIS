@@ -18,15 +18,18 @@
 #ifndef QGSLOCATOR_H
 #define QGSLOCATOR_H
 
+#include <QObject>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QMap>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include <QObject>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <memory>
+
 
 /**
  * \class QgsLocator
@@ -93,19 +96,39 @@ class CORE_EXPORT QgsLocator : public QObject
      * Returns the list of filters registered in the locator.
      * \see prefixedFilters()
      */
-    QList< QgsLocatorFilter *> filters();
+    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
+
+    /**
+     * Returns the list of prefixes in use.
+     * A prefix can have several filters
+     * \see filter()
+     * \since QGIS 3.2
+     */
+    QStringList prefixes();
+
+#ifndef SIP_RUN
 
     /**
      * Returns a map of prefix to filter, for all registered filters
      * with valid prefixes.
      * \see filters()
      */
-    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+    QMultiMap<QString, QgsLocatorFilter *> prefixedFilters() const;
+#else
+
+    /**
+     * Returns a map of prefix to filter, for all registered filters
+     * with valid prefixes.
+     * \deprecated since QGIS 3.2 use prefixes() and filters( const QString &prefix )
+     * \see filters()
+     */
+    Q_DECL_DEPRECATED QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
+#endif
 
     /**
       * Sets the custom prefix for a filter
       */
-    void setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix );
+    void setCustomPrefix( QgsLocatorFilter *filter, const QString &customPrefix );
 
     /**
      * Returns the custom prefix for a filter if defined, its regular prefix otherwise
@@ -167,7 +190,7 @@ class CORE_EXPORT QgsLocator : public QObject
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
     QList< QgsLocatorFilter * > mFilters;
-    QMap< QString, QgsLocatorFilter *> mPrefixedFilters;
+    QMultiMap< QString, QgsLocatorFilter *> mPrefixedFilters;
     QList< QThread * > mActiveThreads;
 
     void cancelRunningQuery();

@@ -44,18 +44,24 @@ void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
 {
   cancelRunningQuery();
   mFilters.removeAll( filter );
-  QString key = mPrefixedFilters.key( filter );
-  if ( !key.isEmpty() )
-    mPrefixedFilters.remove( key );
+  mPrefixedFilters.remove( mPrefixedFilters.key( filter ), filter );
   delete filter;
 }
 
-QList<QgsLocatorFilter *> QgsLocator::filters()
+QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
 {
-  return mFilters;
+  if ( !prefix.isEmpty() )
+    return mPrefixedFilters.values( prefix );
+  else
+    return mFilters;
 }
 
-QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
+QStringList QgsLocator::prefixes()
+{
+  return mPrefixedFilters.keys();
+}
+
+QMultiMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
 {
   return mPrefixedFilters;
 }
@@ -64,12 +70,18 @@ void QgsLocator::setCustomPrefix( QgsLocatorFilter *filter, const QString &prefi
 {
   if ( filter )
   {
-    QgsSettings().setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), prefix, QgsSettings::Section::Gui );
-    QString oldPrefix = mPrefixedFilters.key( filter );
-    if ( !oldPrefix.isEmpty() )
-      mPrefixedFilters.remove( oldPrefix );
-
-    mPrefixedFilters.insert( prefix, filter );
+    mPrefixedFilters.remove( mPrefixedFilters.key( filter ), filter );
+    if ( !prefix.isEmpty() && prefix != filter->prefix() )
+    {
+      QgsSettings().setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), prefix, QgsSettings::Section::Gui );
+      mPrefixedFilters.insert( prefix, filter );
+    }
+    else
+    {
+      // reset the setting if the string is empty or equal to the native prefix
+      // one should the default checkbox instead
+      QgsSettings().remove( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), QgsSettings::Section::Gui );
+    }
   }
 }
 
@@ -129,17 +141,26 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
 
   QList< QgsLocatorFilter * > activeFilters;
   QString searchString = string;
-  if ( searchString.indexOf( ' ' ) > 0 )
+  QString prefix = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) );
+  if ( !prefix.isEmpty() )
   {
-    QString prefix = searchString.left( searchString.indexOf( ' ' ) );
-    if ( mPrefixedFilters.contains( prefix ) && mPrefixedFilters.value( prefix )->enabled() )
+    QMultiMap<QString, QgsLocatorFilter *>::const_iterator it = mPrefixedFilters.constFind( prefix );
+    while ( it != mPrefixedFilters.constEnd() && it.key() == prefix )
     {
-      activeFilters << mPrefixedFilters.value( prefix );
-      searchString = searchString.mid( prefix.length() + 1 );
+      QgsLocatorFilter *filter = it.value();
+      if ( filter->enabled() )
+      {
+        activeFilters << filter;
+      }
+      ++it;
     }
     context.usingPrefix = !activeFilters.empty();
   }
-  if ( activeFilters.isEmpty() )
+  if ( !activeFilters.isEmpty() )
+  {
+    searchString = searchString.mid( prefix.length() + 1 );
+  }
+  else
   {
     for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {

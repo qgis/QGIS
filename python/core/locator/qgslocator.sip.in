@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsLocator : QObject
 {
 %Docstring
@@ -71,22 +73,35 @@ deregisterFilter() to deregister their filters upon plugin unload to avoid crash
 .. seealso:: :py:func:`registerFilter`
 %End
 
-    QList< QgsLocatorFilter *> filters();
+    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
 %Docstring
 Returns the list of filters registered in the locator.
 
 .. seealso:: :py:func:`prefixedFilters`
 %End
 
-    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+    QStringList prefixes();
+%Docstring
+Returns the list of prefixes in use.
+A prefix can have several filters
+
+.. seealso:: :py:func:`filter`
+
+.. versionadded:: 3.2
+%End
+
+
+ QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
 %Docstring
 Returns a map of prefix to filter, for all registered filters
 with valid prefixes.
 
+.. deprecated:: since QGIS 3.2 use prefixes() and filters( const QString &prefix )
+
 .. seealso:: :py:func:`filters`
 %End
 
-    void setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix );
+    void setCustomPrefix( QgsLocatorFilter *filter, const QString &customPrefix );
 %Docstring
 Sets the custom prefix for a filter
 %End

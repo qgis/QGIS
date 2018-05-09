@@ -260,8 +260,8 @@ void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
 void QgsLocatorWidget::configMenuAboutToShow()
 {
   mMenu->clear();
-  QMap< QString, QgsLocatorFilter *> filters = mLocator->prefixedFilters();
-  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
+  QMultiMap< QString, QgsLocatorFilter *> filters = mLocator->prefixedFilters();
+  QMultiMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
   for ( ; fIt != filters.constEnd(); ++fIt )
   {
     if ( !fIt.value()->enabled() )
@@ -422,8 +422,8 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     return;
   }
 
-  QMap< QString, QgsLocatorFilter *> filters = mLocator->locator()->prefixedFilters();
-  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
+  QMultiMap< QString, QgsLocatorFilter *> filters = mLocator->locator()->prefixedFilters();
+  QMultiMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
   for ( ; fIt != filters.constEnd(); ++fIt )
   {
     if ( feedback->isCanceled() )
