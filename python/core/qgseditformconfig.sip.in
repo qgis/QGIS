@@ -114,7 +114,7 @@ Set the active layout style for the attribute editor for this layer
  Get path or URL to the .ui form. Only meaningful with EditorLayout.UiFileLayout
 %End
 
-    bool setUiForm( const QString &ui, QString *errMsg /Out/ = 0 );
+    void setUiForm( const QString &ui );
 %Docstring
 Set path to the .ui form.
 When a string is provided in ``ui``, the layout style will be set to EditorLayout.UiFileLayout,

@@ -684,9 +684,7 @@ void QgsAttributesFormProperties::apply()
     editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
-  QString *errMsg = new QString();
-  if ( !editFormConfig.setUiForm( mEditFormLineEdit->text(), errMsg ) )
-    QgisApp::instance()->messageBar()->pushMessage( *errMsg, Qgis::Warning );
+  editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
   editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
 

@@ -152,9 +152,8 @@ QString QgsEditFormConfig::uiForm() const
   return d->mUiFormPath;
 }
 
-bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
+void QgsEditFormConfig::setUiForm( const QString &ui )
 {
-  Q_UNUSED( errMsg );
   if ( !ui.isEmpty() && !QUrl::fromUserInput( ui ).isLocalFile() )
   {
     // any existing download will not be restarted!
@@ -170,8 +169,6 @@ bool QgsEditFormConfig::setUiForm( const QString &ui, QString *errMsg )
     setLayout( UiFileLayout );
   }
   d->mUiFormPath = ui;
-
-  return true;
 }
 
 bool QgsEditFormConfig::readOnly( int idx ) const
@@ -278,9 +275,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    QString *errMsg = new QString();
-    if ( !setUiForm( context.pathResolver().readPath( e.text() ), errMsg ) )
-      context.pushMessage( *errMsg, Qgis::Warning );
+    setUiForm( context.pathResolver().readPath( e.text() ) );
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );

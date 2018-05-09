@@ -148,7 +148,7 @@ class CORE_EXPORT QgsEditFormConfig
      * If \a ui is a URL, a local copy of the file will be made and will be used to create the forms
      * \a context is provided to save error messages
      */
-    bool setUiForm( const QString &ui, QString *errMsg SIP_OUT = nullptr );
+    void setUiForm( const QString &ui );
 
     /**
      * Set the editor widget config for a widget which is not for a simple field.
