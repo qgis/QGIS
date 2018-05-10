@@ -199,7 +199,9 @@ class TestCase(_TestCase):
     def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
         or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
-        order of vertices) """
+        order of vertices)
+        .. versionadded:: 3.2
+        """
         if not geom0.isNull() and not geom1.isNull():
             if topo_equal_check:
                 equal = geom0.isGeosEqual(geom1)
@@ -225,7 +227,9 @@ class TestCase(_TestCase):
             return equal
 
     def checkAttributesEqual(self, feat0, feat1, fields_expected, use_asserts, compare):
-        """ Checks whether attributes of two features are the same """
+        """ Checks whether attributes of two features are the same
+        .. versionadded:: 3.2
+        """
 
         for attr_expected, field_expected in zip(feat0.attributes(), fields_expected.toList()):
             try:
