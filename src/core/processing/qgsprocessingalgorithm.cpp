@@ -269,7 +269,7 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
 
-    if ( !parameters.contains( def->name() ) || !parameters.value( def->name() ).isValid() )
+    if ( !parameters.contains( def->name() ) )
       continue;
 
     parts << QStringLiteral( "'%1':%2" ).arg( def->name(), def->valueAsPythonString( parameters.value( def->name() ), context ) );
