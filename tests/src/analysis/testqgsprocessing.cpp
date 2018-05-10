@@ -291,8 +291,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       params.insert( "p1", "a" );
       QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a'})" ) );
       params.insert( "p2", QVariant() );
-      // not set, should be no change
-      QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a'})" ) );
+      QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a','p2':None})" ) );
       params.insert( "p2", "b" );
       QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a','p2':'b'})" ) );
 
