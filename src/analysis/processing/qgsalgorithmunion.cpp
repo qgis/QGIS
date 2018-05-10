@@ -65,7 +65,8 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
-  // sourceB is optional so we do not throw an error if it is not a valid source
+  if ( parameters.value( QStringLiteral( "OVERLAY" ) ).isValid() && !sourceB )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
   QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
