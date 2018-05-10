@@ -548,6 +548,8 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span>" ).arg( name );
 
+      bool hasOptionalArgs = false;
+
       if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || !v.mArguments.isEmpty() || v.mVariableLenArguments ) )
       {
         helpContents += '(';
@@ -555,13 +557,24 @@ QString QgsExpression::helpText( QString name )
         QString delim;
         for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
         {
-          helpContents += delim;
-          delim = QStringLiteral( ", " );
           if ( !a.mDescOnly )
           {
-            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? QStringLiteral( "optional" ) : QStringLiteral( "" ), a.mArg,
-                            a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal );
+            if ( a.mOptional )
+            {
+              hasOptionalArgs = true;
+              helpContents += QStringLiteral( "[" );
+            }
+
+            helpContents += delim;
+            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
+                              a.mArg,
+                              a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal
+                            );
+
+            if ( a.mOptional )
+              helpContents += QStringLiteral( "]" );
           }
+          delim = QStringLiteral( "," );
         }
 
         if ( v.mVariableLenArguments )
@@ -573,6 +586,11 @@ QString QgsExpression::helpText( QString name )
       }
 
       helpContents += QLatin1String( "</code>" );
+
+      if ( hasOptionalArgs )
+      {
+        helpContents += QLatin1String( "<br/><br/>" ) + tr( "[ ] marks optional components" );
+      }
     }
 
     if ( !v.mArguments.isEmpty() )
