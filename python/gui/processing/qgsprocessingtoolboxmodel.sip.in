@@ -197,6 +197,9 @@ class QgsProcessingToolboxModel : QAbstractItemModel
 %Docstring
 A model for providers and algorithms shown within the Processing toolbox.
 
+See QgsProcessingToolboxProxyModel for a sorted, filterable version
+of this model.
+
 .. versionadded:: 3.2
 %End
 
@@ -263,7 +266,16 @@ a None if the index does not represent a provider.
 Returns the algorithm which corresponds to a given ``index``, or
 a None if the index does not represent an algorithm.
 
+.. seealso:: :py:func:`isAlgorithm`
+
 .. seealso:: :py:func:`providerForIndex`
+%End
+
+    bool isAlgorithm( const QModelIndex &index ) const;
+%Docstring
+Returns true if ``index`` corresponds to an algorithm.
+
+.. seealso:: :py:func:`algorithmForIndex`
 %End
 
     QModelIndex indexForProvider( QgsProcessingProvider *provider ) const;
@@ -284,7 +296,9 @@ Returns the index corresponding to the parent of a given node.
 class QgsProcessingToolboxProxyModel: QSortFilterProxyModel
 {
 %Docstring
-A sort/filter proxy model for providers and algorithms shown within the Processing toolbox.
+A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
+which automatically sorts the toolbox in a logical fashion and supports filtering
+the results.
 
 .. versionadded:: 3.2
 %End
@@ -293,6 +307,14 @@ A sort/filter proxy model for providers and algorithms shown within the Processi
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
+
+    enum Filter
+    {
+      FilterToolbox,
+      FilterModeler,
+    };
+    typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
+
 
     explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0 );
 %Docstring
@@ -303,6 +325,22 @@ from the given registry. If no registry is specified, then the processing
 registry attached to QgsApplication.processingRegistry() will be used
 by the model.
 %End
+
+    void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
+%Docstring
+Set ``filters`` that affect how toolbox content is filtered.
+
+.. seealso:: :py:func:`filters`
+%End
+
+    Filters filters() const;
+%Docstring
+Returns any filters that affect how toolbox content is filtered.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
