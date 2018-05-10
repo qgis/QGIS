@@ -129,6 +129,12 @@ void QgsMeshLayer::toggleTriangularMeshRendering( bool toggle )
 
 void QgsMeshLayer::setActiveScalarDataset( int index )
 {
+  if ( index < 0 )
+  {
+    mActiveScalarDataset = -1;
+    return;
+  }
+
   Q_ASSERT( dataProvider()->datasetCount() > index );
   if ( dataProvider()->datasetHasScalarData( index ) )
     mActiveScalarDataset = index;
@@ -136,6 +142,12 @@ void QgsMeshLayer::setActiveScalarDataset( int index )
 
 void QgsMeshLayer::setActiveVectorDataset( int index )
 {
+  if ( index < 0 )
+  {
+    mActiveVectorDataset = -1;
+    return;
+  }
+
   Q_ASSERT( dataProvider()->datasetCount() > index );
   if ( !dataProvider()->datasetHasScalarData( index ) )
     mActiveVectorDataset = index;

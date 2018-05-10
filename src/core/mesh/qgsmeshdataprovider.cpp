@@ -94,6 +94,10 @@ void QgsMeshDatasetValue::setX( double x )
   {
     mIsNodata = true;
   }
+  else
+  {
+    mIsNodata = false;
+  }
 }
 
 void QgsMeshDatasetValue::setY( double y )

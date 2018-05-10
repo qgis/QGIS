@@ -82,6 +82,8 @@ struct QgsMesh;
  *     QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
  * \endcode
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
@@ -144,6 +146,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     void setActiveScalarDataset( int index = -1 );
     void setActiveVectorDataset( int index = -1 );
+
+    int activeScalarDataset() const { return mActiveScalarDataset; }
 
   private: // Private methods
 

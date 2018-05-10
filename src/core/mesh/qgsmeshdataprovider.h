@@ -43,6 +43,8 @@ typedef QMap<QString, QString> QgsMeshDatasetMetadata;
  * QgsMeshDatasetValue is a vector or a scalar value on vertex or face of the mesh with
  * support of nodata values
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshDatasetValue
@@ -83,6 +85,8 @@ class CORE_EXPORT QgsMeshDatasetValue
  * Base on the underlying data provider/format, whole mesh is either stored in memory or
  * read on demand
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
@@ -122,6 +126,8 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
  *
  * Base on the underlying data provider/format, whole dataset is either stored in memory or
  * read on demand
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.2
  */
@@ -173,6 +179,8 @@ class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
  * Base class for providing data for QgsMeshLayer
  *
  * Responsible for reading native mesh data
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \see QgsMeshSource
  * \since QGIS 3.2

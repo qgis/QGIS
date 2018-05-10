@@ -453,6 +453,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshlayerrenderer.cpp
   mesh/qgsmeshmemorydataprovider.cpp
   mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshlayerinterpolator.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -1075,6 +1076,7 @@ SET(QGIS_CORE_HDRS
 
   mesh/qgstriangularmesh.h
   mesh/qgsmeshlayerrenderer.h
+  mesh/qgsmeshlayerinterpolator.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h

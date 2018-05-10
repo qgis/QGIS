@@ -42,6 +42,8 @@ struct CORE_EXPORT QgsMesh
  *
  * Triangular/Derived Mesh
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsTriangularMesh

@@ -49,7 +49,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
   private:
     void renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces );
-
+    void renderScalarDataset();
+    void copyScalarDatasetValues( QgsMeshLayer *layer );
 
   protected:
     // copy from mesh layer
@@ -59,7 +60,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsTriangularMesh mTriangularMesh;
 
     // copy of the scalar dataset
-
+    QVector<double> mDatasetValues;
+    bool mDataOnVertices;
 
     // copy from mesh layer
     std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;

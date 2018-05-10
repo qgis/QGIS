@@ -23,6 +23,10 @@ class QgsMeshDatasetValue
 QgsMeshDatasetValue is a vector or a scalar value on vertex or face of the mesh with
 support of nodata values
 
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
 .. versionadded:: 3.2
 %End
 
@@ -58,6 +62,10 @@ Mesh is a  collection of vertices and faces in 2D or 3D space
 
 Base on the underlying data provider/format, whole mesh is either stored in memory or
 read on demand
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
 
 .. versionadded:: 3.2
 %End
@@ -104,6 +112,10 @@ Dataset is a  collection of vector or scalar values on vertices or faces of the 
 
 Base on the underlying data provider/format, whole dataset is either stored in memory or
 read on demand
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
 
 .. versionadded:: 3.2
 %End
@@ -157,6 +169,10 @@ class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource, QgsMeshDatasetSource
 Base class for providing data for :py:class:`QgsMeshLayer`
 
 Responsible for reading native mesh data
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
 
 .. seealso:: :py:class:`QgsMeshSource`
 

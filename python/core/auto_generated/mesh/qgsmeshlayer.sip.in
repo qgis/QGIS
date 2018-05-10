@@ -64,6 +64,11 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
          QString uri = "test/land.2dm";
          QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
 
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+
 .. versionadded:: 3.2
 %End
 
@@ -137,6 +142,8 @@ Toggle rendering of triangular (derived) mesh. Off by default
 
     void setActiveScalarDataset( int index = -1 );
     void setActiveVectorDataset( int index = -1 );
+
+    int activeScalarDataset() const;
 
   private: // Private methods
     QgsMeshLayer( const QgsMeshLayer &rhs );
