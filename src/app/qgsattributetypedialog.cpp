@@ -169,6 +169,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
       QgsDebugMsg( "Oops, couldn't create editor widget config dialog..." );
     }
   }
+  stackedWidget->adjustSize();
 
   //update default expression preview
   defaultExpressionChanged();
