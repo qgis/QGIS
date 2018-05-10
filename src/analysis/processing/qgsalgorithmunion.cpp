@@ -53,11 +53,10 @@ QgsProcessingAlgorithm *QgsUnionAlgorithm::createInstance() const
 void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Union layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Union layer" ), QList< int >(), QVariant(), true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Union" ) ) );
 }
-
 
 QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -66,12 +65,12 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
-  if ( !sourceB )
+  if ( parameters.value( QStringLiteral( "OVERLAY" ) ).isValid() && !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
   QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
-  QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields() );
+  QgsFields fields = sourceB ? QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields() ) : sourceA->fields();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs() ) );
@@ -80,6 +79,13 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+
+  if ( !sourceB )
+  {
+    // we are doing single layer union
+    QgsOverlayUtils::resolveOverlaps( *sourceA.get(), *sink.get(), feedback );
+    return outputs;
+  }
 
   QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
   QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );

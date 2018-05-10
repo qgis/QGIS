@@ -283,13 +283,14 @@ class AlgorithmsTest(object):
 
                 compare = expected_result.get('compare', {})
                 pk = expected_result.get('pk', None)
+                topo_equal_check = expected_result.get('topo_equal_check', False)
 
                 if len(expected_lyrs) == 1:
-                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check})
                 else:
                     res = False
                     for l in expected_lyrs:
-                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check}):
                             res = True
                             break
                     self.assertTrue(res, 'Could not find matching layer in expected results')
@@ -319,6 +320,7 @@ class AlgorithmsTest(object):
 
 
 class GenericAlgorithmsTest(unittest.TestCase):
+
     """
     General (non-provider specific) algorithm tests
     """
