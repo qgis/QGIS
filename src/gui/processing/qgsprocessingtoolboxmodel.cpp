@@ -377,6 +377,12 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( cons
   return qobject_cast< QgsProcessingToolboxModelAlgorithmNode * >( n )->algorithm();
 }
 
+bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm );
+}
+
 QModelIndex QgsProcessingToolboxModel::indexForProvider( QgsProcessingProvider *provider ) const
 {
   if ( !provider )
@@ -429,19 +435,57 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   sort( 0 );
 }
 
+void QgsProcessingToolboxProxyModel::setFilters( QgsProcessingToolboxProxyModel::Filters filters )
+{
+  mFilters = filters;
+  invalidateFilter();
+}
+
+void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
+
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-  if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
+  if ( mModel->isAlgorithm( sourceIndex ) )
   {
-    return provider->isActive(); // and has visible children!!
+    if ( mFilters & FilterModeler )
+    {
+      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;
+      return !isHiddenFromModeler;
+    }
+    if ( mFilters & FilterToolbox )
+    {
+      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromToolbox;
+      return !isHiddenFromToolbox;
+    }
+    return true;
   }
 
-  // TODO
-  // check flags - hide from toolbox/modeler
-  // check search string
-  // check group has visible children
-  return true;
+  bool hasChildren = false;
+  // providers and groups are shown only if they have visible children
+  int count = sourceModel()->rowCount( sourceIndex );
+  for ( int i = 0; i < count; ++i )
+  {
+    if ( filterAcceptsRow( i, sourceIndex ) )
+    {
+      hasChildren = true;
+      break;
+    }
+  }
+
+  if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
+  {
+    return hasChildren && provider->isActive();
+  }
+  else
+  {
+    // group
+    return hasChildren;
+  }
 }
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const

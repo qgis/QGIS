@@ -220,6 +220,10 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
 
 /**
  * A model for providers and algorithms shown within the Processing toolbox.
+ *
+ * See QgsProcessingToolboxProxyModel for a sorted, filterable version
+ * of this model.
+ *
  * \ingroup gui
  * \since QGIS 3.2
  */
@@ -278,9 +282,17 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * Returns the algorithm which corresponds to a given \a index, or
      * a nullptr if the index does not represent an algorithm.
      *
+     * \see isAlgorithm()
      * \see providerForIndex()
      */
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns true if \a index corresponds to an algorithm.
+     *
+     * \see algorithmForIndex()
+     */
+    bool isAlgorithm( const QModelIndex &index ) const;
 
     /**
      * Returns the index corresponding to the specified \a provider.
@@ -321,7 +333,10 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
 
 /**
- * A sort/filter proxy model for providers and algorithms shown within the Processing toolbox.
+ * A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
+ * which automatically sorts the toolbox in a logical fashion and supports filtering
+ * the results.
+ *
  * \ingroup gui
  * \since QGIS 3.2
  */
@@ -330,6 +345,14 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
+    enum Filter
+    {
+      FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
+      FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
 
     /**
      * Constructor for QgsProcessingToolboxProxyModel, with the given \a parent object.
@@ -341,12 +364,29 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      */
     explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr );
 
+    /**
+     * Set \a filters that affect how toolbox content is filtered.
+     * \see filters()
+     */
+    void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
+
+    /**
+     * Returns any filters that affect how toolbox content is filtered.
+     * \see setFilters()
+     */
+    Filters filters() const { return mFilters; }
+
+
+    void setFilterString( const QString &filter );
+
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
 
     QgsProcessingToolboxModel *mModel = nullptr;
+    Filters mFilters = nullptr;
+    QString mFilterString;
 };
 
 
