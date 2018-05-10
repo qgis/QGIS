@@ -5331,6 +5331,21 @@ tests:
             fid: skip
 
   - algorithm: native:union
+    name: Test Union of single layer
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union0.gml
+        type: vector
+        compare:
+          unordered: true
+          fields:
+            fid: skip
+
+  - algorithm: native:union
     name: Test Union (basic)
     params:
       INPUT:
