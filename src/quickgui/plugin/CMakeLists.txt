@@ -97,6 +97,7 @@ IF(QMLPLUGINDUMP_FOUND)
 
   # Extract QML Types Info from our QML plugin. This is useful for development with Qt Creator as it allows
   # Qt Creator understand also the C++ classes registered in the plugin and thus available in QML code
+  # If the qmlplugindumpcommand fails, add -v argument to see detailed output for debugging
   SET(QGIS_QUICK_PLUGIN_TYPEINFO ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/qgsquick.qmltypes)
   ADD_CUSTOM_COMMAND(
       TARGET qgis_quick_plugin
@@ -104,7 +105,7 @@ IF(QMLPLUGINDUMP_FOUND)
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:qgis_quick_plugin> ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${QMLPLUGINDUMP_EXECUTABLE}
-      ARGS QgsQuick 0.1 . -v --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
+      ARGS QgsQuick 0.1 . --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
       POST_BUILD
   )
