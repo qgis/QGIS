@@ -73,21 +73,11 @@ deregisterFilter() to deregister their filters upon plugin unload to avoid crash
 .. seealso:: :py:func:`registerFilter`
 %End
 
-    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
+    QList< QgsLocatorFilter *> filters();
 %Docstring
 Returns the list of filters registered in the locator.
 
 .. seealso:: :py:func:`prefixedFilters`
-%End
-
-    QStringList prefixes();
-%Docstring
-Returns the list of prefixes in use.
-A prefix can have several filters
-
-.. seealso:: :py:func:`filter`
-
-.. versionadded:: 3.2
 %End
 
 

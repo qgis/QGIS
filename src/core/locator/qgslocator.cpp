@@ -48,17 +48,9 @@ void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
   delete filter;
 }
 
-QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
+QList<QgsLocatorFilter *> QgsLocator::filters()
 {
-  if ( !prefix.isEmpty() )
-    return mPrefixedFilters.values( prefix );
-  else
-    return mFilters;
-}
-
-QStringList QgsLocator::prefixes()
-{
-  return mPrefixedFilters.keys();
+  return mFilters;
 }
 
 QMultiMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const

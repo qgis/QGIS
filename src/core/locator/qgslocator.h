@@ -60,6 +60,7 @@ class CORE_EXPORT QgsLocator : public QObject
 
   public:
 
+    //! List of core filters (i.e. not plugin filters)
     static const QList<QString> CORE_FILTERS;
 
     /**
@@ -96,15 +97,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * Returns the list of filters registered in the locator.
      * \see prefixedFilters()
      */
-    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
-
-    /**
-     * Returns the list of prefixes in use.
-     * A prefix can have several filters
-     * \see filter()
-     * \since QGIS 3.2
-     */
-    QStringList prefixes();
+    QList< QgsLocatorFilter *> filters();
 
 #ifndef SIP_RUN
 

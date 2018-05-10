@@ -178,9 +178,15 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
         case Prefix:
         {
           QString prefix = value.toString();
-          if ( prefix.isEmpty() )
-            return false;
-          mPrefixes.insert( filterForIndex( index ), prefix );
+          if ( !prefix.isEmpty() )
+          {
+            mPrefixes.insert( filterForIndex( index ), prefix );
+          }
+          else
+          {
+            // reset to the native prefix
+            mPrefixes.insert( filterForIndex( index ), filterForIndex( index )->prefix() );
+          }
           emit dataChanged( index, index );
           return true;
         }
