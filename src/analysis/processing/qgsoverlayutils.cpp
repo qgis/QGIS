@@ -270,7 +270,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   requestOnlyIds.setFlags( QgsFeatureRequest::NoGeometry );
   requestOnlyIds.setSubsetOfAttributes( QgsAttributeList() );
 
-  // make a set of used feature IDs so they we do not try to reuse them for newly added features
+  // make a set of used feature IDs so that we do not try to reuse them for newly added features
   QgsFeature f;
   QSet<QgsFeatureId> fids;
   QgsFeatureIterator it = source.getFeatures( requestOnlyIds );
@@ -296,6 +296,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
     QgsFeatureId fid1 = f.id();
     QgsGeometry g1 = f.geometry();
+    std::unique_ptr< QgsGeometryEngine > g1engine;
 
     geometries.insert( fid1, g1 );
     index.insertFeature( f );
@@ -307,8 +308,15 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       if ( fid1 == fid2 )
         continue;
 
+      if ( !g1engine )
+      {
+        // use prepared geometries for faster intersection tests
+        g1engine.reset( QgsGeometry::createGeometryEngine( g1.constGet() ) );
+        g1engine->prepareGeometry();
+      }
+
       QgsGeometry g2 = geometries.value( fid2 );
-      if ( !g1.intersects( g2 ) )
+      if ( !g1engine->intersects( g2.constGet() ) )
         continue;
 
       QgsGeometry geomIntersection = g1.intersection( g2 );
@@ -384,6 +392,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
       // update our temporary copy of the geometry to what is left from it
       g1 = g12;
+      g1engine.reset();
     }
 
     ++count;

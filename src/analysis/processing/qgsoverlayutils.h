@@ -50,7 +50,7 @@ namespace QgsOverlayUtils
    * 2. a feature with geometry B - A with B's attributes
    * 3. two features with geometry intersection(A, B) - one with A's attributes, one with B's attributes.
    *
-   * As a result, for all pairs of features in the output, a pair either havs no common interior or their interior is the same.
+   * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */
   void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
 }
