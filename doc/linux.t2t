@@ -59,6 +59,16 @@ See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
 currently supported distributions (plain xenial's GDAL for instance is to old
 and we build with GDAL2 from ubuntugis).
 
+If you plan to code, you will need these packages:
+```
+apt install flip python-autopep8
+```
+
+And also a perl library:
+```
+sudo cpan YAML::Tiny
+```
+These packages are needed by the prehook commit script.
 
 == Setup ccache (Optional, but recommended) ==
 
