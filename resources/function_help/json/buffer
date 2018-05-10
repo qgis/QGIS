@@ -3,7 +3,8 @@
   "type": "function",
   "description": "Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geom","description":"a geometry"},
-                 {"arg":"distance","description":"buffer distance in layer units"}],
+                 {"arg":"distance","description":"buffer distance in layer units"},
+                 {"arg":"segments","optional":true,"default":"8","description":"number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother buffer with more nodes."}],
   "examples": [ { "expression":"buffer($geometry, 10.5)", "returns":"polygon of $geometry buffered by 10.5 units"}]
 }
 
