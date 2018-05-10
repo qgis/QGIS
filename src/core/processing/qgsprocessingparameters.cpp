@@ -1217,6 +1217,9 @@ bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &i
 
 QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -1283,6 +1286,9 @@ QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
 
 QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const
 {
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
   if ( val.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
   return val.toBool() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
@@ -1336,6 +1342,9 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
 
 QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -1397,6 +1406,9 @@ bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &inp
 
 QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
 {
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
   if ( val.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
 
@@ -1479,6 +1491,9 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
 
 QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -1566,6 +1581,9 @@ bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input,
 
 QString QgsProcessingParameterPoint::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -1706,6 +1724,9 @@ bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input
 
 QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -1866,6 +1887,9 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
 
 QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2017,6 +2041,9 @@ bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input
 
 QString QgsProcessingParameterNumber::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2147,6 +2174,9 @@ bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input,
 
 QString QgsProcessingParameterRange::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2233,6 +2263,9 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
 
 QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
 {
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
   if ( val.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
 
@@ -2322,6 +2355,9 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, 
 
 QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2435,6 +2471,9 @@ QgsProcessingParameterDefinition *QgsProcessingParameterString::clone() const
 
 QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2517,6 +2556,9 @@ QgsProcessingParameterDefinition *QgsProcessingParameterExpression::clone() cons
 
 QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2605,6 +2647,9 @@ bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &
 
 QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
 {
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
   if ( val.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
 
@@ -2705,6 +2750,9 @@ bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &input,
 
 QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -2916,6 +2964,9 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
 
 QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -3087,6 +3138,9 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
 
 QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -3280,6 +3334,9 @@ bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVar
 
 QString QgsProcessingParameterRasterDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -3365,6 +3422,9 @@ bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVaria
 
 QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -3561,6 +3621,9 @@ bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVar
 
 QString QgsProcessingParameterVectorDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
@@ -3733,6 +3796,9 @@ bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, 
 
 QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
