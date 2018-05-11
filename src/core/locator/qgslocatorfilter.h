@@ -155,7 +155,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * as these are reserved for core QGIS functions. If a plugin registers
      * a filter with a prefix shorter than 3 characters then the prefix will
      * be ignored.
-     * \note Prefixes might be overriden by user preferences.
+     * \note Prefixes might be overridden by user preferences.
      * \see activePrefix()
      */
     virtual QString prefix() const { return QString(); }

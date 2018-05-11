@@ -127,7 +127,7 @@ results from this filter.
 
 .. note::
 
-   Prefixes might be overriden by user preferences.
+   Prefixes might be overridden by user preferences.
 
 .. seealso:: :py:func:`activePrefix`
 %End
