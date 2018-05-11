@@ -690,6 +690,9 @@
    <property name="text">
     <string>&amp;New</string>
    </property>
+   <property name="toolTip">
+    <string>New Project</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
@@ -701,6 +704,9 @@
    </property>
    <property name="text">
     <string>&amp;Open…</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -714,6 +720,9 @@
    <property name="text">
     <string>&amp;Save</string>
    </property>
+   <property name="toolTip">
+    <string>Save Project</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
@@ -725,6 +734,9 @@
    </property>
    <property name="text">
     <string>Save &amp;As…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Project As</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -738,6 +750,9 @@
    <property name="text">
     <string>Save Map as &amp;Image…</string>
    </property>
+   <property name="toolTip">
+    <string>Save Map as Image</string>
+   </property>
   </action>
   <action name="mActionSaveMapAsPdf">
    <property name="icon">
@@ -746,6 +761,9 @@
    </property>
    <property name="text">
     <string>Save Map as &amp;PDF…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Map as PDF</string>
    </property>
   </action>
   <action name="mActionNewMapCanvas">
@@ -1553,6 +1571,9 @@
    <property name="text">
     <string>&amp;Save As...</string>
    </property>
+   <property name="toolTip">
+    <string>Save Layer As</string>
+   </property>
   </action>
   <action name="mActionRemoveLayer">
    <property name="icon">
@@ -1585,6 +1606,9 @@
   <action name="mActionLayerProperties">
    <property name="text">
     <string>&amp;Properties...</string>
+   </property>
+   <property name="toolTip">
+    <string>Layer Properties</string>
    </property>
   </action>
   <action name="mActionLayerSubsetString">
@@ -1686,6 +1710,9 @@
    </property>
    <property name="text">
     <string>&amp;Properties…</string>
+   </property>
+   <property name="toolTip">
+    <string>Project Properties</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
