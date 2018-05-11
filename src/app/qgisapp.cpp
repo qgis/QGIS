@@ -13613,7 +13613,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     QString name = storage->visibleName();
     if ( name.isEmpty() )
       continue;
-    QAction *action = menu->addAction( name );
+    QAction *action = menu->addAction( QStringLiteral( "%1…" ).arg( name ) );
     if ( saving )
     {
       connect( action, &QAction::triggered, [this, storage]
