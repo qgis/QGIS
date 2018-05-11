@@ -177,7 +177,7 @@ class retile(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         if crs.isValid():
             arguments.append('-s_srs')
-            arguments.append(crs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append('-r')
         arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])

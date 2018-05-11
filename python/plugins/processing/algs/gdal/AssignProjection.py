@@ -84,11 +84,11 @@ class AssignProjection(GdalAlgorithm):
 
         fileName = inLayer.source()
 
-        crs = self.parameterAsCrs(parameters, self.CRS, context).authid()
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = []
         arguments.append('-a_srs')
-        arguments.append(crs)
+        arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append(fileName)
 

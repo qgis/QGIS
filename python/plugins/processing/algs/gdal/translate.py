@@ -130,7 +130,7 @@ class translate(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
         if crs.isValid():
             arguments.append('-a_srs')
-            arguments.append(crs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(crs))
 
         if nodata is not None:
             arguments.append('-a_nodata')
