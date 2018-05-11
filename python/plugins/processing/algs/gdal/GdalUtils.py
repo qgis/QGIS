@@ -416,7 +416,7 @@ class GdalUtils:
     @staticmethod
     def gdal_crs_string(crs: QgsCoordinateReferenceSystem) -> str:
         """
-        Converts a QgsCoordinateReferenceSytem to a string understandable
+        Converts a QgsCoordinateReferenceSystem to a string understandable
         by GDAL
         :param crs: crs to convert
         :return: gdal friendly string
