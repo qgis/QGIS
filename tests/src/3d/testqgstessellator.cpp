@@ -76,7 +76,7 @@ struct TriangleCoords
 
   void dump() const
   {
-    qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
+    qDebug() << pts[0] << "," << pts[1] << ","  << pts[2] << "," << normals[0] << "," << normals[1] << "," << normals[2];
   }
 
   QVector3D pts[3];
@@ -241,9 +241,26 @@ void TestQgsTessellator::testWalls()
   tc << TriangleCoords( QVector3D( 2, 1, 12 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 2 ) );
   tc << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 1, 11 ), QVector3D( 1, 1, 1 ) );
 
+  QList<TriangleCoords> tn;
+  tn << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ), QVector3D( 0, -0.894427, 0.447214 ), QVector3D( 0, -0.894427, 0.447214 ), QVector3D( 0, -0.894427, 0.447214 ) );
+  tn << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ), QVector3D( 0, -0.894427, 0.447214 ), QVector3D( 0, -0.894427, 0.447214 ), QVector3D( 0, -0.894427, 0.447214 ) );
+  tn << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 1 ), QVector3D( -1, 0, 0 ), QVector3D( -1, 0, 0 ), QVector3D( -1, 0, 0 ) );
+  tn << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 2, 4 ), QVector3D( -1, 0, 0 ), QVector3D( -1, 0, 0 ), QVector3D( -1, 0, 0 ) );
+  tn << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 4 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ) );
+  tn << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 3, 2, 13 ), QVector3D( 3, 2, 3 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ) );
+  tn << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 3 ), QVector3D( 0.707107, -0.707107, 0 ), QVector3D( 0.707107, -0.707107, 0 ), QVector3D( 0.707107, -0.707107, 0 ) );
+  tn << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 12 ), QVector3D( 2, 1, 2 ), QVector3D( 0.707107, -0.707107, 0 ), QVector3D( 0.707107, -0.707107, 0 ), QVector3D( 0.707107, -0.707107, 0 ) );
+  tn << TriangleCoords( QVector3D( 2, 1, 12 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 2 ), QVector3D( 0, -1, 0 ), QVector3D( 0, -1, 0 ), QVector3D( 0, -1, 0 ) );
+  tn << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 1, 11 ), QVector3D( 1, 1, 1 ), QVector3D( 0, -1, 0 ), QVector3D( 0, -1, 0 ), QVector3D( 0, -1, 0 ) );
+
   QgsTessellator tZ( 0, 0, false );
   tZ.addPolygon( polygonZ, 10 );
   QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+
+  // with normals
+  QgsTessellator tZN( 0, 0, true );
+  tZN.addPolygon( polygonZ, 10 );
+  QVERIFY( checkTriangleOutput( tZN.data(), true, tn ) );
 }
 
 void TestQgsTessellator::testBackEdges()
