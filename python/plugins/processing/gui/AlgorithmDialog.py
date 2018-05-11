@@ -106,13 +106,13 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+                        isinstance(param, (QgsProcessingParameterRasterDestination,
+                                           QgsProcessingParameterFeatureSink,
+                                           QgsProcessingParameterVectorDestination)):
                     if self.mainWidget().checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
                 value = self.mainWidget().outputWidgets[param.name()].getValue()
-                if value == '':
-                    value = self.parameter.generateTemporaryDestination()
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
                 if value:
