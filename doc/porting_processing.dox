@@ -6,7 +6,7 @@ Consequently, substantial changes are required in order to port existing 2.x Pro
 
 - For algorithms which operate on features one-by-one (e.g. a "centroid" algorithm or "buffer" algorithm), consider subclassing the QgsProcessingFeatureBasedAlgorithm class. This class allows much of the boilerplate code for looping over features from a vector layer to be bypassed, and instead requires implementation of a processFeature method.
 
-- Ensure that your algorithm (or algorithm's parent class) implements the new pure virtual createInstance(self) call, to return a new instance of the algorithm class. Note that this should not return a copy of the algorithm (e.g. don't return 'self'), but instead a newly constructed instance of the class. If you use a base class in your plugin for all algorithms, you can usually shortcut the createInstance implementation by placing:
+- Ensure that your algorithm (or algorithm's parent class) implements the new pure virtual createInstance(self) call, to return a new instance of the algorithm class. Note that this should not return a copy of the algorithm (e.g. don't return 'self'), but instead a newly constructed instance of the class. If you use a base class in your plugin for all algorithms, you can usually shortcut the createInstance implementation by placing
  
     def createInstance(self):
         return type(self)()
