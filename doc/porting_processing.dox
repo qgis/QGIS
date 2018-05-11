@@ -23,7 +23,7 @@ Consequently, substantial changes are required in order to port existing 2.x Pro
 
 - All algorithm input parameters and available outputs must be declared in an implementation of the new pure virtual method initAlgorithm(self, configuration={}).
 
-The input parameters and outputs classes have been replaced with new c++ versions, which must be used when calling addParameter and addOuput.
+The input parameters and outputs classes have been replaced with new c++ versions, which must be used when calling addParameter and addOutput.
 
 - When constructing parameters, be aware that some argument names have changed. E.g. default has been replaced with 'defaultValue'.
 
