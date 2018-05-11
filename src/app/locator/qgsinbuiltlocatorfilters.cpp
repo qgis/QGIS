@@ -144,6 +144,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
   {
     searchActions( string, widget, found );
   }
+
+  QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
+
   Q_FOREACH ( QAction *action, parent->actions() )
   {
     if ( action->menu() )
@@ -159,6 +162,22 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
 
     QString searchText = action->text();
     searchText.replace( '&', QString() );
+
+    QString tooltip = action->toolTip();
+    QRegularExpressionMatch match = extractFromTooltip.match( tooltip );
+    if ( match.hasMatch() )
+    {
+      tooltip = match.captured( 1 );
+    }
+    tooltip.replace( QStringLiteral( "..." ), QString() );
+    tooltip.replace( QStringLiteral( "…" ), QString() );
+    searchText.replace( QStringLiteral( "..." ), QString() );
+    searchText.replace( QStringLiteral( "…" ), QString() );
+    if ( searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0 )
+    {
+      searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
+    }
+
     if ( stringMatches( searchText, string ) )
     {
       QgsLocatorResult result;
