@@ -44,42 +44,40 @@ void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
 {
   cancelRunningQuery();
   mFilters.removeAll( filter );
-  mPrefixedFilters.remove( mPrefixedFilters.key( filter ), filter );
   delete filter;
 }
 
-QList<QgsLocatorFilter *> QgsLocator::filters()
+QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
 {
-  return mFilters;
-}
-
-QMultiMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
-{
-  return mPrefixedFilters;
-}
-
-void QgsLocator::setCustomPrefix( QgsLocatorFilter *filter, const QString &prefix )
-{
-  if ( filter )
+  if ( !prefix.isEmpty() )
   {
-    mPrefixedFilters.remove( mPrefixedFilters.key( filter ), filter );
-    if ( !prefix.isEmpty() && prefix != filter->prefix() )
+    QList<QgsLocatorFilter *> filters =  QList<QgsLocatorFilter *>();
+    for ( QgsLocatorFilter *filter : mFilters )
     {
-      QgsSettings().setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), prefix, QgsSettings::Section::Gui );
-      mPrefixedFilters.insert( prefix, filter );
+      if ( !filter->activePrefix().isEmpty() && filter->activePrefix() == prefix )
+      {
+        filters << filter;
+      }
     }
-    else
-    {
-      // reset the setting if the string is empty or equal to the native prefix
-      // one should the default checkbox instead
-      QgsSettings().remove( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), QgsSettings::Section::Gui );
-    }
+    return filters;
+  }
+  else
+  {
+    return mFilters;
   }
 }
 
-QString QgsLocator::customPrefix( QgsLocatorFilter *filter ) const
+QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
 {
-  return mPrefixedFilters.key( filter, QString() );
+  QMap<QString, QgsLocatorFilter *> filters = QMap<QString, QgsLocatorFilter *>();
+  for ( QgsLocatorFilter *filter : mFilters )
+  {
+    if ( !filter->activePrefix().isEmpty() && filter->enabled() )
+    {
+      filters.insertMulti( filter->activePrefix(), filter );
+    }
+  }
+  return filters;
 }
 
 void QgsLocator::registerFilter( QgsLocatorFilter *filter )
@@ -91,18 +89,22 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   QgsSettings settings;
   bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
   bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
-  QString customPrefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+  QString prefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+  if ( prefix.isEmpty() )
+  {
+    prefix = filter->prefix();
+  }
 
-  if ( !customPrefix.isEmpty() )
+  if ( !prefix.isEmpty() )
   {
     if ( CORE_FILTERS.contains( filter->name() ) )
     {
       //inbuilt filter, no prefix check
-      mPrefixedFilters.insert( customPrefix, filter );
+      filter->setActivePrefix( prefix );
     }
-    else if ( customPrefix.length() >= 3 || customPrefix != filter->prefix() )
+    else if ( prefix.length() >= 3 || prefix != filter->prefix() )
     {
-      mPrefixedFilters.insert( customPrefix, filter );
+      filter->setActivePrefix( prefix );
     }
   }
 
@@ -136,15 +138,12 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   QString prefix = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) );
   if ( !prefix.isEmpty() )
   {
-    QMultiMap<QString, QgsLocatorFilter *>::const_iterator it = mPrefixedFilters.constFind( prefix );
-    while ( it != mPrefixedFilters.constEnd() && it.key() == prefix )
+    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
-      QgsLocatorFilter *filter = it.value();
-      if ( filter->enabled() )
+      if ( filter->activePrefix() == prefix && filter->enabled() )
       {
         activeFilters << filter;
       }
-      ++it;
     }
     context.usingPrefix = !activeFilters.empty();
   }

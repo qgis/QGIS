@@ -155,6 +155,8 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * as these are reserved for core QGIS functions. If a plugin registers
      * a filter with a prefix shorter than 3 characters then the prefix will
      * be ignored.
+     * \note Prefixes might be overriden by user preferences.
+     * \see activePrefix()
      */
     virtual QString prefix() const { return QString(); }
 
@@ -208,6 +210,22 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void setUseWithoutPrefix( bool useWithoutPrefix );
 
     /**
+     * Returns true if the filter should be used when no prefix
+     * is entered.
+     * \see setActivePrefix()
+     * \since QGIS 3.2
+     */
+    QString activePrefix() const;
+
+    /**
+     * Sets whether the filter should be used when no prefix
+     * is entered.
+     * \see activePrefix()
+     * \since QGIS 3.2
+     */
+    void setActivePrefix( const QString &activePrefix ) SIP_SKIP;
+
+    /**
      * Tests a \a candidate string to see if it should be considered a match for
      * a specified \a search string.
      * Filter subclasses should use this method when comparing strings instead
@@ -258,6 +276,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     bool mEnabled = true;
     bool mUseWithoutPrefix = true;
+    QString mActivePrefifx = QString();
 
 };
 

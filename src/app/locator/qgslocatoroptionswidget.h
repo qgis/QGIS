@@ -39,7 +39,6 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
     void configureCurrentFilter();
 
   private:
-
     QgsLocatorWidget *mLocatorWidget = nullptr;
     QgsLocator *mLocator = nullptr;
     QgsLocatorFiltersModel *mModel = nullptr;

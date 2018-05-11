@@ -95,38 +95,18 @@ class CORE_EXPORT QgsLocator : public QObject
 
     /**
      * Returns the list of filters registered in the locator.
+     * \param prefix If prefix is not empty, the list returned corresponds to the filter with the given active prefix
      * \see prefixedFilters()
      */
-    QList< QgsLocatorFilter *> filters();
-
-#ifndef SIP_RUN
+    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
 
     /**
      * Returns a map of prefix to filter, for all registered filters
      * with valid prefixes.
      * \see filters()
-     */
-    QMultiMap<QString, QgsLocatorFilter *> prefixedFilters() const;
-#else
-
-    /**
-     * Returns a map of prefix to filter, for all registered filters
-     * with valid prefixes.
-     * \deprecated since QGIS 3.2 use prefixes() and filters( const QString &prefix )
-     * \see filters()
+     * \deprecated since QGIS 3.2 use filters() instead
      */
     Q_DECL_DEPRECATED QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
-#endif
-
-    /**
-      * Sets the custom prefix for a filter
-      */
-    void setCustomPrefix( QgsLocatorFilter *filter, const QString &customPrefix );
-
-    /**
-     * Returns the custom prefix for a filter if defined, its regular prefix otherwise
-     */
-    QString customPrefix( QgsLocatorFilter *filter ) const;
 
     /**
      * Triggers the background fetching of filter results for a specified search \a string.
@@ -183,7 +163,6 @@ class CORE_EXPORT QgsLocator : public QObject
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
     QList< QgsLocatorFilter * > mFilters;
-    QMultiMap< QString, QgsLocatorFilter *> mPrefixedFilters;
     QList< QThread * > mActiveThreads;
 
     void cancelRunningQuery();

@@ -67,3 +67,16 @@ void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
   mUseWithoutPrefix = useWithoutPrefix;
 }
 
+QString QgsLocatorFilter::activePrefix() const
+{
+  if ( mActivePrefifx.isEmpty() )
+    return prefix();
+  else
+    return mActivePrefifx;
+}
+
+void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
+{
+  mActivePrefifx = activePrefix;
+}
+
