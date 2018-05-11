@@ -82,9 +82,13 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   //also draw the last label
   if ( !positions.isEmpty() )
   {
+    // note: this label is NOT centered over the end of the bar - rather the numeric portion
+    // of it is, without considering the unit label suffix. That's drawn at the end after
+    // horizontally centering just the numeric portion.
     currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
-    QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset,
-                                        fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignCenter,
+    QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
+                                        - fontMetrics.width( currentNumericLabel ) / 2.0,
+                                        fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignLeft,
                                QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
   }
 
