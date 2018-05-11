@@ -116,6 +116,8 @@ class EnumModelerWidget(BASE, WIDGET):
         for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
+                if not self.allowMultiple():
+                    return i
                 options.append(i)
         return options if len(options) > 0 else None
 
@@ -134,7 +136,8 @@ class EnumModelerWidget(BASE, WIDGET):
 
     def setDefault(self, indexes):
         model = self.lstItems.model()
-
+        if not isinstance(indexes, (list, tuple)):
+            indexes = [indexes]
         for i in indexes:
             item = model.item(i)
             if item:
