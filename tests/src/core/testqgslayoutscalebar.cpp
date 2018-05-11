@@ -142,7 +142,8 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
-  format.setColor( QColor( 255, 0, 255, 100 ) );
+  format.setColor( QColor( 255, 0, 255 ) );
+  format.setOpacity( 100.0 / 255 );
   scalebar->setTextFormat( format );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
