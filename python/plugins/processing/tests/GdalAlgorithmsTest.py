@@ -28,9 +28,11 @@ __revision__ = ':%H$'
 import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
 from processing.algs.gdal.gdal2tiles import gdal2tiles
+from processing.algs.gdal.gdaltindex import gdaltindex
 from processing.algs.gdal.contour import contour
 from processing.algs.gdal.GridAverage import GridAverage
 from processing.algs.gdal.GridDataMetrics import GridDataMetrics
@@ -40,11 +42,13 @@ from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
+from processing.algs.gdal.retile import retile
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
+                       QgsCoordinateReferenceSystem,
                        QgsApplication,
                        QgsVectorLayer,
                        QgsFeature,
@@ -216,6 +220,61 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(output, '"d:/test/test.mif"')
         self.assertEqual(outputFormat, '"MapInfo File"')
 
+    def testCrsConversion(self):
+        self.assertFalse(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem()))
+        self.assertEqual(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem('EPSG:3111')), 'EPSG:3111')
+        self.assertEqual(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem('POSTGIS:3111')), 'EPSG:3111')
+        self.assertEqual(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem(
+            'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')),
+            'EPSG:20936')
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromProj4(
+            '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+        self.assertTrue(crs.isValid())
+        self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                         '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+
+    def testAssignProjection(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = AssignProjection()
+        alg.initAlgorithm()
+
+        # with target srs
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'CRS': 'EPSG:3111'}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs EPSG:3111 ' +
+             source])
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'CRS': custom_crs}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs EPSG:20936 ' +
+             source])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'CRS': custom_crs}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+             source])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'CRS': 'POSTGIS:3111'}, context, feedback),
+            ['gdal_edit.py',
+             '-a_srs EPSG:3111 ' +
+             source])
+
     def testGdalTranslate(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -261,16 +320,42 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
-        # with target srs
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
         self.assertEqual(
             translate_alg.getConsoleCommands({'INPUT': source,
-                                              'TARGET_CRS': 'EPSG:3111',
+                                              'TARGET_CRS': custom_crs,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_srs EPSG:20936 ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'TARGET_CRS': custom_crs,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'TARGET_CRS': 'POSTGIS:3111',
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_srs EPSG:3111 ' +
              '-ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
         # with copy subdatasets
         self.assertEqual(
             translate_alg.getConsoleCommands({'INPUT': source,
@@ -434,6 +519,105 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-p mercator -w all -r average -a 0.0 ' +
              source + ' ' +
              'd:/temp/'])
+
+        # with input srs
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -s EPSG:3111 ' +
+             source + ' ' +
+             'd:/temp/'])
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -s EPSG:20936 ' +
+             source + ' ' +
+             'd:/temp/'])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -s "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+             source + ' ' +
+             'd:/temp/'])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'POSTGIS:3111',
+                                    'OUTPUT': 'd:/temp/'}, context, feedback),
+            ['gdal2tiles.py',
+             '-p mercator -w all -r average -s EPSG:3111 ' +
+             source + ' ' +
+             'd:/temp/'])
+
+    def testGdalTindex(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = gdaltindex()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'LAYERS': [source],
+                                    'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
+            ['gdaltindex',
+             '-tileindex location -f "ESRI Shapefile" ' +
+             '"d:/temp/test.shp" ' +
+             source])
+
+        # with input srs
+        self.assertEqual(
+            alg.getConsoleCommands({'LAYERS': [source],
+                                    'TARGET_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
+            ['gdaltindex',
+             '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
+             '"d:/temp/test.shp" ' +
+             source])
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'LAYERS': [source],
+                                    'TARGET_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
+            ['gdaltindex',
+             '-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' +
+             '"d:/temp/test.shp" ' +
+             source])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'LAYERS': [source],
+                                    'TARGET_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
+            ['gdaltindex',
+             '-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' +
+             '"d:/temp/test.shp" ' +
+             source])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            alg.getConsoleCommands({'LAYERS': [source],
+                                    'TARGET_CRS': 'POSTGIS:3111',
+                                    'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
+            ['gdaltindex',
+             '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
+             '"d:/temp/test.shp" ' +
+             source])
 
     def testGridAverage(self):
         context = QgsProcessingContext()
@@ -713,6 +897,58 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              source + ' ' +
              'd:/temp/check.jpg'])
 
+    def testRetile(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = retile()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': [source],
+                                    'OUTPUT': 'd:/temp'}, context, feedback),
+            ['gdal_retile.py',
+             '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -targetDir d:/temp ' +
+             source])
+
+        # with input srs
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': [source],
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp'}, context, feedback),
+            ['gdal_retile.py',
+             '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir d:/temp ' +
+             source])
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': [source],
+                                    'SOURCE_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp'}, context, feedback),
+            ['gdal_retile.py',
+             '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:20936 -r near -ot Float32 -targetDir d:/temp ' +
+             source])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': [source],
+                                    'SOURCE_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp'}, context, feedback),
+            ['gdal_retile.py',
+             '-ps 256 256 -overlap 0 -levels 1 -s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -ot Float32 -targetDir d:/temp ' +
+             source])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': [source],
+                                    'SOURCE_CRS': 'POSTGIS:3111',
+                                    'OUTPUT': 'd:/temp'}, context, feedback),
+            ['gdal_retile.py',
+             '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir d:/temp ' +
+             source])
+
     def testWarp(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -723,30 +959,65 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         # with no NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
-                                    'CRS': 'EPSG:3111',
+                                    'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'NODATA': 9999,
-                                    'CRS': 'EPSG:3111',
+                                    'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-t_srs EPSG:4326 -dstnodata 9999.0 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 9999.0 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'NODATA': 0,
-                                    'CRS': 'EPSG:3111',
+                                    'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-t_srs EPSG:4326 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with target using proj string
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': custom_crs,
+                                    'TARGET_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:20936 -t_srs EPSG:20936 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with target using custom projection
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': custom_crs,
+                                    'TARGET_CRS': custom_crs,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with non-EPSG crs code
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'POSTGIS:3111',
+                                    'TARGET_CRS': 'POSTGIS:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
