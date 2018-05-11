@@ -1629,7 +1629,7 @@ formats like SVG to maintain text as text objects, but at the cost of degraded
 rendering and may result in side effects like misaligned text buffers.
 %End
 
-    static QFontMetricsF fontMetrics( const QgsRenderContext &context, const QgsTextFormat &format );
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
 %Docstring
 Returns the font metrics for the given text ``format``, when rendered
 in the specified render ``context``. The font metrics will take into account

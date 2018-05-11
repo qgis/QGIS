@@ -1408,7 +1408,7 @@ class CORE_EXPORT QgsTextRenderer
      * all scaling required by the render context.
      * \since QGIS 3.2
      */
-    static QFontMetricsF fontMetrics( const QgsRenderContext &context, const QgsTextFormat &format );
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
 
     /**
      * Returns the width of a text based on a given format.
