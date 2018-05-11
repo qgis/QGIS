@@ -448,18 +448,17 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         string = 'xxxxxxxxxxxxxxxxxxxxxx'
 
-        # calculated expected width
-        f = s.toQFont()
-        expected = QFontMetricsF(f).width(string)
-        scale = expected / 416.625
-
-        context = QgsRenderContext()
+        image = QImage(400, 400, QImage.Format_RGB32)
+        painter = QPainter(image)
+        context = QgsRenderContext.fromQPainter(painter)
         context.setScaleFactor(1)
         metrics = QgsTextRenderer.fontMetrics(context, s)
-        self.assertAlmostEqual(metrics.width(string), 51.9 * scale, -1)
         context.setScaleFactor(2)
-        metrics = QgsTextRenderer.fontMetrics(context, s)
-        self.assertAlmostEqual(metrics.width(string), 104.15 * scale, -1)
+        metrics2 = QgsTextRenderer.fontMetrics(context, s)
+        painter.end()
+
+        self.assertAlmostEqual(metrics.width(string), 51.9, 1)
+        self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)
