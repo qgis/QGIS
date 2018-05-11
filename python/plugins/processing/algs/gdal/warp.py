@@ -175,11 +175,11 @@ class warp(GdalAlgorithm):
         arguments = []
         if sourceCrs.isValid():
             arguments.append('-s_srs')
-            arguments.append(sourceCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(sourceCrs))
 
         if targetCrs.isValid():
             arguments.append('-t_srs')
-            arguments.append(targetCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
         if nodata is not None:
             arguments.append('-dstnodata')
