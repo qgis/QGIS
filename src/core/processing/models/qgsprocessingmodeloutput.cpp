@@ -55,9 +55,9 @@ bool QgsProcessingModelOutput::loadVariant( const QVariantMap &map )
   if ( defaultValue.type() == QVariant::Map )
   {
     QVariantMap defaultMap = defaultValue.toMap();
-    if ( defaultMap["class"] == "QgsProcessingOutputLayerDefinition" )
+    if ( defaultMap["class"] == QStringLiteral( "QgsProcessingOutputLayerDefinition" ) )
     {
-      QgsProcessingOutputLayerDefinition value( "" );
+      QgsProcessingOutputLayerDefinition value;
       value.loadVariant( defaultMap );
       mDefaultValue = QVariant( value );
     }

@@ -34,11 +34,6 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
 {
   public:
 
-    /*
-    //! Output flags
-    Q_DECLARE_FLAGS( Flags, QgsProcessingParameterDefinition::Flag )
-    */
-
     /**
      * Constructor for QgsProcessingModelOutput with the specified \a name and \a description.
      */

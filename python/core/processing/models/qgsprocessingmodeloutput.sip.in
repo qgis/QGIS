@@ -23,7 +23,6 @@ Represents a final output created by the model.
 %End
   public:
 
-
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.

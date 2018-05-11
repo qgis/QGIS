@@ -91,6 +91,8 @@ Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
+
+.. versionadded:: 3.2
 %End
 
     bool loadVariant( const QVariantMap &map );
@@ -99,6 +101,8 @@ Loads this output layer definition from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
+
+.. versionadded:: 3.2
 %End
 
     operator QVariant() const;

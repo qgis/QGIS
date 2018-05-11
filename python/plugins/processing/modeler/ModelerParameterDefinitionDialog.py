@@ -301,7 +301,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         elif isinstance(self.param, QgsProcessingDestinationParameter):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultWidget = DestinationSelectionPanel(self.param, self.alg)
+            self.defaultWidget = DestinationSelectionPanel(self.param, self.alg, default_selection=True)
             self.verticalLayout.addWidget(self.defaultWidget)
 
         self.verticalLayout.addSpacing(20)
@@ -311,6 +311,16 @@ class ModelerParameterDefinitionDialog(QDialog):
         if self.param is not None:
             self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.verticalLayout.addWidget(self.requiredCheck)
+
+        # If child algorithm output is mandatory, disable checkbox
+        if isinstance(self.param, QgsProcessingDestinationParameter):
+            provider_name, child_name, output_name = self.param.name().split(':')
+            child = self.alg.childAlgorithms()['{}:{}'.format(provider_name, child_name)]
+            model_output = child.modelOutput(output_name)
+            param_def = child.algorithm().parameterDefinition(model_output.childOutputName())
+            if not (param_def.flags() & QgsProcessingParameterDefinition.FlagOptional):
+                self.requiredCheck.setEnabled(False)
+                self.requiredCheck.setChecked(True)
 
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
@@ -449,23 +459,23 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name=name,
                 description=self.param.description(),
                 fileFilter=self.param.fileFilter(),
-                defaultValue=str(self.defaultWidget.getValue()))
+                defaultValue=self.defaultWidget.getValue())
         elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
             self.param = QgsProcessingParameterFolderDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=str(self.defaultWidget.getValue()))
+                defaultValue=self.defaultWidget.getValue())
         elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
             self.param = QgsProcessingParameterRasterDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=str(self.defaultWidget.getValue()))
+                defaultValue=self.defaultWidget.getValue())
         elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
             self.param = QgsProcessingParameterVectorDestination(
                 name=name,
                 description=self.param.description(),
                 type=self.param.dataType(),
-                defaultValue=str(self.defaultWidget.getValue()))
+                defaultValue=self.defaultWidget.getValue())
 
         else:
             if self.paramType:

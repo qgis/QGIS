@@ -64,26 +64,16 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
     skipOutputChanged = pyqtSignal(bool)
 
-    def __init__(self, parameter, alg):
+    def __init__(self, parameter, alg, default_selection=False):
         super(DestinationSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.parameter = parameter
         self.alg = alg
+        self.default_selection = default_selection
         settings = QgsSettings()
         self.encoding = settings.value('/Processing/encoding', 'System')
         self.use_temporary = True
-
-        if hasattr(self.leText, 'setPlaceholderText'):
-            if parameter.flags() & QgsProcessingParameterDefinition.FlagOptional and not parameter.createByDefault():
-                self.leText.setPlaceholderText(self.SKIP_OUTPUT)
-                self.use_temporary = False
-            elif isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and self.parameter.supportsNonFileBasedOutput():
-                # use memory layers for temporary files if supported
-                self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
-            elif not isinstance(self.parameter, QgsProcessingParameterFolderDestination):
-                self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
         self.setValue(self.parameter.defaultValue())
 
@@ -111,22 +101,23 @@ signal        """
         else:
             popupMenu = QMenu()
 
-            if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                actionSkipOutput = QAction(
-                    self.tr('Skip Output'), self.btnSelect)
-                actionSkipOutput.triggered.connect(self.skipOutput)
-                popupMenu.addAction(actionSkipOutput)
+            if not self.default_selection:
+                if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    actionSkipOutput = QAction(
+                        self.tr('Skip Output'), self.btnSelect)
+                    actionSkipOutput.triggered.connect(self.skipOutput)
+                    popupMenu.addAction(actionSkipOutput)
 
-            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and self.parameter.supportsNonFileBasedOutput():
-                # use memory layers for temporary layers if supported
-                actionSaveToTemp = QAction(
-                    self.tr('Create Temporary Layer'), self.btnSelect)
-            else:
-                actionSaveToTemp = QAction(
-                    self.tr('Save to a Temporary File'), self.btnSelect)
-            actionSaveToTemp.triggered.connect(self.saveToTemporary)
-            popupMenu.addAction(actionSaveToTemp)
+                if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
+                        and self.parameter.supportsNonFileBasedOutput():
+                    # use memory layers for temporary layers if supported
+                    actionSaveToTemp = QAction(
+                        self.tr('Create Temporary Layer'), self.btnSelect)
+                else:
+                    actionSaveToTemp = QAction(
+                        self.tr('Save to a Temporary File'), self.btnSelect)
+                actionSaveToTemp.triggered.connect(self.saveToTemporary)
+                popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
                 QCoreApplication.translate('DestinationSelectionPanel', 'Save to File…'), self.btnSelect)
@@ -287,25 +278,33 @@ signal        """
         self.skipOutputChanged.emit(False)
 
     def setValue(self, value):
-        if value == 'memory:' or not value:
-            self.saveToTemporary()
-        elif isinstance(value, QgsProcessingOutputLayerDefinition):
-            if value.sink.staticValue() == 'memory:':
-                self.saveToTemporary()
+        if not value:
+            if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional and \
+                    not self.parameter.createByDefault():
+                self.skipOutput()
             else:
-                self.leText.setText(value.sink.staticValue())
-                self.use_temporary = False
-            self.encoding = value.createOptions['fileEncoding']
+                self.saveToTemporary()
         else:
-            self.leText.setText(value)
-            self.use_temporary = False
-        self.skipOutputChanged.emit(False)
+            if value == 'memory:':
+                self.saveToTemporary()
+            elif isinstance(value, QgsProcessingOutputLayerDefinition):
+                if value.sink.staticValue() in ('memory:', ''):
+                    self.saveToTemporary()
+                else:
+                    self.leText.setText(value.sink.staticValue())
+                    self.use_temporary = False
+                    self.skipOutputChanged.emit(False)
+                self.encoding = value.createOptions['fileEncoding']
+            else:
+                self.leText.setText(value)
+                self.use_temporary = False
+                self.skipOutputChanged.emit(False)
 
     def getValue(self):
         key = None
         if self.use_temporary and isinstance(self.parameter, QgsProcessingParameterFeatureSink):
             key = 'memory:'
-        elif self.use_temporary:
+        elif self.use_temporary and not self.default_selection:
             key = self.parameter.generateTemporaryDestination()
         else:
             key = self.leText.text()

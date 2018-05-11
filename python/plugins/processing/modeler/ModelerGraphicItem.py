@@ -246,8 +246,6 @@ class ModelerGraphicItem(QGraphicsItem):
                                              alg.position() + QPointF(
                 ModelerGraphicItem.BOX_WIDTH,
                 (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
-            #if existing_child.modelOutput(out):
-            #    alg.modelOutput(out).setDefaultValue(existing_child.modelOutput(out).defaultValue())
         self.model.setChildAlgorithm(alg)
 
     def removeElement(self):

@@ -5257,6 +5257,24 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( testModelOut.childId(), QStringLiteral( "my_id" ) );
   testModelOut.setChildOutputName( QStringLiteral( "my_output" ) );
   QCOMPARE( testModelOut.childOutputName(), QStringLiteral( "my_output" ) );
+  testModelOut.setDefaultValue( QStringLiteral( "my_value" ) );
+  QCOMPARE( testModelOut.defaultValue().toString(), QStringLiteral( "my_value" ) );
+  testModelOut.setMandatory( true );
+  QVERIFY( testModelOut.isMandatory() );
+
+  QgsProcessingOutputLayerDefinition layerDef( QStringLiteral( "my_path" ) );
+  layerDef.createOptions["fileEncoding"] = QStringLiteral( "my_encoding" );
+  testModelOut.setDefaultValue( layerDef );
+  QCOMPARE( testModelOut.defaultValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "my_path" ) );
+  QVariantMap map = testModelOut.toVariant().toMap();
+  QCOMPARE( map["default_value"].toMap()["sink"].toMap()["val"].toString(), QStringLiteral( "my_path" ) );
+  QCOMPARE( map["default_value"].toMap()["create_options"].toMap()["fileEncoding"].toString(), QStringLiteral( "my_encoding" ) );
+  QgsProcessingModelOutput out;
+  out.loadVariant( map );
+  QVERIFY( out.defaultValue().canConvert<QgsProcessingOutputLayerDefinition>() );
+  layerDef = out.defaultValue().value<QgsProcessingOutputLayerDefinition>();
+  QCOMPARE( layerDef.sink.staticValue().toString(), QStringLiteral( "my_path" ) );
+  QCOMPARE( layerDef.createOptions["fileEncoding"].toString(), QStringLiteral( "my_encoding" ) );
 
   QMap<QString, QgsProcessingModelOutput> outputs;
   QgsProcessingModelOutput out1;
@@ -5272,7 +5290,8 @@ void TestQgsProcessing::modelerAlgorithm()
   child.modelOutput( "b" ).setDescription( QStringLiteral( "my output 3" ) );
   QCOMPARE( child.modelOutput( "b" ).description(), QStringLiteral( "my output 3" ) );
   QCOMPARE( child.modelOutputs().count(), 2 );
-
+  child.removeModelOutput( QStringLiteral( "a" ) );
+  QCOMPARE( child.modelOutputs().count(), 1 );
 
 
   // model algorithm tests
@@ -5321,6 +5340,7 @@ void TestQgsProcessing::modelerAlgorithm()
   a4a.setDescription( "new" );
   alg.setChildAlgorithm( a4a );
   QCOMPARE( alg.childAlgorithm( "d" ).description(), QStringLiteral( "new" ) );
+
 
   // generating child ids
   QgsProcessingModelChildAlgorithm c1;
@@ -5686,6 +5706,8 @@ void TestQgsProcessing::modelerAlgorithm()
   alg7c2out1.setChildId( "cx2" );
   alg7c2out1.setChildOutputName( "OUTPUT" );
   alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
+  alg7c2out1.setDefaultValue( QStringLiteral( "my value" ) );
+  alg7c2out1.setMandatory( true );
   alg7c2outputs.insert( QStringLiteral( "my_output2" ), alg7c2out1 );
   alg7c2.setModelOutputs( alg7c2outputs );
   alg7.addChildAlgorithm( alg7c2 );
@@ -5693,8 +5715,12 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QVERIFY( alg7.destinationParameterDefinitions().at( 0 )->defaultValue().isNull() );
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 0 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->defaultValue().toString(), QStringLiteral( "my value" ) );
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QCOMPARE( alg7.outputDefinitions().count(), 2 );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
@@ -5711,6 +5737,23 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+
+  // mandatory model output with optional child algorithm parameter
+  QgsProcessingModelChildAlgorithm alg7c3;
+  alg7c3.setChildId( "cx3" );
+  alg7c3.setAlgorithmId( "native:extractbyexpression" );
+  QMap<QString, QgsProcessingModelOutput> alg7c3outputs;
+  QgsProcessingModelOutput alg7c3out1;
+  alg7c3out1.setChildId( "cx3" );
+  alg7c3out1.setChildOutputName( "FAIL_OUTPUT" );
+  alg7c3out1.setDescription( QStringLiteral( "my_output3" ) );
+  alg7c3outputs.insert( QStringLiteral( "my_output3" ), alg7c3out1 );
+  alg7c3.setModelOutputs( alg7c3outputs );
+  alg7.addChildAlgorithm( alg7c3 );
+  QVERIFY( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  alg7.childAlgorithm( alg7c3.childId() ).modelOutput( QStringLiteral( "my_output3" ) ).setMandatory( true );
+  alg7.updateDestinationParameters();
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
 }
 
 void TestQgsProcessing::modelExecution()
