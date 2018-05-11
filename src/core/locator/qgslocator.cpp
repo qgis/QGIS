@@ -104,7 +104,13 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
     }
     else if ( prefix.length() >= 3 || prefix != filter->prefix() )
     {
+      // for plugins either the native prefix is >3 char or it has been customized by user
       filter->setActivePrefix( prefix );
+    }
+    else
+    {
+      // otherwise set it to empty string (not NULL)
+      filter->setActivePrefix( QString( "" ) );
     }
   }
 
@@ -156,7 +162,9 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
       if ( filter->useWithoutPrefix() && filter->enabled() )
+      {
         activeFilters << filter;
+      }
     }
   }
 

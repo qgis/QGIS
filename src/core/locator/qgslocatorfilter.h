@@ -210,7 +210,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void setUseWithoutPrefix( bool useWithoutPrefix );
 
     /**
-     * Returns true if the filter should be used when no prefix
+     * Returns the prefix in use in the locator
      * is entered.
      * \see setActivePrefix()
      * \since QGIS 3.2
@@ -218,9 +218,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     QString activePrefix() const;
 
     /**
-     * Sets whether the filter should be used when no prefix
-     * is entered.
+     * Sets the prefix as being used by the locator
      * \see activePrefix()
+     * \note If activePrefix is empty, no prefix is used. If activePrefix is NULL, the default prefix is used.
      * \since QGIS 3.2
      */
     void setActivePrefix( const QString &activePrefix ) SIP_SKIP;

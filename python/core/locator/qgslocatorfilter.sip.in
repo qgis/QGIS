@@ -185,7 +185,7 @@ is entered.
 
     QString activePrefix() const;
 %Docstring
-Returns true if the filter should be used when no prefix
+Returns the prefix in use in the locator
 is entered.
 
 .. seealso:: :py:func:`setActivePrefix`
