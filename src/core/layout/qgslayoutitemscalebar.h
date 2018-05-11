@@ -208,7 +208,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * \see font()
      * \deprecated use textFormat() instead
      */
-    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED { return mSettings.textFormat().color(); }
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for drawing text in the scalebar.
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * \see setFont()
      * \deprecated use setTextFormat() instead
      */
-    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED { mSettings.textFormat().setColor( color ); }
+    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for fills in the scalebar.

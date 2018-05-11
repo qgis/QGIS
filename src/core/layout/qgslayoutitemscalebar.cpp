@@ -574,6 +574,19 @@ void QgsLayoutItemScaleBar::setFont( const QFont &font )
   emit changed();
 }
 
+QColor QgsLayoutItemScaleBar::fontColor() const
+{
+  QColor color = mSettings.textFormat().color();
+  color.setAlphaF( mSettings.textFormat().opacity() );
+  return color;
+}
+
+void QgsLayoutItemScaleBar::setFontColor( const QColor &color )
+{
+  mSettings.textFormat().setColor( color );
+  mSettings.textFormat().setOpacity( color.alphaF() );
+}
+
 bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScaleBarElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
   composerScaleBarElem.setAttribute( QStringLiteral( "height" ), QString::number( mSettings.height() ) );
