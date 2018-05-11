@@ -69,7 +69,7 @@ feedback object. E.g.
 
 - Use exceptions only for FATAL errors which force a model to terminate. Algorithms should handle common cases
 such as having no features in an input layer without throwing exceptions (instead, an empty layer should be output). This
-allows more flexibility for users creating models. They may have created models which "route" features to different algorithms
+allows greater flexibility for users creating models. They may have created models which "route" features to different algorithms
 based on some criteria, and it can be a valid case that no features satisfy this criteria. If your algorithm throws an
 exception upon encountering an empty layer, it prevents it being used in these flexible models. Instead, use the feedback
 object to pushInfo or reportError so that the lack of features is brought to user's attention (and logged) without breaking
@@ -89,7 +89,7 @@ can be used in expressions or custom python code in later steps in a model.
 - Don't write outputs using TableWriter or by directly creating a CSV file. Wherever possible use a feature sink instead so that the
 output is created as a proper vector layer. This allows other algorithms in a multi-step model to easily use the tabular outputs from the algorithm. 
 
-- A new API contract for exists for Processing. Now, only the c++ base class (e.g. those prefixed with "Qgs") and the methods from processing.tools
+- A new API contract exists for Processing. Now, only the c++ base class (e.g. those prefixed with "Qgs") and the methods from processing.tools
 are considered stable, public API. All other Processing classes and methods are considered private and may change between QGIS versions. These
 should not be relied on by custom algorithms.
 
