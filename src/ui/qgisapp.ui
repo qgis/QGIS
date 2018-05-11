@@ -748,7 +748,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Save Map as &amp;Image…</string>
+    <string>Export Map to &amp;Image…</string>
    </property>
    <property name="toolTip">
     <string>Save Map as Image</string>
@@ -760,7 +760,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>Save Map as &amp;PDF…</string>
+    <string>Export Map to &amp;PDF…</string>
    </property>
    <property name="toolTip">
     <string>Save Map as PDF</string>
@@ -2443,7 +2443,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionDxfExport">
    <property name="text">
-    <string>Export Map to DXF…</string>
+    <string>Export Project to DXF…</string>
    </property>
   </action>
   <action name="mActionDwgImport">
