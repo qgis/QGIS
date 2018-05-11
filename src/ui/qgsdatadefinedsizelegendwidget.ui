@@ -77,15 +77,29 @@
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QToolButton" name="btnAddClass">
+            <property name="toolTip">
+             <string>Add a class</string>
+            </property>
             <property name="text">
-             <string>Add</string>
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QToolButton" name="btnRemoveClass">
+            <property name="toolTip">
+             <string>Remove selected class</string>
+            </property>
             <property name="text">
-             <string>Remove</string>
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
             </property>
            </widget>
           </item>
@@ -174,6 +188,8 @@
   <tabstop>cboAlignSymbols</tabstop>
   <tabstop>viewLayerTree</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
