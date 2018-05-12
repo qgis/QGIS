@@ -344,7 +344,7 @@
                       <number>0</number>
                      </property>
                      <property name="text">
-                      <string>123232</string>
+                      <string/>
                      </property>
                      <property name="scaledContents">
                       <bool>false</bool>
