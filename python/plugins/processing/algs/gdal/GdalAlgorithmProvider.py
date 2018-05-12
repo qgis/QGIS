@@ -70,7 +70,7 @@ from .tri import tri
 from .warp import warp
 
 # from .extractprojection import ExtractProjection
-# from .gdalcalc import gdalcalc
+from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
 from .Buffer import Buffer
@@ -176,7 +176,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             warp(),
             # rasterize(),
             # ExtractProjection(),
-            # gdalcalc(),
+            gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
             Buffer(),
