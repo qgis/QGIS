@@ -901,6 +901,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
 {
   QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
+  QgsDebugMsgLevel( "loadNamedProperty", 2 );
   resultFlag = false;
 
   QDomDocument myDocument( QStringLiteral( "qgis" ) );
@@ -912,7 +913,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "file found %1" ).arg( uri ) );
+    QgsDebugMsgLevel( QString( "file found %1" ).arg( uri ), 2 );
     // read file
     resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
     if ( !resultFlag )
