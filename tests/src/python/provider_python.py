@@ -42,6 +42,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsProviderMetadata,
     QgsGeometryEngine,
+    QgsSpatialIndex,
 )
 
 from qgis.PyQt.QtCore import QVariant
@@ -65,6 +66,9 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         else:
             self._select_rect_engine = None
             self._select_rect_geom = None
+        self._feature_id_list = None
+        if self._filter_rect is not None and self._source._provider._spatialindex is not None:
+            self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
 
     def fetchFeature(self, f):
         """fetch next feature, return true on success"""
@@ -77,6 +81,21 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
             while not found:
                 _f = self._source._features[list(self._source._features.keys())[self._index]]
                 self._index += 1
+
+                if self._feature_id_list is not None and f.id() not in self._feature_id_list:
+                    continue
+
+                if not self._filter_rect.isNull():
+                    if not _f.hasGeometry():
+                        continue
+                    if self._request.flags() & QgsFeatureRequest.ExactIntersect:
+                        # do exact check in case we're doing intersection
+                        if not self._select_rect_engine.intersects(_f.geometry().constGet()):
+                            continue
+                    else:
+                        if not _f.geometry().boundingBox().intersects(self._filter_rect):
+                            continue
+
                 self._source._expression_context.setFeature(_f)
                 if self._request.filterType() == QgsFeatureRequest.FilterExpression:
                     if not self._request.filterExpression().evaluate(self._source._expression_context):
@@ -90,16 +109,6 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                 elif self._request.filterType() == QgsFeatureRequest.FilterFid:
                     if _f.id() != self._request.filterFid():
                         continue
-                if not self._filter_rect.isNull():
-                    if not _f.hasGeometry():
-                        continue
-                    if self._request.flags() & QgsFeatureRequest.ExactIntersect:
-                        # do exact check in case we're doing intersection
-                        if not self._select_rect_engine.intersects(_f.geometry().constGet()):
-                            continue
-                    else:
-                        if not _f.geometry().boundingBox().intersects(self._filter_rect):
-                            continue
                 f.setGeometry(_f.geometry())
                 self.geometryToDestinationCrs(f, self._transform)
                 f.setFields(_f.fields())
@@ -198,6 +207,9 @@ class PyProvider(QgsVectorDataProvider):
         self._extent.setMinimal()
         self._subset_string = ''
         self._crs = mlayer.crs()
+        self._spatialindex = None
+        if 'index=yes'in self._uri:
+            self.createSpatialIndex()
 
     def featureSource(self):
         return PyFeatureSource(self)
@@ -256,6 +268,9 @@ class PyProvider(QgsVectorDataProvider):
             added = True
             f_added.append(_f)
 
+            if self._spatialindex is not None:
+                self._spatialindex.insertFeature(_f)
+
         if len(f_added):
             self.updateExtents()
 
@@ -267,6 +282,8 @@ class PyProvider(QgsVectorDataProvider):
         removed = False
         for id in ids:
             if id in self._features:
+                if self._spatialindex is not None:
+                    self._spatialindex.deleteFeature(self._features[id])
                 del self._features[id]
                 removed = True
         if removed:
@@ -349,6 +366,10 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def createSpatialIndex(self):
+        if self._spatialindex is None:
+            self._spatialindex = QgsSpatialIndex()
+            for f in self._features:
+                self._spatialindex.insertFeature(f)
         return True
 
     def capabilities(self):
