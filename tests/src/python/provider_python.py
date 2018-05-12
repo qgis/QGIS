@@ -23,8 +23,13 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsGeometry,
+    QgsProject,
     QgsWkbTypes,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
     NULL,
+    QgsCoordinateTransform,
     QgsMemoryProviderUtils,
     QgsCoordinateReferenceSystem,
     QgsRectangle,
@@ -36,39 +41,83 @@ from qgis.core import (
     QgsApplication,
     QgsProviderRegistry,
     QgsProviderMetadata,
+    QgsGeometryEngine,
 )
 
 from qgis.PyQt.QtCore import QVariant
 
 
-class PyFeatureIterator(QgsFeatureIterator):
+class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def __init__(self, source, request):
-        super(PyFeatureIterator, self).__init__()
-        self._request = request
-        self._index = 0
+        super(PyFeatureIterator, self).__init__(request)
+        self._request = request if request is not None else QgsFeatureRequest()
         self._source = source
+        self._index = 0
+        self._transform = QgsCoordinateTransform()
+        if self._request.destinationCrs().isValid() and self._request.destinationCrs() != self._source._provider.crs():
+            self._transform = QgsCoordinateTransform(self._source._provider.crs(), self._request.destinationCrs(), self._request.transformContext())
+        self._filter_rect = self.filterRectToSourceCrs(self._transform)
+        if not self._filter_rect.isNull():
+            self._select_rect_geom = QgsGeometry.fromRect(self._filter_rect)
+            self._select_rect_engine = QgsGeometry.createGeometryEngine(self._select_rect_geom.constGet())
+            self._select_rect_engine.prepareGeometry()
+        else:
+            self._select_rect_engine = None
+            self._select_rect_geom = None
 
-    def nextFeature(self, f):
+    def fetchFeature(self, f):
         """fetch next feature, return true on success"""
         #virtual bool nextFeature( QgsFeature &f );
+        if self._index < 0:
+            f.setValid(False)
+            return False
         try:
-            _f = self._source._features[self._index]
-            self._index += 1
-            f.setAttributes(_f.attributes())
-            f.setGeometry(_f.geometry())
-            f.setValid(_f.isValid())
-            return True
-        except Exception as e:
+            found = False
+            while not found:
+                _f = self._source._features[list(self._source._features.keys())[self._index]]
+                self._index += 1
+                self._source._expression_context.setFeature(_f)
+                if self._request.filterType() == QgsFeatureRequest.FilterExpression:
+                    if not self._request.filterExpression().evaluate(self._source._expression_context):
+                        continue
+                if self._source._subset_expression:
+                    if not self._source._subset_expression.evaluate(self._source._expression_context):
+                        continue
+                elif self._request.filterType() == QgsFeatureRequest.FilterFids:
+                    if not _f.id() in self._request.filterFids():
+                        continue
+                elif self._request.filterType() == QgsFeatureRequest.FilterFid:
+                    if _f.id() != self._request.filterFid():
+                        continue
+                if not self._filter_rect.isNull():
+                    if not _f.hasGeometry():
+                        continue
+                    if self._request.flags() & QgsFeatureRequest.ExactIntersect:
+                        # do exact check in case we're doing intersection
+                        if not self._select_rect_engine.intersects(_f.geometry().constGet()):
+                            continue
+                    else:
+                        if not _f.geometry().boundingBox().intersects(self._filter_rect):
+                            continue
+                f.setGeometry(_f.geometry())
+                self.geometryToDestinationCrs(f, self._transform)
+                f.setFields(_f.fields())
+                f.setAttributes(_f.attributes())
+                f.setValid(_f.isValid())
+                f.setId(_f.id())
+                return True
+        except IndexError as e:
             f.setValid(False)
             return False
 
     def __iter__(self):
-        'Returns itself as an iterator object'
+        """Returns self as an iterator object"""
+        self._index = 0
         return self
 
     def __next__(self):
-        'Returns the next value till current is lower than high'
+        """Returns the next value till current is lower than high"""
         f = QgsFeature()
         if not self.nextFeature(f):
             raise StopIteration
@@ -78,12 +127,15 @@ class PyFeatureIterator(QgsFeatureIterator):
     def rewind(self):
         """reset the iterator to the starting position"""
         #virtual bool rewind() = 0;
+        if self._index < 0:
+            return False
         self._index = 0
+        return True
 
     def close(self):
         """end of iterating: free the resources / lock"""
         #virtual bool close() = 0;
-        self._index = 0
+        self._index = -1
         return True
 
 
@@ -94,10 +146,20 @@ class PyFeatureSource(QgsAbstractFeatureSource):
         self._provider = provider
         self._features = provider._features
 
+        self._expression_context = QgsExpressionContext()
+        self._expression_context.appendScope(QgsExpressionContextUtils.globalScope())
+        self._expression_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        self._expression_context.setFields(self._provider.fields())
+        if self._provider.subsetString():
+            self._subset_expression = QgsExpression(self._provider.subsetString())
+            self._subset_expression.prepare(self._expression_context)
+        else:
+            self._subset_expression = None
+
     def getFeatures(self, request):
         # QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
         # NOTE: this is the same as PyProvider.getFeatures
-        return PyFeatureIterator(self, request)
+        return QgsFeatureIterator(PyFeatureIterator(self, request))
 
 
 class PyProvider(QgsVectorDataProvider):
@@ -127,6 +189,7 @@ class PyProvider(QgsVectorDataProvider):
         super(PyProvider, self).__init__(uri)
         # Use the memory layer to parse the uri
         mlayer = QgsVectorLayer(uri, 'ml', 'memory')
+        self.setNativeTypes(mlayer.dataProvider().nativeTypes())
         self._uri = uri
         self._fields = mlayer.fields()
         self._wkbType = mlayer.wkbType()
@@ -134,49 +197,73 @@ class PyProvider(QgsVectorDataProvider):
         self._extent = QgsRectangle()
         self._extent.setMinimal()
         self._subset_string = ''
+        self._crs = mlayer.crs()
 
     def featureSource(self):
         return PyFeatureSource(self)
 
     def dataSourceUri(self, expandAuthConfig=True):
-        #QString dataSourceUri( bool expandAuthConfig = true ) const override;
         return self._uri
 
     def storageType(self):
-        #QString storageType() const override;
         return "Python test memory storage"
 
-    def getFeatures(self, request=None):
-        #QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-        return PyFeatureIterator(PyFeatureSource(self), request)
+    def getFeatures(self, request=QgsFeatureRequest()):
+        return QgsFeatureIterator(PyFeatureIterator(PyFeatureSource(self), request))
+
+    def uniqueValues(self, fieldIndex, limit=1):
+        results = set()
+        if fieldIndex >= 0 and fieldIndex < self.fields().count():
+            req = QgsFeatureRequest()
+            req.setFlags(QgsFeatureRequest.NoGeometry)
+            req.setSubsetOfAttributes([fieldIndex])
+            for f in self.getFeatures(req):
+                results.add(f.attributes()[fieldIndex])
+        return results
 
     def wkbType(self):
-        #QgsWkbTypes::Type wkbType() const override;
         return self._wkbType
 
     def featureCount(self):
-        # TODO: get from source
-        # long featureCount() const override;
-        return len(self._features)
+        if not self.subsetString():
+            return len(self._features)
+        else:
+            req = QgsFeatureRequest()
+            req.setFlags(QgsFeatureRequest.NoGeometry)
+            req.setSubsetOfAttributes([])
+            return len([f for f in self.getFeatures(req)])
 
     def fields(self):
-        #QgsFields fields() const override;
         return self._fields
 
     def addFeatures(self, flist, flags=None):
-        # bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
         added = False
+        f_added = []
         for f in flist:
-            f.setId(self.next_feature_id)
-            self._features[self.next_feature_id] = f
+            if f.hasGeometry() and (f.geometry().wkbType() != self.wkbType()):
+                return added, f_added
+
+        for f in flist:
+            _f = QgsFeature(self.fields())
+            _f.setGeometry(f.geometry())
+            attrs = [None for i in range(_f.fields().count())]
+            for i in range(min(len(attrs), len(f.attributes()))):
+                attrs[i] = f.attributes()[i]
+            _f.setAttributes(attrs)
+            _f.setId(self.next_feature_id)
+            self._features[self.next_feature_id] = _f
             self.next_feature_id += 1
             added = True
-        if added:
+            f_added.append(_f)
+
+        if len(f_added):
             self.updateExtents()
+
         return added, flist
 
     def deleteFeatures(self, ids):
-        #bool deleteFeatures( const QgsFeatureIds &id ) override;
+        if not ids:
+            return True
         removed = False
         for id in ids:
             if id in self._features:
@@ -187,21 +274,20 @@ class PyProvider(QgsVectorDataProvider):
         return removed
 
     def addAttributes(self, attrs):
-        #bool addAttributes( const QList<QgsField> &attributes ) override;
         try:
-            self._fields.append(attrs)
             for new_f in attrs:
+                if new_f.type() not in (QVariant.Int, QVariant.Double, QVariant.String, QVariant.Date, QVariant.Time, QVariant.DateTime, QVariant.LongLong, QVariant.StringList, QVariant.List):
+                    continue
+                self._fields.append(new_f)
                 for f in self._features.values():
                     old_attrs = f.attributes()
-                    old_attrs.app
                     old_attrs.append(None)
                     f.setAttributes(old_attrs)
             return True
-        except:
+        except Exception:
             return False
 
-    def renameAttributes(self, renameAttributes):
-        #bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
+    def renameAttributes(self, renamedAttributes):
         result = True
         for key, new_name in renamedAttributes:
             fieldIndex = key
@@ -216,7 +302,6 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def deleteAttributes(self, attributes):
-        #bool deleteAttributes( const QgsAttributeIds &attributes ) override;
         attrIdx = sorted(attributes.toList(), reverse=True)
 
         # delete attributes one-by-one with decreasing index
@@ -229,52 +314,55 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def changeAttributeValues(self, attr_map):
-        #bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
         for feature_id, attrs in attr_map.items():
             try:
                 f = self._features[feature_id]
             except KeyError:
                 continue
-            for k, v in attrs:
+            for k, v in attrs.items():
                 f.setAttribute(k, v)
         return True
 
     def changeGeometryValues(self, geometry_map):
-        #bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-        #TODO
+        for feature_id, geometry in geometry_map.items():
+            try:
+                f = self._features[feature_id]
+                f.setGeometry(geometry)
+            except KeyError:
+                continue
+        self.updateExtents()
         return True
 
+    def allFeatureIds(self):
+        return list(self._features.keys())
+
     def subsetString(self):
-        #QString subsetString() const override;
         return self._subset_string
 
     def setSubsetString(self, subsetString):
-        #bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
         self._subset_string = subsetString
+        self.updateExtents()
+        self.clearMinMaxCache()
+        self.dataChanged.emit()
 
     def supportsSubsetString(self):
-        #bool supportsSubsetString() const override { return true; }
         return True
 
     def createSpatialIndex(self):
-        #bool createSpatialIndex() override;
         return True
 
     def capabilities(self):
-        #QgsVectorDataProvider::Capabilities capabilities() const override;
         return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
 
     #/* Implementation of functions from QgsDataProvider */
 
     def name(self):
-        #QString name() const override;
         return self.providerKey()
 
     def extent(self):
-        #QgsRectangle extent() const override;
-        if self._extent.isEmpty() and not self._features:
+        if self._extent.isEmpty() and self._features:
             self._extent.setMinimal()
-            if self._subset_string.isEmpty():
+            if not self._subset_string:
                 # fast way - iterate through all features
                 for feat in self._features.values():
                     if feat.hasGeometry():
@@ -284,18 +372,15 @@ class PyProvider(QgsVectorDataProvider):
                     if f.hasGeometry():
                         self._extent.combineExtentWith(f.geometry().boundingBox())
 
-        elif self._features:
+        elif not self._features:
             self._extent.setMinimal()
-        return self._extent
+        return QgsRectangle(self._extent)
 
     def updateExtents(self):
-        #void updateExtents() override;
         self._extent.setMinimal()
 
     def isValid(self):
-        #bool isValid() const override;
         return True
 
     def crs(self):
-        #QgsCoordinateReferenceSystem crs() const override;
-        return QgsCoordinateReferenceSystem(4326)
+        return self._crs

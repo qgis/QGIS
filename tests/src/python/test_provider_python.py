@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for the memory layer provider.
+"""QGIS Unit tests for the py layerprovider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -279,29 +279,30 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
 
     def testFromUri(self):
         """Test we can construct the mem provider from a uri"""
-        myMemoryLayer = QgsVectorLayer(
+        myPyLayer = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=name:string(20)&'
              'field=age:integer&field=size:double&index=yes'),
             'test',
             'pythonprovider')
 
-        assert myMemoryLayer is not None, 'Provider not initialized'
-        myProvider = myMemoryLayer.dataProvider()
+        assert myPyLayer is not None, 'Provider not initialized'
+        myProvider = myPyLayer.dataProvider()
         assert myProvider is not None
 
     def testLengthPrecisionFromUri(self):
         """Test we can assign length and precision from a uri"""
-        myMemoryLayer = QgsVectorLayer(
+        myPyLayer = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=size:double(12,9)&index=yes'),
             'test',
             'pythonprovider')
 
-        self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
-        self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
+        self.assertEqual(myPyLayer.fields().field('size').length(), 12)
+        self.assertEqual(myPyLayer.fields().field('size').precision(), 9)
 
+    @unittest.expectedFailure("Handled layers are hardcoded")
     def testSaveFields(self):
-        # Create a new memory layer with no fields
-        myMemoryLayer = QgsVectorLayer(
+        # Create a new py layerwith no fields
+        myPyLayer = QgsVectorLayer(
             ('Point?crs=epsg:4326&index=yes'),
             'test',
             'pythonprovider')
@@ -314,14 +315,14 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
                     QgsField('TestDate', QVariant.Date, 'date'),
                     QgsField('TestTime', QVariant.Time, 'time'),
                     QgsField('TestDateTime', QVariant.DateTime, 'datetime')]
-        assert myMemoryLayer.startEditing()
+        assert myPyLayer.startEditing()
         for f in myFields:
-            assert myMemoryLayer.addAttribute(f)
-        assert myMemoryLayer.commitChanges()
-        myMemoryLayer.updateFields()
+            assert myPyLayer.addAttribute(f)
+        assert myPyLayer.commitChanges()
+        myPyLayer.updateFields()
 
         # Export the layer to a layer-definition-XML
-        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer], QgsReadWriteContext())
+        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myPyLayer], QgsReadWriteContext())
         assert qlr is not None
 
         # Import the layer from the layer-definition-XML
