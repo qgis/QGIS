@@ -223,50 +223,50 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setMode( Mode mode ) { mMode = mode; }
 
     /**
-     * get mUseSymmetricMode, which says if we want to classify symmetric around a given value
-     * \since QGIS 3.2
+     * Get if we want to classify symmetric around a given value
+     * \since QGIS 3.4
      */
-    bool useSymmetricMode() { return mUseSymmetricMode; }
+    bool useSymmetricMode() const { return mUseSymmetricMode; }
 
     /**
-     * set mUseSymmetricMode, which says if we want to classify symmetric around a given value
-     * \since QGIS 3.2
+     * Set if we want to classify symmetric around a given value
+     * \since QGIS 3.4
      */
     void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
 
     /**
-     * get mSymmetryPoint, the pivot value for symmetric classification
-     * \since QGIS 3.2
+     * Get the pivot value for symmetric classification
+     * \since QGIS 3.4
      */
-    double symmetryPoint() { return mSymmetryPoint; }
+    double symmetryPoint() const { return mSymmetryPoint; }
 
     /**
-     * set the pivot point
-     * \since QGIS 3.2
+     * Set the pivot point
+     * \since QGIS 3.4
      */
     void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
 
     /**
-     * get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
-     * \since QGIS 3.2
+     * Get mListForCboPrettyBreaks, which is needed to recover this list in saved configuration, or when property window in closed and reopened
+     * \since QGIS 3.4
      */
-    QStringList listForCboPrettyBreaks() { return mListForCboPrettyBreaks; }
+    QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; }
 
     /**
-     * set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
-     * \since QGIS 3.2
+     * Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
+     * \since QGIS 3.4
      */
     void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
 
     /**
-     *  get mAstride, a bool saying if we want to have a central class astride the pivot value
-     * \since QGIS 3.2
+     *  Get if we want to have a central class astride the pivot value
+     * \since QGIS 3.4
      */
-    bool astride() { return mAstride; }
+    bool astride() const { return mAstride; }
 
     /**
-     * set mAstride, a bool saying if we want to have a central class astride the pivot value
-     * \since QGIS 3.2
+     * Set if we want a central class astride the pivot value
+     * \since QGIS 3.4
      */
     void setAstride( bool astride ) { mAstride = astride; }
 
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
      * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 

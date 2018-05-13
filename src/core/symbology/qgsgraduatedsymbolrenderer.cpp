@@ -1217,7 +1217,8 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
       breaks.append( mListForCboPrettyBreaks.at( i ) );
       breaks.append( QStringLiteral( "/" ) );
     }
-    breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size() - 1 ) );
+    if ( mListForCboPrettyBreaks.size() > 0 ) //make sure we can go at size-1
+      breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size() - 1 ) ); //add the last break
     symmetricModeElem.setAttribute( QStringLiteral( "valueForCboPrettyBreaks" ), breaks );
   }
 
