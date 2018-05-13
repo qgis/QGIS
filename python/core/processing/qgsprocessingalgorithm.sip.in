@@ -48,6 +48,25 @@ Abstract base class for processing algorithms.
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
 
 
+    enum LogicalParameterGroupType
+    {
+      AtLeastOneRequired,
+      AllRequired,
+      MutuallyExclusiveOptional,
+      MutuallyExclusiveRequired,
+    };
+
+    struct LogicalParameterGroup
+    {
+      QString name;
+
+      LogicalParameterGroupType type;
+
+      QSet<QString> parameters;
+
+      QList< QgsProcessingAlgorithm::LogicalParameterGroup > childGroups;
+    };
+
     QgsProcessingAlgorithm();
 %Docstring
 Constructor for QgsProcessingAlgorithm.
@@ -437,6 +456,24 @@ occur.
 %Docstring
 Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
 definition.
+%End
+
+    void addLogicalParameterGroup( const QgsProcessingAlgorithm::LogicalParameterGroup &group );
+%Docstring
+Adds a new logical parameter ``group`` to the algorithm. Logical parameter groups specify how sets of related optional parameters are handled.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`logicalParameterGroups`
+%End
+
+    QList< QgsProcessingAlgorithm::LogicalParameterGroup > logicalParameterGroups() const;
+%Docstring
+Returns the list of logical parameter groups used by the algorithm.
+
+.. versionadded:: 3.2
+
+.. seealso:: :py:func:`addLogicalParameterGroup`
 %End
 
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition /Transfer/ );

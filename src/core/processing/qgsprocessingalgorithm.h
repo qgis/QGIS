@@ -78,6 +78,43 @@ class CORE_EXPORT QgsProcessingAlgorithm
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * Parameter group types.
+     * \since QGIS 3.2
+    */
+    enum LogicalParameterGroupType
+    {
+      AtLeastOneRequired, //!< At least one of the grouped parameters must be specified, and more than one may be specified
+      AllRequired, //! All grouped parameters must be specified
+      MutuallyExclusiveOptional, //!< At most one of the grouped parameters must be specified
+      MutuallyExclusiveRequired, //!< One parameter from the group MUST be specified
+    };
+
+    /**
+     * Contains settings related to a single group of linked parameters.
+     *
+     * Both the group's parameters and childGroups are considered when
+     * validating the group - so a group with type AllRequired
+     * will only be valid if all parameters listed by parameter name
+     * AND all childGroups are valid.
+     *
+     * \since QGIS 3.2
+    */
+    struct LogicalParameterGroup
+    {
+      //! Group name, used for notifying users of validation errors
+      QString name;
+
+      //! Type of group
+      LogicalParameterGroupType type = AllRequired;
+
+      //! Names of parameters contained within the group
+      QSet<QString> parameters;
+
+      //! Child groups
+      QList< QgsProcessingAlgorithm::LogicalParameterGroup > childGroups;
+    };
+
+    /**
      * Constructor for QgsProcessingAlgorithm.
      *
      * initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
@@ -443,6 +480,22 @@ class CORE_EXPORT QgsProcessingAlgorithm
     void removeParameter( const QString &name );
 
     /**
+     * Adds a new logical parameter \a group to the algorithm. Logical parameter groups specify how sets of related optional parameters are handled.
+     *
+     * \since QGIS 3.2
+     * \see logicalParameterGroups()
+     */
+    void addLogicalParameterGroup( const QgsProcessingAlgorithm::LogicalParameterGroup &group );
+
+    /**
+     * Returns the list of logical parameter groups used by the algorithm.
+     *
+     * \since QGIS 3.2
+     * \see addLogicalParameterGroup()
+     */
+    QList< QgsProcessingAlgorithm::LogicalParameterGroup > logicalParameterGroups() const;
+
+    /**
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
      * as a result of a duplicate name).
@@ -790,6 +843,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
+    QgsProcessingAlgorithm::LogicalParameterGroup mLogicalParameterGroups;
     QgsProcessingOutputDefinitions mOutputs;
     bool mHasPrepared = false;
     bool mHasExecuted = false;
@@ -801,6 +855,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
+    friend class DummyAlgorithm;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

@@ -137,8 +137,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     return
             ok, msg = self.algorithm().checkParameterValues(parameters, context)
             if msg:
-                QMessageBox.warning(
-                    self, self.tr('Unable to execute algorithm'), msg)
+                self.messageBar().pushMessage("", msg,
+                                              level=Qgis.Warning, duration=5)
                 return
             self.runButton().setEnabled(False)
             self.cancelButton().setEnabled(False)

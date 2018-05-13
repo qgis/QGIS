@@ -15,3 +15,4 @@ QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessin
 QgsProcessingParameterRasterDestination|output|Cumulative cost|None|True
 QgsProcessingParameterRasterDestination|nearest|Cost allocation map|None|True
 QgsProcessingParameterRasterDestination|outdir|Movement directions|None|True
+#logical_group=MutuallyExclusiveRequired:start_coordinates|start_points|start_raster
