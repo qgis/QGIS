@@ -773,7 +773,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 
   //form context variable
-  sVariableHelpTexts.insert( QStringLiteral( "current_form_geometry" ), QCoreApplication::translate( "current_form_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used for in a form/row context to filter the related features." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used for in a form/row context to filter the related features." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

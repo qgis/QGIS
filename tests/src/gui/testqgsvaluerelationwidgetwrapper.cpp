@@ -155,7 +155,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   cfg_municipality.insert( QStringLiteral( "NofColumns" ), 1 );
   cfg_municipality.insert( QStringLiteral( "AllowNull" ), false );
   cfg_municipality.insert( QStringLiteral( "OrderByValue" ), true );
-  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" =  get_current_form_field_value('fk_province')" ) );
+  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" =  current_value('fk_province')" ) );
   cfg_municipality.insert( QStringLiteral( "UseCompleter" ), false );
   w_municipality.setConfig( cfg_municipality );
   w_municipality.widget();
@@ -170,7 +170,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
 
   // Filter by geometry
-  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_form_geometry, 1 ), $geometry)" );
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
   w_municipality.setConfig( cfg_municipality );
   w_municipality.setFeature( f3 );
   QCOMPARE( w_municipality.mComboBox->count(), 1 );
@@ -183,7 +183,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Dreamland By The Clouds" ) );
 
   // Enlarge the buffer
-  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_form_geometry, 3 ), $geometry)" );
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 3 ), $geometry)" );
   w_municipality.setConfig( cfg_municipality );
   w_municipality.setFeature( f3 );
   QCOMPARE( w_municipality.mComboBox->count(), 2 );

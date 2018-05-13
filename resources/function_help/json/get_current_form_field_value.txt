@@ -1,7 +1,7 @@
 {
-  "name": "get_current_form_field_value",
+  "name": "current_value",
   "type": "function",
   "description": "Returns the current value of a field in the form or table row currently being edited.",
   "arguments": [ {"arg":"field_name","description":"a field name in the current form or table row"}],
-  "examples": [ { "expression":"get_current_form_field_value( 'FIELD_NAME' )","returns":"The current value of field 'FIELD_NAME'."} ]
+  "examples": [ { "expression":"current_value( 'FIELD_NAME' )","returns":"The current value of field 'FIELD_NAME'."} ]
 }
