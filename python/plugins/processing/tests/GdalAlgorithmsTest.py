@@ -462,61 +462,6 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
              'd:/temp/check.jpg'])
 
-    def testGdalCalc(self):
-        context = QgsProcessingContext()
-        feedback = QgsProcessingFeedback()
-        source = os.path.join(testDataPath, 'dem.tif')
-        alg = gdalcalc()
-        alg.initAlgorithm()
-
-        output = 'd:/temp/check.jpg'
-
-        # default execution
-        formula = 'A*2' # default formula
-        self.assertEqual(
-            alg.getConsoleCommands({
-                'INPUT_A': source,
-                'BAND_A': 1,
-                'FORMULA': formula,
-                'BAND_D': -1,
-                'NO_DATA': '',
-                'BAND_F': -1,
-                'BAND_B': -1,
-                'EXTRA': '',
-                'RTYPE': 5,
-                'INPUT_F': None,
-                'BAND_E': -1,
-                'INPUT_D': None,
-                'INPUT_B': None,
-                'BAND_C': -1,
-                'INPUT_E': None,
-                'INPUT_C': None,
-                'OUTPUT': output}, context, feedback),
-            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
-
-        # check that formula is not escaped and formula is returned as it is
-        formula = 'A * 2'  # <--- add spaces in the formula
-        self.assertEqual(
-            alg.getConsoleCommands({
-                'INPUT_A': source,
-                'BAND_A': 1,
-                'FORMULA': formula,
-                'BAND_D': -1,
-                'NO_DATA': '',
-                'BAND_F': -1,
-                'BAND_B': -1,
-                'EXTRA': '',
-                'RTYPE': 5,
-                'INPUT_F': None,
-                'BAND_E': -1,
-                'INPUT_D': None,
-                'INPUT_B': None,
-                'BAND_C': -1,
-                'INPUT_E': None,
-                'INPUT_C': None,
-                'OUTPUT': output}, context, feedback),
-            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
-
     def testContour(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -635,6 +580,61 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-p mercator -w all -r average -s EPSG:3111 ' +
              source + ' ' +
              'd:/temp/'])
+
+    def testGdalCalc(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = gdalcalc()
+        alg.initAlgorithm()
+
+        output = 'd:/temp/check.jpg'
+
+        # default execution
+        formula = 'A*2' # default formula
+        self.assertEqual(
+            alg.getConsoleCommands({
+                'INPUT_A': source,
+                'BAND_A': 1,
+                'FORMULA': formula,
+                'BAND_D': -1,
+                'NO_DATA': '',
+                'BAND_F': -1,
+                'BAND_B': -1,
+                'EXTRA': '',
+                'RTYPE': 5,
+                'INPUT_F': None,
+                'BAND_E': -1,
+                'INPUT_D': None,
+                'INPUT_B': None,
+                'BAND_C': -1,
+                'INPUT_E': None,
+                'INPUT_C': None,
+                'OUTPUT': output}, context, feedback),
+            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+
+        # check that formula is not escaped and formula is returned as it is
+        formula = 'A * 2'  # <--- add spaces in the formula
+        self.assertEqual(
+            alg.getConsoleCommands({
+                'INPUT_A': source,
+                'BAND_A': 1,
+                'FORMULA': formula,
+                'BAND_D': -1,
+                'NO_DATA': '',
+                'BAND_F': -1,
+                'BAND_B': -1,
+                'EXTRA': '',
+                'RTYPE': 5,
+                'INPUT_F': None,
+                'BAND_E': -1,
+                'INPUT_D': None,
+                'INPUT_B': None,
+                'BAND_C': -1,
+                'INPUT_E': None,
+                'INPUT_C': None,
+                'OUTPUT': output}, context, feedback),
+            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
     def testGdalTindex(self):
         context = QgsProcessingContext()
