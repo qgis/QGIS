@@ -219,44 +219,64 @@ class gdalcalc(GdalAlgorithm):
             arguments.append(extra)
         #if debug:
         #    arguments.append('--debug')
-        arguments.append('-A')
-        layer_a=self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
-        if layer_a is None:
+        layer=self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
+        if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
-        arguments.append(layer_a.source())
+        arguments.append('-A')
+        arguments.append(layer.source())
         if self.parameterAsString(parameters, self.BAND_A, context):
             arguments.append('--A_band ' + self.parameterAsString(parameters, self.BAND_A, context))
 
-        if self.parameterAsLayer(parameters, self.INPUT_B, context):
+        if self.INPUT_B in parameters and parameters[self.INPUT_B] is not None:
+            layer=self.parameterAsRasterLayer(parameters, self.INPUT_B, context)
+            if layer is None:
+                raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_B))
             arguments.append('-B')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_B, context).source())
+            arguments.append(layer.source())
             if self.parameterAsString(parameters, self.BAND_B, context):
                 arguments.append('--B_band ' + self.parameterAsString(parameters, self.BAND_B, context))
-        if self.parameterAsLayer(parameters, self.INPUT_C, context):
+
+        if self.INPUT_C in parameters and parameters[self.INPUT_C] is not None:
+            layer=self.parameterAsRasterLayer(parameters, self.INPUT_C, context)
+            if layer is None:
+                raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_C))
             arguments.append('-C')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_C, context).source())
+            arguments.append(layer.source())
             if self.parameterAsString(parameters, self.BAND_C, context):
                 arguments.append('--C_band ' + self.parameterAsString(parameters, self.BAND_C, context))
-        if self.parameterAsLayer(parameters, self.INPUT_D, context):
+
+        if self.INPUT_D in parameters and parameters[self.INPUT_D] is not None:
+            layer=self.parameterAsRasterLayer(parameters, self.INPUT_D, context)
+            if layer is None:
+                raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_D))
             arguments.append('-D')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_D, context).source())
+            arguments.append(layer.source())
             if self.parameterAsString(parameters, self.BAND_D, context):
                 arguments.append('--D_band ' + self.parameterAsString(parameters, self.BAND_D, context))
-        if self.parameterAsLayer(parameters, self.INPUT_E, context):
+
+        if self.INPUT_E in parameters and parameters[self.INPUT_E] is not None:
+            layer=self.parameterAsRasterLayer(parameters, self.INPUT_E, context)
+            if layer is None:
+                raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_E))
             arguments.append('-E')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_E, context).source())
+            arguments.append(layer.source())
             if self.parameterAsString(parameters, self.BAND_E, context):
                 arguments.append('--E_band ' + self.parameterAsString(parameters, self.BAND_E, context))
-        if self.parameterAsLayer(parameters, self.INPUT_F, context):
+
+        if self.INPUT_F in parameters and parameters[self.INPUT_F] is not None:
+            layer=self.parameterAsRasterLayer(parameters, self.INPUT_F, context)
+            if layer is None:
+                raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_F))
             arguments.append('-F')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_F, context).source())
+            arguments.append(layer.source())
             if self.parameterAsString(parameters, self.BAND_F, context):
                 arguments.append('--F_band ' + self.parameterAsString(parameters, self.BAND_F, context))
-        arguments.append('--outfile')
-        arguments.append(out)
 
         options=self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        arguments.append('--outfile')
+        arguments.append(out)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
