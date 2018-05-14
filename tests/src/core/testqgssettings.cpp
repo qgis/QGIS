@@ -31,6 +31,7 @@ class TestQgsSettings : public QObject
 
   private slots:
     void enumValue();
+    void flagValue();
 };
 
 
@@ -59,12 +60,17 @@ void TestQgsSettings::enumValue()
   QgsUnitTypes::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
   settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
+  // auto conversion of old settings (int to str)
+  QCOMPARE( settings.value( "qgis/testing/my_value_for_units" ), QStringLiteral( "LayoutCentimeters" ) );
   QgsUnitTypes::LayoutUnit v3s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v3s, QgsUnitTypes::LayoutCentimeters );
   QString v3ss = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), QStringLiteral( "myDummyValue" ) ).toString();
   QCOMPARE( v3ss, QStringLiteral( "LayoutCentimeters" ) );
+}
 
-  // test for flags
+void TestQgsSettings::flagValue()
+{
+  QgsSettings settings;
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
   QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), 1e8 ); // invalid
@@ -74,6 +80,8 @@ void TestQgsSettings::enumValue()
   settings.setValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), static_cast<int>( pointAndPolygon ) );
   QgsMapLayerProxyModel::Filters v5 = settings.flagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine, QgsSettings::NoSection );
   QCOMPARE( v5, pointAndPolygon );
+  // auto conversion of old settings (int to str)
+  QCOMPARE( settings.value( "qgis/testing/my_value_for_a_flag" ), QStringLiteral( "PointLayer|PolygonLayer" ) );
 
   settings.setFlagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndPolygon, QgsSettings::NoSection );
   QgsMapLayerProxyModel::Filters v5s = settings.flagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndLine, QgsSettings::NoSection );

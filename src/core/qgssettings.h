@@ -232,9 +232,10 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     template <class T>
     T enumValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection ) const
+                 const Section section = NoSection )
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
         QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
@@ -245,16 +246,29 @@ class CORE_EXPORT QgsSettings : public QObject
 
       if ( metaEnum.isValid() )
       {
+        // read as string
         QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
       }
       if ( !ok )
       {
+        // if failed, try to read as int (old behavior)
+        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+        // then the method could be marked as const
         v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
-        if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) ) )
+        if ( metaEnum.isValid() )
         {
-          v = defaultValue;
+          if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
+          {
+            v = defaultValue;
+          }
+          else
+          {
+            // found setting as an integer
+            // convert the setting to the new form (string)
+            setEnumValue( key, v, section );
+          }
         }
       }
 
@@ -273,6 +287,7 @@ class CORE_EXPORT QgsSettings : public QObject
                        const Section section = NoSection )
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
         setValue( key, metaEnum.valueToKey( value ), section );
@@ -294,9 +309,10 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     template <class T>
     T flagValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection ) const
+                 const Section section = NoSection )
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
         QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
@@ -305,19 +321,31 @@ class CORE_EXPORT QgsSettings : public QObject
       T v;
       bool ok = false;
 
-
       if ( metaEnum.isValid() )
       {
+        // read as string
         QByteArray ba = value( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
       }
       if ( !ok )
       {
+        // if failed, try to read as int (old behavior)
+        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+        // then the method could be marked as const
         v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
-        if ( metaEnum.isValid() && ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() ) )
+        if ( metaEnum.isValid() )
         {
-          v = defaultValue;
+          if ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() )
+          {
+            v = defaultValue;
+          }
+          else
+          {
+            // found setting as an integer
+            // convert the setting to the new form (string)
+            setFlagValue( key, v, section );
+          }
         }
       }
 
@@ -336,6 +364,7 @@ class CORE_EXPORT QgsSettings : public QObject
                        const Section section = NoSection )
     {
       QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
         setValue( key, metaEnum.valueToKeys( value ), section );
