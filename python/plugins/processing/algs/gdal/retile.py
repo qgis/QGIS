@@ -212,10 +212,10 @@ class retile(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_retile.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_retile.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

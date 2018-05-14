@@ -120,6 +120,9 @@ class GridLinear(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
+    def commandName(self):
+        return 'gdal_grid'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
@@ -151,4 +154,4 @@ class GridLinear(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(out)
 
-        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

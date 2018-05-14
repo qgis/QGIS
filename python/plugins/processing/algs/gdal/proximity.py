@@ -187,10 +187,10 @@ class proximity(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_proximity.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_proximity.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

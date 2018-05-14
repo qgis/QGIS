@@ -52,6 +52,9 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
 
+    def tags(self):
+        return ['ogr', 'gdal', self.commandName()]
+
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 

@@ -126,10 +126,10 @@ class fillnodata(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_fillnodata.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_fillnodata.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

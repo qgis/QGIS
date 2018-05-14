@@ -104,6 +104,9 @@ class buildvrt(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
+    def commandName(self):
+        return "gdalbuildvrt"
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-resolution')
@@ -121,4 +124,4 @@ class buildvrt(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)
 
-        return ['gdalbuildvrt', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

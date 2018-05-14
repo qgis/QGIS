@@ -94,6 +94,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         for a in p.algorithms():
             self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
 
+    def testCommandNameInTags(self):
+        # Test that algorithms commandName is present in provided tags
+        p = QgsApplication.processingRegistry().providerById('gdal')
+        for a in p.algorithms():
+            self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
+
     def testNoParameters(self):
         # Test that algorithms throw QgsProcessingExceptions and not base Python
         # exceptions when no parameters specified

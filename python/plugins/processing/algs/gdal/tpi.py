@@ -77,7 +77,7 @@ class tpi(GdalAlgorithm):
         return 'tpitopographicpositionindex'
 
     def displayName(self):
-        return self.tr('TPI (Topographic Position Index)')
+        return self.tr('Topographic Position Index (TPI)')
 
     def group(self):
         return self.tr('Raster analysis')

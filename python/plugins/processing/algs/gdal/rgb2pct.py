@@ -96,9 +96,9 @@ class rgb2pct(GdalAlgorithm):
         arguments.append(out)
 
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'rgb2pct.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['rgb2pct.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         return commands

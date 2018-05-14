@@ -219,4 +219,4 @@ class rasterize(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(out)
 
-        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

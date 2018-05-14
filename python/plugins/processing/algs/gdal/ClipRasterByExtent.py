@@ -144,4 +144,4 @@ class ClipRasterByExtent(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
