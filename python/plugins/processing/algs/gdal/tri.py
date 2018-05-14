@@ -76,13 +76,16 @@ class tri(GdalAlgorithm):
         return 'triterrainruggednessindex'
 
     def displayName(self):
-        return self.tr('TRI (Terrain Ruggedness Index)')
+        return self.tr('Terrain Ruggedness Index (TRI)')
 
     def group(self):
         return self.tr('Raster analysis')
 
     def groupId(self):
         return 'rasteranalysis'
+
+    def tags(self):
+        return [self.commandName()]
 
     def commandName(self):
         return 'gdaldem'

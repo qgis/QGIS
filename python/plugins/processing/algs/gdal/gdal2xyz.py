@@ -72,6 +72,9 @@ class gdal2xyz(GdalAlgorithm):
     def groupId(self):
         return 'rasterconversion'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal2xyz'
 
@@ -92,9 +95,9 @@ class gdal2xyz(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal2xyz.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal2xyz.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         return commands

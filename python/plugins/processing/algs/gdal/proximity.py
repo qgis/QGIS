@@ -132,6 +132,9 @@ class proximity(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal_proximity'
 
@@ -187,10 +190,10 @@ class proximity(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_proximity.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_proximity.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

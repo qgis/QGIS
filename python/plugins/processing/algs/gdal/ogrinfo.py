@@ -70,6 +70,9 @@ class ogrinfo(GdalAlgorithm):
     def groupId(self):
         return 'vectormiscellaneous'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'ogrinfo'
 

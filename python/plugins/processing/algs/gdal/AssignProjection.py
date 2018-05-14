@@ -74,6 +74,9 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return 'rasterprojections'
 
+    def tags(self):
+        return ['gdal_edit']
+
     def commandName(self):
         return 'gdal_edit'
 
@@ -94,10 +97,10 @@ class AssignProjection(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_edit.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_edit.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         self.setOutputValue(self.OUTPUT, fileName)
         return commands

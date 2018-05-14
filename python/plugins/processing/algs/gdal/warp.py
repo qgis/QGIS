@@ -159,6 +159,9 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdalwarp'
 

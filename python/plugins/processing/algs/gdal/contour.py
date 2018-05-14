@@ -122,6 +122,9 @@ class contour(GdalAlgorithm):
     def groupId(self):
         return 'rasterextraction'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal_contour'
 

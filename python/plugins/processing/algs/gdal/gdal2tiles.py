@@ -155,6 +155,9 @@ class gdal2tiles(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal2tiles'
 
@@ -228,10 +231,10 @@ class gdal2tiles(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal2tiles.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal2tiles.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

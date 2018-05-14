@@ -156,6 +156,9 @@ class rasterize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal_rasterize'
 
@@ -219,4 +222,4 @@ class rasterize(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(out)
 
-        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

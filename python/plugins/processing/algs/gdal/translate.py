@@ -111,6 +111,9 @@ class translate(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdal_translate'
 

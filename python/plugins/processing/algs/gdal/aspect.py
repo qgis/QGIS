@@ -97,6 +97,9 @@ class aspect(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'gdaldem'
 

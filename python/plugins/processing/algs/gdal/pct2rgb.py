@@ -78,6 +78,9 @@ class pct2rgb(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '8-to-24-bits.png'))
 
+    def tags(self):
+        return [self.commandName()]
+
     def commandName(self):
         return 'pct2rgb'
 
@@ -103,9 +106,9 @@ class pct2rgb(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'pct2rgb.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['pct2rgb.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         return commands

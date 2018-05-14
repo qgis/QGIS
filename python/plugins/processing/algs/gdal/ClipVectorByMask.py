@@ -104,4 +104,4 @@ class ClipVectorByMask(GdalAlgorithm):
         if outputFormat:
             arguments.append('-f {}'.format(outputFormat))
 
-        return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

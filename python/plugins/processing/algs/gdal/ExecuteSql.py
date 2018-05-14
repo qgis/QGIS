@@ -85,6 +85,9 @@ class ExecuteSql(GdalAlgorithm):
     def groupId(self):
         return 'vectormiscellaneous'
 
+    def commandName(self):
+        return "ogr2ogr"
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         sql = self.parameterAsString(parameters, self.SQL, context)
@@ -114,4 +117,4 @@ class ExecuteSql(GdalAlgorithm):
         if outputFormat:
             arguments.append('-f {}'.format(outputFormat))
 
-        return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
