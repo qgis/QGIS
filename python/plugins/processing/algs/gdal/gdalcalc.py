@@ -191,9 +191,6 @@ class gdalcalc(GdalAlgorithm):
         return 'gdal_calc'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        if not parameters:
-            raise QgsProcessingException
-
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         extra = self.parameterAsString(parameters, self.EXTRA, context)
         # if extra is not None:
