@@ -354,8 +354,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString createFilterExpression() const;
 
-    //void updateWidgetFeature( QgsEditorWidgetWrapper *w );
-
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
