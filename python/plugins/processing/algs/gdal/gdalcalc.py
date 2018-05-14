@@ -43,6 +43,7 @@ from processing.tools.system import isWindows
 
 class gdalcalc(GdalAlgorithm):
 
+    OPTIONS = 'OPTIONS'
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'
     INPUT_C = 'INPUT_C'
@@ -71,100 +72,84 @@ class gdalcalc(GdalAlgorithm):
             QgsProcessingParameterRasterLayer(
                 self.INPUT_A,
                 self.tr('Input layer A'),
-                optional=False)
-        )
+                optional=False))
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_A,
                 self.tr('Number of raster band for A'),
-                parentLayerParameterName=self.INPUT_A)
-        )
+                parentLayerParameterName=self.INPUT_A))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_B,
                 self.tr('Input layer B'),
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_B,
                 self.tr('Number of raster band for B'),
                 parentLayerParameterName=self.INPUT_B,
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_C,
                 self.tr('Input layer C'),
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
-            QgsProcessingParameterBand(
-                self.BAND_C,
-                self.tr('Number of raster band for C'),
-                parentLayerParameterName=self.INPUT_C,
-                optional=True)
-        )
+            QgsProcessingParameterBand(self.BAND_C,
+                                       self.tr('Number of raster band for C'),
+                                       parentLayerParameterName=self.INPUT_C,
+                                       optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_D,
                 self.tr('Input layer D'),
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_D,
                 self.tr('Number of raster band for D'),
                 parentLayerParameterName=self.INPUT_D,
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_E,
                 self.tr('Input layer E'),
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_E,
                 self.tr('Number of raster band for E'),
                 parentLayerParameterName=self.INPUT_E,
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_F,
                 self.tr('Input layer F'),
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_F,
                 self.tr('Number of raster band for F'),
                 parentLayerParameterName=self.INPUT_F,
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterString(
                 self.FORMULA,
                 self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'),
                 'A*2',
-                optional=False)
-        )
+                optional=False))
         self.addParameter(
             QgsProcessingParameterString(
                 self.NO_DATA,
                 self.tr('Set output nodata value'),
                 '',
-                optional=True)
-        )
+                optional=True))
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.RTYPE,
                 self.tr('Output raster type'),
                 options=self.TYPE,
-                defaultValue=5)
-        )
+                defaultValue=5))
         #self.addParameter(ParameterBoolean(
         #    self.DEBUG, self.tr('Print debugging information'), False))
         self.addParameter(
@@ -172,13 +157,23 @@ class gdalcalc(GdalAlgorithm):
                 self.EXTRA,
                 self.tr('Additional creation parameters'),
                 '',
-                optional=True)
-        )
+                optional=True))
+
+        # advanced raster params
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT,
-                self.tr('Calculated'))
-        )
+                self.tr('Calculated')))
 
     def name(self):
         return 'rastercalculator'
@@ -256,5 +251,9 @@ class gdalcalc(GdalAlgorithm):
                 arguments.append('--F_band ' + self.parameterAsString(parameters, self.BAND_F, context))
         arguments.append('--outfile')
         arguments.append(out)
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
