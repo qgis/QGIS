@@ -219,11 +219,14 @@ class gdalcalc(GdalAlgorithm):
             arguments.append(extra)
         #if debug:
         #    arguments.append('--debug')
-        if self.parameterAsLayer(parameters, self.INPUT_A, context):
-            arguments.append('-A')
-            arguments.append(self.parameterAsLayer(parameters, self.INPUT_A, context).source())
+        arguments.append('-A')
+        layer_a=self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
+        if layer_a is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
+        arguments.append(layer_a.source())
         if self.parameterAsString(parameters, self.BAND_A, context):
             arguments.append('--A_band ' + self.parameterAsString(parameters, self.BAND_A, context))
+
         if self.parameterAsLayer(parameters, self.INPUT_B, context):
             arguments.append('-B')
             arguments.append(self.parameterAsLayer(parameters, self.INPUT_B, context).source())
