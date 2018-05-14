@@ -26,7 +26,8 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "layouts" )
     <<  QStringLiteral( "features" )
     <<  QStringLiteral( "calculator" )
-    <<  QStringLiteral( "bookmarks" );
+    <<  QStringLiteral( "bookmarks" )
+    <<  QStringLiteral( "optionpages" );
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )

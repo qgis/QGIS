@@ -1068,6 +1068,20 @@ QgsOptions::~QgsOptions()
   delete mSettings;
 }
 
+QMap< QString, QString > QgsOptions::pageWidgetNameMap()
+{
+  QMap< QString, QString > pageNames;
+  for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    QListWidgetItem *item = mOptionsListWidget->item( idx );
+    QString title = item->text();
+    QString name = currentPage->objectName();
+    pageNames.insert( title, name );
+  }
+  return pageNames;
+}
+
 void QgsOptions::setCurrentPage( const QString &pageWidgetName )
 {
   //find the page with a matching widget name

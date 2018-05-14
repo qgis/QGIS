@@ -339,6 +339,94 @@ void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult
 {
   QApplication::clipboard()->setText( result.userData.toString() );
 }
+
+// SettingsLocatorFilter
+//
+QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsSettingsLocatorFilter *QgsSettingsLocatorFilter::clone() const
+{
+  return new QgsSettingsLocatorFilter();
+}
+
+void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
+{
+  QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
+
+  QMap<QString, QString> optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
+  {
+    QString title = optionsPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
+    }
+  }
+
+  QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
+  for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
+  {
+    QString title = projectPropertyPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
+    }
+  }
+
+  QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
+  for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
+  {
+    QString title = settingPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
+    }
+  }
+
+  for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
+  {
+    QString title = matchingSettingsPagesIterator.key();
+    QMap<QString, QString> settingsPage = matchingSettingsPagesIterator.value();
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = title;
+    result.userData.setValue( settingsPage );
+    result.score = static_cast< double >( string.length() ) / title.length();
+    emit resultFetched( result );
+  }
+}
+
+QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type,  const QString &page )
+{
+  QMap<QString, QString> returnPage;
+  returnPage.insert( "type", type );
+  returnPage.insert( "page", page );
+  return returnPage;
+}
+
+void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+
+  QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData );
+  QString type = settingsPage.value( "type" );
+  QString page = settingsPage.value( "page" );
+
+  if ( type == "optionpage" )
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
+  }
+  else if ( type == "projectpropertypage" )
+  {
+    QgisApp::instance()->showProjectProperties( page );
+  }
+  else if ( type == "settingspage" )
+  {
+    QgisApp::instance()->showSettings( page );
+  }
+}
+
 // QgBookmarkLocatorFilter
 //
 
@@ -372,13 +460,12 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       result.filter = this;
       result.displayString = name;
       result.userData = index;
-      //TODO Create svg for "Bookmark"?
-      //result.icon = TBD
+      //TODO Create svg for "Bookmark"
+      //TODO result.icon =
       result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
     }
   }
-
 }
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
