@@ -71,82 +71,100 @@ class gdalcalc(GdalAlgorithm):
             QgsProcessingParameterRasterLayer(
                 self.INPUT_A,
                 self.tr('Input layer A'),
-                optional=False))
+                optional=False)
+        )
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_A,
                 self.tr('Number of raster band for A'),
-                parentLayerParameterName=self.INPUT_A))
+                parentLayerParameterName=self.INPUT_A)
+        )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_B,
                 self.tr('Input layer B'),
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_B,
                 self.tr('Number of raster band for B'),
-                parentLayerParameterName=self.INPUT_B, 
-                optional=True))
+                parentLayerParameterName=self.INPUT_B,
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_C,
                 self.tr('Input layer C'),
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
-            QgsProcessingParameterBand(self.BAND_C,
+            QgsProcessingParameterBand(
+                self.BAND_C,
                 self.tr('Number of raster band for C'),
                 parentLayerParameterName=self.INPUT_C,
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_D,
                 self.tr('Input layer D'),
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_D,
                 self.tr('Number of raster band for D'),
                 parentLayerParameterName=self.INPUT_D,
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_E,
                 self.tr('Input layer E'),
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_E,
                 self.tr('Number of raster band for E'),
                 parentLayerParameterName=self.INPUT_E,
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
-                self.INPUT_F, 
+                self.INPUT_F,
                 self.tr('Input layer F'),
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterBand(
                 self.BAND_F,
                 self.tr('Number of raster band for F'),
                 parentLayerParameterName=self.INPUT_F,
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
-            QgsProcessingParameterString(self.FORMULA,
-                self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'), 
-                'A*2', 
-                optional=False))
+            QgsProcessingParameterString(
+                self.FORMULA,
+                self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'),
+                'A*2',
+                optional=False)
+        )
         self.addParameter(
-            QgsProcessingParameterString(self.NO_DATA,
+            QgsProcessingParameterString(
+                self.NO_DATA,
                 self.tr('Set output nodata value'),
-                '', 
-                optional=True))
+                '',
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.RTYPE,
                 self.tr('Output raster type'),
                 options=self.TYPE,
-                defaultValue=5))
+                defaultValue=5)
+        )
         #self.addParameter(ParameterBoolean(
         #    self.DEBUG, self.tr('Print debugging information'), False))
         self.addParameter(
@@ -154,11 +172,13 @@ class gdalcalc(GdalAlgorithm):
                 self.EXTRA,
                 self.tr('Additional creation parameters'),
                 '',
-                optional=True))
+                optional=True)
+        )
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT,
-                self.tr('Calculated')))
+                self.tr('Calculated'))
+        )
 
     def name(self):
         return 'rastercalculator'
@@ -193,7 +213,7 @@ class gdalcalc(GdalAlgorithm):
         #     noData = str(noData)
 
         arguments = []
-        arguments.append('--calc "{}"'.format(formula) )
+        arguments.append('--calc "{}"'.format(formula))
         arguments.append('--format')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('--type')
