@@ -1013,7 +1013,7 @@ class EnumWidgetWrapper(WidgetWrapper):
             else:
                 return self.widget.currentData()
         else:
-            return self.comboValue(combobox=self.combo)
+            return self.comboValue(combobox=self.combobox)
 
 
 class FeatureSourceWidgetWrapper(WidgetWrapper):
