@@ -471,6 +471,8 @@ QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate agg
 void QgsVectorDataProvider::clearMinMaxCache()
 {
   mCacheMinMaxDirty = true;
+  mCacheMinValues.clear();
+  mCacheMaxValues.clear();
 }
 
 void QgsVectorDataProvider::fillMinMaxCache() const
