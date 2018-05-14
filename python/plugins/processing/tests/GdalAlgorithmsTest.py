@@ -32,6 +32,7 @@ from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
 from processing.algs.gdal.gdal2tiles import gdal2tiles
+from processing.algs.gdal.gdalcalc import gdalcalc
 from processing.algs.gdal.gdaltindex import gdaltindex
 from processing.algs.gdal.contour import contour
 from processing.algs.gdal.GridAverage import GridAverage
@@ -45,7 +46,6 @@ from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
-from processing.algs.gdal.gdalcalc import gdalcalc
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
@@ -475,47 +475,47 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         formula = 'A*2' # default formula
         self.assertEqual(
             alg.getConsoleCommands({
-                'INPUT_A' : source,
-                'BAND_A' : 1,
-                'FORMULA' : formula,
-                'BAND_D' : -1,
-                'NO_DATA' : '',
-                'BAND_F' : -1,
-                'BAND_B' : -1,
-                'EXTRA' : '',
-                'RTYPE' : 5,
-                'INPUT_F' : None,
-                'BAND_E' : -1,
-                'INPUT_D' : None,
-                'INPUT_B' : None,
-                'BAND_C' : -1,
-                'INPUT_E' : None,
-                'INPUT_C' : None,
-                'OUTPUT' : output}, context, feedback),
-            [alg.commandName(), '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                'INPUT_A': source,
+                'BAND_A': 1,
+                'FORMULA': formula,
+                'BAND_D': -1,
+                'NO_DATA': '',
+                'BAND_F': -1,
+                'BAND_B': -1,
+                'EXTRA': '',
+                'RTYPE': 5,
+                'INPUT_F': None,
+                'BAND_E': -1,
+                'INPUT_D': None,
+                'INPUT_B': None,
+                'BAND_C': -1,
+                'INPUT_E': None,
+                'INPUT_C': None,
+                'OUTPUT': output}, context, feedback),
+            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
         # check that formula is not escaped and formula is returned as it is
         formula = 'A * 2'  # <--- add spaces in the formula
         self.assertEqual(
             alg.getConsoleCommands({
-                'INPUT_A' : source,
-                'BAND_A' : 1,
-                'FORMULA' : formula,
-                'BAND_D' : -1,
-                'NO_DATA' : '',
-                'BAND_F' : -1,
-                'BAND_B' : -1,
-                'EXTRA' : '',
-                'RTYPE' : 5,
-                'INPUT_F' : None,
-                'BAND_E' : -1,
-                'INPUT_D' : None,
-                'INPUT_B' : None,
-                'BAND_C' : -1,
-                'INPUT_E' : None,
-                'INPUT_C' : None,
-                'OUTPUT' : output}, context, feedback),
-            [alg.commandName(), '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                'INPUT_A': source,
+                'BAND_A': 1,
+                'FORMULA': formula,
+                'BAND_D': -1,
+                'NO_DATA': '',
+                'BAND_F': -1,
+                'BAND_B': -1,
+                'EXTRA': '',
+                'RTYPE': 5,
+                'INPUT_F': None,
+                'BAND_E': -1,
+                'INPUT_D': None,
+                'INPUT_B': None,
+                'BAND_C': -1,
+                'INPUT_E': None,
+                'INPUT_C': None,
+                'OUTPUT': output}, context, feedback),
+            [alg.commandName(), '--calc "{}" --format GTiff --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
     def testContour(self):
         context = QgsProcessingContext()
