@@ -9966,7 +9966,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
 {
   if ( mProjectPropertiesPagesMap.isEmpty() )
   {
-    QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this );
+    std::unique_ptr< QgsProjectProperties > pp( new QgsProjectProperties( mMapCanvas, this ) );
     mProjectPropertiesPagesMap = pp->pageWidgetNameMap();
   }
   return mProjectPropertiesPagesMap;
