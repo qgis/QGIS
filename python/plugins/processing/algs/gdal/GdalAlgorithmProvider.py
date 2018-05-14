@@ -45,6 +45,7 @@ from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
 from .gdal2xyz import gdal2xyz
 from .gdaladdo import gdaladdo
+from .gdalcalc import gdalcalc
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
@@ -70,7 +71,6 @@ from .tri import tri
 from .warp import warp
 
 # from .extractprojection import ExtractProjection
-# from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
 from .Buffer import Buffer
@@ -151,6 +151,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             gdal2tiles(),
             gdal2xyz(),
             gdaladdo(),
+            gdalcalc(),
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
@@ -176,7 +177,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             warp(),
             # rasterize(),
             # ExtractProjection(),
-            # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
             Buffer(),
