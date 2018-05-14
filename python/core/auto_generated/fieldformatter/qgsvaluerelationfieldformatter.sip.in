@@ -118,7 +118,7 @@ Return a list of variables required by the form context ``expression``
 
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
 %Docstring
-Check wether the ``feature`` has all values required by the ``expression``
+Check whether the ``feature`` has all values required by the ``expression``
 
 @return True if the expression can be used
 

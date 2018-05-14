@@ -180,7 +180,7 @@ QGIS forms
 
     const QgsAttributeEditorContext *parentContext() const;
 
-    const QgsFeature formFeature() const;
+    QgsFeature formFeature() const;
 %Docstring
 Return current feature from the currently edited form or table row
 

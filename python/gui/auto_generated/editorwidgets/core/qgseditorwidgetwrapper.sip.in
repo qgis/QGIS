@@ -213,6 +213,7 @@ This will be disabled when the form is not editable.
 .. versionadded:: 3.0
 %End
 
+
   signals:
 
     void valueChanged( const QVariant &value );
@@ -279,8 +280,32 @@ change the visual cue.
 .. versionadded:: 2.16
 %End
 
-  protected:
 
+    QgsFeature formFeature() const;
+%Docstring
+The feature currently being edited, in its current state
+
+:return: the feature currently being edited, in its current state
+
+.. versionadded:: 3.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Set the feature currently being edited to ``feature``
+
+.. versionadded:: 3.2
+%End
+
+    bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
+%Docstring
+Update the feature currently being edited by changing its
+attribute ``attributeName`` to ``attributeValue``
+
+:return: bool true on success
+
+.. versionadded:: 3.2
+%End
 
 
 };

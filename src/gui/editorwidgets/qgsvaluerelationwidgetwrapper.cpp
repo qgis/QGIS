@@ -87,7 +87,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
 QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeForm *form = dynamic_cast<QgsAttributeForm *>( parent );
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsValueRelationWidgetWrapper::widgetValueChanged );
 
@@ -195,7 +195,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
   // Do nothing if the value has not changed
   if ( attributeChanged )
   {
-    mFeature.setAttribute( attribute, newValue );
+    setFormFeatureAttribute( attribute, newValue );
     // Update combos if the value used in the filter expression has changed
     if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression )
          && QgsValueRelationFieldFormatter::expressionFormAttributes( mExpression ).contains( attribute ) )
@@ -210,14 +210,14 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
 
 void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-  mFeature = feature;
+  setFormFeature( feature );
   whileBlocking( this )->populate();
-  whileBlocking( this )->setValue( feature.attribute( mFieldIdx ) );
+  whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
-  if ( mFeature.isValid()
-       && ! mFeature.attribute( mFieldIdx ).isValid()
+  if ( formFeature().isValid()
+       && ! formFeature().attribute( fieldIdx() ).isValid()
        && mCache.size() > 0
        && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
   {
@@ -236,7 +236,7 @@ void QgsValueRelationWidgetWrapper::populate( )
   // Initialize, note that signals are blocked, to avoid double signals on new features
   if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ), mFeature );
+    mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature() );
   }
   else if ( mCache.isEmpty() )
   {

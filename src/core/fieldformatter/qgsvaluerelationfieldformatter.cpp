@@ -179,11 +179,11 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QSt
   const QStringList formVariables( QgsExpressionContextUtils::formScope()->variableNames() );
   QSet<QString> variables;
 
-  for ( auto it = formVariables.constBegin(); it != formVariables.constEnd(); it++ )
+  for ( auto const &variable : formVariables )
   {
-    if ( expression.contains( *it ) )
+    if ( expression.contains( variable ) )
     {
-      variables.insert( *it );
+      variables.insert( variable );
     }
   }
   return variables;

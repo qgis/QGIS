@@ -115,7 +115,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     static QSet<QString> expressionFormVariables( const QString &expression );
 
     /**
-     * Check wether the \a feature has all values required by the \a expression
+     * Check whether the \a feature has all values required by the \a expression
      *
      * @return True if the expression can be used
      * \since QGIS 3.2
