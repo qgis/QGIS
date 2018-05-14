@@ -275,4 +275,4 @@ class gdalcalc(GdalAlgorithm):
         arguments.append('--outfile')
         arguments.append(out)
 
-        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+        return ['gdal_calc.py', GdalUtils.escapeAndJoin(arguments)]
