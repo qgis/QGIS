@@ -319,10 +319,11 @@ FOREACH(module ${PY_MODULES})
   FILE(GLOB_RECURSE PY_FILES "${module}/*.py")
   INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
   FOREACH(pyfile ${PY_FILES})
+    FILE(RELATIVE_PATH subdir ${CMAKE_CURRENT_SOURCE_DIR}/${module} ${pyfile})
     ADD_CUSTOM_COMMAND(TARGET py${module}
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
-      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/${subdir}"
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       DEPENDS ${PY_FILES}
     )
