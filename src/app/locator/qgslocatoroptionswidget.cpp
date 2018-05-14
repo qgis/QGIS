@@ -191,8 +191,8 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
           return true;
         }
       }
+      return false;
     }
-
 
     case Qt::CheckStateRole:
     {
