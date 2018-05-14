@@ -200,9 +200,11 @@ class gdalcalc(GdalAlgorithm):
         #     extra = str(extra)
         #debug = self.getParameterValue(parameters, self.DEBUG)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
-        noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
-        # if noData is not None:
-        #     noData = str(noData)
+        # noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
+        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
+            noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
+        else:
+            noData = None
 
         arguments = []
         arguments.append('--calc "{}"'.format(formula))
@@ -210,9 +212,9 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('--type')
         arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)])
-        if noData and len(noData) > 0:
+        if noData is not None:
             arguments.append('--NoDataValue')
-            arguments.append(noData)
+            arguments.append(str(noData)
         if extra and len(extra) > 0:
             arguments.append(extra)
         #if debug:
@@ -249,7 +251,7 @@ class gdalcalc(GdalAlgorithm):
         arguments.append('--outfile')
         arguments.append(out)
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        options=self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
