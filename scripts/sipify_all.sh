@@ -41,7 +41,7 @@ modules=(core gui analysis server)
 for module in "${modules[@]}"; do
   while read -r sipfile; do
       echo "$sipfile.in"
-      header=$(${GP}sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
+      header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
@@ -50,7 +50,7 @@ for module in "${modules[@]}"; do
         ./scripts/sipify.pl $header > python/$sipfile.in &
       fi
       count=$((count+1))
-  done < <( ${GP}sed -n -r "s/^%Include (.*\.sip)/${module}\/\1/p" python/${module}/${module}_auto.sip )
+  done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
 done
 wait # wait for sipify processes to finish
 

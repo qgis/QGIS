@@ -214,6 +214,17 @@ class edit(object):
 
 
 class ReadWriteContextEnterCategory():
+    """
+    Push a category to the stack
+
+    .. code-block:: python
+
+        context = QgsReadWriteContext()
+        with QgsReadWriteContext.enterCategory(context, category, details):
+            # do something
+
+    .. versionadded:: 3.2
+    """
 
     def __init__(self, context, category_name, details=None):
         self.context = context
@@ -241,10 +252,11 @@ class ProjectDirtyBlocker():
     """
     Context manager used to block project setDirty calls.
 
-    Example:
-      project = QgsProject.instance()
-      with QgsProject.blockDirtying(project):
-        # do something
+    .. code-block:: python
+
+        project = QgsProject.instance()
+        with QgsProject.blockDirtying(project):
+            # do something
 
     .. versionadded:: 3.2
     """
