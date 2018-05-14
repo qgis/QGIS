@@ -107,6 +107,8 @@ Returns the string used for warning users if a conflicting name exists.
 Name entered by user.
 
 :return: new name
+
+.. seealso:: :py:func:`newNameChanged`
 %End
 
     static bool exists( const QString &name, const QStringList &extensions,
@@ -121,6 +123,16 @@ Test if name or name with at least one extension exists.
 
 :return: true if name exists
 %End
+  signals:
+
+
+    void newNameChanged();
+%Docstring
+Emitted when the name is changed in the dialog.
+
+.. versionadded:: 3.2
+%End
+
   public slots:
     void nameChanged();
 
