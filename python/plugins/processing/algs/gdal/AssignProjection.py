@@ -74,9 +74,6 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return 'rasterprojections'
 
-    def tags(self):
-        return ['gdal_edit']
-
     def commandName(self):
         return 'gdal_edit'
 

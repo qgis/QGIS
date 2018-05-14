@@ -155,9 +155,6 @@ class gdal2tiles(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdal2tiles'
 

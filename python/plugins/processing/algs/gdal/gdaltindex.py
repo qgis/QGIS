@@ -117,9 +117,6 @@ class gdaltindex(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdaltindex'
 

@@ -72,9 +72,6 @@ class gdal2xyz(GdalAlgorithm):
     def groupId(self):
         return 'rasterconversion'
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdal2xyz'
 

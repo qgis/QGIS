@@ -120,9 +120,6 @@ class GridLinear(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdal_grid'
 

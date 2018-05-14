@@ -158,9 +158,6 @@ class retile(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return "gdal_retile"
 

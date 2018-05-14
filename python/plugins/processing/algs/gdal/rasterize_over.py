@@ -70,9 +70,6 @@ class rasterize_over(GdalAlgorithm):
     def groupId(self):
         return 'vectorconversion'
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdal_rasterize'
 

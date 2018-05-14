@@ -104,9 +104,6 @@ class buildvrt(GdalAlgorithm):
     def groupId(self):
         return 'rastermiscellaneous'
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return "gdalbuildvrt"
 

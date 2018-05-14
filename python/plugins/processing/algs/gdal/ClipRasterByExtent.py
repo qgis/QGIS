@@ -106,9 +106,6 @@ class ClipRasterByExtent(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return "gdal_translate"
 

@@ -100,9 +100,6 @@ class ColorRelief(GdalAlgorithm):
     def commandName(self):
         return 'gdaldem'
 
-    def tags(self):
-        return [self.commandName()]
-
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['color-relief']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)

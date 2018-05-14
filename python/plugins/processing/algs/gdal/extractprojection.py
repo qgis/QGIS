@@ -66,8 +66,11 @@ class ExtractProjection(GdalAlgorithm):
     def groupId(self):
         return 'rasterprojections'
 
+    def commandName(self):
+        return 'extractprojection'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        return ["extractprojection"]
+        return [self.commandName()]
 
     def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT)

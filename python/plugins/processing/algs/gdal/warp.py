@@ -156,14 +156,13 @@ class warp(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
-    def tags(self):
-        return self.tr('transform,reproject,crs,srs').split(',')
-
-    def tags(self):
-        return [self.commandName()]
-
     def commandName(self):
         return 'gdalwarp'
+
+    def tags(self):
+        tags = self.tr('transform,reproject,crs,srs').split(',')
+        tags.extend(super().tags())
+        return tags
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
