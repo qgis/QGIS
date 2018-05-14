@@ -25,14 +25,12 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsRasterFileWriter,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
-                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFile,
                        QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -139,10 +137,11 @@ class gdalcalc(GdalAlgorithm):
                 'A*2',
                 optional=False))
         self.addParameter(
-            QgsProcessingParameterString(
+            QgsProcessingParameterNumber(
                 self.NO_DATA,
                 self.tr('Set output nodata value'),
-                None,
+                type=QgsProcessingParameterNumber.Double,
+                defaultValue=None,
                 optional=True))
         self.addParameter(
             QgsProcessingParameterEnum(
@@ -197,7 +196,7 @@ class gdalcalc(GdalAlgorithm):
         #     extra = str(extra)
         #debug = self.getParameterValue(parameters, self.DEBUG)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
-        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None and parameters[self.NO_DATA] != '':
+        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
             noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
         else:
             noData = None
