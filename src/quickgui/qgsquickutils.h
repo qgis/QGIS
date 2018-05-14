@@ -21,7 +21,12 @@
 #include <QString>
 
 #include "qgis.h"
+#include "qgsmessagelog.h"
+
+#include "qgsquickmapsettings.h"
 #include "qgis_quick.h"
+
+class QgsCoordinateReferenceSystem;
 
 /**
  * \ingroup quick
@@ -57,6 +62,16 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     //! \copydoc QgsQuickUtils::dp
     qreal screenDensity() const;
+
+    /**
+      * Calculate the distance in meter representing baseLengthPixels pixels on the screen based on the current map settings.
+      */
+    Q_INVOKABLE double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const;
+
+    //! Log message in QgsMessageLog
+    Q_INVOKABLE void logMessage( const QString &message,
+                                 const QString &tag = QString( "QgsQuick" ),
+                                 Qgis::MessageLevel level = Qgis::Warning );
 
     /**
      * Returns a string with information about screen size and resolution

@@ -3,6 +3,8 @@
 SET(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
+  qgsquickmessagelogmodel.h
+  qgsquickscalebarkit.h
   qgsquickutils.h
 )
 
@@ -12,6 +14,8 @@ SET(QGIS_QUICK_GUI_HDRS
 SET(QGIS_QUICK_GUI_SRC
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
+  qgsquickmessagelogmodel.cpp
+  qgsquickscalebarkit.cpp
   qgsquickutils.cpp
 )
 

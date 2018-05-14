@@ -11,6 +11,8 @@ SET(QGIS_QUICK_PLUGIN_SRC
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
   qgsquickmapcanvas.qml
+  qgsquickmessagelog.qml
+  qgsquickscalebar.qml
   qmldir
 )
 
@@ -37,7 +39,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/quickgui
-  
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/quickgui
 )
@@ -99,13 +101,14 @@ IF(QMLPLUGINDUMP_FOUND)
   # Qt Creator understand also the C++ classes registered in the plugin and thus available in QML code
   # If the qmlplugindumpcommand fails, add -v argument to see detailed output for debugging
   SET(QGIS_QUICK_PLUGIN_TYPEINFO ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/qgsquick.qmltypes)
+  SET(QGIS_QUICK_VERSION 0.1)
   ADD_CUSTOM_COMMAND(
       TARGET qgis_quick_plugin
       COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:qgis_quick_plugin> ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${QMLPLUGINDUMP_EXECUTABLE}
-      ARGS QgsQuick 0.1 . --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
+      ARGS QgsQuick ${QGIS_QUICK_VERSION} . --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
       POST_BUILD
   )

@@ -16,11 +16,8 @@
 #include <QString>
 
 #include "qgis.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
-#include "qgsvectorlayer.h"
 
 #include "qgsquickmapsettings.h"
 #include "qgsquickutils.h"
@@ -31,6 +28,28 @@ QgsQuickUtils::QgsQuickUtils( QObject *parent )
   : QObject( parent )
   , mScreenDensity( calculateScreenDensity() )
 {
+}
+
+double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const
+{
+  if ( mapSettings == nullptr ) return 0.0;
+
+  QgsDistanceArea mDistanceArea;
+  mDistanceArea.setEllipsoid( QStringLiteral( "WGS84" ) );
+  mDistanceArea.setSourceCrs( mapSettings->destinationCrs(), mapSettings->transformContext() );
+
+  // calculate the geographic distance from the central point of extent
+  // to the specified number of points on the right side
+  QSize s = mapSettings->outputSize();
+  QPoint pointCenter( s.width() / 2, s.height() / 2 );
+  QgsPointXY p1 = mapSettings->screenToCoordinate( pointCenter );
+  QgsPointXY p2 = mapSettings->screenToCoordinate( pointCenter + QPoint( baseLengthPixels, 0 ) );
+  return mDistanceArea.measureLine( p1, p2 );
+}
+
+void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
+{
+  QgsMessageLog::logMessage( message, tag, level );
 }
 
 QString QgsQuickUtils::dumpScreenInfo() const
