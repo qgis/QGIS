@@ -195,7 +195,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see setFormFeature()
      * \since QGIS 3.2
      */
-    const QgsFeature formFeature() const { return mFormFeature; }
+    QgsFeature formFeature() const { return mFormFeature; }
 
     /**
      * Set current \a feature for the currently edited form or table row
