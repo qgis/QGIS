@@ -61,7 +61,7 @@ void TestQgsSettings::enumValue()
   QCOMPARE( v3, QgsUnitTypes::LayoutCentimeters );
   settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutCentimeters );
   // auto conversion of old settings (int to str)
-  QCOMPARE( settings.value( "qgis/testing/my_value_for_units" ), QStringLiteral( "LayoutCentimeters" ) );
+  QCOMPARE( settings.value( "qgis/testing/my_value_for_units" ).toString(), QStringLiteral( "LayoutCentimeters" ) );
   QgsUnitTypes::LayoutUnit v3s = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), QgsUnitTypes::LayoutMeters );
   QCOMPARE( v3s, QgsUnitTypes::LayoutCentimeters );
   QString v3ss = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), QStringLiteral( "myDummyValue" ) ).toString();
@@ -81,7 +81,7 @@ void TestQgsSettings::flagValue()
   QgsMapLayerProxyModel::Filters v5 = settings.flagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag" ), pointAndLine, QgsSettings::NoSection );
   QCOMPARE( v5, pointAndPolygon );
   // auto conversion of old settings (int to str)
-  QCOMPARE( settings.value( "qgis/testing/my_value_for_a_flag" ), QStringLiteral( "PointLayer|PolygonLayer" ) );
+  QCOMPARE( settings.value( "qgis/testing/my_value_for_a_flag" ).toString(), QStringLiteral( "PointLayer|PolygonLayer" ) );
 
   settings.setFlagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndPolygon, QgsSettings::NoSection );
   QgsMapLayerProxyModel::Filters v5s = settings.flagValue( QStringLiteral( "qgis/testing/my_value_for_a_flag_as_string" ), pointAndLine, QgsSettings::NoSection );
