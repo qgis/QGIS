@@ -219,8 +219,9 @@ class gdalcalc(GdalAlgorithm):
             arguments.append(extra)
         #if debug:
         #    arguments.append('--debug')
-        arguments.append('-A')
-        arguments.append(self.parameterAsLayer(parameters, self.INPUT_A, context).source())
+        if self.parameterAsLayer(parameters, self.INPUT_A, context):
+            arguments.append('-A')
+            arguments.append(self.parameterAsLayer(parameters, self.INPUT_A, context).source())
         if self.parameterAsString(parameters, self.BAND_A, context):
             arguments.append('--A_band ' + self.parameterAsString(parameters, self.BAND_A, context))
         if self.parameterAsLayer(parameters, self.INPUT_B, context):
