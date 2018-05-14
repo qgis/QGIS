@@ -598,7 +598,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 'BAND_A': 1,
                 'FORMULA': formula,
                 'BAND_D': -1,
-                'NO_DATA': '',
+                'NO_DATA': None,
                 'BAND_F': -1,
                 'BAND_B': -1,
                 'EXTRA': '',
@@ -611,7 +611,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 'INPUT_E': None,
                 'INPUT_C': None,
                 'OUTPUT': output}, context, feedback),
-            ['gdal_calc.py', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+            ['gdal_calc', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
         # check that formula is not escaped and formula is returned as it is
         formula = 'A * 2'  # <--- add spaces in the formula
@@ -621,7 +621,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 'BAND_A': 1,
                 'FORMULA': formula,
                 'BAND_D': -1,
-                'NO_DATA': '',
+                'NO_DATA': None,
                 'BAND_F': -1,
                 'BAND_B': -1,
                 'EXTRA': '',
@@ -634,7 +634,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 'INPUT_E': None,
                 'INPUT_C': None,
                 'OUTPUT': output}, context, feedback),
-            ['gdal_calc.py', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+            ['gdal_calc', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
     def testGdalTindex(self):
         context = QgsProcessingContext()
