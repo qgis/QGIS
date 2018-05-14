@@ -124,6 +124,12 @@ results from this filter.
    as these are reserved for core QGIS functions. If a plugin registers
    a filter with a prefix shorter than 3 characters then the prefix will
    be ignored.
+
+.. note::
+
+   Prefixes might be overridden by user preferences.
+
+.. seealso:: :py:func:`activePrefix`
 %End
 
     virtual void prepare( const QString &string, const QgsLocatorContext &context );
@@ -176,6 +182,17 @@ is entered.
 
 .. seealso:: :py:func:`useWithoutPrefix`
 %End
+
+    QString activePrefix() const;
+%Docstring
+Returns the prefix in use in the locator
+is entered.
+
+.. seealso:: :py:func:`setActivePrefix`
+
+.. versionadded:: 3.2
+%End
+
 
     static bool stringMatches( const QString &candidate, const QString &search );
 %Docstring

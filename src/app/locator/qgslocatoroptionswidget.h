@@ -39,7 +39,6 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
     void configureCurrentFilter();
 
   private:
-
     QgsLocatorWidget *mLocatorWidget = nullptr;
     QgsLocator *mLocator = nullptr;
     QgsLocatorFiltersModel *mModel = nullptr;
@@ -97,6 +96,7 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     QgsLocator *mLocator = nullptr;
 
     // changes are deferred to support cancelation
+    QHash< QgsLocatorFilter *, QString > mPrefixes;
     QHash< QgsLocatorFilter *, bool > mEnabledChanges;
     QHash< QgsLocatorFilter *, bool > mDefaultChanges;
 

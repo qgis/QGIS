@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QThread>
 
 #include "qgslocatorfilter.h"
 #include "qgsstringutils.h"
 #include "qgsfeedback.h"
-#include <QThread>
+
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
@@ -66,3 +66,17 @@ void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
 {
   mUseWithoutPrefix = useWithoutPrefix;
 }
+
+QString QgsLocatorFilter::activePrefix() const
+{
+  if ( mActivePrefifx.isNull() )
+    return prefix();
+  else
+    return mActivePrefifx;
+}
+
+void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
+{
+  mActivePrefifx = activePrefix;
+}
+

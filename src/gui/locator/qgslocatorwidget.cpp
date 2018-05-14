@@ -260,14 +260,12 @@ void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
 void QgsLocatorWidget::configMenuAboutToShow()
 {
   mMenu->clear();
-  QMap< QString, QgsLocatorFilter *> filters = mLocator->prefixedFilters();
-  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
-  for ( ; fIt != filters.constEnd(); ++fIt )
+  for ( QgsLocatorFilter *filter : mLocator->filters() )
   {
-    if ( !fIt.value()->enabled() )
+    if ( !filter->enabled() )
       continue;
 
-    QAction *action = new QAction( fIt.value()->displayName(), mMenu );
+    QAction *action = new QAction( filter->displayName(), mMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
       QString currentText = mLineEdit->text();
@@ -276,15 +274,15 @@ void QgsLocatorWidget::configMenuAboutToShow()
       else
       {
         QStringList parts = currentText.split( ' ' );
-        if ( parts.count() > 1 && mLocator->prefixedFilters().contains( parts.at( 0 ) ) )
+        if ( parts.count() > 1 && mLocator->filters( parts.at( 0 ) ).count() > 0 )
         {
           parts.pop_front();
           currentText = parts.join( ' ' );
         }
       }
 
-      mLineEdit->setText( fIt.key() + ' ' + currentText );
-      mLineEdit->setSelection( fIt.key().length() + 1, currentText.length() );
+      mLineEdit->setText( filter->activePrefix() + ' ' + currentText );
+      mLineEdit->setSelection( filter->activePrefix().length() + 1, currentText.length() );
     } );
     mMenu->addAction( action );
   }
@@ -422,20 +420,18 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     return;
   }
 
-  QMap< QString, QgsLocatorFilter *> filters = mLocator->locator()->prefixedFilters();
-  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
-  for ( ; fIt != filters.constEnd(); ++fIt )
+  for ( QgsLocatorFilter *filter : mLocator->locator()->filters() )
   {
     if ( feedback->isCanceled() )
       return;
 
-    if ( fIt.value() == this || !fIt.value() || !fIt.value()->enabled() )
+    if ( filter == this || !filter || !filter->enabled() )
       continue;
 
     QgsLocatorResult result;
-    result.displayString = fIt.key();
-    result.description = fIt.value()->displayName();
-    result.userData = fIt.key() + ' ';
+    result.displayString = filter->activePrefix();
+    result.description = filter->displayName();
+    result.userData = filter->activePrefix() + ' ';
     result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
     emit resultFetched( result );
   }

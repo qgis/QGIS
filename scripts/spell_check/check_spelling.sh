@@ -180,13 +180,13 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         # also make error small case and escape special chars: () |
         ERRORSMALLCASE=$(echo ${ERRORNOCOLOR,,} |${GP}sed -r 's/\(/\\(/g' | ${GP}sed -r 's/\)/\\)/g' | ${GP}sed -r 's/\|/\\|/g' )
         if [[ ! "${ERRORSMALLCASE}" =~ $IGNORECASE_INWORD ]]; then
-         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
            PREVCHAR=${ERROR::1}
            # remove first character
            ERRORSMALLCASE=${ERRORSMALLCASE#?}
            ERROR=${ERROR#?}
          fi
-         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
            NEXTCHAR=${ERROR:${#ERROR}-1:1}
            # remove last character
            ERRORSMALLCASE=${ERRORSMALLCASE::-1}
@@ -196,9 +196,9 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         ERRORSMALLCASE=$(${GP}sed -r 's/\./\\./g' <<< $ERRORSMALLCASE)
 
         # get correction from spelling.dat
-        CORRECTION=$(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f2)
+        CORRECTION=$(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f2)
         # exclude script files
-        if [[ "$(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f3)" =~ "%" ]]; then
+        if [[ "$(ag --noaffinity --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f3)" =~ "%" ]]; then
           if [[ "$FILE" =~ $EXCLUDE_SCRIPT_LIST ]]; then
             echo "skipping script file for $(${GP}sed -r 's/\\//g' <<< $ERRORSMALLCASE)"
             continue
@@ -208,7 +208,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         if [[ -z "$CORRECTION" ]]; then
           CORRECTION=$(perl -e "use strict; use warnings; while(<>) { chop; my(\$a,\$b) = split /:/; \$a = qr(\$a); if( my @matches = '${ERRORSMALLCASE}' =~ /^\$a\$/i ) { print sprintf(\$b, @matches); last; }}" ${DIR}/spelling.dat )
           # exclude script files
-          if [[ "$(ag --nonumbers --case-sensitive ":${CORRECTION}" ${DIR}/spelling.dat | cut -d: -f3)" =~ "%" ]]; then
+          if [[ "$(ag --noaffinity --nonumbers --case-sensitive ":${CORRECTION}" ${DIR}/spelling.dat | cut -d: -f3)" =~ "%" ]]; then
             if [[ "$FILE" =~ $EXCLUDE_SCRIPT_LIST ]]; then
               echo "skipping script file for $(${GP}sed -r 's/\\//g' <<< $ERRORSMALLCASE)"
               continue

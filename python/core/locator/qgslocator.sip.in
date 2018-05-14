@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsLocator : QObject
 {
 %Docstring
@@ -37,6 +39,8 @@ call to fetchResults().
 #include "qgslocator.h"
 %End
   public:
+
+    static const QList<QString> CORE_FILTERS;
 
     QgsLocator( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -69,19 +73,23 @@ deregisterFilter() to deregister their filters upon plugin unload to avoid crash
 .. seealso:: :py:func:`registerFilter`
 %End
 
-    QList< QgsLocatorFilter *> filters();
+    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
 %Docstring
 Returns the list of filters registered in the locator.
+
+:param prefix: If prefix is not empty, the list returned corresponds to the filter with the given active prefix
 
 .. seealso:: :py:func:`prefixedFilters`
 %End
 
-    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+ QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
 %Docstring
 Returns a map of prefix to filter, for all registered filters
 with valid prefixes.
 
 .. seealso:: :py:func:`filters`
+
+.. deprecated:: since QGIS 3.2 use filters() instead
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
