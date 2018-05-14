@@ -142,7 +142,7 @@ class gdalcalc(GdalAlgorithm):
             QgsProcessingParameterString(
                 self.NO_DATA,
                 self.tr('Set output nodata value'),
-                '',
+                None,
                 optional=True))
         self.addParameter(
             QgsProcessingParameterEnum(
@@ -197,7 +197,7 @@ class gdalcalc(GdalAlgorithm):
         #     extra = str(extra)
         #debug = self.getParameterValue(parameters, self.DEBUG)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
-        if self.NO_DATA in parameters and not parameters[self.NO_DATA]:
+        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None and parameters[self.NO_DATA] != '':
             noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
         else:
             noData = None
