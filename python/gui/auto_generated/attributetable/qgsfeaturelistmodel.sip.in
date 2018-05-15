@@ -10,7 +10,7 @@
 
 
 
-class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
+class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
 
 %TypeHeaderCode

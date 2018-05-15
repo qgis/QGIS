@@ -18,7 +18,7 @@
 #include "qgsexpression.h"
 #include "qgis.h"
 
-#include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 #include <QVariant>
 #include <QItemSelectionModel>
 
@@ -36,7 +36,7 @@ class QgsVectorLayerCache;
  * \ingroup gui
  * \class QgsFeatureListModel
  */
-class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
@@ -132,9 +132,10 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     mutable QgsExpression mDisplayExpression;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QString mParserErrorString;
-    bool mInjectNull;
+    bool mInjectNull = false;
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
+    bool mSortByDisplayExpression = false;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

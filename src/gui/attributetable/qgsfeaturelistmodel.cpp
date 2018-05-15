@@ -23,8 +23,7 @@
 #include <QSettings>
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
-  : QAbstractProxyModel( parent )
-  , mInjectNull( false )
+  : QSortFilterProxyModel( parent )
 {
   setSourceModel( sourceModel );
 }
