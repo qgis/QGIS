@@ -25,6 +25,9 @@ class QgsAbstractGeometry
 %TypeHeaderCode
 #include "qgsabstractgeometry.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
 %ConvertToSubClassCode
     if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;

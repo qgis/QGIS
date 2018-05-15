@@ -21,6 +21,9 @@ This class contains information how to simplify geometries fetched from a vector
 #include "qgsvectorsimplifymethod.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     QgsVectorSimplifyMethod();
 %Docstring
 construct a default object

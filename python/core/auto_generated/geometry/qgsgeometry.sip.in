@@ -44,6 +44,9 @@ can be accessed via the geometry() method or set using the setGeometry() method.
 #include "qgsgeometry.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum OperationResult
     {

@@ -22,6 +22,9 @@ This is a container for configuration of the snapping of the project
 #include "qgssnappingconfig.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum SnappingMode
     {

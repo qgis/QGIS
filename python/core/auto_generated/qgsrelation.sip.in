@@ -18,6 +18,9 @@ class QgsRelation
 #include "qgsrelation.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum RelationStrength
     {

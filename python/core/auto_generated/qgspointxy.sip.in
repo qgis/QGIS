@@ -28,6 +28,9 @@ supports Z and M values.
 #include "qgspointxy.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p );

@@ -23,6 +23,9 @@ class QgsUnitTypes
 #include "qgsunittypes.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     enum DistanceUnit
     {
       DistanceMeters,

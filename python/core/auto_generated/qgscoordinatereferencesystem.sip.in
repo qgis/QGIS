@@ -157,6 +157,9 @@ both flavors.
 #include "qgscoordinatereferencesystem.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum CrsType
     {

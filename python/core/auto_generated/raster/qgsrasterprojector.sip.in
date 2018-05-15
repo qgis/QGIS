@@ -25,6 +25,9 @@ which are used to calculate affine transformation matrices.
 #include "qgsrasterprojector.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Precision
     {

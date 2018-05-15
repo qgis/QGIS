@@ -17,6 +17,9 @@ class QgsDataSourceUri
 #include "qgsdatasourceuri.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     enum SslMode
     {
       SslPrefer,
