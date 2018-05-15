@@ -26,6 +26,7 @@
 #include <QToolBar>
 #include <QFile>
 #include <QMessageBox>
+#include <QMenu>
 
 #include "topol.h"
 #include "checkDock.h"
@@ -77,7 +78,7 @@ void Topol::initGui()
   connect( mQActionPointer, &QAction::triggered, this, &Topol::showOrHide );
   // Add the icon to the toolbar
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( QString(), mQActionPointer );
   //run();
 }
 //method defined in interface
@@ -112,7 +113,7 @@ void Topol::run()
 void Topol::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->vectorMenu()->removeAction( mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
