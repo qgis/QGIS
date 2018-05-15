@@ -95,17 +95,25 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         temp_file = os.path.join(self.temp_dir, 'grass_output.shp')
         parameters = {'input': 'testmem',
+                      'cats': '',
+                      'where': '',
                       'type': [0, 1, 4],
                       'distance': 1,
+                      'minordistance': None,
                       'angle': 0,
+                      'column': None,
                       'scale': 1,
                       'tolerance': 0.01,
                       '-s': False,
                       '-c': False,
                       '-t': False,
                       'output': temp_file,
-                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1, 'GRASS_MIN_AREA_PARAMETER': 0.0001,
-                      'GRASS_OUTPUT_TYPE_PARAMETER': 0}
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -146,17 +154,25 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         self.assertIsNotNone(alg)
         temp_file = os.path.join(self.temp_dir, 'grass_output_sel.shp')
         parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
+                      'cats': '',
+                      'where': '',
                       'type': [0, 1, 4],
                       'distance': 1,
+                      'minordistance': None,
                       'angle': 0,
+                      'column': None,
                       'scale': 1,
                       'tolerance': 0.01,
                       '-s': False,
                       '-c': False,
                       '-t': False,
                       'output': temp_file,
-                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1, 'GRASS_MIN_AREA_PARAMETER': 0.0001,
-                      'GRASS_OUTPUT_TYPE_PARAMETER': 0}
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -167,6 +183,61 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         res = QgsVectorLayer(temp_file, 'res')
         self.assertTrue(res.isValid())
         self.assertEqual(res.featureCount(), 1)
+
+        QgsProject.instance().removeMapLayer(layer)
+
+    def testOutputToGeopackage(self):
+        # create a memory layer and add to project and context
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
+        self.assertTrue(layer.isValid())
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 457])
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(110, 200)))
+        self.assertTrue(pr.addFeatures([f, f2]))
+        self.assertEqual(layer.featureCount(), 2)
+        QgsProject.instance().addMapLayer(layer)
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
+        self.assertIsNotNone(alg)
+
+        temp_file = os.path.join(self.temp_dir, 'grass_output.gpkg')
+        parameters = {'input': 'testmem',
+                      'cats': '',
+                      'where': '',
+                      'type': [0, 1, 4],
+                      'distance': 1,
+                      'minordistance': None,
+                      'angle': 0,
+                      'column': None,
+                      'scale': 1,
+                      'tolerance': 0.01,
+                      '-s': False,
+                      '-c': False,
+                      '-t': False,
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
+        feedback = QgsProcessingFeedback()
+
+        results, ok = alg.run(parameters, context, feedback)
+        self.assertTrue(ok)
+        self.assertTrue(os.path.exists(temp_file))
+
+        # make sure that layer has correct features
+        res = QgsVectorLayer(temp_file, 'res')
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.featureCount(), 2)
 
         QgsProject.instance().removeMapLayer(layer)
 
