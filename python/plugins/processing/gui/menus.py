@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication, QgsMessageLog
+from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -182,7 +182,10 @@ def removeMenus():
 
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
-    action = QAction(icon or alg.icon(), actionText or alg.displayName(), iface.mainWindow())
+    if actionText is None:
+        actionText = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase) + QCoreApplication.translate('Processing', '…')
+    action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
+    action.setData(alg.id())
     action.triggered.connect(lambda: _executeAlgorithm(alg))
     action.setObjectName("mProcessingUserMenu_%s" % alg.id())
 
@@ -199,11 +202,11 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
         algorithmsToolbar.addAction(action)
 
 
-def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=True):
+def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
         subMenu = getMenu(submenuName, menu)
-        action = findAction(subMenu.actions(), alg, actionText)
+        action = findAction(subMenu.actions(), alg)
         if action is not None:
             subMenu.removeAction(action)
 
@@ -213,7 +216,7 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
     if delButton:
         global algorithmsToolbar
         if algorithmsToolbar is not None:
-            action = findAction(algorithmsToolbar.actions(), alg, actionText)
+            action = findAction(algorithmsToolbar.actions(), alg)
             if action is not None:
                 algorithmsToolbar.removeAction(action)
 
@@ -260,8 +263,8 @@ def getMenu(name, parent):
         return parent.addMenu(name)
 
 
-def findAction(actions, alg, actionText=None):
+def findAction(actions, alg):
     for action in actions:
-        if action.text() in [actionText, alg.displayName(), alg.name()]:
+        if action.data() == alg.id():
             return action
     return None
