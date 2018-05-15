@@ -37,7 +37,7 @@ class DBManagerPlugin(object):
         self.dlg = None
 
     def initGui(self):
-        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager"),
+        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager…"),
                               self.iface.mainWindow())
 
         self.action.setObjectName("dbManager")
