@@ -76,7 +76,7 @@ class PointsFromLines(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_VECTOR, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_VECTOR))
 
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         rasterPath = raster_layer.source()
