@@ -67,7 +67,7 @@ const QString QgsUserProfile::alias() const
     return name();
   }
 
-  QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ) );
+  QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "userprofile" ) );
   db.setDatabaseName( qgisDB() );
   if ( !db.open() )
     return name();
