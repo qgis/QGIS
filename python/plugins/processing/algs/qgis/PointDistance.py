@@ -31,7 +31,8 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsField,
                        QgsFields,
                        QgsProject,
@@ -64,7 +65,10 @@ class PointDistance(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDistanceMatrix.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDistanceMatrix.svg")
 
     def group(self):
         return self.tr('Vector analysis')

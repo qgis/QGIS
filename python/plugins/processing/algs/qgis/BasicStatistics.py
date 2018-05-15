@@ -31,7 +31,8 @@ import codecs
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStatisticalSummary,
+from qgis.core import (QgsApplication,
+                       QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
@@ -75,7 +76,10 @@ class BasicStatisticsForField(QgisAlgorithm):
     IQR = 'IQR'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def tags(self):
         return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
