@@ -153,6 +153,47 @@ namespace QgsWfs
       request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
       return request;
     }
+    // Apply BBOX through filterRect even inside an And to use spatial index
+    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) &&
+              !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
+    {
+      QDomElement childElem = filterElem.firstChildElement().firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+        childFilterElement.appendChild( childElem.cloneNode( true ) );
+        QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement );
+        if ( childElem.tagName() == QLatin1String( "BBOX" ) )
+        {
+          if ( request.filterRect().isEmpty() )
+          {
+            request.setFilterRect( childRequest.filterRect() );
+          }
+          else
+          {
+            request.setFilterRect( request.filterRect().intersect( &childRequest.filterRect() ) );
+          }
+        }
+        else
+        {
+          if ( !request.filterExpression() )
+          {
+            request.setFilterExpression( childRequest.filterExpression()->expression() );
+          }
+          else
+          {
+            QgsExpressionNode *opLeft = request.filterExpression()->rootNode()->clone();
+            QgsExpressionNode *opRight = childRequest.filterExpression()->rootNode()->clone();
+            std::unique_ptr<QgsExpressionNodeBinaryOperator> node = qgis::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boAnd, opLeft, opRight );
+            QgsExpression expr( node->dump() );
+            request.setFilterExpression( expr );
+          }
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
+      return request;
+    }
     else
     {
       std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );

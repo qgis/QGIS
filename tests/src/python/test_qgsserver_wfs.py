@@ -252,6 +252,33 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('sortby_post', sortTemplate.format("")))
 
+        andBboxTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:And>
+        <ogc:BBOX>
+          <ogc:PropertyName>geometry</ogc:PropertyName>
+          <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+            <gml:lowerCorner>890555.92634619 5465442.18332275</gml:lowerCorner>
+            <gml:upperCorner>1001875.41713946 5621521.48619207</gml:upperCorner>
+          </gml:Envelope>
+        </ogc:BBOX>
+        <ogc:PropertyIsGreaterThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>1</ogc:Literal>
+        </ogc:PropertyIsGreaterThan>
+        <ogc:PropertyIsLessThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>3</ogc:Literal>
+        </ogc:PropertyIsLessThan>
+      </ogc:And>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('bbox_inside_and_post', andBboxTemplate.format("")))
+
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
 
