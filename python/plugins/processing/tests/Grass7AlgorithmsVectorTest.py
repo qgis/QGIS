@@ -95,17 +95,25 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         temp_file = os.path.join(self.temp_dir, 'grass_output.shp')
         parameters = {'input': 'testmem',
+                      'cats': '',
+                      'where': '',
                       'type': [0, 1, 4],
                       'distance': 1,
+                      'minordistance': None,
                       'angle': 0,
+                      'column': None,
                       'scale': 1,
                       'tolerance': 0.01,
                       '-s': False,
                       '-c': False,
                       '-t': False,
                       'output': temp_file,
-                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1, 'GRASS_MIN_AREA_PARAMETER': 0.0001,
-                      'GRASS_OUTPUT_TYPE_PARAMETER': 0}
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -146,17 +154,25 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         self.assertIsNotNone(alg)
         temp_file = os.path.join(self.temp_dir, 'grass_output_sel.shp')
         parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
+                      'cats': '',
+                      'where': '',
                       'type': [0, 1, 4],
                       'distance': 1,
+                      'minordistance': None,
                       'angle': 0,
+                      'column': None,
                       'scale': 1,
                       'tolerance': 0.01,
                       '-s': False,
                       '-c': False,
                       '-t': False,
                       'output': temp_file,
-                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1, 'GRASS_MIN_AREA_PARAMETER': 0.0001,
-                      'GRASS_OUTPUT_TYPE_PARAMETER': 0}
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)

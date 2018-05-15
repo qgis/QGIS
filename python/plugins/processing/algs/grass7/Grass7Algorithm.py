@@ -862,7 +862,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if layerType in self.QGIS_OUTPUT_TYPES:
                     dataType = self.QGIS_OUTPUT_TYPES[layerType]
 
-        outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1])
+        outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
         dsco = self.parameterAsString(parameters, self.GRASS_VECTOR_DSCO, context)
         lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
