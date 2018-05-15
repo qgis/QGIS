@@ -22,6 +22,7 @@
 #include "processing/qgsprocessingprovider.h"
 #include "qgstaskmanager.h"
 #include "processing/qgsprocessingalgrunnertask.h"
+#include "qgsstringutils.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -126,7 +127,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm = algorithm;
-  setWindowTitle( mAlgorithm->displayName() );
+  setWindowTitle( QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase ) );
 
   QString algHelp = formatHelp( algorithm );
   if ( algHelp.isEmpty() )
