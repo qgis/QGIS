@@ -223,6 +223,11 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual QSet<QString> referencedVariables() const = 0;
 
     /**
+     * Return a set of all functions which are used in this expression.
+     */
+    virtual QSet<QString> referencedFunctions() const = 0;
+
+    /**
      * Abstract virtual method which returns if the geometry is required to evaluate
      * this expression.
      *

@@ -198,6 +198,11 @@ to evaluate child nodes.
 Return a set of all variables which are used in this expression.
 %End
 
+    virtual QSet<QString> referencedFunctions() const = 0;
+%Docstring
+Return a set of all functions which are used in this expression.
+%End
+
     virtual bool needsGeometry() const = 0;
 %Docstring
 Abstract virtual method which returns if the geometry is required to evaluate

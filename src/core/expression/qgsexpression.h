@@ -259,6 +259,13 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedVariables() const;
 
     /**
+     * Return a list of all functions which are used in this expression.
+     *
+     * \since QGIS 3.2
+     */
+    QSet<QString> referencedFunctions() const;
+
+    /**
      * Return a list of field name indexes obtained from the provided fields.
      *
      * \since QGIS 3.0

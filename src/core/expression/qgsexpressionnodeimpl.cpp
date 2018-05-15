@@ -137,6 +137,11 @@ QSet<QString> QgsExpressionNodeUnaryOperator::referencedVariables() const
   return mOperand->referencedVariables();
 }
 
+QSet<QString> QgsExpressionNodeUnaryOperator::referencedFunctions() const
+{
+  return mOperand->referencedFunctions();
+}
+
 bool QgsExpressionNodeUnaryOperator::needsGeometry() const
 {
   return mOperand->needsGeometry();
@@ -720,6 +725,11 @@ QSet<QString> QgsExpressionNodeBinaryOperator::referencedVariables() const
   return mOpLeft->referencedVariables() + mOpRight->referencedVariables();
 }
 
+QSet<QString> QgsExpressionNodeBinaryOperator::referencedFunctions() const
+{
+  return mOpLeft->referencedFunctions() + mOpRight->referencedFunctions();
+}
+
 bool QgsExpressionNodeBinaryOperator::needsGeometry() const
 {
   return mOpLeft->needsGeometry() || mOpRight->needsGeometry();
@@ -978,6 +988,23 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
   }
 }
 
+QSet<QString> QgsExpressionNodeFunction::referencedFunctions() const
+{
+  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  QSet<QString> functions = QSet<QString>();
+  functions.insert( fd->name() );
+
+  if ( !mArgs )
+    return functions;
+
+  const QList< QgsExpressionNode * > nodeList = mArgs->list();
+  for ( QgsExpressionNode *n : nodeList )
+  {
+    functions.unite( n->referencedFunctions() );
+  }
+  return functions;
+}
+
 bool QgsExpressionNodeFunction::needsGeometry() const
 {
   bool needs = QgsExpression::QgsExpression::Functions()[mFnIndex]->usesGeometry( this );
@@ -1128,6 +1155,11 @@ QSet<QString> QgsExpressionNodeLiteral::referencedVariables() const
   return QSet<QString>();
 }
 
+QSet<QString> QgsExpressionNodeLiteral::referencedFunctions() const
+{
+  return QSet<QString>();
+}
+
 bool QgsExpressionNodeLiteral::needsGeometry() const
 {
   return false;
@@ -1211,6 +1243,11 @@ QSet<QString> QgsExpressionNodeColumnRef::referencedColumns() const
 }
 
 QSet<QString> QgsExpressionNodeColumnRef::referencedVariables() const
+{
+  return QSet<QString>();
+}
+
+QSet<QString> QgsExpressionNodeColumnRef::referencedFunctions() const
 {
   return QSet<QString>();
 }
@@ -1338,6 +1375,20 @@ QSet<QString> QgsExpressionNodeCondition::referencedVariables() const
   return lst;
 }
 
+QSet<QString> QgsExpressionNodeCondition::referencedFunctions() const
+{
+  QSet<QString> lst;
+  for ( WhenThen *cond : mConditions )
+  {
+    lst += cond->mWhenExp->referencedFunctions() + cond->mThenExp->referencedFunctions();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedFunctions();
+
+  return lst;
+}
+
 bool QgsExpressionNodeCondition::needsGeometry() const
 {
   for ( WhenThen *cond : mConditions )
@@ -1393,6 +1444,16 @@ QSet<QString> QgsExpressionNodeInOperator::referencedVariables() const
   return lst;
 }
 
+QSet<QString> QgsExpressionNodeInOperator::referencedFunctions() const
+{
+  QSet<QString> lst( mNode->referencedFunctions() );
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( const QgsExpressionNode *n : nodeList )
+    lst.unite( n->referencedFunctions() );
+  return lst;
+
+}
+
 QgsExpressionNodeCondition::WhenThen::WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp )
   : mWhenExp( whenExp )
   , mThenExp( thenExp )
@@ -1414,3 +1475,4 @@ QString QgsExpressionNodeBinaryOperator::text() const
 {
   return BINARY_OPERATOR_TEXT[mOp];
 }
+

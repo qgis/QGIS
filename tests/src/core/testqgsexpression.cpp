@@ -1861,6 +1861,24 @@ class TestQgsExpression: public QObject
       QCOMPARE( refVar, expectedVars );
     }
 
+
+    void referenced_functions()
+    {
+      QSet<QString> expectedFunctions;
+      expectedFunctions << QStringLiteral( "current_value" )
+                        << QStringLiteral( "var" )
+                        << QStringLiteral( "intersects" )
+                        << QStringLiteral( "$geometry" )
+                        << QStringLiteral( "buffer" );
+
+      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = \"A_VALUE\" AND intersects(buffer($geometry, 10), @current_geometry)" ) );
+      QCOMPARE( exp.hasParserError(), false );
+      QSet<QString> refVar = exp.referencedFunctions();
+
+      QCOMPARE( refVar, expectedFunctions );
+    }
+
+
     void referenced_columns_all_attributes()
     {
       QgsExpression exp( QStringLiteral( "attribute($currentfeature,'test')" ) );

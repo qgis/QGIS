@@ -276,6 +276,14 @@ QSet<QString> QgsExpression::referencedVariables() const
   return d->mRootNode->referencedVariables();
 }
 
+QSet<QString> QgsExpression::referencedFunctions() const
+{
+  if ( !d->mRootNode )
+    return QSet<QString>();
+
+  return d->mRootNode->referencedFunctions();
+}
+
 QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) const
 {
   if ( !d->mRootNode )
