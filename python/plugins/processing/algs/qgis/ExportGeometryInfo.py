@@ -65,7 +65,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
     def tags(self):
-        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity').split(',')
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity,fields').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
@@ -93,7 +93,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return 'exportaddgeometrycolumns'
 
     def displayName(self):
-        return self.tr('Export geometry columns')
+        return self.tr('Add geometry attributes')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
