@@ -44,6 +44,7 @@
 #include <QToolButton>
 #include <QFile>
 #include <QLabel>
+#include <QMenu>
 
 static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
@@ -97,7 +98,7 @@ void CoordinateCapture::initGui()
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
   connect( mQActionPointer, &QAction::triggered, this, &CoordinateCapture::showOrHide );
-  mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( QString(), mQActionPointer );
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
 
   // create our map tool
@@ -249,7 +250,7 @@ void CoordinateCapture::showOrHide()
 void CoordinateCapture::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->vectorMenu()->removeAction( mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;

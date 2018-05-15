@@ -95,7 +95,7 @@ void QgsGpsPlugin::initGui()
 
   mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
   mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
-  mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->addPluginToVectorMenu( QString(), mQActionPointer );
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
@@ -200,7 +200,7 @@ void QgsGpsPlugin::unload()
   // remove the GUI
   mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
   mQGisInterface->newLayerMenu()->removeAction( mCreateGPXAction );
-  mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->vectorMenu()->removeAction( mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
   mQActionPointer = nullptr;
