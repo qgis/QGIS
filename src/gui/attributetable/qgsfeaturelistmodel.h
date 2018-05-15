@@ -56,7 +56,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
 
     enum Role
     {
-      FeatureInfoRole = Qt::UserRole,
+      FeatureInfoRole = 0x1000, // Make sure no collisions with roles on QgsAttributeTableModel
       FeatureRole
     };
 
@@ -114,13 +114,29 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
+
+    /**
+     * Sort this model by its display expression.
+     *
+     * \since QGIS 3.2
+     */
+    bool sortByDisplayExpression() const;
+
+    /**
+     * Sort this model by its display expression.
+     *
+     * \note Not compatible with injectNull, if sorting by display expression is enabled,
+     * injectNull will automatically turned off.
+     *
+     * \since QGIS 3.2
+     */
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
 
   public slots:
     void onBeginRemoveRows( const QModelIndex &parent, int first, int last );

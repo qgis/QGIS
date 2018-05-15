@@ -102,8 +102,6 @@ for a meaningful error message.
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -114,6 +112,25 @@ for a meaningful error message.
     virtual QModelIndex fidToIndex( QgsFeatureId fid );
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
+
+    bool sortByDisplayExpression() const;
+%Docstring
+Sort this model by its display expression.
+
+.. versionadded:: 3.2
+%End
+
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
+%Docstring
+Sort this model by its display expression.
+
+.. note::
+
+   Not compatible with injectNull, if sorting by display expression is enabled,
+   injectNull will automatically turned off.
+
+.. versionadded:: 3.2
+%End
 
   public slots:
     void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
