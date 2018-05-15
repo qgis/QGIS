@@ -616,13 +616,13 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != Qt::DisplayRole
          && role != Qt::ToolTipRole
          && role != Qt::EditRole
-         && role != SortRole
          && role != FeatureIdRole
          && role != FieldIndexRole
          && role != Qt::BackgroundColorRole
          && role != Qt::TextColorRole
          && role != Qt::DecorationRole
          && role != Qt::FontRole
+         && role < SortRole
        )
      )
     return QVariant();
@@ -897,7 +897,8 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     if ( cache.sortFieldIndex == -1 )
     {
       mExpressionContext.setFeature( f );
-      cache.sortCache.insert( f.id(), cache.sortCacheExpression.evaluate( &mExpressionContext ) );
+      const QVariant cacheValue = cache.sortCacheExpression.evaluate( &mExpressionContext );
+      cache.sortCache.insert( f.id(), cacheValue );
     }
     else
     {
