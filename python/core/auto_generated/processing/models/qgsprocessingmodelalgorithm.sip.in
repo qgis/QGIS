@@ -396,7 +396,7 @@ Creates a new expression context scope for a child algorithm within the model.
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
 
 
 };
