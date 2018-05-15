@@ -517,6 +517,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Transparent")
 
     def test_wms_getmap_labeling_settings(self):
+        # Test the `DrawRectOnly` option with 1 candidate (`CandidatesPolygon`).
+        # May fail if the labeling position engine is tweaked.
+
         d = unitTestDataPath('qgis_server_accesscontrol') + '/'
         project = os.path.join(d, "project_labeling_settings.qgs")
         qs = "?" + "&".join(["%s=%s" % i for i in list({
