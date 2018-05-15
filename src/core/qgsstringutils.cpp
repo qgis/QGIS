@@ -18,6 +18,7 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QTextBoundaryFinder>
+#include <QRegularExpression>
 
 QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
 {
@@ -61,29 +62,37 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       // yes, this is MASSIVELY simplifying the problem!!
 
       static QStringList smallWords;
+      static QStringList newPhraseSeparators;
+      static QRegularExpression splitWords;
       if ( smallWords.empty() )
       {
-        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs.|vs|via" ).split( '|' );
+        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
+        newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
+        splitWords = QRegularExpression( QStringLiteral( "\\b" ) );
       }
 
-      const QStringList parts = string.split( ' ' );
+      const QStringList parts = string.split( splitWords, QString::SkipEmptyParts );
       QString result;
       bool firstWord = true;
+      int i = 0;
+      int lastWord = parts.count() - 1;
       for ( const QString &word : qgis::as_const( parts ) )
       {
-        if ( word.isEmpty() )
+        if ( newPhraseSeparators.contains( word.trimmed() ) )
         {
-          result += ' ';
+          firstWord = true;
+          result += word;
         }
-        else if ( firstWord || !smallWords.contains( word ) )
+        else if ( firstWord || ( i == lastWord ) || !smallWords.contains( word ) )
         {
-          result += ' ' + word.at( 0 ).toUpper() + word.mid( 1 );
+          result += word.at( 0 ).toUpper() + word.mid( 1 );
           firstWord = false;
         }
         else
         {
-          result += ' ' + word;
+          result += word;
         }
+        i++;
       }
       return result;
     }
