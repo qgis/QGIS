@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (NULL,
+                       QgsApplication,
                        QgsCoordinateTransform,
                        QgsField,
                        QgsFields,
@@ -58,7 +59,10 @@ class ExportGeometryInfo(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmAddGeometryAttributes.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
     def tags(self):
         return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity').split(',')

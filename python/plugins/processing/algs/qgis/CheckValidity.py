@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsSettings,
+from qgis.core import (QgsApplication,
+                       QgsSettings,
                        QgsGeometry,
                        QgsFeature,
                        QgsField,
@@ -63,7 +64,10 @@ class CheckValidity(QgisAlgorithm):
     ERROR_COUNT = 'ERROR_COUNT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCheckGeometry.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmCheckGeometry.svg")
 
     def group(self):
         return self.tr('Vector geometry')
