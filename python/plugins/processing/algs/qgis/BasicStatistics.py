@@ -130,7 +130,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
 
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field = source.fields().at(source.fields().lookupField(field_name))
