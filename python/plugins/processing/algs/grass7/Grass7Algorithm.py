@@ -868,7 +868,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
-                          outFormat='ESRI_Shapefile', dsco=None, lco=None):
+                          outFormat='GPKG', dsco=None, lco=None):
         """
         Creates a dedicated command to export a vector from
         temporary GRASS DB into a file via OGR.
