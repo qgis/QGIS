@@ -174,6 +174,7 @@ class QgsStringUtils
       AllUppercase,
       AllLowercase,
       ForceFirstLetterToCapital,
+      TitleCase,
     };
 
     static QString capitalize( const QString &string, Capitalization capitalization );

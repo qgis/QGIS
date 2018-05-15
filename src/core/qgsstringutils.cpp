@@ -56,6 +56,37 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       return temp;
     }
 
+    case TitleCase:
+    {
+      // yes, this is MASSIVELY simplifying the problem!!
+
+      static QStringList smallWords;
+      if ( smallWords.empty() )
+      {
+        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs.|vs|via" ).split( '|' );
+      }
+
+      const QStringList parts = string.split( ' ' );
+      QString result;
+      bool firstWord = true;
+      for ( const QString &word : qgis::as_const( parts ) )
+      {
+        if ( word.isEmpty() )
+        {
+          result += ' ';
+        }
+        else if ( firstWord || !smallWords.contains( word ) )
+        {
+          result += ' ' + word.at( 0 ).toUpper() + word.mid( 1 );
+          firstWord = false;
+        }
+        else
+        {
+          result += ' ' + word;
+        }
+      }
+      return result;
+    }
   }
   // no warnings
   return string;
