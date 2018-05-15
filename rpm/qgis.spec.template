@@ -12,11 +12,16 @@
 %define builddate %(date '+%a %b %d %Y')
 %endif
 
+%if 0%{?fedora} >= 27
+%define grass grass74
+%else
+%define grass grass72
+%endif
+
 Name:           qgis
 Version:        %{_version}
 Release:        %{_relver}%{?dist}
 Summary:        A user friendly Open Source Geographic Information System
-Group:          Applications/Engineering
 
 License:        GPLv3+ with exceptions
 URL:            http://www.qgis.org
@@ -115,7 +120,6 @@ and USGS ASCII DEM.
 
 %package devel
 Summary:        Development Libraries for the QGIS
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
@@ -123,7 +127,6 @@ Development packages for QGIS including the C header files.
 
 %package grass
 Summary:        GRASS Support Libraries for QGIS
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 # The plug-in requires more than just the grass-libs.
@@ -144,7 +147,6 @@ Provides: %{name}-python%{?_isa} = %{version}-%{release}
 Obsoletes: %{name}-python < %{version}-%{release}
 Obsoletes: python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires: gdal-python3
 Requires: python3-future
@@ -163,7 +165,6 @@ Python integration and plug-ins for QGIS.
 
 %package server
 Summary:        FCGI-based OGC web map server
-Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       mod_fcgid
 Provides: mapserver = %{version}-%{release}
@@ -203,7 +204,7 @@ gzip ChangeLog
       -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
       -D WITH_BINDINGS:BOOL=TRUE \
       -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7=%{_libdir}/grass72 \
+      -D GRASS_PREFIX7=%{_libdir}/%{grass} \
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \

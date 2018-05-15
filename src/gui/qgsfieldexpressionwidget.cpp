@@ -346,3 +346,8 @@ bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )
   expression.prepare( &mExpressionContext );
   return !expression.hasParserError();
 }
+
+void QgsFieldExpressionWidget::appendScope( QgsExpressionContextScope *scope )
+{
+  mExpressionContext.appendScope( scope );
+}

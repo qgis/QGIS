@@ -29,6 +29,8 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber,
@@ -61,8 +63,8 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                                                                QgsProcessing.TypeVectorLine,
                                                                QgsProcessing.TypeVectorPolygon]))
 
-        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE, self.tr('Tolerance (layer units)'), parentParameterName=self.INPUT,
+                                                         minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
 
         self.modes = [self.tr('Prefer aligning nodes, insert extra vertices where required'),
                       self.tr('Prefer closest point, insert extra vertices where required'),
@@ -86,13 +88,20 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         reference_source = self.parameterAsSource(parameters, self.REFERENCE_LAYER, context)
+        if reference_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.REFERENCE_LAYER))
+
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
         mode = self.parameterAsEnum(parameters, self.BEHAVIOR, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

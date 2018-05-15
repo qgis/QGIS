@@ -41,6 +41,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
@@ -108,9 +109,16 @@ class PointDistance(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         source_field = self.parameterAsString(parameters, self.INPUT_FIELD, context)
         target_source = self.parameterAsSource(parameters, self.TARGET, context)
+        if target_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.TARGET))
+
         target_field = self.parameterAsString(parameters, self.TARGET_FIELD, context)
+        same_source_and_target = parameters[self.INPUT] == parameters[self.TARGET]
         matType = self.parameterAsEnum(parameters, self.MATRIX_TYPE, context)
         nPoints = self.parameterAsInt(parameters, self.NEAREST_POINTS, context)
 
@@ -119,7 +127,7 @@ class PointDistance(QgisAlgorithm):
 
         if matType == 0:
             # Linear distance matrix
-            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field,
+            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field, same_source_and_target,
                                      matType, nPoints, feedback)
         elif matType == 1:
             # Standard distance matrix
@@ -127,11 +135,17 @@ class PointDistance(QgisAlgorithm):
                                       nPoints, feedback)
         elif matType == 2:
             # Summary distance matrix
-            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field,
+            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field, same_source_and_target,
                                      matType, nPoints, feedback)
 
-    def linearMatrix(self, parameters, context, source, inField, target_source, targetField,
+    def linearMatrix(self, parameters, context, source, inField, target_source, targetField, same_source_and_target,
                      matType, nPoints, feedback):
+
+        if same_source_and_target:
+            # need to fetch an extra point from the index, since the closest match will always be the same
+            # as the input feature
+            nPoints += 1
+
         inIdx = source.fields().lookupField(inField)
         outIdx = target_source.fields().lookupField(targetField)
 
@@ -153,6 +167,8 @@ class PointDistance(QgisAlgorithm):
         out_wkb = QgsWkbTypes.multiType(source.wkbType()) if matType == 0 else source.wkbType()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, out_wkb, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
@@ -175,6 +191,9 @@ class PointDistance(QgisAlgorithm):
             for outFeat in target_source.getFeatures(request):
                 if feedback.isCanceled():
                     break
+
+                if same_source_and_target and inFeat.id() == outFeat.id():
+                    continue
 
                 outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
@@ -207,6 +226,7 @@ class PointDistance(QgisAlgorithm):
 
     def regularMatrix(self, parameters, context, source, inField, target_source, targetField,
                       nPoints, feedback):
+
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
         distArea.setEllipsoid(context.project().ellipsoid())
@@ -238,6 +258,8 @@ class PointDistance(QgisAlgorithm):
 
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                        fields, source.wkbType(), source.sourceCrs())
+                if sink is None:
+                    raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
             data = [inFeat[inField]]
             for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs(), context.transformContext())):

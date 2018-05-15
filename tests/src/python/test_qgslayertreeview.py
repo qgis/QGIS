@@ -111,6 +111,36 @@ class TestQgsLayerTreeView(unittest.TestCase):
         show_in_overview.trigger()
         self.assertEqual(view.currentNode().customProperty('overview', 0), False)
 
+    def testMoveOutOfGroupActionLayer(self):
+        """Test move out of group action on layer"""
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().addGroup("embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+        ])
+
+        view.setCurrentLayer(self.layer5)
+        moveOutOfGroup = actions.actionMoveOutOfGroup()
+        moveOutOfGroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+            self.layer5.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+        ])
+
     def testMoveToTopActionLayer(self):
         """Test move to top action on layer"""
         view = QgsLayerTreeView()

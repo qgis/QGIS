@@ -15,10 +15,11 @@
 #include "qgslabelfeature.h"
 #include "feature.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 
-QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
+QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : mId( id )
-  , mGeometry( geometry )
+  , mGeometry( std::move( geometry ) )
   , mSize( size )
   , mPriority( -1 )
   , mZIndex( 0 )
@@ -37,27 +38,18 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSize
 
 QgsLabelFeature::~QgsLabelFeature()
 {
-  if ( mGeometry )
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mGeometry );
-
-  if ( mObstacleGeometry )
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mObstacleGeometry );
-
   if ( mPermissibleZoneGeosPrepared )
   {
-    GEOSPreparedGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeosPrepared );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
+    mPermissibleZoneGeosPrepared.reset();
+    mPermissibleZoneGeos.reset();
   }
 
   delete mInfo;
 }
 
-void QgsLabelFeature::setObstacleGeometry( GEOSGeometry *obstacleGeom )
+void QgsLabelFeature::setObstacleGeometry( geos::unique_ptr obstacleGeom )
 {
-  if ( mObstacleGeometry )
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mObstacleGeometry );
-
-  mObstacleGeometry = obstacleGeom;
+  mObstacleGeometry = std::move( obstacleGeom );
 }
 
 void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
@@ -66,18 +58,17 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
 
   if ( mPermissibleZoneGeosPrepared )
   {
-    GEOSPreparedGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeosPrepared );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
+    mPermissibleZoneGeosPrepared.reset();
+    mPermissibleZoneGeos.reset();
     mPermissibleZoneGeosPrepared = nullptr;
-    mPermissibleZoneGeos = nullptr;
   }
 
   if ( mPermissibleZone.isNull() )
     return;
 
-  mPermissibleZoneGeos = mPermissibleZone.exportToGeos();
+  mPermissibleZoneGeos = QgsGeos::asGeos( mPermissibleZone );
   if ( !mPermissibleZoneGeos )
     return;
 
-  mPermissibleZoneGeosPrepared = GEOSPrepare_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
+  mPermissibleZoneGeosPrepared.reset( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mPermissibleZoneGeos.get() ) );
 }

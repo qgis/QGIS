@@ -97,6 +97,15 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent )
+{
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ),
+                            tr( "&Zoom to Selection" ), parent );
+  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToSelection ) );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
@@ -109,7 +118,16 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas
 QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Move to Top-level" ), parent );
+  Q_NOWARN_DEPRECATED_PUSH
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::makeTopLevel );
+  Q_NOWARN_DEPRECATED_POP
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveOutOfGroup( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move Out of &Group" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveOutOfGroup );
   return a;
 }
 
@@ -259,6 +277,15 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   zoomToLayers( canvas, layers );
 }
 
+void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
+{
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
+  if ( !layer )
+    return;
+
+  canvas->zoomToSelected( layer );
+}
+
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
 {
   QgsLayerTreeGroup *groupNode = mView->currentGroupNode();
@@ -279,6 +306,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
   QApplication::restoreOverrideCursor();
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToSelection()
+{
+  QAction *s = qobject_cast<QAction *>( sender() );
+  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+  zoomToSelection( canvas );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
@@ -358,6 +393,29 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
     parentGroup->removeChildNode( l );
   }
 }
+
+
+void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
+{
+  const QList< QgsLayerTreeLayer * >  selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+  {
+    QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
+    if ( !parentGroup || parentGroup == rootGroup )
+      continue;
+    QgsLayerTreeGroup *tempGroup = parentGroup;
+    while ( tempGroup->parent() != rootGroup )
+    {
+      tempGroup = qobject_cast<QgsLayerTreeGroup *>( tempGroup->parent() );
+    }
+    QgsLayerTreeLayer *clonedLayer = l->clone();
+    int insertIdx = rootGroup->children().indexOf( tempGroup );
+    rootGroup->insertChildNode( insertIdx, clonedLayer );
+    parentGroup->removeChildNode( l );
+  }
+}
+
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {

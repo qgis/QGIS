@@ -180,7 +180,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param value     The new value of the attribute.
      * \deprecated since 3.0
      */
-    Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value );
+    Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value ) SIP_DEPRECATED;
 
     /**
      * Notifies about changes of attributes

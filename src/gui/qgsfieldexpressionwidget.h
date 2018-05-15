@@ -60,6 +60,15 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
 
+    /**
+     * Appends a scope to the current expression context.
+     *
+     * \param scope The scope to add.
+     *
+     * \since QGIS 3.2
+     */
+    void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
+
     //! return the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 

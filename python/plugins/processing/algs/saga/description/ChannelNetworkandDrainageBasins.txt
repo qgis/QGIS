@@ -1,7 +1,7 @@
 Channel Network and Drainage Basins
 ta_channels
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|5.0|False|None|None
+QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Integer|5|False|1|None
 QgsProcessingParameterRasterDestination|DIRECTION|Flow Direction
 QgsProcessingParameterRasterDestination|CONNECTION|Flow Connectivity
 QgsProcessingParameterRasterDestination|ORDER|Strahler Order

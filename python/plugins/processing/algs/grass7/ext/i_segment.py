@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from .i import regroupRasters
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
     regroupRasters(alg, parameters, context, 'input', 'group')
-    alg.processCommand(parameters, context)
+    alg.processCommand(parameters, context, feedback)

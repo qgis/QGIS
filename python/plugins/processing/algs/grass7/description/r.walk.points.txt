@@ -3,8 +3,8 @@ r.walk.points - Creates a raster map showing the anisotropic cumulative cost of 
 Raster (r.*)
 QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False
 QgsProcessingParameterRasterLayer|friction|Name of input raster map containing friction costs|None|False
-QgsProcessingParameterVectorLayer|start_points|Start points|0|None|False
-QgsProcessingParameterVectorLayer|stop_points|Stop points|0|None|True
+QgsProcessingParameterFeatureSource|start_points|Start points|0|None|False
+QgsProcessingParameterFeatureSource|stop_points|Stop points|0|None|True
 QgsProcessingParameterString|walk_coeff|Coefficients for walking energy formula parameters a,b,c,d|0.72,6.0,1.9998,-1.9998|False|True
 QgsProcessingParameterNumber|lambda|Lambda coefficients for combining walking energy and friction cost|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
 QgsProcessingParameterNumber|slope_factor|Slope factor determines travel energy cost per height step|QgsProcessingParameterNumber.Double|-0.2125|True|None|None

@@ -40,6 +40,7 @@ from qgis.core import (QgsField,
                        QgsSpatialIndex,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterCrs,
@@ -78,10 +79,9 @@ class RandomPointsExtent(QgisAlgorithm):
                                                        self.tr('Number of points'),
                                                        QgsProcessingParameterNumber.Integer,
                                                        1, False, 1, 1000000000))
-        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
-                                                       self.tr('Minimum distance between points'),
-                                                       QgsProcessingParameterNumber.Double,
-                                                       0, False, 0, 1000000000))
+        self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
+                                                         self.tr('Minimum distance between points'),
+                                                         0, self.TARGET_CRS, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
                                                     'ProjectCrs'))
@@ -108,6 +108,8 @@ class RandomPointsExtent(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         nPoints = 0
         nIterations = 0

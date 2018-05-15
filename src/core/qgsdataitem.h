@@ -84,7 +84,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Custom, //!< Custom item type
     };
 
-    Q_ENUM( Type );
+    Q_ENUM( Type )
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populating,   //!< Creating children in separate thread (populating or refreshing)
       Populated     //!< Children created
     };
-    Q_ENUM( State );
+    Q_ENUM( State )
 
     //! \since QGIS 2.8
     State state() const;
@@ -422,10 +422,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       TableLayer,
       Database,
       Table,
-      Plugin     //!< Added in 2.10
+      Plugin,    //!< Added in 2.10
+      Mesh       //!< Added in 3.2
     };
 
-    Q_ENUM( LayerType );
+    Q_ENUM( LayerType )
 
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
@@ -498,6 +499,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
+    //! Return icon for mesh layer type
+    static QIcon iconMesh();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
@@ -597,6 +600,8 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     bool hasDragEnabled() const override { return true; }
+
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
 };
 

@@ -98,12 +98,13 @@ namespace QgsMapToolSelectUtils
   QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
 
   /**
-  Expands a rectangle to a minimum size for selection based on the vector layer type
-  \param selectRect The QRect to expand
+  Expands a point to a rectangle with minimum size for selection based on the vector layer type
+  \param point The point to expand the rectangle around (in map coordinates)
+  \param canvas The map canvas used to transform between canvas and map units
   \param vlayer The vector layer layer
-  \param vlayer The point to expand the rectangle around
+  \returns Expanded rectangle in map units
   */
-  void expandSelectRectangle( QRect &selectRect, QgsVectorLayer *vlayer, QPoint point );
+  QgsRectangle expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsVectorLayer *vlayer );
 
   /**
   Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords

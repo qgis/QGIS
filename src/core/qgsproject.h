@@ -56,6 +56,7 @@ class QgsMapLayer;
 class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
+class QgsProjectStorage;
 class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
@@ -150,10 +151,43 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns QFileInfo object for the project's associated file.
+     *
+     * \note The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
+     * in the file system. It is recommended to use absoluteFilePath(), baseName(), lastModifiedTime() as
+     * replacements that are aware of the fact that projects may be saved in other project storages.
+     *
      * \see fileName()
      * \since QGIS 2.9
+     * \deprecated
      */
-    QFileInfo fileInfo() const;
+    Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
+
+    /**
+     * Returns pointer to project storage implementation that handles read/write of the project file.
+     * If the project file is stored in the local file system, returns null pointer.
+     * The project storage object is inferred from fileName() of the project.
+     * \since QGIS 3.2
+     */
+    QgsProjectStorage *projectStorage() const;
+
+    /**
+     * Returns last modified time of the project file as returned by the file system (or other project storage).
+     * \since QGIS 3.2
+     */
+    QDateTime lastModified() const;
+
+    /**
+     * Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absoluteFilePath() const;
+
+    /**
+     * Returns the base name of the project file without the path and without extension - derived from fileName().
+     * \since QGIS 3.2
+     */
+    QString baseName() const;
 
     /**
      * Returns the project's native coordinate reference system.
@@ -893,6 +927,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see metadataChanged()
      */
     void setMetadata( const QgsProjectMetadata &metadata );
+
+    /**
+     * Returns a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    QSet<QgsMapLayer *> requiredLayers() const;
+
+    /**
+     * Configures a set of map layers that are required in the project and therefore they should not get
+     * removed from the project. The set of layers may be configured by users in project properties.
+     * and it is mainly a hint for the user interface to protect users from removing layers that important
+     * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \since QGIS 3.2
+     */
+    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
   signals:
     //! emitted when project is being read

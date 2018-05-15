@@ -73,7 +73,7 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
   int count = selectLayer->selectedFeatureCount();

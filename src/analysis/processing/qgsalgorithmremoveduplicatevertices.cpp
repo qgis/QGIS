@@ -70,9 +70,8 @@ QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::create
 
 void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber> tolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
-      0.000001, false, 0, 10000000.0 );
+  std::unique_ptr< QgsProcessingParameterDistance> tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
+      QObject::tr( "Tolerance" ), 0.000001, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -84,6 +83,12 @@ void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
   useZ->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "UseZ" ), QObject::tr( "Use Z Value" ), QgsPropertyDefinition::Boolean ) );
   useZ->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( useZ.release() );
+}
+
+QgsProcessingFeatureSource::Flag QgsAlgorithmRemoveDuplicateVertices::sourceFlags() const
+{
+  // skip geometry checks - this algorithm can be used to repair geometries
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
 bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

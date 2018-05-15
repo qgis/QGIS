@@ -117,6 +117,9 @@ class gdaltindex(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
 
+    def commandName(self):
+        return 'gdaltindex'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
         crs_field = self.parameterAsString(parameters, self.CRS_FIELD_NAME, context)
@@ -150,7 +153,8 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-src_srs_format {}'.format(self.modes[crs_format][1]))
 
         if target_crs.isValid():
-            arguments.append('-t_srs {}'.format(target_crs.authid()))
+            arguments.append('-t_srs')
+            arguments.append(GdalUtils.gdal_crs_string(target_crs))
 
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
@@ -158,4 +162,4 @@ class gdaltindex(GdalAlgorithm):
         arguments.append(output)
         arguments.append(' '.join(layers))
 
-        return ['gdaltindex', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -108,7 +108,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
     QStringList fields = url.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
-      QString name = fields.at( i );
+      QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
       QVariant::Type type = QVariant::String;
       QVariant::Type subType = QVariant::Invalid;
       QString typeName( QStringLiteral( "string" ) );
@@ -402,6 +402,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
     mNextFeatureId++;
   }
 
+  clearMinMaxCache();
   return result;
 }
 
@@ -423,6 +424,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
   }
 
   updateExtents();
+  clearMinMaxCache();
 
   return true;
 }
@@ -504,6 +506,7 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds &attributes )
       f.setAttributes( attr );
     }
   }
+  clearMinMaxCache();
   return true;
 }
 
@@ -519,6 +522,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
       fit->setAttribute( it2.key(), it2.value() );
   }
+  clearMinMaxCache();
   return true;
 }
 

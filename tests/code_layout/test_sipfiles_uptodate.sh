@@ -12,9 +12,11 @@ fi
 
 pushd ${DIR} > /dev/null
 
+modules=(core gui analysis server)
+
 code=0
 while read -r sipfile; do
-    header=$(${GP}sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
+    header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
     if [ ! -f $header ]; then
       echo "*** Missing header: $header for sipfile $sipfile"
     else
@@ -25,10 +27,9 @@ while read -r sipfile; do
       fi
     fi
 done < <(
-${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core_auto.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui_auto.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis_auto.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server_auto.sip
+for module in "${modules[@]}"; do
+  ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip
+done
   )
 
 

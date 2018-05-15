@@ -38,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsFields,
                        QgsRectangle,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -99,6 +100,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_name = self.parameterAsString(parameters, self.FIELD, context)
         type = self.parameterAsEnum(parameters, self.TYPE, context)
         use_field = bool(field_name)
@@ -137,6 +141,8 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if field_index >= 0:
             geometry_dict = {}

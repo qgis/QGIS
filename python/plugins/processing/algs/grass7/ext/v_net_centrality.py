@@ -28,10 +28,10 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 
 
-def processCommand(alg, parameters, context):
-    incorporatePoints(alg, parameters, context)
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     outputParameter = {'output': ['output', 'point', 1, False]}
     variableOutput(alg, outputParameter, parameters, context)

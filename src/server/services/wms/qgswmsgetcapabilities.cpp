@@ -756,39 +756,38 @@ namespace QgsWms
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
 
-    // Root Layer title
-    QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-    QDomText layerParentTitleText = doc.createTextNode( project->title() );
-    layerParentTitleElem.appendChild( layerParentTitleText );
-    layerParentElem.appendChild( layerParentTitleElem );
+    if ( !project->title().isEmpty() )
+    {
+      // Root Layer title
+      QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+      QDomText layerParentTitleText = doc.createTextNode( project->title() );
+      layerParentTitleElem.appendChild( layerParentTitleText );
+      layerParentElem.appendChild( layerParentTitleElem );
 
-    // Root Layer abstract
-    QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
-    QDomText layerParentAbstText = doc.createTextNode( project->title() );
-    layerParentAbstElem.appendChild( layerParentAbstText );
-    layerParentElem.appendChild( layerParentAbstElem );
+      // Root Layer abstract
+      QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
+      QDomText layerParentAbstText = doc.createTextNode( project->title() );
+      layerParentAbstElem.appendChild( layerParentAbstText );
+      layerParentElem.appendChild( layerParentAbstElem );
+    }
 
     // Root Layer name
-    QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
-    QString rootName = QgsServerProjectUtils::wmsRootName( *project );
-    if ( rootName.isEmpty() )
+    QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
+    if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
     {
-      QDomText layerParentNameText = doc.createTextNode( project->title() );
-      layerParentNameElem.appendChild( layerParentNameText );
+      rootLayerName = project->title();
     }
-    else
+
+    if ( !rootLayerName.isEmpty() )
     {
-      QDomText layerParentNameText = doc.createTextNode( rootName );
+      QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
+      QDomText layerParentNameText = doc.createTextNode( rootLayerName );
       layerParentNameElem.appendChild( layerParentNameText );
+      layerParentElem.appendChild( layerParentNameElem );
     }
-    layerParentElem.appendChild( layerParentNameElem );
 
     // Keyword list
     addKeywordListElement( project, doc, layerParentElem );
-
-    // Metadata (empty but needed for OGC tests RECOMMENDATIONS)
-    QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-    layerParentElem.appendChild( metaUrlElem );
 
     // Root Layer tree name
     if ( projectSettings )
@@ -1205,6 +1204,13 @@ namespace QgsWms
       QDomElement titleElement = layerElement.firstChildElement( QStringLiteral( "Title" ) );
       QDomElement abstractElement = layerElement.firstChildElement( QStringLiteral( "Abstract" ) );
       QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
+
+      if ( CRSPrecedingElement.isNull() )
+      {
+        // keyword list element is never empty
+        const QDomElement keyElement = layerElement.firstChildElement( QStringLiteral( "KeywordList" ) );
+        CRSPrecedingElement = keyElement;
+      }
 
       //In case the number of advertised CRS is constrained
       if ( !constrainedCrsList.isEmpty() )

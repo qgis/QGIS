@@ -129,9 +129,11 @@ class TestQgsTessellator : public QObject
 
     void testBasic();
     void testWalls();
+    void testBackEdges();
     void asMultiPolygon();
     void testBadCoordinates();
     void testIssue17745();
+    void testCrashSelfIntersection();
 
   private:
 };
@@ -244,6 +246,24 @@ void TestQgsTessellator::testWalls()
   QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
 }
 
+void TestQgsTessellator::testBackEdges()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
+  QVector3D dn( 0, 0, -1 );  // surface normal pointing straight down for back faces
+  QList<TriangleCoords> tcNormals;
+  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+  tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
+  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+  tcNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
+
+  QgsTessellator tN( 0, 0, true, false, true );
+  tN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+}
+
 void TestQgsTessellator::asMultiPolygon()
 {
   QgsPolygon polygon;
@@ -297,6 +317,19 @@ void TestQgsTessellator::testIssue17745()
   QgsTessellator t( 0, 0, true );
   QgsPolygon p;
   bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
+  QVERIFY( resWktRead );
+
+  t.addPolygon( p, 0 );   // must not crash - that's all we test here
+}
+
+void TestQgsTessellator::testCrashSelfIntersection()
+{
+  // this is a polygon where we get self-intersecting exterior ring that would crash poly2tri if not skipped
+
+  QgsTessellator t( 0, 0, true );
+  QgsPolygon p;
+  bool resWktRead = p.fromWkt( "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 -1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))" );
+
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );   // must not crash - that's all we test here

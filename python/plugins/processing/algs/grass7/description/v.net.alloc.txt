@@ -1,8 +1,8 @@
 v.net.alloc
 Allocates subnets for nearest centers (direction from center)
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
-QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 *QgsProcessingParameterString|center_cats|Category values|1-100000|False|False
 *QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|False

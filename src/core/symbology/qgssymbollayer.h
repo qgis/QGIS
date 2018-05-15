@@ -28,7 +28,6 @@
 #include <QDomElement>
 
 #include "qgssymbol.h"
-#include "qgssymbollayerutils.h" // QgsStringMap
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
 
@@ -40,6 +39,10 @@ class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
 class QgsPaintEffect;
+
+#ifndef SIP_RUN
+typedef QMap<QString, QString> QgsStringMap;
+#endif
 
 /**
  * \ingroup core

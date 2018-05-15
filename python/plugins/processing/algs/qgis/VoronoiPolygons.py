@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
@@ -37,6 +38,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
@@ -55,7 +57,10 @@ class VoronoiPolygons(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmVoronoi.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmVoronoi.svg")
 
     def group(self):
         return self.tr('Vector geometry')
@@ -68,8 +73,8 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=9999999999, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterDistance(self.BUFFER, self.tr('Buffer region'), parentParameterName=self.INPUT,
+                                                         minValue=0.0, maxValue=9999999999, defaultValue=0.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
 
@@ -81,9 +86,14 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         buf = self.parameterAsDouble(parameters, self.BUFFER, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         outFeat = QgsFeature()
         extent = source.sourceExtent()

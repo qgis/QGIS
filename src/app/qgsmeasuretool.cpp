@@ -34,17 +34,14 @@
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )
-  , mWrongProjectProjection( false )
+  , mMeasureArea( measureArea )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mMeasureArea = measureArea;
-
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair ) );
 
-  mDone = true;
   // Append point we will move
   mPoints.append( QgsPointXY( 0, 0 ) );
   mDestinationCrs = canvas->mapSettings().destinationCrs();
@@ -58,13 +55,12 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
 
 QgsMeasureTool::~QgsMeasureTool()
 {
+  // important - dialog is not parented to this tool (it's parented to the main window)
+  // but we want to clean it up now
   delete mDialog;
-  delete mRubberBand;
-  delete mRubberBandPoints;
 }
 
-
-QVector<QgsPointXY> QgsMeasureTool::points()
+QVector<QgsPointXY> QgsMeasureTool::points() const
 {
   return mPoints;
 }

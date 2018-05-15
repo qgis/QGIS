@@ -37,11 +37,13 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsFields,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameterFileDestination)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -91,6 +93,9 @@ class UniqueValues(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_names = self.parameterAsFields(parameters, self.FIELDS, context)
 
         fields = QgsFields()
@@ -118,7 +123,7 @@ class UniqueValues(QgisAlgorithm):
             request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
             request.setSubsetOfAttributes(field_indices)
             total = 100.0 / source.featureCount() if source.featureCount() else 0
-            for current, f in enumerate(source.getFeatures(request)):
+            for current, f in enumerate(source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)):
                 if feedback.isCanceled():
                     break
 

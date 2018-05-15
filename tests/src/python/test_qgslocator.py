@@ -20,7 +20,8 @@ from qgis.core import (QgsLocator,
                        QgsLocatorContext,
                        QgsLocatorResult,
                        QgsLocatorModel,
-                       QgsLocatorAutomaticModel)
+                       QgsLocatorAutomaticModel,
+                       QgsSettings)
 from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
 from qgis.testing import start_app, unittest
@@ -30,18 +31,22 @@ start_app()
 
 class test_filter(QgsLocatorFilter):
 
-    def __init__(self, prefix, parent=None):
+    def __init__(self, identifier, prefix=None, parent=None):
         super().__init__(parent)
-        self.prefix = prefix
+        self.identifier = identifier
+        self._prefix = prefix
 
     def clone(self):
-        return test_filter(self.prefix)
+        return test_filter(self.identifier)
 
     def name(self):
-        return 'test'
+        return 'test_' + self.identifier
 
     def displayName(self):
         return 'test'
+
+    def prefix(self):
+        return self._prefix
 
     def fetchResults(self, string, context, feedback):
         for i in range(3):
@@ -49,7 +54,7 @@ class test_filter(QgsLocatorFilter):
                 return
             sleep(0.001)
             result = QgsLocatorResult()
-            result.displayString = self.prefix + str(i)
+            result.displayString = self.identifier + str(i)
             self.resultFetched.emit(result)
 
     def triggerResult(self, result):
@@ -164,6 +169,103 @@ class TestQgsLocator(unittest.TestCase):
         l.fetchResults('a', context)
         l.cancel()
 
+    def testPrefixes(self):
+        """
+        Test custom (active) prefixes
+        """
+
+        def got_hit(result):
+            got_hit._results_.append(result.displayString)
+
+        got_hit._results_ = []
+
+        context = QgsLocatorContext()
+
+        l = QgsLocator()
+
+        # filter with prefix
+        filter_a = test_filter('a', 'aaa')
+        l.registerFilter(filter_a)
+        self.assertEqual(filter_a.prefix(), 'aaa')
+        self.assertEqual(filter_a.activePrefix(), 'aaa')
+        self.assertEqual(filter_a.useWithoutPrefix(), True)
+        l.foundResult.connect(got_hit)
+        l.fetchResults('aaa a', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'a0', 'a1', 'a2'})
+        got_hit._results_ = []
+        l.fetchResults('bbb b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'a0', 'a1', 'a2'})
+        got_hit._results_ = []
+        filter_a.setUseWithoutPrefix(False)
+        self.assertEqual(filter_a.useWithoutPrefix(), False)
+        l.fetchResults('bbb b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(got_hit._results_, [])
+        got_hit._results_ = []
+
+        # test with two filters
+        filter_b = test_filter('b', 'bbb')
+        l.registerFilter(filter_b)
+        self.assertEqual(filter_b.prefix(), 'bbb')
+        self.assertEqual(filter_b.activePrefix(), 'bbb')
+        got_hit._results_ = []
+        l.fetchResults('bbb b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'b0', 'b1', 'b2'})
+        l.deregisterFilter(filter_b)
+
+        # test with two filters with same prefix
+        filter_b = test_filter('b', 'aaa')
+        l.registerFilter(filter_b)
+        self.assertEqual(filter_b.prefix(), 'aaa')
+        self.assertEqual(filter_b.activePrefix(), 'aaa')
+        got_hit._results_ = []
+        l.fetchResults('aaa b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'a0', 'a1', 'a2', 'b0', 'b1', 'b2'})
+        l.deregisterFilter(filter_b)
+
+        # filter with invalid prefix (less than 3 char)
+        filter_c = test_filter('c', 'bb')
+        l.registerFilter(filter_c)
+        self.assertEqual(filter_c.prefix(), 'bb')
+        self.assertEqual(filter_c.activePrefix(), '')
+        got_hit._results_ = []
+        l.fetchResults('b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'c0', 'c1', 'c2'})
+        l.deregisterFilter(filter_c)
+
+        # filter with custom prefix
+        QgsSettings().setValue("locator_filters/prefix_test_custom", 'xyz', QgsSettings.Gui)
+        filter_c = test_filter('custom', 'abc')
+        l.registerFilter(filter_c)
+        self.assertEqual(filter_c.prefix(), 'abc')
+        self.assertEqual(filter_c.activePrefix(), 'xyz')
+        got_hit._results_ = []
+        l.fetchResults('b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'custom0', 'custom1', 'custom2'})
+        l.deregisterFilter(filter_c)
+
+        del l
+
     def testModel(self):
         m = QgsLocatorModel()
         l = QgsLocator()
@@ -259,6 +361,12 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0)), 'a0')
         self.assertEqual(m.data(m.index(2, 0)), 'a1')
         self.assertEqual(m.data(m.index(3, 0)), 'a2')
+
+    def testStringMatches(self):
+        self.assertFalse(QgsLocatorFilter.stringMatches('xxx', 'yyyy'))
+        self.assertTrue(QgsLocatorFilter.stringMatches('axxxy', 'xxx'))
+        self.assertTrue(QgsLocatorFilter.stringMatches('aXXXXy', 'xxx'))
+        self.assertFalse(QgsLocatorFilter.stringMatches('aXXXXy', ''))
 
 
 if __name__ == '__main__':

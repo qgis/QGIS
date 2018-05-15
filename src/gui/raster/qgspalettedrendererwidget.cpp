@@ -41,16 +41,16 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mCancelButton->hide();
 
   mContextMenu = new QMenu( tr( "Options" ), this );
-  mContextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  mContextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
-  mContextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
+  mContextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
+  mContextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  mContextMenu->addAction( tr( "Change Label…" ), this, SLOT( changeLabel() ) );
 
   mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
-  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
+  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load Classes from Layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
-  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load color map from file…" ) );
+  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load Color Map from File…" ) );
   connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
-  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export color map to file…" ) );
+  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export Color Map to File…" ) );
   connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
 
 
@@ -803,5 +803,40 @@ void QgsPalettedRendererModel::deleteAll()
   emit classesChanged();
 }
 
-///@endcond PRIVATE
+void QgsPalettedRendererClassGatherer::run()
+{
+  mWasCanceled = false;
 
+  // allow responsive cancelation
+  mFeedback = new QgsRasterBlockFeedback();
+  connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
+
+  QgsPalettedRasterRenderer::ClassData newClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
+
+  // combine existing classes with new classes
+  QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
+  for ( ; classIt != newClasses.end(); ++classIt )
+  {
+    // check if existing classes contains this same class
+    for ( const QgsPalettedRasterRenderer::Class &existingClass : qgis::as_const( mClasses ) )
+    {
+      if ( existingClass.value == classIt->value )
+      {
+        classIt->color = existingClass.color;
+        classIt->label = existingClass.label;
+        break;
+      }
+    }
+  }
+  mClasses = newClasses;
+
+  // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
+  mFeedbackMutex.lock();
+  delete mFeedback;
+  mFeedback = nullptr;
+  mFeedbackMutex.unlock();
+
+  emit collectedClasses();
+}
+
+///@endcond PRIVATE

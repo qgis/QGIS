@@ -29,6 +29,8 @@
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
 #include "qgspathresolver.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
@@ -46,6 +48,7 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
@@ -460,6 +463,50 @@ QFileInfo QgsProject::fileInfo() const
   return QFileInfo( mFile );
 }
 
+QgsProjectStorage *QgsProject::projectStorage() const
+{
+  return QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
+}
+
+QDateTime QgsProject::lastModified() const
+{
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
+    return metadata.lastModified;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).lastModified();
+  }
+}
+
+QString QgsProject::absoluteFilePath() const
+{
+  if ( projectStorage() )
+    return QString();
+
+  if ( mFile.fileName().isEmpty() )
+    return QString();  // this is to protect ourselves from getting current directory from QFileInfo::absoluteFilePath()
+
+  return QFileInfo( mFile.fileName() ).absoluteFilePath();
+}
+
+QString QgsProject::baseName() const
+{
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QgsProjectStorage::Metadata metadata;
+    storage->readProjectStorageMetadata( mFile.fileName(), metadata );
+    return metadata.name;
+  }
+  else
+  {
+    return QFileInfo( mFile.fileName() ).baseName();
+  }
+}
+
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
   return mCrs;
@@ -774,6 +821,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   {
     mapLayer = new QgsRasterLayer;
   }
+  else if ( type == QLatin1String( "mesh" ) )
+  {
+    mapLayer = new QgsMeshLayer;
+  }
   else if ( type == QLatin1String( "plugin" ) )
   {
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
@@ -821,6 +872,29 @@ bool QgsProject::read()
 {
   QString filename = mFile.fileName();
   bool rc;
+
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    QTemporaryFile inDevice;
+    if ( !inDevice.open() )
+    {
+      setError( tr( "Unable to open %1" ).arg( inDevice.fileName() ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !storage->readProject( filename, &inDevice, context ) )
+    {
+      QString err = tr( "Unable to open %1" ).arg( filename );
+      QList<QgsReadWriteContext::ReadWriteMessage> messages = context.takeMessages();
+      if ( !messages.isEmpty() )
+        err += QStringLiteral( "\n\n" ) + messages.last().message();
+      setError( err );
+      return false;
+    }
+
+    return unzip( inDevice.fileName() );  // calls setError() if returning false
+  }
 
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
@@ -1077,11 +1151,12 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     mRootGroup->readLayerOrderFromXml( layerTreeElem );
   }
-  else
+
+  // Load pre 3.0 configuration
+  QDomElement layerTreeCanvasElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+  if ( !layerTreeCanvasElem.isNull( ) )
   {
-    // Load pre 3.0 configuration
-    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
-    mRootGroup->readLayerOrderFromXml( elem );
+    mRootGroup->readLayerOrderFromXml( layerTreeCanvasElem );
   }
 
   // make sure the are just valid layers
@@ -1373,6 +1448,42 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  if ( QgsProjectStorage *storage = projectStorage() )
+  {
+    // for projects stored in a custom storage, we cannot use relative paths since the storage most likely
+    // will not be in a file system
+    writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+
+    QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+    QString tmpZipFilename( tempPath + QDir::separator() + QUuid::createUuid().toString() );
+
+    if ( !zip( tmpZipFilename ) )
+      return false;  // zip() already calls setError() when returning false
+
+    QFile tmpZipFile( tmpZipFilename );
+    if ( !tmpZipFile.open( QIODevice::ReadOnly ) )
+    {
+      setError( tr( "Unable to read file %1" ).arg( tmpZipFilename ) );
+      return false;
+    }
+
+    QgsReadWriteContext context;
+    if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
+    {
+      QString err = tr( "Unable to save project to storage %1" ).arg( mFile.fileName() );
+      QList<QgsReadWriteContext::ReadWriteMessage> messages = context.takeMessages();
+      if ( !messages.isEmpty() )
+        err += QStringLiteral( "\n\n" ) + messages.last().message();
+      setError( err );
+      return false;
+    }
+
+    tmpZipFile.close();
+    QFile::remove( tmpZipFilename );
+
+    return true;
+  }
+
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
   {
     return zip( mFile.fileName() );
@@ -2504,6 +2615,7 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
   const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     if ( it.value()->type() != QgsMapLayer::VectorLayer )
@@ -2513,10 +2625,15 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();
+      empty &= vl->auxiliaryLayer()->auxiliaryFields().isEmpty();
     }
   }
 
-  if ( !filename.isEmpty() )
+  if ( !mAuxiliaryStorage->exists( *this ) && filename.isEmpty() && empty )
+  {
+    return true; // it's not an error
+  }
+  else if ( !filename.isEmpty() )
   {
     return mAuxiliaryStorage->saveAs( filename );
   }
@@ -2547,4 +2664,26 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
   emit metadataChanged();
 
   setDirty( true );
+}
+
+QSet<QgsMapLayer *> QgsProject::requiredLayers() const
+{
+  QSet<QgsMapLayer *> layers;
+  const QStringList lst = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
+  for ( const QString &layerId : lst )
+  {
+    if ( QgsMapLayer *layer = mapLayer( layerId ) )
+      layers.insert( layer );
+  }
+  return layers;
+}
+
+void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
+{
+  QStringList layerIds;
+  for ( QgsMapLayer *layer : layers )
+  {
+    layerIds << layer->id();
+  }
+  writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
 }

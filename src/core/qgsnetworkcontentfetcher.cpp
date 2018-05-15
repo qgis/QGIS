@@ -99,7 +99,7 @@ void QgsNetworkContentFetcher::cancel()
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {
   //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
-  //see https://bugreports.qt-project.org/browse/QTBUG-41011
+  //see https://bugreports.qt.io/browse/QTBUG-41011
   //so test for that ourselves
 
   //basic check

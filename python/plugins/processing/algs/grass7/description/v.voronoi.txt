@@ -1,7 +1,7 @@
 v.voronoi
 Creates a Voronoi diagram from an input vector layer containing points.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input points layer|0|None|False
+QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False
 QgsProcessingParameterNumber|smoothness|Factor for output smoothness|QgsProcessingParameterNumber.Double|0.25|True|None|None
 QgsProcessingParameterNumber|thin|Maximum dangle length of skeletons (-1 will extract the center line)|QgsProcessingParameterNumber.Double|-1.0|True|-1.0|None
 *QgsProcessingParameterBoolean|-a|Create Voronoi diagram for input areas|False

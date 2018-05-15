@@ -201,7 +201,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Deletes a list of features from joined layers. Feature ids given
-     * in aprameter are those coming from the target layer.
+     * in a parameter are those coming from the target layer.
      *
      * \param fids Feature ids from the target layer to delete
      *

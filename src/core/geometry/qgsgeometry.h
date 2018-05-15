@@ -21,19 +21,12 @@ email                : morb at ozemail dot com dot au
 #include <QString>
 #include <QVector>
 
-#include <geos_c.h>
 #include <climits>
 #include <limits>
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis.h"
-
-
-#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
-#define GEOSGeometry struct GEOSGeom_t
-#define GEOSCoordSequence struct GEOSCoordSeq_t
-#endif
 
 #include "qgsabstractgeometry.h"
 #include "qgsfeature.h"
@@ -257,11 +250,22 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
-     * Set the geometry, feeding in a geometry in GEOS format.
-     * This class will take ownership of the buffer.
-     * \note not available in Python bindings
+     * Creates a wedge shaped buffer from a \a center point.
+     *
+     * The \a azimuth gives the angle (in degrees) for the middle of the wedge to point.
+     * The buffer width (in degrees) is specified by the \a angularWidth parameter. Note that the
+     * wedge will extend to half of the \a angularWidth either side of the \a azimuth direction.
+     *
+     * The outer radius of the buffer is specified via \a outerRadius, and optionally an
+     * \a innerRadius can also be specified.
+     *
+     * The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+     * need to be segmentized to convert to a standard Polygon geometry.
+     *
+     * \since QGIS 3.2
      */
-    void fromGeos( GEOSGeometry *geos ) SIP_SKIP;
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
+                                          double outerRadius, double innerRadius = 0 );
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
@@ -275,14 +279,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     void fromWkb( const QByteArray &wkb );
-
-    /**
-     * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
-     *  \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     *  \since QGIS 3.0
-     *  \note not available in Python bindings
-     */
-    GEOSGeometry *exportToGeos( double precision = 0 ) const SIP_SKIP;
 
     /**
      * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
@@ -631,14 +627,6 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Adds a new island polygon to a multipolygon feature
-     * \param newPart part to add. Ownership is NOT transferred.
-     * \returns OperationResult a result code: success or reason of failure
-     * \note not available in python bindings
-     */
-    OperationResult addPart( GEOSGeometry *newPart ) SIP_SKIP;
-
-    /**
-     * Adds a new island polygon to a multipolygon feature
      * \returns OperationResult a result code: success or reason of failure
      * \note available in python bindings as addPartGeometry
      */
@@ -659,10 +647,22 @@ class CORE_EXPORT QgsGeometry
     OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
-     * Transforms this geometry as described by CoordinateTransform ct
+     * Transforms this geometry as described by the coordinate transform \a ct.
+     *
+     * The transformation defaults to a forward transform, but the direction can be swapped
+     * by setting the \a direction argument.
+     *
+     * By default, z-coordinates are not transformed, even if the coordinate transform
+     * includes a vertical datum transformation. To transform z-coordinates, set
+     * \a transformZ to true. This requires that the z coordinates in the geometry represent
+     * height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
+     * and are expressed in its vertical units (generally meters).
+     *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct,
+                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
+                               bool transformZ = false );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -910,6 +910,9 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
      * of segments used to approximate curves
+     *
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
      */
     QgsGeometry buffer( double distance, int segments ) const;
 
@@ -921,6 +924,9 @@ class CORE_EXPORT QgsGeometry
      * \param joinStyle   join style for corners in geometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
      * \since QGIS 2.4
+     *
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
      */
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
 
@@ -945,10 +951,48 @@ class CORE_EXPORT QgsGeometry
      * \returns buffered geometry, or an empty geometry if buffer could not be
      * calculated
      * \since QGIS 3.0
+     *
+     * \see buffer()
+     * \see taperedBuffer()
      */
     QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
                                    JoinStyle joinStyle = JoinStyleRound,
                                    double miterLimit = 2.0 ) const;
+
+    /**
+     * Calculates a variable width buffer ("tapered buffer") for a (multi)curve geometry.
+     *
+     * The buffer begins at a width of \a startWidth at the start of each curve, and
+     * ends at a width of \a endWidth. Note that unlike buffer() methods, \a startWidth
+     * and \a endWidth are the diameter of the buffer at these points, not the radius.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     * \see buffer()
+     * \see singleSidedBuffer()
+     * \see variableWidthBufferByM()
+     */
+    QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
+
+    /**
+     * Calculates a variable width buffer for a (multi)linestring geometry, where
+     * the width at each node is taken from the linestring m values.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)linestring input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     * \see buffer()
+     * \see singleSidedBuffer()
+     * \see taperedBuffer()
+     */
+    QgsGeometry variableWidthBufferByM( int segments ) const;
 
     /**
      * Extends a (multi)line geometry by extrapolating out the start or end of the line
@@ -1316,6 +1360,17 @@ class CORE_EXPORT QgsGeometry
     bool convertToSingleType();
 
     /**
+     * Converts geometry collection to a the desired geometry type subclass (multi-point,
+     * multi-linestring or multi-polygon). Child geometries of different type are filtered out.
+     * Does nothing the geometry is not a geometry collection. May leave the geometry
+     * empty if none of the child geometries match the desired type.
+     *
+     * \returns true in case of success and false else
+     * \since QGIS 3.2
+     */
+    bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
+
+    /**
      * Modifies geometry to avoid intersections with the layers specified in project properties
      * \returns 0 in case of success,
      *         1 if geometry is not of polygon type,
@@ -1475,13 +1530,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QString lastError() const;
-
-    /**
-     * Return GEOS context handle
-     * \since QGIS 2.6
-     * \note not available in Python
-     */
-    static GEOSContextHandle_t getGEOSHandler() SIP_SKIP;
 
     /**
      * Construct geometry from a QPointF
@@ -1780,6 +1828,8 @@ class CORE_EXPORT QgsGeometry
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
+
+    friend class QgsInternalGeometryEngine;
 
 }; // class QgsGeometry
 

@@ -1,7 +1,7 @@
 v.univar
 Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|map|Name of input vector map|-1|None|False
+QgsProcessingParameterFeatureSource|map|Name of input vector map|-1|None|False
 QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area|True|0,1,4|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
 QgsProcessingParameterField|column|Column name|None|map|-1|False|False

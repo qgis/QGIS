@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (NULL,
+                       QgsApplication,
                        QgsCoordinateTransform,
                        QgsField,
                        QgsFields,
@@ -40,6 +41,7 @@ from qgis.core import (NULL,
                        QgsFeatureSink,
                        QgsDistanceArea,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
@@ -57,10 +59,13 @@ class ExportGeometryInfo(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmAddGeometryAttributes.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
     def tags(self):
-        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity').split(',')
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity,fields').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
@@ -88,10 +93,13 @@ class ExportGeometryInfo(QgisAlgorithm):
         return 'exportaddgeometrycolumns'
 
     def displayName(self):
-        return self.tr('Export geometry columns')
+        return self.tr('Add geometry attributes')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         wkb_type = source.wkbType()
@@ -119,6 +127,8 @@ class ExportGeometryInfo(QgisAlgorithm):
         fields = QgsProcessingUtils.combineFields(fields, new_fields)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         coordTransform = None
 

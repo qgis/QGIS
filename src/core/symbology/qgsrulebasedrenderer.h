@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct FeatureToRender
     {
-      FeatureToRender( QgsFeature &_f, int _flags )
+      FeatureToRender( const QgsFeature &_f, int _flags )
         : feat( _f )
         , flags( _flags )
       {}
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     struct RenderLevel
     {
       explicit RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { Q_FOREACH ( RenderJob *j, jobs ) delete j; }
+      ~RenderLevel() { qDeleteAll( jobs ); }
       int zIndex;
 
       //! List of jobs to render, owned by this object.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
-        Q_FOREACH ( RenderJob *job, rh.jobs )
+        for ( RenderJob *job :  qgis::as_const( rh.jobs ) )
         {
           jobs << new RenderJob( *job );
         }
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
         : zIndex( other.zIndex )
       {
-        Q_FOREACH ( RenderJob *job, other.jobs )
+        for ( RenderJob *job : qgis::as_const( other.jobs ) )
         {
           jobs << new RenderJob( *job );
         }
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param context   The context in which the rendering happens
          * \returns          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, QgsRenderContext *context = nullptr ) const;
+        bool isFilterOK( const QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given \a scale.
@@ -331,26 +331,26 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsRuleBasedRenderer::Rule::RenderResult renderFeature( QgsRuleBasedRenderer::FeatureToRender &featToRender, QgsRenderContext &context, QgsRuleBasedRenderer::RenderQueue &renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
-        bool willRenderFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        bool willRenderFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
         //! tell which symbols will be used to render the feature
-        QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
         /**
          * Returns which legend keys match the feature
          * \since QGIS 2.14
          */
-        QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
         /**
          * Returns the list of rules used to render the feature in a specific
          * context.
          *
-         * \param feat The feature for which rules have to be find
+         * \param feature The feature for which rules have to be find
          * \param context The rendering context
          * \param onlyActive True to search for active rules only, false otherwise
          */
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr, bool onlyActive = true );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr, bool onlyActive = true );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
@@ -374,14 +374,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns A list of rules
          */
-        QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
+        const QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBasedRenderer::RuleList descendants() const { RuleList l; Q_FOREACH ( QgsRuleBasedRenderer::Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedRenderer::RuleList descendants() const;
 
         /**
          * The parent rule
@@ -474,9 +474,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     ~QgsRuleBasedRenderer() override;
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool legendSymbolItemsCheckable() const override;
@@ -504,10 +504,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
     QString dump() const override;
-    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////

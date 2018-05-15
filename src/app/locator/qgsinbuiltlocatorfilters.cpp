@@ -37,13 +37,13 @@ QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
   return new QgsLayerTreeLocatorFilter();
 }
 
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && stringMatches( layer->layer()->name(), string ) )
+    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layer->layer()->name();
@@ -75,12 +75,12 @@ QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
   return new QgsLayoutLocatorFilter();
 }
 
-void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && stringMatches( layout->name(), string ) )
+    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
     {
       QgsLocatorResult result;
       result.displayString = layout->name();
@@ -144,6 +144,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
   {
     searchActions( string, widget, found );
   }
+
+  QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
+
   Q_FOREACH ( QAction *action, parent->actions() )
   {
     if ( action->menu() )
@@ -159,6 +162,22 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
 
     QString searchText = action->text();
     searchText.replace( '&', QString() );
+
+    QString tooltip = action->toolTip();
+    QRegularExpressionMatch match = extractFromTooltip.match( tooltip );
+    if ( match.hasMatch() )
+    {
+      tooltip = match.captured( 1 );
+    }
+    tooltip.replace( QStringLiteral( "..." ), QString() );
+    tooltip.replace( QStringLiteral( "…" ), QString() );
+    searchText.replace( QStringLiteral( "..." ), QString() );
+    searchText.replace( QStringLiteral( "…" ), QString() );
+    if ( searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0 )
+    {
+      searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
+    }
+
     if ( stringMatches( searchText, string ) )
     {
       QgsLocatorResult result;
@@ -320,6 +339,94 @@ void QgsExpressionCalculatorLocatorFilter::triggerResult( const QgsLocatorResult
 {
   QApplication::clipboard()->setText( result.userData.toString() );
 }
+
+// SettingsLocatorFilter
+//
+QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsSettingsLocatorFilter *QgsSettingsLocatorFilter::clone() const
+{
+  return new QgsSettingsLocatorFilter();
+}
+
+void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
+{
+  QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
+
+  QMap<QString, QString> optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
+  {
+    QString title = optionsPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
+    }
+  }
+
+  QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
+  for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
+  {
+    QString title = projectPropertyPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
+    }
+  }
+
+  QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
+  for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
+  {
+    QString title = settingPagesIterator.key();
+    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    {
+      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
+    }
+  }
+
+  for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
+  {
+    QString title = matchingSettingsPagesIterator.key();
+    QMap<QString, QString> settingsPage = matchingSettingsPagesIterator.value();
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = title;
+    result.userData.setValue( settingsPage );
+    result.score = static_cast< double >( string.length() ) / title.length();
+    emit resultFetched( result );
+  }
+}
+
+QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type,  const QString &page )
+{
+  QMap<QString, QString> returnPage;
+  returnPage.insert( "type", type );
+  returnPage.insert( "page", page );
+  return returnPage;
+}
+
+void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+
+  QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData );
+  QString type = settingsPage.value( "type" );
+  QString page = settingsPage.value( "page" );
+
+  if ( type == "optionpage" )
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
+  }
+  else if ( type == "projectpropertypage" )
+  {
+    QgisApp::instance()->showProjectProperties( page );
+  }
+  else if ( type == "settingspage" )
+  {
+    QgisApp::instance()->showSettings( page );
+  }
+}
+
 // QgBookmarkLocatorFilter
 //
 
@@ -332,7 +439,7 @@ QgsBookmarkLocatorFilter *QgsBookmarkLocatorFilter::clone() const
   return new QgsBookmarkLocatorFilter();
 }
 
-void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
 
@@ -346,20 +453,19 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
 
     QString name = i.key();
 
-    if ( stringMatches( name, string ) )
+    if ( stringMatches( name, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
       QModelIndex index = i.value();
       QgsLocatorResult result;
       result.filter = this;
       result.displayString = name;
       result.userData = index;
-      //TODO Create svg for "Bookmark"?
-      //result.icon = TBD
+      //TODO Create svg for "Bookmark"
+      //TODO result.icon =
       result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
     }
   }
-
 }
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )

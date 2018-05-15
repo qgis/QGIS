@@ -27,12 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingUtils,
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
+                       QgsProcessingException,
                        QgsProcessingOutputMultipleLayers,
                        QgsExpression,
                        QgsFeatureRequest)
@@ -70,6 +72,12 @@ class VectorSplit(QgisAlgorithm):
                                                                   self.tr('Output directory')))
         self.addOutput(QgsProcessingOutputMultipleLayers(self.OUTPUT_LAYERS, self.tr('Output layers')))
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSplitLayer.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSplitLayer.svg")
+
     def name(self):
         return 'splitvectorlayer'
 
@@ -78,6 +86,9 @@ class VectorSplit(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         directory = self.parameterAsString(parameters, self.OUTPUT, context)
 

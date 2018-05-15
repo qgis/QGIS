@@ -38,6 +38,7 @@ class TestQgsProcessingAlgs: public QObject
     void renameLayerAlg();
     void loadLayerAlg();
     void parseGeoTags();
+    void featureFilterAlg();
 
   private:
 
@@ -351,6 +352,56 @@ void TestQgsProcessingAlgs::parseGeoTags()
   md.insert( QStringLiteral( "EXIF_DateTime" ), QStringLiteral( "2017:12:27 19:20:52" ) );
   QCOMPARE( QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).toDateTime(), QDateTime( QDate( 2017, 12, 27 ), QTime( 19, 20, 52 ) ) );
 
+}
+
+void TestQgsProcessingAlgs::featureFilterAlg()
+{
+  const QgsProcessingAlgorithm *filterAlgTemplate = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:filter" ) );
+
+  Q_ASSERT( filterAlgTemplate->outputDefinitions().isEmpty() );
+
+  QVariantList outputs;
+  QVariantMap output1;
+  output1.insert( QStringLiteral( "name" ), QStringLiteral( "test" ) );
+  output1.insert( QStringLiteral( "expression" ), QStringLiteral( "TRUE" ) );
+  output1.insert( QStringLiteral( "isModelOutput" ), true );
+
+  outputs.append( output1 );
+
+  QVariantMap config1;
+  config1.insert( QStringLiteral( "outputs" ), outputs );
+
+  std::unique_ptr<QgsProcessingAlgorithm> filterAlg( filterAlgTemplate->create( config1 ) );
+
+  QCOMPARE( filterAlg->outputDefinitions().size(), 1 );
+
+  auto outputDef = filterAlg->outputDefinition( QStringLiteral( "OUTPUT_test" ) );
+  QCOMPARE( outputDef->type(), QStringLiteral( "outputVector" ) );
+
+  auto outputParamDef = filterAlg->parameterDefinition( "OUTPUT_test" );
+  Q_ASSERT( outputParamDef->flags() & QgsProcessingParameterDefinition::FlagIsModelOutput );
+  Q_ASSERT( outputParamDef->flags() & QgsProcessingParameterDefinition::FlagHidden );
+
+  QVariantMap output2;
+  output2.insert( QStringLiteral( "name" ), QStringLiteral( "nonmodeloutput" ) );
+  output2.insert( QStringLiteral( "expression" ), QStringLiteral( "TRUE" ) );
+  output2.insert( QStringLiteral( "isModelOutput" ), false );
+
+  outputs.append( output2 );
+
+  QVariantMap config2;
+  config2.insert( QStringLiteral( "outputs" ), outputs );
+
+  std::unique_ptr<QgsProcessingAlgorithm> filterAlg2( filterAlgTemplate->create( config2 ) );
+
+  QCOMPARE( filterAlg2->outputDefinitions().size(), 2 );
+
+  auto outputDef2 = filterAlg2->outputDefinition( QStringLiteral( "OUTPUT_nonmodeloutput" ) );
+  QCOMPARE( outputDef2->type(), QStringLiteral( "outputVector" ) );
+
+  auto outputParamDef2 = filterAlg2->parameterDefinition( "OUTPUT_nonmodeloutput" );
+  Q_ASSERT( !outputParamDef2->flags().testFlag( QgsProcessingParameterDefinition::FlagIsModelOutput ) );
+  Q_ASSERT( outputParamDef2->flags() & QgsProcessingParameterDefinition::FlagHidden );
 }
 
 

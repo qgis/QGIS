@@ -30,6 +30,19 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 {
 }
 
+void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( elem );
+  Q_UNUSED( context );
+}
+
+QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( doc );
+  Q_UNUSED( context );
+  return QDomElement();
+}
+
 QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )
 {
   return new QgsDefaultVectorLayerLegend( vl );
@@ -199,7 +212,15 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     if ( i.dataDefinedSizeLegendSettings() )
       nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );
     else
-      nodes << new QgsSymbolLegendNode( nodeLayer, i );
+    {
+      QgsSymbolLegendNode *legendNode = new QgsSymbolLegendNode( nodeLayer, i );
+      if ( mTextOnSymbolEnabled && mTextOnSymbolContent.contains( i.ruleKey() ) )
+      {
+        legendNode->setTextOnSymbolLabel( mTextOnSymbolContent.value( i.ruleKey() ) );
+        legendNode->setTextOnSymbolTextFormat( mTextOnSymbolTextFormat );
+      }
+      nodes << legendNode;
+    }
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
@@ -218,6 +239,52 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
   return nodes;
 }
 
+void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  mTextOnSymbolEnabled = false;
+  mTextOnSymbolTextFormat = QgsTextFormat();
+  mTextOnSymbolContent.clear();
+
+  QDomElement tosElem = elem.firstChildElement( QStringLiteral( "text-on-symbol" ) );
+  if ( !tosElem.isNull() )
+  {
+    mTextOnSymbolEnabled = true;
+    QDomElement tosFormatElem = tosElem.firstChildElement( QStringLiteral( "text-style" ) );
+    mTextOnSymbolTextFormat.readXml( tosFormatElem, context );
+    QDomElement tosContentElem = tosElem.firstChildElement( QStringLiteral( "content" ) );
+    QDomElement tosContentItemElem = tosContentElem.firstChildElement( QStringLiteral( "item" ) );
+    while ( !tosContentItemElem.isNull() )
+    {
+      mTextOnSymbolContent.insert( tosContentItemElem.attribute( QStringLiteral( "key" ) ), tosContentItemElem.attribute( QStringLiteral( "value" ) ) );
+      tosContentItemElem = tosContentItemElem.nextSiblingElement( QStringLiteral( "item" ) );
+    }
+  }
+}
+
+QDomElement QgsDefaultVectorLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
+  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "default-vector" ) );
+
+  if ( mTextOnSymbolEnabled )
+  {
+    QDomElement tosElem = doc.createElement( QStringLiteral( "text-on-symbol" ) );
+    QDomElement tosFormatElem = mTextOnSymbolTextFormat.writeXml( doc, context );
+    tosElem.appendChild( tosFormatElem );
+    QDomElement tosContentElem = doc.createElement( QStringLiteral( "content" ) );
+    for ( auto it = mTextOnSymbolContent.constBegin(); it != mTextOnSymbolContent.constEnd(); ++it )
+    {
+      QDomElement tosContentItemElem = doc.createElement( QStringLiteral( "item" ) );
+      tosContentItemElem.setAttribute( QStringLiteral( "key" ), it.key() );
+      tosContentItemElem.setAttribute( QStringLiteral( "value" ), it.value() );
+      tosContentElem.appendChild( tosContentItemElem );
+    }
+    tosElem.appendChild( tosContentElem );
+    elem.appendChild( tosElem );
+  }
+
+  return elem;
+}
 
 
 // -------------------------------------------------------------------------

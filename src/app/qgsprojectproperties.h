@@ -46,6 +46,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    QMap< QString, QString > pageWidgetNameMap();
+
+    void setCurrentPage( const QString & );
 
     ~QgsProjectProperties() override;
 
@@ -224,4 +227,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
+
+    void populateRequiredLayers();
+    void applyRequiredLayers();
 };

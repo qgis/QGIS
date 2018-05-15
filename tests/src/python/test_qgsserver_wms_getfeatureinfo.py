@@ -66,7 +66,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-html')
 
-        #Test getfeatureinfo response html with geometry
+        # Test getfeatureinfo response html with geometry
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fhtml&transparent=true&' +
@@ -76,7 +76,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'with_geometry=true',
                                  'wms_getfeatureinfo-text-html-geometry')
 
-        #Test getfeatureinfo response html with maptip
+        # Test getfeatureinfo response html with maptip
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fhtml&transparent=true&' +
@@ -166,6 +166,74 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=layer0,layer1&X=235&Y=243',
                                  'wms_getfeatureinfo_notvisible',
                                  'test_project_scalevisibility.qgs')
+
+        # Test GetFeatureInfo resolves "value map" widget values
+        mypath = self.testdata_path + "test_project_values.qgs"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer0&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&QUERY_LAYERS=layer0&I=487&J=308',
+                                 'wms_getfeatureinfo-values1-text-xml',
+                                 'test_project_values.qgs')
+
+    # TODO fix regression in QGIS 3 as the widget values don't get solved and enable test
+    @unittest.expectedFailure
+    def testGetFeatureInfoValueRelation(self):
+        """Test GetFeatureInfo resolves "value relation" widget values"""
+        mypath = self.testdata_path + "test_project_values.qgs"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer1&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=True' +
+                                 '&QUERY_LAYERS=layer1&I=487&J=308',
+                                 'wms_getfeatureinfo-values1-text-xml',
+                                 'test_project_values.qgs')
+
+    # TODO make GetFeatureInfo show the dictionary values and enable test
+    @unittest.expectedFailure
+    def testGetFeatureInfoValueRelationArray(self):
+        """Test GetFeatureInfo on "value relation" widget with array field (multiple selections)"""
+        mypath = self.testdata_path + "test_project_values.qgs"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer3&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=True' +
+                                 '&QUERY_LAYERS=layer3&I=487&J=308',
+                                 'wms_getfeatureinfo-values3-text-xml',
+                                 'test_project_values.qgs')
+
+    # TODO make GetFeatureInfo show what's in the display expression and enable test
+    @unittest.expectedFailure
+    def testGetFeatureInfoRelationReference(self):
+        """Test GetFeatureInfo solves "relation reference" widget "display expression" values"""
+        mypath = self.testdata_path + "test_project_values.qgs"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer2&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=True' +
+                                 '&QUERY_LAYERS=layer2&I=487&J=308',
+                                 'wms_getfeatureinfo-values2-text-xml',
+                                 'test_project_values.qgs')
 
     def testGetFeatureInfoFilter(self):
         # Test getfeatureinfo response xml

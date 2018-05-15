@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -57,7 +58,10 @@ class EliminateSelection(QgisAlgorithm):
     MODE_BOUNDARY = 2
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDissolve.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDissolve.svg")
 
     def group(self):
         return self.tr('Vector geometry')
@@ -103,6 +107,8 @@ class EliminateSelection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                inLayer.fields(), inLayer.wkbType(), inLayer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         for aFeat in inLayer.getFeatures():
             if feedback.isCanceled():

@@ -38,7 +38,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Show labels for this layer</string>
+         <string>Single labels</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">

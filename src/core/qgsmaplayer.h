@@ -85,6 +85,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
         case QgsMapLayer::PluginLayer:
           sipType = sipType_QgsPluginLayer;
           break;
+        case QgsMapLayer::MeshLayer:
+          sipType = sipType_QgsMeshLayer;
+          break;
         default:
           sipType = nullptr;
           break;
@@ -100,7 +103,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer
+      PluginLayer,
+      MeshLayer      //!< Added in 3.2
     };
 
     /**
@@ -1192,6 +1196,33 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  project files.
      */
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Called by writeLayerXML(), used by derived classes to encode provider's specific data
+     * source to project files. Typically resolving absolute or relative paths, usernames and
+     * passwords or drivers prefixes ("HDF5:")
+     *
+     * \param source data source to encode, typically QgsMapLayer::source()
+     * \param context writing context (e.g. for conversion between relative and absolute paths)
+     * \return encoded source, typically to be written in the dom element "datasource"
+     *
+     * \since QGIS 3.2
+     */
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Called by readLayerXML(), used by derived classes to decode provider's specific data
+     * source from project files. Typically resolving absolute or relative paths, usernames and
+     * passwords or drivers prefixes ("HDF5:")
+     *
+     * \param source data source to decode, typically read from layer's dom element "datasource"
+     * \param dataProvider string identification of data provider (e.g. "ogr"), typically read from layer's dom element
+     * \param context reading context (e.g. for conversion between relative and absolute paths)
+     * \return decoded source, typically to be used as the layer's datasource
+     *
+     * \since QGIS 3.2
+     */
+    virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
 
     /**
      * Read custom properties from project file.

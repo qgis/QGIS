@@ -98,7 +98,13 @@ class HubDistancePoints(QgisAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         point_source = self.parameterAsSource(parameters, self.INPUT, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
+        if hub_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
@@ -109,6 +115,8 @@ class HubDistancePoints(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, point_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
 

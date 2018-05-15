@@ -51,6 +51,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterField,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMultipleLayers,
@@ -60,8 +61,10 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputHtml,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsVectorLayer)
 from qgis.utils import iface
+from osgeo import ogr
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -211,7 +214,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     parameter = getParameterFromString(line)
                     if parameter is not None:
                         self.params.append(parameter)
-                        if isinstance(parameter, QgsProcessingParameterVectorLayer):
+                        if isinstance(parameter, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
                             hasVectorInput = True
                         elif isinstance(parameter, QgsProcessingParameterRasterLayer):
                             hasRasterInput = True
@@ -365,9 +368,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for fName in ['Inputs', 'Command', 'Outputs']:
             fullName = 'process{}'.format(fName)
             if self.module and hasattr(self.module, fullName):
-                getattr(self.module, fullName)(self, parameters, context)
+                getattr(self.module, fullName)(self, parameters, context, feedback)
             else:
-                getattr(self, fullName)(parameters, context)
+                getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
         loglines = []
@@ -398,10 +401,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         return outputs
 
-    def processInputs(self, parameters, context):
+    def processInputs(self, parameters, context, feedback):
         """Prepare the GRASS import commands"""
         inputs = [p for p in self.parameterDefinitions()
                   if isinstance(p, (QgsProcessingParameterVectorLayer,
+                                    QgsProcessingParameterFeatureSource,
                                     QgsProcessingParameterRasterLayer,
                                     QgsProcessingParameterMultipleLayers))]
         for param in inputs:
@@ -420,7 +424,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.loadRasterLayerFromParameter(
                         paramName, parameters, context)
             # Vector inputs needs to be imported into temp GRASS DB
-            elif isinstance(param, QgsProcessingParameterVectorLayer):
+            elif isinstance(param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                 if paramName not in self.exportedLayers:
                     # Attribute tables are also vector inputs
                     if QgsProcessing.TypeFile in param.dataTypes():
@@ -428,7 +432,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             paramName, parameters, context)
                     else:
                         self.loadVectorLayerFromParameter(
-                            paramName, parameters, context, None)
+                            paramName, parameters, context, feedback, None)
             # For multiple inputs, process each layer
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, paramName, context)
@@ -474,7 +478,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
 
-    def processCommand(self, parameters, context, delOutputs=False):
+    def processCommand(self, parameters, context, feedback, delOutputs=False):
         """
         Prepare the GRASS algorithm command
         :param parameters:
@@ -503,7 +507,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
             # Raster and vector layers
             if isinstance(param, (QgsProcessingParameterRasterLayer,
-                                  QgsProcessingParameterVectorLayer)):
+                                  QgsProcessingParameterVectorLayer,
+                                  QgsProcessingParameterFeatureSource)):
                 if paramName in self.exportedLayers:
                     value = self.exportedLayers[paramName]
                 else:
@@ -570,7 +575,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.parameterAsString(parameters, paramName, context)
                 )
             if value:
-                command += ' {}={}'.format(paramName, value)
+                command += ' {}={}'.format(paramName.replace('~', ''), value)
 
         # Handle outputs
         if not delOutputs:
@@ -622,7 +627,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.outType = ('auto' if typeidx
                             is None else self.OUTPUT_TYPES[typeidx])
 
-    def processOutputs(self, parameters, context):
+    def processOutputs(self, parameters, context, feedback):
         """Prepare the GRASS v.out.ogr commands"""
         # TODO: support multiple raster formats.
         # TODO: support multiple vector formats.
@@ -632,6 +637,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         for out in self.destinationParameterDefinitions():
             outName = out.name()
+            if not outName in parameters:
+                # skipped output
+                continue
+
             if isinstance(out, QgsProcessingParameterRasterDestination):
                 self.exportRasterLayerFromParameter(outName, parameters, context)
             elif isinstance(out, QgsProcessingParameterVectorDestination):
@@ -683,8 +692,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param context: Algorithm context.
         :param colorTable: preserve color Table.
         """
-        fileName = os.path.normpath(
-            self.parameterAsOutputLayer(parameters, name, context))
+        fileName = self.parameterAsOutputLayer(parameters, name, context)
+        if not fileName:
+            return
+
+        fileName = os.path.normpath(fileName)
         grassName = '{}{}'.format(name, self.uniqueSuffix)
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         createOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_OPT, context)
@@ -751,7 +763,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             )
             cmd.append("done")
 
-    def loadVectorLayerFromParameter(self, name, parameters, context, external=False):
+    def loadVectorLayerFromParameter(self, name, parameters, context, feedback, external=False):
         """
         Creates a dedicated command to load a vector into
         the temporary GRASS DB.
@@ -761,7 +773,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param external: use v.external (v.in.ogr if False).
         """
         layer = self.parameterAsVectorLayer(parameters, name, context)
-        self.loadVectorLayer(name, layer, external)
+        if layer is None or layer.dataProvider().name() != 'ogr':
+            # parameter is not a vector layer or not an OGR layer - try to convert to a source compatible with
+            # grass OGR inputs and extract selection if required
+            path = self.parameterAsCompatibleSourceLayerPath(parameters, name, context,
+                                                             QgsVectorFileWriter.supportedFormatExtensions(),
+                                                             feedback=feedback)
+            ogr_layer = QgsVectorLayer(path, '', 'ogr')
+            self.loadVectorLayer(name, ogr_layer, external)
+        else:
+            # already an ogr layer source
+            self.loadVectorLayer(name, layer, external)
 
     def loadVectorLayer(self, name, layer, external=False):
         """
@@ -771,11 +793,21 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param layer: QgsMapLayer for the vector layer.
         :param external: use v.external (v.in.ogr if False).
         """
-        # TODO: support selections
         # TODO: support multiple input formats
         if external is None:
             external = ProcessingConfig.getSetting(
                 Grass7Utils.GRASS_USE_VEXTERNAL)
+
+        # safety check: we can only use external for ogr layers which support random read
+        if external:
+            ds = ogr.Open(layer.source())
+            if ds is not None:
+                ogr_layer = ds.GetLayer()
+                if ogr_layer is None or not ogr_layer.TestCapability(ogr.OLCRandomRead):
+                    external = False
+            else:
+                external = False
+
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
         destFilename = 'vector_{}'.format(os.path.basename(getTempFilename()))

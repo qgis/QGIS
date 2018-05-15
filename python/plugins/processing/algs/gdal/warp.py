@@ -29,6 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
@@ -155,27 +156,38 @@ class warp(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
+    def commandName(self):
+        return 'gdalwarp'
+
     def tags(self):
-        return self.tr('transform,reproject,crs,srs').split(',')
+        tags = self.tr('transform,reproject,crs,srs').split(',')
+        tags.extend(super().tags())
+        return tags
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         resolution = self.parameterAsDouble(parameters, self.TARGET_RESOLUTION, context)
 
         arguments = []
         if sourceCrs.isValid():
             arguments.append('-s_srs')
-            arguments.append(sourceCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(sourceCrs))
 
         if targetCrs.isValid():
             arguments.append('-t_srs')
-            arguments.append(targetCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-dstnodata')
             arguments.append(str(nodata))
 
@@ -217,4 +229,4 @@ class warp(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

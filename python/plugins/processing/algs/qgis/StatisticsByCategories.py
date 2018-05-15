@@ -30,6 +30,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsDateTimeStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsFields,
@@ -39,6 +40,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingFeatureSource,
                        NULL)
 from qgis.PyQt.QtCore import QVariant
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -87,6 +89,9 @@ class StatisticsByCategories(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         value_field_name = self.parameterAsString(parameters, self.VALUES_FIELD_NAME, context)
         category_field_names = self.parameterAsFields(parameters, self.CATEGORIES_FIELD_NAME, context)
 
@@ -158,7 +163,7 @@ class StatisticsByCategories(QgisAlgorithm):
             attrs = []
         attrs.extend(category_field_indexes)
         request.setSubsetOfAttributes(attrs)
-        features = source.getFeatures(request)
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 50.0 / source.featureCount() if source.featureCount() else 0
         if field_type == 'none':
             values = defaultdict(lambda: 0)
@@ -192,6 +197,8 @@ class StatisticsByCategories(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if field_type == 'none':
             self.saveCounts(values, sink, feedback)

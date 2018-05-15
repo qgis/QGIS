@@ -175,30 +175,48 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setUnitLabel( const QString &label ) { mSettings.setUnitLabel( label );}
 
     /**
+     * Returns the text format used for drawing text in the scalebar.
+     * \see setTextFormat()
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used for drawing text in the scalebar.
+     * \see textFormat()
+     * \since QGIS 3.2
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
+    /**
      * Returns the font used for drawing text in the scalebar.
      * \see setFont()
+     * \deprecated use textFormat() instead
      */
-    QFont font() const;
+    Q_DECL_DEPRECATED QFont font() const SIP_DEPRECATED;
 
     /**
      * Sets the \a font used for drawing text in the scalebar.
-     * \see setFont()
+     * \see font()
+     * \deprecated use setTextFormat() instead
      */
-    void setFont( const QFont &font );
+    Q_DECL_DEPRECATED void setFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for drawing text in the scalebar.
      * \see setFontColor()
      * \see font()
+     * \deprecated use textFormat() instead
      */
-    QColor fontColor() const { return mSettings.fontColor(); }
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for drawing text in the scalebar.
      * \see fontColor()
      * \see setFont()
+     * \deprecated use setTextFormat() instead
      */
-    void setFontColor( const QColor &color ) { mSettings.setFontColor( color ); }
+    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for fills in the scalebar.

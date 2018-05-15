@@ -26,7 +26,7 @@
 
 
 // from parser
-extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg );
+extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
@@ -99,7 +99,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
   d->mEvalErrorString = QString();
   d->mExp = expression;
 }
@@ -195,7 +195,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -247,12 +247,17 @@ bool QgsExpression::isValid() const
 
 bool QgsExpression::hasParserError() const
 {
-  return !d->mParserErrorString.isNull();
+  return d->mParserErrors.count() > 0;
 }
 
 QString QgsExpression::parserErrorString() const
 {
   return d->mParserErrorString;
+}
+
+QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
+{
+  return d->mParserErrors;
 }
 
 QSet<QString> QgsExpression::referencedColumns() const
@@ -338,7 +343,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
   }
 
   if ( !d->mRootNode )
@@ -472,6 +477,28 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   return expr_action;
 }
 
+QSet<QString> QgsExpression::referencedVariables( const QString &text )
+{
+  QSet<QString> variables;
+  int index = 0;
+  while ( index < text.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( text, index );
+    if ( pos < 0 )
+      break;
+
+    index = pos + rx.matchedLength();
+    QString to_replace = rx.cap( 1 ).trimmed();
+
+    QgsExpression exp( to_replace );
+    variables.unite( exp.referencedVariables() );
+  }
+
+  return variables;
+}
+
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
   bool ok;
@@ -548,6 +575,8 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span>" ).arg( name );
 
+      bool hasOptionalArgs = false;
+
       if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || !v.mArguments.isEmpty() || v.mVariableLenArguments ) )
       {
         helpContents += '(';
@@ -555,13 +584,24 @@ QString QgsExpression::helpText( QString name )
         QString delim;
         for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
         {
-          helpContents += delim;
-          delim = QStringLiteral( ", " );
           if ( !a.mDescOnly )
           {
-            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? QStringLiteral( "optional" ) : QStringLiteral( "" ), a.mArg,
-                            a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal );
+            if ( a.mOptional )
+            {
+              hasOptionalArgs = true;
+              helpContents += QStringLiteral( "[" );
+            }
+
+            helpContents += delim;
+            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
+                              a.mArg,
+                              a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal
+                            );
+
+            if ( a.mOptional )
+              helpContents += QStringLiteral( "]" );
           }
+          delim = QStringLiteral( "," );
         }
 
         if ( v.mVariableLenArguments )
@@ -573,6 +613,11 @@ QString QgsExpression::helpText( QString name )
       }
 
       helpContents += QLatin1String( "</code>" );
+
+      if ( hasOptionalArgs )
+      {
+        helpContents += QLatin1String( "<br/><br/>" ) + tr( "[ ] marks optional components" );
+      }
     }
 
     if ( !v.mArguments.isEmpty() )
@@ -637,6 +682,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_basename" ), QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );

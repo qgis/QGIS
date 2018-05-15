@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 from .connector import VLayerConnector
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
+from qgis.core import QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition, QCoreApplication
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
 
@@ -46,7 +46,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'Virtual Layers'
+        return QCoreApplication.translate('db_manager', 'Virtual Layers')
 
     @classmethod
     def providerName(self):
@@ -58,7 +58,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def connections(self):
-        return [VLayerDBPlugin('QGIS layers')]
+        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'QGIS layers'))]
 
     def databasesFactory(self, connection, uri):
         return FakeDatabase(connection, uri)

@@ -33,6 +33,45 @@ QgsCircularString::QgsCircularString()
   mWkbType = QgsWkbTypes::CircularString;
 }
 
+QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
+{
+  //get wkb type from first point
+  bool hasZ = p1.is3D();
+  bool hasM = p1.isMeasure();
+  mWkbType = QgsWkbTypes::CircularString;
+
+  mX.resize( 3 );
+  mX[ 0 ] = p1.x();
+  mX[ 1 ] = p2.x();
+  mX[ 2 ] = p3.x();
+  mY.resize( 3 );
+  mY[ 0 ] = p1.y();
+  mY[ 1 ] = p2.y();
+  mY[ 2 ] = p3.y();
+  if ( hasZ )
+  {
+    mWkbType = QgsWkbTypes::addZ( mWkbType );
+    mZ.resize( 3 );
+    mZ[ 0 ] = p1.z();
+    mZ[ 1 ] = p2.z();
+    mZ[ 2 ] = p3.z();
+  }
+  if ( hasM )
+  {
+    mWkbType = QgsWkbTypes::addM( mWkbType );
+    mM.resize( 3 );
+    mM[ 0 ] = p1.m();
+    mM[ 1 ] = p2.m();
+    mM[ 2 ] = p3.m();
+  }
+}
+
+QgsCircularString QgsCircularString::fromTwoPointsAndCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
+{
+  const QgsPoint midPoint = QgsGeometryUtils::segmentMidPointFromCenter( p1, p2, center, useShortestArc );
+  return QgsCircularString( p1, midPoint, p2 );
+}
+
 bool QgsCircularString::equals( const QgsCurve &other ) const
 {
   const QgsCircularString *otherLine = dynamic_cast< const QgsCircularString * >( &other );

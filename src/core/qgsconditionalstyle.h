@@ -132,7 +132,7 @@ class CORE_EXPORT QgsConditionalStyle
     void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
 
     /**
-     * \brief Set the font for the the style
+     * \brief Set the font for the style
      * \param value QFont to be used for text
      */
     void setFont( const QFont &value ) { mFont = value; mValid = true; }

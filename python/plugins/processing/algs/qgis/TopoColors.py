@@ -38,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsPointXY,
                        NULL,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
@@ -96,6 +97,9 @@ class TopoColor(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         min_colors = self.parameterAsInt(parameters, self.MIN_COLORS, context)
         balance_by = self.parameterAsEnum(parameters, self.BALANCE, context)
         min_distance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
@@ -105,6 +109,8 @@ class TopoColor(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = {f.id(): f for f in source.getFeatures()}
 

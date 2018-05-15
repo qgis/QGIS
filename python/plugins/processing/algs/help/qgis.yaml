@@ -135,11 +135,6 @@ qgis:densifygeometriesgivenaninterval: >
 
   The distance is expressed in the same units used by the layer CRS.
 
-qgis:difference: >
-  This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained.
-
-  Attributes are not modified.
-
 qgis:dissolve: >
   This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be dissolved.
 
@@ -154,11 +149,8 @@ qgis:distancetonearesthub: >
   The resulting layer can contain only source points with an additional field indicating the distance to the nearest point and the name of the destination point, or lines linking each source point with its nearest destination point.
 
 qgis:eliminateselectedpolygons: >
-  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. The selected features will always be eliminated whether the option "Use only selected features" is set or not.
+  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated.
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
-
-qgis:explodelines: >
-  This algorithm takes a lines layer and creates a new one in which each line is replaced by a set of lines representing the segments in the original line. Each line in the resulting layer contains only a start and an end point, with no intermediate nodes between them.
 
 qgis:exportaddgeometrycolumns: >
   This algorithm computes geometric properties of the features in a vector layer. It generates a new vector layer with the same content as the input one, but with additional attributes in its attributes table, containing geometric measurements.
@@ -228,11 +220,6 @@ qgis:importintopostgis: >
   This algorithm imports a vector layer into a PostGIS database, creating a new table.
 
   Prior to this a connection between QGIS and the PostGIS database has to be created (for example with the DB Manager).
-
-qgis:intersection: >
-  This algorithm extracts the overlapping portions of features in the Input and Intersect layers. Features in the Intersection layer are assigned the attributes of the overlapping features from both the Input and Intersect layers.
-
-  Attributes are not modified.
 
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
@@ -519,10 +506,6 @@ qgis:sumlinelengths: >
 
   The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and count of the lines across each polygon. The names of these two fields can be configured in the algorithm parameters.
 
-qgis:symmetricaldifference: >
-  This algorithm creates a layer containing features from both the Input and Difference layers but with the overlapping areas between the two layers removed. The attribute table of the Symmetrical Difference layer contains attributes from both the Input and Difference layers.
-
-
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
@@ -547,10 +530,6 @@ qgis:truncatetable: >
 
   Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
 
-qgis:union: >
-  This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features.
-
-
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
 
@@ -570,4 +549,10 @@ qgis:voronoipolygons: >
   This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
 
 qgis:zonalstatistics:
+
+
+qgis:definecurrentprojection: >
+  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
+
+  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
 

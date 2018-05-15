@@ -64,7 +64,7 @@ class QgsPropertyPrivate : public QSharedData
     //! Stores whether the property is currently active
     bool active = true;
 
-    //! Optional transfomer
+    //! Optional transformer
     QgsPropertyTransformer *transformer = nullptr;
 
     // StaticData

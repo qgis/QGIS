@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsMessageLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -67,11 +67,11 @@ defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
                            'native:convexhull': geoprocessingToolsMenu,
-                           'qgis:intersection': geoprocessingToolsMenu,
-                           'qgis:union': geoprocessingToolsMenu,
-                           'qgis:symmetricaldifference': geoprocessingToolsMenu,
+                           'native:intersection': geoprocessingToolsMenu,
+                           'native:union': geoprocessingToolsMenu,
+                           'native:symmetricaldifference': geoprocessingToolsMenu,
                            'native:clip': geoprocessingToolsMenu,
-                           'qgis:difference': geoprocessingToolsMenu,
+                           'native:difference': geoprocessingToolsMenu,
                            'native:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
 geometryToolsMenu = vectorMenu + "/" + Processing.tr('G&eometry Tools')
@@ -88,7 +88,7 @@ defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:linestopolygons': geometryToolsMenu,
                            'native:extractvertices': geometryToolsMenu})
 managementToolsMenu = vectorMenu + "/" + Processing.tr('&Data Management Tools')
-defaultMenuEntries.update({'qgis:definecurrentprojection': managementToolsMenu,
+defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'qgis:joinattributesbylocation': managementToolsMenu,
                            'qgis:splitvectorlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
@@ -132,6 +132,11 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
 
 
 def initializeMenus():
+    for m in defaultMenuEntries.keys():
+        alg = QgsApplication.processingRegistry().algorithmById(m)
+        if alg is None or alg.id() != m:
+            QgsMessageLog.logMessage(Processing.tr('Invalid algorithm ID for menu: {}').format(m), Processing.tr('Processing'))
+
     for provider in QgsApplication.processingRegistry().providers():
         for alg in provider.algorithms():
             d = defaultMenuEntries.get(alg.id(), "")
@@ -189,7 +194,8 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
     if addButton:
         global algorithmsToolbar
         if algorithmsToolbar is None:
-            algorithmsToolbar = iface.addToolBar('ProcessingAlgorithms')
+            algorithmsToolbar = iface.addToolBar(QCoreApplication.translate('MainWindow', 'Processing Algorithms'))
+            algorithmsToolbar.setToolTip(QCoreApplication.translate('MainWindow', 'Processing Algorithms Toolbar'))
         algorithmsToolbar.addAction(action)
 
 

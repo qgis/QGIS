@@ -58,9 +58,6 @@
       </item>
       <item>
        <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
-        <property name="toolTip">
-         <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
-        </property>
         <property name="text">
          <string>Export RDF metadata</string>
         </property>

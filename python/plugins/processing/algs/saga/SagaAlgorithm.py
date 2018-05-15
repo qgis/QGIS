@@ -193,6 +193,9 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                 if not crs:
                     source = self.parameterAsSource(parameters, param.name(), context)
+                    if source is None:
+                        raise QgsProcessingException(self.invalidSourceError(parameters, param.name()))
+
                     crs = source.sourceCrs()
 
                 layer_path = self.parameterAsCompatibleSourceLayerPath(parameters, param.name(), context, ['shp'], 'shp', feedback=feedback)
@@ -229,6 +232,9 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                         if not crs:
                             source = self.parameterAsSource(temp_params, param.name(), context)
+                            if source is None:
+                                raise QgsProcessingException(self.invalidSourceError(parameters, param.name()))
+
                             crs = source.sourceCrs()
 
                         layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, 'shp',

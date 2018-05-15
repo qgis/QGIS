@@ -32,7 +32,7 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     ~QgsGrassEditRenderer() override;
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
@@ -42,7 +42,7 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     QgsFeatureRenderer *clone() const override;
 
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     QString dump() const override;
 

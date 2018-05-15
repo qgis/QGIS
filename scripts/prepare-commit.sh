@@ -91,10 +91,8 @@ for f in $MODIFIED; do
 
   cp $f $m
   ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
-  if diff -u $m $f >>$ASTYLEDIFF; then
-    # no difference found
-    rm $m
-  fi
+  diff -u $m $f >>$ASTYLEDIFF
+  rm $m
 done
 
 if [ -s "$ASTYLEDIFF" ]; then
@@ -102,11 +100,10 @@ if [ -s "$ASTYLEDIFF" ]; then
     # review astyle changes
     colordiff <$ASTYLEDIFF | less -r
   else
-    echo "Files changed (see $ASTYLEDIFF)"
+    echo "Files changed"
   fi
-else
-  rm $ASTYLEDIFF
 fi
+rm $ASTYLEDIFF
 
 
 # verify SIP files
@@ -116,11 +113,11 @@ for f in $MODIFIED; do
   # if cpp header
   if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
     # look if corresponding SIP file
-    sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
-    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\///; s/\.h$/.sip/' <<<$f )
-    module=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\/.*$/\1/' <<<$f )
+    sip_include=$(${GP}sed -r 's@^src/(\w+)/.*$@python/\1/\1.sip@' <<< $f )
+    sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)/@@; s@\.h$@.sip@' <<<$f )
+    module=$(${GP}sed -r 's@src/(core|gui|analysis|server)/.*$@\1@' <<<$f )
     if grep -Fq "$sip_file" ${TOPLEVEL}/python/${module}/${module}_auto.sip; then
-      sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip.in/' <<<$f )
+      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)@\1/auto_generated@; s@\.h$@.sip.in@' <<<$f )
       m=python/$sip_file.$REV.prepare
       touch python/$sip_file
       cp python/$sip_file $m

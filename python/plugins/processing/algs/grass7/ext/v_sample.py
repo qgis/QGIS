@@ -26,12 +26,12 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
         return
 
     # We need to import the vector with v.in.ogr
     # and we can use r.external for the raster
-    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
     alg.loadRasterLayerFromParameter('raster', parameters, context, True)
     alg.postInputs()

@@ -25,8 +25,8 @@
 #include <QDomDocument>
 
 #include "qgsattributeeditorelement.h"
+#include "qgsreadwritecontext.h"
 
-class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
@@ -135,14 +135,18 @@ class CORE_EXPORT QgsEditFormConfig
     //! Set the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
-    //! Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout.
+    /**
+     * \brief Get path or URL to the .ui form. Only meaningful with EditorLayout::UiFileLayout
+     */
     QString uiForm() const;
 
     /**
      * Set path to the .ui form.
-     * When a string is provided, the layout style will be set to EditorLayout::UiFileLayout,
+     * When a string is provided in \a ui, the layout style will be set to EditorLayout::UiFileLayout,
      * if an empty or a null string is provided, the layout style will be set to
      * EditorLayout::GeneratedLayout.
+     * If \a ui is a URL, a local copy of the file will be made and will be used to create the forms
+     * \a context is provided to save error messages
      */
     void setUiForm( const QString &ui );
 

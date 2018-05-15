@@ -86,12 +86,23 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
 
 bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
     {
       if ( message )
-        *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
+      {
+        // TODO QGIS 4 - move the message handling to the parameter subclasses (but this
+        // requires a change in signature for the virtual checkValueIsAcceptable method)
+        if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
+          *message = invalidSourceError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterFeatureSink::typeName() )
+          *message = invalidSinkError( parameters, def->name() );
+        else if ( def->type() == QgsProcessingParameterRasterLayer::typeName() )
+          *message = invalidRasterError( parameters, def->name() );
+        else
+          *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
+      }
       return false;
     }
   }
@@ -115,7 +126,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
     // need to update all destination parameters to turn off non file based outputs
-    Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
+    for ( const QgsProcessingParameterDefinition *definition : qgis::as_const( mParameters ) )
     {
       if ( definition->isDestination() )
       {
@@ -165,9 +176,9 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
 
   bool foundCrs = false;
   QgsCoordinateReferenceSystem crs;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( def->type() == QStringLiteral( "layer" ) || def->type() == QStringLiteral( "raster" ) )
+    if ( def->type() == QgsProcessingParameterMapLayer::typeName() || def->type() == QgsProcessingParameterRasterLayer::typeName() )
     {
       QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( def, parameters, context );
       if ( layer )
@@ -183,7 +194,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         }
       }
     }
-    else if ( def->type() == QStringLiteral( "source" ) )
+    else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
     {
       std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
@@ -199,7 +210,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         }
       }
     }
-    else if ( def->type() == QStringLiteral( "multilayer" ) )
+    else if ( def->type() == QgsProcessingParameterMultipleLayers::typeName() )
     {
       QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
       Q_FOREACH ( QgsMapLayer *layer, layers )
@@ -218,6 +229,32 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         }
       }
     }
+    else if ( def->type() == QgsProcessingParameterExtent::typeName() )
+    {
+      QgsCoordinateReferenceSystem extentCrs = QgsProcessingParameters::parameterAsExtentCrs( def, parameters, context );
+      if ( foundCrs && extentCrs.isValid() && crs != extentCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && extentCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = extentCrs;
+      }
+    }
+    else if ( def->type() == QgsProcessingParameterPoint::typeName() )
+    {
+      QgsCoordinateReferenceSystem pointCrs = QgsProcessingParameters::parameterAsPointCrs( def, parameters, context );
+      if ( foundCrs && pointCrs.isValid() && crs != pointCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && pointCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = pointCrs;
+      }
+    }
   }
   return true;
 }
@@ -227,12 +264,12 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
   QString s = QStringLiteral( "processing.run(\"%1\"," ).arg( id() );
 
   QStringList parts;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
       continue;
 
-    if ( !parameters.contains( def->name() ) || !parameters.value( def->name() ).isValid() )
+    if ( !parameters.contains( def->name() ) )
       continue;
 
     parts << QStringLiteral( "'%1':%2" ).arg( def->name(), def->valueAsPythonString( parameters.value( def->name() ), context ) );
@@ -330,7 +367,7 @@ const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinit
 int QgsProcessingAlgorithm::countVisibleParameters() const
 {
   int count = 0;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( !( def->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
       count++;
@@ -341,19 +378,17 @@ int QgsProcessingAlgorithm::countVisibleParameters() const
 QgsProcessingParameterDefinitions QgsProcessingAlgorithm::destinationParameterDefinitions() const
 {
   QgsProcessingParameterDefinitions result;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
-    if ( !def->isDestination() )
-      continue;
-
-    result << def;
+    if ( def->isDestination() )
+      result << def;
   }
   return result;
 }
 
 const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
     if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
       return def;
@@ -363,7 +398,7 @@ const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( c
 
 bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 {
-  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
     if ( def->type() == QStringLiteral( "outputHtml" ) )
       return true;
@@ -371,9 +406,9 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
   return false;
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration ) const
 {
-  std::unique_ptr< QgsProcessingAlgorithm > alg( create() );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
   if ( ok )
     *ok = false;
 
@@ -422,7 +457,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
 
 QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QString( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QStringLiteral( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
 
   // Hey kids, let's all be thread safe! It's the fun thing to do!
@@ -479,7 +514,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
 QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
-  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QString( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QStringLiteral( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
 
   if ( mLocalContext )
@@ -635,6 +670,82 @@ QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parame
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    {
+      QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
+      var = fromVar.source;
+    }
+    if ( var.canConvert<QgsProperty>() )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not load source layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.canConvert<QgsProperty>() )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not load source layer for %1: %2 not found" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not load source layer for %1: invalid value" ).arg( name );
+  }
+}
+
+QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters, const QString &name )
+{
+  if ( !parameters.contains( name ) )
+    return QObject::tr( "Could not create destination layer for %1: no value specified for parameter" ).arg( name );
+  else
+  {
+    QVariant var = parameters.value( name );
+    if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+      var = fromVar.sink;
+    }
+    if ( var.canConvert<QgsProperty>() )
+    {
+      QgsProperty p = var.value< QgsProperty >();
+      if ( p.propertyType() == QgsProperty::StaticProperty )
+      {
+        var = p.staticValue();
+      }
+    }
+    if ( !var.toString().isEmpty() )
+      return QObject::tr( "Could not create destination layer for %1: %2" ).arg( name, var.toString() );
+    else
+      return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
+  }
+}
+
 bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
 {
   if ( !parameter->isDestination() )
@@ -714,7 +825,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
 {
   mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mSource )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
@@ -722,19 +833,19 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
                                           outputWkbType( mSource->wkbType() ),
                                           outputCrs( mSource->sourceCrs() ) ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // prepare expression context for feature iteration
   QgsExpressionContext prevContext = context.expressionContext();
   QgsExpressionContext algContext = prevContext;
 
-  algContext.appendScopes( createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( mSource.get() ) ).takeScopes() );
+  algContext.appendScopes( createExpressionContext( parameters, context, mSource.get() ).takeScopes() );
   context.setExpressionContext( algContext );
 
   long count = mSource->featureCount();
 
   QgsFeature f;
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest(), sourceFlags() );
+  QgsFeatureIterator it = mSource->getFeatures( request(), sourceFlags() );
 
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
@@ -768,3 +879,4 @@ QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
 {
   return QgsFeatureRequest();
 }
+

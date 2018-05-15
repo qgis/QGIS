@@ -24,7 +24,7 @@ from builtins import str
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from qgis.PyQt.QtCore import Qt, QFileInfo
+from qgis.PyQt.QtCore import Qt, QFileInfo, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import Qgis, QgsDataSourceUri, QgsSettings
@@ -52,7 +52,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite'
+        return QCoreApplication.translate('db_manager', 'SpatiaLite')
 
     @classmethod
     def providerName(self):

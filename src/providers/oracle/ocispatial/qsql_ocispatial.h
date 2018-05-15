@@ -90,6 +90,7 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     bool beginTransaction() override;
     bool commitTransaction() override;
     bool rollbackTransaction() override;
+
 };
 
 QT_END_NAMESPACE

@@ -10,7 +10,7 @@ QgsProcessingParameterRasterLayer|transport_coeff|Name of the transport capacity
 QgsProcessingParameterRasterLayer|shear_stress|Name of the critical shear stress raster map [Pa]|None|False
 QgsProcessingParameterRasterLayer|man|Name of the Mannings n raster map|None|True
 QgsProcessingParameterNumber|man_value|Name of the Mannings n value|QgsProcessingParameterNumber.Double|0.1|True|None|None
-QgsProcessingParameterVectorLayer|observation|Sampling locations vector points|0|None|True
+QgsProcessingParameterFeatureSource|observation|Sampling locations vector points|0|None|True
 QgsProcessingParameterNumber|nwalkers|Number of walkers|QgsProcessingParameterNumber.Integer|None|True|None|None
 QgsProcessingParameterNumber|niterations|Time used for iterations [minutes]|QgsProcessingParameterNumber.Integer|10|True|None|None
 QgsProcessingParameterNumber|output_step|Time interval for creating output maps [minutes]|QgsProcessingParameterNumber.Integer|2|True|None|None

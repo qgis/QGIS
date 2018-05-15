@@ -32,9 +32,11 @@ from qgis.core import (QgsWkbTypes,
                        QgsVertexId,
                        QgsFeature,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
                        QgsGeometry,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSink,
@@ -75,6 +77,9 @@ class ExtractSpecificVertices(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         fields = source.fields()
         fields.append(QgsField('vertex_pos', QVariant.Int))
         fields.append(QgsField('vertex_index', QVariant.Int))
@@ -93,6 +98,8 @@ class ExtractSpecificVertices(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         vertex_indices_string = self.parameterAsString(parameters, self.VERTICES, context)
         indices = []
@@ -103,7 +110,7 @@ class ExtractSpecificVertices(QgisAlgorithm):
                 raise QgsProcessingException(
                     self.tr('\'{}\' is not a valid vertex index').format(vertex))
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):

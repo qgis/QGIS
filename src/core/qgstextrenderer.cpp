@@ -1608,6 +1608,55 @@ QMimeData *QgsTextFormat::toMimeData() const
   return mimeData;
 }
 
+QgsTextFormat QgsTextFormat::fromQFont( const QFont &font )
+{
+  QgsTextFormat format;
+  format.setFont( font );
+  if ( font.pointSizeF() > 0 )
+  {
+    format.setSize( font.pointSizeF() );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( font.pixelSize() > 0 )
+  {
+    format.setSize( font.pixelSize() );
+    format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+
+  return format;
+}
+
+QFont QgsTextFormat::toQFont() const
+{
+  QFont f = font();
+  switch ( sizeUnit() )
+  {
+    case QgsUnitTypes::RenderPoints:
+      f.setPointSizeF( size() );
+      break;
+
+    case QgsUnitTypes::RenderMillimeters:
+      f.setPointSizeF( size() * 2.83464567 );
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      f.setPointSizeF( size() * 72 );
+      break;
+
+    case QgsUnitTypes::RenderPixels:
+      f.setPixelSize( static_cast< int >( std::round( size() ) ) );
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      // no meaning here
+      break;
+  }
+  return f;
+}
+
 QgsTextFormat QgsTextFormat::fromMimeData( const QMimeData *data, bool *ok )
 {
   if ( ok )
@@ -1822,6 +1871,11 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       break;
     }
   }
+}
+
+QFontMetricsF QgsTextRenderer::fontMetrics( QgsRenderContext &context, const QgsTextFormat &format )
+{
+  return QFontMetricsF( format.scaledFont( context ), context.painter() ? context.painter()->device() : nullptr );
 }
 
 void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )

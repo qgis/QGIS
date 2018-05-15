@@ -7,6 +7,7 @@ SET(PG_SRCS
   qgspostgresconnpool.cpp
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
+  qgspostgresprojectstorage.cpp
   qgspostgrestransaction.cpp
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
@@ -29,10 +30,12 @@ IF (WITH_GUI)
   SET(PG_SRCS ${PG_SRCS}
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
+    qgspostgresprojectstoragedialog.cpp
   )
   SET(PG_MOC_HDRS ${PG_MOC_HDRS}
     qgspgnewconnection.h
     qgspgsourceselect.h
+    qgspostgresprojectstoragedialog.h
   )
 ENDIF ()
 
@@ -61,7 +64,6 @@ INCLUDE_DIRECTORIES(
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )

@@ -24,6 +24,7 @@
 #include "qgssymbollayer.h"
 #include "qgisapp.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>

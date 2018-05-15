@@ -50,8 +50,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsProcessingContext,
                        QgsProcessingUtils,
                        QgsProcessingFeedback)
-
-from qgis.testing import _UnexpectedSuccess
+from qgis.analysis import (QgsNativeAlgorithms)
+from qgis.testing import (_UnexpectedSuccess,
+                          start_app,
+                          unittest)
 from utilities import unitTestDataPath
 
 import processing
@@ -118,7 +120,7 @@ class AlgorithmsTest(object):
         if expectFailure:
             try:
                 results, ok = alg.run(parameters, context, feedback)
-                self.check_results(results, context, defs['params'], defs['results'])
+                self.check_results(results, context, parameters, defs['results'])
                 if ok:
                     raise _UnexpectedSuccess
             except Exception:
@@ -126,7 +128,7 @@ class AlgorithmsTest(object):
         else:
             results, ok = alg.run(parameters, context, feedback)
             self.assertTrue(ok, 'params: {}, results: {}'.format(parameters, results))
-            self.check_results(results, context, defs['params'], defs['results'])
+            self.check_results(results, context, parameters, defs['results'])
 
     def load_params(self, params):
         """
@@ -155,9 +157,9 @@ class AlgorithmsTest(object):
                 prefix = processingTestDataPath()
                 tmp = ''
                 for r in param['name'].split(';'):
-                    v = r.split(',')
-                    tmp += '{},{},{},{};'.format(os.path.join(prefix, v[0]),
-                                                 v[1], v[2], v[3])
+                    v = r.split('::~::')
+                    tmp += '{}::~::{}::~::{}::~::{};'.format(os.path.join(prefix, v[0]),
+                                                             v[1], v[2], v[3])
                 return tmp[:-1]
         except TypeError:
             # No type specified, use whatever is there
@@ -281,19 +283,21 @@ class AlgorithmsTest(object):
 
                 compare = expected_result.get('compare', {})
                 pk = expected_result.get('pk', None)
+                topo_equal_check = expected_result.get('topo_equal_check', False)
 
                 if len(expected_lyrs) == 1:
-                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check})
                 else:
                     res = False
                     for l in expected_lyrs:
-                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk, geometry={'topo_equal_check': topo_equal_check}):
                             res = True
                             break
                     self.assertTrue(res, 'Could not find matching layer in expected results')
 
             elif 'rasterhash' == expected_result['type']:
                 print("id:{} result:{}".format(id, results[id]))
+                self.assertTrue(os.path.exists(results[id]), 'File does not exist: {}, {}'.format(results[id], params))
                 dataset = gdal.Open(results[id], GA_ReadOnly)
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
@@ -313,6 +317,39 @@ class AlgorithmsTest(object):
 
                 for rule in expected_result.get('rules', []):
                     self.assertRegex(data, rule)
+
+
+class GenericAlgorithmsTest(unittest.TestCase):
+
+    """
+    General (non-provider specific) algorithm tests
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        start_app()
+        from processing.core.Processing import Processing
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        cls.cleanup_paths = []
+
+    @classmethod
+    def tearDownClass(cls):
+        from processing.core.Processing import Processing
+        Processing.deinitialize()
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
+
+    def testAlgorithmCompliance(self):
+        for p in QgsApplication.processingRegistry().providers():
+            print('testing provider {}'.format(p.id()))
+            for a in p.algorithms():
+                print('testing algorithm {}'.format(a.id()))
+                self.check_algorithm(a)
+
+    def check_algorithm(self, alg):
+        # check that calling helpUrl() works without error
+        alg.helpUrl()
 
 
 if __name__ == '__main__':

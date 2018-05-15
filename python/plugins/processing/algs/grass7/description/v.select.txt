@@ -1,9 +1,9 @@
 v.select
 Selects features from vector map (A) by features from other vector map (B).
 Vector (v.*)
-QgsProcessingParameterVectorLayer|ainput|Input layer (A)|-1|None|False
+QgsProcessingParameterFeatureSource|ainput|Input layer (A)|-1|None|False
 QgsProcessingParameterEnum|atype|Input layer (A) Type|point;line;boundary;centroid;area|True|0,1,4|True
-QgsProcessingParameterVectorLayer|binput|Input layer (B)|-1|None|False
+QgsProcessingParameterFeatureSource|binput|Input layer (B)|-1|None|False
 QgsProcessingParameterEnum|btype|Input layer (B) Type|point;line;boundary;centroid;area|True|0,1,4|True
 QgsProcessingParameterEnum|operator|Operator to use|overlap;equals;disjoint;intersect;touches;crosses;within;contains;overlaps;relate|False|0|False
 QgsProcessing|ParameterString|relate|Intersection Matrix Pattern used for 'relate' operator|None|False|True

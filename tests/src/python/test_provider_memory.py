@@ -275,6 +275,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
         self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
 
+    def testFromUriWithEncodedField(self):
+        """Test we can construct the mem provider from a uri when a field name is encoded"""
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=test%2Ffield:integer'),
+            'test',
+            'memory')
+        self.assertTrue(layer.isValid())
+        self.assertEqual([f.name() for f in layer.fields()], ['name', 'test/field'])
+
     def testSaveFields(self):
         # Create a new memory layer with no fields
         myMemoryLayer = QgsVectorLayer(
@@ -398,6 +408,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("date", QVariant.Date))
         fields.append(QgsField("datetime", QVariant.DateTime))
         fields.append(QgsField("time", QVariant.Time))
+        fields.append(QgsField("#complex_name", QVariant.String))
+        fields.append(QgsField("complex/name", QVariant.String))
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
@@ -431,6 +443,71 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         extent = QgsRectangle(-73, 70, -63, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
         self.assertTrue(QgsTestUtils.testProviderIteratorThreadSafety(self.source, request))
+
+    def testMinMaxCache(self):
+        """
+        Test that min/max cache is appropriately cleared
+        :return:
+        """
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:integer',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200])
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300])
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100])
+        f4 = QgsFeature()
+        f4.setAttributes([2, 200])
+        f5 = QgsFeature()
+        f5.setAttributes([4, 400])
+        res, [f1, f2, f3, f4, f5] = vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
+        self.assertTrue(res)
+
+        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 5)
+        self.assertEqual(vl.dataProvider().maximumValue(1), 400)
+
+        # add feature
+        f6 = QgsFeature()
+        f6.setAttributes([15, 1400])
+        res, [f6] = vl.dataProvider().addFeatures([f6])
+        self.assertTrue(res)
+        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 15)
+        self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
+        f7 = QgsFeature()
+        f7.setAttributes([-1, -1400])
+        res, [f7] = vl.dataProvider().addFeatures([f7])
+        self.assertTrue(res)
+        self.assertEqual(vl.dataProvider().minimumValue(0), -1)
+        self.assertEqual(vl.dataProvider().minimumValue(1), -1400)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 15)
+        self.assertEqual(vl.dataProvider().maximumValue(1), 1400)
+
+        # change attribute values
+        self.assertTrue(vl.dataProvider().changeAttributeValues({f6.id(): {0: 3, 1: 150}, f7.id(): {0: 4, 1: -100}}))
+        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+        self.assertEqual(vl.dataProvider().minimumValue(1), -200)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 5)
+        self.assertEqual(vl.dataProvider().maximumValue(1), 400)
+
+        # delete features
+        self.assertTrue(vl.dataProvider().deleteFeatures([f4.id(), f1.id()]))
+        self.assertEqual(vl.dataProvider().minimumValue(0), 1)
+        self.assertEqual(vl.dataProvider().minimumValue(1), -100)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 4)
+        self.assertEqual(vl.dataProvider().maximumValue(1), 400)
+
+        # delete attributes
+        self.assertTrue(vl.dataProvider().deleteAttributes([0]))
+        self.assertEqual(vl.dataProvider().minimumValue(0), -100)
+        self.assertEqual(vl.dataProvider().maximumValue(0), 400)
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

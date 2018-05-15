@@ -18,6 +18,7 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
+#include "qgssymbollayerutils.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
 {

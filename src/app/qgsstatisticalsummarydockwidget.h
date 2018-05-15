@@ -126,6 +126,11 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
   public slots:
 
     /**
+     * Copy the displayed statistics to the clipboard
+     */
+    void copyStatistics();
+
+    /**
      * Recalculates the displayed statistics
      */
     void refreshStatistics();

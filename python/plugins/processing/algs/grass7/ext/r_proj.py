@@ -29,7 +29,7 @@ from qgis.core import QgsProcessingParameterString
 from ..Grass7Utils import isWindows
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
     layer = alg.parameterAsLayer(parameters, 'input', context)
     layerCrs = layer.crs().toProj4()

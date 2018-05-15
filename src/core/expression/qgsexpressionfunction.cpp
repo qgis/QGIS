@@ -2492,6 +2492,60 @@ static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContex
   return result;
 }
 
+static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( fGeom.constGet() );
+  if ( !pt )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `wedge_buffer` requires a point value for the center." ) );
+    return QVariant();
+  }
+
+  double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double width = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  double outerRadius = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  double innerRadius = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+
+  QgsGeometry geom = QgsGeometry::createWedgeBuffer( *pt, azimuth, width, outerRadius, innerRadius );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
+static QVariant fcnTaperedBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.type() != QgsWkbTypes::LineGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `tapered_buffer` requires a line geometry." ) );
+    return QVariant();
+  }
+
+  double startWidth = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double endWidth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  int segments = static_cast< int >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
+
+  QgsGeometry geom = fGeom.taperedBuffer( startWidth, endWidth, segments );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
+static QVariant fcnBufferByM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.type() != QgsWkbTypes::LineGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `buffer_by_m` requires a line geometry." ) );
+    return QVariant();
+  }
+
+  int segments = static_cast< int >( QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
+
+  QgsGeometry geom = fGeom.variableWidthBufferByM( segments );
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3462,7 +3516,7 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
   return result;
 }
 
-static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
@@ -3481,6 +3535,13 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   }
 
   const QVariant &attVal = values.at( 2 );
+
+  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( vl->id(), QString::number( attributeId ), attVal.toString() );
+  if ( context && context->hasCachedValue( cacheValueKey ) )
+  {
+    return context->cachedValue( cacheValueKey );
+  }
+
   QgsFeatureRequest req;
   req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
                            QgsExpression::quotedString( attVal.toString() ) ) );
@@ -3492,10 +3553,15 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   QgsFeatureIterator fIt = vl->getFeatures( req );
 
   QgsFeature fet;
+  QVariant res;
   if ( fIt.nextFeature( fet ) )
-    return QVariant::fromValue( fet );
+  {
+    res = QVariant::fromValue( fet );
+  }
 
-  return QVariant();
+  if ( context )
+    context->setCachedValue( cacheValueKey, res );
+  return res;
 }
 
 static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
@@ -3525,7 +3591,14 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
     }
     else
     {
-      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+
+      const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName, value.toString() );
+      if ( context->hasCachedValue( cacheValueKey ) )
+      {
+        return context->cachedValue( cacheValueKey );
+      }
+
       const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
       const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
@@ -3541,6 +3614,8 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
         cache = context->cachedValue( cacheKey );
 
       result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+
+      context->setCachedValue( cacheValueKey, result );
     }
   }
   else
@@ -3601,6 +3676,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Vector" );
       case QgsMapLayer::RasterLayer:
         return QCoreApplication::translate( "expressions", "Raster" );
+      case QgsMapLayer::MeshLayer:
+        return QCoreApplication::translate( "expressions", "Mesh" );
       case QgsMapLayer::PluginLayer:
         return QCoreApplication::translate( "expressions", "Plugin" );
     }
@@ -4251,6 +4328,19 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "within" ), 2, fcnWithin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "translate" ), 3, fcnTranslate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), -1, fcnBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "wedge_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "center" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "outer_radius" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "inner_radius" ), true, 0.0 ), fcnWedgeBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "tapered_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "start_width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "end_width" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
+                                            , fcnTaperedBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "buffer_by_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
+                                            , fcnBufferByM, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )

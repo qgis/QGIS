@@ -106,7 +106,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+                        isinstance(param, (QgsProcessingParameterRasterDestination,
+                                           QgsProcessingParameterFeatureSink,
+                                           QgsProcessingParameterVectorDestination)):
                     if self.mainWidget().checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
@@ -118,39 +120,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         return self.algorithm().preprocessParameters(parameters)
 
-    def checkExtentCRS(self):
-        unmatchingCRS = False
-        hasExtent = False
-        context = dataobjects.createContext()
-        projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
-        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        for param in self.algorithm().parameterDefinitions():
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        inputlayers = param.value.split(';')
-                    else:
-                        inputlayers = [param.value]
-                    for inputlayer in inputlayers:
-                        for layer in layers:
-                            if layer.source() == inputlayer:
-                                if layer.crs() != projectCRS:
-                                    unmatchingCRS = True
-
-                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
-                        if p is not None:
-                            if p.crs() != projectCRS:
-                                unmatchingCRS = True
-            if isinstance(param, ParameterExtent):
-                if param.skip_crs_check:
-                    continue
-
-                value = self.mainWidget().wrappers[param.name()].widget.leText.text().strip()
-                if value:
-                    hasExtent = True
-
-        return hasExtent and unmatchingCRS
-
     def accept(self):
         feedback = self.createFeedback()
         context = dataobjects.createContext(feedback)
@@ -161,21 +130,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             if checkCRS and not self.algorithm().validateInputCrs(parameters, context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
-                                             self.tr('Layers do not all use the same CRS. This can '
+                                             self.tr('Parameters do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
                                                      'continue?'),
-                                             QMessageBox.Yes | QMessageBox.No,
-                                             QMessageBox.No)
-                if reply == QMessageBox.No:
-                    return
-            checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
-            # TODO
-            if False and checkExtentCRS and self.checkExtentCRS():
-                reply = QMessageBox.question(self, self.tr("Extent CRS"),
-                                             self.tr('Extent parameters must use the same CRS as the input layers.\n'
-                                                     'Your input layers do not have the same extent as the project, '
-                                                     'so the extent might be in a wrong CRS if you have selected it from the canvas.\n'
-                                                     'Do you want to continue?'),
                                              QMessageBox.Yes | QMessageBox.No,
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
@@ -200,7 +157,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
 
             self.setInfo(
-                self.tr('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
+                QCoreApplication.translate('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
 
             feedback.pushInfo(self.tr('Input parameters:'))
             display_params = []

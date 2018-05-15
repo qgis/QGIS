@@ -828,6 +828,11 @@ QgsTextFormat QgsTextFormatWidget::format() const
   return format;
 }
 
+void QgsTextFormatWidget::setFormat( const QgsTextFormat &format )
+{
+  updateWidgetForFormat( format );
+}
+
 void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
 {
   mLabelingOptionsListWidget->blockSignals( true );
@@ -1015,7 +1020,7 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
   mFontCapitalsComboBox->addItem( tr( "All uppercase" ), QVariant( 1 ) );
   mFontCapitalsComboBox->addItem( tr( "All lowercase" ), QVariant( 2 ) );
   // Small caps doesn't work right with QPainterPath::addText()
-  // https://bugreports.qt-project.org/browse/QTBUG-13965
+  // https://bugreports.qt.io/browse/QTBUG-13965
 //  mFontCapitalsComboBox->addItem( tr( "Small caps" ), QVariant( 3 ) );
   mFontCapitalsComboBox->addItem( tr( "Capitalize first letter" ), QVariant( 4 ) );
 }
@@ -1173,7 +1178,7 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
   // symbology SVG renderer only supports size^2 scaling, so we only use the x size spinbox
   mShapeSizeYLabel->setVisible( !isSVG );
   mShapeSizeYSpnBx->setVisible( !isSVG );
-  mShapeSizeYDDBtn->setVisible( !isSVG );
+  mShapeSizeYDDBtn->setVisible( !isSVG && mWidgetMode == Labeling );
   mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
@@ -1416,8 +1421,8 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 
   mShapeRadiusUnitWidget->setVisible( show );
 
-  mShapeRadiusDDBtn->setVisible( show );
-  mShapeRadiusUnitsDDBtn->setVisible( show );
+  mShapeRadiusDDBtn->setVisible( show && mWidgetMode == Labeling );
+  mShapeRadiusUnitsDDBtn->setVisible( show  && mWidgetMode == Labeling );
 }
 
 void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
@@ -1425,7 +1430,7 @@ void QgsTextFormatWidget::showBackgroundPenStyle( bool show )
   mShapePenStyleLabel->setVisible( show );
   mShapePenStyleCmbBx->setVisible( show );
 
-  mShapePenStyleDDBtn->setVisible( show );
+  mShapePenStyleDDBtn->setVisible( show && mWidgetMode == Labeling );
 }
 
 void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )

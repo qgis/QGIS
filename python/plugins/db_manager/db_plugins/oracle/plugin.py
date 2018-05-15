@@ -28,7 +28,7 @@ from builtins import range
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
@@ -59,7 +59,7 @@ class OracleDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'Oracle Spatial'
+        return QCoreApplication.translate('db_manager', 'Oracle Spatial')
 
     @classmethod
     def providerName(self):
@@ -191,6 +191,11 @@ class ORDatabase(Database):
     def sqlResultModel(self, sql, parent):
         from .data_model import ORSqlResultModel
         return ORSqlResultModel(self, sql, parent)
+
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import ORSqlResultModelAsync
+
+        return ORSqlResultModelAsync(self, sql, parent)
 
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,

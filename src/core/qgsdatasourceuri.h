@@ -221,6 +221,18 @@ class CORE_EXPORT QgsDataSourceUri
     //! Sets the srid
     void setSrid( const QString &srid );
 
+    /**
+     * Decodes SSL mode string into enum value. If the string is not recognized, SslPrefer is returned.
+     * \since QGIS 3.2
+     */
+    static SslMode decodeSslMode( const QString &sslMode );
+
+    /**
+     * Encodes SSL mode enum value into a string.
+     * \since QGIS 3.2
+     */
+    static QString encodeSslMode( SslMode sslMode );
+
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );

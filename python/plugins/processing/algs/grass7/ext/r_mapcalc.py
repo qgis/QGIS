@@ -37,7 +37,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return None
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     # We will use the same raster names than in QGIS to name the rasters in GRASS
     rasters = alg.parameterAsLayerList(parameters, 'maps', context)
     for idx, raster in enumerate(rasters):
@@ -54,11 +54,11 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processCommand(alg, parameters, context):
-    alg.processCommand(parameters, context, True)
+def processCommand(alg, parameters, context, feedback):
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # We need to export every raster from the GRASSDB
     alg.exportRasterLayersIntoDirectory('output_dir',
                                         parameters, context,

@@ -50,7 +50,8 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
   int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
-  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
+  int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 20;
+  mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 }
 
 QSize QgsFontButton::minimumSizeHint() const

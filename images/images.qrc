@@ -76,6 +76,30 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCentroids.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCheckGeometry.svg</file>
+        <file>themes/default/algorithms/mAlgorithmClip.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCollect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmConvexHull.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDelaunay.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDifference.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
+        <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
+        <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
+        <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
+        <file>themes/default/algorithms/mAlgorithmLineToPolygon.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMeanCoordinates.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMergeLayers.svg</file>
+        <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
+        <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSplitLayer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSymmetricalDifference.svg</file>
+        <file>themes/default/algorithms/mAlgorithmUnion.svg</file>
+        <file>themes/default/algorithms/mAlgorithmVoronoi.svg</file>
         <file>themes/default/cap_flat.svg</file>
         <file>themes/default/cap_round.svg</file>
         <file>themes/default/cap_square.svg</file>
@@ -465,17 +489,17 @@
         <file>themes/default/pluginNew.svg</file>
         <file>themes/default/pluginUpgrade.svg</file>
         <file>themes/default/propertyicons/action.svg</file>
-        <file>themes/default/propertyicons/attributes.png</file>
+        <file>themes/default/propertyicons/attributes.svg</file>
         <file>themes/default/propertyicons/CRS.svg</file>
         <file>themes/default/propertyicons/datadefined.svg</file>
         <file>themes/default/propertyicons/diagram.svg</file>
-        <file>themes/default/propertyicons/digitizing.png</file>
+        <file>themes/default/propertyicons/digitizing.svg</file>
         <file>themes/default/propertyicons/display.svg</file>
         <file>themes/default/propertyicons/editmetadata.svg</file>
         <file>themes/default/propertyicons/gdal.svg</file>
         <file>themes/default/propertyicons/general.svg</file>
-        <file>themes/default/propertyicons/histogram.png</file>
-        <file>themes/default/propertyicons/join.png</file>
+        <file>themes/default/propertyicons/histogram.svg</file>
+        <file>themes/default/propertyicons/join.svg</file>
         <file>themes/default/propertyicons/labelbackground.svg</file>
         <file>themes/default/propertyicons/labelbuffer.svg</file>
         <file>themes/default/propertyicons/labelformatting.svg</file>
@@ -483,11 +507,11 @@
         <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/labelshadow.svg</file>
         <file>themes/default/propertyicons/labeltext.svg</file>
-        <file>themes/default/propertyicons/locale.png</file>
-        <file>themes/default/propertyicons/map_tools.png</file>
+        <file>themes/default/propertyicons/locale.svg</file>
+        <file>themes/default/propertyicons/map_tools.svg</file>
         <file>themes/default/propertyicons/metadata.svg</file>
-        <file>themes/default/propertyicons/network_and_proxy.png</file>
-        <file>themes/default/propertyicons/overlay.png</file>
+        <file>themes/default/propertyicons/network_and_proxy.svg</file>
+        <file>themes/default/propertyicons/overlay.svg</file>
         <file>themes/default/propertyicons/plugin.svg</file>
         <file>themes/default/propertyicons/plugin-incompatible.svg</file>
         <file>themes/default/propertyicons/plugin-installed.svg</file>
@@ -495,14 +519,14 @@
         <file>themes/default/propertyicons/plugin-upgrade.svg</file>
         <file>themes/default/propertyicons/plugin-install_from_zip.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
-        <file>themes/default/propertyicons/pyramids.png</file>
+        <file>themes/default/propertyicons/pyramids.svg</file>
         <file>themes/default/propertyicons/rendering.svg</file>
         <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/stylepreset.svg</file>
         <file>themes/default/propertyicons/symbology.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
-        <file>themes/default/propertyicons/transparency.png</file>
+        <file>themes/default/propertyicons/transparency.svg</file>
         <file>themes/default/propertyicons/spacer.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
@@ -648,6 +672,11 @@
         <file>themes/default/mIconLayout.svg</file>
         <file>themes/default/mActionNewReport.svg</file>
         <file>themes/default/mIconReport.svg</file>
+        <file>themes/default/downloading_svg.svg</file>
+        <file>themes/default/mActionIdentifyByFreehand.svg</file>
+        <file>themes/default/mActionIdentifyByPolygon.svg</file>
+        <file>themes/default/mActionIdentifyByRadius.svg</file>
+        <file>themes/default/mActionIdentifyByRectangle.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

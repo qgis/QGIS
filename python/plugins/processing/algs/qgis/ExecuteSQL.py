@@ -30,6 +30,8 @@ from qgis.core import (QgsVirtualLayerDefinition,
                        QgsWkbTypes,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterDefinition,
+                       QgsExpression,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
@@ -38,6 +40,21 @@ from qgis.core import (QgsVirtualLayerDefinition,
                        QgsProcessingException)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+
+
+class ParameterExecuteSql(QgsProcessingParameterDefinition):
+
+    def __init__(self, name='', description=''):
+        super().__init__(name, description)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.ExecuteSQLWidget.ExecuteSQLWidgetWrapper'
+        })
+
+    def type(self):
+        return 'execute_sql'
+
+    def clone(self):
+        return ParameterExecuteSql(self.name(), self.description())
 
 
 class ExecuteSQL(QgisAlgorithm):
@@ -71,9 +88,7 @@ class ExecuteSQL(QgisAlgorithm):
                                                                description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                                optional=True))
 
-        self.addParameter(QgsProcessingParameterString(name=self.INPUT_QUERY,
-                                                       description=self.tr('SQL query'),
-                                                       multiLine=True))
+        self.addParameter(ParameterExecuteSql(name=self.INPUT_QUERY, description=self.tr('SQL query')))
 
         self.addParameter(QgsProcessingParameterString(name=self.INPUT_UID_FIELD,
                                                        description=self.tr('Unique identifier field'), optional=True))
@@ -120,13 +135,15 @@ class ExecuteSQL(QgisAlgorithm):
             raise QgsProcessingException(
                 self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
         else:
-            df.setQuery(query)
+            localContext = self.createExpressionContext(parameters, context)
+            expandedQuery = QgsExpression.replaceExpressionText(query, localContext)
+            df.setQuery(expandedQuery)
 
         if uid_field:
             df.setUid(uid_field)
 
         if geometry_type == 1:  # no geometry
-            df.setGeometryWkbType(QgsWkbTypes.NullGeometry)
+            df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
         else:
             if geometry_field:
                 df.setGeometryField(geometry_field)
@@ -141,6 +158,8 @@ class ExecuteSQL(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                vLayer.fields(), vLayer.wkbType() if geometry_type != 1 else 1, vLayer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = vLayer.getFeatures()
         total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0

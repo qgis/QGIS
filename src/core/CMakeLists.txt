@@ -238,6 +238,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkaccessmanager.cpp
   qgsnetworkdiskcache.cpp
   qgsnetworkcontentfetcher.cpp
+  qgsnetworkcontentfetcherregistry.cpp
   qgsnetworkcontentfetchertask.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
@@ -259,6 +260,8 @@ SET(QGIS_CORE_SRCS
   qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
   qgsprojectproperty.cpp
+  qgsprojectstorage.cpp
+  qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
@@ -297,6 +300,7 @@ SET(QGIS_CORE_SRCS
   qgstransactiongroup.cpp
   qgsunittypes.cpp
   qgsvector.cpp
+  qgsvector3d.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
@@ -444,6 +448,12 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgshillshaderenderer.cpp
 
+  mesh/qgsmeshdataprovider.cpp
+  mesh/qgsmeshlayer.cpp
+  mesh/qgsmeshlayerrenderer.cpp
+  mesh/qgsmeshmemorydataprovider.cpp
+  mesh/qgstriangularmesh.cpp
+
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
   geometry/qgscircle.cpp
@@ -460,6 +470,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
+  geometry/qgslinesegment.cpp
   geometry/qgslinestring.cpp
   geometry/qgsmulticurve.cpp
   geometry/qgsmultilinestring.cpp
@@ -615,6 +626,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkaccessmanager.h
   qgsnetworkdiskcache.h
   qgsnetworkcontentfetcher.h
+  qgsnetworkcontentfetcherregistry.h
   qgsnetworkcontentfetchertask.h
   qgsnetworkreplyparser.h
   qgsofflineediting.h
@@ -679,6 +691,10 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterinterface.h
   raster/qgsrasterlayerrenderer.h
   raster/qgsrasterprojector.h
+
+  mesh/qgsmeshdataprovider.h
+  mesh/qgsmeshlayer.h
+  mesh/qgsmeshmemorydataprovider.h
 
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
@@ -889,6 +905,8 @@ SET(QGIS_CORE_HDRS
   qgsprojectbadlayerhandler.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
+  qgsprojectstorage.h
+  qgsprojectstorageregistry.h
   qgsprojectversion.h
   qgsproperty.h
   qgsproperty_p.h
@@ -942,6 +960,7 @@ SET(QGIS_CORE_HDRS
   qgstestutils.h
   qgsziputils.h
   qgsvector.h
+  qgsvector3d.h
   qgslocalec.h
 
   annotations/qgsannotationregistry.h
@@ -1054,6 +1073,9 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgshillshaderenderer.h
 
+  mesh/qgstriangularmesh.h
+  mesh/qgsmeshlayerrenderer.h
+
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
   scalebar/qgsscalebarsettings.h
@@ -1105,6 +1127,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometryutils.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
+  geometry/qgslinesegment.h
   geometry/qgslinestring.h
   geometry/qgsmulticurve.h
   geometry/qgsmultilinestring.h
@@ -1173,6 +1196,7 @@ INCLUDE_DIRECTORIES(
   scalebar
   symbology
   metadata
+  mesh
   ${CMAKE_SOURCE_DIR}/external/nmea
 )
 IF (WITH_INTERNAL_QEXTSERIALPORT)

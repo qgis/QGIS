@@ -45,8 +45,8 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QgsFeatureRenderer *clone() const override SIP_FACTORY;
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
      * Get the roof color

@@ -103,6 +103,23 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="mButtonCopy">
+        <property name="toolTip">
+         <string>Copy Statistics to Clipboard</string>
+        </property>
+        <property name="text">
+         <string>…</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QToolButton" name="mButtonRefresh">
         <property name="toolTip">
          <string>Recalculate Statistics</string>

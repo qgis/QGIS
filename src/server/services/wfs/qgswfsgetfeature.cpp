@@ -132,6 +132,10 @@ namespace QgsWfs
     for ( int i = 0; i < wfsLayerIds.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
+      if ( !layer )
+      {
+        continue;
+      }
       if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
       {
         continue;
@@ -332,11 +336,6 @@ namespace QgsWfs
         requestPrecision = QgsServerProjectUtils::wfsLayerPrecision( *project, vlayer->id() );
       }
 
-      if ( onlyOneLayer && !featureRequest.filterRect().isEmpty() )
-      {
-        requestRect = featureRequest.filterRect();
-      }
-
       if ( aRequest.maxFeatures > 0 )
       {
         featureRequest.setLimit( aRequest.maxFeatures + aRequest.startIndex - sentFeatures );
@@ -357,6 +356,23 @@ namespace QgsWfs
       if ( !query.srsName.isEmpty() )
       {
         outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( query.srsName );
+      }
+
+      if ( onlyOneLayer && !featureRequest.filterRect().isEmpty() )
+      {
+        Q_NOWARN_DEPRECATED_PUSH
+        QgsCoordinateTransform transform( outputCrs, requestCrs );
+        Q_NOWARN_DEPRECATED_POP
+        try
+        {
+          featureRequest.setFilterRect( transform.transform( featureRequest.filterRect() ) );
+        }
+        catch ( QgsException &cse )
+        {
+          Q_UNUSED( cse );
+        }
+
+        requestRect = featureRequest.filterRect();
       }
 
       // Iterate through features

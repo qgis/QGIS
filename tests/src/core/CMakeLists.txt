@@ -20,6 +20,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
@@ -107,6 +108,7 @@ SET(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
@@ -141,6 +143,7 @@ SET(TESTS
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
@@ -155,6 +158,7 @@ SET(TESTS
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
  testqgsproject.cpp
+ testqgsprojectstorage.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
@@ -179,12 +183,15 @@ SET(TESTS
  testqgstaskmanager.cpp
  testqgstracer.cpp
  testqgsfontutils.cpp
+ testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testziplayer.cpp
-    )
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerrenderer.cpp
+   )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}

@@ -80,11 +80,11 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
 {
   std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !sourceA )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
   if ( !sourceB )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
 
   const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
   const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );
@@ -142,7 +142,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, QgsWkbTypes::Point,  sourceA->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs(), context.transformContext() ) ), feedback );
   QgsFeature outFeature;
@@ -196,7 +196,25 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
-          if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+          if ( QgsWkbTypes::flatType( intersectGeom.wkbType() ) == QgsWkbTypes::GeometryCollection )
+          {
+            const QVector<QgsGeometry> geomCollection = intersectGeom.asGeometryCollection();
+            for ( const QgsGeometry &part : geomCollection )
+            {
+              if ( part.type() == QgsWkbTypes::PointGeometry )
+              {
+                if ( part.isMultipart() )
+                {
+                  points = part.asMultiPoint();
+                }
+                else
+                {
+                  points.append( part.asPoint() );
+                }
+              }
+            }
+          }
+          else if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
           {
             if ( intersectGeom.isMultipart() )
             {
@@ -206,13 +224,12 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
             {
               points.append( intersectGeom.asPoint() );
             }
-
-            for ( const QgsPointXY &j : qgis::as_const( points ) )
-            {
-              outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
-              outFeature.setAttributes( outAttributes );
-              sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
-            }
+          }
+          for ( const QgsPointXY &j : qgis::as_const( points ) )
+          {
+            outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
+            outFeature.setAttributes( outAttributes );
+            sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
           }
         }
       }

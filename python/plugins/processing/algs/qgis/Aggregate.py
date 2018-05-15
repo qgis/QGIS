@@ -131,6 +131,9 @@ class Aggregate(QgisAlgorithm):
 
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         group_by = self.parameterAsExpression(parameters, self.GROUP_BY, context)
         aggregates = self.parameterAsAggregates(parameters, self.AGGREGATES, context)
 
@@ -221,6 +224,8 @@ class Aggregate(QgisAlgorithm):
                                                self.fields,
                                                QgsWkbTypes.multiType(source.wkbType()),
                                                source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # Calculate aggregates on memory layers
         if len(keys):

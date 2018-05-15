@@ -342,8 +342,11 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QV
     spatialReference = QStringLiteral( "EPSG:%1" ).arg( spatialReference );
   QgsCoordinateReferenceSystem crs;
   crs.createFromString( spatialReference );
-  if ( crs.authid().startsWith( QLatin1String( "USER:" ) ) )
-    crs.createFromString( QStringLiteral( "EPSG:4326" ) ); // If we can't recognize the SRS, fall back to WGS84
+  if ( !crs.isValid() )
+  {
+    // If not spatial reference, just use WGS84
+    crs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  }
   return crs;
 }
 
@@ -754,6 +757,21 @@ Qt::BrushStyle QgsArcGisRestUtils::parseEsriFillStyle( const QString &style )
     return Qt::VerPattern;
   else
     return Qt::SolidPattern;
+}
+
+QDateTime QgsArcGisRestUtils::parseDateTime( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QDateTime();
+  bool ok = false;
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
+  if ( !ok )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
+    return QDateTime();
+  }
+  else
+    return dt;
 }
 
 QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )

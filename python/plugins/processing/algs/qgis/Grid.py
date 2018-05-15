@@ -44,6 +44,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink,
                        QgsFields)
@@ -90,18 +91,18 @@ class Grid(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Grid extent')))
 
-        self.addParameter(QgsProcessingParameterNumber(self.HSPACING,
-                                                       self.tr('Horizontal spacing'), QgsProcessingParameterNumber.Double,
-                                                       0.0001, False, 0, 1000000000.0))
-        self.addParameter(QgsProcessingParameterNumber(self.VSPACING,
-                                                       self.tr('Vertical spacing'), QgsProcessingParameterNumber.Double,
-                                                       0.0001, False, 0, 1000000000.0))
-        self.addParameter(QgsProcessingParameterNumber(self.HOVERLAY,
-                                                       self.tr('Horizontal overlay'), QgsProcessingParameterNumber.Double,
-                                                       0.0, False, 0, 1000000000.0))
-        self.addParameter(QgsProcessingParameterNumber(self.VOVERLAY,
-                                                       self.tr('Vertical overlay'), QgsProcessingParameterNumber.Double,
-                                                       0.0, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterDistance(self.HSPACING,
+                                                         self.tr('Horizontal spacing'),
+                                                         0.0001, self.CRS, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterDistance(self.VSPACING,
+                                                         self.tr('Vertical spacing'),
+                                                         0.0001, self.CRS, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterDistance(self.HOVERLAY,
+                                                         self.tr('Horizontal overlay'),
+                                                         0.0, self.CRS, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterDistance(self.VOVERLAY,
+                                                         self.tr('Vertical overlay'),
+                                                         0.0, self.CRS, False, 0, 1000000000.0))
 
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Grid CRS', 'ProjectCrs'))
 
@@ -155,6 +156,8 @@ class Grid(QgisAlgorithm):
             outputWkb = QgsWkbTypes.Polygon
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, outputWkb, crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if idx == 0:
             self._pointGrid(

@@ -13,15 +13,24 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import os
+import filecmp
 
-from qgis.core import (QgsVectorLayer,
-                       QgsReadWriteContext)
+from qgis.core import (QgsApplication,
+                       QgsVectorLayer,
+                       QgsReadWriteContext,
+                       QgsEditFormConfig,
+                       QgsFetchedContent)
 from qgis.gui import QgsGui
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from utilities import unitTestDataPath
+import socketserver
+import threading
+import http.server
 
-start_app()
+app = start_app()
 
 
 class TestQgsEditFormConfig(unittest.TestCase):
@@ -29,6 +38,17 @@ class TestQgsEditFormConfig(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         QgsGui.editorWidgetRegistry().initEditors()
+
+        # Bring up a simple HTTP server
+        os.chdir(unitTestDataPath() + '')
+        handler = http.server.SimpleHTTPRequestHandler
+
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
+        cls.port = cls.httpd.server_address[1]
+
+        cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
+        cls.httpd_thread.setDaemon(True)
+        cls.httpd_thread.start()
 
     def createLayer(self):
         self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
@@ -56,6 +76,31 @@ class TestQgsEditFormConfig(unittest.TestCase):
         self.assertFalse(config2.readOnly(1))
         self.assertFalse(config2.labelOnTop(0))
         self.assertTrue(config2.labelOnTop(1))
+
+    def testFormUi(self):
+        layer = self.createLayer()
+        config = layer.editFormConfig()
+
+        config.setLayout(QgsEditFormConfig.GeneratedLayout)
+        self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
+
+        uiLocal = os.path.join(unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
+        config.setUiForm(uiLocal)
+        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
+
+        config.setLayout(QgsEditFormConfig.GeneratedLayout)
+        self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
+
+        uiUrl = 'http://localhost:' + str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
+        config.setUiForm(uiUrl)
+        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl)
+        self.assertTrue(content is not None)
+        while True:
+            if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
+                break
+            app.processEvents()
+        self.assertEqual(content.status(), QgsFetchedContent.Finished)
 
     def testReadOnly(self):
         layer = self.createLayer()

@@ -52,7 +52,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
       BottomMiddle, //!< Bottom center of widget
       BottomRight, //!< Bottom-right of widget
     };
-    Q_ENUM( AnchorPoint );
+    Q_ENUM( AnchorPoint )
 
     /**
      * Constructor for QgsFloatingWidget.

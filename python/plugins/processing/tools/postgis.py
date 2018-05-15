@@ -30,7 +30,10 @@ import psycopg2.extensions  # For isolation levels
 import re
 import os
 
-from qgis.core import QgsDataSourceUri, QgsCredentials, QgsSettings
+from qgis.core import (QgsProcessingException,
+                       QgsDataSourceUri,
+                       QgsCredentials,
+                       QgsSettings)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -44,7 +47,7 @@ def uri_from_name(conn_name):
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?
-        raise DbError(QCoreApplication.translate("PostGIS", 'There is no defined database connection "{0}".').format(conn_name))
+        raise QgsProcessingException(QCoreApplication.translate("PostGIS", 'There is no defined database connection "{0}".').format(conn_name))
 
     uri = QgsDataSourceUri()
 
@@ -126,19 +129,6 @@ class TableIndex(object):
         self.columns = list(map(int, columns.split(' ')))
 
 
-class DbError(Exception):
-
-    def __init__(self, message, query=None):
-        self.message = message
-        self.query = query
-
-    def __str__(self):
-        text = "MESSAGE: {}".format(self.message)
-        if self.query:
-            text = "{}\nQUERY: {}".format(text, self.query)
-        return text
-
-
 class TableField(object):
 
     def __init__(self, name, data_type, is_null=None, default=None,
@@ -207,7 +197,7 @@ class GeoDB(object):
                 break
             except psycopg2.OperationalError as e:
                 if i == 3:
-                    raise DbError(str(e))
+                    raise QgsProcessingException(str(e))
 
                 err = str(e)
                 user = self.uri.username()
@@ -217,7 +207,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(QCoreApplication.translate("PostGIS", 'Action canceled by user'))
+                    raise QgsProcessingException(QCoreApplication.translate("PostGIS", 'Action canceled by user'))
                 if user:
                     self.uri.setUsername(user)
                 if password:
@@ -823,8 +813,8 @@ class GeoDB(object):
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(str(e),
-                          e.cursor.query.decode(e.cursor.connection.encoding))
+            raise QgsProcessingException(str(e) + ' QUERY: ' +
+                                         e.cursor.query.decode(e.cursor.connection.encoding))
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls

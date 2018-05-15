@@ -79,6 +79,9 @@ class ConcaveHull(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
+        if layer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
         holes = self.parameterAsBool(parameters, self.HOLES, context)
         no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
@@ -141,6 +144,8 @@ class ConcaveHull(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                layer.fields(), QgsWkbTypes.Polygon, layer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():

@@ -266,9 +266,9 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
   return ( void * )chain;
 }
 
-void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) const
+void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransformArg ) const
 {
-  delete static_cast<TransformChain *>( GeoToPixelTransfomArg );
+  delete static_cast<TransformChain *>( GeoToPixelTransformArg );
 }
 
 int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,

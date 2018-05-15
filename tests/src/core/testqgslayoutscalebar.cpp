@@ -113,7 +113,7 @@ void TestQgsLayoutScaleBar::singleBox()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setFont( QgsFontUtils::getStandardTestFont() );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
@@ -141,7 +141,10 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  format.setColor( QColor( 255, 0, 255 ) );
+  format.setOpacity( 100.0 / 255 );
+  scalebar->setTextFormat( format );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
@@ -153,7 +156,6 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   scalebar->setFillColor( QColor( 255, 0, 0, 100 ) );
   scalebar->setFillColor2( QColor( 0, 255, 0, 50 ) );
   scalebar->setLineColor( QColor( 0, 0, 255, 150 ) );
-  scalebar->setFontColor( QColor( 255, 0, 255, 100 ) );
   scalebar->setLineWidth( 1.0 );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_alpha" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
@@ -174,7 +176,9 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  format.setColor( Qt::black );
+  scalebar->setTextFormat( format );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
@@ -186,7 +190,6 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setFillColor2( Qt::white );
   scalebar->setLineColor( Qt::black );
   scalebar->setLineWidth( 1.0 );
-  scalebar->setFontColor( Qt::black );
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox" ), &l );
@@ -208,7 +211,8 @@ void TestQgsLayoutScaleBar::numeric()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  scalebar->setTextFormat( format );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
@@ -218,7 +222,7 @@ void TestQgsLayoutScaleBar::numeric()
 
   QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   newFont.setPointSizeF( 12 );
-  scalebar->setFont( newFont );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
 
   scalebar->setStyle( QStringLiteral( "Numeric" ) );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numeric" ), &l );
@@ -241,7 +245,7 @@ void TestQgsLayoutScaleBar::tick()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setFont( QgsFontUtils::getStandardTestFont() );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );

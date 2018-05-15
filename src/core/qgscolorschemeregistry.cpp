@@ -117,12 +117,15 @@ void QgsColorSchemeRegistry::setRandomStyleColorScheme( QgsColorScheme *scheme )
   {
     mRandomStyleColors = scheme->fetchColors();
 
-    std::random_device rd;
-    std::mt19937 mt( rd() );
-    std::uniform_int_distribution<int> colorDist( 0, mRandomStyleColors.count() - 1 );
-    mNextRandomStyleColorIndex = colorDist( mt );
-    std::uniform_int_distribution<int> colorDir( 0, 1 );
-    mNextRandomStyleColorDirection = colorDir( mt ) == 0 ? -1 : 1;
+    if ( mRandomStyleColors.count() > 0 )
+    {
+      std::random_device rd;
+      std::mt19937 mt( rd() );
+      std::uniform_int_distribution<int> colorDist( 0, mRandomStyleColors.count() - 1 );
+      mNextRandomStyleColorIndex = colorDist( mt );
+      std::uniform_int_distribution<int> colorDir( 0, 1 );
+      mNextRandomStyleColorDirection = colorDir( mt ) == 0 ? -1 : 1;
+    }
   }
   else
   {

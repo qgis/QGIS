@@ -33,14 +33,14 @@ class QgsProcessingProvider;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
 class QgsProcessingFeedback;
-
+class QgsProcessingModelAlgorithm;
+class QgsProcessingAlgorithmConfigurationWidget;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
 % End
 #endif
-
 
 /**
  * \class QgsProcessingAlgorithm
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
      */
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap() ) const;
 
     /**
      * Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
@@ -743,6 +743,48 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a list of fields.
      */
     QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Returns a user-friendly string to use as an error when a source parameter could
+     * not be loaded.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid source parameter name.
+     *
+     * \since QGIS 3.2
+     *
+     * \see invalidRasterError()
+     * \see invalidSinkError()
+     */
+    static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
+
+    /**
+     * Returns a user-friendly string to use as an error when a raster layer input could
+     * not be loaded.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid source parameter name.
+     *
+     * \since QGIS 3.2
+     *
+     * \see invalidSourceError()
+     * \see invalidSinkError()
+     */
+    static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
+
+    /**
+     * Returns a user-friendly string to use as an error when a sink parameter could
+     * not be created.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the invalid source parameter name.
+     *
+     * \since QGIS 3.2
+     *
+     * \see invalidSourceError()
+     * \see invalidRasterError()
+     */
+    static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 
   private:
 

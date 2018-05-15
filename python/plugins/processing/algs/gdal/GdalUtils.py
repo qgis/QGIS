@@ -37,6 +37,7 @@ from osgeo import ogr
 
 from qgis.core import (Qgis,
                        QgsApplication,
+                       QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -411,3 +412,17 @@ class GdalUtils:
                         layers.append(l.source())
                 f.write('\n'.join(layers))
         return listFile
+
+    @staticmethod
+    def gdal_crs_string(crs: QgsCoordinateReferenceSystem) -> str:
+        """
+        Converts a QgsCoordinateReferenceSystem to a string understandable
+        by GDAL
+        :param crs: crs to convert
+        :return: gdal friendly string
+        """
+        if crs.authid().upper().startswith('EPSG:'):
+            return crs.authid()
+
+        # fallback to proj4 string
+        return crs.toProj4()

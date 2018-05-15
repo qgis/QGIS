@@ -30,6 +30,7 @@ class QgsTaskManager;
 class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
+class QgsProjectStorageRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsSymbolLayerRegistry;
@@ -45,6 +46,7 @@ class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
+class QgsNetworkContentFetcherRegistry;
 
 /**
  * \ingroup core
@@ -404,6 +406,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path with utility executables (help viewer, crssync, ...)
     static QString libexecPath();
 
+    /**
+     * Returns the path where QML components are installed for QGIS Quick library. Returns
+     * empty string when QGIS is built without Quick support
+     *
+     * \since QGIS 3.2
+     */
+    static QString qmlImportPath();
+
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 
@@ -586,6 +596,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSvgCache *svgCache();
 
     /**
+     * Returns the application's network content registry used for fetching temporary files during QGIS session
+     * \since QGIS 3.2
+     */
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+
+    /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
@@ -669,6 +685,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry();
 
     /**
+     * Returns registry of available project storage implementations.
+     * \since QGIS 3.2
+     */
+    static QgsProjectStorageRegistry *projectStorageRegistry();
+
+    /**
      * This string is used to represent the value `NULL` throughout QGIS.
      *
      * In general, when passing values around, prefer to use a null QVariant
@@ -745,6 +767,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mPkgDataPath );
     static QString ABISYM( mLibraryPath );
     static QString ABISYM( mLibexecPath );
+    static QString ABISYM( mQmlImportPath );
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
     static QMap<QString, QString> ABISYM( mSystemEnvVars );
@@ -795,10 +818,12 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;

@@ -36,6 +36,7 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterFeatureSink,
                        QgsFields)
@@ -94,6 +95,8 @@ class ExtentFromLayer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, layer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         try:
             # may not be possible

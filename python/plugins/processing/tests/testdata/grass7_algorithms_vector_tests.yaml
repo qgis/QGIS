@@ -1,0 +1,35 @@
+# See ../README.md for a description of the file format
+
+tests:
+
+# v.* modules
+  - algorithm: grass7:v.buffer
+    name: Buffer vectors
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      angle: 0.0
+      cats: ''
+      distance: 0.1
+      input:
+        name: lines.gml
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_lines.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+

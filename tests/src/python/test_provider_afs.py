@@ -18,18 +18,18 @@ import re
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsLayerMetadata,
-    QgsBox3d,
-    QgsCoordinateReferenceSystem,
-    QgsApplication,
-    QgsSettings,
-    QgsRectangle,
-    QgsCategorizedSymbolRenderer
-)
+from qgis.core import (NULL,
+                       QgsVectorLayer,
+                       QgsLayerMetadata,
+                       QgsBox3d,
+                       QgsCoordinateReferenceSystem,
+                       QgsApplication,
+                       QgsSettings,
+                       QgsRectangle,
+                       QgsCategorizedSymbolRenderer
+                       )
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -404,6 +404,91 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
         assert vl.isValid()
+
+    def testDateTime(self):
+        """ Test that datetime fields work correctly """
+
+        endpoint = self.basetestpath + '/oid_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"dt","length":8,"domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1,
+          2
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+
+        self.assertTrue(vl.isValid())
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,dt&returnM=false&returnZ=false'), 'wb') as f:
+            f.write("""
+        {
+         "displayFieldName": "name",
+         "fieldAliases": {
+          "name": "name"
+         },
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"dt","domain":null},
+        {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID": 1,
+            "pk": 1,
+            "dt":1493769600000
+           },
+           "geometry": {
+            "x": -70.332,
+            "y": 66.33
+           }
+          },
+          {
+           "attributes": {
+            "OBJECTID": 2,
+            "pk": 2,
+            "dt":null
+           },
+           "geometry": {
+            "x": -68.2,
+            "y": 70.8
+           }
+          }
+         ]
+        }""".encode('UTF-8'))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+        self.assertEqual([f['dt'] for f in features], [QDate(2017, 5, 3), NULL])
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """

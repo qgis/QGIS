@@ -220,7 +220,7 @@ class QgsSpatialIndexData : public QSharedData
       // create R-tree
       SpatialIndex::id_type indexId;
 
-      if ( inputStream )
+      if ( inputStream && inputStream->hasNext() )
         mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity,
                  leafCapacity, dimension, variant, indexId );
       else

@@ -1,8 +1,8 @@
 v.net.flow
 Computes the maximum flow between two sets of nodes in the network.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-QgsProcessingParameterVectorLayer|points|Input vector point layer (flow nodes)|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Input vector point layer (flow nodes)|0|None|False
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50|False|0.0|None
 QgsProcessingParameterString|source_cats|Source Category values|None|False|True
 QgsProcessingParameterString|source_where|Source WHERE conditions of SQL statement without 'where' keyword|None|True|True

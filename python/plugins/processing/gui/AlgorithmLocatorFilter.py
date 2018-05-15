@@ -65,7 +65,8 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
 
-            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)]:
+            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
+                    (context.usingPrefix and not string):
                 result = QgsLocatorResult()
                 result.filter = self
                 result.displayString = a.displayName()

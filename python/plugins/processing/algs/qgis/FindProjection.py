@@ -36,6 +36,7 @@ from qgis.core import (QgsGeometry,
                        QgsCoordinateTransform,
                        QgsCoordinateTransformContext,
                        QgsWkbTypes,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterCrs,
@@ -86,6 +87,8 @@ class FindProjection(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         extent = self.parameterAsExtent(parameters, self.TARGET_AREA, context)
         target_crs = self.parameterAsCrs(parameters, self.TARGET_AREA_CRS, context)
@@ -97,6 +100,8 @@ class FindProjection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # make intersection tests nice and fast
         engine = QgsGeometry.createGeometryEngine(target_geom.constGet())

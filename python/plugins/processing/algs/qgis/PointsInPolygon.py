@@ -36,6 +36,7 @@ from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -91,7 +92,12 @@ class PointsInPolygon(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
+
         point_source = self.parameterAsSource(parameters, self.POINTS, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POINTS))
 
         weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
         weight_field_index = -1
@@ -112,6 +118,8 @@ class PointsInPolygon(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(
             QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)

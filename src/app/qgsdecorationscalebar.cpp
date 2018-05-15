@@ -85,17 +85,31 @@ void QgsDecorationScaleBar::projectRead()
 
   QDomDocument doc;
   QDomElement elem;
-  QString fontXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
-  if ( !fontXml.isEmpty() )
+  QString textFormatXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/TextFormat" ) );
+  if ( !textFormatXml.isEmpty() )
   {
-    doc.setContent( fontXml );
+    doc.setContent( textFormatXml );
     elem = doc.documentElement();
-    QgsDebugMsg( doc.toString() );
-    QgsFontUtils::setFromXmlElement( mFont, elem );
+    QgsReadWriteContext context;
+    context.setPathResolver( QgsProject::instance()->pathResolver() );
+    mTextFormat.readXml( elem, context );
   }
   else
   {
-    mFont = QFont();
+    QString fontXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+    if ( !fontXml.isEmpty() )
+    {
+      doc.setContent( fontXml );
+      elem = doc.documentElement();
+      QFont font;
+      QgsFontUtils::setFromXmlElement( font, elem );
+      mTextFormat = QgsTextFormat::fromQFont( font );
+      mTextFormat.setColor( mColor );
+    }
+    else
+    {
+      mTextFormat = QgsTextFormat();
+    }
   }
 
   setupScaleBar();
@@ -113,9 +127,12 @@ void QgsDecorationScaleBar::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 
   QDomDocument fontDoc;
-  QDomElement font = QgsFontUtils::toXmlElement( mFont, fontDoc, QStringLiteral( "BarFont" ) );
-  fontDoc.appendChild( font );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), fontDoc.toString() );
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
+  fontDoc.appendChild( textElem );
+
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
 }
 
 
@@ -127,6 +144,7 @@ void QgsDecorationScaleBar::run()
 
 void QgsDecorationScaleBar::setupScaleBar()
 {
+  mSettings.setTextFormat( mTextFormat );
   switch ( mStyleIndex )
   {
     case 0:
@@ -137,8 +155,6 @@ void QgsDecorationScaleBar::setupScaleBar()
       mStyle = std::move( tickStyle );
       mSettings.setFillColor( mColor );
       mSettings.setLineColor( mColor ); // Compatibility with pre 3.2 configuration
-      mSettings.setFont( mFont );
-      mSettings.setFontColor( mColor );
       mSettings.setHeight( 2.2 );
       mSettings.setLineWidth( 0.3 );
       break;
@@ -149,8 +165,6 @@ void QgsDecorationScaleBar::setupScaleBar()
       mSettings.setFillColor( mColor );
       mSettings.setFillColor2( QColor( "transparent" ) );
       mSettings.setLineColor( mOutlineColor );
-      mSettings.setFont( mFont );
-      mSettings.setFontColor( mColor );
       mSettings.setHeight( mStyleIndex == 2 ? 1 : 3 );
       mSettings.setLineWidth( mStyleIndex == 2 ? 0.2 : 0.3 );
       break;
@@ -288,9 +302,6 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
     case QgsUnitTypes::DistanceMillimeters:
     case QgsUnitTypes::DistanceUnknownUnit:
       scaleBarUnitLabel = QgsUnitTypes::toAbbreviatedString( scaleBarUnits );
-      break;
-      scaleBarUnitLabel = tr( "unknown" );
-      QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( scaleBarUnits ) );
       break;
   }
 

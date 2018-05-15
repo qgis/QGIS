@@ -22,9 +22,11 @@
 #include "qgsmulticurve.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
-
-
+#include "qgslinesegment.h"
+#include "qgscircle.h"
+#include "qgslogger.h"
 #include <QTransform>
+#include <functional>
 #include <memory>
 #include <queue>
 
@@ -389,10 +391,12 @@ QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tole
 
   std::unique_ptr< QgsLineString > best( ring->clone() );
 
+  QVector< QgsVector > /* yep */ motions;
+  motions.reserve( numPoints );
+
   for ( int it = 0; it < iterations; ++it )
   {
-    QVector< QgsVector > /* yep */ motions;
-    motions.reserve( numPoints );
+    motions.resize( 0 ); // avoid re-allocations
 
     // first loop through an calculate all motions
     QgsPoint a;
@@ -707,4 +711,326 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
   {
     return QgsGeometry( densifyGeometry( mGeometry, -1, distance ) );
   }
+}
+
+///@cond PRIVATE
+//
+// QgsLineSegmentDistanceComparer
+//
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+bool QgsLineSegmentDistanceComparer::operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const
+{
+  Q_ASSERT_X( ab.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "AB must not be collinear with the origin." );
+  Q_ASSERT_X( cd.pointLeftOfLine( mOrigin ) != 0,
+              "line_segment_dist_comparer",
+              "CD must not be collinear with the origin." );
+
+  // flip the segments so that if there are common endpoints,
+  // they will be the segment's start points
+  if ( ab.end() == cd.start() || ab.end() == cd.end() )
+    ab.reverse();
+  if ( ab.start() == cd.end() )
+    cd.reverse();
+
+  // cases with common endpoints
+  if ( ab.start() == cd.start() )
+  {
+    const int oad = QgsGeometryUtils::leftOfLine( cd.endX(), cd.endY(), mOrigin.x(), mOrigin.y(), ab.startX(), ab.startY() );
+    const int oab = ab.pointLeftOfLine( mOrigin );
+    if ( ab.end() == cd.end() || oad != oab )
+      return false;
+    else
+      return ab.pointLeftOfLine( cd.end() ) != oab;
+  }
+  else
+  {
+    // cases without common endpoints
+    const int cda = cd.pointLeftOfLine( ab.start() );
+    const int cdb = cd.pointLeftOfLine( ab.end() );
+    if ( cdb == 0 && cda == 0 )
+    {
+      return mOrigin.sqrDist( ab.start() ) < mOrigin.sqrDist( cd.start() );
+    }
+    else if ( cda == cdb || cda == 0 || cdb == 0 )
+    {
+      const int cdo = cd.pointLeftOfLine( mOrigin );
+      return cdo == cda || cdo == cdb;
+    }
+    else
+    {
+      const int abo = ab.pointLeftOfLine( mOrigin );
+      return abo != ab.pointLeftOfLine( cd.start() );
+    }
+  }
+}
+
+//
+// QgsClockwiseAngleComparer
+//
+
+bool QgsClockwiseAngleComparer::operator()( const QgsPointXY &a, const QgsPointXY &b ) const
+{
+  const bool aIsLeft = a.x() < mVertex.x();
+  const bool bIsLeft = b.x() < mVertex.x();
+  if ( aIsLeft != bIsLeft )
+    return bIsLeft;
+
+  if ( qgsDoubleNear( a.x(), mVertex.x() ) && qgsDoubleNear( b.x(), mVertex.x() ) )
+  {
+    if ( a.y() >= mVertex.y() || b.y() >= mVertex.y() )
+    {
+      return b.y() < a.y();
+    }
+    else
+    {
+      return a.y() < b.y();
+    }
+  }
+  else
+  {
+    const QgsVector oa = a - mVertex;
+    const QgsVector ob = b - mVertex;
+    const double det = oa.crossProduct( ob );
+    if ( qgsDoubleNear( det, 0.0 ) )
+    {
+      return oa.lengthSquared() < ob.lengthSquared();
+    }
+    else
+    {
+      return det < 0;
+    }
+  }
+}
+
+///@endcond PRIVATE
+
+//
+// QgsRay2D
+//
+
+bool QgsRay2D::intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const
+{
+  const QgsVector ao = origin - segment.start();
+  const QgsVector ab = segment.end() - segment.start();
+  const double det = ab.crossProduct( direction );
+  if ( qgsDoubleNear( det, 0.0 ) )
+  {
+    const int abo = segment.pointLeftOfLine( origin );
+    if ( abo != 0 )
+    {
+      return false;
+    }
+    else
+    {
+      const double distA = ao * direction;
+      const double distB = ( origin - segment.end() ) * direction;
+
+      if ( distA > 0 && distB > 0 )
+      {
+        return false;
+      }
+      else
+      {
+        if ( ( distA > 0 ) != ( distB > 0 ) )
+          intersectPoint = origin;
+        else if ( distA > distB ) // at this point, both distances are negative
+          intersectPoint = segment.start(); // hence the nearest point is A
+        else
+          intersectPoint = segment.end();
+        return true;
+      }
+    }
+  }
+  else
+  {
+    const double u = ao.crossProduct( direction ) / det;
+    if ( u < 0.0 || 1.0 < u )
+    {
+      return false;
+    }
+    else
+    {
+      const double t = -ab.crossProduct( ao ) / det;
+      intersectPoint = origin + direction * t;
+      return qgsDoubleNear( t, 0.0 ) || t > 0;
+    }
+  }
+}
+
+QVector<QgsPointXY> generateSegmentCurve( const QgsPoint &center1, const double radius1, const QgsPoint &center2, const double radius2 )
+{
+  // ensure that first circle is smaller than second
+  if ( radius1 > radius2 )
+    return generateSegmentCurve( center2, radius2, center1, radius1 );
+
+  QgsPointXY t1;
+  QgsPointXY t2;
+  QgsPointXY t3;
+  QgsPointXY t4;
+  QVector<QgsPointXY> points;
+  if ( QgsGeometryUtils::circleCircleOuterTangents( center1, radius1, center2, radius2, t1, t2, t3, t4 ) )
+  {
+    points << t1
+           << t2
+           << t4
+           << t3;
+  }
+  return points;
+}
+
+// partially ported from JTS VariableWidthBuffer,
+// https://github.com/topobyte/jts/blob/master/jts-lab/src/main/java/com/vividsolutions/jts/operation/buffer/VariableWidthBuffer.java
+
+QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const
+{
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  std::vector< std::unique_ptr<QgsLineString > > linesToProcess;
+
+  const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
+  if ( multiCurve )
+  {
+    for ( int i = 0; i < multiCurve->partCount(); ++i )
+    {
+      if ( static_cast< const QgsCurve * >( multiCurve->geometryN( i ) )->nCoordinates() == 0 )
+        continue; // skip 0 length lines
+
+      linesToProcess.emplace_back( static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() ) );
+    }
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( mGeometry );
+  if ( curve )
+  {
+    if ( curve->nCoordinates() > 0 )
+      linesToProcess.emplace_back( static_cast<QgsLineString *>( curve->segmentize() ) );
+  }
+
+  if ( linesToProcess.empty() )
+  {
+    QgsGeometry g;
+    g.mLastError = QStringLiteral( "Input geometry was not a curve type geometry" );
+    return g;
+  }
+
+  QVector<QgsGeometry> bufferedLines;
+
+  for ( std::unique_ptr< QgsLineString > &line : linesToProcess )
+  {
+    QVector<QgsGeometry> parts;
+    QgsPoint prevPoint;
+    double prevRadius = 0;
+    QgsGeometry prevCircle;
+
+    std::unique_ptr< double[] > widths = widthFunction( line.get() ) ;
+    for ( int i = 0; i < line->nCoordinates(); ++i )
+    {
+      QgsPoint thisPoint = line->pointN( i );
+      QgsGeometry thisCircle;
+      double thisRadius = widths[ i ] / 2.0;
+      if ( thisRadius > 0 )
+      {
+        QgsGeometry p = QgsGeometry( thisPoint.clone() );
+
+        QgsCircle circ( thisPoint, thisRadius );
+        thisCircle = QgsGeometry( circ.toPolygon( segments * 4 ) );
+        parts << thisCircle;
+      }
+      else
+      {
+        thisCircle = QgsGeometry( thisPoint.clone() );
+      }
+
+      if ( i > 0 )
+      {
+        if ( prevRadius > 0 || thisRadius > 0 )
+        {
+          QVector< QgsPointXY > points = generateSegmentCurve( prevPoint, prevRadius, thisPoint, thisRadius );
+          if ( !points.empty() )
+          {
+            // snap points to circle vertices
+
+            int atVertex = 0;
+            int beforeVertex = 0;
+            int afterVertex = 0;
+            double sqrDist = 0;
+            double sqrDistPrev = 0;
+            for ( int j = 0; j < points.count(); ++j )
+            {
+              QgsPointXY pA = prevCircle.closestVertex( points.at( j ), atVertex, beforeVertex, afterVertex, sqrDistPrev );
+              QgsPointXY pB = thisCircle.closestVertex( points.at( j ), atVertex, beforeVertex, afterVertex, sqrDist );
+              points[j] = sqrDistPrev < sqrDist ? pA : pB;
+            }
+            // close ring
+            points.append( points.at( 0 ) );
+
+            std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+            poly->setExteriorRing( new QgsLineString( points ) );
+            if ( poly->area() > 0 )
+              parts << QgsGeometry( std::move( poly ) );
+          }
+        }
+      }
+      prevPoint = thisPoint;
+      prevRadius = thisRadius;
+      prevCircle = thisCircle;
+    }
+
+    bufferedLines << QgsGeometry::unaryUnion( parts );
+  }
+
+  return QgsGeometry::collectGeometry( bufferedLines );
+}
+
+QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const
+{
+  start = std::fabs( start );
+  end = std::fabs( end );
+
+  auto interpolateWidths = [ start, end ]( const QgsLineString * line )->std::unique_ptr< double [] >
+  {
+    // ported from JTS VariableWidthBuffer,
+    // https://github.com/topobyte/jts/blob/master/jts-lab/src/main/java/com/vividsolutions/jts/operation/buffer/VariableWidthBuffer.java
+    std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
+    widths[0] = start;
+    widths[line->nCoordinates() - 1] = end;
+
+    double lineLength = line->length();
+    double currentLength = 0;
+    QgsPoint prevPoint = line->pointN( 0 );
+    for ( int i = 1; i < line->nCoordinates() - 1; ++i )
+    {
+      QgsPoint point = line->pointN( i );
+      double segmentLength = point.distance( prevPoint );
+      currentLength += segmentLength;
+      double lengthFraction = lineLength > 0 ? currentLength / lineLength : 1;
+      double delta = lengthFraction * ( end - start );
+      widths[i] = start + delta;
+      prevPoint = point;
+    }
+    return widths;
+  };
+
+  return variableWidthBuffer( segments, interpolateWidths );
+}
+
+QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) const
+{
+  auto widthByM = []( const QgsLineString * line )->std::unique_ptr< double [] >
+  {
+    std::unique_ptr< double [] > widths( new double[ line->nCoordinates() ] );
+    for ( int i = 0; i < line->nCoordinates(); ++i )
+    {
+      widths[ i ] = line->mAt( i );
+    }
+    return widths;
+  };
+
+  return variableWidthBuffer( segments, widthByM );
 }

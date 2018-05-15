@@ -39,26 +39,46 @@
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
      <property name="title">
-      <string>New From Template</string>
+      <string>New from Template</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mProjectToStorageMenu">
+     <property name="title">
+      <string>Save to</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mProjectFromStorageMenu">
+     <property name="title">
+      <string>Open from</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuImport_Export">
+     <property name="title">
+      <string>Import/Export</string>
+     </property>
+     <addaction name="mActionSaveMapAsImage"/>
+     <addaction name="mActionSaveMapAsPdf"/>
+     <addaction name="mActionDxfExport"/>
+     <addaction name="separator"/>
+     <addaction name="mActionDwgImport"/>
+    </widget>
     <addaction name="mActionNewProject"/>
-    <addaction name="mActionOpenProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
+    <addaction name="separator"/>
+    <addaction name="mActionOpenProject"/>
+    <addaction name="mProjectFromStorageMenu"/>
     <addaction name="mRecentProjectsMenu"/>
-    <addaction name="mActionRevertProject"/>
+    <addaction name="separator"/>
     <addaction name="mActionCloseProject"/>
     <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
-    <addaction name="mActionSaveMapAsImage"/>
-    <addaction name="mActionSaveMapAsPdf"/>
-    <addaction name="mActionDxfExport"/>
-    <addaction name="mActionDwgImport"/>
-    <addaction name="separator"/>
-    <addaction name="mActionSnappingOptions"/>
+    <addaction name="mProjectToStorageMenu"/>
+    <addaction name="mActionRevertProject"/>
     <addaction name="separator"/>
     <addaction name="mActionProjectProperties"/>
+    <addaction name="mActionSnappingOptions"/>
+    <addaction name="menuImport_Export"/>
     <addaction name="separator"/>
     <addaction name="mActionNewPrintLayout"/>
     <addaction name="mActionNewReport"/>
@@ -670,6 +690,9 @@
    <property name="text">
     <string>&amp;New</string>
    </property>
+   <property name="toolTip">
+    <string>New Project</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
@@ -680,7 +703,10 @@
      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>&amp;Open…</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -694,6 +720,9 @@
    <property name="text">
     <string>&amp;Save</string>
    </property>
+   <property name="toolTip">
+    <string>Save Project</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
@@ -704,7 +733,10 @@
      <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
    </property>
    <property name="text">
-    <string>Save &amp;As...</string>
+    <string>Save &amp;As…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Project As</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -716,7 +748,10 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Save Map as &amp;Image...</string>
+    <string>Export Map to &amp;Image…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Map as Image</string>
    </property>
   </action>
   <action name="mActionSaveMapAsPdf">
@@ -725,7 +760,10 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>Save Map as &amp;PDF...</string>
+    <string>Export Map to &amp;PDF…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Map as PDF</string>
    </property>
   </action>
   <action name="mActionNewMapCanvas">
@@ -1010,7 +1048,7 @@
   </action>
   <action name="mActionSnappingOptions">
    <property name="text">
-    <string>&amp;Snapping Options...</string>
+    <string>&amp;Snapping Options…</string>
    </property>
   </action>
   <action name="mActionPan">
@@ -1533,6 +1571,9 @@
    <property name="text">
     <string>&amp;Save As...</string>
    </property>
+   <property name="toolTip">
+    <string>Save Layer As</string>
+   </property>
   </action>
   <action name="mActionRemoveLayer">
    <property name="icon">
@@ -1566,6 +1607,9 @@
    <property name="text">
     <string>&amp;Properties...</string>
    </property>
+   <property name="toolTip">
+    <string>Layer Properties</string>
+   </property>
   </action>
   <action name="mActionLayerSubsetString">
    <property name="text">
@@ -1581,7 +1625,7 @@
      <normaloff>:/images/themes/default/mActionInOverview.svg</normaloff>:/images/themes/default/mActionInOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Add to Overview</string>
+    <string>Show in Overview</string>
    </property>
   </action>
   <action name="mActionAddAllToOverview">
@@ -1590,7 +1634,7 @@
      <normaloff>:/images/themes/default/mActionAddAllToOverview.svg</normaloff>:/images/themes/default/mActionAddAllToOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Add All to Overview</string>
+    <string>Show All in Overview</string>
    </property>
   </action>
   <action name="mActionRemoveAllFromOverview">
@@ -1599,7 +1643,7 @@
      <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</iconset>
    </property>
    <property name="text">
-    <string>Remove All from Overview</string>
+    <string>Hide All from Overview</string>
    </property>
   </action>
   <action name="mActionShowAllLayers">
@@ -1665,7 +1709,10 @@
      <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Project Properties...</string>
+    <string>&amp;Properties…</string>
+   </property>
+   <property name="toolTip">
+    <string>Project Properties</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
@@ -2396,12 +2443,12 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionDxfExport">
    <property name="text">
-    <string>DXF Export...</string>
+    <string>Export Project to DXF…</string>
    </property>
   </action>
   <action name="mActionDwgImport">
    <property name="text">
-    <string>DWG/DXF Import...</string>
+    <string>Import Layers from DWG/DXF…</string>
    </property>
   </action>
   <action name="mActionFillRing">
@@ -2957,7 +3004,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionNewLayout.svg</normaloff>:/images/themes/default/mActionNewLayout.svg</iconset>
    </property>
    <property name="text">
-    <string>New &amp;Print Layout</string>
+    <string>New &amp;Print Layout…</string>
    </property>
    <property name="toolTip">
     <string>New Print Layout</string>
@@ -2972,7 +3019,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionNewReport.svg</normaloff>:/images/themes/default/mActionNewReport.svg</iconset>
    </property>
    <property name="text">
-    <string>New &amp;Report</string>
+    <string>New &amp;Report…</string>
    </property>
    <property name="toolTip">
     <string>New Report</string>
@@ -2980,7 +3027,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionCloseProject">
    <property name="text">
-    <string>Close Project</string>
+    <string>Close</string>
    </property>
    <property name="toolTip">
     <string>Close Project</string>
@@ -2988,7 +3035,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionRevertProject">
    <property name="text">
-    <string>Revert Project…</string>
+    <string>Revert…</string>
    </property>
    <property name="toolTip">
     <string>Revert Project to Saved version</string>

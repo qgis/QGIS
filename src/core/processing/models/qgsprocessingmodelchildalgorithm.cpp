@@ -64,6 +64,7 @@ const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() cons
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
 {
   mModelOutputs = modelOutputs;
+
   QMap<QString, QgsProcessingModelOutput>::iterator outputIt = mModelOutputs.begin();
   for ( ; outputIt != mModelOutputs.end(); ++outputIt )
   {
@@ -71,6 +72,12 @@ void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsP
     outputIt->setName( outputIt.key() );
     outputIt->setChildId( mId );
   }
+}
+
+bool QgsProcessingModelChildAlgorithm::removeModelOutput( const QString &name )
+{
+  mModelOutputs.remove( name );
+  return true;
 }
 
 QVariant QgsProcessingModelChildAlgorithm::toVariant() const

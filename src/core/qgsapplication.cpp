@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
 #include "qgsactionscoperegistry.h"
@@ -31,6 +32,7 @@
 #include "qgssvgcache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
@@ -89,6 +91,7 @@ QString ABISYM( QgsApplication::mPluginPath );
 QString ABISYM( QgsApplication::mPkgDataPath );
 QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
+QString ABISYM( QgsApplication::mQmlImportPath );
 QString ABISYM( QgsApplication::mThemeName );
 QString ABISYM( QgsApplication::mUIThemeName );
 QString ABISYM( QgsApplication::mProfilePath );
@@ -204,31 +207,37 @@ void QgsApplication::init( QString profileFolder )
 #else
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
+#if defined( HAVE_QUICK )
+    ABISYM( mQmlImportPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_QML_SUBDIR + '/';
+#endif
   }
   else
   {
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
-      setPrefixPath( applicationDirPath(), true );
-#elif defined(ANDROID)
-      // this is  "/data/data/org.qgis.qgis" in android
-      QDir myDir( QDir::homePath() );
-      myDir.cdUp();
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
-#else
-      QDir myDir( applicationDirPath() );
-      // Fix for server which is one level deeper in /usr/lib/cgi-bin
-      if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+      if ( ABISYM( mPrefixPath ).isNull() )
       {
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+        setPrefixPath( applicationDirPath(), true );
+#elif defined(ANDROID)
+        // this is  "/data/data/org.qgis.qgis" in android
+        QDir myDir( QDir::homePath() );
         myDir.cdUp();
-      }
-      myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
-      QString myPrefix = myDir.absolutePath();
-      setPrefixPath( myPrefix, true );
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
+#else
+        QDir myDir( applicationDirPath() );
+        // Fix for server which is one level deeper in /usr/lib/cgi-bin
+        if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+        {
+          myDir.cdUp();
+        }
+        myDir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
+        QString myPrefix = myDir.absolutePath();
+        setPrefixPath( myPrefix, true );
 #endif
+      }
     }
     else
     {
@@ -392,6 +401,9 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
   }
   ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIB_SUBDIR + '/';
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
+#if defined( HAVE_QUICK )
+  ABISYM( mQmlImportPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_QML_SUBDIR + '/';
+#endif
 }
 
 void QgsApplication::setPluginPath( const QString &pluginPath )
@@ -568,7 +580,7 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
     if ( app->devicePixelRatio() >= 2 )
     {
       scale *= app->devicePixelRatio();
-      activeX = activeY = 5;
+      activeX = activeY = 8;
     }
 #endif
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
@@ -995,6 +1007,11 @@ QString QgsApplication::libraryPath()
 QString QgsApplication::libexecPath()
 {
   return ABISYM( mLibexecPath );
+}
+
+QString QgsApplication::qmlImportPath()
+{
+  return ABISYM( mQmlImportPath );
 }
 
 QgsApplication::endian_t QgsApplication::endian()
@@ -1660,6 +1677,11 @@ QgsSvgCache *QgsApplication::svgCache()
   return members()->mSvgCache;
 }
 
+QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
+{
+  return members()->mNetworkContentFetcherRegistry;
+}
+
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
   return members()->mSymbolLayerRegistry;
@@ -1710,6 +1732,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
+{
+  return members()->mProjectStorageRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1733,6 +1760,8 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mLayoutItemRegistry->populate();
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
+  mProjectStorageRegistry = new QgsProjectStorageRegistry();
+  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -1747,6 +1776,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
+  delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
   delete mLayoutItemRegistry;
   delete mProfiler;
@@ -1755,6 +1785,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSvgCache;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
+  delete mNetworkContentFetcherRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

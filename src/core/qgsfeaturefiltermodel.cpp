@@ -394,9 +394,9 @@ QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
   return requestedAttrs;
 }
 
-void QgsFeatureFilterModel::setExtraIdentifierValueIndex( int index )
+void QgsFeatureFilterModel::setExtraIdentifierValueIndex( int index, bool force )
 {
-  if ( mExtraIdentifierValueIndex == index )
+  if ( mExtraIdentifierValueIndex == index && !force )
     return;
 
   mExtraIdentifierValueIndex = index;
@@ -416,7 +416,9 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   int index = 0;
   for ( const Entry &entry : entries )
   {
-    if ( entry.identifierValue == extraIdentifierValue && entry.identifierValue.isNull() == extraIdentifierValue.isNull() && entry.identifierValue.isValid() == extraIdentifierValue.isValid() )
+    if ( entry.identifierValue == extraIdentifierValue
+         && entry.identifierValue.isNull() == extraIdentifierValue.isNull()
+         && entry.identifierValue.isValid() == extraIdentifierValue.isValid() )
     {
       setExtraIdentifierValueIndex( index );
       break;
@@ -434,7 +436,8 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
     else
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();
-    setExtraIdentifierValueIndex( 0 );
+
+    setExtraIdentifierValueIndex( 0, true );
 
     reloadCurrentFeature();
   }
@@ -448,16 +451,10 @@ QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &featu
   QgsVectorLayer *layer = mSourceLayer;
   QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
-  QgsConditionalStyle style;
-
-  if ( mEntryStylesMap.contains( fid ) )
-  {
-    style = mEntryStylesMap.value( fid );
-  }
 
   auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
 
-  if ( mDisplayExpression.isField() )
+  if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
     QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
@@ -465,10 +462,11 @@ QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &featu
     const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
 
     styles += matchingFieldStyles;
-
-    style = QgsConditionalStyle::compressStyles( styles );
-    mEntryStylesMap.insert( fid, style );
   }
+
+  QgsConditionalStyle style;
+  style = QgsConditionalStyle::compressStyles( styles );
+  mEntryStylesMap.insert( fid, style );
 
   return style;
 }
@@ -537,8 +535,16 @@ void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdenti
   if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
     return;
 
-  setExtraIdentifierValueUnguarded( extraIdentifierValue );
+  if ( mIsSettingExtraIdentifierValue )
+    return;
+
+  mIsSettingExtraIdentifierValue = true;
 
   mExtraIdentifierValue = extraIdentifierValue;
+
+  setExtraIdentifierValueUnguarded( extraIdentifierValue );
+
+  mIsSettingExtraIdentifierValue = false;
+
   emit extraIdentifierValueChanged();
 }

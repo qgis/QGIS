@@ -212,8 +212,11 @@ void QgsTask::setProgress( double progress )
     progress = ( progress + totalProgress ) / ( mSubTasks.count() + 1 );
   }
 
+  // avoid flooding with too many events
+  if ( static_cast< int >( mTotalProgress  * 10 ) != static_cast< int >( progress * 10 ) )
+    emit progressChanged( progress );
+
   mTotalProgress = progress;
-  emit progressChanged( mTotalProgress );
 }
 
 void QgsTask::completed()

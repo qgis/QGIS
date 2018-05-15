@@ -31,6 +31,8 @@ from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 
+from owslib.wms import WebMapService
+
 from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
 
@@ -144,6 +146,23 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         for request in ('GetCapabilities',):
             self.wms_inspire_request_compare(request)
 
+    def test_wms_getcapabilities_without_title(self):
+        # Empty title in project leads to a Layer element without Name, Title
+        # and Abstract tags. However, it should still have a CRS and a BBOX
+        # according to OGC specifications tests.
+        project = os.path.join(self.testdata_path, "test_project_without_title.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetCapabilities",
+            "STYLES": ""
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+
+        self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
+
     def test_wms_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
@@ -215,6 +234,26 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.assertTrue(xmlResult.find("<WMSBackgroundLayer>1</WMSBackgroundLayer>") != -1)
         self.assertTrue(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>") != -1)
         self.assertTrue(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>") != -1)
+
+    def test_getcapabilities_owslib(self):
+
+        # read getcapabilities document
+        docPath = self.testdata_path + 'getcapabilities.txt'
+        f = open(docPath, 'r')
+        doc = f.read()
+        f.close()
+
+        # clean header in doc
+        doc = doc.replace('Content-Length: 5775\n', '')
+        doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
+        doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
+
+        # read capabilities document with owslib
+        w = WebMapService(None, xml=doc, version='1.3.0')
+
+        # check content
+        rootLayerName = 'QGIS Test Project'
+        self.assertTrue(rootLayerName in w.contents.keys())
 
 
 if __name__ == '__main__':

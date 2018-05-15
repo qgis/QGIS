@@ -32,6 +32,7 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS
 website:
+<a href="https://qgis.org/api/3.0">3.0</a>,
 <a href="https://qgis.org/api/2.18">2.18 (LTR)</a>,
 <a href="https://qgis.org/api/2.14">2.14 (LTR)</a>,
 <a href="https://qgis.org/api/2.12">2.12</a>,
@@ -44,6 +45,10 @@ website:
 <a href="https://qgis.org/api/1.8">1.8</a>,
 <a href="https://qgis.org/api/1.7">1.7</a> and
 <a href="https://qgis.org/api/1.6">1.6</a>
+
+\section qgsquick_docs QgsQuick library documentation
+ 
+See \ref qgsquick for information about QGIS Quick (QML) components library
 
 \section index_maillist Mailing Lists
 

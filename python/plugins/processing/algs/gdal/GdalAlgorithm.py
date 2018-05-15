@@ -32,7 +32,9 @@ from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingContext,
+                       QgsProcessingFeedback)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -49,6 +51,9 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
+
+    def tags(self):
+        return ['ogr', 'gdal', self.commandName()]
 
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
@@ -73,7 +78,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
         ogr_data_path = None
         ogr_layer_name = None
-        if input_layer is None:
+        if input_layer is None or input_layer.dataProvider().name() == 'memory':
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required
@@ -136,11 +141,11 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def commandName(self):
         parameters = {}
-        for output in self.outputs:
-            output.setValue("dummy")
         for param in self.parameterDefinitions():
             parameters[param.name()] = "1"
-        name = self.getConsoleCommands(parameters)[0]
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        name = self.getConsoleCommands(parameters, context, feedback, executing=False)[0]
         if name.endswith(".py"):
             name = name[:-3]
         return name

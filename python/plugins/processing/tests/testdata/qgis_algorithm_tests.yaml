@@ -339,6 +339,18 @@ tests:
         name: expected/multipolys_densify.gml
         type: vector
 
+  - algorithm: qgis:densifygeometriesgivenaninterval
+    name: Densify polygons by interval
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERVAL: 1.0
+    results:
+      OUTPUT:
+        name: expected/densify_by_interval_polys.gml
+        type: vector
+
   - name: Polygons to Lines
     algorithm: qgis:polygonstolines
     params:
@@ -487,6 +499,22 @@ tests:
     results:
       OUTPUT:
         name: expected/autoincrement_grouped.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with sorting)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      SORT_ASCENDING: true
+      SORT_EXPRESSION: 99-id
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_sort.gml
         type: vector
 
   - algorithm: native:dissolve
@@ -1653,6 +1681,20 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:lineintersections
+    name: Line intersections with geometry collection
+    params:
+      INPUT:
+        name: custom/line_intersection_collection1.gml
+        type: vector
+      INTERSECT:
+        name: custom/line_intersection_collection2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection_collection.gml
+        type: vector
+
   - algorithm: qgis:sumlinelengths
     name: Sum line lengths
     params:
@@ -1687,7 +1729,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1704,7 +1746,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       ROWS: 300
     results:
@@ -1720,7 +1762,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,0,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       METHOD: '0'
       ROWS: 300
@@ -1740,7 +1782,7 @@ tests:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,1,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       METHOD: '1'
       ROWS: 300
@@ -3037,6 +3079,66 @@ tests:
             start: skip
             end: skip
 
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area (from point, shortest, no bounds)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1002465.0089601517,6221875.432489508
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_no_bounds.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area from point, output lines
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1003654.8065293541,6222397.723338357 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 400.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_lines.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer
     params:
@@ -3071,6 +3173,75 @@ tests:
         - d
         - type
 
+  - algorithm: qgis:serviceareafromlayer
+    name: Service area from layer no bounds
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_from_layer_no_bounds.shp
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+        - d
+        - type
+
+  - algorithm: qgis:serviceareafromlayer
+    name: Service area from layer (lines)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 500.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_from_layer_lines.shp
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+        - d
+        - type
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
@@ -3289,6 +3460,22 @@ tests:
           geometry:
             precision: 5
 
+  - algorithm: qgis:zonalhistogram
+    name: zonal histogram
+    params:
+      COLUMN_PREFIX: HISTO_
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_VECTOR:
+        name: zones.gml
+        type: vector
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/zones_histogram.gml
+        type: vector
+
   - algorithm: native:fixgeometries
     name: Fix geometries
     params:
@@ -3336,7 +3523,7 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode lines
     params:
       INPUT:
@@ -3350,7 +3537,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode multilines
     params:
       INPUT:
@@ -3363,6 +3550,17 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:explodelines
+    name: Explode compound curves
+    params:
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings_with_line
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_compound_curve.shp
+        type: vector
 
   - algorithm: qgis:findprojection
     name: Find projection
@@ -4707,6 +4905,53 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, nearest 3 points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 3
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_nearest3.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, different layers
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_diff.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Standard (N x T) distance matrix
@@ -4752,33 +4997,27 @@ tests:
             __all__:
               precision: 7
 
-  - algorithm: qgis:union
-    name: Union simple
+  - algorithm: qgis:distancematrix
+    name: Summary matrix different layers
     params:
       INPUT:
-        name: custom/polygon_mask.gml
+        name: points.gml
         type: vector
-      OVERLAY:
-        name: custom/for_union.gml
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 2
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
         type: vector
+      TARGET_FIELD: fid
     results:
       OUTPUT:
-        name: expected/union.gml
+        name: expected/summary_matrix_diff_layers.gml
         type: vector
-
-  - algorithm: qgis:difference
-    name: Difference test
-    params:
-      INPUT:
-        name: custom/for_union.gml
-        type: vector
-      OVERLAY:
-        name: custom/polygon_mask.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/difference.gml
-        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
 
   - algorithm: native:projectpointcartesian
     name: Project points cartesian
@@ -4955,3 +5194,232 @@ tests:
       OUTPUT:
         name: expected/swap_xy.gml
         type: vector
+
+  - algorithm: model:filtertest
+    name: Test (model:filtertest)
+    params:
+      layer:
+        name: points.gml
+        type: vector
+    results:
+      native:filter_1:OUTPUT_small:
+        name: expected/filter_points_small.gml
+        type: vector
+      native:filter_1:OUTPUT_big:
+        name: expected/filter_points_big.gml
+        type: vector
+
+  - algorithm: native:intersection
+    name: Test Intersection (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/wedge_buffers.gml
+        type: vector
+
+  - algorithm: native:difference
+    name: Test Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_a_b.gml
+        type: vector
+        pk: id_a
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:difference
+    name: Test Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_b_a.gml
+        type: vector
+        pk: id_b
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_a_b.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_b_a.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union of single layer
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union0.gml
+        type: vector
+        compare:
+          unordered: true
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (lines)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_line.gml
+        type: vector
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (multiline)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: multilines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_multiline.gml
+        type: vector
+
+  - algorithm: native:bufferbym
+    name: Variable width buffer by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SEGMENTS: 3
+    results:
+      OUTPUT:
+        name: expected/variable_width_buffer_by_m.gml
+        type: vector
+
+
+# See ../README.md for a description of the file format

@@ -361,7 +361,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      emit openFile( projectItem->path() );
+      emit openFile( projectItem->path(), QStringLiteral( "project" ) );
       QApplication::restoreOverrideCursor();
     }
   }
@@ -393,7 +393,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
-        emit openFile( projectItem->path() );
+        emit openFile( projectItem->path(), QStringLiteral( "project" ) );
 
       QApplication::restoreOverrideCursor();
       return;

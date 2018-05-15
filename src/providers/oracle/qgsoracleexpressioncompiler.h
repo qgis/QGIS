@@ -30,6 +30,7 @@ class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
     virtual Result compileNode( const QgsExpressionNode *node, QString &result ) override;
     virtual QString quotedIdentifier( const QString &identifier ) override;
     virtual QString quotedValue( const QVariant &value, bool &ok ) override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
 };
 
 #endif // QGSORACLEEXPRESSIONCOMPILER_H

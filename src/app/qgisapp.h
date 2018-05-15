@@ -76,6 +76,7 @@ class QgsMapToolAddFeature;
 class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
+class QgsMapToolSelect;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -703,7 +704,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
-    void openFile( const QString &fileName );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();
@@ -931,6 +932,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
+    /**
+     * Settings pages section
+     */
+    //! Get map of option pages
+    QMap< QString, QString > optionsPagesMap();
+    //! Get map of project property pages
+    QMap< QString, QString > projectPropertiesPagesMap();
+    //! Get map of setting pages
+    QMap< QString, QString > settingPagesMap();
+
+    void showProjectProperties( const QString  &page = QString() );
+    void showSettings( const QString &page );
+    // End Settings pages section
+
     //! Opens the options dialog
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() );
 
@@ -965,6 +980,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows the snapping Options
     void snappingOptions();
+
+    void setMapTipsDelay( int timerInterval );
 
   protected:
 
@@ -1330,8 +1347,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void options();
     //! Whats-this help slot
     void whatsThis();
-    //! Set project properties, including map untis
-    void projectProperties();
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */
@@ -1743,13 +1758,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            bool guiUpdate );
 
     /**
-     * Add this file to the recently opened/saved projects list
+     * Add the current project to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
-    void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
+    void saveRecentProjectPath( bool savePreviewImage = true );
     //! Save recent projects list to settings
     void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
@@ -1782,6 +1797,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
+
+    //! Set project properties, including map untis
+    void projectProperties( const QString  &currentPage = QString() );
 
     /**
      * Paste features from clipboard into a new memory layer.
@@ -1880,6 +1898,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     int dockedToolbarIconSize( int standardToolbarIconSize ) const;
 
+    //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
+    void populateProjectStorageMenu( QMenu *menu, bool saving );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
@@ -1959,11 +1980,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mReshapeFeatures = nullptr;
         QgsMapTool *mSplitFeatures = nullptr;
         QgsMapTool *mSplitParts = nullptr;
-        QgsMapTool *mSelect = nullptr;
-        QgsMapTool *mSelectFeatures = nullptr;
-        QgsMapTool *mSelectPolygon = nullptr;
-        QgsMapTool *mSelectFreehand = nullptr;
-        QgsMapTool *mSelectRadius = nullptr;
+        QgsMapToolSelect *mSelectFeatures = nullptr;
+        QgsMapToolSelect *mSelectPolygon = nullptr;
+        QgsMapToolSelect *mSelectFreehand = nullptr;
+        QgsMapToolSelect *mSelectRadius = nullptr;
         QgsMapTool *mVertexAdd = nullptr;
         QgsMapTool *mVertexMove = nullptr;
         QgsMapTool *mVertexDelete = nullptr;
@@ -2207,6 +2227,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
     QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
+
+    //! Internal vars supporting Settings Pages function
+    QMap< QString, QString > mOptionsPagesMap;
+    QMap< QString, QString > mProjectPropertiesPagesMap;
+    QMap< QString, QString > mSettingPagesMap;
 
     friend class TestQgisAppPython;
 };

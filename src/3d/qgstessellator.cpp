@@ -66,11 +66,12 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
   , mInvertNormals( invertNormals )
+  , mAddBackFaces( addBackFaces )
 {
   mStride = 3 * sizeof( float );
   if ( addNormals )
@@ -282,6 +283,21 @@ static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, co
 
 static bool _check_intersecting_rings( const QgsPolygon &polygon )
 {
+  QList<QgsGeometry> geomRings;
+  geomRings << QgsGeometry( polygon.exteriorRing()->clone() );
+  for ( int i = 0; i < polygon.numInteriorRings(); ++i )
+    geomRings << QgsGeometry( polygon.interiorRing( i )->clone() );
+
+  // we need to make sure that the polygon has no rings with self-intersection: that may
+  // crash the tessellator. The original geometry maybe have been valid and the self-intersection
+  // was introduced when transforming to a new base (in a rare case when all points are not in the same plane)
+
+  for ( int i = 0; i < geomRings.count(); ++i )
+  {
+    if ( !geomRings[i].isSimple() )
+      return false;
+  }
+
   // At this point we assume that input polygons are valid according to the OGC definition.
   // This means e.g. no duplicate points, polygons are simple (no butterfly shaped polygon with self-intersection),
   // internal rings are inside exterior rings, rings do not cross each other, no dangles.
@@ -301,11 +317,6 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 
   if ( polygon.numInteriorRings() > 0 )
   {
-    QList<QgsGeometry> geomRings;
-    geomRings << QgsGeometry( polygon.exteriorRing()->clone() );
-    for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      geomRings << QgsGeometry( polygon.interiorRing( i )->clone() );
-
     for ( int i = 0; i < geomRings.count(); ++i )
       for ( int j = i + 1; j < geomRings.count(); ++j )
       {
@@ -357,6 +368,18 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
+    }
+
+    if ( mAddBackFaces )
+    {
+      // the same triangle with reversed order of coordinates and inverted normal
+      for ( int i = 2; i >= 0; i-- )
+      {
+        exterior->pointAt( i, pt, vt );
+        mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
+        if ( mAddNormals )
+          mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+      }
     }
   }
   else
@@ -417,7 +440,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     if ( !_check_intersecting_rings( *polygonNew.get() ) )
     {
       // skip the polygon - it would cause a crash inside poly2tri library
-      QgsMessageLog::logMessage( QObject::tr( "polygon rings intersect each other - skipping" ), QObject::tr( "3D" ) );
+      QgsMessageLog::logMessage( QObject::tr( "polygon rings self-intersect or intersect each other - skipping" ), QObject::tr( "3D" ) );
       return;
     }
 
@@ -465,6 +488,24 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           mData << fx << fz << -fy;
           if ( mAddNormals )
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
+        }
+
+        if ( mAddBackFaces )
+        {
+          // the same triangle with reversed order of coordinates and inverted normal
+          for ( int j = 2; j >= 0; --j )
+          {
+            p2t::Point *p = t->GetPoint( j );
+            QVector4D pt( p->x, p->y, z[p], 0 );
+            if ( toOldBase )
+              pt = *toOldBase * pt;
+            const double fx = pt.x() - mOriginX + pt0.x();
+            const double fy = pt.y() - mOriginY + pt0.y();
+            const double fz = pt.z() + extrusionHeight + pt0.z();
+            mData << fx << fz << -fy;
+            if ( mAddNormals )
+              mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+          }
         }
       }
     }

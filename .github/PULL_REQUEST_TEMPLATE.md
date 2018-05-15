@@ -8,7 +8,7 @@ Include a few sentences describing the overall goals for this PR (pull request).
 - [ ] Commit messages are descriptive and explain the rationale for changes
 - [ ] Commits which fix bugs include `fixes #11111` in the commit message next to the description
 - [ ] Commits which add new features are tagged with `[FEATURE]` in the commit message
-- [ ] Commits which change the UI or existing user workflows are tagged with `[needs-docs]` in the commit message and containt sufficient information in the commit message to be documented
+- [ ] Commits which change the UI or existing user workflows are tagged with `[needs-docs]` in the commit message and contain sufficient information in the commit message to be documented
 - [ ] I have read the [QGIS Coding Standards](https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
 - [ ] This PR passes all existing unit tests (test results will be reported by travis-ci after opening this PR)
 - [ ] New unit tests have been added for core changes
