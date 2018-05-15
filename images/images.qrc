@@ -76,6 +76,7 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
         <file>themes/default/algorithms/mAlgorithmBasicStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
         <file>themes/default/algorithms/mAlgorithmCentroids.svg</file>
@@ -83,12 +84,13 @@
         <file>themes/default/algorithms/mAlgorithmClip.svg</file>
         <file>themes/default/algorithms/mAlgorithmCollect.svg</file>
         <file>themes/default/algorithms/mAlgorithmConvexHull.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCreateGrid.svg</file>
         <file>themes/default/algorithms/mAlgorithmDelaunay.svg</file>
         <file>themes/default/algorithms/mAlgorithmDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
         <file>themes/default/algorithms/mAlgorithmDistanceMatrix.svg</file>
-        <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
+        <file>themes/default/algorithms/mAlgorithmExtractLayerExtent.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineToPolygon.svg</file>
@@ -97,6 +99,11 @@
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
         <file>themes/default/algorithms/mAlgorithmNearestNeighbour.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSelectLocation.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSelectRandom.svg</file>
         <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
         <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
         <file>themes/default/algorithms/mAlgorithmSplitLayer.svg</file>

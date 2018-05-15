@@ -30,7 +30,8 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsFields,
@@ -67,7 +68,10 @@ class RandomPointsPolygons(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmRandomPointsWithinPolygon.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmRandomPointsWithinPolygon.svg")
 
     def group(self):
         return self.tr('Vector creation')
