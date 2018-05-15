@@ -44,12 +44,12 @@
     </widget>
     <widget class="QMenu" name="mProjectToStorageMenu">
      <property name="title">
-      <string>Save to</string>
+      <string>Save To</string>
      </property>
     </widget>
     <widget class="QMenu" name="mProjectFromStorageMenu">
      <property name="title">
-      <string>Open from</string>
+      <string>Open From</string>
      </property>
     </widget>
     <widget class="QMenu" name="menuImport_Export">
