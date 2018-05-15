@@ -3,9 +3,7 @@
      --------------------------------------
     Date                 : 21 07 2017
     Copyright            : (C) 2017 Paul Blottiere
-    Copyright            : (C) 2018 Alessandro Pasotti
     Email                : paul dot blottiere at oslandia dot com
-    Email                : elpaso at itopen dot it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
