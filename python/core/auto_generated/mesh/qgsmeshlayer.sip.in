@@ -52,8 +52,6 @@ E.g. to create mesh with one quad and one triangle
         );
         QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
 
-Add datasets by adding them through data provider, :py:func:`QgsMeshDatasetSource.addDataset`
-
 \subsection mdal MDAL data provider (mdal)
 
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
@@ -118,32 +116,68 @@ QgsMeshLayer cannot be copied.
 
     QString providerType() const;
 %Docstring
-Return the provider type for this layer
+Returns the provider type for this layer
 %End
 
 
 
-    QgsSymbol *nativeMeshSymbol();
+    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const /Factory/;
 %Docstring
-Returns a line symbol used for rendering native mesh.
+Returns rendrer settings
 %End
 
-    QgsSymbol *triangularMeshSymbol();
+    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Returns a line symbol used for rendering of triangular (derived) mesh.
-
-.. seealso:: :py:func:`toggleTriangularMeshRendering`
+Sets new rendering settings, triggers repaint
 %End
 
-    void toggleTriangularMeshRendering( bool toggle );
+    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const /Factory/;
 %Docstring
-Toggle rendering of triangular (derived) mesh. Off by default
+Returns rendrer settings
+%End
+
+    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new rendering settings, triggers repaint
+%End
+
+    QgsMeshRendererScalarSettings rendererScalarSettings() const /Factory/;
+%Docstring
+Returns rendrer settings
+%End
+
+    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
+%Docstring
+Sets new rendering settings, triggers repaint
+%End
+
+    QgsMeshRendererVectorSettings rendererVectorSettings() const /Factory/;
+%Docstring
+Returns rendrer settings
+%End
+
+    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new rendering settings, triggers repaint
 %End
 
     void setActiveScalarDataset( int index = -1 );
-    void setActiveVectorDataset( int index = -1 );
-
+%Docstring
+Sets active scalar dataset for rendering
+%End
     int activeScalarDataset() const;
+%Docstring
+Returns active scalar dataset
+%End
+
+    void setActiveVectorDataset( int index = -1 );
+%Docstring
+Sets active vector dataset for rendering. If dataset is not vector based, do nothing
+%End
+    int activeVectorDataset() const;
+%Docstring
+Returns active vector dataset
+%End
 
   private: // Private methods
     QgsMeshLayer( const QgsMeshLayer &rhs );

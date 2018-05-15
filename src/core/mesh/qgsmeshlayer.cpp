@@ -19,7 +19,7 @@
 
 #include <QUuid>
 
-#include "qgsfillsymbollayer.h"
+
 #include "qgslogger.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
@@ -37,12 +37,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   // load data
   setDataProvider( providerKey );
 
-  QgsSymbolLayerList l1;
-  l1 << new QgsSimpleFillSymbolLayer( Qt::white, Qt::NoBrush, Qt::black, Qt::SolidLine, 1.0 );
-  mNativeMeshSymbol.reset( new QgsFillSymbol( l1 ) );
-
-
-  toggleTriangularMeshRendering( false );
+  // show at least the mesh by default so we render something
+  mRendererNativeMeshSettings.setEnabled( true );
 
 } // QgsMeshLayer ctor
 
@@ -99,33 +95,52 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
   return mTriangularMesh.get();
 }
 
-QgsSymbol *QgsMeshLayer::nativeMeshSymbol()
+
+QgsMeshRendererMeshSettings QgsMeshLayer::rendererNativeMeshSettings() const
 {
-  return mNativeMeshSymbol.get();
+  return mRendererNativeMeshSettings;
 }
 
-QgsSymbol *QgsMeshLayer::triangularMeshSymbol()
+void QgsMeshLayer::setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings )
 {
-  return mTriangularMeshSymbol.get();
-}
-
-void QgsMeshLayer::toggleTriangularMeshRendering( bool toggle )
-{
-  if ( toggle && mTriangularMeshSymbol )
-    return;
-
-  if ( toggle )
-  {
-    QgsSymbolLayerList l2;
-    l2 << new QgsSimpleFillSymbolLayer( Qt::white, Qt::NoBrush, Qt::red, Qt::SolidLine, 0.26 );
-    mTriangularMeshSymbol.reset( new QgsFillSymbol( l2 ) );
-  }
-  else
-  {
-    mTriangularMeshSymbol.reset();
-  }
+  mRendererNativeMeshSettings = settings;
   triggerRepaint();
 }
+
+QgsMeshRendererMeshSettings QgsMeshLayer::rendererTriangularMeshSettings() const
+{
+  return mRendererTriangularMeshSettings;
+}
+
+void QgsMeshLayer::setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings )
+{
+  mRendererTriangularMeshSettings = settings;
+  triggerRepaint();
+}
+
+QgsMeshRendererScalarSettings QgsMeshLayer::rendererScalarSettings() const
+{
+  return mRendererScalarSettings;
+}
+
+void QgsMeshLayer::setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings )
+{
+  mRendererScalarSettings = settings;
+  triggerRepaint();
+}
+
+
+QgsMeshRendererVectorSettings QgsMeshLayer::rendererVectorSettings() const
+{
+  return mRendererVectorSettings;
+}
+
+void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings )
+{
+  mRendererVectorSettings = settings;
+  triggerRepaint();
+}
+
 
 void QgsMeshLayer::setActiveScalarDataset( int index )
 {
@@ -136,8 +151,8 @@ void QgsMeshLayer::setActiveScalarDataset( int index )
   }
 
   Q_ASSERT( dataProvider()->datasetCount() > index );
-  if ( dataProvider()->datasetHasScalarData( index ) )
-    mActiveScalarDataset = index;
+  // for vector datasets, we render magnitude
+  mActiveScalarDataset = index;
 }
 
 void QgsMeshLayer::setActiveVectorDataset( int index )

@@ -55,22 +55,26 @@ class CORE_EXPORT QgsTriangularMesh
     ~QgsTriangularMesh() = default;
 
     /**
-     * Construct triangular mesh from layer's native mesh and context
+     * Constructs triangular mesh from layer's native mesh and context
      * \param nativeMesh QgsMesh to access native vertices and faces
      * \param context Rendering context to estimate number of triagles to create for an face
     */
     void update( QgsMesh *nativeMesh, QgsRenderContext *context );
 
     /**
-     * Return vertices in map CRS
+     * Returns vertices in map CRS
      *
      * The list of consist of vertices from native mesh (0-N) and
      * extra vertices needed to create triangles (N+1 - len)
      */
     const QVector<QgsMeshVertex> &vertices() const ;
-    //! Return triangles
+    //! Returns triangles
     const QVector<QgsMeshFace> &triangles() const ;
-    //! Return mapping between triangles and original faces
+
+    //! Returns centroids of the native faces in map CRS
+    const QVector<QgsMeshVertex> &centroids() const ;
+
+    //! Returns mapping between triangles and original faces
     const QVector<int> &trianglesToNativeFaces() const ;
 
   private:
@@ -78,6 +82,9 @@ class CORE_EXPORT QgsTriangularMesh
     // faces are derived triangles
     QgsMesh mTriangularMesh;
     QVector<int> mTrianglesToNativeFaces; //len(mTrianglesToNativeFaces) == len(mTriangles). Mapping derived -> native
+
+    // centroids of the native faces in map CRS
+    QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
 };
 
 

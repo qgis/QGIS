@@ -28,8 +28,24 @@ class QgsSymbol;
 #include "qgis.h"
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrasterinterface.h"
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
+#include "qgsmeshlayer.h"
+#include "qgssymbol.h"
+
+///@cond PRIVATE
+
+/**
+ * Feedback for mesh layer rendering - right now derived from raster block feedback so that we
+ * can pass it to block reading in the raster interface.
+ */
+class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
+{
+};
+
+///@endcond
+
 
 /**
  * \ingroup core
@@ -43,16 +59,23 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
   public:
     //! Ctor
     QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context );
-
     ~QgsMeshLayerRenderer() override = default;
+    QgsFeedback *feedback() const override;
     bool render() override;
 
   private:
     void renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces );
     void renderScalarDataset();
+    void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
+    void copyVectorDatasetValues( QgsMeshLayer *layer );
+    void createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol, const QgsMeshRendererMeshSettings &settings );
+    void calculateOutputSize();
 
   protected:
+    //! feedback class for cancelation
+    std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
+
     // copy from mesh layer
     QgsMesh mNativeMesh;
 
@@ -60,8 +83,14 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsTriangularMesh mTriangularMesh;
 
     // copy of the scalar dataset
-    QVector<double> mDatasetValues;
-    bool mDataOnVertices;
+    QVector<double> mScalarDatasetValues;
+    bool mScalarDataOnVertices;
+
+    // copy of the vector dataset
+    QVector<double> mVectorDatasetValuesX;
+    QVector<double> mVectorDatasetValuesY;
+    QVector<double> mVectorDatasetValuesMag;
+    bool mVectorDataOnVertices;
 
     // copy from mesh layer
     std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;
@@ -71,6 +100,15 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // rendering context
     QgsRenderContext &mContext;
+
+    // copy of rendering settings
+    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
+    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
+    QgsMeshRendererScalarSettings mRendererScalarSettings;
+    QgsMeshRendererVectorSettings mRendererVectorSettings;
+
+    // output screen size
+    QSize mOutputSize;
 };
 
 

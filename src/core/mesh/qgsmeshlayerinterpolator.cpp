@@ -21,65 +21,21 @@
 
 #include "qgsrasterinterface.h"
 #include <QVector2D>
+#include "qgsmaptopixel.h"
 
-// TODO: use QgsMapToPixel
-class MapToPixel
+static void bbox2rect(
+  const QgsMapToPixel &mtp,
+  const QSize &outputSize,
+  const QgsRectangle &bbox,
+  int &leftLim, int &rightLim, int &topLim, int &bottomLim )
 {
-  public:
-    MapToPixel( double llX, double llY, double mupp, int rows )
-      : mLlX( llX ), mLlY( llY ), mMupp( mupp ), mRows( rows ) {}
-
-    MapToPixel( const MapToPixel &obj )
-      : mLlX( obj.mLlX ), mLlY( obj.mLlY ), mMupp( obj.mMupp ), mRows( obj.mRows ) {}
-
-    QPointF realToPixel( double rx, double ry ) const
-    {
-      double px = ( rx - mLlX ) / mMupp;
-      double py = mRows - ( ry - mLlY ) / mMupp;
-      return QPointF( px, py );
-    }
-
-
-    QPointF realToPixel( const QPointF &pt ) const
-    {
-      return realToPixel( pt.x(), pt.y() );
-    }
-
-    QPointF pixelToReal( double px, double py ) const
-    {
-      double rx = mLlX + ( px * mMupp );
-      double ry = mLlY + mMupp * ( mRows - py );
-      return QPointF( rx, ry );
-    }
-
-    QPointF pixelToReal( const QPointF &pt ) const
-    {
-      return pixelToReal( pt.x(), pt.y() );
-    }
-
-  private:
-    double mLlX, mLlY;
-    double mMupp; // map units per pixel
-    double mRows; // (actually integer value)
-};
-
-void bbox2rect( const MapToPixel &mtp, const QSize &outputSize, const QgsRectangle &bbox, int &leftLim, int &rightLim, int &topLim, int &bottomLim )
-{
-  QPoint ll = mtp.realToPixel( bbox.xMinimum(), bbox.yMinimum() ).toPoint();
-  QPoint ur = mtp.realToPixel( bbox.xMaximum(), bbox.yMaximum() ).toPoint();
-  topLim = std::max( ur.y(), 0 );
-  bottomLim = std::min( ll.y(), outputSize.height() - 1 );
-  leftLim = std::max( ll.x(), 0 );
-  rightLim = std::min( ur.x(), outputSize.width() - 1 );
+  QgsPointXY ll = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
+  QgsPointXY ur = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
+  topLim = std::max( int( ur.y() ), 0 );
+  bottomLim = std::min( int( ll.y() ), outputSize.height() - 1 );
+  leftLim = std::max( int( ll.x() ), 0 );
+  rightLim = std::min( int( ur.x() ), outputSize.width() - 1 );
 }
-
-struct MapView
-{
-  MapView(): mtp( 0, 0, 0, 0 ) {}
-  MapToPixel mtp;
-  QSize outputSize;
-};
-
 
 static void lam_tol( double &lam )
 {
@@ -90,7 +46,7 @@ static void lam_tol( double &lam )
   }
 }
 
-bool E3T_physicalToBarycentric( QPointF pA, QPointF pB, QPointF pC, QPointF pP, double &lam1, double &lam2, double &lam3 )
+static bool E3T_physicalToBarycentric( QPointF pA, QPointF pB, QPointF pC, QPointF pP, double &lam1, double &lam2, double &lam3 )
 {
   if ( pA == pB || pA == pC || pB == pC )
     return false; // this is not a valid triangle!
@@ -148,24 +104,14 @@ double interpolateFromFacesData( const QPointF &p1, const QPointF &p2, const QPo
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
     const QVector<double> &datasetValues, bool dataIsOnVertices,
-    const QgsRenderContext &context )
+    const QgsRenderContext &context,
+    const QSize &size )
   : mTriangularMesh( m ),
     mDatasetValues( datasetValues ),
     mContext( context ),
-    mDataOnVertices( dataIsOnVertices )
+    mDataOnVertices( dataIsOnVertices ),
+    mOutputSize( size )
 {
-  // figure out image size
-  QgsRectangle extent = mContext.extent();  // this is extent in layer's coordinate system - but we need it in map coordinate system
-  QgsMapToPixel mapToPixel = mContext.mapToPixel();
-  // TODO: what if OTF reprojection is used - see crayfish layer_renderer.py (_calculate_extent)
-  QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
-  QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
-  int width = bottomright.x() - topleft.x();
-  int height = bottomright.y() - topleft.y();
-
-  mMapView.reset( new MapView() );
-  mMapView->mtp = MapToPixel( extent.xMinimum(), extent.yMinimum(), mapToPixel.mapUnitsPerPixel(), height );
-  mMapView->outputSize = QSize( width, height );
 }
 
 QgsMeshLayerInterpolator::~QgsMeshLayerInterpolator() = default;
@@ -177,7 +123,7 @@ QgsRasterInterface *QgsMeshLayerInterpolator::clone() const
 
 Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const
 {
-  return Qgis::Float32;
+  return Qgis::Float64;
 }
 
 int QgsMeshLayerInterpolator::bandCount() const
@@ -187,9 +133,9 @@ int QgsMeshLayerInterpolator::bandCount() const
 
 QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  QgsRasterBlock *b = new QgsRasterBlock( Qgis::Float32, width, height );
+  QgsRasterBlock *b = new QgsRasterBlock( Qgis::Float64, width, height );
   b->setIsNoData();  // assume initially that all values are unset
-  float *data = reinterpret_cast<float *>( b->bits() );
+  double *data = reinterpret_cast<double *>( b->bits() );
 
   const QVector<QgsMeshFace> &triangels = mTriangularMesh.triangles();
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
@@ -217,16 +163,16 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
     // Get the BBox of the element in pixels
     int topLim, bottomLim, leftLim, rightLim;
-    bbox2rect( mMapView->mtp, mMapView->outputSize, bbox, leftLim, rightLim, topLim, bottomLim );
+    bbox2rect( mContext.mapToPixel(), mOutputSize, bbox, leftLim, rightLim, topLim, bottomLim );
 
     // interpolate in the bounding box of the face
     for ( int j = topLim; j <= bottomLim; j++ )
     {
-      float *line = data + ( j * width );
+      double *line = data + ( j * width );
       for ( int k = leftLim; k <= rightLim; k++ )
       {
         double val;
-        QPointF p = mMapView->mtp.pixelToReal( k, j );
+        QPointF p = mContext.mapToPixel().toMapCoordinates( k, j ).toQPointF();
         if ( mDataOnVertices )
           val = interpolateFromVerticesData(
                   QPointF( p1.x(), p1.y() ),

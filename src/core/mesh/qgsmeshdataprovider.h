@@ -52,21 +52,44 @@ class CORE_EXPORT QgsMeshDatasetValue
     Q_GADGET
 
   public:
+    //! Ctor
     QgsMeshDatasetValue( double x,
                          double y );
+
+    //! Ctor
     QgsMeshDatasetValue( double scalar );
+
+    //! Ctor
     QgsMeshDatasetValue( ) = default;
 
+    //! Dtor
     ~QgsMeshDatasetValue() = default;
+
+    //! Sets nodata value for this dataset value
     void setNodata( bool nodata = true );
+    //! Returns whether it is nodata value
     bool isNodata() const;
+    //! Returns whether it is scalar value
     bool isScalar() const;
-    double scalar() const; //length for vectors, value for scalars
+    //! Returns scalar value. Length for vectors, value for scalars
+    double scalar() const;
+
+    //! Sets scalar value
     void set( double scalar );
+
+    //! Sets X value
     void setX( double x );
+
+    //! Sets Y value
     void setY( double y ) ;
+
+    //! Returns x value
     double x() const;
+
+    //! Returns y value
     double y() const;
+
+    //! Equals
     bool operator==( const QgsMeshDatasetValue &other ) const;
 
   private:
@@ -96,20 +119,20 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
     virtual ~QgsMeshSource() = default;
 
     /**
-     * \brief Return number of vertices in the native mesh
+     * \brief Returns number of vertices in the native mesh
      * \returns Number of vertices in the mesh
      */
     virtual int vertexCount() const = 0;
 
     /**
-     * \brief Return number of faces in the native mesh
+     * \brief Returns number of faces in the native mesh
      * \returns Number of faces in the mesh
      */
     virtual int faceCount() const = 0;
 
     /**
      * \brief Factory for mesh vertex with index
-     * \returns new mesh vertex on index
+     * \returns New mesh vertex on index
      */
     virtual QgsMeshVertex vertex( int index ) const = 0;
 
@@ -143,32 +166,32 @@ class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
     virtual bool addDataset( const QString &uri ) = 0;
 
     /**
-     * \brief Return number of datasets loaded
+     * \brief Returns number of datasets loaded
      */
     virtual int datasetCount() const = 0;
 
     /**
-     * \brief Whether dataset has scalar data associated
+     * \brief Returns whether dataset has scalar data associated
      */
     virtual bool datasetHasScalarData( int index ) const = 0;
 
     /**
-     * \brief Whether dataset is on vertices
+     * \brief Returns whether dataset is on vertices
      */
     virtual bool datasetIsOnVertices( int index ) const = 0;
 
     /**
-     * \brief Return dataset metadata
+     * \brief Returns dataset metadata
      */
     virtual QgsMeshDatasetMetadata datasetMetadata( int index ) const = 0;
 
     /**
-     * \brief Return value associated with the index from the dataset
+     * \brief Returns value associated with the index from the dataset
      */
     virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
 
     /**
-     * \brief Return whether dataset is valid
+     * \brief Returns whether dataset is valid
      */
     virtual bool datasetIsValid( int index ) const = 0;
 };

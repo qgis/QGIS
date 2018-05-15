@@ -87,7 +87,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
 
 
     /**
-     * Add dataset to a mesh in-memory data provider from data string
+     * Adds dataset to a mesh in-memory data provider from data string
      *
      * Data string constains simple definition of datasets
      * Each entry is separated by "\n" sign and section deliminer "---"

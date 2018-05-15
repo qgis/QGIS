@@ -64,14 +64,22 @@ class TestQgsMeshRenderer : public QObject
 
     void test_native_mesh_rendering();
     void test_triangular_mesh_rendering();
+
     void test_vertex_scalar_dataset_rendering();
+    void test_vertex_vector_dataset_rendering();
+    void test_face_scalar_dataset_rendering();
+    void test_face_vector_dataset_rendering();
 };
 
 void TestQgsMeshRenderer::init()
 {
-  mMemoryLayer->toggleTriangularMeshRendering( false );
   mMemoryLayer->setActiveScalarDataset();
   mMemoryLayer->setActiveVectorDataset();
+
+  mMemoryLayer->setRendererNativeMeshSettings( QgsMeshRendererMeshSettings() );
+  mMemoryLayer->setRendererTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  mMemoryLayer->setRendererScalarSettings( QgsMeshRendererScalarSettings() );
+  mMemoryLayer->setRendererVectorSettings( QgsMeshRendererVectorSettings() );
 }
 
 void TestQgsMeshRenderer::initTestCase()
@@ -128,15 +136,20 @@ bool TestQgsMeshRenderer::imageCheck( const QString &testType )
 
 void TestQgsMeshRenderer::test_native_mesh_rendering()
 {
-  mMemoryLayer->toggleTriangularMeshRendering( false );
-  QVERIFY( mMemoryLayer->triangularMeshSymbol() == nullptr );
+  QgsMeshRendererMeshSettings settings = mMemoryLayer->rendererNativeMeshSettings();
+  settings.setEnabled( true );
+  settings.setLineWidth( 1. );
+  mMemoryLayer->setRendererNativeMeshSettings( settings );
   QVERIFY( imageCheck( "quad_and_triangle_native_mesh" ) );
 }
 
 void TestQgsMeshRenderer::test_triangular_mesh_rendering()
 {
-  mMemoryLayer->toggleTriangularMeshRendering( true );
-  QVERIFY( mMemoryLayer->triangularMeshSymbol() != nullptr );
+  QgsMeshRendererMeshSettings settings = mMemoryLayer->rendererTriangularMeshSettings();
+  settings.setEnabled( true );
+  settings.setColor( Qt::red );
+  settings.setLineWidth( 0.26 );
+  mMemoryLayer->setRendererTriangularMeshSettings( settings );
   QVERIFY( imageCheck( "quad_and_triangle_triangular_mesh" ) );
 }
 
@@ -146,9 +159,39 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
   mMemoryLayer->setActiveScalarDataset( ds );
   QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
   QVERIFY( metadata["name"] == "VertexScalarDataset" );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset" ) );
+}
 
-  // TODO!
-  // QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset" ) );
+void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
+{
+  int ds = 1;
+  mMemoryLayer->setActiveVectorDataset( ds );
+  QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
+  QVERIFY( metadata["name"] == "VertexVectorDataset" );
+
+  QgsMeshRendererVectorSettings settings = mMemoryLayer->rendererVectorSettings();
+  settings.setMinShaftLength( 15 );
+  mMemoryLayer->setRendererVectorSettings( settings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_dataset" ) );
+}
+
+void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
+{
+  int ds = 2;
+  mMemoryLayer->setActiveScalarDataset( ds );
+  QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
+  QVERIFY( metadata["name"] == "FaceScalarDataset" );
+  QVERIFY( imageCheck( "quad_and_triangle_face_scalar_dataset" ) );
+}
+
+void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
+{
+  int ds = 3;
+  mMemoryLayer->setActiveVectorDataset( ds );
+  QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
+  QVERIFY( metadata["name"] == "FaceVectorDataset" );
+  QVERIFY( imageCheck( "quad_and_triangle_face_vector_dataset" ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

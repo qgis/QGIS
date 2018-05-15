@@ -36,19 +36,64 @@ support of nodata values
   public:
     QgsMeshDatasetValue( double x,
                          double y );
+%Docstring
+Ctor
+%End
+
     QgsMeshDatasetValue( double scalar );
+%Docstring
+Ctor
+%End
+
     QgsMeshDatasetValue( );
+%Docstring
+Ctor
+%End
 
     ~QgsMeshDatasetValue();
+
     void setNodata( bool nodata = true );
+%Docstring
+Sets nodata value for this dataset value
+%End
     bool isNodata() const;
+%Docstring
+Returns whether it is nodata value
+%End
     bool isScalar() const;
-    double scalar() const; //length for vectors, value for scalars
+%Docstring
+Returns whether it is scalar value
+%End
+    double scalar() const;
+%Docstring
+Returns scalar value. Length for vectors, value for scalars
+%End
+
     void set( double scalar );
+%Docstring
+Sets scalar value
+%End
+
     void setX( double x );
+%Docstring
+Sets X value
+%End
+
     void setY( double y );
+%Docstring
+Sets Y value
+%End
+
     double x() const;
+%Docstring
+Returns x value
+%End
+
     double y() const;
+%Docstring
+Returns y value
+%End
+
     bool operator==( const QgsMeshDatasetValue &other ) const;
 
 };
@@ -78,14 +123,14 @@ read on demand
 
     virtual int vertexCount() const = 0;
 %Docstring
- Return number of vertices in the native mesh
+ Returns number of vertices in the native mesh
 
 :return: Number of vertices in the mesh
 %End
 
     virtual int faceCount() const = 0;
 %Docstring
- Return number of faces in the native mesh
+ Returns number of faces in the native mesh
 
 :return: Number of faces in the mesh
 %End
@@ -94,7 +139,7 @@ read on demand
 %Docstring
  Factory for mesh vertex with index
 
-:return: new mesh vertex on index
+:return: New mesh vertex on index
 %End
 
     virtual QgsMeshFace face( int index ) const = 0;
@@ -133,32 +178,32 @@ read on demand
 
     virtual int datasetCount() const = 0;
 %Docstring
- Return number of datasets loaded
+ Returns number of datasets loaded
 %End
 
     virtual bool datasetHasScalarData( int index ) const = 0;
 %Docstring
- Whether dataset has scalar data associated
+ Returns whether dataset has scalar data associated
 %End
 
     virtual bool datasetIsOnVertices( int index ) const = 0;
 %Docstring
- Whether dataset is on vertices
+ Returns whether dataset is on vertices
 %End
 
     virtual QgsMeshDatasetMetadata datasetMetadata( int index ) const = 0;
 %Docstring
- Return dataset metadata
+ Returns dataset metadata
 %End
 
     virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
 %Docstring
- Return value associated with the index from the dataset
+ Returns value associated with the index from the dataset
 %End
 
     virtual bool datasetIsValid( int index ) const = 0;
 %Docstring
- Return whether dataset is valid
+ Returns whether dataset is valid
 %End
 };
 

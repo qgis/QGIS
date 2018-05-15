@@ -24,6 +24,7 @@ class QgsSymbol;
 #define SIP_NO_FILE
 
 #include <memory>
+#include <QSize>
 
 #include "qgis.h"
 
@@ -37,8 +38,6 @@ class QgsSymbol;
 
 ///@cond PRIVATE
 
-struct MapView;
-
 /**
  * \ingroup core
  * Interpolate mesh scalar dataset to raster block
@@ -49,10 +48,12 @@ struct MapView;
 class QgsMeshLayerInterpolator : public QgsRasterInterface
 {
   public:
+    //! Ctor
     QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
                               const QVector<double> &datasetValues,
                               bool dataIsOnVertices,
-                              const QgsRenderContext &context );
+                              const QgsRenderContext &context,
+                              const QSize &size );
     ~QgsMeshLayerInterpolator() override;
 
     virtual QgsRasterInterface *clone() const override;
@@ -64,8 +65,8 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;
     const QgsRenderContext &mContext;
-    std::unique_ptr<MapView> mMapView;
     bool mDataOnVertices;
+    QSize mOutputSize;
 };
 
 ///@endcond

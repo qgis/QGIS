@@ -1,4 +1,3 @@
-// Include auto-generated SIP files
 %Include auto_generated/expression/qgsexpression.sip
 %Include auto_generated/expression/qgsexpressionnode.sip
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
@@ -381,6 +380,7 @@
 %Include auto_generated/raster/qgsrasterprojector.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
+%Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsgeometry.sip
 %Include auto_generated/geometry/qgspoint.sip
