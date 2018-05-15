@@ -51,7 +51,7 @@ void QgsOfflineEditingPlugin::initGui()
   delete mActionConvertProject;
 
   // Create the action for tool
-  mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to offline project" ), this );
+  mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to Offline Project…" ), this );
   mActionConvertProject->setObjectName( QStringLiteral( "mActionConvertProject" ) );
   // Set the what's this text
   mActionConvertProject->setWhatsThis( tr( "Create offline copies of selected layers and save as offline project" ) );
@@ -103,7 +103,7 @@ void QgsOfflineEditingPlugin::convertProject()
       return;
     }
 
-    mProgressDialog->setTitle( tr( "Converting to offline project" ) );
+    mProgressDialog->setTitle( tr( "Converting to Offline Project" ) );
     if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds, myPluginGui->onlySelected() ) )
     {
       updateActions();
@@ -117,7 +117,7 @@ void QgsOfflineEditingPlugin::convertProject()
 
 void QgsOfflineEditingPlugin::synchronize()
 {
-  mProgressDialog->setTitle( tr( "Synchronizing to remote layers" ) );
+  mProgressDialog->setTitle( tr( "Synchronizing to Remote Layers" ) );
   mOfflineEditing->synchronize();
   updateActions();
 }
