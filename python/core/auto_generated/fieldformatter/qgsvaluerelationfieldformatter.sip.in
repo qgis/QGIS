@@ -59,11 +59,7 @@ Constructor for QgsValueRelationFieldFormatter.
 
     static QStringList valueToStringList( const QVariant &value );
 %Docstring
-Utility to convert an array or a string representation of and array ``value`` to a string list
-
-:param value: The value to be converted
-
-:return: A string list
+Utility to convert an array or a string representation of an array ``value`` to a string list
 
 .. versionadded:: 3.2
 %End
@@ -120,12 +116,10 @@ Return a list of variables required by the form context ``expression``
 %Docstring
 Check whether the ``feature`` has all values required by the ``expression``
 
-@return True if the expression can be used
+:return: True if the expression can be used
 
 .. versionadded:: 3.2
 %End
-
-    static QString FORM_SCOPE_FUNCTIONS_RE;
 
 };
 

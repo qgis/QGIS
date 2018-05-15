@@ -29,6 +29,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsinterval.h"
+#include "qgsexpressionnode.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -41,7 +42,6 @@ class QgsDistanceArea;
 class QDomElement;
 class QgsExpressionContext;
 class QgsExpressionPrivate;
-class QgsExpressionNode;
 class QgsExpressionFunction;
 
 /**
@@ -259,11 +259,42 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedVariables() const;
 
     /**
-     * Return a list of all functions which are used in this expression.
+     * Return a list of the names of all functions which are used in this expression.
      *
      * \since QGIS 3.2
      */
     QSet<QString> referencedFunctions() const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Return a list of all nodes which are used in this expression
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    QList<const QgsExpressionNode *> nodes( ) const;
+
+    /**
+     * Return a list of all nodes of the given class which are used in this expression
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    template <class T>
+    QList<const T *> findNodes( ) const
+    {
+      QList<const T *> lst;
+      const QList<const QgsExpressionNode *> allNodes( nodes() );
+      for ( const auto &node : allNodes )
+      {
+        const T *n = dynamic_cast<const T *>( node );
+        if ( n )
+          lst << n;
+      }
+      return lst;
+    }
+#endif
 
     /**
      * Return a list of field name indexes obtained from the provided fields.

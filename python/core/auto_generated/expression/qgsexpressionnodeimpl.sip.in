@@ -57,8 +57,6 @@ Returns the node the operator will operate upon.
 
     virtual QSet<QString> referencedFunctions() const;
 
-    virtual bool needsGeometry() const;
-
     virtual QgsExpressionNode *clone() const /Factory/;
 
 
@@ -158,7 +156,6 @@ Returns the node to the right of the operator.
 
     virtual QSet<QString> referencedFunctions() const;
 
-
     virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
@@ -231,8 +228,6 @@ Returns the list of nodes to search for matching values within.
 
     virtual QSet<QString> referencedFunctions() const;
 
-    virtual bool needsGeometry() const;
-
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
@@ -284,7 +279,6 @@ Returns a list of arguments specified for the function.
 
     virtual QSet<QString> referencedFunctions() const;
 
-    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -334,7 +328,6 @@ The value of the literal.
 
     virtual QSet<QString> referencedFunctions() const;
 
-    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -480,6 +473,7 @@ The ELSE expression used for the condition.
     virtual QSet<QString> referencedVariables() const;
 
     virtual QSet<QString> referencedFunctions() const;
+
 
     virtual bool needsGeometry() const;
 

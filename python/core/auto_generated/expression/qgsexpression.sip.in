@@ -180,10 +180,11 @@ which is determined at runtime.
 
     QSet<QString> referencedFunctions() const;
 %Docstring
-Return a list of all functions which are used in this expression.
+Return a list of the names of all functions which are used in this expression.
 
 .. versionadded:: 3.2
 %End
+
 
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 %Docstring

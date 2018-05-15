@@ -66,10 +66,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 
     /**
-     * Utility to convert an array or a string representation of and array \a value to a string list
-     *
-     * \param value The value to be converted
-     * \return A string list
+     * Utility to convert an array or a string representation of an array \a value to a string list
      * \since QGIS 3.2
      */
     static QStringList valueToStringList( const QVariant &value );
@@ -117,18 +114,10 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     /**
      * Check whether the \a feature has all values required by the \a expression
      *
-     * @return True if the expression can be used
+     * \return True if the expression can be used
      * \since QGIS 3.2
      */
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
-
-    /**
-     * Regular expression to find dynamic filtering based on form field values
-     * \see GetCurrentFormFieldValue()
-     *
-     * \since QGIS 3.2
-     */
-    static QString FORM_SCOPE_FUNCTIONS_RE;
 
 };
 

@@ -18,10 +18,9 @@
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QSettings>
-
-QString QgsValueRelationFieldFormatter::FORM_SCOPE_FUNCTIONS_RE = QStringLiteral( "%1\\s*\\(\\s*'([^']+)'\\s*\\)" );
 
 bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
@@ -176,17 +175,11 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
 
 QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QString &expression )
 {
-  const QStringList formVariables( QgsExpressionContextUtils::formScope()->variableNames() );
-  QSet<QString> variables;
-
-  for ( auto const &variable : formVariables )
-  {
-    if ( expression.contains( variable ) )
-    {
-      variables.insert( variable );
-    }
-  }
-  return variables;
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
+  QSet< QString > formVariables = scope->variableNames().toSet();
+  const QSet< QString > usedVariables = QgsExpression( expression ).referencedVariables();
+  formVariables.intersect( usedVariables );
+  return formVariables;
 }
 
 bool QgsValueRelationFieldFormatter::expressionRequiresFormScope( const QString &expression )
@@ -197,18 +190,22 @@ bool QgsValueRelationFieldFormatter::expressionRequiresFormScope( const QString 
 QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QString &expression )
 {
   QSet<QString> attributes;
-  const QStringList formFunctions( QgsExpressionContextUtils::formScope()->functionNames() );
-  QRegularExpression re;
-  for ( const auto &fname : formFunctions )
+  QgsExpression exp( expression );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
+  // List of form function names used in the expression
+  const QSet<QString> formFunctions( scope->functionNames()
+                                     .toSet()
+                                     .intersect( exp.referencedFunctions( ) ) );
+  const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
+  const QgsExpressionContext context;
+  for ( const auto &f : expFunctions )
   {
-    if ( QgsExpressionContextUtils::formScope()->function( fname )->parameters().count( ) != 0 )
+    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    if ( formFunctions.contains( fd->name( ) ) )
     {
-      re.setPattern( QgsValueRelationFieldFormatter::FORM_SCOPE_FUNCTIONS_RE.arg( fname ) );
-      QRegularExpressionMatchIterator i = re.globalMatch( expression );
-      while ( i.hasNext() )
+      for ( const auto &param : f->args( )->list() )
       {
-        QRegularExpressionMatch match = i.next();
-        attributes.insert( match.captured( 1 ) );
+        attributes.insert( param->eval( &exp, &context ).toString() );
       }
     }
   }

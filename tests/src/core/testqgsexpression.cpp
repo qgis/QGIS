@@ -1871,13 +1871,48 @@ class TestQgsExpression: public QObject
                         << QStringLiteral( "$geometry" )
                         << QStringLiteral( "buffer" );
 
-      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = \"A_VALUE\" AND intersects(buffer($geometry, 10), @current_geometry)" ) );
+      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)" ) );
       QCOMPARE( exp.hasParserError(), false );
       QSet<QString> refVar = exp.referencedFunctions();
 
       QCOMPARE( refVar, expectedFunctions );
     }
 
+    void findNodes()
+    {
+      QSet<QString> expectedFunctions;
+      expectedFunctions << QStringLiteral( "current_value" )
+                        << QStringLiteral( "intersects" )
+                        << QStringLiteral( "var" )
+                        << QStringLiteral( "$geometry" )
+                        << QStringLiteral( "buffer" );
+      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)" ) );
+      QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
+      QCOMPARE( functionNodes.size(), 5 );
+      QgsExpressionFunction *fd;
+      QSet<QString> actualFunctions;
+      for ( const auto &f : functionNodes )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      QCOMPARE( actualFunctions, expectedFunctions );
+
+      QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> expectedBinaryOps;
+      expectedBinaryOps << QgsExpressionNodeBinaryOperator::BinaryOperator::boAnd;
+      expectedBinaryOps << QgsExpressionNodeBinaryOperator::BinaryOperator::boEQ;
+      QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
+      QCOMPARE( binaryOpsNodes.size(), 2 );
+      QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
+      for ( const auto &f : binaryOpsNodes )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
+        actualBinaryOps << f->op();
+      }
+      QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
+    }
 
     void referenced_columns_all_attributes()
     {

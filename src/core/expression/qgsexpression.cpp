@@ -956,3 +956,14 @@ bool QgsExpression::isField() const
 {
   return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
 }
+
+QList<const QgsExpressionNode *> QgsExpression::nodes() const
+{
+  if ( !d->mRootNode )
+    return QList<const QgsExpressionNode *>();
+
+  return d->mRootNode->nodes();
+}
+
+
+

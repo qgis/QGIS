@@ -140,16 +140,16 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         res = sorted(res)
         self.assertEqual(res, ['ONE', 'TWO'])
 
-        res = list(QgsValueRelationFieldFormatter.expressionFormVariables("current_geometry"))
+        res = list(QgsValueRelationFieldFormatter.expressionFormVariables("@current_geometry"))
         self.assertEqual(res, ['current_geometry'])
 
         self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresFormScope(""))
         self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value('TWO')"))
         self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value ( 'TWO' )"))
-        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_geometry"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("@current_geometry"))
 
         self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("", QgsFeature()))
-        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_geometry", QgsFeature()))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry", QgsFeature()))
         self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", QgsFeature()))
 
         layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
