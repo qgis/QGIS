@@ -18,7 +18,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgslinestring.h"
-#include "qgsmessagelog.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
@@ -34,14 +33,12 @@ email                : marco.hugentobler at sourcepole dot com
 #define CATCH_GEOS(r) \
   catch (GEOSException &e) \
   { \
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr("GEOS") ); \
     return r; \
   }
 
 #define CATCH_GEOS_WITH_ERRMSG(r) \
   catch (GEOSException &e) \
   { \
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr("GEOS") ); \
     if ( errorMsg ) \
     { \
       *errorMsg = e.what(); \
@@ -1053,9 +1050,8 @@ geos::unique_ptr QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGe
   {
     geom.reset( GEOSGeom_createCollection_r( geosinit.ctxt, typeId, geomarr, nNotNullGeoms ) );
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException & )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
   }
 
   delete [] geomarr;
@@ -1751,7 +1747,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numOutPoints, coordDims );
     if ( !coordSeq )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ), QObject::tr( "GEOS" ) );
+      QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
       return nullptr;
     }
     if ( precision > 0. )
@@ -1813,7 +1809,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
     if ( !coordSeq )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ), QObject::tr( "GEOS" ) );
+      QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ) );
       return nullptr;
     }
     if ( precision > 0. )
@@ -2363,7 +2359,6 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
   }
   catch ( GEOSException &e )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     atLeastTwoIntersections = false;
   }
 
@@ -2582,7 +2577,6 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
   }
   catch ( GEOSException &e )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     nIntersections = 0;
   }
 
