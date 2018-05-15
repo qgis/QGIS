@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
                        QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsFeature,
@@ -57,7 +58,10 @@ class PointsInPolygon(QgisAlgorithm):
     CLASSFIELD = 'CLASSFIELD'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumPoints.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumPoints.svg")
 
     def group(self):
         return self.tr('Vector analysis')

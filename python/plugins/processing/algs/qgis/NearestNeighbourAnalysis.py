@@ -31,7 +31,8 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
@@ -57,7 +58,10 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
     Z_SCORE = 'Z_SCORE'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmNearestNeighbour.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmNearestNeighbour.svg")
 
     def group(self):
         return self.tr('Vector analysis')
