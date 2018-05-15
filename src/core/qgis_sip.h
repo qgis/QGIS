@@ -170,6 +170,13 @@
 #define SIP_VIRTUALERRORHANDLER(name)
 
 /*
+ * Throw - adds deprecated c++ throw calls for sip. Required for sip to add appropriate
+ * try/catch blocks around call and catch the correct exception, otherwise only
+ * unknown generic exceptions are available for Python code.
+ */
+#define SIP_THROW(name)
+
+/*
  * Will insert a `%End` directive in sip files
  */
 #define SIP_END
