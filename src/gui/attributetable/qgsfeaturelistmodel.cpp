@@ -34,21 +34,6 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
   mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
 
-  if ( mFilterModel )
-  {
-#if 0
-    // rewire (filter-)change events in the source model so this proxy reflects the changes
-    connect( mFilterModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, &QgsFeatureListModel::onBeginRemoveRows );
-    connect( mFilterModel, &QAbstractItemModel::rowsRemoved, this, &QgsFeatureListModel::onEndRemoveRows );
-    connect( mFilterModel, &QAbstractItemModel::rowsAboutToBeInserted, this, &QgsFeatureListModel::onBeginInsertRows );
-    connect( mFilterModel, &QAbstractItemModel::rowsInserted, this, &QgsFeatureListModel::onEndInsertRows );
-    // propagate sort order changes from source model to views connected to this model
-    connect( mFilterModel, &QAbstractItemModel::layoutAboutToBeChanged, this, &QAbstractItemModel::layoutAboutToBeChanged );
-    connect( mFilterModel, &QAbstractItemModel::layoutChanged, this, &QAbstractItemModel::layoutChanged );
-    connect( mFilterModel, &QAbstractItemModel::modelAboutToBeReset, this, &QAbstractItemModel::modelAboutToBeReset );
-    connect( mFilterModel, &QAbstractItemModel::modelReset, this, &QAbstractItemModel::modelReset );
-#endif
-  }
 }
 
 QgsVectorLayerCache *QgsFeatureListModel::layerCache()

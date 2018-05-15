@@ -139,10 +139,34 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     void setSortByDisplayExpression( bool sortByDisplayExpression );
 
   public slots:
-    void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
-    void onEndRemoveRows( const QModelIndex &parent, int first, int last );
-    void onBeginInsertRows( const QModelIndex &parent, int first, int last );
-    void onEndInsertRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginRemoveRows()
+     *
+     * \deprecated
+     */
+    Q_DECL_DEPRECATED void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endRemoveRows()
+     *
+     * \deprecated
+     */
+    Q_DECL_DEPRECATED void onEndRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginInsertRows()
+     *
+     * \deprecated
+     */
+    Q_DECL_DEPRECATED void onBeginInsertRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endInsertRows()
+     *
+     * \deprecated
+     */
+    Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
   private:
     mutable QgsExpression mDisplayExpression;
