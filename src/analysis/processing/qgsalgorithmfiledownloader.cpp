@@ -71,6 +71,8 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
 {
   mFeedback = feedback;
   QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  if ( url.isEmpty() )
+    throw QgsProcessingException( tr( "No URL specified" ) );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QEventLoop loop;
