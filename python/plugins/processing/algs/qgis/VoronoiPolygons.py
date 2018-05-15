@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
@@ -56,7 +57,10 @@ class VoronoiPolygons(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmVoronoi.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmVoronoi.svg")
 
     def group(self):
         return self.tr('Vector geometry')

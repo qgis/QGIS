@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsFeature,
@@ -56,7 +57,10 @@ class Delaunay(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'delaunay.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDelaunay.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDelaunay.svg")
 
     def group(self):
         return self.tr('Vector geometry')
