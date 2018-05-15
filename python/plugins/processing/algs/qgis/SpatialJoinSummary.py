@@ -65,9 +65,6 @@ class SpatialJoinSummary(QgisAlgorithm):
     DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
     OUTPUT = "OUTPUT"
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
-
     def group(self):
         return self.tr('Vector general')
 

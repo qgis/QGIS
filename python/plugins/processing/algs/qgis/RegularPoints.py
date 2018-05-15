@@ -31,7 +31,8 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
+from qgis.core import (QgsApplication,
+                       QgsFields,
                        QgsFeatureSink,
                        QgsField,
                        QgsFeature,
@@ -63,7 +64,10 @@ class RegularPoints(QgisAlgorithm):
     CRS = 'CRS'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmRegularPoints.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmRegularPoints.svg")
 
     def group(self):
         return self.tr('Vector creation')
