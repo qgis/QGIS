@@ -309,7 +309,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * mFieldIdx the widget feature field id
      */
-    int mFieldIdx;
+    int mFieldIdx = -1;
 
     /**
      * The feature currently being edited, in its current state
