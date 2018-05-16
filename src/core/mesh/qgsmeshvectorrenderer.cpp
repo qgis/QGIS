@@ -28,6 +28,7 @@
 #include <QPainter>
 #include <math.h>
 
+///@cond PRIVATE
 
 inline double mag( double input )
 {
@@ -262,3 +263,5 @@ void QgsMeshVectorRenderer::drawVectorArrow( const QgsPointXY &lineStart, double
   mContext.painter()->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
   mContext.painter()->drawPolygon( finalVectorHeadPoints );
 }
+
+///@endcond
