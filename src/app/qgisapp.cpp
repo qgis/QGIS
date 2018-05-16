@@ -5814,7 +5814,7 @@ void QgisApp::fileSaveAs()
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
-                 tr( "Choose a File Name to Save the QGIS Project File as" ),
+                 tr( "Save Project As" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
                  qgsExt + ";;" + zipExt, &filter );
   if ( path.isEmpty() )

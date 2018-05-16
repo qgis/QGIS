@@ -1019,7 +1019,7 @@ void QgsGpsInformationWidget::mBtnLogFile_clicked()
   QgsSettings settings;
   QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
   QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file As" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {
     return;

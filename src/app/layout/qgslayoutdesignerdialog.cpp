@@ -1844,7 +1844,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgisApp::instance()->activateWindow();
   this->raise();
 #endif
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Layout as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Layout As" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )
@@ -2952,7 +2952,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report As" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )

@@ -51,9 +51,9 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
-  QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
+  QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as Default" ) );
   connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
-  QAction *loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
+  QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
 

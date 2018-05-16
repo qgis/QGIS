@@ -285,7 +285,7 @@
     </widget>
     <widget class="QMenu" name="mMenuPasteAs">
      <property name="title">
-      <string>Paste Features as</string>
+      <string>Paste Features As</string>
      </property>
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>

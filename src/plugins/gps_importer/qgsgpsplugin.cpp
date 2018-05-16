@@ -154,7 +154,7 @@ void QgsGpsPlugin::createGPX()
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
-                                  tr( "Save New GPX File as…" ),
+                                  tr( "Save New GPX File As" ),
                                   dir,
                                   tr( "GPS eXchange file" ) + " (*.gpx)" );
   if ( !fileName.isEmpty() )
@@ -167,7 +167,7 @@ void QgsGpsPlugin::createGPX()
     std::ofstream ofs( fileName.toUtf8() );
     if ( !ofs )
     {
-      QMessageBox::warning( nullptr, tr( "Save New GPX File as…" ),
+      QMessageBox::warning( nullptr, tr( "Save New GPX File" ),
                             tr( "Unable to create a GPX file with the given name. "
                                 "Try again with another name or in another "
                                 "directory." ) );

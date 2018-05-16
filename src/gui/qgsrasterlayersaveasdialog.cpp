@@ -169,7 +169,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   else
   {
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
-    mFilename->setDialogTitle( tr( "Save Layer as…" ) );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
@@ -717,7 +717,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
   {
     mTilesGroupBox->hide();
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
-    mFilename->setDialogTitle( tr( "Save Layer as…" ) );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
 }
 

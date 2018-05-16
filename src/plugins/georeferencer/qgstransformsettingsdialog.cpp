@@ -57,7 +57,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   mPdfMap->setStorageMode( QgsFileWidget::SaveFile );
   mPdfMap->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
-  mPdfMap->setDialogTitle( tr( "Save Map File as" ) );
+  mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
   mPdfMap->setDefaultRoot( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString() );
   connect( mPdfMap, &QgsFileWidget::fileChanged, this, [ = ]
   {
@@ -68,7 +68,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   mPdfReport->setStorageMode( QgsFileWidget::SaveFile );
   mPdfReport->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
-  mPdfReport->setDialogTitle( tr( "Save Report File as" ) );
+  mPdfReport->setDialogTitle( tr( "Save Report File As" ) );
   mPdfReport->setDefaultRoot( settings.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString() );
   connect( mPdfReport, &QgsFileWidget::fileChanged, this, [ = ]
   {

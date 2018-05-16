@@ -430,7 +430,7 @@ void QgsMapSaveDialog::onAccepted()
   {
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-    QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
     if ( !fileName.isEmpty() )
     {
       QgsMapSettings ms = QgsMapSettings();

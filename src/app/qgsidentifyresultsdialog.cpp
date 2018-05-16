@@ -125,7 +125,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
     }
     QString targetFile = QFileDialog::getSaveFileName( this,
-                         tr( "Save as" ),
+                         tr( "Save As" ),
                          savePath,
                          info.suffix().isEmpty() ? QString() : "*." +  info.suffix()
                                                      );
