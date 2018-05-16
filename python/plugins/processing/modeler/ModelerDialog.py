@@ -779,9 +779,10 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.ALG_ITEM)
 
     def formatAlgorithmTooltip(self, alg):
-        return '<p><b>{}</b></p><p>{}</p>'.format(
+        return '<p><b>{}</b></p>{}<p>{}</p>'.format(
             alg.displayName(),
-            QCoreApplication.translate('TreeAlgorithmItem', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
+            '<p>{}</p>'.format(alg.shortDescription()) if alg.shortDescription() else '',
+            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
         )
 
 

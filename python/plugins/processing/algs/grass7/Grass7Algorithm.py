@@ -102,6 +102,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         super().__init__()
         self._name = ''
         self._display_name = ''
+        self._short_description = ''
         self._group = ''
         self._groupId = ''
         self.groupIdRegex = re.compile('^[^\s\(]+')
@@ -141,6 +142,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def displayName(self):
         return self._display_name
+
+    def shortDescription(self):
+        return self._short_description
 
     def group(self):
         return self._group
@@ -191,13 +195,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.grass7Name = line
             # Second line if the algorithm name in Processing
             line = lines.readline().strip('\n').strip()
-            self._name = line
-            self._display_name = QCoreApplication.translate("GrassAlgorithm", line)
-            if " - " not in self._name:
-                self._name = self.grass7Name + " - " + self._name
-                self._display_name = self.grass7Name + " - " + self._display_name
-
-            self._name = self._name[:self._name.find(' ')].lower()
+            self._short_description = line
+            if " - " not in line:
+                self._name = self.grass7Name
+            else:
+                self._name = line[:line.find(' ')].lower()
+            self._display_name = self._name
             # Read the grass group
             line = lines.readline().strip('\n').strip()
             self._group = QCoreApplication.translate("GrassAlgorithm", line)

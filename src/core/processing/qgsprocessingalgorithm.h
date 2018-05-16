@@ -146,9 +146,21 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the translated algorithm name, which should be used for any user-visible display
      * of the algorithm name.
+     *
+     * Algorithm display names should be short, e.g. ideally no more than 3 or 4 words.
+     * The name should use sentence case (e.g. "Raster layer statistics", not "Raster Layer Statistics").
+     *
      * \see name()
+     * \see shortDescription()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns an optional translated short description of the algorithm. This should be
+     * at most a single sentence, e.g. "Converts 2D features to 3D by sampling a DEM raster."
+     * \since QGIS 3.2
+     */
+    virtual QString shortDescription() const;
 
     /**
      * Returns a list of tags which relate to the algorithm, and are used to assist users in searching
