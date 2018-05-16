@@ -223,6 +223,19 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual QSet<QString> referencedVariables() const = 0;
 
     /**
+     * Return a set of all functions which are used in this expression.
+     */
+    virtual QSet<QString> referencedFunctions() const = 0;
+
+    /**
+     * Return a list of all nodes which are used in this expression.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    virtual QList<const QgsExpressionNode *> nodes( ) const = 0; SIP_SKIP
+
+    /**
      * Abstract virtual method which returns if the geometry is required to evaluate
      * this expression.
      *

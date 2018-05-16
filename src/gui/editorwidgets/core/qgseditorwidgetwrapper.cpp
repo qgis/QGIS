@@ -25,9 +25,9 @@
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
+  , mFieldIdx( fieldIdx )
   , mValidConstraint( true )
   , mIsBlockingCommit( false )
-  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -68,7 +68,7 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-  mFeature = feature;
+  mFormFeature = feature;
   setValue( feature.attribute( mFieldIdx ) );
 }
 
@@ -100,6 +100,11 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
     }
   }
+}
+
+bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )
+{
+  return mFormFeature.setAttribute( attributeName, attributeValue );
 }
 
 QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const

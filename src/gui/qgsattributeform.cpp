@@ -690,6 +690,7 @@ QString QgsAttributeForm::createFilterExpression() const
   return filter;
 }
 
+
 void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 {
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );

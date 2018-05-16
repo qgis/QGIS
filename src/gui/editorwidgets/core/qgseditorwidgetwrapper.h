@@ -213,6 +213,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void setConstraintResultVisible( bool constraintResultVisible );
 
+
   signals:
 
     /**
@@ -277,7 +278,43 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void updateConstraintWidgetStatus();
 
+
+    /**
+     * The feature currently being edited, in its current state
+     *
+     * \return the feature currently being edited, in its current state
+     * \since QGIS 3.2
+     */
+    QgsFeature formFeature() const { return mFormFeature; }
+
+    /**
+     * Set the feature currently being edited to \a feature
+     *
+     * \since QGIS 3.2
+     */
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature; }
+
+    /**
+     * Update the feature currently being edited by changing its
+     * attribute \a attributeName to \a attributeValue
+     *
+     * \return bool true on success
+     * \since QGIS 3.2
+     */
+    bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
+
+
   private:
+
+    /**
+     * mFieldIdx the widget feature field id
+     */
+    int mFieldIdx = -1;
+
+    /**
+     * The feature currently being edited, in its current state
+     */
+    QgsFeature mFormFeature;
 
     /**
      * Boolean storing the current validity of the constraint for this widget.
@@ -296,8 +333,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     //! The current constraint result
     bool mConstraintResultVisible = false;
 
-    int mFieldIdx;
-    QgsFeature mFeature;
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
 
 };

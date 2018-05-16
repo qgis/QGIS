@@ -346,7 +346,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     mutable QgsExpressionContext mExpressionContext;
 
     /**
-      * Gets mFieldCount, mAttributes and mValueMaps
+      * Gets mFieldCount, mAttributes
       */
     virtual void loadAttributes();
 

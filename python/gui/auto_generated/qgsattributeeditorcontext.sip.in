@@ -180,6 +180,25 @@ QGIS forms
 
     const QgsAttributeEditorContext *parentContext() const;
 
+    QgsFeature formFeature() const;
+%Docstring
+Return current feature from the currently edited form or table row
+
+.. seealso:: :py:func:`setFormFeature`
+
+.. versionadded:: 3.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Set current ``feature`` for the currently edited form or table row
+
+.. seealso:: :py:func:`formFeature`
+
+.. versionadded:: 3.2
+%End
+
+
 };
 
 /************************************************************************

@@ -276,6 +276,14 @@ QSet<QString> QgsExpression::referencedVariables() const
   return d->mRootNode->referencedVariables();
 }
 
+QSet<QString> QgsExpression::referencedFunctions() const
+{
+  if ( !d->mRootNode )
+    return QSet<QString>();
+
+  return d->mRootNode->referencedFunctions();
+}
+
 QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) const
 {
   if ( !d->mRootNode )
@@ -771,6 +779,10 @@ void QgsExpression::initVariableHelp()
 
   //provider notification
   sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
+
+  //form context variable
+  sVariableHelpTexts.insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used for in a form/row context to filter the related features." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "current_feature" ), QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used for in a form/row context to filter the related features." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )
@@ -945,3 +957,14 @@ bool QgsExpression::isField() const
 {
   return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
 }
+
+QList<const QgsExpressionNode *> QgsExpression::nodes() const
+{
+  if ( !d->mRootNode )
+    return QList<const QgsExpressionNode *>();
+
+  return d->mRootNode->nodes();
+}
+
+
+
