@@ -414,7 +414,7 @@ class GdalUtils:
         return listFile
 
     @staticmethod
-    def gdal_crs_string(crs: QgsCoordinateReferenceSystem) -> str:
+    def gdal_crs_string(crs):
         """
         Converts a QgsCoordinateReferenceSystem to a string understandable
         by GDAL
