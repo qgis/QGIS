@@ -49,6 +49,11 @@ QString QgsProcessingAlgorithm::id() const
     return name();
 }
 
+QString QgsProcessingAlgorithm::shortDescription() const
+{
+  return QString();
+}
+
 QString QgsProcessingAlgorithm::shortHelpString() const
 {
   return QString();
