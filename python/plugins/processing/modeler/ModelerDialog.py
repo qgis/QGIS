@@ -606,8 +606,10 @@ class ModelerDialog(BASE, WIDGET):
             # hide if every part of text is not contained somewhere in either the item text or item user role
             item_text = [item.text(0).lower(), item.data(0, ModelerDialog.NAME_ROLE).lower()]
             if isinstance(item, TreeAlgorithmItem):
-                item_text.append(item.alg.id())
-                item_text.extend(item.data(0, ModelerDialog.TAG_ROLE))
+                item_text.append(item.alg.id().lower())
+                if item.alg.shortDescription():
+                    item_text.append(item.alg.shortDescription().lower())
+                item_text.extend([t.lower() for t in item.data(0, ModelerDialog.TAG_ROLE)])
 
             hide = bool(text) and not all(
                 any(part in t for t in item_text)
