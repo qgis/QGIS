@@ -75,6 +75,15 @@ ApplicationWindow {
     }
   }
 
+  QgsQuick.PositionMarker {
+    id: positionMarker
+    positionKit: QgsQuick.PositionKit {
+      id: positionKit
+      mapSettings: mapCanvas.mapSettings
+      simulatePositionLongLatRad: __use_simulated_position ? [-97.36, 36.93, 2] : undefined
+    }
+  }
+
   QgsQuick.ScaleBar {
     id: scaleBar
     y: window.height - height
@@ -83,4 +92,5 @@ ApplicationWindow {
     preferredWidth: 115 * QgsQuick.Utils.dp
     z: 1
   }
+
 }

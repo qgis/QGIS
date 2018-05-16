@@ -12,6 +12,7 @@ SET(QGIS_QUICK_PLUGIN_SRC
 SET(QGIS_QUICK_PLUGIN_RESOURCES
   qgsquickmapcanvas.qml
   qgsquickmessagelog.qml
+  qgsquickpositionmarker.qml
   qgsquickscalebar.qml
   qmldir
 )

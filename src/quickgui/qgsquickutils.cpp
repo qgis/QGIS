@@ -16,6 +16,8 @@
 #include <QString>
 
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -32,7 +34,40 @@ QgsQuickUtils::QgsQuickUtils( QObject *parent )
 {
 }
 
-double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const
+/**
+ * Makes QgsCoordinateReferenceSystem::fromEpsgId accessable for QML components
+ */
+QgsCoordinateReferenceSystem QgsQuickUtils::coordinateReferenceSystemFromEpsgId( long epsg )
+{
+  return QgsCoordinateReferenceSystem::fromEpsgId( epsg );
+}
+
+QgsPointXY QgsQuickUtils::pointXYFactory( double x, double y ) const
+{
+  return QgsPointXY( x, y );
+}
+
+QgsPoint QgsQuickUtils::pointFactory( double x, double y ) const
+{
+  return QgsPoint( x, y );
+}
+
+QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate &coor ) const
+{
+  return QgsPoint( coor.longitude(), coor.latitude(), coor.altitude() );
+}
+
+QgsPointXY QgsQuickUtils::transformPoint( const QgsCoordinateReferenceSystem &srcCrs,
+    const QgsCoordinateReferenceSystem &destCrs,
+    const QgsCoordinateTransformContext &context,
+    const QgsPointXY &srcPoint )
+{
+  QgsCoordinateTransform mTransform( srcCrs, destCrs, context );
+  QgsPointXY pt = mTransform.transform( srcPoint );
+  return pt;
+}
+
+double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels )
 {
   if ( mapSettings == nullptr ) return 0.0;
 
@@ -57,6 +92,41 @@ void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis
 QgsQuickFeatureLayerPair QgsQuickUtils::featureFactory( const QgsFeature &feature, QgsVectorLayer *layer ) const
 {
   return QgsQuickFeatureLayerPair( feature, layer );
+}
+
+QUrl QgsQuickUtils::getThemeIcon( const QString &name )
+  QString path = QStringLiteral( "qrc:/%1.svg" ).arg( name );
+  QgsDebugMsg( QStringLiteral( "Using icon %1 from %2" ).arg( name, path ) );
+  return QUrl( path );
+}
+
+QString QgsQuickUtils::qgsPointToString( const QgsPoint &point, int decimals )
+{
+  return QString( "%1, %2" ).arg( QString::number( point.x(), 'f', decimals ) ).arg( QString::number( point.y(), 'f', decimals ) );
+}
+
+QString QgsQuickUtils::distanceToString( qreal dist, int decimals )
+{
+  if ( dist < 0 )
+  {
+    return QStringLiteral( "0 %1" ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters ) );
+  }
+
+  if ( dist > 1000 )
+  {
+    return QStringLiteral( "%1 %2" ).arg( QString::number( dist / 1000.0, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceKilometers ) );
+  }
+  else
+  {
+    if ( dist > 1 )
+    {
+      return QStringLiteral( "%1 %2" ).arg( QString::number( dist, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters ) );
+    }
+    else
+    {
+      return QStringLiteral( "%1 %2" ).arg( QString::number( dist * 1000, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMillimeters ) );
+    }
+  }
 }
 
 QString QgsQuickUtils::dumpScreenInfo() const

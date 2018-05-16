@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsquickfeaturehighlight.h"
+#include "qgsquickcoordinatetransformer.h"
 #include "qgsquickidentifykit.h"
 #include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapcanvasmap.h"
@@ -37,6 +38,7 @@
 #include "qgsquickmaptransform.h"
 #include "qgsquickmessagelogmodel.h"
 #include "qgsquickplugin.h"
+#include "qgsquickpositionkit.h"
 #include "qgsquickscalebarkit.h"
 #include "qgsquickutils.h"
 
@@ -61,11 +63,13 @@ void QgsQuickPlugin::registerTypes( const char *uri )
 
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
   qmlRegisterType< QgsQuickFeatureHighlight >( uri, 0, 1, "FeatureHighlight" );
+  qmlRegisterType< QgsQuickCoordinateTransformer >( uri, 0, 1, "CoordinateTransformer" );
   qmlRegisterType< QgsQuickIdentifyKit >( uri, 0, 1, "IdentifyKit" );
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
   qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
   qmlRegisterType< QgsQuickMessageLogModel >( uri, 0, 1, "MessageLogModel" );
+  qmlRegisterType< QgsQuickPositionKit >( uri, 0, 1, "PositionKit" );
   qmlRegisterType< QgsQuickScaleBarKit >( uri, 0, 1, "ScaleBarKit" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 

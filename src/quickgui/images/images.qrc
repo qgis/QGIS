@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ic_navigation_black.svg</file>
+    </qresource>
+</RCC>

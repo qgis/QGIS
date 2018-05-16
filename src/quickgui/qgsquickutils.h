@@ -19,9 +19,12 @@
 
 #include <QObject>
 #include <QString>
+#include <QtPositioning/QGeoCoordinate>
 
 #include "qgis.h"
 #include "qgsmessagelog.h"
+#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include "qgsquickmapsettings.h"
 #include "qgsquickfeaturelayerpair.h"
@@ -60,16 +63,44 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
   public:
     //! Create new utilities
     QgsQuickUtils( QObject *parent = nullptr );
-    //! dtor
+    //! Destructor
     ~QgsQuickUtils() = default;
 
     //! \copydoc QgsQuickUtils::dp
     qreal screenDensity() const;
 
     /**
-      * Calculate the distance in meter representing baseLengthPixels pixels on the screen based on the current map settings.
+      * Creates crs from epsg code in QML
       */
-    Q_INVOKABLE double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const;
+    Q_INVOKABLE static QgsCoordinateReferenceSystem coordinateReferenceSystemFromEpsgId( long epsg );
+
+    /**
+      * Creates QgsPointXY in QML
+      */
+    Q_INVOKABLE QgsPointXY pointXYFactory( double x, double y ) const;
+
+    /**
+      * Creates QgsPoint in QML
+      */
+    Q_INVOKABLE QgsPoint pointFactory( double x, double y ) const;
+
+    /**
+      * Converts QGeoCoordinate to QgsPoint
+      */
+    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate &coor ) const;
+
+    /**
+      * Transforms point between different crs from QML
+      */
+    Q_INVOKABLE static QgsPointXY transformPoint( const QgsCoordinateReferenceSystem &srcCrs,
+        const QgsCoordinateReferenceSystem &destCrs,
+        const QgsCoordinateTransformContext &context,
+        const QgsPointXY &srcPoint );
+
+    /**
+      * Calculates the distance in meter representing baseLengthPixels pixels on the screen based on the current map settings.
+      */
+    Q_INVOKABLE static double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels );
 
     //! Log message in QgsMessageLog
     Q_INVOKABLE void logMessage( const QString &message,
@@ -86,10 +117,23 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
 
     /**
-     * Returns a string with information about screen size and resolution
-     *
-     * Useful to log for debugging of graphical problems on various display sizes
-     */
+      * Returns QUrl to image from libary's /images folder.
+      */
+    Q_INVOKABLE QUrl getThemeIcon( const QString &name );
+
+    /**
+      * Converts point to string with given decimals (default decimals = 3),
+      * e.g. -2.234521, 34.4444421 -> -2.234, 34.444
+      */
+    Q_INVOKABLE static QString qgsPointToString( const QgsPoint &point, int decimals = 3 );
+
+    /**
+      * Converts distance in meters to human readable length with given decimals (default decimals = 1),
+      *  e.g. 1222.234 m -> 1.2 km
+      */
+    Q_INVOKABLE static QString distanceToString( qreal dist, int decimals = 1 );
+
+    //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
 
   private:
