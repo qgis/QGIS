@@ -882,7 +882,7 @@ void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.get(), mStyle, mLayer, panel );
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
 
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );

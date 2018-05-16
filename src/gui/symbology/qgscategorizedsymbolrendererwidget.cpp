@@ -613,7 +613,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol.get(), mStyle, mLayer, panel );
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
     connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
