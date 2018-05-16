@@ -31,7 +31,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
 #define CATCH_GEOS(r) \
-  catch (GEOSException &e) \
+  catch (GEOSException &) \
   { \
     return r; \
   }
@@ -2357,7 +2357,7 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException & )
   {
     atLeastTwoIntersections = false;
   }
@@ -2575,7 +2575,7 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException & )
   {
     nIntersections = 0;
   }
