@@ -878,8 +878,8 @@ void QgsGraduatedSymbolRendererWidget::reapplySizes()
 
 void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 {
-  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
   if ( panel && panel->dockMode() )
   {
     QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
