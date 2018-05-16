@@ -80,7 +80,6 @@ class SelectByExpression(QgisAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
-
         if method == 0:
             behavior = QgsVectorLayer.SetSelection
         elif method == 1:
@@ -96,4 +95,5 @@ class SelectByExpression(QgisAlgorithm):
             raise QgsProcessingException(qExp.parserErrorString())
 
         layer.selectByExpression(expression, behavior)
+
         return {self.OUTPUT: parameters[self.INPUT]}
