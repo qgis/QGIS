@@ -7,6 +7,7 @@
 #define MDAL_2DM_HPP
 
 #include <string>
+#include <memory>
 
 #include "mdal_defines.hpp"
 #include "mdal.h"
@@ -18,7 +19,7 @@ namespace MDAL
   {
     public:
       Loader2dm( const std::string &meshFile );
-      Mesh *load( MDAL_Status *status );
+      std::unique_ptr< Mesh > load( MDAL_Status *status );
 
     private:
       std::string mMeshFile;
