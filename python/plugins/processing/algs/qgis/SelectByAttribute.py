@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
+                       QgsVectorLayer,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingAlgorithm,
@@ -43,6 +44,7 @@ class SelectByAttribute(QgisAlgorithm):
     FIELD = 'FIELD'
     OPERATOR = 'OPERATOR'
     VALUE = 'VALUE'
+    METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
     OPERATORS = ['=',
@@ -77,26 +79,38 @@ class SelectByAttribute(QgisAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
-        self.i18n_operators = ['=',
-                               '!=',
-                               '>',
-                               '>=',
-                               '<',
-                               '<=',
-                               self.tr('begins with'),
-                               self.tr('contains'),
-                               self.tr('is null'),
-                               self.tr('is not null'),
-                               self.tr('does not contain')
-                               ]
+        self.operators = ['=',
+                          '!=',
+                          '>',
+                          '>=',
+                          '<',
+                          '<=',
+                          self.tr('begins with'),
+                          self.tr('contains'),
+                          self.tr('is null'),
+                          self.tr('is not null'),
+                          self.tr('does not contain')
+                          ]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
+        self.methods = [self.tr('creating new selection'),
+                        self.tr('adding to current selection'),
+                        self.tr('removing from current selection'),
+                        self.tr('selecting within current selection')]
 
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer'),
+                                                            types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Selection attribute'), parentLayerParameterName=self.INPUT))
+                                                      self.tr('Selection attribute'),
+                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
-                                                     self.tr('Operator'), self.i18n_operators))
-        self.addParameter(QgsProcessingParameterString(self.VALUE, self.tr('Value')))
+                                                     self.tr('Operator'), self.operators))
+        self.addParameter(QgsProcessingParameterString(self.VALUE,
+                                                       self.tr('Value')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Modify current selection by'),
+                                                     self.methods,
+                                                     0))
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
@@ -130,17 +144,28 @@ class SelectByAttribute(QgisAlgorithm):
         elif operator == 'is not null':
             expression_string = '{} IS NOT NULL'.format(field_ref)
         elif operator == 'begins with':
-            expression_string = """%s LIKE '%s%%'""" % (field_ref, value)
+            expression_string = "{} LIKE '{}%'".format(field_ref, value)
         elif operator == 'contains':
-            expression_string = """%s LIKE '%%%s%%'""" % (field_ref, value)
+            expression_string = "{} LIKE '%{}%'".format(field_ref, value)
         elif operator == 'does not contain':
-            expression_string = """%s NOT LIKE '%%%s%%'""" % (field_ref, value)
+            expression_string = "{} NOT LIKE '%{}%'".format(field_ref, value)
         else:
             expression_string = '{} {} {}'.format(field_ref, operator, quoted_val)
+
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        if method == 0:
+            behavior = QgsVectorLayer.SetSelection
+        elif method == 1:
+            behavior = QgsVectorLayer.AddToSelection
+        elif method == 2:
+            behavior = QgsVectorLayer.RemoveFromSelection
+        elif method == 3:
+            behavior = QgsVectorLayer.IntersectSelection
 
         expression = QgsExpression(expression_string)
         if expression.hasParserError():
             raise QgsProcessingException(expression.parserErrorString())
 
-        layer.selectByExpression(expression_string)
+        layer.selectByExpression(expression_string, behavior)
+
         return {self.OUTPUT: parameters[self.INPUT]}
