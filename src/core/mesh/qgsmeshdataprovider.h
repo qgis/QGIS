@@ -102,7 +102,9 @@ class CORE_EXPORT QgsMeshDatasetValue
 class CORE_EXPORT QgsMeshDatasetMetadata
 {
   public:
+    //! Constructs an empty metadata object
     QgsMeshDatasetMetadata() = default;
+    //! Consutructs a valid metadata object
     QgsMeshDatasetMetadata( bool isScalar,
                             bool isValid,
                             bool isOnVertices,

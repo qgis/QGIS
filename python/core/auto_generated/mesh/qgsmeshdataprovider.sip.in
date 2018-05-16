@@ -106,10 +106,16 @@ as if the data is vector or scalar, etc.
 %End
   public:
     QgsMeshDatasetMetadata();
+%Docstring
+Constructs an empty metadata object
+%End
     QgsMeshDatasetMetadata( bool isScalar,
                             bool isValid,
                             bool isOnVertices,
                             const QMap<QString, QString> &extraOptions );
+%Docstring
+Consutructs a valid metadata object
+%End
 
     QMap<QString, QString> extraOptions() const;
 %Docstring

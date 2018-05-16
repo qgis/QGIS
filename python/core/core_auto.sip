@@ -228,6 +228,7 @@
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrenderer.sip
 %Include auto_generated/raster/qgshillshaderenderer.sip
+%Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
@@ -381,7 +382,6 @@
 %Include auto_generated/raster/qgsrasterprojector.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
-%Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsgeometry.sip
 %Include auto_generated/geometry/qgspoint.sip
