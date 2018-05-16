@@ -49,7 +49,10 @@ def algorithmHelp(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         print('{} ({})\n'.format(alg.displayName(), alg.id()))
-        print(alg.shortHelpString())
+        if alg.shortDescription():
+            print(alg.shortDescription() + '\n')
+        if alg.shortHelpString():
+            print(alg.shortHelpString() + '\n')
         print('\n----------------')
         print('Input parameters')
         print('----------------')
