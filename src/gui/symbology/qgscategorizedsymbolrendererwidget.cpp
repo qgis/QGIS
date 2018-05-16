@@ -548,7 +548,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   std::unique_ptr<QgsSymbol> newSymbol( mCategorizedSymbol->clone() );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.get(), mStyle, mLayer, panel );
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
     connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
