@@ -602,8 +602,10 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # insert metaoject for Q_GADGET
     if ($LINE =~ m/^\s*Q_GADGET\b.*?$/){
-      write_output("HCE", "  public:\n");
-      write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n");
+        if ($LINE !~ m/SIP_SKIP/){
+            write_output("HCE", "  public:\n");
+            write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n");
+        }
         next;
     }
 

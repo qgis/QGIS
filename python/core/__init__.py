@@ -48,4 +48,3 @@ QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
 QgsProject.blockDirtying = ProjectDirtyBlocker
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 QgsTask.fromFunction = fromFunction
-QgsTolerance.UnitType.parentClass = QgsTolerance

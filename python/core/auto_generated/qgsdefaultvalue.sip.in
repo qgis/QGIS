@@ -37,9 +37,6 @@ not set, the default value will only be used when a feature is created.
 #include "qgsdefaultvalue.h"
 %End
   public:
-    static const QMetaObject staticMetaObject;
-
-  public:
 
     explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
 %Docstring
