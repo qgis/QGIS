@@ -1,3 +1,4 @@
+// Include auto-generated SIP files
 %Include auto_generated/expression/qgsexpression.sip
 %Include auto_generated/expression/qgsexpressionnode.sip
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip

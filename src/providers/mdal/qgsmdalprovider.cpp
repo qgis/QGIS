@@ -109,64 +109,62 @@ int QgsMdalProvider::datasetCount() const
   return MDAL_M_datasetCount( mMeshH );
 }
 
-bool QgsMdalProvider::datasetHasScalarData( int index ) const
+QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int datasetIndex ) const
 {
-  Q_ASSERT( index < mDatasets.length() );
-  DatasetH dataset = mDatasets[index];
-  return MDAL_D_hasScalarData( dataset );
-}
+  if ( datasetIndex >= mDatasets.length() )
+    return QgsMeshDatasetMetadata();
 
-bool QgsMdalProvider::datasetIsOnVertices( int index ) const
-{
-  Q_ASSERT( index < mDatasets.length() );
-  DatasetH dataset = mDatasets[index];
-  return MDAL_D_isOnVertices( dataset );
-}
+  if ( datasetIndex < 0 )
+    return QgsMeshDatasetMetadata();
 
-QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int index ) const
-{
-  Q_ASSERT( index < mDatasets.length() );
-  DatasetH dataset = mDatasets[index];
-  QgsMeshDatasetMetadata meta;
+  DatasetH dataset = mDatasets[datasetIndex];
 
+  bool isScalar = MDAL_D_hasScalarData( dataset );
+  bool isValid = MDAL_D_isValid( dataset );
+  bool isOnVertices = MDAL_D_isOnVertices( dataset );
+
+  QMap<QString, QString> metadata;
   int n = MDAL_D_metadataCount( dataset );
   for ( int i = 0; i < n; ++i )
   {
     QString key = MDAL_D_metadataKey( dataset, i );
     QString value = MDAL_D_metadataValue( dataset, i );
-    meta[key] = value;
+    metadata[key] = value;
   }
+
+  QgsMeshDatasetMetadata meta(
+    isScalar,
+    isValid,
+    isOnVertices,
+    metadata
+  );
 
   return meta;
 }
 
 QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIndex ) const
 {
-  Q_ASSERT( datasetIndex < mDatasets.length() );
-  DatasetH dataset = mDatasets[datasetIndex];
+  if ( datasetIndex >= mDatasets.length() )
+    return QgsMeshDatasetValue();
 
+  if ( datasetIndex < 0 )
+    return QgsMeshDatasetValue();
+
+  DatasetH dataset = mDatasets[datasetIndex];
   QgsMeshDatasetValue val;
 
-  if ( datasetHasScalarData( datasetIndex ) )
+  if ( MDAL_D_hasScalarData( dataset ) )
   {
     val.setX( MDAL_D_value( dataset, valueIndex ) );
   }
   else
   {
     val.setX( MDAL_D_valueX( dataset, valueIndex ) );
-    val.setY( MDAL_D_valueX( dataset, valueIndex ) );
+    val.setY( MDAL_D_valueY( dataset, valueIndex ) );
   }
 
   return val;
 }
-
-bool QgsMdalProvider::datasetIsValid( int index ) const
-{
-  Q_ASSERT( index < mDatasets.length() );
-  DatasetH dataset = mDatasets[index];
-  return MDAL_D_isValid( dataset );
-}
-
 
 void QgsMdalProvider::refreshDatasets()
 {

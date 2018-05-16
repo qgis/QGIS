@@ -118,7 +118,7 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
   double yDist = 0.0;
   switch ( mCfg.shaftLengthMethod() )
   {
-    case QgsMeshRendererVectorSettings::VectorRenderingType::MinMax:
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax:
     {
       double minShaftLength = mContext.convertToPainterUnits( mCfg.minShaftLength(),
                               QgsUnitTypes::RenderUnit::RenderMillimeters );
@@ -132,14 +132,14 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
       yDist = sinAlpha * L;
       break;
     }
-    case QgsMeshRendererVectorSettings::VectorRenderingType::Scaled:
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::Scaled:
     {
       double scaleFactor = mCfg.scaleFactor();
       xDist = scaleFactor * xVal;
       yDist = scaleFactor * yVal;
       break;
     }
-    case QgsMeshRendererVectorSettings::VectorRenderingType::Fixed:
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::Fixed:
     {
       // We must be using a fixed length
       double fixedShaftLength = mContext.convertToPainterUnits( mCfg.fixedShaftLength(),

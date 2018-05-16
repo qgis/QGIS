@@ -127,7 +127,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 {
   public:
     //! Algorithm how to transform vector magnitude to length of arrow on the device in pixels
-    enum VectorRenderingType
+    enum ArrowScalingMethod
     {
 
       /**
@@ -185,46 +185,64 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setFilterMax( double filterMax );
 
     //! Returns method used for drawing arrows
-    QgsMeshRendererVectorSettings::VectorRenderingType shaftLengthMethod() const;
+    QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
-    void setShaftLengthMethod( const QgsMeshRendererVectorSettings::VectorRenderingType &shaftLengthMethod );
+    void setShaftLengthMethod( const QgsMeshRendererVectorSettings::ArrowScalingMethod &shaftLengthMethod );
 
     /**
      * Returns mininimum shaft length (in millimeters)
      *
-     * Only for QgsMeshRendererVectorSettings::ArrowType::MinMax
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
     double minShaftLength() const;
 
     /**
      * Sets mininimum shaft length (in millimeters)
      *
-     * Only for QgsMeshRendererVectorSettings::ArrowType::MinMax
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
     void setMinShaftLength( double minShaftLength );
 
     /**
      * Returns maximum shaft length (in millimeters)
      *
-     * Only for QgsMeshRendererVectorSettings::ArrowType::MinMax
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
     double maxShaftLength() const;
 
     /**
      * Sets maximum shaft length (in millimeters)
      *
-     * Only for QgsMeshRendererVectorSettings::ArrowType::MinMax
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
     void setMaxShaftLength( double maxShaftLength );
 
-    //! Returns scale factor. Only for QgsMeshRendererVectorSettings::ArrowType::Scaled
+    /**
+     * Returns scale factor
+     *
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Scaled
+     */
     double scaleFactor() const;
-    //! Sets scale factor. Only for QgsMeshRendererVectorSettings::ArrowType::Scaled
+
+    /**
+     * Sets scale factor
+     *
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Scaled
+     */
     void setScaleFactor( double scaleFactor );
 
-    //! Returns fixed arrow length (in millimeters). Only for QgsMeshRendererVectorSettings::ArrowType::Fixed
+    /**
+     * Returns fixed arrow length (in millimeters)
+     *
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Fixed
+     */
     double fixedShaftLength() const;
-    //! Sets fixed length  (in millimeters). Only for QgsMeshRendererVectorSettings::ArrowType::Fixed
+
+    /**
+     * Sets fixed length  (in millimeters)
+     *
+     * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Fixed
+     */
     void setFixedShaftLength( double fixedShaftLength );
 
     //! Returns ratio of the head width of the arrow (range 0-1)
@@ -242,7 +260,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
-    QgsMeshRendererVectorSettings::VectorRenderingType mShaftLengthMethod = QgsMeshRendererVectorSettings::VectorRenderingType::MinMax;
+    QgsMeshRendererVectorSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax;
     double mMinShaftLength = 0.8; //in milimeters
     double mMaxShaftLength = 10; //in milimeters
     double mScaleFactor = 10;

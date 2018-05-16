@@ -151,14 +151,14 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
 
     QCOMPARE( 4, dp->datasetCount() );
 
-    QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.count(), 2 );
-    QCOMPARE( meta["name"], QString( "VertexScalarDataset" ) );
-    QVERIFY( qgsDoubleNear( meta["time"].toDouble(), 0.0 ) );
+    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
+    QCOMPARE( meta.extraOptions().count(), 2 );
+    QCOMPARE( meta.extraOptions()["name"], QString( "VertexScalarDataset" ) );
+    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
 
-    QVERIFY( dp->datasetIsValid( ds ) );
-    QVERIFY( dp->datasetHasScalarData( ds ) );
-    QVERIFY( dp->datasetIsOnVertices( ds ) );
+    QVERIFY( meta.isValid() );
+    QVERIFY( meta.isScalar() );
+    QVERIFY( meta.isOnVertices() );
 
     // We have 5 values, since dp->vertexCount() = 5
     QCOMPARE( QgsMeshDatasetValue( 1.0 ), dp->datasetValue( ds, 0 ) );
@@ -183,14 +183,14 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
 
     QCOMPARE( 4, dp->datasetCount() );
 
-    QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.count(), 2 );
-    QCOMPARE( meta["name"], QString( "VertexVectorDataset" ) );
-    QVERIFY( qgsDoubleNear( meta["time"].toDouble(), 0.0 ) );
+    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
+    QCOMPARE( meta.extraOptions().count(), 2 );
+    QCOMPARE( meta.extraOptions()["name"], QString( "VertexVectorDataset" ) );
+    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
 
-    QVERIFY( dp->datasetIsValid( ds ) );
-    QVERIFY( !dp->datasetHasScalarData( ds ) );
-    QVERIFY( dp->datasetIsOnVertices( ds ) );
+    QVERIFY( meta.isValid() );
+    QVERIFY( !meta.isScalar() );
+    QVERIFY( meta.isOnVertices() );
 
     // We have 5 values, since dp->vertexCount() = 5
     QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );
@@ -215,14 +215,14 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
 
     QCOMPARE( 4, dp->datasetCount() );
 
-    QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.count(), 2 );
-    QCOMPARE( meta["name"], QString( "FaceScalarDataset" ) );
-    QVERIFY( qgsDoubleNear( meta["time"].toDouble(), 0.0 ) );
+    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
+    QCOMPARE( meta.extraOptions().count(), 2 );
+    QCOMPARE( meta.extraOptions()["name"], QString( "FaceScalarDataset" ) );
+    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
 
-    QVERIFY( dp->datasetIsValid( ds ) );
-    QVERIFY( dp->datasetHasScalarData( ds ) );
-    QVERIFY( !dp->datasetIsOnVertices( ds ) );
+    QVERIFY( meta.isValid() );
+    QVERIFY( meta.isScalar() );
+    QVERIFY( !meta.isOnVertices() );
 
     // We have 2 values, since dp->faceCount() = 2
     QCOMPARE( QgsMeshDatasetValue( 1 ), dp->datasetValue( ds, 0 ) );
@@ -245,14 +245,14 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
 
     QCOMPARE( 4, dp->datasetCount() );
 
-    QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.count(), 2 );
-    QCOMPARE( meta["name"], QString( "FaceVectorDataset" ) );
-    QVERIFY( qgsDoubleNear( meta["time"].toDouble(), 0.0 ) );
+    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
+    QCOMPARE( meta.extraOptions().count(), 2 );
+    QCOMPARE( meta.extraOptions()["name"], QString( "FaceVectorDataset" ) );
+    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
 
-    QVERIFY( dp->datasetIsValid( ds ) );
-    QVERIFY( !dp->datasetHasScalarData( ds ) );
-    QVERIFY( !dp->datasetIsOnVertices( ds ) );
+    QVERIFY( meta.isValid() );
+    QVERIFY( !meta.isScalar() );
+    QVERIFY( !meta.isOnVertices() );
 
     // We have 2 values, since dp->faceCount() = 2
     QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );

@@ -127,12 +127,12 @@ void QgsMeshRendererVectorSettings::setFilterMax( double vectorFilterMax )
   mFilterMax = vectorFilterMax;
 }
 
-QgsMeshRendererVectorSettings::VectorRenderingType QgsMeshRendererVectorSettings::shaftLengthMethod() const
+QgsMeshRendererVectorSettings::ArrowScalingMethod QgsMeshRendererVectorSettings::shaftLengthMethod() const
 {
   return mShaftLengthMethod;
 }
 
-void QgsMeshRendererVectorSettings::setShaftLengthMethod( const QgsMeshRendererVectorSettings::VectorRenderingType &shaftLengthMethod )
+void QgsMeshRendererVectorSettings::setShaftLengthMethod( const QgsMeshRendererVectorSettings::ArrowScalingMethod &shaftLengthMethod )
 {
   mShaftLengthMethod = shaftLengthMethod;
 }

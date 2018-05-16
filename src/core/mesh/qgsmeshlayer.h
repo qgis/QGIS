@@ -26,6 +26,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
+const int NO_ACTIVE_MESH_DATASET = -1;
+
 class QgsMapLayerRenderer;
 class QgsSymbol;
 class QgsTriangularMesh;
@@ -132,36 +134,44 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     //! Returns rendrer settings
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const SIP_FACTORY;
+    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
 
     //! Sets new rendering settings, triggers repaint
     void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 
     //! Returns rendrer settings
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const SIP_FACTORY;
+    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
 
     //! Sets new rendering settings, triggers repaint
     void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 
     //! Returns rendrer settings
-    QgsMeshRendererScalarSettings rendererScalarSettings() const SIP_FACTORY;
+    QgsMeshRendererScalarSettings rendererScalarSettings() const;
 
     //! Sets new rendering settings, triggers repaint
     void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
 
     //! Returns rendrer settings
-    QgsMeshRendererVectorSettings rendererVectorSettings() const SIP_FACTORY;
+    QgsMeshRendererVectorSettings rendererVectorSettings() const;
 
     //! Sets new rendering settings, triggers repaint
     void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
 
-    //! Sets active scalar dataset for rendering
-    void setActiveScalarDataset( int index = -1 );
+    /**
+     * Sets active scalar dataset for rendering
+     *
+     * Triggers repaint
+     */
+    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
     //! Returns active scalar dataset
     int activeScalarDataset() const { return mActiveScalarDataset; }
 
-    //! Sets active vector dataset for rendering. If dataset is not vector based, do nothing
-    void setActiveVectorDataset( int index = -1 );
+    /**
+     * Sets active vector dataset for rendering.
+     *
+     * If dataset is not vector based, do nothing. Triggers repaint
+     */
+    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
     //! Returns active vector dataset
     int activeVectorDataset() const { return mActiveVectorDataset; }
 
@@ -204,10 +214,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshRendererVectorSettings mRendererVectorSettings;
 
     //! index of active scalar dataset; -1 if none
-    int mActiveScalarDataset = -1;
+    int mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
 
     //! index of active vector dataset; -1 if none
-    int mActiveVectorDataset = -1;
+    int mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
 };
 
 #endif //QGSMESHLAYER_H

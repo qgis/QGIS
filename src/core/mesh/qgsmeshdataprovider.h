@@ -34,14 +34,12 @@ typedef QgsPoint QgsMeshVertex;
 //! List of vertex indexes
 typedef QVector<int> QgsMeshFace;
 
-//! Dataset's metadata key:value map
-typedef QMap<QString, QString> QgsMeshDatasetMetadata;
-
 /**
  * \ingroup core
  *
- * QgsMeshDatasetValue is a vector or a scalar value on vertex or face of the mesh with
- * support of nodata values
+ * QgsMeshDatasetValue represents single mesh dataset value
+ *
+ * could be scalar or vector. Nodata values are represented by NaNs.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -49,30 +47,19 @@ typedef QMap<QString, QString> QgsMeshDatasetMetadata;
  */
 class CORE_EXPORT QgsMeshDatasetValue
 {
-    Q_GADGET
-
   public:
-    //! Ctor
+    //! Constructor for vector value
     QgsMeshDatasetValue( double x,
                          double y );
 
-    //! Ctor
+    //! Constructor for scalar value
     QgsMeshDatasetValue( double scalar );
 
-    //! Ctor
-    QgsMeshDatasetValue( ) = default;
+    //! Default Ctor, initialize to NaN
+    QgsMeshDatasetValue() = default;
 
     //! Dtor
     ~QgsMeshDatasetValue() = default;
-
-    //! Sets nodata value for this dataset value
-    void setNodata( bool nodata = true );
-    //! Returns whether it is nodata value
-    bool isNodata() const;
-    //! Returns whether it is scalar value
-    bool isScalar() const;
-    //! Returns scalar value. Length for vectors, value for scalars
-    double scalar() const;
 
     //! Sets scalar value
     void set( double scalar );
@@ -82,6 +69,9 @@ class CORE_EXPORT QgsMeshDatasetValue
 
     //! Sets Y value
     void setY( double y ) ;
+
+    //! Returns magnitude of vector for vector data or scalar value for scalar data
+    double scalar() const;
 
     //! Returns x value
     double x() const;
@@ -95,8 +85,60 @@ class CORE_EXPORT QgsMeshDatasetValue
   private:
     double mX  = std::numeric_limits<double>::quiet_NaN();
     double mY  = std::numeric_limits<double>::quiet_NaN();
-    bool mIsNodata = true;
-    bool mIsScalar = true;
+};
+
+
+
+/**
+ * \ingroup core
+ *
+ * QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
+ * as if the data is vector or scalar, etc.
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsMeshDatasetMetadata
+{
+  public:
+    QgsMeshDatasetMetadata() = default;
+    QgsMeshDatasetMetadata( bool isScalar,
+                            bool isValid,
+                            bool isOnVertices,
+                            const QMap<QString, QString> &extraOptions );
+
+    /**
+     * Returns extra metadata options
+     * Usually including name, description or time variable
+     */
+    QMap<QString, QString> extraOptions() const;
+
+    /**
+     * \brief Returns whether dataset has vector data
+     */
+    bool isVector() const;
+
+    /**
+     * \brief Returns whether dataset has scalar data
+     */
+    bool isScalar() const;
+
+    /**
+     * \brief Returns whether dataset data is defined on vertices
+     */
+    bool isOnVertices() const;
+
+    /**
+     * \brief Returns whether dataset is valid
+     */
+    bool isValid() const;
+
+  private:
+    bool mIsScalar = false;
+    bool mIsValid = false;
+    bool mIsOnVertices = false;
+    QMap<QString, QString> mExtraOptions;
 };
 
 /**
@@ -147,7 +189,7 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
  * \ingroup core
  * Dataset is a  collection of vector or scalar values on vertices or faces of the mesh
  *
- * Base on the underlying data provider/format, whole dataset is either stored in memory or
+ * Based on the underlying data provider/format, whole dataset is either stored in memory or
  * read on demand
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -171,29 +213,16 @@ class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
     virtual int datasetCount() const = 0;
 
     /**
-     * \brief Returns whether dataset has scalar data associated
-     */
-    virtual bool datasetHasScalarData( int index ) const = 0;
-
-    /**
-     * \brief Returns whether dataset is on vertices
-     */
-    virtual bool datasetIsOnVertices( int index ) const = 0;
-
-    /**
      * \brief Returns dataset metadata
      */
-    virtual QgsMeshDatasetMetadata datasetMetadata( int index ) const = 0;
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
 
     /**
-     * \brief Returns value associated with the index from the dataset
+     * \brief Returns vector/scalar value associated with the index from the dataset
+     *
+     * See QgsMeshDatasetMetadata::isVector() to check if the returned value is vector or scalar
      */
     virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
-
-    /**
-     * \brief Returns whether dataset is valid
-     */
-    virtual bool datasetIsValid( int index ) const = 0;
 };
 
 

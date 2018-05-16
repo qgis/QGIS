@@ -92,9 +92,10 @@ void QgsMeshLayerRenderer::createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol,
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
   int datasetIndex = layer->activeScalarDataset();
-  if ( datasetIndex != -1 )
+  if ( datasetIndex != NO_ACTIVE_MESH_DATASET )
   {
-    mScalarDataOnVertices = layer->dataProvider()->datasetIsOnVertices( datasetIndex );
+    const QgsMeshDatasetMetadata metadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    mScalarDataOnVertices = metadata.isOnVertices();
     int count;
     if ( mScalarDataOnVertices )
       count = mNativeMesh.vertices.count();
@@ -113,16 +114,18 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
   int datasetIndex = layer->activeVectorDataset();
-  if ( datasetIndex != -1 )
+  if ( datasetIndex != NO_ACTIVE_MESH_DATASET )
   {
-    bool isScalar = layer->dataProvider()->datasetHasScalarData( datasetIndex );
+    const QgsMeshDatasetMetadata metadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+
+    bool isScalar = metadata.isScalar();
     if ( isScalar )
     {
       QgsDebugMsg( "Dataset has no vector values" );
     }
     else
     {
-      mVectorDataOnVertices = layer->dataProvider()->datasetIsOnVertices( datasetIndex );
+      mVectorDataOnVertices = metadata.isOnVertices();
       int count;
       if ( mVectorDataOnVertices )
         count = mNativeMesh.vertices.count();

@@ -236,11 +236,6 @@ bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, QgsMeshMem
       {
         point.setX( values[0].toDouble() );
         point.setY( values[1].toDouble() );
-        if ( values.size() > 2 )
-        {
-          Q_ASSERT( false );
-          //TODO Not implemented
-        }
       }
     }
 
@@ -322,35 +317,38 @@ int QgsMeshMemoryDataProvider::datasetCount() const
   return mDatasets.count();
 }
 
-bool QgsMeshMemoryDataProvider::datasetHasScalarData( int index ) const
-{
-  Q_ASSERT( datasetCount() > index );
-  return mDatasets[index].isScalar;
-}
-
-bool QgsMeshMemoryDataProvider::datasetIsOnVertices( int index ) const
-{
-  Q_ASSERT( datasetCount() > index );
-  return mDatasets[index].isOnVertices;
-}
-
 QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( int index ) const
 {
-  Q_ASSERT( datasetCount() > index );
-  return mDatasets[index].metadata;
+  if ( ( index >= 0 ) && ( index < datasetCount() ) )
+  {
+    QgsMeshDatasetMetadata metadata(
+      mDatasets[index].isScalar,
+      mDatasets[index].valid,
+      mDatasets[index].isOnVertices,
+      mDatasets[index].metadata
+    );
+    return metadata;
+  }
+  else
+  {
+    return QgsMeshDatasetMetadata();
+  }
 }
 
 QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( int datasetIndex, int valueIndex ) const
 {
-  Q_ASSERT( datasetCount() > datasetIndex );
-  Q_ASSERT( mDatasets[datasetIndex].values.count() > valueIndex );
-  return mDatasets[datasetIndex].values[valueIndex];
+  if ( ( datasetIndex >= 0 ) &&
+       ( datasetIndex < datasetCount() )  &&
+       ( valueIndex >= 0 ) &&
+       ( valueIndex < mDatasets[datasetIndex].values.count() ) )
+  {
+    return mDatasets[datasetIndex].values[valueIndex];
+  }
+  else
+  {
+    return QgsMeshDatasetValue();
+  }
 }
 
-bool QgsMeshMemoryDataProvider::datasetIsValid( int index ) const
-{
-  Q_ASSERT( datasetCount() > index );
-  return mDatasets[index].valid;
-}
 
 ///@endcond

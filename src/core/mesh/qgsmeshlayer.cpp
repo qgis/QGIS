@@ -144,28 +144,36 @@ void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSetting
 
 void QgsMeshLayer::setActiveScalarDataset( int index )
 {
-  if ( index < 0 )
-  {
-    mActiveScalarDataset = -1;
+  if ( index == mActiveScalarDataset )
     return;
-  }
 
-  Q_ASSERT( dataProvider()->datasetCount() > index );
-  // for vector datasets, we render magnitude
-  mActiveScalarDataset = index;
+  if ( ( index >= 0 ) && ( index < dataProvider()->datasetCount() ) )
+    mActiveScalarDataset = index;
+  else
+    mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
+
+  triggerRepaint();
 }
 
 void QgsMeshLayer::setActiveVectorDataset( int index )
 {
-  if ( index < 0 )
-  {
-    mActiveVectorDataset = -1;
+  if ( index == mActiveVectorDataset )
     return;
+
+  if ( ( index < 0 ) || ( index >= dataProvider()->datasetCount() ) )
+  {
+    mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
+  }
+  else
+  {
+    const QgsMeshDatasetMetadata metadata = dataProvider()->datasetMetadata( index );
+    if ( metadata.isVector() )
+      mActiveVectorDataset = index;
+    else
+      mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
   }
 
-  Q_ASSERT( dataProvider()->datasetCount() > index );
-  if ( !dataProvider()->datasetHasScalarData( index ) )
-    mActiveVectorDataset = index;
+  triggerRepaint();
 }
 
 void QgsMeshLayer::fillNativeMesh()

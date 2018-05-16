@@ -31,9 +31,8 @@
 
 struct QgsMeshMemoryDataset
 {
-  QgsMeshDatasetMetadata metadata;
+  QMap<QString, QString> metadata;
   QVector<QgsMeshDatasetValue> values;
-
   bool isScalar = true;
   bool isOnVertices = true;
   bool valid = false;
@@ -111,11 +110,9 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      */
     bool addDataset( const QString &uri ) override;
     int datasetCount() const override;
-    bool datasetHasScalarData( int index ) const override;
-    bool datasetIsOnVertices( int index ) const override;
-    QgsMeshDatasetMetadata datasetMetadata( int index ) const override;
+
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
     QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
-    bool datasetIsValid( int index ) const override;
 
     //! Returns the memory provider key
     static QString providerKey();
