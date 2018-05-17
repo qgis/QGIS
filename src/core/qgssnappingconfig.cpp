@@ -368,7 +368,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
   bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), true ).toBool();
-  SnappingType type = ( SnappingType )QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), Vertex ).toInt();
+  SnappingType type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), Vertex );
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
 

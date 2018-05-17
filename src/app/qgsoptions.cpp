@@ -581,9 +581,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
 
   //segmentation tolerance type
-  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), 0 );
-  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), 1 );
-  int toleranceType = mSettings->value( QStringLiteral( "/qgis/segmentationToleranceType" ), "0" ).toInt();
+  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), QgsAbstractGeometry::MaximumAngle );
+  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), QgsAbstractGeometry::MaximumDifference );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = mSettings->enumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
   if ( toleranceTypeIndex != -1 )
   {
@@ -591,7 +591,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   double tolerance = mSettings->value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  if ( toleranceType == 0 )
+  if ( toleranceType == QgsAbstractGeometry::MaximumAngle )
   {
     tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
   }
@@ -616,7 +616,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), ( int )QgsVectorSimplifyMethod::Distance );
   mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), ( int )QgsVectorSimplifyMethod::Visvalingam );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->value( QStringLiteral( "/qgis/simplifyAlgorithm" ), 0 ).toInt() ) );
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), QgsVectorSimplifyMethod::NoSimplification ) ) );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -633,7 +633,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
   mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
-  mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
+  mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() );
 
@@ -948,7 +948,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
   mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() ) );
+  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
   QgsTolerance::UnitType defSnapUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
@@ -961,7 +961,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  int defRadiusUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt();
+  QgsTolerance::UnitType defRadiusUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels );
   if ( defRadiusUnits == QgsTolerance::ProjectUnits || defRadiusUnits == QgsTolerance::LayerUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
@@ -974,7 +974,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mSnappingMarkerColorButton->setColor( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_color" ), QColor( Qt::magenta ) ).value<QColor>() );
   mSnappingTooltipsCheckbox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), false ).toBool() );
-  mEnableSnappingOnInvisibleFeatureCheckbox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() );
 
   //vertex marker
   mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool() );
@@ -1012,10 +1011,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSnappingMainDialogComboBox->addItem( tr( "Dock" ), "dock" );
   mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString() ) );
 
-  mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
-  mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), 1 );
-  mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
-  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
+  mOffsetJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
+  mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
+  mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
+  mOffsetJoinStyleComboBox->setCurrentIndex( ( int )mSettings->enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ) );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
 
@@ -1314,7 +1313,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), cmbAttrTableBehavior->currentData() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
   mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
@@ -1330,7 +1329,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), mComboCopyFeatureFormat->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), ( QgsClipboard::CopyFormat )mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
@@ -1351,8 +1350,8 @@ void QgsOptions::saveOptions()
     simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
     if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), ( int ) simplifyHints );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), mSimplifyAlgorithmComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
@@ -1361,10 +1360,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
 
   //curve segmentation
-  int segmentationType = mToleranceTypeComboBox->currentData().toInt();
-  mSettings->setValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
+  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
+  mSettings->setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
-  if ( segmentationType == 0 )
+  if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
   {
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
@@ -1493,13 +1492,13 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), mDefaultSnapModeComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( QgsSnappingConfig::SnappingType )mDefaultSnapModeComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
-                       ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
-                       ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
+                           ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
+                           ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_color" ), mSnappingMarkerColorButton->color() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), mSnappingTooltipsCheckbox->isChecked() );
@@ -1526,7 +1525,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), chkDisableAttributeValuesDlg->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/validate_geometries" ), mValidateGeometries->currentIndex() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), ( QgsGeometry::JoinStyle )mOffsetJoinStyleComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
