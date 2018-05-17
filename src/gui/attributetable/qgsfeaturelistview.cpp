@@ -386,7 +386,7 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
   else
   {
     // we don't care if the edit selection is in the feature selection?
-    // well then, only update if there is no valid edit selection availble
+    // well then, only update if there is no valid edit selection available
     if ( !validEditSelectionAvailable )
       editSelectionUpdateRequested = true;
   }
