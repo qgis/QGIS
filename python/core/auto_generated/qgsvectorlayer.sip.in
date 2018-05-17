@@ -939,6 +939,18 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
+    virtual bool empty() const;
+
+%Docstring
+Determines if this vector layer is empty.
+A layer is considered empty if either the data provider or
+the edit buffer have features in them.
+This means, in case the data provider contains features which have all
+been deleted in the edit buffer, the result will be false.
+
+.. versionadded:: 3.2
+%End
+
  void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false ) /Deprecated/;
 %Docstring
 Update the data source of the layer. The layer's renderer and legend will be preserved only

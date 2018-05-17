@@ -930,6 +930,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     long featureCount( const QString &legendKey ) const;
 
     /**
+     * Determines if this vector layer is empty.
+     * A layer is considered empty if either the data provider or
+     * the edit buffer have features in them.
+     * This means, in case the data provider contains features which have all
+     * been deleted in the edit buffer, the result will be false.
+     *
+     * \since QGIS 3.2
+     */
+    bool empty() const override;
+
+    /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      * \param dataSource new layer data source

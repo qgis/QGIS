@@ -704,6 +704,8 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
+
+
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted || mFeatureCounter )
@@ -2761,6 +2763,11 @@ long QgsVectorLayer::featureCount() const
 {
   return mDataProvider->featureCount() +
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
+}
+
+bool QgsVectorLayer::empty() const
+{
+  return mDataProvider->empty() && ( !mEditBuffer || mEditBuffer->addedFeatures().empty() );
 }
 
 bool QgsVectorLayer::commitChanges()
