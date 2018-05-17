@@ -124,6 +124,21 @@ Number of features in the layer
 :return: long containing number of features
 %End
 
+    virtual bool empty() const;
+%Docstring
+Returns true if the layer contains at least one feature.
+
+.. versionadded:: 3.2
+%End
+
+    virtual bool emptyUnknown() const;
+%Docstring
+For QgsVectorDataProviders this always returns true because
+the provider is actually queried for features.
+
+.. versionadded:: 3.2
+%End
+
     virtual QgsFields fields() const = 0;
 
 %Docstring
