@@ -908,13 +908,14 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
   }
 }
 
-QString QgsAttributeTableModel::sortCacheExpression() const
+QString QgsAttributeTableModel::sortCacheExpression( unsigned long cacheIndex ) const
 {
-  Q_ASSERT( !mSortCaches.empty() );
-
   QString expressionString;
 
-  const QgsExpression &expression = mSortCaches.begin()->sortCacheExpression;
+  if ( cacheIndex >= mSortCaches.size() )
+    return expressionString;
+
+  const QgsExpression &expression = mSortCaches[cacheIndex].sortCacheExpression;
 
   if ( expression.isValid() )
     expressionString = expression.expression();
