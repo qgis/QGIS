@@ -415,6 +415,21 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(count, 0)
             self.assertEqual(self.source.featureCount(), 5)
 
+    def testEmpty(self):
+        self.assertFalse(self.source.empty())
+        self.assertFalse(self.source.emptyUnknown())
+
+        if self.source.supportsSubsetString():
+            # Add a subset string and test feature count
+            subset = self.getSubsetString()
+            self.source.setSubsetString(subset)
+            self.assertFalse(self.source.empty())
+            subsetNoMatching = getSubsetStringNoMatching(self)
+            self.source.setSubsetString(subsetNoMatching)
+            self.assertTrue(self.source.empty())
+            self.source.setSubsetString(None)
+            self.assertFalse(self.source.empty())
+
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
 
