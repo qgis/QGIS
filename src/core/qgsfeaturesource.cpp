@@ -23,6 +23,16 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+bool QgsFeatureSource::empty() const
+{
+  return featureCount();
+}
+
+bool QgsFeatureSource::emptyUnknown() const
+{
+  return featureCount() == -1;
+}
+
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )

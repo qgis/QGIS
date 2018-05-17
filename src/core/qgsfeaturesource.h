@@ -86,6 +86,27 @@ class CORE_EXPORT QgsFeatureSource
     virtual long featureCount() const = 0;
 
     /**
+     * Determines if there are any features available in the source.
+     *
+     * In case it is not known if there are features available, false is returned.
+     * Use ``emptyUnknown()`` to determine if this value is reliable.
+     *
+     * \see QgsVectorDataProvider::empty() for data provider specific
+     *      information.
+     *
+     * \since QGIS 3.2
+     */
+    virtual bool empty() const;
+
+    /**
+     * Returns true if the value returned by ``empty()`` may be wrong.
+     * This depends on the dataprovider.
+     *
+     * \since QGIS 3.2
+     */
+    virtual bool emptyUnknown() const;
+
+    /**
      * Returns the set of unique values contained within the specified \a fieldIndex from this source.
      * If specified, the \a limit option can be used to limit the number of returned values.
      * The base class implementation uses a non-optimised approach of looping through
@@ -150,7 +171,6 @@ class CORE_EXPORT QgsFeatureSource
      */
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
                                  QgsFeedback *feedback = nullptr ) SIP_FACTORY;
-
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )
