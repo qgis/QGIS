@@ -599,8 +599,18 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^\s*friend class \w+/ ){
         next;
     }
-    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
+
+    # insert metaoject for Q_GADGET
+    if ($LINE =~ m/^\s*Q_GADGET\b.*?$/){
+        if ($LINE !~ m/SIP_SKIP/){
+            write_output("HCE", "  public:\n");
+            write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n");
+        }
+        next;
+    }
+
+    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM etc.
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
 

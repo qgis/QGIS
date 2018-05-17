@@ -28,6 +28,9 @@ length, and if applicable, precision.
 #include "qgsfield.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,

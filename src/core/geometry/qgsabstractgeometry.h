@@ -52,7 +52,6 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
-    Q_GADGET
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -86,6 +85,9 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = 0;
     SIP_END
 #endif
+
+    Q_GADGET
+
   public:
 
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle

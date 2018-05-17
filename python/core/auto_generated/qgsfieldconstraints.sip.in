@@ -22,6 +22,9 @@ Stores information about constraints which may be present on a field.
 #include "qgsfieldconstraints.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Constraint
     {

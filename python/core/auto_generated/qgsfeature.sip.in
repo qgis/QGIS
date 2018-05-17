@@ -34,6 +34,9 @@ geometry and a list of field/values attributes.
 #endif
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     SIP_PYOBJECT __iter__();
 %MethodCode

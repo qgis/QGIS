@@ -26,22 +26,25 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
-from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
-from .additions.projectdirtyblocker import ProjectDirtyBlocker
-from .additions.qgstaskwrapper import QgsTaskWrapper
-from .additions.qgsfunction import register_function, qgsfunction
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
 from .additions.processing import processing_output_layer_repr, processing_source_repr
-from .additions.qgsgeometry import _geometryNonZero
+from .additions.projectdirtyblocker import ProjectDirtyBlocker
 from .additions.qgsdefaultvalue import _isValid
+from .additions.qgsfeature import mapping_feature
+from .additions.qgsfunction import register_function, qgsfunction
+from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
+from .additions.qgstaskwrapper import QgsTaskWrapper
+from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 
 # Injections into classes
-QgsGeometry.__nonzero__ = _geometryNonZero
-QgsGeometry.__bool__ = _geometryNonZero
 QgsDefaultValue.__bool__ = _isValid
-QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
-QgsProject.blockDirtying = ProjectDirtyBlocker
-QgsTask.fromFunction = fromFunction
+QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsGeometry.__bool__ = _geometryNonZero
+QgsGeometry.__geo_interface__ = property(mapping_geometry)
+QgsGeometry.__nonzero__ = _geometryNonZero
 QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
+QgsProject.blockDirtying = ProjectDirtyBlocker
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+QgsTask.fromFunction = fromFunction
