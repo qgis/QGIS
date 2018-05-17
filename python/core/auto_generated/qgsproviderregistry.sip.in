@@ -184,8 +184,6 @@ Returns a string containing the available protocol drivers
 %Docstring
  register a new vector data provider from its ``providerMetadata``
 
-:param providerMetadata: QgsProviderMetadata instance describing the new provider
-
 .. note::
 
    ownership of the QgsProviderMetadata instance is transferred to the registry

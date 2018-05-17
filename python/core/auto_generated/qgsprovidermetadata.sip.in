@@ -42,10 +42,6 @@ Metadata for provider with direct provider creation function pointer, where
 no library is involved.
 
 .. versionadded:: 3.0
-
-.. note::
-
-   not available in Python bindings
 %End
 %MethodCode
 
