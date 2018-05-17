@@ -1809,7 +1809,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
       QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
       if ( name.isEmpty() )
-        name = QObject::tr( "Imported from GDAL" );
+        name = ( OSRIsGeocentric( crs ) ? OSRGetAttrValue( crs, "GEOCCS", 0 ) : QObject::tr( "Imported from GDAL" ) );
 
       sql = QString( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,0)" )
             .arg( quotedValue( name ),
