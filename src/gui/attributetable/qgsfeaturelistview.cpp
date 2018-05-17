@@ -58,6 +58,10 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
 
   mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
   setSelectionModel( mFeatureSelectionModel );
+  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [ this ]()
+  {
+    ensureEditSelection( true );
+  } );
 
   if ( mItemDelegate && mItemDelegate->parent() == this )
   {
@@ -75,9 +79,9 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
            this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
   connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [ = ] { repaintRequested(); } );
-  connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, &QgsFeatureListView::ensureEditSelection );
-  connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, &QgsFeatureListView::ensureEditSelection );
-  connect( featureListModel, &QgsFeatureListModel::modelReset, this, &QgsFeatureListView::ensureEditSelection );
+  connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::modelReset, this, [ this ]() { ensureEditSelection(); } );
 }
 
 bool QgsFeatureListView::setDisplayExpression( const QString &expression )
@@ -334,17 +338,87 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
 }
 
-void QgsFeatureListView::ensureEditSelection()
+void QgsFeatureListView::ensureEditSelection( bool inSelection )
 {
-  QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
-  // If there is no selection or an invalid selection (and there would be something we could select) : select it
-  if ( ( selectedIndexes.isEmpty()
-         || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
-       && mModel->rowCount() )
+  if ( !mModel->rowCount() )
+    return;
+
+  const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
+
+  // We potentially want a new edit selection
+  // If we it should be in the feature selection
+  // but we don't find a matching one we might
+  // still stick to the old edit selection
+  bool editSelectionUpdateRequested = false;
+  // There is a valid selection available which we
+  // could fall back to
+  bool validEditSelectionAvailable = false;
+
+  if ( selectedIndexes.isEmpty() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
   {
-    QTimer::singleShot( 0, this, [ this ]()
+    validEditSelectionAvailable = false;
+  }
+  else
+  {
+    validEditSelectionAvailable = true;
+  }
+
+  // If we want to force the edit selection to be within the feature selection
+  // let's do some additional checks
+  if ( inSelection )
+  {
+    // no valid edit selection, update anyway
+    if ( !validEditSelectionAvailable )
     {
-      setEditSelection( mModel->mapToMaster( mModel->index( 0, 0 ) ), QItemSelectionModel::ClearAndSelect );
+      editSelectionUpdateRequested = true;
+    }
+    else
+    {
+      // valid selection: update only if it's not in the feature selection
+      const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
+
+      if ( !selectedFids.contains( mModel->idxToFid( mModel->mapFromMaster( selectedIndexes.first() ) ) ) )
+      {
+        editSelectionUpdateRequested = true;
+      }
+    }
+  }
+  else
+  {
+    // we don't care if the edit selection is in the feature selection?
+    // well then, only update if there is no valid edit selection availble
+    if ( !validEditSelectionAvailable )
+      editSelectionUpdateRequested = true;
+  }
+
+  if ( editSelectionUpdateRequested )
+  {
+    QTimer::singleShot( 0, this, [ this, inSelection, validEditSelectionAvailable ]()
+    {
+      int rowToSelect = -1;
+
+      if ( inSelection )
+      {
+        const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
+        const int rowCount = mModel->rowCount();
+
+        for ( int i = 0; i < rowCount; i++ )
+        {
+          if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
+          {
+            rowToSelect = i;
+            break;
+          }
+
+          if ( rowToSelect == -1 && !validEditSelectionAvailable )
+            rowToSelect = 0;
+        }
+      }
+      else
+        rowToSelect = 0;
+
+      if ( rowToSelect != -1 )
+        setEditSelection( mModel->mapToMaster( mModel->index( rowToSelect, 0 ) ), QItemSelectionModel::ClearAndSelect );
     } );
   }
 }
