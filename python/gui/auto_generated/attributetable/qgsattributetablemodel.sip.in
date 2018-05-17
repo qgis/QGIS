@@ -203,7 +203,7 @@ as ``QgsAttributeTableModel.SortRole + cacheIndex``.
 
     QString sortCacheExpression( unsigned long cacheIndex = 0 ) const;
 %Docstring
-The expression which was used to fill the sorting cache at index \cacheIndex.
+The expression which was used to fill the sorting cache at index ``cacheIndex``.
 
 .. seealso:: :py:func:`prefetchSortData`
 %End

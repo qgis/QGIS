@@ -209,7 +209,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void prefetchSortData( const QString &expression, unsigned long cacheIndex = 0 );
 
     /**
-     * The expression which was used to fill the sorting cache at index \cacheIndex.
+     * The expression which was used to fill the sorting cache at index \a cacheIndex.
      *
      *  \see prefetchSortData
      */
