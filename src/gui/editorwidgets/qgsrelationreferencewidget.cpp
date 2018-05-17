@@ -145,6 +145,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKey );
   connect( mAddEntryButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::addEntry );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsRelationReferenceWidget::updateAddEntryButton );
+  connect( mComboBox, &QgsFeatureListComboBox::modelUpdated, this, &QgsRelationReferenceWidget::updateIndex );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -153,6 +154,38 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
   unsetMapTool();
   if ( mMapTool )
     delete mMapTool;
+}
+
+void QgsRelationReferenceWidget::updateIndex()
+{
+  if ( mChainFilters && mComboBox->count() > 0 )
+  {
+    int index = -1;
+
+    // uninitialized filter
+    if ( ! mFilterComboBoxes.isEmpty()
+         && mFilterComboBoxes[0]->currentIndex() == 0 && mAllowNull )
+    {
+      index = mComboBox->nullIndex();
+    }
+    else if ( mComboBox->count() > mComboBox->nullIndex() )
+    {
+      index = mComboBox->nullIndex() + 1;
+    }
+    else if ( mAllowNull )
+    {
+      index = mComboBox->nullIndex();
+    }
+    else
+    {
+      index = 0;
+    }
+
+    if ( mComboBox->count() > index )
+    {
+      mComboBox->setCurrentIndex( index );
+    }
+  }
 }
 
 void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool allowNullValue )
