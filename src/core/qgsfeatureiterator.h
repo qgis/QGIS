@@ -276,13 +276,13 @@ class CORE_EXPORT QgsFeatureIterator
     % End
 #endif
 
-    //! construct invalid iterator
+    //! Construct invalid iterator
     QgsFeatureIterator() = default;
-    //! construct a valid iterator
+    //! Construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter SIP_TRANSFER );
-    //! copy constructor copies the iterator, increases ref.count
+    //! Copy constructor copies the iterator, increases ref.count
     QgsFeatureIterator( const QgsFeatureIterator &fi );
-    //! destructor deletes the iterator if it has no more references
+    //! Destructor deletes the iterator if it has no more references
     ~QgsFeatureIterator();
 
     QgsFeatureIterator &operator=( const QgsFeatureIterator &other );
