@@ -38,6 +38,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsfieldmodel.h"
+#include "qgstexteditwidgetfactory.h"
 
 #include <QVariant>
 
@@ -375,15 +376,12 @@ void QgsAttributeTableModel::loadAttributes()
     QgsEditorWidgetFactory *widgetFactory = QgsGui::editorWidgetRegistry()->factory( setup.type() );
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-    if ( widgetFactory )
-    {
-      mWidgetFactories.append( widgetFactory );
-      mWidgetConfigs.append( setup.config() );
-      mAttributeWidgetCaches.append( fieldFormatter->createCache( layer(), idx, setup.config() ) );
-      mFieldFormatters.append( fieldFormatter );
+    mWidgetFactories.append( widgetFactory );
+    mWidgetConfigs.append( setup.config() );
+    mAttributeWidgetCaches.append( fieldFormatter->createCache( layer(), idx, setup.config() ) );
+    mFieldFormatters.append( fieldFormatter );
 
-      attributes << idx;
-    }
+    attributes << idx;
   }
 
   if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
