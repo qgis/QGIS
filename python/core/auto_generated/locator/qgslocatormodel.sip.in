@@ -26,6 +26,8 @@ in order to ensure correct sorting of results by priority and match level.
 %End
   public:
 
+    static const int NoGroup;
+
     enum Role
     {
       ResultDataRole,
@@ -33,6 +35,7 @@ in order to ensure correct sorting of results by priority and match level.
       ResultFilterPriorityRole,
       ResultScoreRole,
       ResultFilterNameRole,
+      ResultFilterGroupSortingRole,
     };
 
     QgsLocatorModel( QObject *parent /TransferThis/ = 0 );

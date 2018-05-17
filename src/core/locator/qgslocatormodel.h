@@ -45,6 +45,8 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 
   public:
 
+    static const int NoGroup = 9999;
+
     //! Custom model roles
     enum Role
     {
@@ -53,6 +55,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
       ResultFilterPriorityRole, //!< Result priority, used by QgsLocatorProxyModel for sorting roles.
       ResultScoreRole, //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
       ResultFilterNameRole, //!< Associated filter name which created the result
+      ResultFilterGroupSortingRole, //!< Group results within the same filter results
     };
 
     /**
@@ -99,10 +102,13 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
       QgsLocatorResult result;
       QString filterTitle;
       QgsLocatorFilter *filter = nullptr;
+      QString groupTitle = QString();
+      int groupSorting = 0;
     };
 
     QList<Entry> mResults;
     QSet<QString> mFoundResultsFromFilterNames;
+    QMap<QgsLocatorFilter *, QStringList> mFoundResultsFilterGroups;
     bool mDeferredClear = false;
     QTimer mDeferredClearTimer;
 };

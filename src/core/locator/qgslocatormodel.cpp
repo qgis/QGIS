@@ -15,11 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QFont>
 
 #include "qgslocatormodel.h"
 #include "qgslocator.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+
 
 //
 // QgsLocatorModel
@@ -41,6 +43,7 @@ void QgsLocatorModel::clear()
   beginResetModel();
   mResults.clear();
   mFoundResultsFromFilterNames.clear();
+  mFoundResultsFilterGroups.clear();
   endResetModel();
 }
 
@@ -76,8 +79,14 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         case Name:
           if ( !mResults.at( index.row() ).filter )
             return mResults.at( index.row() ).result.displayString;
-          else
+          else if ( mResults.at( index.row() ).filter && mResults.at( index.row() ).groupSorting == 0 )
             return mResults.at( index.row() ).filterTitle;
+          else
+          {
+            QString groupTitle = mResults.at( index.row() ).groupTitle;
+            groupTitle.prepend( "  " );
+            return groupTitle;
+          }
         case Description:
           if ( !mResults.at( index.row() ).filter )
             return mResults.at( index.row() ).result.description;
@@ -86,6 +95,19 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       }
       break;
     }
+
+    case Qt::FontRole:
+      if ( index.column() == Name && !mResults.at( index.row() ).groupTitle.isEmpty() )
+      {
+        QFont font;
+        font.setItalic( true );
+        return font;
+      }
+      else
+      {
+        return QVariant();
+      }
+      break;
 
     case Qt::DecorationRole:
       switch ( index.column() )
@@ -112,10 +134,8 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     case ResultTypeRole:
-      if ( mResults.at( index.row() ).filter )
-        return 0;
-      else
-        return 1;
+      // 0 for filter title, the group otherwise, 9999 if no group
+      return mResults.at( index.row() ).groupSorting;
 
     case ResultScoreRole:
       if ( mResults.at( index.row() ).filter )
@@ -134,6 +154,12 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return mResults.at( index.row() ).result.filter->displayName();
       else
         return mResults.at( index.row() ).filterTitle;
+
+    case ResultFilterGroupSortingRole:
+      if ( mResults.at( index.row() ).groupTitle.isEmpty() )
+        return 1;
+      else
+        return 0;
   }
 
   return QVariant();
@@ -146,7 +172,7 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
     return QAbstractTableModel::flags( index );
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
-  if ( !mResults.at( index.row() ).filterTitle.isEmpty() )
+  if ( mResults.at( index.row() ).filter )
   {
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   }
@@ -159,6 +185,7 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   if ( mDeferredClear )
   {
     mFoundResultsFromFilterNames.clear();
+    mFoundResultsFilterGroups.clear();
   }
 
   int pos = mResults.size();
@@ -166,13 +193,21 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
+  bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
+                     || !mFoundResultsFilterGroups.value( result.filter ).contains( result.group ) );
+  if ( addingGroup )
+  {
+    if ( !mFoundResultsFilterGroups.contains( result.filter ) )
+      mFoundResultsFilterGroups[result.filter] = QStringList();
+    mFoundResultsFilterGroups[result.filter] << result.group ;
+  }
   if ( mDeferredClear )
   {
     beginResetModel();
     mResults.clear();
   }
   else
-    beginInsertRows( QModelIndex(), pos, pos + ( addingFilter ? 1 : 0 ) );
+    beginInsertRows( QModelIndex(), pos, pos + ( static_cast<int>( addingFilter ) + static_cast<int>( addingGroup ) ) );
 
   if ( addingFilter )
   {
@@ -181,8 +216,21 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
     entry.filter = result.filter;
     mResults << entry;
   }
+  if ( addingGroup )
+  {
+    Entry entry;
+    entry.filterTitle = result.filter->displayName();
+    entry.groupTitle = result.group;
+    // the sorting of groups will be achieved by order of adding groups
+    // this could be customized by adding the extra info to QgsLocatorResult
+    entry.groupSorting = mFoundResultsFilterGroups[result.filter].count();
+    entry.filter = result.filter;
+    mResults << entry;
+  }
   Entry entry;
   entry.result = result;
+  // keep the group title empty to allow differecing group title from results
+  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].count();
   mResults << entry;
 
   if ( mDeferredClear )
@@ -279,11 +327,17 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   if ( leftFilter != rightFilter )
     return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 
-  // then make sure filter title appears before filter's results
+  // then make sure filter title or group appears before filter's results
   int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
   int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
   if ( leftTypeRole != rightTypeRole )
     return leftTypeRole < rightTypeRole;
+
+  // make sure group title are above
+  int leftGroupRole = sourceModel()->data( left, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
+  int rightGroupRole = sourceModel()->data( right, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
+  if ( leftGroupRole != rightGroupRole )
+    return leftGroupRole < rightGroupRole;
 
   // sort filter's results by score
   double leftScore = sourceModel()->data( left, QgsLocatorModel::ResultScoreRole ).toDouble();

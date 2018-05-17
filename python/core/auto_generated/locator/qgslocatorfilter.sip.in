@@ -45,6 +45,8 @@ Constructor for QgsLocatorResult.
 
     double score;
 
+    QString group;
+
 };
 
 class QgsLocatorFilter : QObject
