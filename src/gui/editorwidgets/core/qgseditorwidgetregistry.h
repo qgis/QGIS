@@ -52,7 +52,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
      * QgsGui::editorWidgetRegistry().
      */
-    QgsEditorWidgetRegistry() = default;
+    QgsEditorWidgetRegistry();
 
     /**
      * Registers all the default widgets.
@@ -188,6 +188,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QMap<QString, QgsEditorWidgetFactory *> mWidgetFactories;
     QMap<const char *, QPair<int, QString> > mFactoriesByType;
     QgsEditorWidgetAutoConf mAutoConf;
+    std::unique_ptr<QgsEditorWidgetFactory> mFallbackWidgetFactory = nullptr;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H
