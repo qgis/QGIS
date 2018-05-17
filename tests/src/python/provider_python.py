@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""QGIS test python layer provider.
+"""QGIS python layer provider test.
+
+This module is a Python implementation of (a clone of) the core memory
+vector layer provider, to be used for test_provider_python.py
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -166,8 +169,6 @@ class PyFeatureSource(QgsAbstractFeatureSource):
             self._subset_expression = None
 
     def getFeatures(self, request):
-        # QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
-        # NOTE: this is the same as PyProvider.getFeatures
         return QgsFeatureIterator(PyFeatureIterator(self, request))
 
 
@@ -178,18 +179,15 @@ class PyProvider(QgsVectorDataProvider):
     @classmethod
     def providerKey(cls):
         """Returns the memory provider key"""
-        #static QString providerKey();
         return 'pythonprovider'
 
     @classmethod
     def description(cls):
         """Returns the memory provider description"""
-        #static QString providerDescription();
         return 'Python Test Provider'
 
     @classmethod
     def createProvider(cls, uri):
-        #static QgsMemoryProvider *createProvider( const QString &uri );
         return PyProvider(uri)
 
     # Implementation of functions from QgsVectorDataProvider
@@ -272,9 +270,10 @@ class PyProvider(QgsVectorDataProvider):
                 self._spatialindex.insertFeature(_f)
 
         if len(f_added):
+            self.clearMinMaxCache()
             self.updateExtents()
 
-        return added, flist
+        return added, f_added
 
     def deleteFeatures(self, ids):
         if not ids:
@@ -287,6 +286,7 @@ class PyProvider(QgsVectorDataProvider):
                 del self._features[id]
                 removed = True
         if removed:
+            self.clearMinMaxCache()
             self.updateExtents()
         return removed
 
@@ -300,6 +300,7 @@ class PyProvider(QgsVectorDataProvider):
                     old_attrs = f.attributes()
                     old_attrs.append(None)
                     f.setAttributes(old_attrs)
+            self.clearMinMaxCache()
             return True
         except Exception:
             return False
@@ -308,26 +309,27 @@ class PyProvider(QgsVectorDataProvider):
         result = True
         for key, new_name in renamedAttributes:
             fieldIndex = key
-            if fieldIndex < 0 or fieldIndex >= lself._fields.count():
-                result = false
+            if fieldIndex < 0 or fieldIndex >= self._fields.count():
+                result = False
                 continue
             if new_name in self._fields.indexFromName(new_name) >= 0:
                 #field name already in use
                 result = False
                 continue
             self._fields[fieldIndex].setName(new_name)
-        return True
+        return result
 
     def deleteAttributes(self, attributes):
-        attrIdx = sorted(attributes.toList(), reverse=True)
+        attrIdx = sorted(attributes, reverse=True)
 
         # delete attributes one-by-one with decreasing index
         for idx in attrIdx:
             self._fields.remove(idx)
-            for f in self._features:
+            for f in self._features.values():
                 attr = f.attributes()
-                attr.remove(idx)
+                del(attr[idx])
                 f.setAttributes(attr)
+        self.clearMinMaxCache()
         return True
 
     def changeAttributeValues(self, attr_map):
@@ -338,6 +340,7 @@ class PyProvider(QgsVectorDataProvider):
                 continue
             for k, v in attrs.items():
                 f.setAttribute(k, v)
+        self.clearMinMaxCache()
         return True
 
     def changeGeometryValues(self, geometry_map):
@@ -373,7 +376,7 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def capabilities(self):
-        return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
+        return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.CreateSpatialIndex | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
 
     #/* Implementation of functions from QgsDataProvider */
 
