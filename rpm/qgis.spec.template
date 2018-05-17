@@ -6,6 +6,12 @@
 # - _relver
 # - _timestamp (optional)
 
+# Force the python interpreter to python3:
+# brp-python-bytecompile is unable to identify
+# the proper required version of python for 
+# py files located under /usr/share/qgis/python/plugins
+%global __python %{__python3}
+
 %if %{_timestamp} > 0
 %define builddate %(date -d @%{_timestamp} '+%a %b %d %Y')
 %else
