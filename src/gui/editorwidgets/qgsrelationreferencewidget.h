@@ -184,6 +184,12 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void addEntry();
     void updateAddEntryButton();
 
+    /**
+     * Updates the FK index as soon as the underlying model is updated when
+     * the chainFilter option is activated.
+     */
+    void updateIndex();
+
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature &feature );

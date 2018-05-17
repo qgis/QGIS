@@ -259,7 +259,11 @@ void QgsValueRelationWidgetWrapper::populate( )
   else if ( mTableWidget )
   {
     if ( mCache.size() > 0 )
-      mTableWidget->setRowCount( ( mCache.size() + config( QStringLiteral( "NofColumns" ) ).toInt() - 1 ) / config( QStringLiteral( "NofColumns" ) ).toInt() );
+    {
+      const int nofCols = config( QStringLiteral( "NofColumns" ) ).toInt();
+      const int denom = nofCols != 0 ? nofCols : 1;
+      mTableWidget->setRowCount( ( mCache.size() + nofCols - 1 ) / denom );
+    }
     else
       mTableWidget->setRowCount( 1 );
     if ( config( QStringLiteral( "NofColumns" ) ).toInt() > 0 )
