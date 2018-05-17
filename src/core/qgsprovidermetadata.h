@@ -82,7 +82,6 @@ class CORE_EXPORT QgsProviderMetadata
 
       if ( sipResObj )
       {
-        // Py_DECREF(sipResObj);
         if ( sipCanConvertToType( sipResObj, sipType_QgsDataProvider, SIP_NOT_NONE ) )
         {
           int state0;
