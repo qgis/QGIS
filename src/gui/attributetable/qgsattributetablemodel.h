@@ -199,12 +199,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void prefetchColumnData( int column );
 
     /**
-     * Prefetches the entire data for one expression. Based on this cached information
+     * Prefetches the entire data for an \a expression. Based on this cached information
      * the sorting can later be done in a performant way. A \a cacheIndex can be specified
      * if multiple caches should be filled. In this case, the caches will be available
      * as ``QgsAttributeTableModel::SortRole + cacheIndex``.
-     *
-     * \param expression The expression to cache
      */
     void prefetchSortData( const QString &expression, unsigned long cacheIndex = 0 );
 
