@@ -110,7 +110,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
-     * Determines if there is at least one feature avaiable on this table.
+     * Determines if there is at least one feature available on this table.
      *
      * \note In contrast to the featureCount() method, this method is not
      *       affected by estimated metadata.
