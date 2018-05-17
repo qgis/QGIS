@@ -67,7 +67,7 @@ class ClipRasterByExtent(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue='',
+                                                       defaultValue=None,
                                                        optional=True))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,

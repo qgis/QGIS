@@ -91,7 +91,7 @@ class contour(GdalAlgorithm):
         nodata_param = QgsProcessingParameterNumber(self.NODATA,
                                                     self.tr('Input pixel value to treat as "nodata"'),
                                                     type=QgsProcessingParameterNumber.Double,
-                                                    defaultValue='',
+                                                    defaultValue=None,
                                                     optional=True)
         nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(nodata_param)
