@@ -58,6 +58,14 @@ An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
 %End
 
+    int nullIndex() const;
+%Docstring
+Returns the current index of the NULL value, or -1 if NULL values are
+not allowed.
+
+.. versionadded:: 3.2
+%End
+
     void setFilterExpression( const QString &filterExpression );
 %Docstring
 An additional expression to further restrict the available features.
@@ -118,6 +126,13 @@ The index of the currently selected item.
 
 
   signals:
+
+    void modelUpdated();
+%Docstring
+The underlying model has been updated.
+
+.. versionadded:: 3.2
+%End
 
     void sourceLayerChanged();
 %Docstring
