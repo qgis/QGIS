@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import QSize
 import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
@@ -514,6 +515,30 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Transparent")
+
+    def test_wms_getmap_labeling_settings(self):
+        # Test the `DrawRectOnly` option with 1 candidate (`CandidatesPolygon`).
+        # May fail if the labeling position engine is tweaked.
+
+        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        project = os.path.join(d, "project_labeling_settings.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_LabelingSettings")
 
     def test_wms_getmap_background(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

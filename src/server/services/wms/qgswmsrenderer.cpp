@@ -1130,6 +1130,9 @@ namespace QgsWms
     QgsExpressionContext context = mProject->createExpressionContext();
     context << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
     mapSettings.setExpressionContext( context );
+
+    // add labeling engine settings
+    mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,

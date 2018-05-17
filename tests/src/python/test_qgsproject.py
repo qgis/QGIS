@@ -23,6 +23,7 @@ from qgis.core import (QgsProject,
                        QgsApplication,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsLabelingEngineSettings,
                        QgsVectorLayer,
                        QgsRasterLayer,
                        QgsMapLayer,
@@ -1032,6 +1033,28 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(tree.hasCustomLayerOrder())
         self.assertEqual(tree.customLayerOrder(), [layer_y, layer_x])
         self.assertEqual(tree.layerOrder(), [layer_y, layer_x])
+
+    def testPalPropertiesReadWrite(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+
+        s0 = QgsLabelingEngineSettings()
+        s0.setNumCandidatePositions(3, 33, 333)
+
+        p0 = QgsProject()
+        p0.setFileName(tmpFile)
+        p0.setLabelingEngineSettings(s0)
+        p0.write()
+
+        p1 = QgsProject()
+        p1.read(tmpFile)
+
+        s1 = p1.labelingEngineSettings()
+        candidates = s1.numCandidatePositions()
+
+        self.assertEqual(candidates[0], 3)
+        self.assertEqual(candidates[1], 33)
+        self.assertEqual(candidates[2], 333)
 
 
 if __name__ == '__main__':
