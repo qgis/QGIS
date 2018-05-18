@@ -2662,12 +2662,33 @@ static QVariant fcnReverse( const QVariantList &values, const QgsExpressionConte
   if ( fGeom.isNull() )
     return QVariant();
 
-  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( fGeom.constGet() );
-  if ( !curve )
-    return QVariant();
+  QVariant result;
+  if ( !fGeom.isMultipart() )
+  {
+    const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( fGeom.constGet() );
+    if ( !curve )
+      return QVariant();
 
-  QgsCurve *reversed = curve->reversed();
-  QVariant result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
+    QgsCurve *reversed = curve->reversed();
+    result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
+  }
+  else
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( fGeom.constGet() );
+    std::unique_ptr< QgsGeometryCollection > reversed( collection->createEmptyWithSameType() );
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
+      {
+        reversed->addGeometry( curve->reversed() );
+      }
+      else
+      {
+        reversed->addGeometry( collection->geometryN( i )->clone() );
+      }
+    }
+    result = reversed ? QVariant::fromValue( QgsGeometry( std::move( reversed ) ) ) : QVariant();
+  }
   return result;
 }
 
