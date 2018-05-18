@@ -28,20 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QTreeWidgetItem
-from qgis.PyQt.QtCore import Qt
 
-from qgis.core import (QgsApplication,
-                       QgsExpressionContextScope,
+from qgis.core import (QgsExpressionContextScope,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsExpression,
-                       QgsProcessingModelChildParameterSource,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterField,
-                       QgsProcessingOutputString,
-                       QgsProcessingParameterExpression,
-                       QgsProcessingOutputFile)
+                       QgsProcessingModelChildParameterSource)
 
 from qgis.gui import QgsFieldExpressionWidget
 
