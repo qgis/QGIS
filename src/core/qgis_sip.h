@@ -197,4 +197,10 @@
  */
 #define SIP_DOC_TEMPLATE
 
+/*
+ * Define the __bool__ operator using the given method
+ * sipify.pl will take care of creating the injection in qgis/{module}/__init__.py
+ */
+#define SIP_PYTHON_OPERATOR_BOOL(method)
+
 #endif // QGIS_SIP_H

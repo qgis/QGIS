@@ -31,7 +31,6 @@ from .additions.fromfunction import fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
-from .additions.qgsdefaultvalue import _isValid
 from .additions.qgsfeature import mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
 from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
@@ -40,7 +39,6 @@ from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 
 # Injections into classes
-QgsDefaultValue.__bool__ = _isValid
 QgsFeature.__geo_interface__ = property(mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
 QgsGeometry.__geo_interface__ = property(mapping_geometry)
@@ -85,3 +83,4 @@ QgsAbstractGeometry.SegmentationToleranceType.baseClass = QgsAbstractGeometry
 QgsGeometry.BufferSide.baseClass = QgsGeometry
 QgsGeometry.EndCapStyle.baseClass = QgsGeometry
 QgsGeometry.JoinStyle.baseClass = QgsGeometry
+QgsDefaultValue.__bool__ = lambda self: self.isValid()

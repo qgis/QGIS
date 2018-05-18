@@ -77,7 +77,6 @@ Returns if this default value should be applied.
 :return: false if the expression is a null string.
 %End
 
-    operator bool() const;
 
 };
 
