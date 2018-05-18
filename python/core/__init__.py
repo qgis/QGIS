@@ -48,3 +48,29 @@ QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
 QgsProject.blockDirtying = ProjectDirtyBlocker
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 QgsTask.fromFunction = fromFunction
+
+# -----------------
+# DO NOT EDIT BELOW
+# These are automatically added by calling sipify.pl script
+QgsTolerance.UnitType.parentClass = lambda: QgsTolerance
+QgsAuthManager.MessageLevel.parentClass = lambda: QgsAuthManager
+QgsDataItem.Type.parentClass = lambda: QgsDataItem
+QgsDataItem.State.parentClass = lambda: QgsDataItem
+QgsLayerItem.LayerType.parentClass = lambda: QgsLayerItem
+QgsDataProvider.DataCapability.parentClass = lambda: QgsDataProvider
+QgsDataSourceUri.SslMode.parentClass = lambda: QgsDataSourceUri
+QgsNetworkContentFetcherRegistry.FetchingMode.parentClass = lambda: QgsNetworkContentFetcherRegistry
+QgsSnappingConfig.SnappingMode.parentClass = lambda: QgsSnappingConfig
+QgsSnappingConfig.SnappingType.parentClass = lambda: QgsSnappingConfig
+QgsUnitTypes.DistanceUnit.parentClass = lambda: QgsUnitTypes
+QgsUnitTypes.AreaUnit.parentClass = lambda: QgsUnitTypes
+QgsUnitTypes.AngleUnit.parentClass = lambda: QgsUnitTypes
+QgsUnitTypes.RenderUnit.parentClass = lambda: QgsUnitTypes
+QgsUnitTypes.LayoutUnit.parentClass = lambda: QgsUnitTypes
+QgsVectorSimplifyMethod.SimplifyHint.parentClass = lambda: QgsVectorSimplifyMethod
+QgsVectorSimplifyMethod.SimplifyAlgorithm.parentClass = lambda: QgsVectorSimplifyMethod
+QgsRasterProjector.Precision.parentClass = lambda: QgsRasterProjector
+QgsAbstractGeometry.SegmentationToleranceType.parentClass = lambda: QgsAbstractGeometry
+QgsGeometry.BufferSide.parentClass = lambda: QgsGeometry
+QgsGeometry.EndCapStyle.parentClass = lambda: QgsGeometry
+QgsGeometry.JoinStyle.parentClass = lambda: QgsGeometry
