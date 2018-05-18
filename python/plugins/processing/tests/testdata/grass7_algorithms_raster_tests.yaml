@@ -353,19 +353,20 @@ tests:
         hash: 6b4dcffae16a630e655a57e346a1a8a58d2f22760dcf2deb28ede7b5
         type: rasterhash
 
-#  - algorithm: grass7:r.thin
-#    name: GRASS7 r.thin
-#    params:
-#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-#      input:
-#        name: custom/grass7/raster_6class.tif
-#        type: raster
-#      iterations: '200'
-#    results:
-#      output:
-#        hash: 0012dbb0f83db91896ce36c6d4ad080ac5a3d60418ccd654521eca98
-#        type: rasterhash
+  - algorithm: grass7:r.thin
+    name: Test GRASS7 r.thin
+    params:
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      input:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      iterations: 200
+    results:
+      output:
+        hash: 0012dbb0f83db91896ce36c6d4ad080ac5a3d60418ccd654521eca98
+        type: rasterhash
 
   - algorithm: grass7:r.surf.idw
     name: GRASS7 r.surf.idw
