@@ -1602,12 +1602,12 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
     {
       int pos = line.indexOf( ',' );
       if ( pos < 0 )
-        return false;
+        continue;
 
       bool ok;
       int epsg = line.left( pos ).toInt( &ok );
       if ( !ok )
-        return false;
+        continue;
 
       wkts.insert( epsg, line.mid( pos + 1 ) );
     }
