@@ -23,9 +23,12 @@ use constant CODE_SNIPPET_CPP => 31;
 
 # read arguments
 my $debug = 0;
+my $sip_output = '';
+my $python_output = '';
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
-die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
+die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] headerfile\n")
+  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -603,8 +606,30 @@ while ($LINE_IDX < $LINE_COUNT){
     # insert metaoject for Q_GADGET
     if ($LINE =~ m/^\s*Q_GADGET\b.*?$/){
         if ($LINE !~ m/SIP_SKIP/){
+            dbg_info('Q_GADGET');
             write_output("HCE", "  public:\n");
             write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n");
+        }
+        next;
+    }
+    if ($LINE =~ m/Q_ENUM\(\s*(\w+)\s*\)/ ){
+        if ($LINE !~ m/SIP_SKIP/){
+            my $enum_helper = "$ACTUAL_CLASS.$1.parentClass = lambda: $ACTUAL_CLASS";
+            dbg_info("Q_ENUM $enum_helper");
+            if ($python_output ne ''){
+                my $pl;
+                open(FH, '+<', $python_output) or die $!;
+                foreach $pl (<FH>)  {
+                    if ($pl =~ m/$enum_helper/){
+                        $enum_helper = '';
+                        last;
+                    }
+                }
+                if ($enum_helper ne ''){
+                    print FH "$enum_helper\n";
+                }
+                close(FH);
+            }
         }
         next;
     }
@@ -1102,4 +1127,10 @@ while ($LINE_IDX < $LINE_COUNT){
 }
 write_header_footer();
 
-print join('',@OUTPUT);
+if ( $sip_output ne ''){
+  open(FH, '>', $sip_output) or die $!;
+  print FH join('',@OUTPUT);
+  close(FH);
+} else {
+  print join('',@OUTPUT);
+}

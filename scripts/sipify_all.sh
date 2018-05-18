@@ -47,7 +47,7 @@ for module in "${modules[@]}"; do
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $header > python/$sipfile.in &
+        ./scripts/sipify.pl -s python/$sipfile.in -p python/${module}/__init__.py $header &
       fi
       count=$((count+1))
   done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
