@@ -12,7 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.core import (QgsSettings,)
+from qgis.core import QgsSettings, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSettings
 
@@ -390,6 +390,23 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('testQgisSettings/tempSection', section=QgsSettings.Core), True)
         self.settings.remove('testQgisSettings/temp', section=QgsSettings.Core)
         self.assertEqual(self.settings.value('testqQgisSettings/temp', section=QgsSettings.Core), None)
+
+    def test_enumValue(self):
+        self.settings.setValue('enum', 'LayerUnits')
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
+        self.settings.setValue('enum', 'dummy_setting')
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
+        self.assertEqual(type(self.settings.enumValue('enum', QgsTolerance.Pixels)), QgsTolerance.UnitType)
+
+    def test_flagValue(self):
+        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
+        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
+
+        self.settings.setValue('flag', 'PointLayer|PolygonLayer')
+        self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndPolygon)
+        self.settings.setValue('flag', 'dummy_setting')
+        self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndLine)
+        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), QgsMapLayerProxyModel.Filters)
 
 
 if __name__ == '__main__':

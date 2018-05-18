@@ -227,6 +227,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Hence if the setting value is incorrect, the given default value is returned.
      * This tries first with setting as a string (as the enum) and then as an integer value.
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
      * \see setEnumValue
      * \see flagValue
      */
@@ -304,6 +305,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Hence if the setting value is incorrect, the given default value is returned.
      * This tries first with setting as a string (using a byte array) and then as an integer value.
      * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly.
      * \see setFlagValue
      * \see enumValue
      */
