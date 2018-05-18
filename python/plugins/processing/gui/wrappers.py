@@ -984,9 +984,8 @@ class EnumWidgetWrapper(WidgetWrapper):
                 return widget
         else:
             self.combobox = QComboBox()
-            values = self.dialog.getAvailableValuesOfType(QgsProcessingParameterEnum)
-            for v in values:
-                self.combobox.addItem(self.dialog.resolveValueDescription(v), v)
+            for i, option in enumerate(self.param.options()):
+                self.combobox.addItem(option, i)
             return self.combobox
 
     def setValue(self, value):
