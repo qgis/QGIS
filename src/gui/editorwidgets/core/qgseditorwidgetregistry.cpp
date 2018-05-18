@@ -40,6 +40,11 @@
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
 
+QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
+{
+  mFallbackWidgetFactory.reset( new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+}
+
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
   registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
@@ -163,7 +168,7 @@ QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 
 QgsEditorWidgetFactory *QgsEditorWidgetRegistry::factory( const QString &widgetId )
 {
-  return mWidgetFactories.value( widgetId );
+  return mWidgetFactories.value( widgetId, mFallbackWidgetFactory.get() );
 }
 
 bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory )

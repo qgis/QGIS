@@ -32,8 +32,6 @@
 QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mCanvas( canvas )
-  , mFilterMode( ShowAll )
-  , mSelectedOnTop( false )
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );

@@ -268,8 +268,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   private:
     QgsFeatureIds mFilteredFeatures;
     QgsMapCanvas *mCanvas = nullptr;
-    FilterMode mFilterMode;
-    bool mSelectedOnTop;
+    FilterMode mFilterMode = FilterMode::ShowAll;
+    bool mSelectedOnTop = false;
     QgsAttributeTableModel *mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;

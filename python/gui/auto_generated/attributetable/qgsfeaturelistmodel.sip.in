@@ -10,7 +10,7 @@
 
 
 
-class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
+class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
 
 %TypeHeaderCode
@@ -102,8 +102,6 @@ for a meaningful error message.
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -115,11 +113,54 @@ for a meaningful error message.
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
+    bool sortByDisplayExpression() const;
+%Docstring
+Sort this model by its display expression.
+
+.. versionadded:: 3.2
+%End
+
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
+%Docstring
+Sort this model by its display expression.
+
+.. note::
+
+   Not compatible with injectNull, if sorting by display expression is enabled,
+   injectNull will automatically turned off.
+
+.. versionadded:: 3.2
+%End
+
   public slots:
-    void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
-    void onEndRemoveRows( const QModelIndex &parent, int first, int last );
-    void onBeginInsertRows( const QModelIndex &parent, int first, int last );
-    void onEndInsertRows( const QModelIndex &parent, int first, int last );
+
+ void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling beginRemoveRows()
+
+\deprecated
+%End
+
+ void onEndRemoveRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling endRemoveRows()
+
+\deprecated
+%End
+
+ void onBeginInsertRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling beginInsertRows()
+
+\deprecated
+%End
+
+ void onEndInsertRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling endInsertRows()
+
+\deprecated
+%End
 
 };
 
