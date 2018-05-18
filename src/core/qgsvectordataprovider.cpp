@@ -49,7 +49,11 @@ QString QgsVectorDataProvider::storageType() const
 bool QgsVectorDataProvider::empty() const
 {
   QgsFeature f;
-  if ( getFeatures().nextFeature( f ) )
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setLimit( 1 );
+  if ( getFeatures( request ).nextFeature( f ) )
     return true;
   else
     return false;
