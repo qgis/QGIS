@@ -81,6 +81,7 @@ void QgsDecorationCopyright::projectRead()
   if ( oldColor.isValid() )
   {
     mTextFormat.setColor( oldColor );
+    QgsProject::instance()->removeEntry( mNameConfig, QStringLiteral( "/Color" ) );
   }
 }
 
