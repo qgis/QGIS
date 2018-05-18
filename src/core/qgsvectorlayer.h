@@ -931,10 +931,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Determines if this vector layer is empty.
-     * A layer is considered empty if either the data provider or
+     *
+     * \warning A layer is considered empty if neither the data provider nor
      * the edit buffer have features in them.
-     * This means, in case the data provider contains features which have all
-     * been deleted in the edit buffer, the result will be false.
+     * This means the returned value may be inaccurate for layers with unsaved changes,
+     * i.e. in the case of all features from the data provider having been
+     * deleted within the edit buffer.
      *
      * \since QGIS 3.2
      */
