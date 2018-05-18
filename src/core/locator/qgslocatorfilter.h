@@ -82,6 +82,15 @@ class CORE_EXPORT QgsLocatorResult
      */
     double score = 0.5;
 
+    /**
+      * Group the results by categories
+      * If left as empty string, this means that results are all shown without being grouped.
+      * If a group is given, the results will be grouped by \a group under a header.
+      * \note This should be translated.
+      * \since 3.2
+      */
+    QString group = QString();
+
 };
 
 /**

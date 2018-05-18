@@ -252,8 +252,15 @@ void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
   mLocatorModel->addResult( result );
   if ( selectFirst )
   {
-    int row = mProxyModel->flags( mProxyModel->index( 0, 0 ) ) & Qt::ItemIsSelectable ? 0 : 1;
-    mResultsView->setCurrentIndex( mProxyModel->index( row, 0 ) );
+    int row = -1;
+    bool selectable = false;
+    while ( !selectable && row < mProxyModel->rowCount() )
+    {
+      row++;
+      selectable = mProxyModel->flags( mProxyModel->index( row, 0 ) ).testFlag( Qt::ItemIsSelectable );
+    }
+    if ( selectable )
+      mResultsView->setCurrentIndex( mProxyModel->index( row, 0 ) );
   }
 }
 
