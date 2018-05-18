@@ -123,6 +123,16 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
 
         QgsProject.instance().removeMapLayer(second_layer.id())
 
+    def test_valueToStringList(self):
+
+        def _test(a, b):
+            self.assertEqual(QgsValueRelationFieldFormatter.valueToStringList(a), b)
+
+        _test([1, 2, 3], ["1", "2", "3"])
+        _test("{1,2,3}", ["1", "2", "3"])
+        _test(['1', '2', '3'], ["1", "2", "3"])
+        _test('not an array', ['not an array'])
+
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
