@@ -614,7 +614,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     if ($LINE =~ m/Q_ENUM\(\s*(\w+)\s*\)/ ){
         if ($LINE !~ m/SIP_SKIP/){
-            my $enum_helper = "$ACTUAL_CLASS.$1.parentClass = lambda: $ACTUAL_CLASS";
+            my $enum_helper = "$ACTUAL_CLASS.$1.baseClass = $ACTUAL_CLASS";
             dbg_info("Q_ENUM $enum_helper");
             if ($python_output ne ''){
                 my $pl;
