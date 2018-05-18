@@ -649,6 +649,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         next;
     }
+    # insert in python output (python/module/__init__.py)
     if ($LINE =~ m/Q_(ENUM|FLAG)\(\s*(\w+)\s*\)/ ){
         if ($LINE !~ m/SIP_SKIP/){
             my $is_flag = $1 eq 'FLAG' ? 1 : 0;
@@ -664,11 +665,11 @@ while ($LINE_IDX < $LINE_COUNT){
                     }
                 }
                 if ($enum_helper ne ''){
-                  if ($is_flag == 1){
-                      # SIP seems to introduce the flags in the module rather than in the class itself
-                      # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
-                      $enum_helper .= "\n$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module";
-                  }
+                    if ($is_flag == 1){
+                        # SIP seems to introduce the flags in the module rather than in the class itself
+                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                        $enum_helper .= "\n$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module";
+                    }
                     print FH "$enum_helper\n";
                 }
                 close(FH);
@@ -683,9 +684,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # SIP_SKIP
-    if ( $LINE =~ m/SIP_SKIP/ ){
+    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_OPERATOR_/ ){
         dbg_info('SIP SKIP!');
-        $COMMENT = '';
         # if multiline definition, remove previous lines
         if ( $MULTILINE_DEFINITION != MULTILINE_NO){
             dbg_info('SIP_SKIP with MultiLine');
@@ -700,6 +700,27 @@ while ($LINE_IDX < $LINE_COUNT){
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
+
+        if ($LINE =~ m/SIP_PYTHON_OPERATOR_(\w+)\(\s*(\w+)\s*\)/ ){
+            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: self.$2()";
+            dbg_info("PYTHON OPERATOR $pyop");
+            if ($python_output ne ''){
+                my $pl;
+                open(FH, '+<', $python_output) or die $!;
+                foreach $pl (<FH>)  {
+                    if ($pl =~ m/$pyop/){
+                        $pyop = '';
+                        last;
+                    }
+                }
+                if ($pyop ne ''){
+                    print FH "$pyop\n";
+                }
+                close(FH);
+              }
+        }
+        
+        $COMMENT = '';
         next;
     }
 
