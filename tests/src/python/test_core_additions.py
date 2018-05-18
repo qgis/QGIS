@@ -24,15 +24,18 @@ start_app()
 
 class TestCoreAdditions(unittest.TestCase):
 
-    def testEnum(self):
+    def testMetaEnum(self):
         me = metaEnumFromValue(QgsTolerance.Pixels)
         self.assertIsNotNone(me)
         self.assertEqual(me.valueToKey(QgsTolerance.Pixels), 'Pixels')
 
         # if using same variable twice (e.g. me = me2), this seg faults
-        me2 = metaEnumFromValue(QgsTolerance.Pixels, True, QgsTolerance)
+        me2 = metaEnumFromValue(QgsTolerance.Pixels, QgsTolerance)
         self.assertIsNotNone(me)
         self.assertEqual(me2.valueToKey(QgsTolerance.Pixels), 'Pixels')
+
+        # do not raise error
+        self.assertIsNone(metaEnumFromValue(1, QgsTolerance, False))
 
         # do not provide an int
         with self.assertRaises(TypeError):

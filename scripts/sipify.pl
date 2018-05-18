@@ -612,10 +612,11 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         next;
     }
-    if ($LINE =~ m/Q_ENUM\(\s*(\w+)\s*\)/ ){
+    if ($LINE =~ m/Q_(ENUM|FLAG)\(\s*(\w+)\s*\)/ ){
         if ($LINE !~ m/SIP_SKIP/){
-            my $enum_helper = "$ACTUAL_CLASS.$1.baseClass = $ACTUAL_CLASS";
-            dbg_info("Q_ENUM $enum_helper");
+            my $is_flag = $1 eq 'FLAG' ? 1 : 0;
+            my $enum_helper = "$ACTUAL_CLASS.$2.baseClass = $ACTUAL_CLASS";
+            dbg_info("Q_ENUM/Q_FLAG $enum_helper");
             if ($python_output ne ''){
                 my $pl;
                 open(FH, '+<', $python_output) or die $!;
@@ -626,6 +627,11 @@ while ($LINE_IDX < $LINE_COUNT){
                     }
                 }
                 if ($enum_helper ne ''){
+                  if ($is_flag == 1){
+                      # SIP seems to introduce the flags in the module rather than in the class itself
+                      # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                      $enum_helper .= "\n$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module";
+                  }
                     print FH "$enum_helper\n";
                 }
                 close(FH);
