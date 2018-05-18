@@ -8,6 +8,7 @@ IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
 ENDIF (WITH_SERVER)
 
+ADD_PYTHON_TEST(PyCoreAdittions test_core_additions.py)
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
 ADD_PYTHON_TEST(PyQgsAFSProvider test_provider_afs.py)
 ADD_PYTHON_TEST(PyQgsAggregateCalculator test_qgsaggregatecalculator.py)

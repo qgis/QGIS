@@ -28,6 +28,7 @@ from qgis._core import *
 
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
+from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
 from .additions.qgsdefaultvalue import _isValid
@@ -52,25 +53,25 @@ QgsTask.fromFunction = fromFunction
 # -----------------
 # DO NOT EDIT BELOW
 # These are automatically added by calling sipify.pl script
-QgsTolerance.UnitType.parentClass = lambda: QgsTolerance
-QgsAuthManager.MessageLevel.parentClass = lambda: QgsAuthManager
-QgsDataItem.Type.parentClass = lambda: QgsDataItem
-QgsDataItem.State.parentClass = lambda: QgsDataItem
-QgsLayerItem.LayerType.parentClass = lambda: QgsLayerItem
-QgsDataProvider.DataCapability.parentClass = lambda: QgsDataProvider
-QgsDataSourceUri.SslMode.parentClass = lambda: QgsDataSourceUri
-QgsNetworkContentFetcherRegistry.FetchingMode.parentClass = lambda: QgsNetworkContentFetcherRegistry
-QgsSnappingConfig.SnappingMode.parentClass = lambda: QgsSnappingConfig
-QgsSnappingConfig.SnappingType.parentClass = lambda: QgsSnappingConfig
-QgsUnitTypes.DistanceUnit.parentClass = lambda: QgsUnitTypes
-QgsUnitTypes.AreaUnit.parentClass = lambda: QgsUnitTypes
-QgsUnitTypes.AngleUnit.parentClass = lambda: QgsUnitTypes
-QgsUnitTypes.RenderUnit.parentClass = lambda: QgsUnitTypes
-QgsUnitTypes.LayoutUnit.parentClass = lambda: QgsUnitTypes
-QgsVectorSimplifyMethod.SimplifyHint.parentClass = lambda: QgsVectorSimplifyMethod
-QgsVectorSimplifyMethod.SimplifyAlgorithm.parentClass = lambda: QgsVectorSimplifyMethod
-QgsRasterProjector.Precision.parentClass = lambda: QgsRasterProjector
-QgsAbstractGeometry.SegmentationToleranceType.parentClass = lambda: QgsAbstractGeometry
-QgsGeometry.BufferSide.parentClass = lambda: QgsGeometry
-QgsGeometry.EndCapStyle.parentClass = lambda: QgsGeometry
-QgsGeometry.JoinStyle.parentClass = lambda: QgsGeometry
+QgsTolerance.UnitType.baseClass = QgsTolerance
+QgsAuthManager.MessageLevel.baseClass = QgsAuthManager
+QgsDataItem.Type.baseClass = QgsDataItem
+QgsDataItem.State.baseClass = QgsDataItem
+QgsLayerItem.LayerType.baseClass = QgsLayerItem
+QgsDataProvider.DataCapability.baseClass = QgsDataProvider
+QgsDataSourceUri.SslMode.baseClass = QgsDataSourceUri
+QgsNetworkContentFetcherRegistry.FetchingMode.baseClass = QgsNetworkContentFetcherRegistry
+QgsSnappingConfig.SnappingMode.baseClass = QgsSnappingConfig
+QgsSnappingConfig.SnappingType.baseClass = QgsSnappingConfig
+QgsUnitTypes.DistanceUnit.baseClass = QgsUnitTypes
+QgsUnitTypes.AreaUnit.baseClass = QgsUnitTypes
+QgsUnitTypes.AngleUnit.baseClass = QgsUnitTypes
+QgsUnitTypes.RenderUnit.baseClass = QgsUnitTypes
+QgsUnitTypes.LayoutUnit.baseClass = QgsUnitTypes
+QgsVectorSimplifyMethod.SimplifyHint.baseClass = QgsVectorSimplifyMethod
+QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod
+QgsRasterProjector.Precision.baseClass = QgsRasterProjector
+QgsAbstractGeometry.SegmentationToleranceType.baseClass = QgsAbstractGeometry
+QgsGeometry.BufferSide.baseClass = QgsGeometry
+QgsGeometry.EndCapStyle.baseClass = QgsGeometry
+QgsGeometry.JoinStyle.baseClass = QgsGeometry
