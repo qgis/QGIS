@@ -313,7 +313,7 @@ signal        """
             return None
 
         if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
-            return self.leText.text()
+            return key
 
         if isinstance(self.parameter, QgsProcessingParameterFileDestination):
             return key

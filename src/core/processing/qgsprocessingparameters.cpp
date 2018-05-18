@@ -3643,7 +3643,14 @@ bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
-  return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+  if ( defaultFileExtension().isEmpty() )
+  {
+    return QgsProcessingUtils::generateTempFilename( name() );
+  }
+  else
+  {
+    return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+  }
 }
 
 bool QgsProcessingDestinationParameter::createByDefault() const
