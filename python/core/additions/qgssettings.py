@@ -76,7 +76,7 @@ def _qgssettings_flag_value(self, key, flagDefaultValue, section=None):
         section = self.NoSection
 
     # There is an issue in SIP, flags.__class__ does not return the proper class
-    # (e.g. Fitlers instead of QgsMapLayerProxyModel.Filters)
+    # (e.g. Filters instead of QgsMapLayerProxyModel.Filters)
     # dirty hack to get the parent class
     __import__(flagDefaultValue.__module__)
     baseClass = None
