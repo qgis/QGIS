@@ -1919,7 +1919,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( name.isEmpty() )
       name = QObject::tr( "Imported from GDAL" );
 
-    sql = QStringLiteral( "SELECT parameters,description,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
+    bool deprecated = name.contains( QLatin1Literal( "(deprecated)" ) );
+
+    sql = QStringLiteral( "SELECT parameters,description,deprecated,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     statement = database.prepare( sql, result );
     if ( result != SQLITE_OK )
     {
@@ -1929,12 +1931,14 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
     QString srsProj4;
     QString srsDesc;
+    bool srsDeprecated;
     if ( statement.step() == SQLITE_ROW )
     {
       srsProj4 = statement.columnAsText( 0 );
       srsDesc = statement.columnAsText( 1 );
+      srsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
 
-      if ( statement.columnAsText( 2 ).toInt() != 0 )
+      if ( statement.columnAsText( 3 ).toInt() != 0 )
       {
         continue;
       }
@@ -1942,12 +1946,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
     if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
     {
-      if ( proj4 != srsProj4 || name != srsDesc )
+      if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated )
       {
         errMsg = nullptr;
-        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2 WHERE auth_name='EPSG' AND auth_id=%3" )
+        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name='EPSG' AND auth_id=%4" )
               .arg( quotedValue( proj4 ) )
               .arg( quotedValue( name ) )
+              .arg( deprecated ? 1 : 0 )
               .arg( it.key() );
 
         if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
@@ -1982,13 +1987,14 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         ellps = ellipseRegExp.cap( 1 );
       }
 
-      sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,0)" )
+      sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,%7)" )
             .arg( quotedValue( name ),
                   quotedValue( projRegExp.cap( 1 ) ),
                   quotedValue( ellps ),
                   quotedValue( proj4 ) )
             .arg( it.key() )
-            .arg( OSRIsGeographic( crs ) );
+            .arg( OSRIsGeographic( crs ) )
+            .arg( deprecated ? 1 : 0 );
 
       errMsg = nullptr;
       if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
