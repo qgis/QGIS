@@ -2812,7 +2812,7 @@ void QgisApp::createToolBars()
   mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
 
   // move feature tool button
-  QToolButton *moveFeatureButton = new QToolButton( mDigitizeToolBar );
+  QToolButton *moveFeatureButton = new QToolButton( mAdvancedDigitizeToolBar );
   moveFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
   moveFeatureButton->addAction( mActionMoveFeature );
   moveFeatureButton->addAction( mActionMoveFeatureCopy );
@@ -2828,7 +2828,7 @@ void QgisApp::createToolBars()
   };
   moveFeatureButton->setDefaultAction( defAction );
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mDigitizeToolBar->insertWidget( mActionVertexTool, moveFeatureButton );
+  mAdvancedDigitizeToolBar->insertWidget( mAdvancedDigitizingDockWidget->enableAction(), moveFeatureButton );
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
