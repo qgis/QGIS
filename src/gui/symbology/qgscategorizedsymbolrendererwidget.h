@@ -162,16 +162,18 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     // Called by virtual refreshSymbolView()
     void populateCategories();
 
-    //! return row index for the currently selected category (-1 if on no selection)
+    //! Returns row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
 
-    //! return a list of indexes for the categories unders selection
+    //! Returns a list of indexes for the categories under selection
     QList<int> selectedCategories();
 
-    //! change the selected symbols alone for the change button, if there is a selection
+    //! Changes the selected symbols alone for the change button, if there is a selection
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
+    //! Applies current symbol to selected categories, or to all categories if none is selected
+    void applyChangeToSymbol();
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
@@ -179,9 +181,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsCategorizedSymbolRenderer > mRenderer;
 
-    QgsSymbol *mCategorizedSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererModel *mModel = nullptr;
 
