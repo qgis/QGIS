@@ -4762,6 +4762,10 @@ void TestQgsProcessing::parameterFolderOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/" ) );
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/", &context ) );
 
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QStringLiteral( "." ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+
   QVariantMap params;
   params.insert( "non_optional", "c:/mine" );
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "c:/mine" ) );
