@@ -1733,7 +1733,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
     if ( line.isNull() )
       break;
 
-    if ( line.startsWith( '#' ) )
+    if ( line.trimmed().isEmpty() || line.startsWith( '#' ) )
     {
       continue;
     }
@@ -1785,14 +1785,23 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
       if ( line.isNull() )
         break;
 
+      if ( line.trimmed().isEmpty() )
+        continue;
+
       int pos = line.indexOf( ',' );
       if ( pos < 0 )
+      {
+        qWarning( "No id found in: %s", qPrintable( line ) );
         continue;
+      }
 
       bool ok;
       int epsg = line.leftRef( pos ).toInt( &ok );
       if ( !ok )
+      {
+        qWarning( "No valid id found in: %s", qPrintable( line ) );
         continue;
+      }
 
       // some CRS are known to fail (see http://trac.osgeo.org/gdal/ticket/2900)
       if ( epsg == 2218 || epsg == 2221 || epsg == 2296 || epsg == 2297 || epsg == 2298 || epsg == 2299 || epsg == 2300 || epsg == 2301 || epsg == 2302 ||
@@ -1904,7 +1913,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( proj4.isEmpty() )
       continue;
 
-    sql = QStringLiteral( "SELECT parameters,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
+    QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) :
+                  OSRIsGeocentric( crs ) ? OSRGetAttrValue( crs, "GEOCCS", 0 ) :
+                  OSRGetAttrValue( crs, "PROJCS", 0 ) );
+    if ( name.isEmpty() )
+      name = QObject::tr( "Imported from GDAL" );
+
+    sql = QStringLiteral( "SELECT parameters,description,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     statement = database.prepare( sql, result );
     if ( result != SQLITE_OK )
     {
@@ -1913,22 +1928,27 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     }
 
     QString srsProj4;
+    QString srsDesc;
     if ( statement.step() == SQLITE_ROW )
     {
       srsProj4 = statement.columnAsText( 0 );
+      srsDesc = statement.columnAsText( 1 );
 
-      if ( statement.columnAsText( 1 ).toInt() != 0 )
+      if ( statement.columnAsText( 2 ).toInt() != 0 )
       {
         continue;
       }
     }
 
-    if ( !srsProj4.isEmpty() )
+    if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
     {
-      if ( proj4 != srsProj4 )
+      if ( proj4 != srsProj4 || name != srsDesc )
       {
         errMsg = nullptr;
-        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name='EPSG' AND auth_id=%2" ).arg( quotedValue( proj4 ) ).arg( it.key() );
+        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2 WHERE auth_name='EPSG' AND auth_id=%3" )
+              .arg( quotedValue( proj4 ) )
+              .arg( quotedValue( name ) )
+              .arg( it.key() );
 
         if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
         {
@@ -1961,10 +1981,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         ellps = ellipseRegExp.cap( 1 );
       }
-
-      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
-      if ( name.isEmpty() )
-        name = QObject::tr( "Imported from GDAL" );
 
       sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,0)" )
             .arg( quotedValue( name ),
