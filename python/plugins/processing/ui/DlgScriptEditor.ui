@@ -240,6 +240,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
    <property name="text">
     <string>Find &amp;&amp; &amp;Replace</string>
    </property>
