@@ -106,6 +106,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
+        self.leFindText.returnPressed.connect(self.find)
         self.btnFind.clicked.connect(self.find)
         self.btnReplace.clicked.connect(self.replace)
         self.lastSearch = None
@@ -257,6 +258,8 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def toggleSearchBox(self, checked):
         self.searchWidget.setVisible(checked)
+        if (checked):
+            self.leFindText.setFocus()
 
     def _loadFile(self, filePath):
         with codecs.open(filePath, "r", encoding="utf-8") as f:
