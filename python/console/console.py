@@ -173,7 +173,7 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton = QAction(self)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.svg"))
+        self.openFileButton.setIcon(QgsApplication.getThemeIcon("mActionScriptOpen.svg"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)

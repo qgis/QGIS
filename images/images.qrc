@@ -121,7 +121,6 @@
         <file>themes/default/console/iconCodepadConsole.svg</file>
         <file>themes/default/console/iconHelpConsole.svg</file>
         <file>themes/default/console/iconHideToolConsole.svg</file>
-        <file>themes/default/console/iconOpenConsole.svg</file>
         <file>themes/default/console/iconQtCoreConsole.svg</file>
         <file>themes/default/console/iconQtGuiConsole.svg</file>
         <file>themes/default/console/mIconRunConsole.svg</file>
@@ -345,6 +344,7 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.svg</file>
         <file>themes/default/mActionScaleBar.svg</file>
+        <file>themes/default/mActionScriptOpen.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.svg</file>
