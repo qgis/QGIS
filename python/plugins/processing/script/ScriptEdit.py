@@ -99,6 +99,7 @@ class ScriptEdit(QsciScintilla):
         self.setTabIndents(True)
         self.setBackspaceUnindents(True)
         self.setTabWidth(4)
+        self.setIndentationGuides(True)
 
         # Autocomletion
         self.setAutoCompletionThreshold(2)
