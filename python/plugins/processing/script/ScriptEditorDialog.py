@@ -111,12 +111,26 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnReplace.clicked.connect(self.replace)
         self.lastSearch = None
 
-        self.filePath = filePath
-        if self.filePath is not None:
-            self._loadFile(self.filePath)
+        self.filePath = None
+        if filePath is not None:
+            self._loadFile(filePath)
 
         self.needUpdate = False
         self.setHasChanged(False)
+
+    def update_dialog_title(self):
+        """
+        Updates the script editor dialog title
+        """
+        if self.filePath:
+            path, file_name = os.path.split(self.filePath)
+        else:
+            file_name = self.tr('Untitled Script')
+
+        if self.hasChanged:
+            file_name = '*' + file_name
+
+        self.setWindowTitle(self.tr('{} - Processing Script Editor').format(file_name))
 
     def closeEvent(self, event):
         settings = QgsSettings()
@@ -165,7 +179,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         with OverrideCursor(Qt.WaitCursor):
             self._loadFile(fileName)
-            self.filePath = fileName
 
     def save(self):
         self.saveScript(False)
@@ -205,6 +218,7 @@ class ScriptEditorDialog(BASE, WIDGET):
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
         self.actionSaveScript.setEnabled(hasChanged)
+        self.update_dialog_title()
 
     def runAlgorithm(self):
         d = {}
@@ -275,3 +289,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.hasChanged = False
         self.editor.setModified(False)
         self.editor.recolor()
+
+        self.filePath = filePath
+        self.update_dialog_title()
