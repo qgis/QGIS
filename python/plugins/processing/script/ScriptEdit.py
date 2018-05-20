@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut
 from qgis.core import QgsApplication, QgsSettings
 
@@ -59,6 +59,7 @@ class ScriptEdit(QsciScintilla):
         self.setMarginsFont(font)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         self.setWrapMode(QsciScintilla.WrapWord)
         self.setWrapVisualFlags(QsciScintilla.WrapFlagByText,
@@ -70,16 +71,21 @@ class ScriptEdit(QsciScintilla):
         # Show line numbers
         self.setMarginWidth(1, '000')
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor('#2e3436'))
-        self.setMarginsBackgroundColor(QColor('#babdb6'))
+        self.setMarginsForegroundColor(QColor("#3E3EE3"))
+        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
 
         # Highlight current line
+        settings = QgsSettings()
+        caretLineColorEditor = settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))
+        cursorColorEditor = settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor('#d3d7cf'))
+        self.setCaretWidth(2)
+        self.setCaretLineBackgroundColor(caretLineColorEditor)
+        self.setCaretForegroundColor(cursorColorEditor)
 
         # Folding
-        self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
-        self.setFoldMarginColors(QColor('#d3d7cf'), QColor('#d3d7cf'))
+        self.setFolding(QsciScintilla.PlainFoldStyle)
+        self.setFoldMarginColors(QColor("#f4f4f4"), QColor("#f4f4f4"))
 
         # Mark column 80 with vertical line
         self.setEdgeMode(QsciScintilla.EdgeLine)
@@ -147,38 +153,40 @@ class ScriptEdit(QsciScintilla):
         self.autoCompleteFromAll()
 
     def initLexer(self):
+        settings = QgsSettings()
         self.lexer = QsciLexerPython()
 
-        colorDefault = QColor('#2e3436')
-        colorComment = QColor('#c00')
-        colorCommentBlock = QColor('#3465a4')
-        colorNumber = QColor('#4e9a06')
-        colorType = QColor('#4e9a06')
-        colorKeyword = QColor('#204a87')
-        colorString = QColor('#ce5c00')
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
 
-        self.lexer.setDefaultFont(self.defaultFont)
-        self.lexer.setDefaultColor(colorDefault)
+        loadFont = settings.value("pythonConsole/fontfamilytextEditor")
+        if loadFont:
+            font.setFamily(loadFont)
+        fontSize = settings.value("pythonConsole/fontsizeEditor", type=int)
+        if fontSize:
+            font.setPointSize(fontSize)
 
-        self.lexer.setColor(colorComment, 1)
-        self.lexer.setColor(colorNumber, 2)
-        self.lexer.setColor(colorString, 3)
-        self.lexer.setColor(colorString, 4)
-        self.lexer.setColor(colorKeyword, 5)
-        self.lexer.setColor(colorString, 6)
-        self.lexer.setColor(colorString, 7)
-        self.lexer.setColor(colorType, 8)
-        self.lexer.setColor(colorCommentBlock, 12)
-        self.lexer.setColor(colorString, 15)
+        self.lexer.setDefaultFont(font)
+        self.lexer.setDefaultColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
+        self.lexer.setColor(QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))), 1)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))), 5)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))), 8)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))), 9)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))), 15)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))), 12)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue))), 4)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue))), 3)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue))), 6)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue))), 7)
+        self.lexer.setFont(font, 1)
+        self.lexer.setFont(font, 3)
+        self.lexer.setFont(font, 4)
 
-        self.lexer.setFont(self.italicFont, 1)
-        self.lexer.setFont(self.boldFont, 5)
-        self.lexer.setFont(self.boldFont, 8)
-        self.lexer.setFont(self.italicFont, 12)
+        for style in range(0, 33):
+            paperColor = QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white)))
+            self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
 
-        settings = QgsSettings()
         useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
                                             True))
         if useDefaultAPI:
