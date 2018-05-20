@@ -283,7 +283,9 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.svg")
+        iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
+        iconUndo = QgsApplication.getThemeIcon("mActionUndo.svg")
+        iconRedo = QgsApplication.getThemeIcon("mActionRedo.svg")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.svg")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg")
@@ -308,12 +310,12 @@ class Editor(QsciScintilla):
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction(
-            QCoreApplication.translate("PythonConsole", "Undo"),
-            self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(
-            QCoreApplication.translate("PythonConsole", "Redo"),
-            self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(iconUndo,
+                                    QCoreApplication.translate("PythonConsole", "Undo"),
+                                    self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(iconRedo,
+                                    QCoreApplication.translate("PythonConsole", "Redo"),
+                                    self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         menu.addAction(iconFind,
                        QCoreApplication.translate("PythonConsole", "Find Text"),
