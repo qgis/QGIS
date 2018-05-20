@@ -125,7 +125,6 @@
         <file>themes/default/console/iconQtCoreConsole.svg</file>
         <file>themes/default/console/iconQtGuiConsole.svg</file>
         <file>themes/default/console/mIconRunConsole.svg</file>
-        <file>themes/default/console/iconSaveConsole.svg</file>
         <file>themes/default/console/iconSettingsConsole.svg</file>
         <file>themes/default/console/iconProcessingConsole.svg</file>
         <file>themes/default/console/consoleHelp.png</file>
@@ -136,8 +135,6 @@
         <file>themes/default/console/iconRestoreTabsConsole.svg</file>
         <file>themes/default/console/iconFileTabsMenuConsole.svg</file>
         <file>themes/default/console/iconShowEditorConsole.svg</file>
-        <file>themes/default/console/iconSaveAsConsole.svg</file>
-        <file>themes/default/console/iconRunScriptConsole.svg</file>
         <file>themes/default/console/iconCommentEditorConsole.svg</file>
         <file>themes/default/console/iconUncommentEditorConsole.svg</file>
         <file>themes/default/console/iconClassTreeWidgetConsole.svg</file>
