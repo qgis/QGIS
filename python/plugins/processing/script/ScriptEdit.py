@@ -61,9 +61,9 @@ class ScriptEdit(QsciScintilla):
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
         self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
-        self.setWrapMode(QsciScintilla.WrapWord)
-        self.setWrapVisualFlags(QsciScintilla.WrapFlagByText,
-                                QsciScintilla.WrapFlagNone, 4)
+        #self.setWrapMode(QsciScintilla.WrapWord)
+        #self.setWrapVisualFlags(QsciScintilla.WrapFlagByText,
+        #                        QsciScintilla.WrapFlagNone, 4)
 
         self.setSelectionForegroundColor(QColor('#2e3436'))
         self.setSelectionBackgroundColor(QColor('#babdb6'))
@@ -90,7 +90,7 @@ class ScriptEdit(QsciScintilla):
         # Mark column 80 with vertical line
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor('#eeeeec'))
+        self.setEdgeColor(QColor("#FF0000"))
 
         # Indentation
         self.setAutoIndent(True)
