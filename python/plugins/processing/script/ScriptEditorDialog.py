@@ -67,7 +67,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.toolBar.setIconSize(iface.iconSize())
 
         self.actionOpenScript.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+            QgsApplication.getThemeIcon('/mActionScriptOpen.svg'))
         self.actionSaveScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.actionSaveScriptAs.setIcon(
