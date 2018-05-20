@@ -119,20 +119,26 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setHasChanged(False)
 
     def closeEvent(self, event):
+        settings = QgsSettings()
+        settings.setValue("/Processing/stateScriptEditor", self.saveState())
+        settings.setValue("/Processing/geometryScriptEditor", self.saveGeometry())
+
         if self.hasChanged:
-            ret = QMessageBox.question(self,
-                                       self.tr("Unsaved changes"),
-                                       self.tr("There are unsaved changes in the script. Continue?"),
-                                       QMessageBox.Yes | QMessageBox.No,
-                                       QMessageBox.No
-                                       )
-            if ret == QMessageBox.Yes:
+            ret = QMessageBox.question(
+                self, self.tr('Save Script?'),
+                self.tr('There are unsaved changes in this script. Do you want to keep those?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.updateProvider()
+                self.saveScript(False)
+                event.accept()
+            elif ret == QMessageBox.Discard:
                 self.updateProvider()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.updateProvider()
             event.accept()
 
     def updateProvider(self):
