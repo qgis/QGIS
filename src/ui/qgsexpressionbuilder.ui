@@ -713,7 +713,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                </property>
                <property name="icon">
                 <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/console/iconRunScriptConsole.svg</normaloff>:/images/themes/default/console/iconRunScriptConsole.svg</iconset>
+                 <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
