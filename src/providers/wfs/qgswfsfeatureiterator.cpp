@@ -456,6 +456,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   int pagingIter = 1;
   QString gmlIdFirstFeatureFirstIter;
   bool disablePaging = false;
+  // Top level loop to do feature paging in WFS 2
   while ( true )
   {
     success = true;
@@ -476,9 +477,14 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              false /* cache */ );
 
     int featureCountForThisResponse = 0;
+    bool bytesStillAvailableInReply = false;
+    // Loop until there is no data coming from the current requst
     while ( true )
     {
-      loop.exec( QEventLoop::ExcludeUserInputEvents );
+      if ( !bytesStillAvailableInReply )
+      {
+        loop.exec( QEventLoop::ExcludeUserInputEvents );
+      }
       if ( mStop )
       {
         interrupted = true;
@@ -495,7 +501,10 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       bool finished = false;
       if ( mReply )
       {
-        data = mReply->readAll();
+        // Limit the number of bytes to process at once, to avoid the GML parser to
+        // create too many objects.
+        data = mReply->read( 10 * 1024 * 1024 );
+        bytesStillAvailableInReply = mReply->bytesAvailable() > 0;
       }
       else
       {
