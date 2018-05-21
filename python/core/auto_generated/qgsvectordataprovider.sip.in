@@ -67,7 +67,7 @@ of feature and attribute information from a spatial datasource.
       UnknownCount,
     };
 
-    QgsVectorDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 %Docstring
 Constructor for a vector data provider.
 

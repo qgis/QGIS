@@ -70,7 +70,7 @@ to generic QgsVectorDataProvider's) depends on it.
 
     };
 
-    QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
