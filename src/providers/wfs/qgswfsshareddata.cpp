@@ -776,7 +776,11 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
       int idx = dataProviderFields.indexFromName( mFields.at( siter.key() ).name() );
       Q_ASSERT( idx >= 0 );
       if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
-        newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
+      {
+        QDateTime dt = siter.value().toDateTime();
+        dt.setTimeSpec( Qt::LocalTime );
+        newAttrMap[idx] = QVariant( dt.toMSecsSinceEpoch() );
+      }
       else
         newAttrMap[idx] = siter.value();
     }
