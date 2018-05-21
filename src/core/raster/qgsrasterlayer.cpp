@@ -212,7 +212,7 @@ void QgsRasterLayer::setDataProvider( const QString &provider )
 }
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider *classFactoryFunction_t( const QString * );
+typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataProvider::ProviderOptions &options );
 
 //////////////////////////////////////////////////////////
 //
