@@ -19,6 +19,8 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgis_app.h"
 
+class QgsSnapIndicator;
+
 //! Map tool for translating feature position by mouse drag
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
@@ -49,6 +51,9 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     //! Id of moved feature
     QgsFeatureIds mMovedFeatures;
