@@ -1392,8 +1392,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void mergeAttributesOfSelectedFeatures();
     //! Modifies the attributes of selected features via feature form
     void modifyAttributesOfSelectedFeatures();
-    //! provides operations with nodes
+    //! provides operations with nodes on all layers
     void vertexTool();
+    //! provides operations with nodes on active layer only
+    void vertexToolActiveLayer();
     //! activates the rotate points tool
     void rotatePointSymbols();
     //! activates the offset point symbol tool
@@ -2000,6 +2002,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mDeleteRing = nullptr;
         QgsMapTool *mDeletePart = nullptr;
         QgsMapTool *mVertexTool = nullptr;
+        QgsMapTool *mVertexToolActiveLayer = nullptr;
         QgsMapTool *mRotatePointSymbolsTool = nullptr;
         QgsMapTool *mOffsetPointSymbolTool = nullptr;
         QgsMapTool *mAnnotation = nullptr;
