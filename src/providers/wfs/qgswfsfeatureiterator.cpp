@@ -478,7 +478,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
     int featureCountForThisResponse = 0;
     bool bytesStillAvailableInReply = false;
-    // Loop until there is no data coming from the current requst
+    // Loop until there is no data coming from the current request
     while ( true )
     {
       if ( !bytesStillAvailableInReply )
