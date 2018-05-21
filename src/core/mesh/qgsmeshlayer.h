@@ -111,6 +111,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *               parameters used by the data provider as url query items.
      * \param baseName The name used to represent the layer in the legend
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
+     * \param options general mesh layer options
      */
     explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
