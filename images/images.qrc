@@ -309,6 +309,7 @@
         <file>themes/default/mActionNewGeoPackageLayer.svg</file>
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionVertexTool.svg</file>
+        <file>themes/default/mActionVertexToolActiveLayer.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>

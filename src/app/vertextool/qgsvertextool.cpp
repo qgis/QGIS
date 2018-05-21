@@ -227,8 +227,9 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 //
 
 
-QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, bool activeLayerOnly )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
+  , mActiveLayerOnly( activeLayerOnly )
 {
   setAdvancedDigitizingAllowed( false );
 
@@ -470,8 +471,6 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
 
-    const bool allLayers = canvas()->snappingUtils()->config().editVerticesOnAllLayers();
-
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )
@@ -480,7 +479,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
         continue;
 
-      if ( !allLayers && vlayer != currentVectorLayer() )
+      if ( mActiveLayerOnly && vlayer != currentVectorLayer() )
         continue;
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
@@ -696,7 +695,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   }
 
   // if there is no match from the current layer, try to use any editable vector layer
-  if ( !m.isValid() && oldConfig.editVerticesOnAllLayers() )
+  if ( !m.isValid() && !mActiveLayerOnly )
   {
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )

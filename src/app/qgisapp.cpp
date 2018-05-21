@@ -1441,6 +1441,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMoveFeatureCopy;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mVertexTool;
+  delete mMapTools.mVertexToolActiveLayer;
   delete mMapTools.mOffsetCurve;
   delete mMapTools.mPinLabels;
   delete mMapTools.mReshapeFeatures;
@@ -2023,6 +2024,7 @@ void QgisApp::createActions()
   connect( mActionMergeFeatureAttributes, &QAction::triggered, this, &QgisApp::mergeAttributesOfSelectedFeatures );
   connect( mActionMultiEditAttributes, &QAction::triggered, this, &QgisApp::modifyAttributesOfSelectedFeatures );
   connect( mActionVertexTool, &QAction::triggered, this, &QgisApp::vertexTool );
+  connect( mActionVertexToolActiveLayer, &QAction::triggered, this, &QgisApp::vertexToolActiveLayer );
   connect( mActionRotatePointSymbols, &QAction::triggered, this, &QgisApp::rotatePointSymbols );
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
@@ -2310,6 +2312,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatures );
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
   mMapToolGroup->addAction( mActionVertexTool );
+  mMapToolGroup->addAction( mActionVertexToolActiveLayer );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
   mMapToolGroup->addAction( mActionOffsetPointSymbol );
   mMapToolGroup->addAction( mActionPinLabels );
@@ -2869,6 +2872,16 @@ void QgisApp::createToolBars()
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
 
+  // vertex tool button
+  QToolButton *vertexToolButton = new QToolButton( mDigitizeToolBar );
+  vertexToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+  vertexToolButton->addAction( mActionVertexTool );
+  vertexToolButton->addAction( mActionVertexToolActiveLayer );
+  mAdvancedDigitizeToolBar->insertWidget( mActionDeleteSelected, vertexToolButton );
+  QAction *defActionVertexTool = mActionVertexTool;
+  vertexToolButton->setDefaultAction( defActionVertexTool );
+  connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionRotatePointSymbols );
@@ -3179,6 +3192,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSplitParts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitParts.svg" ) ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
   mActionVertexTool->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionVertexTool.svg" ) ) );
+  mActionVertexToolActiveLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionVertexToolActiveLayer.svg" ) ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSimplify.svg" ) ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
@@ -3472,6 +3486,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mDeletePart->setAction( mActionDeletePart );
   mMapTools.mVertexTool = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mVertexTool->setAction( mActionVertexTool );
+  mMapTools.mVertexToolActiveLayer = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget, true );
+  mMapTools.mVertexToolActiveLayer->setAction( mActionVertexToolActiveLayer );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
   mMapTools.mOffsetPointSymbolTool = new QgsMapToolOffsetPointSymbol( mMapCanvas );
@@ -8191,6 +8207,11 @@ void QgisApp::vertexTool()
   mMapCanvas->setMapTool( mMapTools.mVertexTool );
 }
 
+void QgisApp::vertexToolActiveLayer()
+{
+  mMapCanvas->setMapTool( mMapTools.mVertexToolActiveLayer );
+}
+
 void QgisApp::rotatePointSymbols()
 {
   mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
@@ -11874,6 +11895,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionVertexTool->setEnabled( false );
+    mActionVertexToolActiveLayer->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
@@ -12055,6 +12077,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionVertexTool->setEnabled( isEditable && canChangeGeometry );
+      mActionVertexToolActiveLayer->setEnabled( isEditable && canChangeGeometry );
 
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
@@ -12209,6 +12232,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionFillRing->setEnabled( false );
     mActionAddPart->setEnabled( false );
     mActionVertexTool->setEnabled( false );
+    mActionVertexToolActiveLayer->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
