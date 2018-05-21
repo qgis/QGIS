@@ -362,7 +362,7 @@ QDir QgsProviderRegistry::libraryDirectory() const
 
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider *classFactoryFunction_t( const QString * );
+typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataProvider::ProviderOptions &options );
 
 
 /* Copied from QgsVectorLayer::setDataProvider
@@ -426,7 +426,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  QgsDataProvider *dataProvider = classFactory( &dataSource );
+  QgsDataProvider *dataProvider = classFactory( &dataSource, options );
   if ( !dataProvider )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the data provider plugin %1" ).arg( lib ) );
