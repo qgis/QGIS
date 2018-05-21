@@ -120,7 +120,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsVectorDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     /**
      * Return feature source object that can be used for querying provider's data. The returned feature source

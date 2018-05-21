@@ -82,7 +82,7 @@ Base class for raster data providers.
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 %Docstring
 Constructor for QgsRasterDataProvider.
 

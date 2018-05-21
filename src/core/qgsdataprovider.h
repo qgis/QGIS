@@ -111,7 +111,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() )
       : mDataSourceURI( uri )
     {
       Q_UNUSED( options );

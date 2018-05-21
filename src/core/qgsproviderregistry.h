@@ -98,7 +98,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
 
     /**
      * Return the provider capabilities

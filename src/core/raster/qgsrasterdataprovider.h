@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * The \a options argument specifies generic provider options.
      */
-    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     QgsRasterInterface *clone() const override = 0;
 
