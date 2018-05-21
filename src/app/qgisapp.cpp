@@ -2879,6 +2879,15 @@ void QgisApp::createToolBars()
   vertexToolButton->addAction( mActionVertexToolActiveLayer );
   mAdvancedDigitizeToolBar->insertWidget( mActionDeleteSelected, vertexToolButton );
   QAction *defActionVertexTool = mActionVertexTool;
+  switch ( settings.value( QStringLiteral( "UI/defaultVertexTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionVertexTool = mActionVertexTool;
+      break;
+    case 1:
+      defActionVertexTool = mActionVertexToolActiveLayer;
+      break;
+  };
   vertexToolButton->setDefaultAction( defActionVertexTool );
   connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -13549,6 +13558,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/defaultMoveTool" ), 0 );
   else if ( action == mActionMoveFeatureCopy )
     settings.setValue( QStringLiteral( "UI/defaultMoveTool" ), 1 );
+  else if ( action == mActionVertexTool )
+    settings.setValue( QStringLiteral( "UI/defaultVertexTool" ), 0 );
+  else if ( action == mActionVertexToolActiveLayer )
+    settings.setValue( QStringLiteral( "UI/defaultVertexTool" ), 1 );
 
   bt->setDefaultAction( action );
 }
