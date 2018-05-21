@@ -135,6 +135,8 @@ class EnumModelerWidget(BASE, WIDGET):
             model.appendRow(item)
 
     def setDefault(self, indexes):
+        if indexes is None:
+            return
         model = self.lstItems.model()
         if not isinstance(indexes, (list, tuple)):
             indexes = [indexes]
