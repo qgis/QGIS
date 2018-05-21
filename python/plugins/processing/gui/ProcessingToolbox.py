@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import operator
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -50,8 +51,11 @@ from processing.gui.ProviderActions import (ProviderActions,
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
 
 
 class ProcessingToolbox(QgsDockWidget, WIDGET):

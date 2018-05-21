@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import re
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal
@@ -49,8 +50,11 @@ from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class DestinationSelectionPanel(BASE, WIDGET):

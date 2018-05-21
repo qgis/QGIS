@@ -30,6 +30,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
+
 from functools import partial
 
 from qgis.core import (QgsProcessingParameterDefinition,
@@ -52,9 +54,12 @@ from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
 
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
+pluginPath = os.path.split(os.path.dirname(__file__))[0]\
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
 
 
 class ParametersPanel(BASE, WIDGET):

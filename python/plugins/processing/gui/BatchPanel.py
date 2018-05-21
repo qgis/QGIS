@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
@@ -43,8 +44,11 @@ from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
 
 class BatchPanel(BASE, WIDGET):
