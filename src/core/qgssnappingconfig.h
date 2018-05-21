@@ -296,7 +296,6 @@ class CORE_EXPORT QgsSnappingConfig
     double mTolerance = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
-    bool mEditVerticesOnAllLayers = true;
 
     QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 

@@ -106,8 +106,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void enableIntersectionSnapping( bool enabled );
 
-    void enableEditVerticesOnAllLayers( bool enabled );
-
     void modeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
 
@@ -153,8 +151,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;
-
-    QAction *mEditVerticesAllLayersAction = nullptr;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };
