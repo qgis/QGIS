@@ -965,6 +965,7 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
 
 
 class EnumWidgetWrapper(WidgetWrapper):
+    NOT_SELECTED = '[Not selected]'
 
     def createWidget(self, useCheckBoxes=False, columns=1):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
