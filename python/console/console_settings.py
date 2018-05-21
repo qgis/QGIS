@@ -54,9 +54,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.removeAPIpath.clicked.connect(self.removeAPI)
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
-        self.resetFontColor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.svg"))
+        self.resetFontColor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
         self.resetFontColor.setIconSize(QSize(18, 18))
-        self.resetFontColorEditor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.svg"))
+        self.resetFontColorEditor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
         self.resetFontColorEditor.setIconSize(QSize(18, 18))
         self.resetFontColor.clicked.connect(self._resetFontColor)
         self.resetFontColorEditor.clicked.connect(self._resetFontColorEditor)
