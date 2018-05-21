@@ -253,7 +253,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
 
   public:
     //! Ctor
-    QgsMeshDataProvider( const QString &uri = QString() );
+    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /**
      * Returns the extent of the layer

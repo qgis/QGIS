@@ -357,7 +357,9 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 
   // use the provider to edit the table
   dsUri.setDataSource( QLatin1String( "" ), tableName, geometryColumn, QString(), primaryKey );
-  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri() );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     QgsDebugMsg( "The layer " + tableName + " just created is not valid or not supported by the provider." );
@@ -435,8 +437,8 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 }
 
 
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -5293,9 +5295,9 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
+QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsSpatiaLiteProvider( *uri );
+  return new QgsSpatiaLiteProvider( *uri, options );
 }
 
 /**

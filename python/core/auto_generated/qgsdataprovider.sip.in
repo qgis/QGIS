@@ -64,9 +64,17 @@ to generic QgsVectorDataProvider's) depends on it.
       CustomData
     };
 
-    QgsDataProvider( const QString &uri = QString() );
+
+    struct ProviderOptions
+    {
+
+    };
+
+    QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
+
+Additional creation options are specified within the ``options`` value.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;

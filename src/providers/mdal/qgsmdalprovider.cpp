@@ -42,8 +42,8 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
   return QgsCoordinateReferenceSystem();
 }
 
-QgsMdalProvider::QgsMdalProvider( const QString &uri )
-  : QgsMeshDataProvider( uri )
+QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
+  : QgsMeshDataProvider( uri, options )
 {
   QByteArray curi = uri.toAscii();
   mMeshH = MDAL_LoadMesh( curi.constData() );
@@ -184,9 +184,9 @@ void QgsMdalProvider::refreshDatasets()
  * Class factory to return a pointer to a newly created
  * QgsGdalProvider object
  */
-QGISEXTERN QgsMdalProvider *classFactory( const QString *uri )
+QGISEXTERN QgsMdalProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsMdalProvider( *uri );
+  return new QgsMdalProvider( *uri, options );
 }
 
 /**

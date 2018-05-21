@@ -96,12 +96,26 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
+
+    /**
+     * Setting options for creating vector data providers.
+     * \since QGIS 3.2
+     */
+    struct ProviderOptions
+    {
+
+    };
+
     /**
      * Create a new dataprovider with the specified in the \a uri.
+     *
+     * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString() )
+    QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
       : mDataSourceURI( uri )
-    {}
+    {
+      Q_UNUSED( options );
+    }
 
     /**
      * Returns the coordinate system for the data source.

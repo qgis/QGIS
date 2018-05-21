@@ -71,9 +71,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
      * Constructor of the vector provider
-     * \param uri  uniform resource locator (URI) for a dataset
+     * \param uri uniform resource locator (URI) for a dataset
+     * \param options generic data provider options
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri = QString() );
+    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
     ~ QgsSpatiaLiteProvider() override;
 

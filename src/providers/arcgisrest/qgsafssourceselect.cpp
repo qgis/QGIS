@@ -115,7 +115,8 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   QString url = ds.param( QStringLiteral( "url" ) ) + "/" + id;
   ds.removeParam( QStringLiteral( "url" ) );
   ds.setParam( QStringLiteral( "url" ), url );
-  QgsAfsProvider provider( ds.uri() );
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsAfsProvider provider( ds.uri(), providerOptions );
   if ( !provider.isValid() )
   {
     return;

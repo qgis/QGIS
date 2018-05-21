@@ -248,8 +248,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Return time stamp for given file name
     static QDateTime lastModified( const QString   &name );
 
-    //! [ data provider interface ] Set the data provider
-    void setDataProvider( const QString &provider );
+    /**
+     * Set the data provider.
+     * \deprecated Use the version with ProviderOptions instead.
+     */
+    Q_DECL_DEPRECATED void setDataProvider( const QString &provider ) SIP_DEPRECATED;
+
+    /**
+     * Set the data provider.
+     * \param provider provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
+     * \param options provider options
+     * \since QGIS 3.2
+     */
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
 
     //! \brief  Accessor for raster layer type (which is a read only property)
     LayerType rasterType() { return mRasterType; }

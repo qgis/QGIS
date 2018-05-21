@@ -22,10 +22,9 @@
 
 #include <QString>
 #include "qgis.h"
+#include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include <functional>
-
-class QgsDataProvider;
 
 /**
  * \ingroup core
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsProviderMetadata
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
-    SIP_SKIP typedef std::function < QgsDataProvider*( const QString & ) > CreateDataProviderFunction;
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
 
     QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
 

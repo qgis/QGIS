@@ -180,9 +180,21 @@ returned in ``retError``.
 Return time stamp for given file name
 %End
 
-    void setDataProvider( const QString &provider );
+ void setDataProvider( const QString &provider ) /Deprecated/;
 %Docstring
-[ data provider interface ] Set the data provider
+Set the data provider.
+
+.. deprecated:: Use the version with ProviderOptions instead.
+%End
+
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+%Docstring
+Set the data provider.
+
+:param provider: provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
+:param options: provider options
+
+.. versionadded:: 3.2
 %End
 
     LayerType rasterType();

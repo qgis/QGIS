@@ -372,7 +372,7 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource )
+QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource, const QgsDataProvider::ProviderOptions &options )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -386,7 +386,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
 
   if ( metadata->createFunction() )
   {
-    return metadata->createFunction()( dataSource );
+    return metadata->createFunction()( dataSource, options );
   }
 
   // load the plugin

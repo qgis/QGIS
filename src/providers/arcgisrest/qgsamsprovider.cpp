@@ -124,8 +124,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString &uri )
-  : QgsRasterDataProvider( uri ), mValid( false )
+QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsRasterDataProvider( uri, options )
 {
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
@@ -209,7 +209,8 @@ void QgsAmsProvider::reloadData()
 
 QgsRasterInterface *QgsAmsProvider::clone() const
 {
-  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri() );
+  QgsDataProvider::ProviderOptions options;
+  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri(), options );
   provider->copyBaseSettings( *this );
   return provider;
 }

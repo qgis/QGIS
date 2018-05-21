@@ -119,7 +119,9 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 {
   QgsDebugMsgLevel( "Entered", 4 );
   init();
-  setDataProvider( providerKey );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  setDataProvider( providerKey, providerOptions );
   if ( !mValid ) return;
 
   // load default style
@@ -202,6 +204,11 @@ QDateTime QgsRasterLayer::lastModified( QString const &name )
   QgsDebugMsgLevel( "last modified = " + t.toString(), 4 );
 
   return t;
+}
+
+void QgsRasterLayer::setDataProvider( const QString &provider )
+{
+  setDataProvider( provider, QgsDataProvider::ProviderOptions() );
 }
 
 // typedef for the QgsDataProvider class factory
@@ -571,7 +578,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mHeight = 0;
 }
 
-void QgsRasterLayer::setDataProvider( QString const &provider )
+void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   mValid = false; // assume the layer is invalid until we determine otherwise
@@ -591,7 +598,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
 
   //mBandCount = 0;
 
-  mDataProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource ) );
+  mDataProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options ) );
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -1452,7 +1459,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  setDataProvider( mProviderKey );
+  QgsDataProvider::ProviderOptions providerOptions;
+  setDataProvider( mProviderKey, providerOptions );
   if ( !mValid ) return false;
 
   QString error;
@@ -1868,7 +1876,8 @@ bool QgsRasterLayer::update()
     QgsDebugMsgLevel( "reload data", 4 );
     closeDataProvider();
     init();
-    setDataProvider( mProviderKey );
+    QgsDataProvider::ProviderOptions providerOptions;
+    setDataProvider( mProviderKey, providerOptions );
     emit dataChanged();
   }
   return mValid;

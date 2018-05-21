@@ -929,8 +929,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
      * data source
      * \since QGIS 2.10
+     * \deprecated Use version with ProviderOptions argument instead
      */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    Q_DECL_DEPRECATED void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false ) SIP_DEPRECATED;
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * \since QGIS 3.2
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
@@ -2284,8 +2298,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Bind layer to a specific data provider
      * \param provider provider key string, must match a valid QgsVectorDataProvider key. E.g. "postgres", "ogr", etc.
+     * \param options provider options
      */
-    bool setDataProvider( QString const &provider );
+    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options );
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );

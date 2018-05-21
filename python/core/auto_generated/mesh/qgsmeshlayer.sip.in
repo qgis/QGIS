@@ -77,7 +77,13 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 %End
   public:
 
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
+    struct LayerOptions
+    {
+
+    };
+
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 %Docstring
 Constructor - creates a mesh layer
 

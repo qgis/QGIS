@@ -89,8 +89,8 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 
-QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mShared( new QgsPostgresSharedData )
 {
 
@@ -3935,7 +3935,9 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ) );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -4399,9 +4401,9 @@ bool QgsPostgresProvider::hasMetadata() const
  * Class factory to return a pointer to a newly created
  * QgsPostgresProvider object
  */
-QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri )
+QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsPostgresProvider( *uri );
+  return new QgsPostgresProvider( *uri, options );
 }
 
 /**

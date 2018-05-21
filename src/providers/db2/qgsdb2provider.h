@@ -34,7 +34,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri = QString() );
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     ~QgsDb2Provider() override;
 

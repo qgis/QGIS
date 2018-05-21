@@ -30,12 +30,14 @@
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
-                            const QString &providerKey )
+                            const QString &providerKey,
+                            const LayerOptions & )
   : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
   , mProviderKey( providerKey )
 {
   // load data
-  setDataProvider( providerKey );
+  QgsDataProvider::ProviderOptions providerOptions;
+  setDataProvider( providerKey, providerOptions );
 
   // show at least the mesh by default so we render something
   mRendererNativeMeshSettings.setEnabled( true );
@@ -269,7 +271,8 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     mProviderKey = pkeyElt.text();
   }
 
-  if ( !setDataProvider( mProviderKey ) )
+  QgsDataProvider::ProviderOptions providerOptions;
+  if ( !setDataProvider( mProviderKey, providerOptions ) )
   {
     return false;
   }
@@ -304,7 +307,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   return writeSymbology( layer_node, document, errorMsg, context );
 }
 
-bool QgsMeshLayer::setDataProvider( QString const &provider )
+bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   if ( mDataProvider )
     delete mDataProvider;
@@ -312,7 +315,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider )
   mProviderKey = provider;
   QString dataSource = mDataSource;
 
-  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
+  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options ) );
   if ( !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );

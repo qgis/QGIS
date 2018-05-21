@@ -125,7 +125,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 }
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
-  : QgsRasterDataProvider( uri )
+  : QgsRasterDataProvider( uri, QgsDataProvider::ProviderOptions() )
   , mpRefCounter( new QAtomicInt( 1 ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( false )
@@ -139,8 +139,8 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   setError( error );
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH dataset )
-  : QgsRasterDataProvider( uri )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
+  : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
   , mpMutex( new QMutex( QMutex::Recursive ) )
   , mpParent( new QgsGdalProvider * ( this ) )
@@ -194,7 +194,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH 
 }
 
 QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
-  : QgsRasterDataProvider( other.dataSourceUri() )
+  : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
   , mUpdate( false )
 {
   // The JP2OPENJPEG driver might consume too much memory on large datasets
@@ -2125,9 +2125,9 @@ QStringList QgsGdalProvider::subLayers() const
  * Class factory to return a pointer to a newly created
  * QgsGdalProvider object
  */
-QGISEXTERN QgsGdalProvider *classFactory( const QString *uri )
+QGISEXTERN QgsGdalProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsGdalProvider( *uri );
+  return new QgsGdalProvider( *uri, options );
 }
 
 /**
@@ -3004,7 +3004,8 @@ QGISEXTERN QgsGdalProvider *create(
   GDALSetGeoTransform( dataset.get(), geoTransform );
   GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
 
-  return new QgsGdalProvider( uri, true, dataset.release() );
+  QgsDataProvider::ProviderOptions providerOptions;
+  return new QgsGdalProvider( uri, providerOptions, true, dataset.release() );
 }
 
 bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )

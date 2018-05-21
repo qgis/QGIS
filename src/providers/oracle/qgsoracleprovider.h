@@ -78,8 +78,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
+     * \param options generic data provider options
      */
-    explicit QgsOracleProvider( QString const &uri = "" );
+    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
     //! Destructor
     virtual ~QgsOracleProvider();

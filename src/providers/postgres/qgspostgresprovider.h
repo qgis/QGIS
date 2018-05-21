@@ -87,8 +87,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * host=localhost dbname=test [user=gsherman [password=xxx] | authcfg=xxx] table=test.alaska (the_geom)
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
+     * \param options generic data provider options
      */
-    explicit QgsPostgresProvider( QString const &uri = QString() );
+    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
 
     ~QgsPostgresProvider() override;

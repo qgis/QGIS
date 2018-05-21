@@ -93,6 +93,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
   public:
 
     /**
+     * Setting options for loading mesh layers.
+     */
+    struct LayerOptions
+    {
+
+    };
+
+    /**
      * Constructor - creates a mesh layer
      *
      * The QgsMeshLayer is constructed by instantiating a data provider.  The provider
@@ -104,7 +112,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \param baseName The name used to represent the layer in the legend
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
     ~QgsMeshLayer() override;
 
     //! QgsMeshLayer cannot be copied.
@@ -185,8 +194,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
      * Binds layer to a specific data provider
      * \param provider provider key string, must match a valid QgsMeshDataProvider key. E.g. "mesh_memory", etc.
+     * \param options generic provider options
      */
-    bool setDataProvider( QString const &provider );
+    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options );
 
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );

@@ -114,10 +114,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     };
 
     /**
-     * Constructor of the vector provider
-     * \param uri  uniform resource locator (URI) for a dataset
+     * Constructor for a vector data provider.
+     *
+     * The \a uri argument specifies the uniform resource locator (URI) for the associated dataset.
+     *
+     * Additional creation options are specified within the \a options value.
      */
-    QgsVectorDataProvider( const QString &uri = QString() );
+    QgsVectorDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /**
      * Return feature source object that can be used for querying provider's data. The returned feature source

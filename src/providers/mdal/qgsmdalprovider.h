@@ -39,11 +39,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     /**
      * Constructor for the provider.
      *
-     * \param   uri         file name
-     * \param   newDataset  handle of newly created dataset.
-     *
+     * \param uri file name
+     * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri = QString() );
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
     ~QgsMdalProvider();
 
     bool isValid() const override;

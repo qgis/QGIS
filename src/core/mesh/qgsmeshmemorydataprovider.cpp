@@ -41,8 +41,8 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
   return QgsCoordinateReferenceSystem();
 }
 
-QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri )
-  : QgsMeshDataProvider( uri )
+QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const ProviderOptions &options )
+  : QgsMeshDataProvider( uri, options )
 {
   mIsValid = splitMeshSections( uri );
 }
@@ -61,9 +61,9 @@ QString QgsMeshMemoryDataProvider::providerDescription()
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri )
+QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri, const ProviderOptions &options )
 {
-  return new QgsMeshMemoryDataProvider( uri );
+  return new QgsMeshMemoryDataProvider( uri, options );
 }
 
 bool QgsMeshMemoryDataProvider::splitMeshSections( const QString &uri )

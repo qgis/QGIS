@@ -157,7 +157,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    setDataSource( vectorLayerPath, baseName, providerKey, options.loadDefaultStyle );
+    QgsDataProvider::ProviderOptions providerOptions;
+    setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { emit repaintRequested(); } );
@@ -1388,7 +1389,8 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
-  if ( !setDataProvider( mProviderKey ) )
+  QgsDataProvider::ProviderOptions options;
+  if ( !setDataProvider( mProviderKey, options ) )
   {
     return false;
   }
@@ -1457,11 +1459,17 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
 void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag )
 {
+  QgsDataProvider::ProviderOptions options;
+  setDataSource( dataSource, baseName, provider, options, loadDefaultStyleFlag );
+}
+
+void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
   QgsWkbTypes::GeometryType geomType = mValid && mDataProvider ? geometryType() : QgsWkbTypes::UnknownGeometry;
 
   mDataSource = dataSource;
   setName( baseName );
-  setDataProvider( provider );
+  setDataProvider( provider, options );
 
   if ( !mValid )
     return;
@@ -1523,7 +1531,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 }
 
 
-bool QgsVectorLayer::setDataProvider( QString const &provider )
+bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
 
@@ -1543,7 +1551,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   }
 
   delete mDataProvider;
-  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
+  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options ) );
   if ( !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "Unable to get data provider" ), 2 );

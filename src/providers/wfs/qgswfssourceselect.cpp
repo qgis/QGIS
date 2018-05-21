@@ -425,7 +425,9 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
 
   QgsWFSDataSourceURI uri( mURI );
   uri.setSql( sqlStr );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions options;
+  QgsWFSProvider p( uri.uri(), options, mCaps );
   if ( !p.isValid() )
   {
     errorReason = p.processSQLErrorMsg();
@@ -454,7 +456,9 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     return;
   QgsWFSDataSourceURI uri( mURI );
   uri.setTypeName( prefixedTypename );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWFSProvider p( uri.uri(), providerOptions, mCaps );
   if ( !p.isValid() )
   {
     return;
@@ -490,7 +494,9 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   QgsWfsConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri() );
   uri.setTypeName( typeName );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWFSProvider p( uri.uri(), providerOptions, mCaps );
   if ( !p.isValid() )
   {
     QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Server exception" ), tr( "DescribeFeatureType failed" ), QMessageBox::Ok, this );

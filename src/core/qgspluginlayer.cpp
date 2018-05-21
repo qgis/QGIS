@@ -22,7 +22,7 @@ QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerNa
   : QgsMapLayer( PluginLayer, layerName )
   , mPluginLayerType( layerType )
 {
-  mDataProvider = new QgsPluginLayerDataProvider( layerType );
+  mDataProvider = new QgsPluginLayerDataProvider( layerType, QgsDataProvider::ProviderOptions() );
 }
 
 QgsPluginLayer::~QgsPluginLayer()
@@ -63,8 +63,9 @@ const QgsDataProvider *QgsPluginLayer::dataProvider() const
 // QgsPluginLayerDataProvider
 //
 ///@cond PRIVATE
-QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType )
-  : mName( layerType )
+QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType, const ProviderOptions &options )
+  : QgsDataProvider( QString(), options )
+  , mName( layerType )
 {}
 
 QgsCoordinateReferenceSystem QgsPluginLayerDataProvider::crs() const

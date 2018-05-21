@@ -54,8 +54,8 @@ static QString quotedColumn( QString name )
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
-QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   mError.clear();
 
@@ -629,9 +629,9 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri )
+QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsVirtualLayerProvider( *uri );
+  return new QgsVirtualLayerProvider( *uri, options );
 }
 
 /**

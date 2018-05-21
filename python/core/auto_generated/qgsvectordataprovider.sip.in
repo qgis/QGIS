@@ -67,11 +67,13 @@ of feature and attribute information from a spatial datasource.
       UnknownCount,
     };
 
-    QgsVectorDataProvider( const QString &uri = QString() );
+    QgsVectorDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 %Docstring
-Constructor of the vector provider
+Constructor for a vector data provider.
 
-:param uri:  uniform resource locator (URI) for a dataset
+The ``uri`` argument specifies the uniform resource locator (URI) for the associated dataset.
+
+Additional creation options are specified within the ``options`` value.
 %End
 
     virtual QgsAbstractFeatureSource *featureSource() const = 0 /Factory/;
