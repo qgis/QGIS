@@ -451,7 +451,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -766,7 +766,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -807,7 +807,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
 
         # Test changeAttributeValues
         content = """
@@ -838,7 +838,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['bar'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)])
+        self.assertEqual(values, [QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -1942,11 +1942,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
 
         values = [(f['intfield'], f['longfield'], f['stringfield'], f['datetimefield']) for f in vl.getFeatures()]
-        control = [(1, 1234567890, 'foo', QDateTime(2016, 4, 10, 6, 34, 56, 789)),
-                   (2, 1234567890, 'foo', QDateTime(2016, 4, 10, 6, 34, 56, 789)),
-                   (1, 1234567891, 'foo', QDateTime(2016, 4, 10, 6, 34, 56, 789)),
-                   (1, 1234567890, 'fop', QDateTime(2016, 4, 10, 6, 34, 56, 789)),
-                   (1, 1234567890, 'foo', QDateTime(2016, 4, 10, 6, 34, 56, 788))]
+        control = [(1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
+                   (2, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
+                   (1, 1234567891, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
+                   (1, 1234567890, 'fop', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
+                   (1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 788, Qt.TimeSpec(Qt.LocalTime)))]
         for i, v in enumerate(values):
             self.assertEqual(v, control[i], 'failed for value {}\nvalue: {}\nexpected: {}'.format(i, v, control[i]))
 
