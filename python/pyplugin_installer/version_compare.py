@@ -207,7 +207,7 @@ def pyQgisVersion():
         If Y = 99, bump up to (X+1.0.0), so e.g. 2.99 becomes 3.0.0
         This way QGIS X.99 is only compatible with plugins for the upcoming major release.
     """
-    x, y, z = re.findall('^(\d*).(\d*).(\d*)', Qgis.QGIS_VERSION)[0]
+    x, y, z = re.findall(r'^(\d*).(\d*).(\d*)', Qgis.QGIS_VERSION)[0]
     if y == '99':
         x = str(int(x) + 1)
         y = z = '0'
