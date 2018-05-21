@@ -456,7 +456,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   int pagingIter = 1;
   QString gmlIdFirstFeatureFirstIter;
   bool disablePaging = false;
-  // Top level loop to do feature paging in WFS 2
+  // Top level loop to do feature paging in WFS 2.0
   while ( true )
   {
     success = true;
