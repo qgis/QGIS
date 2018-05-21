@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the geometry using the specified tolerance
-    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry &geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
+    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, const QgsAbstractGeometry &geometry, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
