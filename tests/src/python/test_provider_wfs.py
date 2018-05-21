@@ -451,7 +451,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -748,7 +748,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             f.write(response.encode('UTF-8'))
 
         f = QgsFeature()
-        f.setAttributes([1, 1234567890123, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.LocalTime)])
+        f.setAttributes([1, 1234567890123, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)])
         f.setGeometry(QgsGeometry.fromWkt('Point (2 49)'))
         (ret, fl) = vl.dataProvider().addFeatures([f])
         assert ret
@@ -766,7 +766,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -807,7 +807,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['foo'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
+        self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))])
 
         # Test changeAttributeValues
         content = """
@@ -826,7 +826,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">intfield</Name><Value xmlns="http://www.opengis.net/wfs">2</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">longfield</Name><Value xmlns="http://www.opengis.net/wfs">3</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">stringfield</Name><Value xmlns="http://www.opengis.net/wfs">bar</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">datetimefield</Name><Value xmlns="http://www.opengis.net/wfs">2015-04-10T12:34:56.789-06:00</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'), 'wb') as f:
             f.write(content.encode('UTF-8'))
 
-        assert vl.dataProvider().changeAttributeValues({1: {0: 2, 1: 3, 2: "bar", 3: QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.LocalTime)}})
+        assert vl.dataProvider().changeAttributeValues({1: {0: 2, 1: 3, 2: "bar", 3: QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.OffsetFromUTC)}})
 
         values = [f['intfield'] for f in vl.getFeatures()]
         self.assertEqual(values, [2])
@@ -838,7 +838,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, ['bar'])
 
         values = [f['datetimefield'] for f in vl.getFeatures()]
-        self.assertEqual(values, [QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))])
+        self.assertEqual(values, [QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))])
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
@@ -1942,11 +1942,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
 
         values = [(f['intfield'], f['longfield'], f['stringfield'], f['datetimefield']) for f in vl.getFeatures()]
-        control = [(1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
-                   (2, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
-                   (1, 1234567891, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
-                   (1, 1234567890, 'fop', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.LocalTime))),
-                   (1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 788, Qt.TimeSpec(Qt.LocalTime)))]
+        control = [(1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))),
+                   (2, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))),
+                   (1, 1234567891, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))),
+                   (1, 1234567890, 'fop', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.OffsetFromUTC))),
+                   (1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 788, Qt.TimeSpec(Qt.OffsetFromUTC)))]
         for i, v in enumerate(values):
             self.assertEqual(v, control[i], 'failed for value {}\nvalue: {}\nexpected: {}'.format(i, v, control[i]))
 
