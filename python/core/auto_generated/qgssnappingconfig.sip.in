@@ -191,10 +191,6 @@ Returns if the snapping on intersection is enabled
 Sets if the snapping on intersection is enabled
 %End
 
-    bool editVerticesOnAllLayers() const;
-
-    void setEditVerticesOnAllLayers( bool enabled );
-
     SIP_PYDICT individualLayerSettings() const;
 %Docstring
 Returns individual snapping settings for all layers

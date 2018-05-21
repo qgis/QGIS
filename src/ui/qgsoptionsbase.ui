@@ -4208,28 +4208,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_30">
-                 <property name="title">
-                  <string>Vertex tool</string>
-                 </property>
-                 <layout class="QGridLayout" name="_13">
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="mEditVerticesOnAllLayersDefault">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The vertex editor tool allows to edit vertices from many layers at once. This option allows to restore previous behavior, ie only edit active layer. Useful with transaction groups and database trigger design interfering with multi layer editing&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>Edit vertices of all editable layers at once by default</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mVertexMarkerGroupBox">
                  <property name="title">
                   <string>Vertex markers</string>

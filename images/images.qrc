@@ -627,7 +627,6 @@
         <file>themes/default/mIconSnappingSegment.svg</file>
         <file>themes/default/mIconTopologicalEditing.svg</file>
         <file>themes/default/mIconSnappingIntersection.svg</file>
-        <file>themes/default/mIconEditVerticesAllLayers.svg</file>
         <file>themes/default/mActionMoveFeatureCopy.svg</file>
         <file>themes/default/mActionMoveFeatureCopyLine.svg</file>
         <file>themes/default/mActionMoveFeatureCopyPoint.svg</file>
