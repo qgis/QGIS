@@ -117,12 +117,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     * \param uri HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
-     * \param   capabilities   Optionally existing parsed capabilities for the given URI
+     * \param options generic data provider options
+     * \param capabilities Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = nullptr );
+    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, const QgsWmsCapabilities *capabilities = nullptr );
 
 
     ~QgsWmsProvider() override;

@@ -76,9 +76,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /**
      * Constructor of the vector provider
-     * \param uri  uniform resource locator (URI) for a dataset
+     * \param uri uniform resource locator (URI) for a dataset
+     * \param options generic data provider options
      */
-    explicit QgsOgrProvider( QString const &uri = QString() );
+    explicit QgsOgrProvider( QString const &uri,
+                             const QgsDataProvider::ProviderOptions &options );
 
     ~QgsOgrProvider() override;
 

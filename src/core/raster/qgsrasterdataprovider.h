@@ -104,7 +104,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri );
+    /**
+     * Constructor for QgsRasterDataProvider.
+     *
+     * The \a uri argument gives a provider-specific uri indicating the underlying data
+     * source and it's parameters.
+     *
+     * The \a options argument specifies generic provider options.
+     */
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     QgsRasterInterface *clone() const override = 0;
 

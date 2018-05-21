@@ -34,8 +34,8 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri )
-  : QgsDataProvider( uri )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
+  : QgsDataProvider( uri, options )
 {
   QgsSettings settings;
   setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );

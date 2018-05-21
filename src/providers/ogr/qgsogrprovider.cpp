@@ -424,8 +424,8 @@ static QString AnalyzeURI( QString const &uri,
 
 }
 
-QgsOgrProvider::QgsOgrProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   QgsApplication::registerOgrDrivers();
 
@@ -2925,9 +2925,9 @@ QGISEXTERN QStringList wildcards()
  * Class factory to return a pointer to a newly created
  * QgsOgrProvider object
  */
-QGISEXTERN QgsOgrProvider *classFactory( const QString *uri )
+QGISEXTERN QgsOgrProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOgrProvider( *uri );
+  return new QgsOgrProvider( *uri, options );
 }
 
 

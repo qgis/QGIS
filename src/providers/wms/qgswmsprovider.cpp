@@ -100,8 +100,8 @@ struct LessThanTileRequest
 };
 
 
-QgsWmsProvider::QgsWmsProvider( QString const &uri, const QgsWmsCapabilities *capabilities )
-  : QgsRasterDataProvider( uri )
+QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &options, const QgsWmsCapabilities *capabilities )
+  : QgsRasterDataProvider( uri, options )
   , mHttpGetLegendGraphicResponse( nullptr )
   , mImageCrs( DEFAULT_LATLON_CRS )
 {
@@ -199,7 +199,8 @@ QgsWmsProvider::~QgsWmsProvider()
 
 QgsWmsProvider *QgsWmsProvider::clone() const
 {
-  QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), mCaps.isValid() ? &mCaps : nullptr );
+  QgsDataProvider::ProviderOptions options;
+  QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -3522,9 +3523,9 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
  * Class factory to return a pointer to a newly created
  * QgsWmsProvider object
  */
-QGISEXTERN QgsWmsProvider *classFactory( const QString *uri )
+QGISEXTERN QgsWmsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWmsProvider( *uri );
+  return new QgsWmsProvider( *uri, options );
 }
 
 /**

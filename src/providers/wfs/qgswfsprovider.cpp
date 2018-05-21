@@ -56,8 +56,8 @@
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "WFS" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
 
-QgsWFSProvider::QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps )
-  : QgsVectorDataProvider( uri )
+QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
+  : QgsVectorDataProvider( uri, options )
   , mShared( new QgsWFSSharedData( uri ) )
 {
   mShared->mCaps = caps;
@@ -1739,9 +1739,9 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QGISEXTERN QgsWFSProvider *classFactory( const QString *uri )
+QGISEXTERN QgsWFSProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWFSProvider( *uri );
+  return new QgsWFSProvider( *uri, options );
 }
 
 QGISEXTERN QString providerKey()

@@ -82,7 +82,15 @@ Base class for raster data providers.
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri );
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+%Docstring
+Constructor for QgsRasterDataProvider.
+
+The ``uri`` argument gives a provider-specific uri indicating the underlying data
+source and it's parameters.
+
+The ``options`` argument specifies generic provider options.
+%End
 
     virtual QgsRasterInterface *clone() const = 0;
 

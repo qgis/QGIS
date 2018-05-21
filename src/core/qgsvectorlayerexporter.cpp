@@ -108,7 +108,9 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
       uriUpdated += layerName;
     }
   }
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated ) );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;

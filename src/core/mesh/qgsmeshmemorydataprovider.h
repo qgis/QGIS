@@ -71,7 +71,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      *    );
      * \endcode
      */
-    QgsMeshMemoryDataProvider( const QString &uri = QString() );
+    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
     ~QgsMeshMemoryDataProvider();
 
     bool isValid() const override;
@@ -119,7 +119,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     //! Returns the memory provider description
     static QString providerDescription();
     //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri );
+    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
   private:
     bool splitMeshSections( const QString &uri );
     bool addMeshVertices( const QString &def );

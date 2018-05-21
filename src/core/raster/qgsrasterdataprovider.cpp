@@ -206,12 +206,13 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
-  : QgsRasterInterface( nullptr )
+  : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
+  , QgsRasterInterface( nullptr )
 {
 }
 
-QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
-  : QgsDataProvider( uri )
+QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
+  : QgsDataProvider( uri, options )
   , QgsRasterInterface( nullptr )
 {
 }

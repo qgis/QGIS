@@ -268,7 +268,7 @@ Responsible for reading native mesh data
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    QgsMeshDataProvider( const QString &uri = QString() );
+    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 %Docstring
 Ctor
 %End

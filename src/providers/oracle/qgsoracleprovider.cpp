@@ -45,8 +45,8 @@
 const QString ORACLE_KEY = "oracle";
 const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
-QgsOracleProvider::QgsOracleProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mValid( false )
   , mIsQuery( false )
   , mPrimaryKeyType( PktUnknown )
@@ -2840,7 +2840,9 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
   // use the provider to edit the table1
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
-  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri() );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -3029,9 +3031,9 @@ QString  QgsOracleProvider::description() const
  * Class factory to return a pointer to a newly created
  * QgsOracleProvider object
  */
-QGISEXTERN QgsOracleProvider *classFactory( const QString *uri )
+QGISEXTERN QgsOracleProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOracleProvider( *uri );
+  return new QgsOracleProvider( *uri, options );
 }
 
 /**

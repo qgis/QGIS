@@ -18,8 +18,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgis.h"
 
-QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri )
-  : QgsDataProvider( uri )
+QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+  : QgsDataProvider( uri, options )
 {
 }
 

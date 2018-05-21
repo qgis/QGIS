@@ -25,11 +25,11 @@
 #include <QLibrary>
 #include <QString>
 
+#include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 
-class QgsDataProvider;
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -93,10 +93,12 @@ class CORE_EXPORT QgsProviderRegistry
      * Creates a new instance of a provider.
      * \param providerKey identificator of the provider
      * \param dataSource  string containing data source for the provider
+     * \param options provider options
      * \returns new instance of provider or NULL on error
      */
     QgsDataProvider *createProvider( const QString &providerKey,
-                                     const QString &dataSource ) SIP_FACTORY;
+                                     const QString &dataSource,
+                                     const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
     /**
      * Return the provider capabilities

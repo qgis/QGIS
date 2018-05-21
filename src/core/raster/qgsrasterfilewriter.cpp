@@ -716,7 +716,8 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
 {
   QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
-  QgsRasterDataProvider *destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename ) );
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsRasterDataProvider *destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
   if ( !destProvider )
   {
     return;

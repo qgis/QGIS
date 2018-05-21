@@ -448,8 +448,10 @@ bool QgsWFSSharedData::createCache()
   pragmas << QStringLiteral( "synchronous=OFF" );
   pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers
   dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
+
+  QgsDataProvider::ProviderOptions providerOptions;
   mCacheDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider(
-                         QStringLiteral( "spatialite" ), dsURI.uri() ) );
+                         QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     delete mCacheDataProvider;

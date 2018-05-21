@@ -65,8 +65,8 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 // TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
-QgsWcsProvider::QgsWcsProvider( const QString &uri )
-  : QgsRasterDataProvider( uri )
+QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsRasterDataProvider( uri, options )
   , mCachedViewExtent( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
@@ -430,7 +430,8 @@ QgsWcsProvider::~QgsWcsProvider()
 
 QgsWcsProvider *QgsWcsProvider::clone() const
 {
-  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri() );
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri(), providerOptions );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -1581,9 +1582,9 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QGISEXTERN QgsWcsProvider *classFactory( const QString *uri )
+QGISEXTERN QgsWcsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWcsProvider( *uri );
+  return new QgsWcsProvider( *uri, options );
 }
 
 QGISEXTERN QString providerKey()
