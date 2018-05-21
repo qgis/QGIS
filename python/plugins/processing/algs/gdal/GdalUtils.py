@@ -29,15 +29,16 @@ import os
 import subprocess
 import platform
 import re
+import warnings
 
 import psycopg2
 
-from osgeo import gdal
-from osgeo import ogr
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -49,7 +50,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal  # NOQA
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        from osgeo import gdal  # NOQA
 
     gdalAvailable = True
 except:

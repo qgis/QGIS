@@ -29,6 +29,7 @@ import os
 import codecs
 import inspect
 import traceback
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -48,8 +49,11 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, "ui", "DlgScriptEditor.ui"))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, "ui", "DlgScriptEditor.ui"))
 
 
 class ScriptEditorDialog(BASE, WIDGET):

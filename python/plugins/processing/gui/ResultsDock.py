@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import time
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (QUrl,
@@ -39,8 +40,11 @@ from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from processing.core.ProcessingResults import resultsList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'resultsdockbase.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'resultsdockbase.ui'))
 
 
 class ResultsDock(QgsDockWidget, WIDGET):

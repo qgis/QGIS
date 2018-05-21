@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
@@ -38,8 +39,11 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
 
 class HelpEditionDialog(BASE, WIDGET):
