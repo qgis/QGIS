@@ -120,6 +120,13 @@ class DoxygenParser():
                 return True
         return False
 
+    @staticmethod
+    def standardize_signature(signature):
+        """
+        Standardizes a method's signature for comparison
+        """
+        return signature.lower().replace('* >', '*>').replace('< ', '<')
+
     def parseFile(self, f):
         """ Parses a single Doxygen XML file
             :param f: XML file path
@@ -153,7 +160,7 @@ class DoxygenParser():
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
 
                         # do a case insensitive check too
-                        unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
+                        unacceptable_undocumented_insensitive = set([DoxygenParser.standardize_signature(u) for u in undocumented]) - set([DoxygenParser.standardize_signature(u) for u in acceptable_missing])
 
                         if len(unacceptable_undocumented_insensitive) > 0:
                             self.undocumented_members[class_name] = {}
