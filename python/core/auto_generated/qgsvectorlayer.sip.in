@@ -761,6 +761,18 @@ Resolve references to other layers (kept as layer IDs after reading XML) into la
 .. versionadded:: 3.0
 %End
 
+    virtual bool styleExistsInDatabase( const QString &name, QString &msgError /Out/ );
+%Docstring
+Check if the named style exists in the database.
+
+:param name: Name of the style to check.
+:param msgError: A reason why the style might not exist in the DB.
+
+:return: If the style is present or not.
+
+.. versionadded:: 3.2
+%End
+
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
                                       QString &msgError /Out/ );

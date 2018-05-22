@@ -931,12 +931,26 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
       case 0:
         return;
       case 2:
+      {
+        QgsDataSourceUri dsUri( mLayer->dataProvider()->uri() );
+        if ( mLayer->styleExistsInDatabase( dsUri.table(), errorMsg ) )
+        {
+          if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                      QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
+                                      .arg( dsUri.table() ),
+                                      QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+          {
+            return;
+          }
+        }
+        errorMsg = QString();
         mLayer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
         if ( errorMsg.isNull() )
         {
           return;
         }
         break;
+      }
       default:
         break;
     }
@@ -1137,6 +1151,18 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 
       apply();
 
+      if ( mLayer->styleExistsInDatabase( styleName, msgError ) )
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                    QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
+                                    .arg( styleName ),
+                                    QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+        {
+          return;
+        }
+      }
+
+      msgError = QString();
       mLayer->saveStyleToDatabase( styleName, styleDesc, isDefault, uiFileContent, msgError );
 
       if ( !msgError.isNull() )
