@@ -106,7 +106,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
   restoreState();
 
-  mOnlySelectedCheckBox->setDisabled(true);
+  mOnlySelectedCheckBox->setDisabled( true );
   mOfflineDbFile = QStringLiteral( "offline.gpkg" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
@@ -154,7 +154,7 @@ bool QgsOfflineEditingPluginGui::isGeopackage() const
 
 void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
-  if( isGeopackage() )
+  if ( isGeopackage() )
   {
     //GeoPackage
     QString fileName = QFileDialog::getSaveFileName( this,
@@ -255,16 +255,14 @@ void QgsOfflineEditingPluginGui::deSelectAll()
 
 void QgsOfflineEditingPluginGui::datatypeChanged( int index )
 {
-  if( index==0 )
+  if ( index == 0 )
   {
     //GeoPackage
-    mOnlySelectedCheckBox->setDisabled(true);
     mOfflineDbFile = QStringLiteral( "offline.gpkg" );
   }
   else
   {
     //Spatialite
-    mOnlySelectedCheckBox->setEnabled(true);
     mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   }
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );

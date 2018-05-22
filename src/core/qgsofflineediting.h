@@ -111,7 +111,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void createLoggingTables( sqlite3 *db );
 
     QgsVectorLayer *copyVectorLayerGpkg( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath );
-    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected );
+    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, bool gpkg );
 
     void applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
