@@ -126,8 +126,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor("#3E3EE3"))
-        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretWidth(0)
 
@@ -161,6 +159,11 @@ class ShellOutputScintilla(QsciScintilla):
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.setLexers()
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor("#2e3436"))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor("#babdb6"))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceColor", QColor("#b7f907"))))
+        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColor", QColor("#3E3EE3"))))
+        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor("#f9f9f9"))))
         caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))
         cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
         self.setCaretLineBackgroundColor(caretLineColor)
@@ -181,6 +184,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColorEditor", QColor("#4e9a06"))), 2)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
