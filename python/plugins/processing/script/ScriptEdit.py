@@ -37,6 +37,30 @@ from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 class ScriptEdit(QsciScintilla):
 
+    DEFAULT_COLOR = "#4d4d4c"
+    KEYWORD_COLOR = "#8959a8"
+    CLASS_COLOR = "#4271ae"
+    METHOD_COLOR = "#4271ae"
+    DECORATION_COLOR = "#3e999f"
+    NUMBER_COLOR = "#c82829"
+    COMMENT_COLOR = "#8e908c"
+    COMMENT_BLOCK_COLOR = "#8e908c"
+    BACKGROUND_COLOR = "#ffffff"
+    CURSOR_COLOR = "#636363"
+    CARET_LINE_COLOR = "#efefef"
+    SINGLE_QUOTE_COLOR = "#718c00"
+    DOUBLE_QUOTE_COLOR = "#718c00"
+    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
+    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
+    MARGIN_BACKGROUND_COLOR = "#efefef"
+    MARGIN_FOREGROUND_COLOR = "#636363"
+    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
+    SELECTION_FOREGROUND_COLOR = "#303030"
+    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
+    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
+    EDGE_COLOR = "#efefef"
+    FOLD_COLOR = "#efefef"
+
     def __init__(self, parent=None):
         QsciScintilla.__init__(self, parent)
 
@@ -58,28 +82,28 @@ class ScriptEdit(QsciScintilla):
         self.setMarginsFont(font)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor(settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor("#b7f907"))))
-        self.setMatchedBraceForegroundColor(QColor(settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor("#000000"))))
+        self.setMatchedBraceBackgroundColor(QColor(settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
+        self.setMatchedBraceForegroundColor(QColor(settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
 
         #self.setWrapMode(QsciScintilla.WrapWord)
         #self.setWrapVisualFlags(QsciScintilla.WrapFlagByText,
         #                        QsciScintilla.WrapFlagNone, 4)
 
-        self.setSelectionForegroundColor(QColor(settings.value("pythonConsole/selectionForegroundColorEditor", QColor("#2e3436"))))
-        self.setSelectionBackgroundColor(QColor(settings.value("pythonConsole/selectionBackgroundColorEditor", QColor("#babdb6"))))
+        self.setSelectionForegroundColor(QColor(settings.value("pythonConsole/selectionForegroundColorEditor", QColor(self.SELECTION_FOREGROUND_COLOR))))
+        self.setSelectionBackgroundColor(QColor(settings.value("pythonConsole/selectionBackgroundColorEditor", QColor(self.SELECTION_BACKGROUND_COLOR))))
 
         # Show line numbers
         fontmetrics = QFontMetrics(font)
         self.setMarginWidth(1, fontmetrics.width("0000") + 5)
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor("#3E3EE3"))))
-        self.setMarginsBackgroundColor(QColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor("#f9f9f9"))))
-        self.setIndentationGuidesForegroundColor(QColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor("#3E3EE3"))))
-        self.setIndentationGuidesBackgroundColor(QColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor("#f9f9f9"))))
+        self.setMarginsForegroundColor(QColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
+        self.setMarginsBackgroundColor(QColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
+        self.setIndentationGuidesForegroundColor(QColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
+        self.setIndentationGuidesBackgroundColor(QColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
 
         # Highlight current line
-        caretLineColorEditor = settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))
-        cursorColorEditor = settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))
+        caretLineColorEditor = settings.value("pythonConsole/caretLineColorEditor", QColor(self.CARET_LINE_COLOR))
+        cursorColorEditor = settings.value("pythonConsole/cursorColorEditor", QColor(self.CURSOR_COLOR))
         self.setCaretLineVisible(True)
         self.setCaretWidth(2)
         self.setCaretLineBackgroundColor(caretLineColorEditor)
@@ -87,13 +111,13 @@ class ScriptEdit(QsciScintilla):
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
-        foldColor = QColor(settings.value("pythonConsole/foldColorEditor", QColor("#f4f4f4")))
+        foldColor = QColor(settings.value("pythonConsole/foldColorEditor", QColor(self.FOLD_COLOR)))
         self.setFoldMarginColors(foldColor, foldColor)
 
         # Mark column 80 with vertical line
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor(settings.value("pythonConsole/edgeColorEditor", QColor("#FF0000"))))
+        self.setEdgeColor(QColor(settings.value("pythonConsole/edgeColorEditor", QColor(self.EDGE_COLOR))))
 
         # Indentation
         self.setAutoIndent(True)
@@ -170,24 +194,24 @@ class ScriptEdit(QsciScintilla):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/numberFontColorEditor", QColor(Qt.gray))), 2)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue))), 7)
+        self.lexer.setDefaultColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/numberFontColorEditor", QColor(self.NUMBER_COLOR))), 2)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/classFontColorEditor", QColor(self.CLASS_COLOR))), 8)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(self.METHOD_COLOR))), 9)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(self.DECORATION_COLOR))), 15)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
 
         for style in range(0, 33):
-            paperColor = QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white)))
+            paperColor = QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
