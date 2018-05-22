@@ -58,7 +58,7 @@ class TestQgsDocCoverage(unittest.TestCase):
             for cls, props in list(parser.undocumented_members.items()):
                 print(('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members'])))
                 for mem in props['missing_members']:
-                    print((colored('  ' + mem, 'yellow', attrs=['bold'])))
+                    print((colored('  "' + mem + '"', 'yellow', attrs=['bold'])))
 
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
