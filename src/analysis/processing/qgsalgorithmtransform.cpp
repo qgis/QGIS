@@ -79,7 +79,7 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   return true;
 }
 
-QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( !mCreatedTransform )
@@ -91,12 +91,21 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   if ( feature.hasGeometry() )
   {
     QgsGeometry g = feature.geometry();
-    if ( g.transform( mTransform ) == 0 )
+    try
     {
-      feature.setGeometry( g );
+      if ( g.transform( mTransform ) == 0 )
+      {
+        feature.setGeometry( g );
+      }
+      else
+      {
+        feature.clearGeometry();
+      }
     }
-    else
+    catch ( QgsCsException & )
     {
+      if ( feedback )
+        feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( f.id() ) );
       feature.clearGeometry();
     }
   }
