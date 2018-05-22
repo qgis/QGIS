@@ -266,7 +266,7 @@ class DoxygenParser():
                 signature = elem.find('name').text
             if signature.endswith('= default'):
                 signature = signature[:-len('= default')]
-            return signature
+            return signature.strip()
         except:
             return None
 
