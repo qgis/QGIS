@@ -660,9 +660,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QgsCoordinateTransform &ct,
-                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
-                               bool transformZ = false );
+    OperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.

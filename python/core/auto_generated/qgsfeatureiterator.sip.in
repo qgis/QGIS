@@ -118,7 +118,7 @@ QgsFeatureRequest.destinationCrs() set on the request is respected.
 %End
 
 
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
 %Docstring
 Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
