@@ -23,7 +23,6 @@ class QgsSymbol;
 
 #define SIP_NO_FILE
 
-#include <memory>
 #include <QSize>
 
 #include "qgis.h"
@@ -34,7 +33,6 @@ class QgsSymbol;
 #include "qgsrasterinterface.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
-#include <QVector2D>
 
 ///@cond PRIVATE
 
@@ -56,16 +54,16 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
                               const QSize &size );
     ~QgsMeshLayerInterpolator() override;
 
-    virtual QgsRasterInterface *clone() const override;
-    virtual Qgis::DataType dataType( int ) const override;
-    virtual int bandCount() const override;
-    virtual QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterInterface *clone() const override;
+    Qgis::DataType dataType( int ) const override;
+    int bandCount() const override;
+    QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;
     const QgsRenderContext &mContext;
-    bool mDataOnVertices;
+    bool mDataOnVertices = true;
     QSize mOutputSize;
 };
 

@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgsmeshlayerrenderer.h"
 
 #include "qgsfield.h"
@@ -223,13 +225,10 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
   QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
   QgsSingleBandPseudoColorRenderer r( &interpolator, 0, sh );  // takes ownership of sh
-  QgsRasterBlock *bl = r.block( 0, mContext.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() );
-  Q_ASSERT( bl );
-
+  std::unique_ptr<QgsRasterBlock> bl( r.block( 0, mContext.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();
 
   mContext.painter()->drawImage( 0, 0, img );
-  delete bl;
 }
 
 void QgsMeshLayerRenderer::renderVectorDataset()

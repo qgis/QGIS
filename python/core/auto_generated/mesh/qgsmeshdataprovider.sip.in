@@ -92,7 +92,7 @@ class QgsMeshDatasetMetadata
 %Docstring
 
 QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
-as if the data is vector or scalar, etc.
+as whether the data is vector or scalar, etc.
 
 .. note::
 
@@ -109,12 +109,18 @@ as if the data is vector or scalar, etc.
 %Docstring
 Constructs an empty metadata object
 %End
+
     QgsMeshDatasetMetadata( bool isScalar,
                             bool isValid,
                             bool isOnVertices,
                             const QMap<QString, QString> &extraOptions );
 %Docstring
-Consutructs a valid metadata object
+Constructs a valid metadata object
+
+:param isScalar: dataset contains scalar data, particulary the y-value of QgsMeshDatasetValue is NaN
+:param isValid: dataset is loadad and valid for fetching the data
+:param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
+:param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
     QMap<QString, QString> extraOptions() const;
@@ -145,9 +151,12 @@ Usually including name, description or time variable
 
 };
 
-class QgsMeshSource /Abstract/
+class QgsMeshDataSourceInterface /Abstract/
 {
 %Docstring
+
+Interface for mesh data sources
+
 Mesh is a  collection of vertices and faces in 2D or 3D space
 - vertex - XY(Z) point (in the mesh's coordinate reference system)
 - faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
@@ -166,7 +175,7 @@ read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    virtual ~QgsMeshSource();
+    virtual ~QgsMeshDataSourceInterface();
 
     virtual int vertexCount() const = 0;
 %Docstring
@@ -197,13 +206,14 @@ read on demand
 %End
 };
 
-class QgsMeshDatasetSource /Abstract/
+class QgsMeshDatasetSourceInterface /Abstract/
 {
 %Docstring
-Dataset is a  collection of vector or scalar values on vertices or faces of the mesh
+Interface for mesh datasets
 
-Based on the underlying data provider/format, whole dataset is either stored in memory or
-read on demand
+Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
+Based on the underlying data provider/format, whole dataset is either stored in memory
+or read on demand
 
 .. note::
 
@@ -216,7 +226,7 @@ read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    virtual ~QgsMeshDatasetSource();
+    virtual ~QgsMeshDatasetSourceInterface();
 
     virtual bool addDataset( const QString &uri ) = 0;
 %Docstring
@@ -242,7 +252,7 @@ See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector o
 };
 
 
-class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource, QgsMeshDatasetSource
+class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
 %Docstring
 Base class for providing data for :py:class:`QgsMeshLayer`

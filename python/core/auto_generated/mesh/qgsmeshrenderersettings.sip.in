@@ -202,7 +202,7 @@ Sets filter value for vector magnitudes.
 %Docstring
 Returns method used for drawing arrows
 %End
-    void setShaftLengthMethod( const QgsMeshRendererVectorSettings::ArrowScalingMethod &shaftLengthMethod );
+    void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
 %Docstring
 Sets method used for drawing arrows
 %End

@@ -84,13 +84,13 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
-    bool mScalarDataOnVertices;
+    bool mScalarDataOnVertices = true;
 
     // copy of the vector dataset
     QVector<double> mVectorDatasetValuesX;
     QVector<double> mVectorDatasetValuesY;
     QVector<double> mVectorDatasetValuesMag;
-    bool mVectorDataOnVertices;
+    bool mVectorDataOnVertices = true;
 
     // copy from mesh layer
     std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;

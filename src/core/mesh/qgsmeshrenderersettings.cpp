@@ -132,7 +132,7 @@ QgsMeshRendererVectorSettings::ArrowScalingMethod QgsMeshRendererVectorSettings:
   return mShaftLengthMethod;
 }
 
-void QgsMeshRendererVectorSettings::setShaftLengthMethod( const QgsMeshRendererVectorSettings::ArrowScalingMethod &shaftLengthMethod )
+void QgsMeshRendererVectorSettings::setShaftLengthMethod( QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod )
 {
   mShaftLengthMethod = shaftLengthMethod;
 }

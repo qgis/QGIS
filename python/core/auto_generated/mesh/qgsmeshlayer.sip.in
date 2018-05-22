@@ -103,6 +103,7 @@ QgsMeshLayer cannot be copied.
     virtual QgsRectangle extent() const;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
@@ -125,42 +126,42 @@ Returns the provider type for this layer
 
     QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
 %Docstring
-Returns rendrer settings
+Returns renderer settings
 %End
 
     void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new rendering settings, triggers repaint
+Sets new renderer settings, triggers repaint
 %End
 
     QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
 %Docstring
-Returns rendrer settings
+Returns renderer settings
 %End
 
     void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new rendering settings, triggers repaint
+Sets new renderer settings, triggers repaint
 %End
 
     QgsMeshRendererScalarSettings rendererScalarSettings() const;
 %Docstring
-Returns rendrer settings
+Returns renderer settings
 %End
 
     void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
 %Docstring
-Sets new rendering settings, triggers repaint
+Sets new renderer settings, triggers repaint
 %End
 
     QgsMeshRendererVectorSettings rendererVectorSettings() const;
 %Docstring
-Returns rendrer settings
+Returns renderer settings
 %End
 
     void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
 %Docstring
-Sets new rendering settings, triggers repaint
+Sets new renderer settings, triggers repaint
 %End
 
     void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );

@@ -55,12 +55,17 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
   , mDataOnVertices( dataIsOnVertices )
   , mOutputSize( size )
 {
-  mMinX = *std::min_element( datasetValuesX.constBegin(), datasetValuesX.constEnd() );
-  mMaxX = *std::max_element( datasetValuesX.constBegin(), datasetValuesX.constEnd() );
-  mMinY = *std::min_element( datasetValuesY.constBegin(), datasetValuesY.constEnd() );
-  mMaxY = *std::max_element( datasetValuesY.constBegin(), datasetValuesY.constEnd() );
-  mMinMag = *std::min_element( mDatasetValuesMag.constBegin(), mDatasetValuesMag.constEnd() );
-  mMaxMag = *std::max_element( mDatasetValuesMag.constBegin(), mDatasetValuesMag.constEnd() );
+  auto bounds = std::minmax_element( mDatasetValuesX.constBegin(), mDatasetValuesX.constEnd() );
+  mMinX = *bounds.first;
+  mMaxX = *bounds.second;
+
+  bounds = std::minmax_element( mDatasetValuesY.constBegin(), mDatasetValuesY.constEnd() );
+  mMinY = *bounds.first;
+  mMaxY = *bounds.second;
+
+  bounds = std::minmax_element( mDatasetValuesMag.constBegin(), mDatasetValuesMag.constEnd() );
+  mMinMag = *bounds.first;
+  mMaxMag = *bounds.second;
 }
 
 QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
@@ -68,9 +73,13 @@ QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
 void QgsMeshVectorRenderer::draw()
 {
   // Set up the render configuration options
-  QPainter *p = mContext.painter();
-  p->setRenderHint( QPainter::Antialiasing );
-  QPen pen = p->pen();
+  QPainter *painter = mContext.painter();
+  painter->save();
+  if ( mContext.flags() & QgsRenderContext::Antialiasing )
+    painter->setRenderHint( QPainter::Antialiasing, true );
+
+  painter->setRenderHint( QPainter::Antialiasing );
+  QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
 
@@ -78,12 +87,14 @@ void QgsMeshVectorRenderer::draw()
                     QgsUnitTypes::RenderUnit::RenderMillimeters );
   pen.setWidthF( penWidth );
   pen.setColor( mCfg.color() );
-  p->setPen( pen );
+  painter->setPen( pen );
 
   if ( mDataOnVertices )
     drawVectorDataOnVertices();
   else
     drawVectorDataOnFaces();
+
+  painter->restore();
 }
 
 bool QgsMeshVectorRenderer::calcVectorLineEnd(

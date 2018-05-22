@@ -79,7 +79,6 @@ class CORE_EXPORT QgsMeshDatasetValue
     //! Returns y value
     double y() const;
 
-    //! Equals
     bool operator==( const QgsMeshDatasetValue &other ) const;
 
   private:
@@ -93,7 +92,7 @@ class CORE_EXPORT QgsMeshDatasetValue
  * \ingroup core
  *
  * QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
- * as if the data is vector or scalar, etc.
+ * as whether the data is vector or scalar, etc.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -104,7 +103,15 @@ class CORE_EXPORT QgsMeshDatasetMetadata
   public:
     //! Constructs an empty metadata object
     QgsMeshDatasetMetadata() = default;
-    //! Consutructs a valid metadata object
+
+    /**
+     * Constructs a valid metadata object
+     *
+     * \param isScalar dataset contains scalar data, particulary the y-value of QgsMeshDatasetValue is NaN
+     * \param isValid dataset is loadad and valid for fetching the data
+     * \param isOnVertices dataset values are defined on mesh's vertices. If false, values are defined on faces.
+     * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
+     */
     QgsMeshDatasetMetadata( bool isScalar,
                             bool isValid,
                             bool isOnVertices,
@@ -145,6 +152,9 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 
 /**
  * \ingroup core
+ *
+ * Interface for mesh data sources
+ *
  * Mesh is a  collection of vertices and faces in 2D or 3D space
  *  - vertex - XY(Z) point (in the mesh's coordinate reference system)
  *  - faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
@@ -156,11 +166,11 @@ class CORE_EXPORT QgsMeshDatasetMetadata
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
+class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
 {
   public:
     //! Dtor
-    virtual ~QgsMeshSource() = default;
+    virtual ~QgsMeshDataSourceInterface() = default;
 
     /**
      * \brief Returns number of vertices in the native mesh
@@ -189,20 +199,21 @@ class CORE_EXPORT QgsMeshSource SIP_ABSTRACT
 
 /**
  * \ingroup core
- * Dataset is a  collection of vector or scalar values on vertices or faces of the mesh
+ * Interface for mesh datasets
  *
- * Based on the underlying data provider/format, whole dataset is either stored in memory or
- * read on demand
+ *  Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
+ *  Based on the underlying data provider/format, whole dataset is either stored in memory
+ *  or read on demand
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
+class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 {
   public:
     //! Dtor
-    virtual ~QgsMeshDatasetSource() = default;
+    virtual ~QgsMeshDatasetSourceInterface() = default;
 
     /**
      * \brief Associate dataset with the mesh
@@ -239,7 +250,7 @@ class CORE_EXPORT QgsMeshDatasetSource SIP_ABSTRACT
  * \see QgsMeshSource
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshSource, public QgsMeshDatasetSource
+class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDataSourceInterface, public QgsMeshDatasetSourceInterface
 {
     Q_OBJECT
 

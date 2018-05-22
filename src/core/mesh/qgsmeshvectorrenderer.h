@@ -57,7 +57,7 @@ class QgsMeshVectorRenderer
     ~QgsMeshVectorRenderer();
 
     /**
-     * Draws vector arrows in the context's painter base on settings
+     * Draws vector arrows in the context's painter based on settings
      */
     void draw();
 
@@ -84,15 +84,15 @@ class QgsMeshVectorRenderer
     const QVector<double> &mDatasetValuesX;
     const QVector<double> &mDatasetValuesY;
     const QVector<double> &mDatasetValuesMag; //magnitudes
-    double mMinX;
-    double mMaxX;
-    double mMinY;
-    double mMaxY;
-    double mMinMag;
-    double mMaxMag;
+    double mMinX = 0.0;
+    double mMaxX = 0.0;
+    double mMinY = 0.0;
+    double mMaxY = 0.0;
+    double mMinMag = 0.0;
+    double mMaxMag = 0.0;
     QgsRenderContext &mContext;
     const QgsMeshRendererVectorSettings &mCfg;
-    bool mDataOnVertices;
+    bool mDataOnVertices = true;
     QSize mOutputSize;
 };
 

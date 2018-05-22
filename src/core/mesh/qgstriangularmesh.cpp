@@ -131,6 +131,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   {
     const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
     QVector<QPointF> points;
+    points.reserve( face.size() );
     for ( int j = 0; j < face.size(); ++j )
     {
       int index = face.at( j );

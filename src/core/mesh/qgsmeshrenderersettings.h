@@ -187,7 +187,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Returns method used for drawing arrows
     QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
-    void setShaftLengthMethod( const QgsMeshRendererVectorSettings::ArrowScalingMethod &shaftLengthMethod );
+    void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
 
     /**
      * Returns mininimum shaft length (in millimeters)

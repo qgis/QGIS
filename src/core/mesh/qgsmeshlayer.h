@@ -116,7 +116,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     const QgsMeshDataProvider *dataProvider() const override SIP_SKIP;
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
@@ -127,34 +127,34 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Returns the provider type for this layer
     QString providerType() const;
 
-    //! Returns native mesh (nullprt before rendering)
+    //! Returns native mesh (nullptr before rendering)
     QgsMesh *nativeMesh() SIP_SKIP;
 
-    //! Returns triangular mesh (nullprt before rendering)
+    //! Returns triangular mesh (nullptr before rendering)
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
-    //! Returns rendrer settings
+    //! Returns renderer settings
     QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
 
-    //! Sets new rendering settings, triggers repaint
+    //! Sets new renderer settings, triggers repaint
     void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 
-    //! Returns rendrer settings
+    //! Returns renderer settings
     QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
 
-    //! Sets new rendering settings, triggers repaint
+    //! Sets new renderer settings, triggers repaint
     void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 
-    //! Returns rendrer settings
+    //! Returns renderer settings
     QgsMeshRendererScalarSettings rendererScalarSettings() const;
 
-    //! Sets new rendering settings, triggers repaint
+    //! Sets new renderer settings, triggers repaint
     void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
 
-    //! Returns rendrer settings
+    //! Returns renderer settings
     QgsMeshRendererVectorSettings rendererVectorSettings() const;
 
-    //! Sets new rendering settings, triggers repaint
+    //! Sets new renderer settings, triggers repaint
     void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
 
     /**

@@ -168,8 +168,9 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIn
 
 void QgsMdalProvider::refreshDatasets()
 {
-  mDatasets.clear();
   int n = MDAL_M_datasetCount( mMeshH );
+  mDatasets.resize( 0 ); // keeps allocated space - potentially avoids reallocation
+  mDatasets.reserve( n );
   for ( int i = 0; i < n; ++i )
   {
     DatasetH dataset = MDAL_M_dataset( mMeshH, i );

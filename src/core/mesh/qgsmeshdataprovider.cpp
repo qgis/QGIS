@@ -40,10 +40,12 @@ QgsRectangle QgsMeshDataProvider::extent() const
 
 }
 
-QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y ): mX( x ), mY( y )
+QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
+  : mX( x ), mY( y )
 {}
 
-QgsMeshDatasetValue::QgsMeshDatasetValue( double scalar ): mX( scalar )
+QgsMeshDatasetValue::QgsMeshDatasetValue( double scalar )
+  : mX( scalar )
 {}
 
 double QgsMeshDatasetValue::scalar() const
