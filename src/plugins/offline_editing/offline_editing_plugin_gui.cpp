@@ -106,7 +106,6 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
   restoreState();
 
-  mOnlySelectedCheckBox->setDisabled( true );
   mOfflineDbFile = QStringLiteral( "offline.gpkg" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 

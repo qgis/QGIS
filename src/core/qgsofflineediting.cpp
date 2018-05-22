@@ -138,8 +138,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer;
-          newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, gpkg );
+          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, gpkg );
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -170,6 +169,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
           }
         }
       }
+
 
       emit progressStopped();
 
@@ -406,6 +406,7 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath, bool g
   // creating/opening the new database
   QString dbPath = newDb.fileName();
 
+  // creating geopackage
   if ( gpkg )
   {
     OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
@@ -600,13 +601,15 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           rc = sqlExec( db, sqlCreateIndex );
         }
       }
-      if ( rc != SQLITE_OK )
-      {
-        showWarning( tr( "Filling SpatiaLite for layer %1 failed" ).arg( layer->name() ) );
-        return nullptr;
-      }
     }
 
+    if ( rc != SQLITE_OK )
+    {
+      showWarning( tr( "Filling SpatiaLite for layer %1 failed" ).arg( layer->name() ) );
+      return nullptr;
+    }
+
+    // add new layer
     QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
                                .arg( offlineDbPath,
                                      tableName, layer->isSpatial() ? "(Geometry)" : "" );
@@ -758,6 +761,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     updateRelations( layer, newLayer );
     updateMapThemes( layer, newLayer );
     updateLayerOrder( layer, newLayer );
+
 
 
   }
@@ -1352,7 +1356,6 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   // only store feature ids
   QString sql = QStringLiteral( "SELECT ROWID FROM '%1' ORDER BY ROWID DESC LIMIT %2" ).arg( tableName ).arg( addedFeatures.size() );
   QList<int> newFeatureIds = sqlQueryInts( database.get(), sql );
-
   for ( int i = newFeatureIds.size() - 1; i >= 0; i-- )
   {
     QString sql = QStringLiteral( "INSERT INTO 'log_added_features' VALUES ( %1, %2 )" )
