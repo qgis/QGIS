@@ -24,6 +24,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmimportphotos.h"
+#include "qgsalgorithmtransform.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -39,6 +40,7 @@ class TestQgsProcessingAlgs: public QObject
     void loadLayerAlg();
     void parseGeoTags();
     void featureFilterAlg();
+    void transformAlg();
 
   private:
 
@@ -402,6 +404,35 @@ void TestQgsProcessingAlgs::featureFilterAlg()
   auto outputParamDef2 = filterAlg2->parameterDefinition( "OUTPUT_nonmodeloutput" );
   Q_ASSERT( !outputParamDef2->flags().testFlag( QgsProcessingParameterDefinition::FlagIsModelOutput ) );
   Q_ASSERT( outputParamDef2->flags() & QgsProcessingParameterDefinition::FlagHidden );
+}
+
+void TestQgsProcessingAlgs::transformAlg()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:reprojectlayer" ) ) );
+  QVERIFY( alg );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QgsProcessingFeedback feedback;
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+  QgsFeature f;
+  // add a point with a bad geometry - this should result in a transform exception!
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -96215069, 41.673559 ) ) );
+  QVERIFY( layer->dataProvider()->addFeature( f ) );
+  p.addMapLayer( layer );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "test" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+  parameters.insert( QStringLiteral( "TARGET_CRS" ), QStringLiteral( "EPSG:2163" ) );
+  bool ok = false;
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  Q_UNUSED( results );
+  QVERIFY( ok );
 }
 
 
