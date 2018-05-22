@@ -236,6 +236,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   {
     //if outputing composer, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+    jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
   }
 
   QgsExpressionContext* context = createExpressionContext();
