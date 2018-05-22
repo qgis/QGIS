@@ -213,7 +213,10 @@ class QgsWFSFeatureIterator : public QObject,
 
   private:
 
-    bool fetchFeature( QgsFeature& f ) override;
+    //! Translate mRequest to a request compatible of the Spatialite cache
+    QgsFeatureRequest buildRequestCache( int gencounter );
+
+    bool fetchFeature( QgsFeature &f ) override;
 
     /** Copies feature attributes / geometry from srcFeature to dstFeature*/
     void copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature );

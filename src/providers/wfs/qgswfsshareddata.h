@@ -53,7 +53,7 @@ class QgsWFSSharedData : public QObject
 
     /** Used by a QgsWFSFeatureIterator to start a downloader and get the
         generation counter. */
-    int registerToCache( QgsWFSFeatureIterator* iterator, QgsRectangle rect = QgsRectangle() );
+    int registerToCache( QgsWFSFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle() );
 
     /** Used by the rewind() method of an iterator so as to get the up-to-date
         generation counter. */
@@ -106,6 +106,9 @@ class QgsWFSSharedData : public QObject
     /** Return whether the feature download is finished */
     bool downloadFinished() const { return mDownloadFinished; }
 
+    //! Return maximum number of features to download, or 0 if unlimited
+    int requestLimit() const { return mRequestLimit; }
+
   signals:
 
     /** Raise error */
@@ -152,6 +155,9 @@ class QgsWFSSharedData : public QObject
 
     /** Whether mMaxFeatures was set to a non 0 value for the purpose of paging */
     bool mMaxFeaturesWasSetFromDefaultForPaging;
+
+    //! Limit of retrieved number of features for the current request
+    int mRequestLimit;
 
     /** Server capabilities */
     QgsWFSCapabilities::Capabilities mCaps;
