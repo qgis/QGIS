@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtDebug>
-
 #include "qgsquickcoordinatetransformer.h"
 
 QgsQuickCoordinateTransformer::QgsQuickCoordinateTransformer( QObject *parent )
