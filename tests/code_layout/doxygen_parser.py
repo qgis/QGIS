@@ -52,6 +52,7 @@ class DoxygenParser():
         self.documentable_members = 0
         self.documented_members = 0
         self.undocumented_members = {}
+        self.noncompliant_members = {}
         self.bindable_members = []
         self.groups = {}
         self.classes_missing_group = []
@@ -140,7 +141,7 @@ class DoxygenParser():
                 if event == 'end' and elem.tag == 'compounddef':
                     if self.elemIsPublicClass(elem):
                         # store documentation status
-                        members, documented, undocumented, bindable, has_brief_description, found_version_added = self.parseClassElem(elem)
+                        members, documented, undocumented, noncompliant, bindable, has_brief_description, found_version_added = self.parseClassElem(elem)
                         documentable_members += members
                         documented_members += documented
                         class_name = elem.find('compoundname').text
@@ -167,6 +168,9 @@ class DoxygenParser():
                             self.undocumented_members[class_name]['documented'] = documented
                             self.undocumented_members[class_name]['members'] = members
                             self.undocumented_members[class_name]['missing_members'] = unacceptable_undocumented
+
+                        if len(noncompliant) > 0:
+                            self.noncompliant_members[class_name] = noncompliant
 
                         # store bindable members
                         if self.classElemIsBindable(elem):
@@ -224,6 +228,7 @@ class DoxygenParser():
         documentable_members = 0
         documented_members = 0
         undocumented_members = set()
+        noncompliant_members = []
         bindable_members = []
         # loop through all members
         for m in e.getiterator('memberdef'):
@@ -238,6 +243,9 @@ class DoxygenParser():
                 documentable_members += 1
                 if self.memberIsDocumented(m):
                     documented_members += 1
+                    error = self.memberDocIsNonCompliant(m)
+                    if error:
+                        noncompliant_members.append({m.find('name').text: error})
                 else:
                     undocumented_members.add(signature)
         # test for brief description
@@ -259,7 +267,7 @@ class DoxygenParser():
             if found_version_added:
                 break
 
-        return documentable_members, documented_members, undocumented_members, bindable_members, has_brief_description, found_version_added
+        return documentable_members, documented_members, undocumented_members, noncompliant_members, bindable_members, has_brief_description, found_version_added
 
     def memberSignature(self, elem):
         """ Returns the signature for a member
@@ -536,4 +544,24 @@ class DoxygenParser():
             doc = member_elem.find(doc_type)
             if doc is not None and list(doc):
                 return True
+        return False
+
+    def memberDocIsNonCompliant(self, member_elem):
+        """ Tests whether an member's documentation is non-compliant
+            :param member_elem: XML element for a class member
+        """
+        for doc_type in ['briefdescription']:
+            doc = member_elem.find(doc_type)
+            if doc is not None:
+                for para in doc.getiterator('para'):
+                    if not para.text:
+                        continue
+                    if para.text.strip().lower().startswith('getter'):
+                        return 'Use "Returns the..." instead of "getter"'
+                    elif para.text.strip().lower().startswith('setter'):
+                        return 'Use "Sets the..." instead of "setter"'
+                    #elif para.text.strip().lower().startswith('return '):
+                    #    return 'Use "Returns the..." instead of "return ..."'
+                    #elif para.text.strip().lower().startswith('set '):
+                    #    return 'Use "Sets the..." instead of "set ..."'
         return False
