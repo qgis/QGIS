@@ -199,6 +199,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         for style in range(0, 33):
             paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
