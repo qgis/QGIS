@@ -199,6 +199,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/keywordFontColorEditor", self.keywordFontColorEditor.color())
         settings.setValue("pythonConsole/decorFontColor", self.decorFontColor.color())
         settings.setValue("pythonConsole/decorFontColorEditor", self.decorFontColorEditor.color())
+        settings.setValue("pythonConsole/numberFontColor", self.numberFontColor.color())
+        settings.setValue("pythonConsole/numberFontColorEditor", self.numberFontColorEditor.color())
         settings.setValue("pythonConsole/methodFontColor", self.methodFontColor.color())
         settings.setValue("pythonConsole/methodFontColorEditor", self.methodFontColorEditor.color())
         settings.setValue("pythonConsole/commentFontColor", self.commentFontColor.color())
@@ -223,6 +225,20 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColor", self.tripleDoubleQuoteFontColor.color())
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColorEditor",
                           self.tripleDoubleQuoteFontColorEditor.color())
+        settings.setValue("pythonConsole/edgeColorEditor", self.edgeColorEditor.color())
+        settings.setValue("pythonConsole/marginBackgroundColor", self.marginBackgroundColor.color())
+        settings.setValue("pythonConsole/marginBackgroundColorEditor", self.marginBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/marginForegroundColor", self.marginForegroundColor.color())
+        settings.setValue("pythonConsole/marginForegroundColorEditor", self.marginForegroundColorEditor.color())
+        settings.setValue("pythonConsole/foldColorEditor", self.foldColorEditor.color())
+        settings.setValue("pythonConsole/selectionBackgroundColor", self.selectionBackgroundColor.color())
+        settings.setValue("pythonConsole/selectionBackgroundColorEditor", self.selectionBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/selectionForegroundColor", self.selectionForegroundColor.color())
+        settings.setValue("pythonConsole/selectionForegroundColorEditor", self.selectionForegroundColorEditor.color())
+        settings.setValue("pythonConsole/matchedBraceBackgroundColor", self.matchedBraceBackgroundColor.color())
+        settings.setValue("pythonConsole/matchedBraceBackgroundColorEditor", self.matchedBraceBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/matchedBraceForegroundColor", self.matchedBraceForegroundColor.color())
+        settings.setValue("pythonConsole/matchedBraceForegroundColorEditor", self.matchedBraceForegroundColorEditor.color())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -289,7 +305,10 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))))
         self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))))
         self.decorFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))))
+            QColor(settings.value("pythonConsole/decorFontColorEditor", QColor("#4e9a06"))))
+        self.numberFontColor.setColor(QColor(settings.value("pythonConsole/numberFontColor", QColor("#4e9a06"))))
+        self.numberFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/numberFontColorEditor", QColor(Qt.darkBlue))))
         self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))))
         self.commentFontColorEditor.setColor(
             QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))))
@@ -322,6 +341,20 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue)))
         self.tripleDoubleQuoteFontColorEditor.setColor(
             settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue)))
+        self.edgeColorEditor.setColor(settings.value("pythonConsole/edgeColorEditor", QColor("#FF0000")))
+        self.marginBackgroundColor.setColor(settings.value("pythonConsole/marginBackgroundColor", QColor("#f9f9f9")))
+        self.marginBackgroundColorEditor.setColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor("#f9f9f9")))
+        self.marginForegroundColor.setColor(settings.value("pythonConsole/marginForegroundColor", QColor("#3E3EE3")))
+        self.marginForegroundColorEditor.setColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor("#3E3EE3")))
+        self.foldColorEditor.setColor(settings.value("pythonConsole/foldColorEditor", QColor("#f4f4f4")))
+        self.selectionForegroundColor.setColor(settings.value("pythonConsole/selectionForegroundColor", QColor("#2e3436")))
+        self.selectionForegroundColorEditor.setColor(settings.value("pythonConsole/selectionForegroundColorEditor", QColor("#2e3436")))
+        self.selectionBackgroundColor.setColor(settings.value("pythonConsole/selectionBackgroundColor", QColor("#babdb6")))
+        self.selectionBackgroundColorEditor.setColor(settings.value("pythonConsole/selectionBackgroundColorEditor", QColor("#babdb6")))
+        self.matchedBraceForegroundColor.setColor(settings.value("pythonConsole/matchedBraceForegroundColor", QColor("#000000")))
+        self.matchedBraceForegroundColorEditor.setColor(settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor("#000000")))
+        self.matchedBraceBackgroundColor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColor", QColor("#b7f907")))
+        self.matchedBraceBackgroundColorEditor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor("#b7f907")))
 
     def _resetFontColor(self):
         self.defaultFontColor.setColor(QColor(Qt.black))
@@ -329,6 +362,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.classFontColor.setColor(QColor(Qt.blue))
         self.methodFontColor.setColor(QColor(Qt.darkGray))
         self.decorFontColor.setColor(QColor(Qt.darkBlue))
+        self.numFontColor.setColor(QColor("#4e9a06"))
         self.commentFontColor.setColor(QColor(Qt.gray))
         self.commentBlockFontColor.setColor(QColor(Qt.gray))
         self.stderrFontColor.setColor(QColor(Qt.red))
@@ -339,6 +373,12 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.doubleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleSingleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleDoubleQuoteFontColor.setColor(QColor(Qt.blue))
+        self.marginBackgroundColor.setColor(QColor("#f9f9f9"))
+        self.marginForegroundColor.setColor(QColor("#3E3EE3"))
+        self.selectionBackgroundColor.setColor(QColor("#babdb6"))
+        self.selectionForegroundColor.setColor(QColor("#2e3436"))
+        self.matchedBraceBackgroundColor.setColor(QColor("#b7f907"))
+        self.matchedBraceForegroundColor.setColor(QColor("#000000"))
 
     def _resetFontColorEditor(self):
         self.defaultFontColorEditor.setColor(QColor(Qt.black))
@@ -346,6 +386,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.classFontColorEditor.setColor(QColor(Qt.blue))
         self.methodFontColorEditor.setColor(QColor(Qt.darkGray))
         self.decorFontColorEditor.setColor(QColor(Qt.darkBlue))
+        self.numFontColorEditor.setColor(QColor("#4e9a06"))
         self.commentFontColorEditor.setColor(QColor(Qt.gray))
         self.commentBlockFontColorEditor.setColor(QColor(Qt.gray))
         self.paperBackgroundColorEditor.setColor(QColor(Qt.white))
@@ -355,6 +396,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.doubleQuoteFontColorEditor.setColor(QColor(Qt.blue))
         self.tripleSingleQuoteFontColorEditor.setColor(QColor(Qt.blue))
         self.tripleDoubleQuoteFontColorEditor.setColor(QColor(Qt.blue))
+        self.edgeColorEditor.setColor(QColor("#FF0000"))
+        self.marginBackgroundColorEditor.setColor(QColor("#f9f9f9"))
+        self.marginForegroundColorEditor.setColor(QColor("#3E3EE3"))
+        self.foldColorEditor.setColor(QColor("#f4f4f4"))
+        self.selectionBackgroundColorEditor.setColor(QColor("#babdb6"))
+        self.selectionForegroundColorEditor.setColor(QColor("#2e3436"))
+        self.matchedBraceBackgroundColorEditor.setColor(QColor("#b7f907"))
+        self.matchedBraceForegroundColorEditor.setColor(QColor("#000000"))
 
     def reject(self):
         self.restoreSettings()

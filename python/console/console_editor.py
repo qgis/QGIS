@@ -100,13 +100,9 @@ class Editor(QsciScintilla):
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
-        # fm = QFontMetrics(font)
         fontmetrics = QFontMetrics(font)
-        self.setMarginsFont(font)
         self.setMarginWidth(0, fontmetrics.width("0000") + 5)
         self.setMarginLineNumbers(0, True)
-        self.setMarginsForegroundColor(QColor("#3E3EE3"))
-        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretWidth(2)
 
@@ -117,17 +113,14 @@ class Editor(QsciScintilla):
         # self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
-        self.setFoldMarginColors(QColor("#f4f4f4"), QColor("#f4f4f4"))
         # self.setWrapMode(QsciScintilla.WrapWord)
 
         # Edge Mode
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor("#FF0000"))
 
         # self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
@@ -182,6 +175,18 @@ class Editor(QsciScintilla):
         self.modificationAttempted.connect(self.fileReadOnly)
 
     def settingsEditor(self):
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColorEditor", QColor("#2e3436"))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColorEditor", QColor("#babdb6"))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor("#b7f907"))))
+        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor("#000000"))))
+        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor("#3E3EE3"))))
+        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor("#f9f9f9"))))
+        self.setIndentationGuidesForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor("#3E3EE3"))))
+        self.setIndentationGuidesBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor("#f9f9f9"))))
+        self.setEdgeColor(QColor(self.settings.value("pythonConsole/edgeColorEditor", QColor("#FF0000"))))
+        foldColor = QColor(self.settings.value("pythonConsole/foldColorEditor", QColor("#f4f4f4")))
+        self.setFoldMarginColors(foldColor, foldColor)
+
         # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
@@ -234,6 +239,7 @@ class Editor(QsciScintilla):
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColorEditor", QColor("#4e9a06"))), 2)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))), 5)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))), 9)

@@ -78,7 +78,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Current line visible with special background color
         self.setCaretWidth(2)
@@ -138,6 +137,10 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
         self.setCaretForegroundColor(cursorColor)
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor("#2e3436"))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor("#babdb6"))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor", QColor("#b7f907"))))
+        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor", QColor("#000000"))))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -187,6 +190,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColorEditor", QColor("#4e9a06"))), 2)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
