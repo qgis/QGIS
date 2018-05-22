@@ -258,9 +258,7 @@ Returns a GeoJSON representation of the geometry.
 %End
 
 
-    virtual void transform( const QgsCoordinateTransform &ct,
-                            QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                            bool transformZ = false ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
 

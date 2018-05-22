@@ -632,9 +632,7 @@ Translates this geometry by dx, dy, dz and dm.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult transform( const QgsCoordinateTransform &ct,
-                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
-                               bool transformZ = false );
+    OperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
 %Docstring
 Transforms this geometry as described by the coordinate transform ``ct``.
 

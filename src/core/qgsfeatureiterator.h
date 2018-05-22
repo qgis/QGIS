@@ -139,7 +139,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
      * \since QGIS 3.0
      */
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
