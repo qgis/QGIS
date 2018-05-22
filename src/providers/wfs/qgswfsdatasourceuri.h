@@ -144,6 +144,9 @@ class QgsWFSDataSourceURI
     //! Returns whether axis orientation should be inverted. Defaults to false
     bool invertAxisOrientation() const;
 
+    //! Returns whether TYPENAMES should be used for WFS 2.0 DescribeFeatureType. Defaults to false
+    bool useTypenamesDescribeFeatureType() const;
+
     //! For debug purposes. Checks that functions used in sql match functions declared by the server. Defaults to false
     bool validateSqlFunctions() const;
 

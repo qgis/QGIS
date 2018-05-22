@@ -25,7 +25,10 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   url.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
-  url.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+  if ( mUri.useTypenamesDescribeFeatureType() )
+    url.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+  else
+    url.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
 
   return sendGET( url, true, false );
 }

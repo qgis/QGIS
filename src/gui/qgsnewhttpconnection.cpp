@@ -221,6 +221,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
   cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxWfs2TypenamesDescribeFeatureType->setChecked( settings.value( wfsKey + "/useTYPENAMESDescribeFeatureType", false ).toBool() );
   cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWmsInvertAxisOrientation->setChecked( settings.value( wmsKey + "/invertAxisOrientation", false ).toBool() );
   cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( wmsKey + "/ignoreGetFeatureInfoURI", false ).toBool() );
@@ -309,6 +310,7 @@ void QgsNewHttpConnection::accept()
   {
     settings.setValue( wfsKey + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
     settings.setValue( wfsKey + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+    settings.setValue( wfsKey + "/useTYPENAMESDescribeFeatureType", cbxWfs2TypenamesDescribeFeatureType->isChecked() );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {

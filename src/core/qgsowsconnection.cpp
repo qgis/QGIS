@@ -146,6 +146,11 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
     uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumfeatures );
   }
 
+  if ( settings.value( settingsKey + QStringLiteral( "/useTYPENAMESDescribeFeatureType" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "UseTYPENAMESDescribeFeatureType" ), QStringLiteral( "1" ) );
+  }
+
   return uri;
 }
 

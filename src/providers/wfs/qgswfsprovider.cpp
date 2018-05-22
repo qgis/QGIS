@@ -1467,7 +1467,10 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
     describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
   }
   describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  if ( mShared->mURI.useTypenamesDescribeFeatureType() )
+    describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAMES" ), mShared->mURI.typeName() );
+  else
+    describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
 
   transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );
