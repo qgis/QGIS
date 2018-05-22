@@ -809,7 +809,7 @@ void QgsWFSThreadedFeatureDownloader::run()
     mWaitCond.wakeOne();
   }
   mDownloader->run( true, /* serialize features */
-                    0 /* user max features */ );
+                    mShared->requestLimit() /* user max features */ );
 }
 
 // -------------------------
@@ -844,14 +844,35 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
   if ( !threshold.isEmpty() )
     mWriteTransferThreshold = threshold.toInt();
 
+  // Particular case: if a single feature is requested by Fid and we already
+  // have it in cache, no need to interrupt any download
+  if ( mShared->mCacheDataProvider &&
+       mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  {
+    QgsFeatureRequest requestCache = buildRequestCache( -1 );
+    QgsFeature f;
+    if ( mShared->mCacheDataProvider->getFeatures( requestCache ).nextFeature( f ) )
+    {
+      mCacheIterator = mShared->mCacheDataProvider->getFeatures( requestCache );
+      mDownloadFinished = true;
+      return;
+    }
+  }
+
   int genCounter = ( mShared->mURI.isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, mFilterRect ) : mShared->registerToCache( this );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ) );
   mDownloadFinished = genCounter < 0;
   if ( !mShared->mCacheDataProvider )
     return;
 
   QgsDebugMsg( QString( "QgsWFSFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ) );
 
+  mCacheIterator = mShared->mCacheDataProvider->getFeatures( buildRequestCache( genCounter ) );
+}
+
+QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
+{
   QgsFeatureRequest requestCache;
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid ||
        mRequest.filterType() == QgsFeatureRequest::FilterFids )
@@ -928,7 +949,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
     requestCache.setSubsetOfAttributes( cacheSubSet );
   }
 
-  mCacheIterator = mShared->mCacheDataProvider->getFeatures( requestCache );
+  return requestCache;
 }
 
 QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
