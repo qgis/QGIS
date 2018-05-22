@@ -46,11 +46,13 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QString offlineDbFile();
     QStringList selectedLayerIds();
     bool onlySelected() const;
+    bool isGeopackage() const;
 
   public slots:
     //! Change the selection of layers in the list
     void selectAll();
     void deSelectAll();
+    void datatypeChanged( int index );
 
   private:
     void saveState();

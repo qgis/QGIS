@@ -106,7 +106,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
   restoreState();
 
-  mOfflineDbFile = QStringLiteral( "offline.sqlite" );
+  mOnlySelectedCheckBox->setDisabled(true);
+  mOfflineDbFile = QStringLiteral( "offline.gpkg" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
   QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
@@ -116,6 +117,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::deSelectAll );
+  connect( mSelectDatatypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOfflineEditingPluginGui::datatypeChanged );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
@@ -145,23 +147,52 @@ bool QgsOfflineEditingPluginGui::onlySelected() const
   return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
+bool QgsOfflineEditingPluginGui::isGeopackage() const
+{
+  return mSelectDatatypeCombo->currentIndex() == 0;
+}
+
 void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
-  QString fileName = QFileDialog::getSaveFileName( this,
-                     tr( "Select target database for offline data" ),
-                     QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                     tr( "SpatiaLite DB" ) + " (*.sqlite);;"
-                     + tr( "All files" ) + " (*.*)" );
-
-  if ( !fileName.isEmpty() )
+  if( isGeopackage() )
   {
-    if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
+    //GeoPackage
+    QString fileName = QFileDialog::getSaveFileName( this,
+                       tr( "Select target database for offline data" ),
+                       QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
+                       tr( "GeoPackage" ) + " (*.gpkg);;"
+                       + tr( "All files" ) + " (*.*)" );
+
+    if ( !fileName.isEmpty() )
     {
-      fileName += QLatin1String( ".sqlite" );
+      if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+      {
+        fileName += QLatin1String( ".gpkg" );
+      }
+      mOfflineDbFile = QFileInfo( fileName ).fileName();
+      mOfflineDataPath = QFileInfo( fileName ).absolutePath();
+      mOfflineDataPathLineEdit->setText( fileName );
     }
-    mOfflineDbFile = QFileInfo( fileName ).fileName();
-    mOfflineDataPath = QFileInfo( fileName ).absolutePath();
-    mOfflineDataPathLineEdit->setText( fileName );
+  }
+  else
+  {
+    //Spacialite
+    QString fileName = QFileDialog::getSaveFileName( this,
+                       tr( "Select target database for offline data" ),
+                       QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
+                       tr( "SpatiaLite DB" ) + " (*.sqlite);;"
+                       + tr( "All files" ) + " (*.*)" );
+
+    if ( !fileName.isEmpty() )
+    {
+      if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
+      {
+        fileName += QLatin1String( ".sqlite" );
+      }
+      mOfflineDbFile = QFileInfo( fileName ).fileName();
+      mOfflineDataPath = QFileInfo( fileName ).absolutePath();
+      mOfflineDataPathLineEdit->setText( fileName );
+    }
   }
 }
 
@@ -216,9 +247,26 @@ void QgsOfflineEditingPluginGui::selectAll()
     nodeLayer->setItemVisibilityChecked( true );
 }
 
-
 void QgsOfflineEditingPluginGui::deSelectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setItemVisibilityChecked( false );
 }
+
+void QgsOfflineEditingPluginGui::datatypeChanged( int index )
+{
+  if( index==0 )
+  {
+    //GeoPackage
+    mOnlySelectedCheckBox->setDisabled(true);
+    mOfflineDbFile = QStringLiteral( "offline.gpkg" );
+  }
+  else
+  {
+    //Spatialite
+    mOnlySelectedCheckBox->setEnabled(true);
+    mOfflineDbFile = QStringLiteral( "offline.sqlite" );
+  }
+  mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
+}
+

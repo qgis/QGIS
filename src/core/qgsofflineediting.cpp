@@ -35,6 +35,8 @@
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayertree.h"
+#include "qgsogrutils.h"
+#include "qgsvectorfilewriter.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -74,14 +76,14 @@ QgsOfflineEditing::QgsOfflineEditing()
  *  - remove remote layers
  *  - mark as offline project
  */
-bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected )
+bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, bool gpkg )
 {
   if ( layerIds.isEmpty() )
   {
     return false;
   }
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
-  if ( createSpatialiteDB( dbPath ) )
+  if ( createSpatialiteDB( dbPath, gpkg ) )
   {
     spatialite_database_unique_ptr database;
     int rc = database.open( dbPath );
@@ -136,7 +138,17 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected );
+          QgsVectorLayer *newLayer;
+          if ( !gpkg )
+          {
+            //spatialite
+            newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected );
+          }
+          else
+          {
+            //geopackage
+            newLayer = copyVectorLayerGpkg( vl, database.get(), dbPath );
+          }
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -383,7 +395,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   spatial_ref_sys_init( sqlite_handle, 0 );
 }
 
-bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
+bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath, bool gpkg )
 {
   int ret;
   char *errMsg = nullptr;
@@ -393,16 +405,36 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
     QFile::remove( offlineDbPath );
   }
 
-  // see also QgsNewSpatialiteLayerDialog::createDb()
+  QString dbPath = offlineDbPath;
 
-  QFileInfo fullPath = QFileInfo( offlineDbPath );
-  QDir path = fullPath.dir();
+  if( gpkg )
+  {
+    OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
+    if ( !hGpkgDriver )
+    {
+      showWarning( tr( "Creation of database failed. GeoPackage driver not found." ) );
+      return false;
+    }
 
-  // Must be sure there is destination directory ~/.qgis
-  QDir().mkpath( path.absolutePath() );
+    gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, dbPath.toUtf8().constData(), nullptr ) );
+    if ( !hDS )
+    {
+      showWarning( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      return false;
+    }
+  }
+  else{
+    // see also QgsNewSpatialiteLayerDialog::createDb()
 
-  // creating/opening the new database
-  QString dbPath = newDb.fileName();
+    QFileInfo fullPath = QFileInfo( offlineDbPath );
+    QDir path = fullPath.dir();
+
+    // Must be sure there is destination directory ~/.qgis
+    QDir().mkpath( path.absolutePath() );
+
+    // creating/opening the new database
+    dbPath = newDb.fileName();
+  }
   spatialite_database_unique_ptr database;
   ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
@@ -714,6 +746,56 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
 
     }
+    return newLayer;
+  }
+  return nullptr;
+}
+
+QgsVectorLayer *QgsOfflineEditing::copyVectorLayerGpkg( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath )
+{
+  if ( !layer )
+    return nullptr;
+
+  QString tableName = layer->id();
+  QgsDebugMsgLevel( QString( "Creating offline table %1 ..." ).arg( tableName ), 4 );
+
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = QStringLiteral( "GPKG" );
+  options.layerName = layer->name();
+  options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
+
+  QString error;
+  if ( QgsVectorFileWriter::writeAsVectorFormat( layer, offlineDbPath, options, &error ) != QgsVectorFileWriter::NoError )
+  {
+    showWarning( tr( "Packaging layer %1 failed: %2" ).arg( layer->name(), error ) );
+    return nullptr;
+  }
+
+  QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  layer->name() );
+  QgsVectorLayer *newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
+
+  if ( newLayer->isValid() )
+  {
+    // update feature id lookup
+    getOrCreateLayerId( db, newLayer->id() );
+
+    // mark as offline layer
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
+
+    // store original layer source
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
+
+    // register this layer with the central layers registry
+    QgsProject::instance()->addMapLayers(
+      QList<QgsMapLayer *>() << newLayer );
+
+    // copy style
+    copySymbology( layer, newLayer );
+    updateRelations( layer, newLayer );
+    updateMapThemes( layer, newLayer );
+    updateLayerOrder( layer, newLayer );
+
     return newLayer;
   }
   return nullptr;
