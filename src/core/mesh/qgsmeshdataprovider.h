@@ -185,14 +185,12 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     virtual int faceCount() const = 0;
 
     /**
-     * \brief Factory for mesh vertex with index
-     * \returns New mesh vertex on index
+     * Returns the mesh vertex at index
      */
     virtual QgsMeshVertex vertex( int index ) const = 0;
 
     /**
-     * \brief Factory for mesh face with index
-     * \returns new mesh face on index
+     * Returns the mesh face at index
      */
     virtual QgsMeshFace face( int index ) const = 0;
 };

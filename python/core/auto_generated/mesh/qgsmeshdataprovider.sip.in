@@ -193,16 +193,12 @@ read on demand
 
     virtual QgsMeshVertex vertex( int index ) const = 0;
 %Docstring
- Factory for mesh vertex with index
-
-:return: New mesh vertex on index
+Returns the mesh vertex at index
 %End
 
     virtual QgsMeshFace face( int index ) const = 0;
 %Docstring
- Factory for mesh face with index
-
-:return: new mesh face on index
+Returns the mesh face at index
 %End
 };
 
