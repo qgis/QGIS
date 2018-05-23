@@ -24,6 +24,8 @@
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
+#include <QFuture>
+#include <QtConcurrent>
 
 const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
 
@@ -140,12 +142,27 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
   if ( !synchronous )
     return true;
+  else
+  {
+    QEventLoop loop;
+    connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
 
-  QEventLoop loop;
-  connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
-  loop.exec( QEventLoop::ExcludeUserInputEvents );
+    if ( QThread::currentThread() == QApplication::instance()->thread() )
+    {
+      QFuture<void> future = QtConcurrent::run( [ &loop ]()
+      {
+        loop.exec();
+      } );
 
-  return mErrorMessage.isEmpty();
+      future.waitForFinished();
+    }
+    else
+    {
+      loop.exec();
+    }
+
+    return mErrorMessage.isEmpty();
+  }
 }
 
 bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data )
