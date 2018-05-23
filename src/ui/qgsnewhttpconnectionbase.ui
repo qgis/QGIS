@@ -46,6 +46,13 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QCheckBox" name="cbxWfs2TypenamesDescribeFeatureType">
+           <property name="text">
+            <string>Use TYPENAMES for WFS 2.0 DescribeFeatureType</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="lblMaxNumFeatures">
            <property name="text">
@@ -289,6 +296,23 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtUrl</tabstop>
+  <tabstop>cmbVersion</tabstop>
+  <tabstop>txtMaxNumFeatures</tabstop>
+  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>cbxWfs2TypenamesDescribeFeatureType</tabstop>
+  <tabstop>txtReferer</tabstop>
+  <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cbxIgnoreGetMapURI</tabstop>
+  <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
+  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWmsInvertAxisOrientation</tabstop>
+  <tabstop>cbxSmoothPixmapTransform</tabstop>
+  <tabstop>mTestConnectionButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

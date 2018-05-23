@@ -296,6 +296,11 @@ bool QgsWFSDataSourceURI::invertAxisOrientation() const
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION );
 }
 
+bool QgsWFSDataSourceURI::useTypenamesDescribeFeatureType() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_USE_TYPENAMES_DESCRIBEFEATURETYPE );
+}
+
 bool QgsWFSDataSourceURI::validateSqlFunctions() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS );
