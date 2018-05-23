@@ -60,6 +60,13 @@ class TestQgsDocCoverage(unittest.TestCase):
                 for mem in props['missing_members']:
                     print((colored('  "' + mem + '"', 'yellow', attrs=['bold'])))
 
+        if parser.noncompliant_members:
+            for cls, props in list(parser.noncompliant_members.items()):
+                print(('\n\nClass {}, non-compliant members found\n'.format(colored(cls, 'yellow'))))
+                for p in props:
+                    for mem, error in p.items():
+                        print((colored('  ' + mem + ': ' + error, 'yellow', attrs=['bold'])))
+
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
         if parser.classes_missing_group:
@@ -88,6 +95,7 @@ class TestQgsDocCoverage(unittest.TestCase):
         self.assertTrue(not parser.classes_missing_group, 'Classes without \\group tag found')
         self.assertTrue(not parser.classes_missing_version_added, 'Classes without \\since version tag found')
         self.assertTrue(not parser.classes_missing_brief, 'Classes without \\brief description found')
+        self.assertTrue(not parser.noncompliant_members, 'Non compliant members found')
 
 
 if __name__ == '__main__':
