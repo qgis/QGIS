@@ -121,9 +121,6 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::position
     bool hasPosition() const;
 
-    //! \copydoc QgsQuickPositionKit::positionLabel
-    QString positionLabel() const;
-
     //! \copydoc QgsQuickPositionKit::position
     QgsPoint position() const;
 
@@ -191,13 +188,10 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::position
     void positionChanged();
 
-    //! \copydoc QgsQuickPositionKit::positionLabel
-    QString positionLabelChanged();
-
     //! \copydoc QgsQuickPositionKit::projectedPosition
     void projectedPositionChanged();
 
-    //! \copydoc QgsQuickPositionKit::screenPositionChanged
+    //! \copydoc QgsQuickPositionKit::screenPosition
     void screenPositionChanged();
 
     //! hasPosition changed
@@ -241,7 +235,6 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     QGeoPositionInfoSource *gpsSource();
     QGeoPositionInfoSource *simulatedSource( double longitude, double latitude, double radius );
 
-    QString mPositionLabel;
     QgsPoint mPosition;
     QgsPoint mProjectedPosition;
     QPointF mScreenPosition;

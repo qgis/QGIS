@@ -38,8 +38,8 @@ class TestQgsQuickUtils: public QObject
     void dump_screen_info();
     void screenUnitsToMeters();
     void transformedPoint();
-    void qgsPointToString();
-    void distanceToString();
+    void formatPoint();
+    void formatDistance();
 
   private:
     QgsQuickUtils utils;
@@ -73,12 +73,12 @@ void TestQgsQuickUtils::screenUnitsToMeters()
 void TestQgsQuickUtils::transformedPoint()
 {
   QgsPointXY pointXY = utils.pointXYFactory( 49.9, 16.3 );
-  QVERIFY( pointXY.x() == 49.9 );
-  QVERIFY( pointXY.y() == 16.3 );
+  QGSCOMPARENEAR( pointXY.x(), 49.9, 1e-4 );
+  QGSCOMPARENEAR( pointXY.y(), 16.3, 1e-4 );
 
   QgsPoint point = utils.pointFactory( 1.0, -1.0 );
-  QVERIFY( point.x() == 1.0 );
-  QVERIFY( point.y() == -1.0 );
+  QGSCOMPARENEAR( point.x(), 1.0, 1e-4 );
+  QGSCOMPARENEAR( point.y(), -1.0, 1e-4 );
 
   QgsCoordinateReferenceSystem crs3857 = QgsCoordinateReferenceSystem::fromEpsgId( 3857 );
   QVERIFY( crs3857.authid() == "EPSG:3857" );
@@ -90,47 +90,38 @@ void TestQgsQuickUtils::transformedPoint()
                                 crs3857,
                                 QgsCoordinateTransformContext(),
                                 pointXY );
-  QVERIFY( fabs( transformedPoint.x() - 5554843 ) < 1.0 );
-  QVERIFY( fabs( transformedPoint.y() - 1839491 ) < 1.0 );
+  QGSCOMPARENEAR( transformedPoint.x(), 5554843, 1.0 );
+  QGSCOMPARENEAR( transformedPoint.y(), 1839491, 1.0 );
 }
 
-void TestQgsQuickUtils::qgsPointToString()
+void TestQgsQuickUtils::formatPoint()
 {
   QgsPoint point( -2.234521, 34.4444421 );
-  QString point2str = utils.qgsPointToString( point, 3 );
-  QVERIFY( point2str == "-2.235, 34.444" );
-
-  point2str = utils.qgsPointToString( point, 2 );
-  QVERIFY( point2str == "-2.23, 34.44" );
-
-  point2str = utils.qgsPointToString( point, 1 );
-  QVERIFY( point2str == "-2.2, 34.4" );
-
-  point2str = utils.qgsPointToString( point, 0 );
-  QVERIFY( point2str == "-2, 34" );
+  QString point2str = utils.formatPoint( point );
+  QVERIFY( point2str == "-2.235,34.444" );
 }
 
-void TestQgsQuickUtils::distanceToString()
+void TestQgsQuickUtils::formatDistance()
 {
-  QString dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters,  2 );
+  QString dist2str = utils.formatDistance( 1222.234, QgsUnitTypes::DistanceMeters,  2 );
   QVERIFY( dist2str == "1.22 km" );
 
-  dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters, 1 );
+  dist2str = utils.formatDistance( 1222.234, QgsUnitTypes::DistanceMeters, 1 );
   QVERIFY( dist2str == "1.2 km" );
 
-  dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters, 0 );
+  dist2str = utils.formatDistance( 1222.234, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "1 km" );
 
-  dist2str = utils.distanceToString( 700.22, QgsUnitTypes::DistanceMeters, 1 );
+  dist2str = utils.formatDistance( 700.22, QgsUnitTypes::DistanceMeters, 1 );
   QVERIFY( dist2str == "700.2 m" );
 
-  dist2str = utils.distanceToString( 0.22, QgsUnitTypes::DistanceMeters, 0 );
+  dist2str = utils.formatDistance( 0.22, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "220 mm" );
 
-  dist2str = utils.distanceToString( -0.22, QgsUnitTypes::DistanceMeters, 0 );
+  dist2str = utils.formatDistance( -0.22, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "0 m" );
 
-  dist2str = utils.distanceToString( 1.222234, QgsUnitTypes::DistanceKilometers,  2 );
+  dist2str = utils.formatDistance( 1.222234, QgsUnitTypes::DistanceKilometers,  2 );
   QVERIFY( dist2str == "1.22 km" );
 }
 

@@ -100,12 +100,16 @@ QUrl QgsQuickUtils::getThemeIcon( const QString &name )
   return QUrl( path );
 }
 
-QString QgsQuickUtils::qgsPointToString( const QgsPoint &point, int decimals )
+QString QgsQuickUtils::formatPoint(
+  const QgsPoint &point,
+  QgsCoordinateFormatter::Format format,
+  int decimals,
+  QgsCoordinateFormatter::FormatFlags flags )
 {
-  return QString( "%1, %2" ).arg( QString::number( point.x(), 'f', decimals ) ).arg( QString::number( point.y(), 'f', decimals ) );
+  return QgsCoordinateFormatter::format( point, format, decimals, flags );
 }
 
-QString QgsQuickUtils::distanceToString( double distance, QgsUnitTypes::DistanceUnit units, int decimals )
+QString QgsQuickUtils::formatDistance( double distance, QgsUnitTypes::DistanceUnit units, int decimals )
 {
   double dist = distance * QgsUnitTypes::fromUnitToUnitFactor( units, QgsUnitTypes::DistanceMeters );
 
