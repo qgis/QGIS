@@ -128,41 +128,46 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
 
-  mReply = QgsNetworkAccessManager::instance()->get( request );
-  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
-  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  std::function<bool()> downloaderFunction = [ this, request, synchronous ]()
   {
-    mErrorCode = QgsWfsRequest::NetworkError;
-    mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
-    return false;
-  }
-  connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
-  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
-
-  if ( !synchronous )
-    return true;
-  else
-  {
-    QEventLoop loop;
-    connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
-
-    if ( QThread::currentThread() == QApplication::instance()->thread() )
+    bool success = true;
+    mReply = QgsNetworkAccessManager::instance()->get( request );
+    mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
+    if ( !mUri.auth().setAuthorizationReply( mReply ) )
     {
-      QFuture<void> future = QtConcurrent::run( [ &loop ]()
-      {
-        loop.exec();
-      } );
-
-      future.waitForFinished();
+      mErrorCode = QgsWfsRequest::NetworkError;
+      mErrorMessage = errorMessageFailedAuth();
+      QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+      success = false;
     }
     else
     {
-      loop.exec();
-    }
+      connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
+      connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
 
-    return mErrorMessage.isEmpty();
+      if ( synchronous )
+      {
+        QEventLoop loop;
+        connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
+        loop.exec();
+      }
+    }
+    return success;
+  };
+
+  bool success;
+
+  if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    QFuture<bool> future = QtConcurrent::run( downloaderFunction );
+    future.waitForFinished();
+    success = future.result();
   }
+  else
+  {
+    success = downloaderFunction();
+  }
+  return success && mErrorMessage.isEmpty();
 }
 
 bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data )
