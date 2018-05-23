@@ -182,7 +182,7 @@ ENDIF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
 # core module
 FILE(GLOB_RECURSE sip_files_core core/*.sip core/*.sip.in)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_core.pyi -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 SET(SIP_CORE_CPP_FILES ${cpp_files})
@@ -200,7 +200,7 @@ IF (WITH_GUI)
 
   FILE(GLOB_RECURSE sip_files_gui gui/*.sip gui/*.sip.in)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
-  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_gui.pyi -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
 
   IF(QSCI_SIP_DIR)
     SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
@@ -224,7 +224,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
   FILE(GLOB_RECURSE sip_files_server server/*.sip server/*.sip.in)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
-  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_server.pyi -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip "${sip_files_server}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._server server/server.sip ${cpp_files} "" qgis_core qgis_server)
 ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
@@ -248,7 +248,7 @@ INCLUDE_DIRECTORIES(BEFORE
 # analysis module
 FILE(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_analysis.pyi -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 
