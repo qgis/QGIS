@@ -23,6 +23,7 @@
 #include "qgspointxy.h"
 #include "qgstest.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
 
 #include "qgsquickutils.h"
 
@@ -37,7 +38,8 @@ class TestQgsQuickUtils: public QObject
     void dump_screen_info();
     void screenUnitsToMeters();
     void transformedPoint();
-    void formatting();
+    void qgsPointToString();
+    void distanceToString();
 
   private:
     QgsQuickUtils utils;
@@ -92,7 +94,7 @@ void TestQgsQuickUtils::transformedPoint()
   QVERIFY( fabs( transformedPoint.y() - 1839491 ) < 1.0 );
 }
 
-void TestQgsQuickUtils::formatting()
+void TestQgsQuickUtils::qgsPointToString()
 {
   QgsPoint point( -2.234521, 34.4444421 );
   QString point2str = utils.qgsPointToString( point, 3 );
@@ -106,24 +108,30 @@ void TestQgsQuickUtils::formatting()
 
   point2str = utils.qgsPointToString( point, 0 );
   QVERIFY( point2str == "-2, 34" );
+}
 
-  QString dist2str = utils.distanceToString( 1222.234, 2 );
+void TestQgsQuickUtils::distanceToString()
+{
+  QString dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters,  2 );
   QVERIFY( dist2str == "1.22 km" );
 
-  dist2str = utils.distanceToString( 1222.234, 1 );
+  dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters, 1 );
   QVERIFY( dist2str == "1.2 km" );
 
-  dist2str = utils.distanceToString( 1222.234, 0 );
+  dist2str = utils.distanceToString( 1222.234, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "1 km" );
 
-  dist2str = utils.distanceToString( 700.22, 1 );
+  dist2str = utils.distanceToString( 700.22, QgsUnitTypes::DistanceMeters, 1 );
   QVERIFY( dist2str == "700.2 m" );
 
-  dist2str = utils.distanceToString( 0.22, 0 );
+  dist2str = utils.distanceToString( 0.22, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "220 mm" );
 
-  dist2str = utils.distanceToString( -0.22, 0 );
+  dist2str = utils.distanceToString( -0.22, QgsUnitTypes::DistanceMeters, 0 );
   QVERIFY( dist2str == "0 m" );
+
+  dist2str = utils.distanceToString( 1.222234, QgsUnitTypes::DistanceKilometers,  2 );
+  QVERIFY( dist2str == "1.22 km" );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )

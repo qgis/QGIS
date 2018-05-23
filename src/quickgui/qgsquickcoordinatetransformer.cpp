@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgsquickcoordinatetransformer.h"
+#include "qgslogger.h"
 
 QgsQuickCoordinateTransformer::QgsQuickCoordinateTransformer( QObject *parent )
   : QObject( parent )
 {
   mCoordinateTransform.setSourceCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
-  mCoordinateTransform.setContext( QgsCoordinateTransformContext() );
 }
 
 QgsPoint QgsQuickCoordinateTransformer::projectedPosition() const
@@ -32,7 +32,7 @@ QgsPoint QgsQuickCoordinateTransformer::sourcePosition() const
   return mSourcePosition;
 }
 
-void QgsQuickCoordinateTransformer::setSourcePosition( QgsPoint sourcePosition )
+void QgsQuickCoordinateTransformer::setSourcePosition( const QgsPoint &sourcePosition )
 {
   if ( mSourcePosition == sourcePosition )
     return;
@@ -74,6 +74,11 @@ void QgsQuickCoordinateTransformer::setSourceCrs( const QgsCoordinateReferenceSy
   updatePosition();
 }
 
+void QgsQuickCoordinateTransformer::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mCoordinateTransform.setContext( context );
+}
+
 void QgsQuickCoordinateTransformer::updatePosition()
 {
   double x = mSourcePosition.x();
@@ -88,10 +93,14 @@ void QgsQuickCoordinateTransformer::updatePosition()
     z = 0;
   }
 
-  if ( mMapSettings )
-    mCoordinateTransform.setContext( mMapSettings->transformContext() );
-
-  mCoordinateTransform.transformInPlace( x, y, z );
+  try
+  {
+    mCoordinateTransform.transformInPlace( x, y, z );
+  }
+  catch ( const QgsCsException &exp )
+  {
+    QgsDebugMsg( exp.what() );
+  }
 
   mProjectedPosition = QgsPoint( x, y );
   mProjectedPosition.addZValue( mSourcePosition.z() );

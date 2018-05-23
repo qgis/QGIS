@@ -52,6 +52,7 @@ ApplicationWindow {
     z: 1
   }
 
+  /** Message Log */
   Drawer {
     id: logPanel
     visible: true
@@ -75,22 +76,67 @@ ApplicationWindow {
     }
   }
 
-  QgsQuick.PositionMarker {
-    id: positionMarker
-    positionKit: QgsQuick.PositionKit {
-      id: positionKit
-      mapSettings: mapCanvas.mapSettings
-      simulatePositionLongLatRad: __use_simulated_position ? [-97.36, 36.93, 2] : undefined
-    }
-  }
-
+  /** Scale Bar */
   QgsQuick.ScaleBar {
     id: scaleBar
     y: window.height - height
-    height: 50
+    height: 50 * QgsQuick.Utils.dp
     mapSettings: mapCanvas.mapSettings
     preferredWidth: 115 * QgsQuick.Utils.dp
     z: 1
   }
 
+  /** Position Kit and Marker */
+  QgsQuick.PositionKit {
+    id: positionKit
+    mapSettings: mapCanvas.mapSettings
+    simulatePositionLongLatRad: __use_simulated_position ? [-97.36, 36.93, 2] : undefined
+  }
+
+  QgsQuick.PositionMarker {
+    id: positionMarker
+    positionKit: positionKit
+  }
+
+  Label {
+    id: gpsPositionLabel
+    text: {
+      var label = "Signal Lost"
+      if ( positionKit.hasPosition )
+        label = QgsQuick.Utils.qgsPointToString( positionKit.position, 3 )
+        if (positionKit.accuracy > 0)
+          label += " (" + QgsQuick.Utils.distanceToString( positionKit.accuracy, positionKit.accuracyUnits, 0 ) + ")"
+      label;
+    }
+    height: scaleBar.height
+    x: window.width - width
+    font.pixelSize: 22 * QgsQuick.Utils.dp
+    font.italic: true
+    color: "steelblue"
+    z: 1
+  }
+
+  /** Coordinate transformater */
+  QgsQuick.CoordinateTransformer {
+    id: coordinateTransformer
+    sourcePosition: positionKit.position
+    sourceCrs: positionKit.positionCRS()
+    destinationCrs: QgsQuick.Utils.coordinateReferenceSystemFromEpsgId( 3857 ) //web mercator
+    transformContext: mapCanvas.mapSettings.transformContext()
+  }
+
+  Label {
+    id: webPositionLabel
+    text: {
+      if ( positionKit.hasPosition )
+         QgsQuick.Utils.qgsPointToString( coordinateTransformer.projectedPosition, 3 ) + " (web mercator)"
+    }
+    height: scaleBar.height
+    x: window.width - width
+    y: gpsPositionLabel.height + 2 * QgsQuick.Utils.dp
+    font.pixelSize: 22 * QgsQuick.Utils.dp
+    font.italic: true
+    color: "steelblue"
+    z: 1
+  }
 }

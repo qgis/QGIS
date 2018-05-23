@@ -21,11 +21,13 @@
 #include <QString>
 #include <QtPositioning/QGeoCoordinate>
 
+#include <limits>
+
 #include "qgis.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
-
+#include "qgsunittypes.h"
 #include "qgsquickmapsettings.h"
 #include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
@@ -82,7 +84,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     /**
       * Creates QgsPoint in QML
       */
-    Q_INVOKABLE QgsPoint pointFactory( double x, double y ) const;
+    Q_INVOKABLE QgsPoint pointFactory( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
 
     /**
       * Converts QGeoCoordinate to QgsPoint
@@ -117,9 +119,9 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
 
     /**
-      * Returns QUrl to image from libary's /images folder.
+      * Returns QUrl to image from library's /images folder.
       */
-    Q_INVOKABLE QUrl getThemeIcon( const QString &name );
+    Q_INVOKABLE const QUrl getThemeIcon( const QString &name );
 
     /**
       * Converts point to string with given decimals (default decimals = 3),
@@ -128,10 +130,17 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE static QString qgsPointToString( const QgsPoint &point, int decimals = 3 );
 
     /**
-      * Converts distance in meters to human readable length with given decimals (default decimals = 1),
-      *  e.g. 1222.234 m -> 1.2 km
+      * Converts distance in meters to human readable
+      *
+      * The resulting units is determined automatically
+      * e.g. 1222.234 m is converted to 1.2 km
+      *
+      * \param dist distance in units
+      * \param units units of dist
+      * \param decimals decimal to use
+      * \returns string represetation of dist
       */
-    Q_INVOKABLE static QString distanceToString( qreal dist, int decimals = 1 );
+    Q_INVOKABLE static QString distanceToString( double distance, QgsUnitTypes::DistanceUnit units, int decimals = 1 );
 
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;

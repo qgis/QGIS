@@ -42,6 +42,8 @@
  * Simulated position source generates random points in circles around the selected
  * point and radius. Real GPS position is not used in this mode.
  *
+ * For disabling (random) updates, use flight radius <= 0 (useful for testing)
+ *
  * \note QML Type: not exported
  *
  * \since QGIS 3.2
@@ -67,13 +69,16 @@ class QUICK_NO_EXPORT QgsQuickSimulatedPositionSource : public QGeoPositionInfoS
     void readNextPosition();
 
   private:
+    void readRandomPosition();
+    void readConstantPosition();
+
     std::unique_ptr< QTimer > mTimer;
     QGeoPositionInfo mLastPosition;
-    double mAngle;
+    double mAngle = 0;
 
-    double mFlightRadius;
-    double mLongitude;
-    double mLatitude;
+    double mFlightRadius = 0;
+    double mLongitude = 0;
+    double mLatitude = 0;
 };
 
 /// @endcond

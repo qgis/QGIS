@@ -28,6 +28,7 @@
 #include "qgsrelationmanager.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsunittypes.h"
 
 #include "qgsquickfeaturehighlight.h"
 #include "qgsquickcoordinatetransformer.h"
@@ -60,6 +61,7 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qRegisterMetaType< QgsPoint >( "QgsPoint" );
   qRegisterMetaType< QgsPointXY >( "QgsPointXY" );
   qRegisterMetaType< QgsQuickFeatureLayerPair >( "QgsQuickFeatureLayerPair" );
+  qRegisterMetaType< QgsUnitTypes::DistanceUnit >( "QgsUnitTypes::DistanceUnit" );
 
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
   qmlRegisterType< QgsQuickFeatureHighlight >( uri, 0, 1, "FeatureHighlight" );

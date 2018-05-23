@@ -21,8 +21,7 @@
 
 QgsQuickSimulatedPositionSource::QgsQuickSimulatedPositionSource( QObject *parent, double longitude, double latitude, double flightRadius )
   : QGeoPositionInfoSource( parent )
-  , mTimer( qgis::make_unique< QTimer >( this ) )
-  , mAngle( 0 )
+  , mTimer( qgis::make_unique< QTimer >() )
   , mFlightRadius( flightRadius )
   , mLongitude( longitude )
   , mLatitude( latitude )
@@ -50,7 +49,17 @@ void QgsQuickSimulatedPositionSource::requestUpdate( int /*timeout*/ )
   readNextPosition();
 }
 
+
+
 void QgsQuickSimulatedPositionSource::readNextPosition()
+{
+  if ( mFlightRadius <= 0 )
+    readConstantPosition();
+  else
+    readRandomPosition();
+}
+
+void QgsQuickSimulatedPositionSource::readRandomPosition()
 {
   double latitude = mLatitude, longitude = mLongitude;
   latitude += sin( mAngle * M_PI / 180 ) * mFlightRadius;
@@ -79,6 +88,17 @@ void QgsQuickSimulatedPositionSource::readNextPosition()
     info.setAttribute( QGeoPositionInfo::HorizontalAccuracy, accuracy );
     emit positionUpdated( info );
   }
+}
+
+void QgsQuickSimulatedPositionSource::readConstantPosition()
+{
+  QGeoCoordinate coordinate( mLatitude, mLongitude );
+  coordinate.setAltitude( 20 );
+  QDateTime timestamp = QDateTime::currentDateTime();
+  QGeoPositionInfo info( coordinate, timestamp );
+  info.setAttribute( QGeoPositionInfo::Direction, 0 );
+  info.setAttribute( QGeoPositionInfo::HorizontalAccuracy, 20 );
+  emit positionUpdated( info );
 }
 
 /// @endcond

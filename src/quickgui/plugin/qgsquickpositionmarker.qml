@@ -47,7 +47,7 @@ Item {
   /**
    * Whether circle representing accuracy of the position should be rendered.
    */
-  property var withAccuracy: true
+  property bool withAccuracy: true
 
   /**
    * Icon for position marker.

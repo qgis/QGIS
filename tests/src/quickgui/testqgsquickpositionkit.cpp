@@ -40,23 +40,21 @@ class TestQgsQuickUtils: public QObject
 
 void TestQgsQuickUtils::simulated_position()
 {
-
-  const QVector<double> initPosition( { -92.36, 38.93, 2 } );
-  QVERIFY( !positionKit.simulated() );
-  positionKit.use_simulated_location( initPosition[0], initPosition[1], initPosition[2] );
-  QVERIFY( positionKit.simulated() );
+  QVERIFY( !positionKit.isSimulated() );
+  positionKit.useSimulatedLocation( -92.36, 38.93, -1 );
+  QVERIFY( positionKit.isSimulated() );
 
   QVERIFY( positionKit.hasPosition() );
-  QVERIFY( positionKit.position().y() == initPosition[1] );
+  QGSCOMPARENEAR( positionKit.position().y(), 38.93, 1e-4 );
   QVERIFY( positionKit.accuracy() > 0 );
 
-  const QVector<double> newPosition( { 90.36, 33.93, 3 } );
-  positionKit.onSimulatePositionLongLatRadChanged( newPosition );
+  const QVector<double> newPosition( { 90.36, 33.93, -1 } );
+  positionKit.setSimulatePositionLongLatRad( newPosition );
   QVERIFY( positionKit.hasPosition() );
-  QVERIFY( positionKit.position().y() == newPosition[1] );
+  QGSCOMPARENEAR( positionKit.position().y(), newPosition[1], 1e-4 );
 
-  positionKit.onSimulatePositionLongLatRadChanged( QVector<double>() );
-  QVERIFY( !positionKit.simulated() );
+  positionKit.setSimulatePositionLongLatRad( QVector<double>() );
+  QVERIFY( !positionKit.isSimulated() );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )
