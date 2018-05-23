@@ -151,7 +151,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
        The method gives back the name of
        the geometry attribute and the thematic attributes with their types*/
     bool describeFeatureType( QString &geometryAttribute,
-                              QgsFields &fields, QgsWkbTypes::Type &geomType, bool forceSingularTypeNames = false );
+                              QgsFields &fields, QgsWkbTypes::Type &geomType );
 
     /**
      * For a given typename, reads the name of the geometry attribute, the

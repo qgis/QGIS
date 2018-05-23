@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgswfsdescribefeaturetype.h"
-#include "qgswfsutils.h"
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -22,16 +21,13 @@ QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
 }
 
 bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
-    const QString &typeName, bool forceSingularTypeName )
+    const QString &typeName, bool bUsePlural )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   url.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
-  // The specs are not consistent: is it singular in 1.0.x and plural in 2.0.0?
-  // see http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#147
-  if ( ! forceSingularTypeName )
-    url.addQueryItem( QgsWFSUtils::typeNameParameterForVersion( WFSVersion ).toUpper( ), typeName );
-  else
-    url.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+  url.addQueryItem( bUsePlural ?
+                    QStringLiteral( "TYPENAMES" ) : QStringLiteral( "TYPENAME" ), typeName );
+
   return sendGET( url, true, false );
 }
 

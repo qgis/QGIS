@@ -420,15 +420,31 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-  if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-       concatenatedTypenames ) )
+  bool bUsePlural = false;
+  QByteArray response;
+  for ( int i = 0; i < 2; i++ )
   {
-    errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
-               arg( dataSourceUri(), describeFeatureType.errorMessage() );
-    return false;
-  }
+    if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
+         concatenatedTypenames, bUsePlural ) )
+    {
+      errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
+                 arg( dataSourceUri(), describeFeatureType.errorMessage() );
+      return false;
+    }
 
-  const QByteArray &response = describeFeatureType.response();
+    response = describeFeatureType.response();
+    // "http://geoportal.samregion.ru/wfs12?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=EC_1_132&VERSION=2.0.0"
+    // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
+    if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
+    {
+      QgsDebugMsg( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" );
+      bUsePlural = true;
+    }
+    else
+    {
+      break;
+    }
+  }
 
   QDomDocument describeFeatureDocument;
   errorMsg.clear();
@@ -919,7 +935,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   transactionDoc.appendChild( transactionElem );
   //delete element
   QDomElement deleteElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Delete" ) );
-  deleteElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
+  deleteElem.setAttribute( QStringLiteral( "typeName" ), tname );
   QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "Filter" ) );
 
 
@@ -984,7 +1000,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       continue;
     }
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
+    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
     //Property
     QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
     QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
@@ -1040,7 +1056,6 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
   return valueStr;
 }
 
-
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   //find out typename from uri and strip namespace prefix
@@ -1066,7 +1081,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     }
 
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QgsWFSUtils::typeNameParameterForVersion( mShared->mWFSVersion ), tname );
+    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
 
     QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
@@ -1159,25 +1174,38 @@ QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVar
   {
     return value.toString();
   }
-}
+};
 
-bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute,
-    QgsFields &fields,
-    QgsWkbTypes::Type &geomType,
-    bool forceSingularTypeNames )
+bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )
 {
   fields.clear();
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
-  if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-       mShared->mURI.typeName(), forceSingularTypeNames ) )
+  bool bUsePlural = false;
+  QByteArray response;
+  for ( int i = 0; i < 2; i++ )
   {
-    QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
-                               arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
-    return false;
-  }
+    if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
+         mShared->mURI.typeName(), bUsePlural ) )
+    {
+      QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
+                                 arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
+      return false;
+    }
 
-  const QByteArray &response = describeFeatureType.response();
+    response = describeFeatureType.response();
+    // "http://geoportal.samregion.ru/wfs12?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=EC_1_132&VERSION=2.0.0"
+    // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
+    if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
+    {
+      QgsDebugMsg( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" );
+      bUsePlural = true;
+    }
+    else
+    {
+      break;
+    }
+  }
 
   QDomDocument describeFeatureDocument;
   QString errorMsg;
@@ -1193,19 +1221,11 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute,
                                   mShared->mURI.typeName(),
                                   geometryAttribute, fields, geomType, errorMsg ) )
   {
-    // If 2.0.0, let's assume it was a server that only accepted TYPENAME singular form
-    // and try with that ...
-    if ( ! forceSingularTypeNames && mShared->mWFSVersion.startsWith( '2' ) )
-    {
-      return QgsWFSProvider::describeFeatureType( geometryAttribute,
-             fields,
-             geomType,
-             true );
-    }
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
+
   return true;
 }
 
@@ -1479,8 +1499,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
     describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
   }
   describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  //TODO: proper support of 2.0.0, for now hardcoded
-  describeFeatureTypeURL.addQueryItem( QgsWFSUtils::typeNameParameterForVersion( WfsVersion ).toUpper(), mShared->mURI.typeName() );
+  describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
 
   transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );
