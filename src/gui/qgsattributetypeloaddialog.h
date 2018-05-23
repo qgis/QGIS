@@ -52,7 +52,8 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     void setVectorLayer( QgsVectorLayer *layer );
 
     /**
-     * Getter to value map which is currently active
+     * Returns the value map which is currently active.
+     *
      * \returns value map of vlues selected from layer
      */
     QMap<QString, QVariant> &valueMap();

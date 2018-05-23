@@ -190,29 +190,33 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setHint( const QString &hintText );
 
     /**
-     * Getter of constraintResult
-     * It's the current result of the constraint on the widget influencing it's visualization.
+     * Returns the constraint result, which is the current result of the constraint
+     * on the widget influencing its visualization.
+     *
      * \since QGIS 3.0
      */
     ConstraintResult constraintResult() const;
 
     /**
-     * Getter of constraintResultVisible
-     * Defines if the constraint result should be visualized on the widget (with color).
+     * Returns whether the constraint result is visible.
+     *
+     * Returns true if the constraint result will be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
+     *
      * \since QGIS 3.0
      */
     bool constraintResultVisible() const;
 
     /**
-     * Setter of constraintResultVisible
-     * Defines if the constraint result should be visualized on the widget (with color).
+     * Sets whether the constraint result is visible.
+     *
+     * Controls if the constraint result should be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
+     *
      * \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
      * \since QGIS 3.0
      */
     void setConstraintResultVisible( bool constraintResultVisible );
-
 
   signals:
 

@@ -187,16 +187,17 @@ Add a hint text on the widget
 
     ConstraintResult constraintResult() const;
 %Docstring
-Getter of constraintResult
-It's the current result of the constraint on the widget influencing it's visualization.
+Returns the constraint result, which is the current result of the constraint
+on the widget influencing its visualization.
 
 .. versionadded:: 3.0
 %End
 
     bool constraintResultVisible() const;
 %Docstring
-Getter of constraintResultVisible
-Defines if the constraint result should be visualized on the widget (with color).
+Returns whether the constraint result is visible.
+
+Returns true if the constraint result will be visualized on the widget (with color).
 This will be disabled when the form is not editable.
 
 .. versionadded:: 3.0
@@ -204,15 +205,15 @@ This will be disabled when the form is not editable.
 
     void setConstraintResultVisible( bool constraintResultVisible );
 %Docstring
-Setter of constraintResultVisible
-Defines if the constraint result should be visualized on the widget (with color).
+Sets whether the constraint result is visible.
+
+Controls if the constraint result should be visualized on the widget (with color).
 This will be disabled when the form is not editable.
 
 :param constraintResultVisible: if constraintResult should be displayed (mostly editable status)
 
 .. versionadded:: 3.0
 %End
-
 
   signals:
 
