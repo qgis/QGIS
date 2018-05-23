@@ -132,6 +132,9 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   {
     bool success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
+
+    Q_ASSERT( QThread::currentThread() == mReply->thread() );
+
     mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
     if ( !mUri.auth().setAuthorizationReply( mReply ) )
     {
@@ -142,13 +145,13 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     }
     else
     {
-      connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
-      connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
+      connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
 
       if ( synchronous )
       {
         QEventLoop loop;
-        connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
+        connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
         loop.exec();
       }
     }
