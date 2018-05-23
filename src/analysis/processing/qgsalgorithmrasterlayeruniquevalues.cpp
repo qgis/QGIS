@@ -53,6 +53,8 @@ void QgsRasterLayerUniqueValuesReportAlgorithm::initAlgorithm( const QVariantMap
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ),
                 QObject::tr( "Unique values report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_TABLE" ),
+                QObject::tr( "Unique values table" ), QgsProcessing::TypeVector, QVariant(), true, false ) );
 
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
@@ -97,6 +99,21 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
 {
   int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+
+  QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
+
+  QString tableDest;
+  std::unique_ptr< QgsFeatureSink > sink;
+  if ( parameters.contains( QStringLiteral( "OUTPUT_TABLE" ) ) && parameters.value( QStringLiteral( "OUTPUT_TABLE" ) ).isValid() )
+  {
+    QgsFields outFields;
+    outFields.append( QgsField( QStringLiteral( "value" ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "count" ), QVariant::Int, QString(), 20 ) );
+    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
+    sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() ) );
+    if ( !sink )
+      throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
+  }
 
   QHash< double, qgssize > uniqueValues;
   qgssize noDataCount = 0;
@@ -155,13 +172,14 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
   outputs.insert( QStringLiteral( "NODATA_PIXEL_COUNT" ), noDataCount );
 
+  double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
+
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-      const QString areaUnit = QgsStringUtils::ampersandEncode( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) ) );
-      double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
+      const QString encodedAreaUnit = QgsStringUtils::ampersandEncode( areaUnit );
 
       QTextStream out( &file );
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
@@ -173,7 +191,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( layerSize );
       if ( mHasNoDataValue )
         out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "NODATA pixel count" ) ).arg( noDataCount );
-      out << QStringLiteral( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ), QObject::tr( "Pixel count" ), QObject::tr( "Area" ), areaUnit );
+      out << QStringLiteral( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ), QObject::tr( "Pixel count" ), QObject::tr( "Area" ), encodedAreaUnit );
 
       for ( auto it = sortedUniqueValues.constBegin(); it != sortedUniqueValues.constEnd(); ++it )
       {
@@ -183,6 +201,18 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       out << QStringLiteral( "</table>\n</body></html>" );
       outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputFile );
     }
+  }
+
+  if ( sink )
+  {
+    for ( auto it = sortedUniqueValues.constBegin(); it != sortedUniqueValues.constEnd(); ++it )
+    {
+      QgsFeature f;
+      double area = it.value() * pixelArea;
+      f.setAttributes( QgsAttributes() << it.key() << it.value() << area );
+      sink->addFeature( f, QgsFeatureSink::FastInsert );
+    }
+    outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
   }
 
   return outputs;
