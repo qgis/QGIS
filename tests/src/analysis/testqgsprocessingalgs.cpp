@@ -409,7 +409,7 @@ void TestQgsProcessingAlgs::featureFilterAlg()
 void TestQgsProcessingAlgs::transformAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:reprojectlayer" ) ) );
-  QVERIFY( alg );
+  QVERIFY( alg != nullptr );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
   QgsProject p;
