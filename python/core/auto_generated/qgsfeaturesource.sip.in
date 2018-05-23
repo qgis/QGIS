@@ -22,6 +22,12 @@ An interface for objects which provide features via a getFeatures method.
 #include "qgsfeaturesource.h"
 %End
   public:
+    enum FeatureAvailability
+    {
+      NoFeaturesAvailable,
+      FeaturesAvailable,
+      FeaturesMaybeAvailable
+    };
 
     virtual ~QgsFeatureSource();
 
@@ -68,23 +74,9 @@ Returns the number of features contained in the source, or -1
 if the feature count is unknown.
 %End
 
-    virtual bool empty() const;
+    virtual FeatureAvailability hasFeatures() const;
 %Docstring
 Determines if there are any features available in the source.
-
-In case it is not known if there are features available, false is returned.
-Use ``emptyUnknown()`` to determine if this value is reliable.
-
-.. seealso:: :py:func:`QgsVectorDataProvider.empty`
-information.
-
-.. versionadded:: 3.2
-%End
-
-    virtual bool emptyUnknown() const;
-%Docstring
-Returns true if the value returned by ``empty()`` may be wrong.
-This depends on the dataprovider.
 
 .. versionadded:: 3.2
 %End

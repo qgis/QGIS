@@ -939,10 +939,10 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
-    virtual bool empty() const;
+    virtual FeatureAvailability hasFeatures() const;
 
 %Docstring
-Determines if this vector layer is empty.
+Determines if this vector layer has features.
 
 .. warning::
 

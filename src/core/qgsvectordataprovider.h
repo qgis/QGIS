@@ -168,15 +168,19 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 3.2
      */
-    virtual bool empty() const override;
+    virtual bool empty() const;
 
     /**
-     * For QgsVectorDataProviders this always returns true because
-     * the provider is actually queried for features.
+     * Will always return FeatureAvailability::FeaturesAvailable or
+     * FeatureAvailability::FeaturesMaybeAvailable.
+     *
+     * Calls empty() internally. Providers should override empty instead
+     * if they provide an optimized version of this call.
      *
      * \since QGIS 3.2
+     * \see empty()
      */
-    virtual bool emptyUnknown() const override;
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const override;
 
     /**
      * Returns the fields associated with this data provider.

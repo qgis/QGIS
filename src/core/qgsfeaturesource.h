@@ -37,6 +37,12 @@ class QgsFeedback;
 class CORE_EXPORT QgsFeatureSource
 {
   public:
+    enum FeatureAvailability
+    {
+      NoFeaturesAvailable, //!< There are certainly no features available in this source
+      FeaturesAvailable, //!< There is at least one feature available in this source
+      FeaturesMaybeAvailable //!< There may be features available in this source
+    };
 
     virtual ~QgsFeatureSource() = default;
 
@@ -88,23 +94,9 @@ class CORE_EXPORT QgsFeatureSource
     /**
      * Determines if there are any features available in the source.
      *
-     * In case it is not known if there are features available, false is returned.
-     * Use ``emptyUnknown()`` to determine if this value is reliable.
-     *
-     * \see QgsVectorDataProvider::empty() for data provider specific
-     *      information.
-     *
      * \since QGIS 3.2
      */
-    virtual bool empty() const;
-
-    /**
-     * Returns true if the value returned by ``empty()`` may be wrong.
-     * This depends on the dataprovider.
-     *
-     * \since QGIS 3.2
-     */
-    virtual bool emptyUnknown() const;
+    virtual FeatureAvailability hasFeatures() const;
 
     /**
      * Returns the set of unique values contained within the specified \a fieldIndex from this source.

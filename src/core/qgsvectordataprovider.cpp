@@ -59,9 +59,12 @@ bool QgsVectorDataProvider::empty() const
     return false;
 }
 
-bool QgsVectorDataProvider::emptyUnknown() const
+QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
 {
-  return false;
+  if ( empty() )
+    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+  else
+    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
 }
 
 QgsCoordinateReferenceSystem QgsVectorDataProvider::sourceCrs() const

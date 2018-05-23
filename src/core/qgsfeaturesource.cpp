@@ -23,14 +23,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-bool QgsFeatureSource::empty() const
+QgsFeatureSource::FeatureAvailability QgsFeatureSource::hasFeatures() const
 {
-  return featureCount();
-}
-
-bool QgsFeatureSource::emptyUnknown() const
-{
-  return featureCount() == -1;
+  return FeaturesMaybeAvailable;
 }
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const

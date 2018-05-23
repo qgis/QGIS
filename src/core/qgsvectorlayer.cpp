@@ -2765,9 +2765,12 @@ long QgsVectorLayer::featureCount() const
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
 }
 
-bool QgsVectorLayer::empty() const
+QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
-  return mDataProvider->empty() && ( !mEditBuffer || mEditBuffer->addedFeatures().empty() );
+  if ( mDataProvider->empty() && ( !mEditBuffer || mEditBuffer->addedFeatures().empty() ) )
+    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+  else
+    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
 }
 
 bool QgsVectorLayer::commitChanges()
