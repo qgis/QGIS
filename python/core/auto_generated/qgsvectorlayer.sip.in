@@ -2143,10 +2143,9 @@ This is a writable configuration that can directly be changed in place.
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 %Docstring
-Get the configuration of the form used to represent this vector layer.
-This is a writable configuration that can directly be changed in place.
+Set the ``editFormConfig`` (configuration) of the form used to represent this vector layer.
 
-:return: The configuration of this layers' form
+.. seealso:: :py:func:`editFormConfig`
 
 .. versionadded:: 3.0
 %End

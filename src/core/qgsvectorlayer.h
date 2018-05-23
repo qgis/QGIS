@@ -1924,11 +1924,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsEditFormConfig editFormConfig() const;
 
     /**
-     * Get the configuration of the form used to represent this vector layer.
-     * This is a writable configuration that can directly be changed in place.
+     * Set the \a editFormConfig (configuration) of the form used to represent this vector layer.
      *
-     * \returns The configuration of this layers' form
-     *
+     * \see editFormConfig()
      * \since QGIS 3.0
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
