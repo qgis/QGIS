@@ -488,8 +488,18 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
         request = QgsFeatureRequest().setFilterRect(extent)
-        values = [f['INTFIELD'] for f in vl.getFeatures(request)]
-        self.assertEqual(values, [100])
+        values = [(f.id(), f['INTFIELD']) for f in vl.getFeatures(request)]
+        self.assertEqual(values[0][1], 100)
+
+        # Issue a request by id on a cached feature
+        request = QgsFeatureRequest(values[0][0])
+        values = [(f.id(), f['INTFIELD']) for f in vl.getFeatures(request)]
+        self.assertEqual(values[0][1], 100)
+
+        # Check behavior with setLimit(1)
+        request = QgsFeatureRequest().setLimit(1)
+        values = [(f.id(), f['INTFIELD']) for f in vl.getFeatures(request)]
+        self.assertEqual(values[0][1], 100)
 
     def testWFS10_outputformat_GML3(self):
         """Test WFS 1.0 with OUTPUTFORMAT=GML3"""
@@ -1181,6 +1191,30 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         request = QgsFeatureRequest().setFilterRect(extent)
         values = [f['ogc_fid'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [101])
+
+        # Check behavior with setLimit(1)
+        with open(sanitize(endpoint, "?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my"
+                       numberOfFeatures="1" timeStamp="2016-03-25T14:51:48.998Z">
+  <gml:featureMembers>
+    <my:typename gml:id="typename.12345">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
+      <my:ogc_fid>12345</my:ogc_fid>
+    </my:typename>
+  </gml:featureMembers>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' restrictToRequestBBOX=1", 'test', 'WFS')
+        request = QgsFeatureRequest().setLimit(1)
+        values = [f['ogc_fid'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [12345])
+
+        # Check that the layer extent is not built from this single feature
+        reference = QgsGeometry.fromRect(QgsRectangle(-80, 60, -50, 80))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
     def testWFS20TruncatedResponse(self):
         """Test WFS 2.0 truncatedResponse"""
@@ -2161,7 +2195,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Extent before downloading features
         reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.1), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
         # Download all features
         features = [f for f in vl.getFeatures()]
@@ -2169,7 +2203,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.1), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
         self.assertEqual(features[0]['intfield'], 1)
         self.assertEqual(features[1]['intfield'], 2)
 

@@ -24,6 +24,8 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
+const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
+
 QgsWFSRequest::QgsWFSRequest( const QString& theUri )
     : mUri( theUri )
     , mReply( nullptr )
@@ -116,6 +118,7 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWFSRequest::NetworkError;
@@ -167,6 +170,7 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
+  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWFSRequest::NetworkError;
@@ -257,6 +261,7 @@ void QgsWFSRequest::replyFinished()
 
           QgsDebugMsg( QString( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mReply = QgsNetworkAccessManager::instance()->get( request );
+          mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
           {
             mResponse.clear();
