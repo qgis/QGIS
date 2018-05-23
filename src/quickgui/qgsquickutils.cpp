@@ -35,7 +35,7 @@ QgsQuickUtils::QgsQuickUtils( QObject *parent )
 }
 
 /**
- * Makes QgsCoordinateReferenceSystem::fromEpsgId accessable for QML components
+ * Makes QgsCoordinateReferenceSystem::fromEpsgId accessible for QML components
  */
 QgsCoordinateReferenceSystem QgsQuickUtils::coordinateReferenceSystemFromEpsgId( long epsg )
 {

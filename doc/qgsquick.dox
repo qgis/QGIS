@@ -15,12 +15,11 @@ QGIS Quick consists of a Qt plugin that provides the QML components and of a sha
 \subsubsection qgsquick_overview_widgets_mapcanvas MapCanvas
 \subsubsection qgsquick_overview_widgets_positionmarker PositionMarker
 The element refers to current position according gps location device connected to it. It holds information about longitude, latitude, altitude,
-direction of the movement and accuracy of the signal. See also QgsQuickPostionKit.
+direction of the movement and accuracy of the signal. See also QgsQuickPositionKit.
 \subsubsection qgsquick_overview_widgets_scalebar ScaleBar
 A QML component that shows the scale ratio between its length and distance on the MapCanvas. There are predefined rounded values
 for several zooming levels with 'm' or 'km' postfixes. After any zoom in/out event on canvas recalculates its properties and updates
 text. See also QgsQuickScaleBarKit.
-
 \subsubsection qgsquick_overview_widgets_messagelog MessageLog
 A simple panel which can be used for publishing logs messages to a user such as basic information about the application or its status.
 See also QgsQuickMessageLogModel.
