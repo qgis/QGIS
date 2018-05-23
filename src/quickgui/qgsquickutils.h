@@ -137,7 +137,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * The resulting units is determined automatically
       * e.g. 1222.234 m is converted to 1.2 km
       *
-      * \param dist distance in units
+      * \param distance distance in units
       * \param units units of dist
       * \param decimals decimal to use
       * \returns string represetation of dist
