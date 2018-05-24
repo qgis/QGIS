@@ -508,10 +508,10 @@ Attempts to parse mime data as a color
 
 :param data: mime data to parse
 :param hasAlpha: will be set to true if mime data was interpreted as a color containing
-an explicit alpha value
+                 an explicit alpha value
 
 :return: valid color if mimedata could be interpreted as a color, otherwise an
-invalid color
+         invalid color
 
 .. versionadded:: 2.5
 %End

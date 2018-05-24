@@ -88,7 +88,7 @@ which contains a QgsRenderContext which in turn contains an expression
 context which is available to the evaluated expression.
 
 :param context: The rendering context which will be used to render and to
-construct a geometry.
+                construct a geometry.
 %End
 
     virtual void setColor( const QColor &color );

@@ -331,7 +331,7 @@ expiration and effective dates, optionally trusts the root CA
 :param bundle:
 :param useIntermediates: if true the intermediate certs are also checked
 :param trustRootCa: if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
-this option is ignored and set to false
+                    this option is ignored and set to false
 
 :return: a list of error strings, if the list is empty then the PKI bundle is valid
 %End

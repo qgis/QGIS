@@ -256,11 +256,11 @@ Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document
 
 :param node: the node in the SLD document whose the UserStyle element
-is a child
+             is a child
 :param geomType: the geometry type of the features, used to convert
-Symbolizer elements
+                 Symbolizer elements
 :param errorMessage: it will contain the error message if something
-went wrong
+                     went wrong
 
 :return: the renderer
 %End
@@ -351,7 +351,7 @@ extended to support renderers that may use more symbols per feature - similar to
 Allows for a renderer to modify the extent of a feature request prior to rendering
 
 :param extent: reference to request's filter extent. Modify extent to change the
-extent of feature request
+               extent of feature request
 :param context: render context
 
 .. versionadded:: 2.7
@@ -393,8 +393,8 @@ Returns whether the renderer must render as a raster.
 Sets whether the renderer should be rendered to a raster destination.
 
 :param forceRaster: set to true if renderer must be drawn on a raster surface.
-This may be desirable for highly detailed layers where rendering as a vector
-would result in a large, complex vector output.
+                    This may be desirable for highly detailed layers where rendering as a vector
+                    would result in a large, complex vector output.
 
 .. seealso:: :py:func:`forceRasterRender`
 

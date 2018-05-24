@@ -490,12 +490,12 @@ Deletes the vertex at the given position number and item
 (first number is index 0)
 
 :return: false if atVertex does not correspond to a valid vertex
-on this geometry (including if this geometry is a Point),
-or if the number of remaining vertices in the linestring
-would be less than two.
-It is up to the caller to distinguish between
-these error conditions.  (Or maybe we add another method to this
-object to help make the distinction?)
+         on this geometry (including if this geometry is a Point),
+         or if the number of remaining vertices in the linestring
+         would be less than two.
+         It is up to the caller to distinguish between
+         these error conditions.  (Or maybe we add another method to this
+         object to help make the distinction?)
 %End
 
     QgsPoint vertexAt( int atVertex ) const;
@@ -549,9 +549,9 @@ Searches for the closest segment of geometry to the given point
 :param point: Specifies the point for search
 :param minDistPoint: Receives the nearest point on the segment
 :param afterVertex: Receives index of the vertex after the closest segment. The vertex
-before the closest segment is always afterVertex - 1
+                    before the closest segment is always afterVertex - 1
 :param leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
-that the test was unsuccessful, e.g. for a point exactly on the line)
+               that the test was unsuccessful, e.g. for a point exactly on the line)
 :param epsilon: epsilon for segment snapping
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
@@ -944,7 +944,7 @@ applied to one side of the line.
 :param miterLimit: limit on the miter ratio used for very sharp corners
 
 :return: buffered geometry, or an empty geometry if buffer could not be
-calculated
+         calculated
 
 .. versionadded:: 3.0
 
@@ -1242,7 +1242,7 @@ converts them to single line strings.
 
 :return: a LineString or MultiLineString geometry, with any connected lines
 joined. An empty geometry will be returned if the input geometry was not a
-MultiLineString geometry.
+         MultiLineString geometry.
 
 .. versionadded:: 3.0
 %End
@@ -1426,9 +1426,9 @@ empty if none of the child geometries match the desired type.
 Modifies geometry to avoid intersections with the layers specified in project properties
 
 :return: 0 in case of success,
-1 if geometry is not of polygon type,
-2 if avoid intersection would change the geometry type,
-3 other error during intersection removal
+         1 if geometry is not of polygon type,
+         2 if avoid intersection would change the geometry type,
+         3 other error during intersection removal
 
 :param avoidIntersectionsLayers: list of layers to check for intersections
 :param ignoreFeatures: possibility to give a list of features where intersections should be ignored (not available in Python bindings)
@@ -1643,14 +1643,14 @@ The 2 types should match.
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: true if objects are
-- polylines and have the same number of points and all
-points are equal within the specified tolerance
-- polygons and have the same number of points and all
-points are equal within the specified tolerance
-- multipolygons and  have the same number of polygons, the polygons have the same number
-of rings, and each ring has the same number of points and all points are equal
-within the specified
-tolerance
+         - polylines and have the same number of points and all
+         points are equal within the specified tolerance
+         - polygons and have the same number of points and all
+         points are equal within the specified tolerance
+         - multipolygons and  have the same number of polygons, the polygons have the same number
+         of rings, and each ring has the same number of points and all points are equal
+         within the specified
+         tolerance
 
 .. versionadded:: 2.9
 %End
@@ -1761,10 +1761,10 @@ If input geometries contain Z or M values, these will also be smoothed and the o
 geometry will retain the same dimensionality as the input geometry.
 
 :param iterations: number of smoothing iterations to run. More iterations results
-in a smoother geometry
+                   in a smoother geometry
 :param offset: fraction of line to create new vertices along, between 0 and 1.0,
-e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
-of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+               e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
+               of the geometry for each iteration. Smaller values result in "tighter" smoothing.
 :param minimumDistance: minimum segment length to apply smoothing to
 :param maxAngle: maximum angle at node (0-180) at which smoothing will be applied
 

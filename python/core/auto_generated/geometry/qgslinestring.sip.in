@@ -96,7 +96,7 @@ Returns the z-coordinate of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
-does not have a z dimension
+         does not have a z dimension
 
 .. seealso:: :py:func:`setZAt`
 %End
@@ -108,7 +108,7 @@ Returns the m value of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: m value of node, or ``nan`` if index is out of bounds or the line
-does not have m values
+         does not have m values
 
 .. seealso:: :py:func:`setMAt`
 %End
@@ -118,7 +118,7 @@ does not have m values
 Sets the x-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string.
+              node must already exist in line string.
 :param x: x-coordinate of node
 
 .. seealso:: :py:func:`xAt`
@@ -129,7 +129,7 @@ node must already exist in line string.
 Sets the y-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string.
+              node must already exist in line string.
 :param y: y-coordinate of node
 
 .. seealso:: :py:func:`yAt`
@@ -140,7 +140,7 @@ node must already exist in line string.
 Sets the z-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string, and the line string must have z-dimension.
+              node must already exist in line string, and the line string must have z-dimension.
 :param z: z-coordinate of node
 
 .. seealso:: :py:func:`zAt`
@@ -151,7 +151,7 @@ node must already exist in line string, and the line string must have z-dimensio
 Sets the m value of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string, and the line string must have m values.
+              node must already exist in line string, and the line string must have m values.
 :param m: m value of node
 
 .. seealso:: :py:func:`mAt`

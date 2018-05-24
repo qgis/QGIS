@@ -396,7 +396,7 @@ Returns the blur radius, which controls the amount of blurring applied to the fi
 Sets whether the shapeburst fill should be drawn using the entire shape.
 
 :param useWholeShape: Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
-be shaded
+                      be shaded
 
 .. versionadded:: 2.3
 

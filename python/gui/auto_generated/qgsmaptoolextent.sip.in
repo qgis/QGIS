@@ -47,7 +47,7 @@ Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
 To unset a fixed aspect ratio, set the width and height to zero.
 
 :param ratio: aspect ratio's width and height
-*
+              *
 %End
 
     QSize ratio() const;

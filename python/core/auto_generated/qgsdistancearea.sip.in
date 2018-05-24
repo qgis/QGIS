@@ -272,7 +272,7 @@ Returns an distance formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of distance
 :param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
-kilometers
+                     kilometers
 
 :return: formatted distance string
 
@@ -289,7 +289,7 @@ Returns an area formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of area
 :param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
-square kilometers
+                     square kilometers
 
 :return: formatted area string
 
@@ -304,7 +304,7 @@ Takes a length measurement calculated by this QgsDistanceArea object and convert
 different distance unit.
 
 :param length: length value calculated by this class to convert. It is assumed that the length
-was calculated by this class, ie that its unit of length is equal to lengthUnits().
+               was calculated by this class, ie that its unit of length is equal to lengthUnits().
 :param toUnits: distance unit to convert measurement to
 
 :return: converted distance
@@ -320,7 +320,7 @@ Takes an area measurement calculated by this QgsDistanceArea object and converts
 different areal unit.
 
 :param area: area value calculated by this class to convert. It is assumed that the area
-was calculated by this class, ie that its unit of area is equal to areaUnits().
+             was calculated by this class, ie that its unit of area is equal to areaUnits().
 :param toUnits: area unit to convert measurement to
 
 :return: converted area

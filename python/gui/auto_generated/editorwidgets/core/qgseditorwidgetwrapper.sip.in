@@ -123,7 +123,7 @@ Update constraint.
 
 :param featureContext: the feature to use to evaluate the constraint
 :param constraintOrigin: optional origin for constraints to check. This can be used to limit the constraints tested
-to only provider or layer based constraints.
+                         to only provider or layer based constraints.
 
 .. versionadded:: 2.16
 %End
@@ -136,8 +136,8 @@ Update constraint on a feature coming from a specific layer.
 :param index: The index of the field to check
 :param feature: The feature to use to evaluate the constraint
 :param constraintOrigin: Optional origin for constraints to check. This
-can be used to limit the constraints tested to only provider or layer
-based constraints.
+                         can be used to limit the constraints tested to only provider or layer
+                         based constraints.
 
 .. versionadded:: 3.0
 %End
@@ -147,7 +147,7 @@ based constraints.
 Gets the current constraint status.
 
 :return: true if the constraint is valid or if there's no constraint,
-false otherwise
+         false otherwise
 
 .. versionadded:: 2.16
 

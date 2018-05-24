@@ -16,7 +16,7 @@ class QgsGraphEdge
 %Docstring
 
 .. versionadded:: 3.0
- This class implements a graph edge
+                   This class implements a graph edge
 %End
 
 %TypeHeaderCode

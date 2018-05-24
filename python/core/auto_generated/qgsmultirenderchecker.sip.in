@@ -83,7 +83,7 @@ Set tolerance for color components used by runTest()
 Default value is 0.
 
 :param colorTolerance: The maximum difference for each color component
-including alpha to be considered correct.
+                       including alpha to be considered correct.
 %End
 
     void setSizeTolerance( int xTolerance, int yTolerance );
@@ -101,12 +101,12 @@ Sets the largest allowable difference in size between the rendered and the expec
 Test using renderer to generate the image to be compared.
 
 :param testName: - to be used as the basis for writing a file to
-e.g. /tmp/theTestName.png
+                 e.g. /tmp/theTestName.png
 
 :param mismatchCount: - defaults to 0 - the number of pixels that
-are allowed to be different from the control image. In some cases
+                      are allowed to be different from the control image. In some cases
 rendering may be non-deterministic. This parameter allows you to account
-for that by providing a tolerance.
+                      for that by providing a tolerance.
 
 .. note::
 

@@ -116,7 +116,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return:  Whether the segments intersect
-* Example:
+         * Example:
 .. code-block:: python
 
        ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
@@ -405,7 +405,7 @@ M value is computed if one of this point have M.
 :param pt2: second point.
 
 :return: New point at middle between points pt1 and pt2.
-* Example:
+         * Example:
 .. code-block:: python
 
        p = QgsPoint( 4, 6 ) # 2D point
@@ -552,7 +552,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param intersection: is the result intersection, of it can be found.
 
 :return: true if the intersection can be found, false - otherwise.
-example:
+         example:
 .. code-block:: python
 
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))

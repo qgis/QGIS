@@ -120,8 +120,8 @@ the sizes of all frames can be recalculated by calling recalculateFrameRects().
 :param frameIndex: frame number
 
 :return: fixed size for frame. If the size has a width or height of 0, then
-the frame size is not fixed in that direction and frames can have variable width
-or height accordingly.
+         the frame size is not fixed in that direction and frames can have variable width
+         or height accordingly.
 
 .. seealso:: :py:func:`minFrameSize`
 
@@ -137,7 +137,7 @@ recalculateFrameRects().
 :param frameIndex: frame number
 
 :return: minimum size for frame. If the size has a width or height of 0, then
-the frame size has no minimum in that direction.
+         the frame size has no minimum in that direction.
 
 .. seealso:: :py:func:`fixedFrameSize`
 
@@ -169,7 +169,7 @@ Finds the optimal position to break a frame at.
 :param yPos: maximum vertical position for break, in layout units.
 
 :return: the optimal breakable position which occurs in the multi frame close
-to and before the specified yPos
+         to and before the specified yPos
 %End
 
     void removeFrame( int index, bool removeEmptyPages = false );
@@ -265,7 +265,7 @@ Returns the index of a ``frame`` within the multiframe.
 Creates a new frame and adds it to the multi frame and layout.
 
 :param currentFrame: an existing QgsLayoutFrame from which to copy the size
-and general frame properties (e.g., frame style, background, rendering settings).
+                     and general frame properties (e.g., frame style, background, rendering settings).
 :param pos: position of top-left corner of the new frame, in layout units
 :param size: size of the new frame, in layout units
 %End

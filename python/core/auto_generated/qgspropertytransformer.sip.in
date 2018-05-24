@@ -296,14 +296,14 @@ Attempts to parse an expression into a corresponding property transformer.
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding property transformer, or None if expression could not
-be parsed to a transformer.
+         be parsed to a transformer.
 %End
 
   protected:
@@ -365,14 +365,14 @@ Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTran
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding :py:class:`QgsSizeScaleTransformer`, or None if expression could not
-be parsed to a size scale transformer.
+         be parsed to a size scale transformer.
 %End
 
     double value( double input ) const;
@@ -514,14 +514,14 @@ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding QgsSizeScaleTransformer, or None if expression could not
-be parsed to a size scale transformer.
+         be parsed to a size scale transformer.
 %End
 
     double size( double value ) const;

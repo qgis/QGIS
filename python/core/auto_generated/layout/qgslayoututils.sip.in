@@ -71,8 +71,8 @@ painter device.
 Resizes a QRectF relative to a resized bounding rectangle.
 
 :param rectToResize: QRectF to resize, contained within boundsBefore. The
-rectangle is linearly scaled to retain its relative position and size within
-boundsAfter.
+                     rectangle is linearly scaled to retain its relative position and size within
+                     boundsAfter.
 :param boundsBefore: QRectF of bounds before resize
 :param boundsAfter: QRectF of bounds after resize
 %End

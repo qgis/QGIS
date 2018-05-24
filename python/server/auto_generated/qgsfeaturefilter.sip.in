@@ -17,7 +17,7 @@ class QgsFeatureFilter : QgsFeatureFilterProvider
  A feature filter provider allowing to set filter expressions on a per-layer basis.
 
 .. versionadded:: 3.0
-*
+                  *
 %End
 
 %TypeHeaderCode

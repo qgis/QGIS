@@ -117,8 +117,8 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 %End
 
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
@@ -136,8 +136,8 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 %End
 
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
@@ -449,8 +449,8 @@ Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 
 .. versionadded:: 2.14
 %End

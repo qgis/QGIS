@@ -31,7 +31,7 @@ create a highlight widget implementation for the proper widget type.
 For instance a QgsOptionsDialogHighlightButton for button.
 
 :return: a QgsOptionsDialogHighlightWidget or a None if there is no implementation
-for the given widget.
+         for the given widget.
 %End
 
     bool isValid();

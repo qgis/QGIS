@@ -123,7 +123,7 @@ Is emitted, in order to provide a hook to add additional* menu entries to the co
 
 :param menu:     If additional QMenuItems are added, they will show up in the context menu.
 :param atIndex:  The QModelIndex, to which the context menu belongs. Relative to the source model.
-In most cases, this will be a :py:class:`QgsAttributeTableFilterModel`
+                In most cases, this will be a :py:class:`QgsAttributeTableFilterModel`
 %End
 
     void columnResized( int column, int width );

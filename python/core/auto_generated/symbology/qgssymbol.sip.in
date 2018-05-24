@@ -151,8 +151,8 @@ and should be followed by a call to stopRender().
 
 :param context: render context which symbol will be drawn using
 :param fields: fields for features to be rendered (usually the associated
-vector layer's fields). Required for correct calculation of data defined
-overrides.
+               vector layer's fields). Required for correct calculation of data defined
+               overrides.
 
 .. seealso:: :py:func:`stopRender`
 %End
@@ -162,7 +162,7 @@ overrides.
 Ends the rendering process. This should be called after rendering all desired features.
 
 :param context: render context, must match the context specified when startRender()
-was called.
+                was called.
 
 .. seealso:: :py:func:`startRender`
 %End
@@ -193,7 +193,7 @@ Generate symbol as image
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 :param expressionContext: optional expression context, for evaluation of
-data defined symbol properties
+                          data defined symbol properties
 %End
 
     QString dump() const;
@@ -423,7 +423,7 @@ Returns a reference to the context's render context.
 Sets the original value variable value for data defined symbology
 
 :param value: value for original value variable. This usually represents the symbol property value
-before any data defined overrides have been applied.
+              before any data defined overrides have been applied.
 
 .. versionadded:: 2.12
 %End
@@ -619,7 +619,7 @@ Set data defined angle for whole symbol (including all symbol layers).
 Returns data defined angle for whole symbol (including all symbol layers).
 
 :return: data defined angle, or invalid property if angle is not set
-at the marker level.
+         at the marker level.
 
 .. versionadded:: 3.0
 
@@ -737,7 +737,7 @@ Set data defined size for whole symbol (including all symbol layers).
 Returns data defined size for whole symbol (including all symbol layers).
 
 :return: data defined size, or invalid property if size is not set
-at the marker level.
+         at the marker level.
 
 .. versionadded:: 3.0
 

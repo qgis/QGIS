@@ -32,8 +32,8 @@ Constructor for QgsShortcutsManager.
 
 :param parent: parent object
 :param settingsRoot: root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
-as the default value to store settings alongside built in QGIS shortcuts, but care must be
-taken to not register actions which conflict with the built in QGIS actions.
+                     as the default value to store settings alongside built in QGIS shortcuts, but care must be
+                     taken to not register actions which conflict with the built in QGIS actions.
 %End
 
     void registerAllChildren( QObject *object, bool recursive = false );
@@ -82,7 +82,7 @@ Automatically registers all QShortcuts which are children of the passed object.
 Registers an action with the manager so the shortcut can be configured in GUI.
 
 :param action: action to register. The action must have a unique text string for
-identification.
+               identification.
 :param defaultShortcut: default key sequence for action
 
 :return: true if action was successfully registered
@@ -99,7 +99,7 @@ identification.
 Registers a QShortcut with the manager so the shortcut can be configured in GUI.
 
 :param shortcut: QShortcut to register. The shortcut must have a unique QObject.objectName() for
-identification.
+                 identification.
 :param defaultSequence: default key sequence for shortcut
 
 :return: true if shortcut was successfully registered
@@ -116,7 +116,7 @@ Removes an action from the manager.
 :param action: action to remove
 
 :return: true if action was previously registered in manager and has been removed, or
-false if action was not previously registered in manager
+         false if action was not previously registered in manager
 
 .. seealso:: :py:func:`registerAction`
 
@@ -130,7 +130,7 @@ Removes a shortcut from the manager.
 :param shortcut: shortcut to remove
 
 :return: true if shortcut was previously registered in manager and has been removed, or
-false if shortcut was not previously registered in manager
+         false if shortcut was not previously registered in manager
 
 .. seealso:: :py:func:`registerShortcut`
 
@@ -199,7 +199,7 @@ no default sequence.
 Modifies an action or shortcut's key sequence.
 
 :param name: name of action or shortcut to modify. Must match the action's QAction.text() or the
-shortcut's QObject.objectName()
+             shortcut's QObject.objectName()
 :param sequence: new shortcut key sequence
 
 .. seealso:: :py:func:`setObjectKeySequence`

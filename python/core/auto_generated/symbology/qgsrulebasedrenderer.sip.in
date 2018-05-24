@@ -304,7 +304,7 @@ Render a given feature, will recursively call subclasses and only render if the 
 :param renderQueue:  The rendering queue to which the feature should be added
 
 :return:             The result of the rendering. In explicit if the feature is added to the queue or
-the reason for not rendering the feature.
+         the reason for not rendering the feature.
 %End
 
         bool willRenderFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );

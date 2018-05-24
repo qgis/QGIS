@@ -1037,7 +1037,7 @@ QGIS documentation, set useQgisDocDirectory to false.
 
 :param url: URL to open
 :param useQgisDocDirectory: If true, the URL will be formed by concatenating
-url to the QGIS documentation directory path (prefix/share/doc)
+                            url to the QGIS documentation directory path (prefix/share/doc)
 
 .. deprecated:: Use QDesktopServices instead
 %End

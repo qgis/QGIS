@@ -226,7 +226,7 @@ set.
 If no match is found a invalid QgsConditionalStyle is return.
 
 :return: A conditional style that matches the value and feature.
-Check with :py:func:`QgsConditionalStyle.isValid()`
+         Check with :py:func:`QgsConditionalStyle.isValid()`
 %End
 
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
@@ -235,7 +235,7 @@ Check with :py:func:`QgsConditionalStyle.isValid()`
 If no match is found a invalid QgsConditionalStyle is return.
 
 :return: A conditional style that matches the value and feature.
-Check with :py:func:`QgsConditionalStyle.isValid()`
+         Check with :py:func:`QgsConditionalStyle.isValid()`
 %End
 
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );

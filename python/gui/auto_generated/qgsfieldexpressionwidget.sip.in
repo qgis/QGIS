@@ -125,7 +125,7 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
 
 :param generator: A QgsExpressionContextGenerator class that will be used to
-create an expression context when required.
+                  create an expression context when required.
 
 .. versionadded:: 3.0
 %End
@@ -215,7 +215,7 @@ when expression has been edited (finished) it will be added to the model
  updateLineEditStyle will re-style (color/font) the line edit depending on content and status
 
 :param expression: if expression is given it will be evaluated for the given string, otherwise it takes
-current expression from the model
+                   current expression from the model
 %End
 
     bool isExpressionValid( const QString &expressionStr );

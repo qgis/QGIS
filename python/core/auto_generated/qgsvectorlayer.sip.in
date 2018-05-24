@@ -393,7 +393,7 @@ Set the preview expression, used to create a human readable preview string.
 Used e.g. in the attribute table feature list. Uses :py:class:`QgsExpression`.
 
 :param displayExpression: The expression which will be used to preview features
-for this layer
+                          for this layer
 %End
 
     QString displayExpression() const;
@@ -535,7 +535,7 @@ Select features found within the search rectangle (in layer's coordinates)
 
 :param rect: search rectangle
 :param behavior: selection type, allows adding to current selection, removing
-from selection, etc.
+                 from selection, etc.
 
 .. seealso:: :py:func:`invertSelectionInRectangle`
 
@@ -550,7 +550,7 @@ Select matching features using an expression.
 
 :param expression: expression to evaluate to select features
 :param behavior: selection type, allows adding to current selection, removing
-from selection, etc.
+                 from selection, etc.
 
 .. versionadded:: 2.16
 
@@ -566,7 +566,7 @@ selectionChanged() signal with the clearAndSelect flag set.
 
 :param ids: feature IDs to select
 :param behavior: selection type, allows adding to current selection, removing
-from selection, etc.
+                 from selection, etc.
 
 .. versionadded:: 2.16
 
@@ -626,7 +626,7 @@ Returns a copy of the user-selected features.
 Returns an iterator of the selected features.
 
 :param request: You may specify a request, e.g. to limit the set of requested attributes.
-Any filter on the request will be discarded.
+                Any filter on the request will be discarded.
 
 :return: Iterator over the selected features
 
@@ -934,7 +934,7 @@ if the geometry type of the new data source matches the current geometry type of
 :param baseName: base name of the layer
 :param provider: provider string
 :param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
-data source
+                             data source
 
 .. versionadded:: 2.10
 
@@ -980,8 +980,8 @@ notified when the freshly updated feature counts are ready.
 Set the string (typically sql) used to define a subset of the layer
 
 :param subset: The subset string. This may be the where clause of a sql statement
-or other definition string specific to the underlying dataprovider
-and data store.
+               or other definition string specific to the underlying dataprovider
+               and data store.
 
 :return: true, when setting the subset string was successful, false otherwise
 %End
@@ -1154,13 +1154,13 @@ Adds a ring to polygon/multipolygon features
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
 :return: QgsGeometry.OperationResult
-- Success
-- LayerNotEditable
-- AddRingNotInExistingFeature
-- InvalidInputGeometryType
-- AddRingNotClosed
-- AddRingNotValid
-- AddRingCrossesExistingRings
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
 
 .. note::
 
@@ -1178,13 +1178,13 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 :param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
 
 :return: QgsGeometry.OperationResult
-- Success
-- LayerNotEditable
-- AddRingNotInExistingFeature
-- InvalidInputGeometryType
-- AddRingNotClosed
-- AddRingNotValid
-- AddRingCrossesExistingRings
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
 
 .. note::
 
@@ -1203,14 +1203,14 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 Adds a new part polygon to a multipart feature
 
 :return: QgsGeometry.OperationResult
-- Success
-- LayerNotEditable
-- SelectionIsEmpty
-- SelectionIsGreaterThanOne
-- AddPartSelectedGeometryNotFound
-- AddPartNotMultiGeometry
-- InvalidBaseGeometry
-- InvalidInputGeometryType
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
 
 .. note::
 
@@ -1225,14 +1225,14 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return: QgsGeometry.OperationResult
-- Success
-- LayerNotEditable
-- SelectionIsEmpty
-- SelectionIsGreaterThanOne
-- AddPartSelectedGeometryNotFound
-- AddPartNotMultiGeometry
-- InvalidBaseGeometry
-- InvalidInputGeometryType
+         - Success
+         - LayerNotEditable
+         - SelectionIsEmpty
+         - SelectionIsGreaterThanOne
+         - AddPartSelectedGeometryNotFound
+         - AddPartNotMultiGeometry
+         - InvalidBaseGeometry
+         - InvalidInputGeometryType
 
 .. note::
 
@@ -1287,13 +1287,13 @@ Splits parts cut by the given line
 :param topologicalEditing: true if topological editing is enabled
 
 :return: QgsGeometry.OperationResult
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 
@@ -1311,13 +1311,13 @@ Splits features cut by the given line
 :param topologicalEditing: true if topological editing is enabled
 
 :return: QgsGeometry.OperationResult
-- Success
-- NothingHappened
-- LayerNotEditable
-- InvalidInputGeometryType
-- InvalidBaseGeometry
-- GeometryEngineError
-- SplitCannotSplitPoint
+         - Success
+         - NothingHappened
+         - LayerNotEditable
+         - InvalidInputGeometryType
+         - InvalidBaseGeometry
+         - GeometryEngineError
+         - SplitCannotSplitPoint
 
 .. note::
 
@@ -1696,7 +1696,7 @@ Deletes a set of features from the layer (but does not commit it)
 :param fids: The feature ids to delete
 
 :return: false if the layer is not in edit mode or does not support deleting
-in case of an active transaction depends on the provider implementation
+         in case of an active transaction depends on the provider implementation
 
 .. note::
 
@@ -1815,10 +1815,10 @@ or taken from the underlying data provider.
 
 :param index: field index
 :param feature: optional feature to use for default value evaluation. If passed,
-then properties from the feature (such as geometry) can be used when calculating
-the default value.
+                then properties from the feature (such as geometry) can be used when calculating
+                the default value.
 :param context: optional expression context to evaluate expressions again. If not
-specified, a default context will be created
+                specified, a default context will be created
 
 :return: calculated default value
 
@@ -1833,8 +1833,8 @@ Sets the definition of the expression to use when calculating the default value 
 
 :param index: field index
 :param definition: default value definition to use and evaluate
-when calculating default values for field. Pass
-an empty expression to clear the default.
+                   when calculating default values for field. Pass
+                   an empty expression to clear the default.
 
 .. versionadded:: 3.0
 
@@ -1850,8 +1850,8 @@ Returns the definition of the expression used when calculating the default value
 :param index: field index
 
 :return: definition of the default value with the expression evaluated
-when calculating default values for field, or definition with an
-empty string if no default is set
+         when calculating default values for field, or definition with an
+         empty string if no default is set
 
 .. versionadded:: 3.0
 
@@ -2105,7 +2105,7 @@ Returns the conditional styles that are set for this layer. Style information is
 used to render conditional formatting in the attribute table.
 
 :return: Return a QgsConditionalLayerStyles object holding the conditional attribute
-style information. Style information is generic and can be used for anything.
+         style information. Style information is generic and can be used for anything.
 
 .. versionadded:: 2.12
 %End

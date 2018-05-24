@@ -31,7 +31,7 @@ Constructor for QgsMapUnitScale
 
 :param minScale: minimum allowed scale, or 0.0 if no minimum scale set
 :param maxScale: maximum allowed scale, or 0.0 if no maximum scale set
-The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+                 The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     double minScale;

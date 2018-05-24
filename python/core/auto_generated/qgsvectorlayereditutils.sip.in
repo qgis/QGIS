@@ -66,7 +66,7 @@ Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add
 :param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-all intersecting features are tested and the ring is added to the first valid feature.
+                         all intersecting features are tested and the ring is added to the first valid feature.
 :param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
 
 :return: OperationResult result code: success or reason of failure
@@ -78,7 +78,7 @@ Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add
 :param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-all intersecting features are tested and the ring is added to the first valid feature.
+                         all intersecting features are tested and the ring is added to the first valid feature.
 :param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
 
 :return: OperationResult result code: success or reason of failure
@@ -93,11 +93,11 @@ all intersecting features are tested and the ring is added to the first valid fe
 Adds a new part polygon to a multipart feature
 
 :return:
-- QgsGeometry.Success
-- QgsGeometry.AddPartSelectedGeometryNotFound
-- QgsGeometry.AddPartNotMultiGeometry
-- QgsGeometry.InvalidBaseGeometry
-- QgsGeometry.InvalidInput
+         - QgsGeometry.Success
+         - QgsGeometry.AddPartSelectedGeometryNotFound
+         - QgsGeometry.AddPartNotMultiGeometry
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.InvalidInput
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -105,11 +105,11 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return:
-- QgsGeometry.Success
-- QgsGeometry.AddPartSelectedGeometryNotFound
-- QgsGeometry.AddPartNotMultiGeometry
-- QgsGeometry.InvalidBaseGeometry
-- QgsGeometry.InvalidInput
+         - QgsGeometry.Success
+         - QgsGeometry.AddPartSelectedGeometryNotFound
+         - QgsGeometry.AddPartNotMultiGeometry
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.InvalidInput
 
 .. note::
 
@@ -121,11 +121,11 @@ Adds a new part polygon to a multipart feature
 Adds a new part polygon to a multipart feature
 
 :return:
-- QgsGeometry.Success
-- QgsGeometry.AddPartSelectedGeometryNotFound
-- QgsGeometry.AddPartNotMultiGeometry
-- QgsGeometry.InvalidBaseGeometry
-- QgsGeometry.InvalidInput
+         - QgsGeometry.Success
+         - QgsGeometry.AddPartSelectedGeometryNotFound
+         - QgsGeometry.AddPartNotMultiGeometry
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.InvalidInput
 
 .. note::
 
@@ -151,13 +151,13 @@ Splits parts cut by the given line
 :param topologicalEditing: true if topological editing is enabled
 
 :return:
-- QgsGeometry.InvalidBaseGeometry
-- QgsGeometry.Success
-- QgsGeometry.InvalidInput
-- QgsGeometry.NothingHappened if a selection is present but no feature has been split
-- QgsGeometry.InvalidBaseGeometry
-- QgsGeometry.GeometryEngineError
-- QgsGeometry.SplitCannotSplitPoint
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.Success
+         - QgsGeometry.InvalidInput
+         - QgsGeometry.NothingHappened if a selection is present but no feature has been split
+         - QgsGeometry.InvalidBaseGeometry
+         - QgsGeometry.GeometryEngineError
+         - QgsGeometry.SplitCannotSplitPoint
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
@@ -168,8 +168,8 @@ Splits features cut by the given line
 :param topologicalEditing: true if topological editing is enabled
 
 :return:
-0 in case of success,
-4 if there is a selection but no feature split
+         0 in case of success,
+         4 if there is a selection but no feature split
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );

@@ -19,7 +19,7 @@ class QgsCheckableComboBox : QComboBox
 QComboBox subclass which allows selecting multiple items.
 
 .. versionadded:: 3.0
-*
+                  *
 %End
 
 %TypeHeaderCode

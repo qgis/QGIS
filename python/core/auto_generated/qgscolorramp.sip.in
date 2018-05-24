@@ -134,7 +134,7 @@ Constructor for QgsGradientColorRamp
 :param color1: start color, corresponding to a position of 0.0
 :param color2: end color, corresponding to a position of 1.0
 :param discrete: set to true for discrete interpolation instead of smoothly
-interpolating between colors
+                 interpolating between colors
 :param stops: optional list of additional color stops
 %End
 
@@ -222,7 +222,7 @@ Converts a gradient with existing color stops to or from discrete
 interpolation.
 
 :param discrete: set to true to convert the gradient stops to discrete,
-or false to convert them to smooth interpolation
+                 or false to convert them to smooth interpolation
 
 .. seealso:: :py:func:`isDiscrete`
 %End
@@ -232,8 +232,8 @@ or false to convert them to smooth interpolation
 Sets the list of intermediate gradient stops for the ramp.
 
 :param stops: list of stops. Any existing color stops will be replaced. The stop
-list will be automatically reordered so that stops are listed in ascending offset
-order.
+              list will be automatically reordered so that stops are listed in ascending offset
+              order.
 
 .. seealso:: :py:func:`stops`
 %End
@@ -267,7 +267,7 @@ Copy color ramp stops to a QGradient
 
 :param gradient: gradient to copy stops into
 :param opacity: opacity multiplier. Opacity of colors will be multiplied
-by this factor before adding to the gradient.
+                by this factor before adding to the gradient.
 
 .. versionadded:: 2.1
 %End
@@ -642,7 +642,7 @@ Sets the name of the color brewer color scheme.
 Sets the number of colors in the ramp.
 
 :param colors: number of colors. Must match a valid value for the scheme,
-which can be retrieved using listSchemeVariants()
+               which can be retrieved using listSchemeVariants()
 
 .. seealso:: :py:func:`colors`
 %End

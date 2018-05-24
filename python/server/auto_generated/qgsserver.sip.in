@@ -48,7 +48,7 @@ variable
 :param response: a QgsServerResponse for handling response I/O)
 :param project: a QgsProject or None, if it is None the project
 is created from the MAP param specified in request or from
-the QGIS_PROJECT_FILE setting
+                the QGIS_PROJECT_FILE setting
 %End
 
 

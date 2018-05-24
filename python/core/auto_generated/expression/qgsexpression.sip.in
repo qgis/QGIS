@@ -298,7 +298,7 @@ calculator is set and all distance and area calculations are performed using sim
 Cartesian methods (ie no ellipsoidal calculations).
 
 :param calc: geometry calculator. Ownership is not transferred. Set to a None to force
-Cartesian calculations.
+             Cartesian calculations.
 
 .. seealso:: :py:func:`geomCalculator`
 %End
@@ -374,7 +374,7 @@ Additional substitutions can be passed through the substitutionMap parameter
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
 :param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the QgsDistanceArea is used for distance
-and area conversion
+                     and area conversion
 
 .. versionadded:: 2.12
 %End
