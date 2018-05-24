@@ -128,7 +128,10 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
 
-  std::function<bool()> downloaderFunction = [ this, request, synchronous ]()
+  QWaitCondition waitCondition;
+
+  QMutex mutex;
+  std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitCondition ]()
   {
     bool success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -139,6 +142,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       mErrorCode = QgsWfsRequest::NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+      waitCondition.wakeAll();
       success = false;
     }
     else
@@ -148,6 +152,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
+      connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&waitCondition]() { waitCondition.wakeAll(); } );
 
       if ( synchronous )
       {
@@ -156,6 +161,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         loop.exec();
       }
     }
+    waitCondition.wakeAll();
     return success;
   };
 
@@ -163,14 +169,22 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
-    QFuture<bool> future = QtConcurrent::run( downloaderFunction );
-    future.waitForFinished();
-    success = future.result();
+    std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
+    downloaderThread->start();
+    while ( !downloaderThread->isFinished() )
+    {
+      waitCondition.wait( &mutex );
+      if ( !downloaderThread->isFinished() )
+        QgsApplication::instance()->processEvents();
+    }
+
+    success = downloaderThread->success();
   }
   else
   {
     success = downloaderFunction();
   }
+  mutex.unlock();
   return success && mErrorMessage.isEmpty();
 }
 
