@@ -88,6 +88,8 @@ QgsLocatorFiltersModel::QgsLocatorFiltersModel( QgsLocator *locator, QObject *pa
   : QAbstractTableModel( parent )
   , mLocator( locator )
 {
+  mIconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() * 1.1, 24.0 ) );
+  mRowSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() * 1.1 * 4 / 3, 32.0 ) );
 }
 
 QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget *parent ) const
@@ -107,8 +109,7 @@ QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget
     w->setLayout( layout );
 
     connect( bt, &QToolButton::clicked, this, [ = ]() {filter->openConfigWidget( bt );} );
-    //bt->setMinimumSize( 24, 24 );
-    bt->setMaximumSize( 24, 24 );
+    bt->setMaximumSize( mIconSize, mIconSize );
     bt->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     bt->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
     return w;
@@ -191,7 +192,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
       break;
 
     case Qt::SizeHintRole:
-      return QSize( 32, 32 );
+      return QSize( mRowSize, mRowSize );
 
     case Qt::TextAlignmentRole:
       if ( index.column() == Config )
