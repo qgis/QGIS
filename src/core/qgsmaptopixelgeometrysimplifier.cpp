@@ -108,12 +108,12 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
         << y2
         << y1 );
     if ( geometryType == QgsWkbTypes::LineString )
-      return ext;
+      return std::move( ext );
     else
     {
       std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
       polygon->setExteriorRing( ext.release() );
-      return polygon;
+      return std::move( polygon );
     }
   }
 }
@@ -305,7 +305,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
       }
     }
 
-    return output;
+    return std::move( output );
   }
   else if ( flatType == QgsWkbTypes::Polygon )
   {
@@ -319,7 +319,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
       std::unique_ptr< QgsAbstractGeometry > ring = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *sub, map2pixelTol, true );
       polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( ring.release() ) );
     }
-    return polygon;
+    return std::move( polygon );
   }
   else if ( QgsWkbTypes::isMultiType( flatType ) )
   {
@@ -332,7 +332,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
       std::unique_ptr< QgsAbstractGeometry > part = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *sub, map2pixelTol, false );
       collection->addGeometry( part.release() );
     }
-    return collection;
+    return std::move( collection );
   }
   return std::unique_ptr< QgsAbstractGeometry >( geometry.clone() );
 }
