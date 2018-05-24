@@ -230,13 +230,13 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
+  jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
 
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
     //if outputing composer, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
-    jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
   }
 
   QgsExpressionContext* context = createExpressionContext();
