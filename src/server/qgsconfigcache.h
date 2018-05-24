@@ -30,7 +30,10 @@
 #include "qgis_sip.h"
 #include "qgsproject.h"
 
-
+/**
+ * Cache for server configuration.
+ * \ingroup server
+ */
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
