@@ -102,6 +102,7 @@ class TestQgsDocCoverage(unittest.TestCase):
         self.assertTrue(not parser.classes_missing_version_added, 'Classes without \\since version tag found')
         self.assertTrue(not parser.classes_missing_brief, 'Classes without \\brief description found')
         self.assertTrue(not parser.noncompliant_members, 'Non compliant members found')
+        self.assertTrue(not parser.broken_links, 'Broken links found')
 
 
 if __name__ == '__main__':
