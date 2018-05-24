@@ -337,6 +337,7 @@ void QgsWFSRequest::replyFinished()
     mReply = nullptr;
   }
 
+  QgsDebugMsg( QString::fromAscii( mResponse.data() ) );
   emit downloadFinished();
 }
 

@@ -1266,9 +1266,20 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
         if ( v.type() == fields.at( i ).type() )
           dstFeature.setAttribute( i, v );
         else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
-          dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
+        {
+          QDateTime dt = QDateTime::fromMSecsSinceEpoch( v.toLongLong() );
+          dt.setTimeSpec( Qt::LocalTime );
+          dstFeature.setAttribute( i, QVariant( dt ) );
+        }
         else
           dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
+
+        if ( fields.at( i ).type() == QVariant::DateTime )
+        {
+          QgsDebugMsg( "oops" );
+          QgsDebugMsg( v.toString() );
+          QgsDebugMsg( QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ).toString() );
+        }
       }
     }
   }
@@ -1280,10 +1291,18 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( idx );
+        if ( fields.at( i ).type() == QVariant::DateTime )
+        {
+          qDebug() << v.toString();
+        }
         if ( v.type() == fields.at( i ).type() )
           dstFeature.setAttribute( i, v );
         else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
-          dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
+        {
+          QDateTime dt = QDateTime::fromMSecsSinceEpoch( v.toLongLong() );
+          dt.setTimeSpec( Qt::LocalTime );
+          dstFeature.setAttribute( i, QVariant( dt ) );
+        }
         else
           dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
       }

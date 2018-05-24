@@ -46,6 +46,7 @@
 #include <QPair>
 #include <QTimer>
 #include <QSettings>
+#include <QDateTime>
 
 #include <cfloat>
 
@@ -1026,12 +1027,52 @@ QString QgsWFSProvider::convertToXML( const QVariant& value )
   QString valueStr( value.toString() );
   if ( value.type() == QVariant::DateTime )
   {
-    QDateTime dt = value.toDateTime().toUTC();
-    valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                      dt.date().year(), dt.date().month(), dt.date().day(),
-                      dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+    QDateTime dt = value.toDateTime();
+    if ( dt.isNull() )
+    {
+      valueStr = QString();
+    }
+    else
+    {
+      bool negative = true;
+      QTime tz = getTimeZoneDiff( dt, negative );
+      valueStr = QString( "%1%2%3" )
+                 .arg( dt.toString( "yyyy-MM-ddTHH:mm:ss.zzz" ) )
+                 .arg( negative ? "-" : "+" )
+                 .arg( tz.toString( "HH:mm" ) );
+    }
   }
   return valueStr;
+}
+
+QTime QgsWFSProvider::getTimeZoneDiff( const QDateTime &dateTime, bool &isNegative )
+{
+  QDateTime midnightDateTime = dateTime;
+  midnightDateTime.setTime( QTime( 0, 0 ) );
+  QDateTime utc = midnightDateTime.toUTC();
+  QDateTime local = midnightDateTime;
+  local.setTimeSpec( Qt::LocalTime );
+  QDateTime offset = local.toUTC();
+  // this should handle daylight differences
+  QTime properTimeOffset = QTime( offset.time().hour(), offset.time().minute() );
+  offset.setTimeSpec( Qt::LocalTime );
+  utc.setTimeSpec( Qt::UTC );
+
+  if ( offset.secsTo( utc ) < 0 )
+  {
+    isNegative = true;
+  }
+  else
+  {
+    isNegative = false;
+    properTimeOffset.setHMS( 24 - properTimeOffset.hour() - ( properTimeOffset.minute() / 60.0 ) - ( properTimeOffset.second() / 3600.0 ),
+                             properTimeOffset.minute() - ( properTimeOffset.second() / 60.0 ), properTimeOffset.second() );
+    if ( !properTimeOffset.isValid() )
+    { //Midnight case
+      properTimeOffset.setHMS( 0, 0, 0 );
+    }
+  }
+  return properTimeOffset;
 }
 
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
@@ -1072,10 +1113,15 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       nameElem.appendChild( nameText );
       propertyElem.appendChild( nameElem );
 
-      QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
-      QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
-      valueElem.appendChild( valueText );
-      propertyElem.appendChild( valueElem );
+      if ( attMapIt.value().isValid() && !attMapIt.value().isNull() )
+      {
+        // WFS does not support :nil='true'
+        // if value is NULL, do not add value element
+        QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
+        QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
+        valueElem.appendChild( valueText );
+        propertyElem.appendChild( valueElem );
+      }
 
       updateElem.appendChild( propertyElem );
     }

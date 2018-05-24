@@ -784,7 +784,11 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
       int idx = dataProviderFields.indexFromName( mFields.at( siter.key() ).name() );
       Q_ASSERT( idx >= 0 );
       if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
-        newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
+      {
+        QDateTime dt = siter.value().toDateTime();
+        dt.setTimeSpec( Qt::LocalTime );
+        newAttrMap[idx] = QVariant( dt.toMSecsSinceEpoch() );
+      }
       else
         newAttrMap[idx] = siter.value();
     }
@@ -904,7 +908,11 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       {
         const QVariant &v = gmlFeature.attributes().value( i );
         if ( v.type() == QVariant::DateTime && !v.isNull() )
-          cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
+        {
+          QDateTime dt = v.toDateTime();
+          dt.setTimeSpec( Qt::LocalTime );
+          cachedFeature.setAttribute( idx, QVariant( dt.toMSecsSinceEpoch() ) );
+        }
         else if ( v.type() !=  dataProviderFields.at( idx ).type() )
           cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
         else
