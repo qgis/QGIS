@@ -117,7 +117,7 @@ Constructs an empty metadata object
 %Docstring
 Constructs a valid metadata object
 
-:param isScalar: dataset contains scalar data, particularly the y-value of QgsMeshDatasetValue is NaN
+:param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
 :param isValid: dataset is loadad and valid for fetching the data
 :param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
