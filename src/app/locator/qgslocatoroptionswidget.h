@@ -109,6 +109,8 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     QHash< QgsLocatorFilter *, bool > mEnabledChanges;
     QHash< QgsLocatorFilter *, bool > mDefaultChanges;
 
+    int mIconSize, mRowSize;
+
 };
 
 #endif // QGSLOCATOROPTIONSWIDGET_H
