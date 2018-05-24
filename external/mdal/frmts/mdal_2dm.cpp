@@ -1,6 +1,6 @@
 /*
  MDAL - Mesh Data Abstraction Library (MIT License)
- Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
+ Copyright (C) 2018 Lutra Consulting Ltd.
 */
 
 #include <stddef.h>
@@ -22,14 +22,14 @@ MDAL::Loader2dm::Loader2dm( const std::string &meshFile ):
 {
 }
 
-MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
 {
   if ( status ) *status = MDAL_Status::None;
 
   if ( !MDAL::fileExists( mMeshFile ) )
   {
     if ( status ) *status = MDAL_Status::Err_FileNotFound;
-    return 0;
+    return nullptr;
   }
 
   std::ifstream in( mMeshFile, std::ifstream::in );
@@ -37,11 +37,11 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
   if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
   {
     if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return 0;
+    return nullptr;
   }
 
-  size_t elemCount = 0;
-  size_t nodeCount = 0;
+  size_t faceCount = 0;
+  size_t vertexCount = 0;
 
   // Find out how many nodes and elements are contained in the .2dm mesh file
   while ( std::getline( in, line ) )
@@ -49,11 +49,11 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
     if ( startsWith( line, "E4Q" ) ||
          startsWith( line, "E3T" ) )
     {
-      elemCount++;
+      faceCount++;
     }
     else if ( startsWith( line, "ND" ) )
     {
-      nodeCount++;
+      vertexCount++;
     }
     else if ( startsWith( line, "E2L" ) ||
               startsWith( line, "E3L" ) ||
@@ -62,63 +62,63 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
               startsWith( line, "E9Q" ) )
     {
       if ( status ) *status = MDAL_Status::Warn_UnsupportedElement;
-      elemCount += 1; // We still count them as elements
+      faceCount += 1; // We still count them as elements
     }
   }
 
   // Allocate memory
-  std::vector<Vertex> vertices( nodeCount );
-  std::vector<Face> faces( elemCount );
+  std::vector<Vertex> vertices( vertexCount );
+  std::vector<Face> faces( faceCount );
 
   in.clear();
   in.seekg( 0, std::ios::beg );
 
   std::vector<std::string> chunks;
 
-  size_t elemIndex = 0;
-  size_t nodeIndex = 0;
-  std::map<size_t, size_t> elemIDtoIndex;
-  std::map<size_t, size_t> nodeIDtoIndex;
+  size_t faceIndex = 0;
+  size_t vertexIndex = 0;
+  std::map<size_t, size_t> faceIDtoIndex;
+  std::map<size_t, size_t> vertexIDtoIndex;
 
   while ( std::getline( in, line ) )
   {
     if ( startsWith( line, "E4Q" ) )
     {
       chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
-      assert( elemIndex < elemCount );
+      assert( faceIndex < faceCount );
 
       size_t elemID = toSizeT( chunks[1] );
 
-      std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
-      if ( search != elemIDtoIndex.end() )
+      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
+      if ( search != faceIDtoIndex.end() )
       {
         if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
-      elemIDtoIndex[elemID] = elemIndex;
-      Face &face = faces[elemIndex];
+      faceIDtoIndex[elemID] = faceIndex;
+      Face &face = faces[faceIndex];
       face.resize( 4 );
       // Right now we just store node IDs here - we will convert them to node indices afterwards
       for ( size_t i = 0; i < 4; ++i )
         face[i] = toSizeT( chunks[i + 2] );
 
-      elemIndex++;
+      faceIndex++;
     }
     else if ( startsWith( line, "E3T" ) )
     {
       chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
-      assert( elemIndex < elemCount );
+      assert( faceIndex < faceCount );
 
       size_t elemID = toSizeT( chunks[1] );
 
-      std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
-      if ( search != elemIDtoIndex.end() )
+      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
+      if ( search != faceIDtoIndex.end() )
       {
         if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
-      elemIDtoIndex[elemID] = elemIndex;
-      Face &face = faces[elemIndex];
+      faceIDtoIndex[elemID] = faceIndex;
+      Face &face = faces[faceIndex];
       face.resize( 3 );
       // Right now we just store node IDs here - we will convert them to node indices afterwards
       for ( size_t i = 0; i < 3; ++i )
@@ -126,7 +126,7 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
         face[i] = toSizeT( chunks[i + 2] );
       }
 
-      elemIndex++;
+      faceIndex++;
     }
     else if ( startsWith( line, "E2L" ) ||
               startsWith( line, "E3L" ) ||
@@ -136,39 +136,39 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
     {
       // We do not yet support these elements
       chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
-      assert( elemIndex < elemCount );
+      assert( faceIndex < faceCount );
 
       size_t elemID = toSizeT( chunks[1] );
 
-      std::map<size_t, size_t>::iterator search = elemIDtoIndex.find( elemID );
-      if ( search != elemIDtoIndex.end() )
+      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
+      if ( search != faceIDtoIndex.end() )
       {
         if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
         continue;
       }
-      elemIDtoIndex[elemID] = elemIndex;
+      faceIDtoIndex[elemID] = faceIndex;
       assert( false ); //TODO mark element as unusable
 
-      elemIndex++;
+      faceIndex++;
     }
     else if ( startsWith( line, "ND" ) )
     {
       chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
       size_t nodeID = toSizeT( chunks[1] );
 
-      std::map<size_t, size_t>::iterator search = nodeIDtoIndex.find( nodeID );
-      if ( search != nodeIDtoIndex.end() )
+      std::map<size_t, size_t>::iterator search = vertexIDtoIndex.find( nodeID );
+      if ( search != vertexIDtoIndex.end() )
       {
         if ( status ) *status = MDAL_Status::Warn_NodeNotUnique;
         continue;
       }
-      nodeIDtoIndex[nodeID] = nodeIndex;
-      assert( nodeIndex < nodeCount );
-      Vertex &vertex = vertices[nodeIndex];
+      vertexIDtoIndex[nodeID] = vertexIndex;
+      assert( vertexIndex < vertexCount );
+      Vertex &vertex = vertices[vertexIndex];
       vertex.x = toDouble( chunks[2] );
       vertex.y = toDouble( chunks[3] );
 
-      nodeIndex++;
+      vertexIndex++;
     }
   }
 
@@ -179,8 +179,8 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
     {
       size_t nodeID = face[nd];
 
-      std::map<size_t, size_t>::iterator ni2i = nodeIDtoIndex.find( nodeID );
-      if ( ni2i != nodeIDtoIndex.end() )
+      std::map<size_t, size_t>::iterator ni2i = vertexIDtoIndex.find( nodeID );
+      if ( ni2i != vertexIDtoIndex.end() )
       {
         face[nd] = ni2i->second; // convert from ID to index
       }
@@ -196,9 +196,12 @@ MDAL::Mesh *MDAL::Loader2dm::load( MDAL_Status *status )
     //check that we have distinct nodes
   }
 
-  Mesh *mesh = new Mesh;
+  std::unique_ptr< Mesh > mesh( new Mesh );
+  mesh->uri = mMeshFile;
   mesh->faces = faces;
   mesh->vertices = vertices;
+  mesh->faceIDtoIndex = faceIDtoIndex;
+  mesh->vertexIDtoIndex = vertexIDtoIndex;
 
   return mesh;
 }

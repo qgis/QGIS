@@ -10,18 +10,21 @@
 
 
 
-typedef QgsPoint QgsMeshVertex; //xyz coords of vertex
-typedef QVector<int> QgsMeshFace; //list of vertex indexes
+typedef QgsPoint QgsMeshVertex;
 
-class QgsMeshSource /Abstract/
+typedef QVector<int> QgsMeshFace;
+
+class QgsMeshDatasetValue
 {
 %Docstring
-Mesh is a  collection of vertices and faces in 2D or 3D space
-- vertex - XY(Z) point (in the mesh's coordinate reference system)
-- faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
 
-Base on the underlying data provider/format, whole mesh is either stored in memory or
-read on demand
+QgsMeshDatasetValue represents single mesh dataset value
+
+could be scalar or vector. Nodata values are represented by NaNs.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
 
 .. versionadded:: 3.2
 %End
@@ -30,43 +33,231 @@ read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    virtual ~QgsMeshSource();
+    QgsMeshDatasetValue( double x,
+                         double y );
+%Docstring
+Constructor for vector value
+%End
+
+    QgsMeshDatasetValue( double scalar );
+%Docstring
+Constructor for scalar value
+%End
+
+    QgsMeshDatasetValue();
+%Docstring
+Default Ctor, initialize to NaN
+%End
+
+    ~QgsMeshDatasetValue();
+
+    void set( double scalar );
+%Docstring
+Sets scalar value
+%End
+
+    void setX( double x );
+%Docstring
+Sets X value
+%End
+
+    void setY( double y );
+%Docstring
+Sets Y value
+%End
+
+    double scalar() const;
+%Docstring
+Returns magnitude of vector for vector data or scalar value for scalar data
+%End
+
+    double x() const;
+%Docstring
+Returns x value
+%End
+
+    double y() const;
+%Docstring
+Returns y value
+%End
+
+    bool operator==( const QgsMeshDatasetValue &other ) const;
+
+};
+
+
+
+class QgsMeshDatasetMetadata
+{
+%Docstring
+
+QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
+as whether the data is vector or scalar, etc.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDatasetMetadata();
+%Docstring
+Constructs an empty metadata object
+%End
+
+    QgsMeshDatasetMetadata( bool isScalar,
+                            bool isValid,
+                            bool isOnVertices,
+                            const QMap<QString, QString> &extraOptions );
+%Docstring
+Constructs a valid metadata object
+
+:param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
+:param isValid: dataset is loadad and valid for fetching the data
+:param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
+:param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
+%End
+
+    QMap<QString, QString> extraOptions() const;
+%Docstring
+Returns extra metadata options
+Usually including name, description or time variable
+%End
+
+    bool isVector() const;
+%Docstring
+ Returns whether dataset has vector data
+%End
+
+    bool isScalar() const;
+%Docstring
+ Returns whether dataset has scalar data
+%End
+
+    bool isOnVertices() const;
+%Docstring
+ Returns whether dataset data is defined on vertices
+%End
+
+    bool isValid() const;
+%Docstring
+ Returns whether dataset is valid
+%End
+
+};
+
+class QgsMeshDataSourceInterface /Abstract/
+{
+%Docstring
+
+Interface for mesh data sources
+
+Mesh is a  collection of vertices and faces in 2D or 3D space
+- vertex - XY(Z) point (in the mesh's coordinate reference system)
+- faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+
+Base on the underlying data provider/format, whole mesh is either stored in memory or
+read on demand
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    virtual ~QgsMeshDataSourceInterface();
 
     virtual int vertexCount() const = 0;
 %Docstring
- Return number of vertices in the native mesh
+ Returns number of vertices in the native mesh
 
 :return: Number of vertices in the mesh
 %End
 
     virtual int faceCount() const = 0;
 %Docstring
- Return number of faces in the native mesh
+ Returns number of faces in the native mesh
 
 :return: Number of faces in the mesh
 %End
 
     virtual QgsMeshVertex vertex( int index ) const = 0;
 %Docstring
- Factory for mesh vertex with index
-
-:return: new mesh vertex on index
+Returns the mesh vertex at index
 %End
 
     virtual QgsMeshFace face( int index ) const = 0;
 %Docstring
- Factory for mesh face with index
-
-:return: new mesh face on index
+Returns the mesh face at index
 %End
 };
 
-class QgsMeshDataProvider: QgsDataProvider, QgsMeshSource
+class QgsMeshDatasetSourceInterface /Abstract/
+{
+%Docstring
+Interface for mesh datasets
+
+Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
+Based on the underlying data provider/format, whole dataset is either stored in memory
+or read on demand
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    virtual ~QgsMeshDatasetSourceInterface();
+
+    virtual bool addDataset( const QString &uri ) = 0;
+%Docstring
+ Associate dataset with the mesh
+%End
+
+    virtual int datasetCount() const = 0;
+%Docstring
+ Returns number of datasets loaded
+%End
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
+%Docstring
+ Returns dataset metadata
+%End
+
+    virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
+%Docstring
+ Returns vector/scalar value associated with the index from the dataset
+
+See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+%End
+};
+
+
+class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
 %Docstring
 Base class for providing data for :py:class:`QgsMeshLayer`
 
 Responsible for reading native mesh data
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
 
 .. seealso:: :py:class:`QgsMeshSource`
 

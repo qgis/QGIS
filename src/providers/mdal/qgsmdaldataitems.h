@@ -23,8 +23,8 @@ class QgsMdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
+    //! Ctor
     QgsMdalLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
-
     QString layerName() const override;
 };
 

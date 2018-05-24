@@ -10,6 +10,8 @@
 
 
 
+const int NO_ACTIVE_MESH_DATASET;
+
 
 class QgsMeshLayer : QgsMapLayer
 {
@@ -62,6 +64,11 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
          QString uri = "test/land.2dm";
          QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
 
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+
 .. versionadded:: 3.2
 %End
 
@@ -96,6 +103,7 @@ QgsMeshLayer cannot be copied.
     virtual QgsRectangle extent() const;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
@@ -111,26 +119,71 @@ QgsMeshLayer cannot be copied.
 
     QString providerType() const;
 %Docstring
-Return the provider type for this layer
+Returns the provider type for this layer
 %End
 
 
 
-    QgsSymbol *nativeMeshSymbol();
+    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
 %Docstring
-Returns a line symbol used for rendering native mesh.
+Returns renderer settings
 %End
 
-    QgsSymbol *triangularMeshSymbol();
+    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Returns a line symbol used for rendering of triangular (derived) mesh.
-
-.. seealso:: :py:func:`toggleTriangularMeshRendering`
+Sets new renderer settings, triggers repaint
 %End
 
-    void toggleTriangularMeshRendering( bool toggle );
+    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
 %Docstring
-Toggle rendering of triangular (derived) mesh. Off by default
+Returns renderer settings
+%End
+
+    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    QgsMeshRendererScalarSettings rendererScalarSettings() const;
+%Docstring
+Returns renderer settings
+%End
+
+    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    QgsMeshRendererVectorSettings rendererVectorSettings() const;
+%Docstring
+Returns renderer settings
+%End
+
+    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
+%Docstring
+Sets active scalar dataset for rendering
+
+Triggers repaint
+%End
+    int activeScalarDataset() const;
+%Docstring
+Returns active scalar dataset
+%End
+
+    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
+%Docstring
+Sets active vector dataset for rendering.
+
+If dataset is not vector based, do nothing. Triggers repaint
+%End
+    int activeVectorDataset() const;
+%Docstring
+Returns active vector dataset
 %End
 
   private: // Private methods
