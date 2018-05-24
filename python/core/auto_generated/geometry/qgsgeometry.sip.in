@@ -1492,7 +1492,6 @@ The ``method`` argument dictates which validator to utilize.
 .. note::
 
    Available in Python bindings since QGIS 1.6
-   *
 %End
 
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );

@@ -168,6 +168,10 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    if ( $line eq '*' ) {
+        $line = '';
+    }
+
     # if inside multi-line parameter, ensure additional lines are indented
     if ($line ne '') {
         if ( $line !~ m/\s*[\\:]?(param|note|since|return|deprecated|warning)/ ) {

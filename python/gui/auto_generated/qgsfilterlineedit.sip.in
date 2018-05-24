@@ -19,7 +19,6 @@ handling custom null value representations.
 When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used
 instead of QLineEdit's text(), setText() and clear() methods, and the valueChanged()
 signal should be used instead of textChanged().
-*
 %End
 
 %TypeHeaderCode

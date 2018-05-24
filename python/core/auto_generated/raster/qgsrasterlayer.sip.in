@@ -132,7 +132,6 @@ The main tasks carried out by the constructor are:
 -Assign sensible defaults for the red, green, blue and gray bands.
 
 -
-*
 %End
 
     ~QgsRasterLayer();
