@@ -353,7 +353,6 @@ class CORE_EXPORT QgsProcessingContext
      * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
-     * \see destinationCrs()
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 

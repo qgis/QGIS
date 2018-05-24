@@ -287,7 +287,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * it does not consider x coordinates and vertical coordinates before the first page or
      * after the last page will still return the nearest page.
      *
-     * \see predicatePageNumberForPoint()
+     * \see predictPageNumberForPoint()
      * \see pageAtPoint()
      * \see positionOnPage()
      */

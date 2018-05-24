@@ -201,7 +201,7 @@ setColorizeOn() is set to true.
 
 :return: colorization strength, between 0 and 100
 
-.. seealso:: :py:func:`setColorizeStrengths`
+.. seealso:: :py:func:`setColorizeStrength`
 
 .. seealso:: :py:func:`colorizeOn`
 

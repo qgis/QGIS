@@ -319,14 +319,14 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * \brief transform bounding box from layer's CRS to output CRS
-     * \see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
+     * \see layerToMapCoordinates( const QgsMapLayer *, QgsRectangle ) const if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
      * \brief transform bounding box from output CRS to layer's CRS
-     * \see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
+     * \see mapToLayerCoordinates( const QgsMapLayer *, QgsRectangle ) const if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;

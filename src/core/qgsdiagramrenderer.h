@@ -145,7 +145,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * \param flags placement value
-     * \see getPlacement()
+     * \see linePlacementFlags()
      * \since QGIS 2.16
      */
     void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Returns a reference to the diagram's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * \see setProperties()
+     * \see setDataDefinedProperties()
      * \note not available in Python bindings
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
@@ -584,7 +584,6 @@ class CORE_EXPORT QgsDiagramRenderer
      * Returns true if renderer will show legend items for diagram attributes.
      * \since QGIS 2.16
      * \see setAttributeLegend()
-     * \see sizeLegend()
      */
     bool attributeLegend() const { return mShowAttributeLegend; }
 
@@ -593,7 +592,6 @@ class CORE_EXPORT QgsDiagramRenderer
      * \param enabled set to true to show diagram attribute legend
      * \since QGIS 2.16
      * \see attributeLegend()
-     * \see setSizeLegend()
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 

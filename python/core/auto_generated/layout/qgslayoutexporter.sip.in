@@ -51,7 +51,7 @@ Renders a full page to a destination ``painter``.
 The ``page`` argument specifies the page number to render. Page numbers
 are 0 based, such that the first page in a layout is page 0.
 
-.. seealso:: :py:func:`renderRect`
+.. seealso:: :py:func:`renderRegion`
 %End
 
     QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = 0 ) const;
@@ -331,7 +331,7 @@ Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as
 
 The function will return true if the output was successfully georeferenced.
 
-.. seealso:: :py:func:`computeGeoTransform`
+.. seealso:: :py:func:`computeWorldFileParameters`
 %End
 
     void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;

@@ -151,7 +151,7 @@ parameter value.
 %Docstring
 Returns a session specific processing temporary folder for use in processing algorithms.
 
-.. seealso:: :py:func:`generateTempFileName`
+.. seealso:: :py:func:`generateTempFilename`
 %End
 
     static QString generateTempFilename( const QString &basename );

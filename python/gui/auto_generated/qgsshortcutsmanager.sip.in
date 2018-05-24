@@ -159,7 +159,7 @@ Returns a list of shortcuts in the manager.
 %Docstring
 Returns a list of both actions and shortcuts in the manager.
 
-.. seealso:: :py:func:`listAction`
+.. seealso:: :py:func:`listActions`
 
 .. seealso:: :py:func:`listShortcuts`
 %End

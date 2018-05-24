@@ -182,9 +182,9 @@ Returns a WKB representation of the geometry.
 
 .. seealso:: :py:func:`asWkt`
 
-.. seealso:: :py:func:`asGML2`
+.. seealso:: :py:func:`asGml2`
 
-.. seealso:: :py:func:`asGML3`
+.. seealso:: :py:func:`asGml3`
 
 .. seealso:: :py:func:`asJson`
 

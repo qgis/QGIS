@@ -234,11 +234,11 @@ Returns the interval between individual markers. Units are specified through int
 %Docstring
 Sets the interval between individual markers.
 
-:param interval: interval size. Units are specified through setIntervalUnits()
+:param interval: interval size. Units are specified through setIntervalUnit()
 
 .. seealso:: :py:func:`interval`
 
-.. seealso:: :py:func:`setIntervalUnits`
+.. seealso:: :py:func:`setIntervalUnit`
 %End
 
     Placement placement() const;

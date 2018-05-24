@@ -588,7 +588,7 @@ class DoxygenParser():
                     continue
 
                 para = s.getchildren()[0]
-                if para.find('ref') is None and para.text:
+                if para.find('ref') is None and para.text and (not para.text.startswith('Q') or para.text.startswith('Qgs')):
                     broken.append(para.text)
 
         return broken

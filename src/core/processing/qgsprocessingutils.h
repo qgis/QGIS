@@ -184,7 +184,7 @@ class CORE_EXPORT QgsProcessingUtils
 
     /**
      * Returns a session specific processing temporary folder for use in processing algorithms.
-     * \see generateTempFileName()
+     * \see generateTempFilename()
      */
     static QString tempFolder();
 

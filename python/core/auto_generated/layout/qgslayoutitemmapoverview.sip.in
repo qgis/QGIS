@@ -86,15 +86,11 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
     QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 %Docstring
 Returns a reference to an overview with matching overviewId within the stack.
-
-.. seealso:: :py:func:`constOverview`
 %End
 
     QgsLayoutItemMapOverview *overview( const int index ) const;
 %Docstring
 Returns a reference to an overview at the specified ``index`` within the stack.
-
-.. seealso:: :py:func:`constOverview`
 %End
 
     QgsLayoutItemMapOverview &operator[]( int index );

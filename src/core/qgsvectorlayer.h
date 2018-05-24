@@ -634,10 +634,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param selectIds    Select these ids
      * \param deselectIds  Deselect these ids
      *
-     * \see   select(QgsFeatureIds)
-     * \see   select(QgsFeatureId)
-     * \see   deselect(QgsFeatureIds)
-     * \see   deselect(QgsFeatureId)
+     * \see   selectByIds
+     * \see   deselect(const QgsFeatureIds&)
+     * \see   deselect(const QgsFeatureId)
      * \see selectByExpression()
      */
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -1732,7 +1731,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns the descriptive name for the constraint expression for a specified field index.
      * \since QGIS 3.0
-     * \see constraints()
+     * \see fieldConstraints()
      * \see constraintExpression()
      * \see setConstraintExpression()
      */
@@ -1744,7 +1743,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      * \see constraintExpression()
      * \see constraintDescription()
-     * \see constraints()
+     * \see fieldConstraints()
      */
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 
@@ -1963,7 +1962,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param featureId  The id of the feature to select
      *
-     * \see select(QgsFeatureIds)
+     * \see select( const QgsFeatureIds& )
      */
     void select( QgsFeatureId featureId );
 
@@ -1981,7 +1980,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param featureId  The id of the feature to deselect
      *
-     * \see deselect(QgsFeatureIds)
+     * \see deselect(const QgsFeatureIds&)
      */
     void deselect( const QgsFeatureId featureId );
 
@@ -1990,7 +1989,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param featureIds The ids of the features to deselect
      *
-     * \see deselect(QgsFeatureId)
+     * \see deselect(const QgsFeatureId)
      */
     void deselect( const QgsFeatureIds &featureIds );
 

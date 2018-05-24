@@ -120,8 +120,8 @@ class CORE_EXPORT QgsScaleBarSettings
     /**
      * Returns the size mode for the scale bar segments.
      * \see setSegmentSizeMode()
-     * \see minBarWidth()
-     * \see maxBarWidth()
+     * \see minimumBarWidth()
+     * \see maximumBarWidth()
      */
     SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 

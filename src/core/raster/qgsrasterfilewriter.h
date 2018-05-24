@@ -167,7 +167,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
      *
-     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedFormatExtensions()
      */
     static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
 

@@ -128,14 +128,14 @@ Sets whether a random colors option is shown in the button's drop-down menu.
 
 :param showRandom: set to true to show a random colors option
 
-.. seealso:: :py:func:`showRandom`
+.. seealso:: :py:func:`showRandomColorRamp`
 %End
 
     bool showRandomColorRamp() const;
 %Docstring
 Returns whether random colors option is shown in the button's drop-down menu.
 
-.. seealso:: :py:func:`setShowRandom`
+.. seealso:: :py:func:`setShowRandomColorRamp`
 %End
 
     bool isRandomColorRamp() const;

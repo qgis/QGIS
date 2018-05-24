@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLayoutExporter
      * The \a page argument specifies the page number to render. Page numbers
      * are 0 based, such that the first page in a layout is page 0.
      *
-     * \see renderRect()
+     * \see renderRegion()
      */
     void renderPage( QPainter *painter, int page ) const;
 
@@ -458,7 +458,7 @@ class CORE_EXPORT QgsLayoutExporter
      *
      * The function will return true if the output was successfully georeferenced.
      *
-     * \see computeGeoTransform()
+     * \see computeWorldFileParameters()
      */
     bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;

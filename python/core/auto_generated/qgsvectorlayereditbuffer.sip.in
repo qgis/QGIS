@@ -175,7 +175,7 @@ Returns a list of added attributes fields which are not committed.
 %Docstring
 Returns a map of features with changed geometries which are not committed.
 
-.. seealso:: :py:func:`hasFeatureGeometryChange`
+.. seealso:: :py:func:`isFeatureGeometryChanged`
 %End
 
     bool isFeatureGeometryChanged( QgsFeatureId id ) const;

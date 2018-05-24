@@ -779,7 +779,7 @@ in a widget or sending it to a web browser.
 Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 
 .. versionadded:: 3.0
 %End
@@ -789,7 +789,7 @@ This does not include generated variables (like system name, user name etc.)
 Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 
 .. versionadded:: 3.0
 %End

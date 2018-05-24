@@ -767,7 +767,7 @@ Register a new tab in the vector layer properties dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterMapLayerPropertiesFactory`
+.. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
@@ -776,7 +776,7 @@ Unregister a previously registered tab in the vector layer properties dialog.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`registerMapLayerPropertiesFactory`
+.. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;

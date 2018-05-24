@@ -119,7 +119,7 @@ is set to a line type.
 
 :param flags: placement value
 
-.. seealso:: :py:func:`getPlacement`
+.. seealso:: :py:func:`linePlacementFlags`
 
 .. versionadded:: 2.16
 %End
@@ -550,8 +550,6 @@ Returns true if renderer will show legend items for diagram attributes.
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`setAttributeLegend`
-
-.. seealso:: :py:func:`sizeLegend`
 %End
 
     void setAttributeLegend( bool enabled );
@@ -563,8 +561,6 @@ Sets whether the renderer will show legend items for diagram attributes.
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`attributeLegend`
-
-.. seealso:: :py:func:`setSizeLegend`
 %End
 
   protected:

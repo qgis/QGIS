@@ -67,8 +67,8 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Returns true if the removal was successful, or false if the removal failed (eg as a result
      * of removing an annotation which is not contained in the manager).
      * \see addAnnotation()
-     * \see compositionRemoved()
-     * \see compositionAboutToBeRemoved()
+     * \see annotationRemoved()
+     * \see annotationAboutToBeRemoved()
      * \see clear()
      */
     bool removeAnnotation( QgsAnnotation *annotation );

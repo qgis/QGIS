@@ -313,7 +313,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  This function creates a new on-disk permanent style database.
      *  \returns returns the success state of the database creation
      *  \since QGIS 3.0
-     *  \see createMemoryDb()
+     *  \see createMemoryDatabase()
      */
     bool createDatabase( const QString &filename );
 
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
      *  \returns returns the success state of the temporary memory database creation
      *  \since QGIS 3.0
-     *  \see createDb()
+     *  \see createDatabase()
      */
     bool createMemoryDatabase();
 
@@ -333,7 +333,8 @@ class CORE_EXPORT QgsStyle : public QObject
      *  This function is used to create the tables structure in a newly-created database.
      *  \returns returns the success state of the temporary memory database creation
      *  \since QGIS 3.0
-     *  \see createDB(), createMemoryDB()
+     *  \see createDatabase()
+     *  \see createMemoryDatabase()
      */
     void createTables();
 

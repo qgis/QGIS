@@ -175,7 +175,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Sets a list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * \see dependentLayerIds()
+     * \see dependentLayers()
      */
     void setDependentLayers( const QList<QgsMapLayer *> &dependentLayers );
 

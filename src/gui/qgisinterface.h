@@ -635,13 +635,14 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 2.16
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterMapLayerPropertiesFactory() */
+     * \see unregisterMapLayerConfigWidgetFactory()
+     */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
      * Unregister a previously registered tab in the vector layer properties dialog.
      * \since QGIS 2.16
-     * \see registerMapLayerPropertiesFactory()
+     * \see registerMapLayerConfigWidgetFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 

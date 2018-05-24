@@ -528,8 +528,6 @@ Returns the current contents of the table. Excludes header cells.
 Refreshes the contents shown in the table by querying for new data.
 This also causes the column widths and size of the table to change to accommodate the
 new data.
-
-.. seealso:: :py:func:`adjustFrameToSize`
 %End
 
     virtual void recalculateFrameSizes();

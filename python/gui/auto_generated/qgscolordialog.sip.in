@@ -69,8 +69,6 @@ Return a color selection from a color dialog.
 :param allowOpacity: set to true to allow modification of color opacity value (transparency)
 
 :return: Selected color on accepted() or initialColor on rejected().
-
-.. seealso:: :py:func:`getLiveColor`
 %End
 
   signals:

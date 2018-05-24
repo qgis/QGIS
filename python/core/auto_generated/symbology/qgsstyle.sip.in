@@ -316,7 +316,7 @@ This function creates a new on-disk permanent style database.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createMemoryDb`
+.. seealso:: :py:func:`createMemoryDatabase`
 %End
 
     bool createMemoryDatabase();
@@ -329,7 +329,7 @@ This function is used to create a temporary style database in case a permanent o
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createDb`
+.. seealso:: :py:func:`createDatabase`
 %End
 
     void createTables();
@@ -342,7 +342,9 @@ This function is used to create the tables structure in a newly-created database
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createDB`
+.. seealso:: :py:func:`createDatabase`
+
+.. seealso:: :py:func:`createMemoryDatabase`
 %End
 
     bool load( const QString &filename );

@@ -924,7 +924,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the auto refresh interval (in milliseconds). Note that
      * auto refresh is only active when hasAutoRefreshEnabled() is true.
      * \since QGIS 3.0
-     * \see autoRefreshEnabled()
+     * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
      */
     int autoRefreshInterval() const;
@@ -1027,7 +1027,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param enabled set to true to enable scale based visibility
      * \see setMinimumScale
      * \see setMaximumScale
-     * \see scaleBasedVisibility
+     * \see hasScaleBasedVisibility
      */
     void setScaleBasedVisibility( const bool enabled );
 

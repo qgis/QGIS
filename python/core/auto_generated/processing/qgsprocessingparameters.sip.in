@@ -1029,7 +1029,7 @@ effect if hasFixedNumberRows() is true.
 
 .. seealso:: :py:func:`setNumberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows`
+.. seealso:: :py:func:`setHasFixedNumberRows`
 %End
 
     void setNumberRows( int rows );
@@ -1039,7 +1039,7 @@ effect if hasFixedNumberRows() is true.
 
 .. seealso:: :py:func:`numberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows`
+.. seealso:: :py:func:`setHasFixedNumberRows`
 %End
 
     bool hasFixedNumberRows() const;

@@ -256,7 +256,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     /**
      * Should return true if the filter has a configuration widget.
-     * \see createConfigWidget()
+     * \see openConfigWidget()
      */
     virtual bool hasConfigWidget() const;
 

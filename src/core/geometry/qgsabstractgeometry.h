@@ -217,8 +217,8 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns a WKB representation of the geometry.
      * \see asWkt
-     * \see asGML2
-     * \see asGML3
+     * \see asGml2
+     * \see asGml3
      * \see asJson()
      * \since QGIS 3.0
      */

@@ -157,7 +157,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Returns a map of features with changed geometries which are not committed.
-     * \see hasFeatureGeometryChange()
+     * \see isFeatureGeometryChanged()
      */
     QgsGeometryMap changedGeometries() const { return mChangedGeometries; }
 

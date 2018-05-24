@@ -58,7 +58,7 @@ Constructor for QgsFieldConstraints.
 %Docstring
 Returns any constraints which are present for the field.
 
-.. seealso:: :py:func:`setConstraints`
+.. seealso:: :py:func:`setConstraint`
 
 .. seealso:: :py:func:`constraintOrigin`
 %End

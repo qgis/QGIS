@@ -76,7 +76,6 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param title the title of the dialog.
      * \param allowOpacity set to true to allow modification of color opacity value (transparency)
      * \returns Selected color on accepted() or initialColor on rejected().
-     * \see getLiveColor
      */
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
                             const bool allowOpacity = false );

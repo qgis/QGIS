@@ -66,7 +66,6 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /**
      * Sets whether the associated field contains mixed values.
      * \param mixed whether field values are mixed
-     * \see isMixed()
      * \see setIsChanged()
      * \see resetChanges()
      */
@@ -75,7 +74,6 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /**
      * Sets whether the associated field has changed.
      * \param changed whether field has changed
-     * \see isChanged()
      * \see setIsMixed()
      * \see resetChanges()
      */

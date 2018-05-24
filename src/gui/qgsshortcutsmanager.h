@@ -138,7 +138,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
     /**
      * Returns a list of both actions and shortcuts in the manager.
-     * \see listAction()
+     * \see listActions()
      * \see listShortcuts()
      */
     QList<QObject *> listAll() const;
