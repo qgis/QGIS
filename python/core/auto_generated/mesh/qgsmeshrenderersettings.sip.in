@@ -180,7 +180,7 @@ drawn. -1 represents that filtering is not active.
 %Docstring
 Sets filter value for vector magnitudes.
 
-.. seealso:: :py:func:`QgsMeshRendererVectorSettings.vectorFilterMin`
+.. seealso:: :py:func:`filterMin`
 %End
 
     double filterMax() const;
@@ -195,7 +195,7 @@ drawn. -1 represents that filtering is not active.
 %Docstring
 Sets filter value for vector magnitudes.
 
-.. seealso:: :py:func:`QgsMeshRendererVectorSettings.vectorFilterMax`
+.. seealso:: :py:func:`filterMax`
 %End
 
     QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
