@@ -80,7 +80,7 @@ Sets the legend's item bounds to fit the whole legend content.
 Sets whether the legend should automatically resize to fit its contents.
 
 :param enabled: set to false to disable automatic resizing. The legend frame will not
-be expanded to fit legend items, and items may be cropped from display.
+                be expanded to fit legend items, and items may be cropped from display.
 
 .. seealso:: :py:func:`resizeToContents`
 %End

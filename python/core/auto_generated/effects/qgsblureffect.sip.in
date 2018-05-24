@@ -56,7 +56,7 @@ Constructor for QgsBlurEffect.
 Sets blur level (strength)
 
 :param level: blur level. Depending on the current blurMethod(), this parameter
-has different effects
+              has different effects
 
 .. seealso:: :py:func:`blurLevel`
 
@@ -68,7 +68,7 @@ has different effects
 Returns the blur level (strength)
 
 :return: blur level. Depending on the current blurMethod(), this parameter
-has different effects
+         has different effects
 
 .. seealso:: :py:func:`setBlurLevel`
 
@@ -98,7 +98,7 @@ Returns the blur method (algorithm) used for performing the blur.
 Sets the ``opacity`` for the effect.
 
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque
+                and 1 is fully opaque
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -108,7 +108,7 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque
+         and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -118,7 +118,7 @@ and 1 is fully opaque
 Sets the blend mode for the effect
 
 :param mode: blend mode used for drawing the effect on to a destination
-paint device
+             paint device
 
 .. seealso:: :py:func:`blendMode`
 %End
@@ -128,7 +128,7 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-paint device
+         paint device
 
 .. seealso:: :py:func:`setBlendMode`
 %End

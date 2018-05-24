@@ -675,7 +675,7 @@ Returns the map unit scale for the symbol's offset.
 Sets the horizontal anchor point for positioning the symbol.
 
 :param h: anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
-the marker's desired location.
+          the marker's desired location.
 
 .. seealso:: :py:func:`horizontalAnchorPoint`
 
@@ -697,7 +697,7 @@ the horizontal anchor point is aligned with the marker's desired location.
 Sets the vertical anchor point for positioning the symbol.
 
 :param v: anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
-the marker's desired location.
+          the marker's desired location.
 
 .. seealso:: :py:func:`verticalAnchorPoint`
 

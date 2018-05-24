@@ -351,12 +351,12 @@ Freeze/thaw the map canvas. This is used to prevent the canvas from
 responding to events while layers are being added/removed etc.
 
 :param frozen: Boolean specifying if the canvas should be frozen (true) or
-thawed (false). Default is true.
+               thawed (false). Default is true.
 
 .. seealso:: :py:func:`isFrozen`
 
 .. seealso:: :py:func:`setRenderFlag`
-while setRenderFlag() should only be used when users disable rendering via GUI.
+               while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
     bool isFrozen() const;
@@ -741,7 +741,7 @@ Sets whether a user has disabled canvas renders via the GUI.
 .. seealso:: :py:func:`renderFlag`
 
 .. seealso:: :py:func:`freeze`
-while setRenderFlag() should only be used when users disable rendering via GUI.
+             while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
     void stopRendering();

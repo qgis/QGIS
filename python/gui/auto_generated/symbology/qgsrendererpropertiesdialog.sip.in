@@ -27,7 +27,7 @@ Constructor for QgsRendererPropertiesDialog.
 :param layer: associated layer
 :param style: style collection
 :param embedded: set to true to indicate that the dialog will be embedded in another widget, rather
-than shown as a dialog by itself
+                 than shown as a dialog by itself
 :param parent: parent widget
 %End
     ~QgsRendererPropertiesDialog();

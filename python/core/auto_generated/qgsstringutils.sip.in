@@ -117,7 +117,7 @@ Returns the list of string replacements in this collection.
 Sets the list of string replacements in this collection.
 
 :param replacements: list of string replacements to apply. Replacements are applied in the
-order they are specified here.
+                     order they are specified here.
 
 .. seealso:: :py:func:`replacements`
 %End

@@ -203,11 +203,11 @@ their own layers, such as WMS *
 Returns a new image downloader for the raster legend.
 
 :param mapSettings: map settings for legend providers supporting
-contextual legends.
+                    contextual legends.
 
 :return: a download handler or null if the provider does not support
 legend at all. Ownership of the returned object is transferred
-to caller.
+         to caller.
 
 
 .. versionadded:: 2.8
@@ -227,10 +227,10 @@ to caller.
 Returns the raster layers pyramid list.
 
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
-A pyramid list defines the
-POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
-list.
+                     A pyramid list defines the
+                     POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
+                     ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
+                     list.
 %End
 
     bool hasPyramids();

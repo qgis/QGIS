@@ -51,7 +51,7 @@ Creates a DOM element representing the range in SLD format.
 :param element: destination DOM element
 :param props: graduated renderer properties
 :param firstRange: set to true if the range is the first range, where the lower value uses a <= test
-rather than a < test.
+                   rather than a < test.
 %End
 
   protected:
@@ -178,7 +178,7 @@ value becomes a break between two classes.
 
 :param breakValue: position to insert break
 :param updateSymbols: set to true to reapply ramp colors to the new
-symbol ranges
+                      symbol ranges
 
 .. versionadded:: 2.9
 %End

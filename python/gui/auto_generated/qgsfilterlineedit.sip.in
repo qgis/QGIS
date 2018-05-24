@@ -158,7 +158,7 @@ is equal to ClearToDefault.
 Sets the current text for the widget with support for handling null values.
 
 :param value: The text to set. If a null string is provided, the text shown in the
-widget will be set to the current nullValue().
+              widget will be set to the current nullValue().
 
 .. seealso:: :py:func:`value`
 %End

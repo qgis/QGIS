@@ -348,8 +348,8 @@ Assign a field map with the feature to allow attribute access by attribute name.
 
 :param fields: The attribute fields which this feature holds
 :param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
-C++: Defaults to false
-Python: Defaults to true
+                       C++: Defaults to false
+                       Python: Defaults to true
 
 .. versionadded:: 2.9
 

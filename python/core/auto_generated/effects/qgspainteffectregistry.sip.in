@@ -127,7 +127,7 @@ Creates a new paint effect given the effect name and properties map.
 :param properties: encoded string map of effect properties
 
 :return: new paint effect of specified class, or None if matching
-paint effect could not be created
+         paint effect could not be created
 %End
 
     QgsPaintEffect *createEffect( const QDomElement &element ) const /Factory/;
@@ -138,7 +138,7 @@ properties.
 :param element: encoded DOM element of effect properties
 
 :return: new paint effect, or None if matching
-paint effect could not be created
+         paint effect could not be created
 %End
 
     QStringList effects() const;

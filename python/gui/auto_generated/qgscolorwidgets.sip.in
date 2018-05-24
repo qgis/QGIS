@@ -69,7 +69,7 @@ Returns the color component which the widget controls
 Returns the current value of the widget's color component
 
 :return: value of color component, or -1 if widget has multiple components or an invalid color
-set
+         set
 
 .. seealso:: :py:func:`setComponentValue`
 
@@ -109,7 +109,7 @@ Sets the color component which the widget controls
 Alters the widget's color by setting the value for the widget's color component
 
 :param value: value for widget's color component. This value is automatically
-clipped to the range of valid values for the color component.
+              clipped to the range of valid values for the color component.
 
 .. seealso:: :py:func:`componentValue`
 
@@ -183,7 +183,7 @@ Alters a color by modifiying the value of a specific color component
 :param color: color to alter
 :param component: color component to alter
 :param newValue: new value of color component. Values are automatically clipped to a
-valid range for the color component.
+                 valid range for the color component.
 %End
 
     static const QPixmap &transparentBackground();
@@ -244,8 +244,8 @@ Sets whether the parent menu should be dismissed and closed when a color is sele
 from the action's color widget.
 
 :param dismiss: set to true (default) to immediately close the menu when a color is selected
-from the widget. If set to false, the colorChanged signal will be emitted but the menu will
-stay open.
+                from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+                stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
 %End
@@ -341,8 +341,8 @@ Construct a new color box widget.
 
 :param parent: parent QWidget for the widget
 :param component: constant color component for the widget. The color components
-which vary along the horizontal and vertical axis are automatically assigned
-based on this constant color component.
+                  which vary along the horizontal and vertical axis are automatically assigned
+                  based on this constant color component.
 %End
 
     ~QgsColorBox();
@@ -595,7 +595,7 @@ Construct a new color preview widget.
 Returns the secondary color for the widget
 
 :return: secondary widget color, or an invalid color if the widget
-has no secondary color
+         has no secondary color
 
 .. seealso:: :py:func:`color`
 
@@ -609,7 +609,7 @@ has no secondary color
 Sets the second color for the widget
 
 :param color: secondary widget color. Set to an invalid color to prevent
-drawing of a secondary color
+              drawing of a secondary color
 
 .. seealso:: :py:func:`setColor`
 

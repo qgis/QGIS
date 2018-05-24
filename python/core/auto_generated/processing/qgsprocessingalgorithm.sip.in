@@ -299,7 +299,7 @@ Algorithm progress should be reported using the supplied ``feedback`` object.
 If specified, ``ok`` will be set to true if algorithm was successfully run.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations.
+         values such as statistical calculations.
 
 .. note::
 
@@ -525,9 +525,9 @@ to indicate that a fatal error occurred within the execution. Python based subcl
 should raise GeoAlgorithmExecutionException for the same purpose.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations. Unless the algorithm subclass overrides
+         values such as statistical calculations. Unless the algorithm subclass overrides
 the postProcessAlgorithm() step this returned map will be used as the output for the
-algorithm.
+         algorithm.
 
 .. seealso:: :py:func:`prepareAlgorithm`
 

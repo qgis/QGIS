@@ -84,7 +84,7 @@ colors. For instance, a "recent colors" scheme may filter returned colors
 by context so that colors used only in a "composer" context are returned.
 :param baseColor: base color for the scheme's colors. Some color schemes
 may take advantage of this to filter or modify their returned colors
-to colors related to the base color.
+                  to colors related to the base color.
 
 :return: a list of QPairs of color and color name
 %End

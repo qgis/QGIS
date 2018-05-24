@@ -144,7 +144,7 @@ Sets the default color for the button, which is shown in the button's drop-down 
 "default color" option.
 
 :param color: default color for the button. Set to an invalid QColor to disable the default color
-option.
+              option.
 
 .. seealso:: :py:func:`defaultColor`
 %End
@@ -155,7 +155,7 @@ Returns the default color for the button, which is shown in the button's drop-do
 "default color" option.
 
 :return: default color for the button. Returns an invalid QColor if the default color
-option is disabled.
+         option is disabled.
 
 .. seealso:: :py:func:`setDefaultColor`
 %End
@@ -289,7 +289,7 @@ Sets the color scheme registry for the button, which controls the color swatch g
 that are shown in the button's drop-down menu.
 
 :param registry: color scheme registry for the button. Set to 0 to hide all color
-swatch grids from the button's drop-down menu.
+                 swatch grids from the button's drop-down menu.
 
 .. seealso:: :py:func:`colorSchemeRegistry`
 %End
@@ -300,7 +300,7 @@ Returns the color scheme registry for the button, which controls the color swatc
 that are shown in the button's drop-down menu.
 
 :return: color scheme registry for the button. If returned value is 0 then all color
-swatch grids are hidden from the button's drop-down menu.
+         swatch grids are hidden from the button's drop-down menu.
 
 .. seealso:: :py:func:`setColorSchemeRegistry`
 %End
@@ -325,7 +325,7 @@ but the color has not changed, i.e. setColor() wouldn't update button and
 you want the button to retain the set color's alpha component regardless
 
 :param color: Color for button background. If no color is specified, the button's current
-color will be used
+              color will be used
 %End
 
     void copyColor();

@@ -352,7 +352,7 @@ Returns an distance formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of distance
 :param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
-kilometers
+                     kilometers
 
 :return: formatted distance string
 
@@ -369,7 +369,7 @@ Returns an area formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of area
 :param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
-square kilometers
+                     square kilometers
 
 :return: formatted area string
 

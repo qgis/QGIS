@@ -120,7 +120,7 @@ Sets a the item to display always on top of other items in the widget, regardles
 sort column and sort or display value for the item.
 
 :param priority: priority for sorting always on top items. Items with a lower priority will
-be placed above items with a higher priority.
+                 be placed above items with a higher priority.
 
 .. seealso:: :py:func:`alwaysOnTopPriority`
 %End

@@ -235,7 +235,7 @@ Returns whether user stylesheets are enabled for the HTML content.
 Reloads the html source from the url and redraws the item.
 
 :param useCache: set to true to use a cached copy of remote html
-content
+                 content
 :param context: expression context for evaluating data defined urls and expressions in html
 
 .. seealso:: :py:func:`setUrl`

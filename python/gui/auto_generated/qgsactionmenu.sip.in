@@ -50,7 +50,7 @@ Constructs a new QgsActionMenu
 
 :param layer:    The layer that this action will be run upon.
 :param feature:  The feature that this action will be run upon. Make sure that this feature is available
-for the lifetime of this object.
+                for the lifetime of this object.
 :param parent:   The usual QWidget parent.
 :param actionScope: The action scope this menu will run in
 %End
@@ -70,7 +70,7 @@ Constructs a new QgsActionMenu
 Change the feature on which actions are performed
 
 :param feature:  A feature. Will not take ownership. It's the callers responsibility to keep the feature
-as long as the menu is displayed and the action is running.
+                as long as the menu is displayed and the action is running.
 %End
 
     void setMode( const QgsAttributeForm::Mode mode );

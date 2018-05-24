@@ -132,8 +132,8 @@ Sets this widget to filter the available projections to those listed
 by the given Coordinate Reference Systems.
 
 :param crsFilter: a list of OGC Coordinate Reference Systems to filter the
-list of projections by.  This is useful in (e.g.) WMS situations
-where you just want to offer what the WMS server can support.
+                  list of projections by.  This is useful in (e.g.) WMS situations
+                  where you just want to offer what the WMS server can support.
 
 .. warning::
 

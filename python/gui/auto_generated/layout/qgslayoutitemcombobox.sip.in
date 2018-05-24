@@ -40,7 +40,7 @@ Sets the ``layout`` containing the items to list in the combo box.
 Sets a filter for the item type to show in the combo box.
 
 :param itemType: type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
-show all items.
+                 show all items.
 
 .. seealso:: :py:func:`itemType`
 %End

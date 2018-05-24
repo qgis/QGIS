@@ -205,8 +205,8 @@ QgsEffectStackCompactWidget constructor
 
 :param parent: parent widget
 :param effect: QgsPaintEffect for modification by the widget. If the effect
-is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
-stack consisting of the original effect
+               is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
+               stack consisting of the original effect
 %End
     ~QgsEffectStackCompactWidget();
 
@@ -215,8 +215,8 @@ stack consisting of the original effect
 Sets paint effect attached to the widget,
 
 :param effect: QgsPaintEffect for modification by the widget. If the effect
-is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
-stack consisting of the original effect
+               is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
+               stack consisting of the original effect
 
 .. seealso:: :py:func:`paintEffect`
 %End

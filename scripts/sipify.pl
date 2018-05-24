@@ -52,6 +52,7 @@ my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
+my $INDENT = '';
 my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
@@ -166,12 +167,27 @@ sub processDoxygenLine {
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
+
+    # if inside multi-line parameter, ensure additional lines are indented
+    if ($line ne '') {
+        if ( $line !~ m/\s*[\\:]?(param|note|since|return|deprecated|warning)/ ) {
+            $line = "$INDENT$line";
+        }
+    }
+    else
+    {
+        $INDENT = '';
+    }
     # replace \returns with :return:
-    $line =~ s/\s*\\return(s)?/\n:return:/;
+    if ( $line =~ m/\\return(s)?/ ){
+        $line =~ s/\s*\\return(s)?/\n:return:/;
+        $INDENT = ' 'x( index($line,':',4) + 1);
+    } 
 
     # params
     if ( $line =~ m/\\param / ){
         $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
+        $INDENT = ' 'x( index($line,':',2) + 2);
         if ( $line =~ m/^:param/ ){
           if ( $COMMENT_PARAM_LIST == 0 )
           {
@@ -184,18 +200,22 @@ sub processDoxygenLine {
 
     if ( $line =~ m/^\s*[\\@]brief/){
         $line =~ s/[\\@]brief//;
+        $INDENT = '';
         if ( $line =~ m/^\s*$/ ){
             return "";
         }
     }
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
+        $INDENT = '';
         return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
+        $INDENT = '                  ';
         return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\deprecated (.*)/i ) {
+        $INDENT = '                ';
         return "\n.. deprecated:: $1\n";
     }
 
@@ -243,9 +263,11 @@ sub processDoxygenLine {
 
     if ( $line =~ m/[\\@]note (.*)/ ) {
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        $INDENT = '';
         return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]warning (.*)/ ) {
+        $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
     }
@@ -391,6 +413,7 @@ sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
     $COMMENT_PARAM_LIST = 0;
+    $INDENT = '';
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
@@ -839,6 +862,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
                 $COMMENT_PARAM_LIST = 0;
+                $INDENT = '';
                 $COMMENT_LAST_LINE_NOTE_WARNING = 0;
                 $COMMENT = processDoxygenLine( $1 );
                 $COMMENT =~ s/\n+$//;

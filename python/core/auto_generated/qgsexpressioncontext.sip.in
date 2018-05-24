@@ -167,7 +167,7 @@ Removes a variable from the context scope, if found.
 :param name: name of variable to remove
 
 :return: true if variable was removed from the scope, false if matching variable was not
-found within the scope
+         found within the scope
 %End
 
     bool hasVariable( const QString &name ) const;
@@ -532,7 +532,7 @@ Returns whether a variable is read only, and should not be modifiable by users.
 :param name: variable name
 
 :return: true if variable is read only. Read only status will be taken from last
-matching scope which contains a matching variable.
+         matching scope which contains a matching variable.
 %End
 
     QString description( const QString &name ) const;
@@ -660,7 +660,7 @@ Convenience function for retrieving the fields for the context, if set.
 Sets the original value variable value for the context.
 
 :param value: value for original value variable. This usually represents the an original widget
-value before any data defined overrides have been applied.
+              value before any data defined overrides have been applied.
 
 .. versionadded:: 2.12
 %End

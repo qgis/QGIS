@@ -60,11 +60,11 @@ Alter the brightness or contrast of a QImage.
 
 :param image: QImage to alter
 :param brightness: brightness value, in the range -255 to 255. A brightness value of 0 indicates
-no change to brightness, a negative value will darken the image, and a positive value will brighten
-the image.
+                   no change to brightness, a negative value will darken the image, and a positive value will brighten
+                   the image.
 :param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
-to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
-contrast of the image.
+                 to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
+                 contrast of the image.
 %End
 
     static void adjustHueSaturation( QImage &image, const double saturation, const QColor &colorizeColor = QColor(),
@@ -75,7 +75,7 @@ Alter the hue or saturation of a QImage.
 :param image: QImage to alter
 :param saturation: double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
 :param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
-colorization.
+                      colorization.
 :param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
 %End
 
@@ -115,7 +115,7 @@ using a color ramp.
 
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
-for the distance transform operation
+                   for the distance transform operation
 %End
 
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
@@ -162,7 +162,7 @@ Calculates the non-transparent region of an image.
 
 :param image: source image
 :param minSize: minimum size for returned region, if desired. If the
-non-transparent region of the image is smaller than this minimum size,
+                non-transparent region of the image is smaller than this minimum size,
 it will be centered in the returned rectangle.
 :param center: return rectangle will be centered on the center of the original image if set to true
 
@@ -177,7 +177,7 @@ Crop any transparent border from around an image.
 
 :param image: source image
 :param minSize: minimum size for cropped image, if desired. If the
-cropped image is smaller than the minimum size, it will be centered
+                cropped image is smaller than the minimum size, it will be centered
 in the returned image.
 :param center: cropped image will be centered on the center of the original image if set to true
 

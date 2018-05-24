@@ -265,10 +265,10 @@ Transforms the geometry using a coordinate transform
 :param ct: coordinate transform
 :param d: transformation direction
 :param transformZ: set to true to also transform z coordinates. This requires that
-the z coordinates in the geometry represent height relative to the vertical datum
-of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
-units (generally meters). If false, then z coordinates will not be changed by the
-transform.
+                   the z coordinates in the geometry represent height relative to the vertical datum
+                   of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
+                   units (generally meters). If false, then z coordinates will not be changed by the
+                   transform.
 %End
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
@@ -304,7 +304,7 @@ Returns -1 if a corresponding vertex could not be found.
 Returns next vertex id and coordinates
 
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
-in this variable if found.
+           in this variable if found.
 :param vertex: container for found node
 
 :return: false if at end
@@ -344,9 +344,9 @@ Searches for the closest segment of the geometry to a given point.
 :param segmentPt: storage for the closest point within the geometry
 :param vertexAfter: storage for the ID of the vertex at the end of the closest segment
 :param leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left
-of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
-be determined, e.g. point exactly on a line)
-false if point is to right of segment)
+               of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+               be determined, e.g. point exactly on a line)
+               false if point is to right of segment)
 :param epsilon: epsilon for segment snapping
 
 :return: squared distance to closest segment or negative value on error

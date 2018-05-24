@@ -34,7 +34,7 @@ class QgsShadowEffect : QgsPaintEffect
 Sets blur level (strength) for the shadow.
 
 :param level: blur level. Values between 0 and 16 are valid, with larger
-values indicating greater blur strength.
+              values indicating greater blur strength.
 
 .. seealso:: :py:func:`blurLevel`
 %End
@@ -44,7 +44,7 @@ values indicating greater blur strength.
 Returns the blur level (strength) for the shadow.
 
 :return: blur level. Value will be between 0 and 16, with larger
-values indicating greater blur strength.
+         values indicating greater blur strength.
 
 .. seealso:: :py:func:`setBlurLevel`
 %End
@@ -172,7 +172,7 @@ Returns the color used for the shadow.
 Sets the ``opacity`` for the effect.
 
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque
+                and 1 is fully opaque
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -182,7 +182,7 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque
+         and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -192,7 +192,7 @@ and 1 is fully opaque
 Sets the blend mode for the effect
 
 :param mode: blend mode used for drawing the effect on to a destination
-paint device
+             paint device
 
 .. seealso:: :py:func:`blendMode`
 %End
@@ -202,7 +202,7 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-paint device
+         paint device
 
 .. seealso:: :py:func:`setBlendMode`
 %End
@@ -220,7 +220,7 @@ Specifies whether the shadow is drawn outside the picture or within
 the picture.
 
 :return: true if shadow is to be drawn outside the picture, or false
-to draw shadow within the picture
+         to draw shadow within the picture
 %End
 
 

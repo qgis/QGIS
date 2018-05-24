@@ -181,7 +181,7 @@ Derived classes must implement draw() to handle drawing the generated shape onto
 :param context: symbol render context
 :param shape: shape to draw
 :param polygon: polygon representing transformed marker shape. May be empty, in which case the shape will be specified
-in the path argument.
+                in the path argument.
 :param path: transformed painter path representing shape to draw
 %End
 };

@@ -216,7 +216,7 @@ the returned rectangle.
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
 :param handle180Crossover: set to true if destination CRS is geographic and handling of extents
-crossing the 180 degree longitude line is required
+                           crossing the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
 %End
@@ -230,8 +230,8 @@ otherwise points are transformed from destination to source CRS.
 :param x: array of x coordinates of points to transform
 :param y: array of y coordinates of points to transform
 :param z: array of z coordinates of points to transform. The z coordinates of the points
-must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
-heights) and must be expressed in its vertical units (generally meters)
+          must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
+          heights) and must be expressed in its vertical units (generally meters)
 :param direction: transform direction (defaults to ForwardTransform)
 %End
 

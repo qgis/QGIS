@@ -106,7 +106,7 @@ Sets the default color ramp for the button, which is shown in the button's drop-
 "default color ramp" option.
 
 :param colorramp: default color ramp for the button. Set to a null pointer to disable the default color
-ramp option. The ramp will be cloned and ownership is not transferred.
+                  ramp option. The ramp will be cloned and ownership is not transferred.
 
 .. seealso:: :py:func:`defaultColorRamp`
 %End
@@ -117,7 +117,7 @@ Returns a copy of the default color ramp for the button, which is shown in the b
 "default color ramp" option.
 
 :return: default color ramp for the button. Returns a null pointer if the default color ramp
-option is disabled.
+         option is disabled.
 
 .. seealso:: :py:func:`setDefaultColorRamp`
 %End
@@ -265,7 +265,7 @@ if the color ramp is different to the previous color ramp.
 Sets the background pixmap for the button based upon current color ramp.
 
 :param colorramp: Color ramp for button background. If no color ramp is specified, the button's current
-color ramp will be used
+                  color ramp will be used
 %End
 
     void setToDefaultColorRamp();

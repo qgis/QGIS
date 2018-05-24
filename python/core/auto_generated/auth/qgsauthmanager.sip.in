@@ -165,7 +165,7 @@ Re-emit a signal to schedule an optional erase of authentication database.
    processing state is not ready for interacting with the user, e.g. project is still loading
 
 :param emitted: Setting to false will cause signal to be emitted by the schedule timer.
-Setting to true will stop any emitting, but will not stop the schedule timer.
+                Setting to true will stop any emitting, but will not stop the schedule timer.
 %End
 
     QString authManTag() const;

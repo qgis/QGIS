@@ -277,7 +277,7 @@ distance between the marker and the start of the line or the end of the line res
 This setting has no effect for Vertex or CentralPoint placements.
 
 :param offsetAlongLine: Distance to offset markers along the line. The offset
-unit is set via setOffsetAlongLineUnit.
+                        unit is set via setOffsetAlongLineUnit.
 
 .. versionadded:: 2.3
 

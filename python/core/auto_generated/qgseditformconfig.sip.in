@@ -139,7 +139,7 @@ Example:
 :param config:      The config to set for this widget
 
 :return: false if a field exists with the provided widgetName. In this case
-QgsVectorLayer.setEditorWidgetSetup should be used.
+         QgsVectorLayer.setEditorWidgetSetup should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End

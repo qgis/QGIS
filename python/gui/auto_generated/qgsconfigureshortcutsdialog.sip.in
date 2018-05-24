@@ -30,7 +30,7 @@ Constructor for QgsConfigureShortcutsDialog.
 
 :param parent: parent widget
 :param manager: associated :py:class:`QgsShortcutsManager`, or leave as null to use the default
-singleton QgsShortcutsManager instance.
+                singleton QgsShortcutsManager instance.
 %End
 
   protected:

@@ -166,7 +166,7 @@ Sets the map unit scale used for the heatmap's radius
 Returns the maximum value used for shading the heatmap.
 
 :return: maximum value for heatmap shading. If 0, then maximum value will be automatically
-calculated.
+         calculated.
 
 .. seealso:: :py:func:`setMaximumValue`
 %End
@@ -176,7 +176,7 @@ calculated.
 Sets the maximum value used for shading the heatmap.
 
 :param value: maximum value for heatmap shading. Set to 0 for automatic calculation of
-maximum value.
+              maximum value.
 
 .. seealso:: :py:func:`maximumValue`
 %End
@@ -186,7 +186,7 @@ maximum value.
 Returns the render quality used for drawing the heatmap.
 
 :return: render quality. A value of 1 indicates maximum quality, and increasing the
-value will result in faster drawing but lower quality rendering.
+         value will result in faster drawing but lower quality rendering.
 
 .. seealso:: :py:func:`setRenderQuality`
 %End
@@ -196,7 +196,7 @@ value will result in faster drawing but lower quality rendering.
 Sets the render quality used for drawing the heatmap.
 
 :param quality: render quality. A value of 1 indicates maximum quality, and increasing the
-value will result in faster drawing but lower quality rendering.
+                value will result in faster drawing but lower quality rendering.
 
 .. seealso:: :py:func:`renderQuality`
 %End

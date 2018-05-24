@@ -148,7 +148,7 @@ semi-transparent text.
 Sets whether the interior of the buffer will be filled in.
 
 :param fill: set to false to drawn only the stroke of the text as the buffer, or true to also
-shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
+             shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
 
 .. seealso:: :py:func:`fillBufferInterior`
 %End
@@ -166,7 +166,7 @@ opaque).
 Sets the buffer opacity.
 
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-opaque)
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -560,7 +560,7 @@ Sets the radii used for rounding the corners of shapes. This is only used if
 type() is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
 
 :param radii: QSizeF representing horizontal and vertical radii for rounded corners. Units are
-specified through setRadiiUnit()
+              specified through setRadiiUnit()
 
 .. seealso:: :py:func:`radii`
 
@@ -622,7 +622,7 @@ opaque).
 Sets the background shape's opacity.
 
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-opaque)
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -1048,7 +1048,7 @@ Returns whether only the alpha channel for the shadow will be blurred.
 Sets whether only the alpha channel for the shadow should be blurred.
 
 :param alphaOnly: set to true to blur only the alpha channel. If false, all channels (including
-red, green and blue channel) will be blurred.
+                  red, green and blue channel) will be blurred.
 
 .. seealso:: :py:func:`blurAlphaOnly`
 %End
@@ -1066,7 +1066,7 @@ opaque).
 Sets the shadow's opacity.
 
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-opaque)
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -1381,7 +1381,7 @@ opaque).
 Sets the text's opacity.
 
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-opaque)
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -1416,8 +1416,8 @@ multiplier of line height.
 Sets the line height for text.
 
 :param height: a number between
-0.0 and 10.0 representing the leading between lines as a
-multiplier of line height.
+               0.0 and 10.0 representing the leading between lines as a
+               multiplier of line height.
 
 .. seealso:: :py:func:`lineHeight`
 %End
@@ -1568,8 +1568,8 @@ Draws text within a rectangle using the specified settings.
 :param context: render context
 :param format: text format
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
-formats like SVG to maintain text as text objects, but at the cost of degraded
-rendering and may result in side effects like misaligned text buffers.
+                       formats like SVG to maintain text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like misaligned text buffers.
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1585,8 +1585,8 @@ Draws text at a point origin using the specified settings.
 :param context: render context
 :param format: text format
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
-formats like SVG to maintain text as text objects, but at the cost of degraded
-rendering and may result in side effects like misaligned text buffers.
+                       formats like SVG to maintain text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like misaligned text buffers.
 %End
 
     static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1602,11 +1602,11 @@ Draws a single component of rendered text using the specified settings.
 :param context: render context
 :param format: text format
 :param part: component of text to draw. Note that Shadow parts cannot be drawn
-individually and instead are drawn with their associated part (e.g., drawn together
-with the text or background parts)
+             individually and instead are drawn with their associated part (e.g., drawn together
+             with the text or background parts)
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
-formats like SVG to maintain text as text objects, but at the cost of degraded
-rendering and may result in side effects like misaligned text buffers.
+                       formats like SVG to maintain text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like misaligned text buffers.
 %End
 
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1622,11 +1622,11 @@ Draws a single component of rendered text using the specified settings.
 :param context: render context
 :param format: text format
 :param part: component of text to draw. Note that Shadow parts cannot be drawn
-individually and instead are drawn with their associated part (e.g., drawn together
-with the text or background parts)
+             individually and instead are drawn with their associated part (e.g., drawn together
+             with the text or background parts)
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
-formats like SVG to maintain text as text objects, but at the cost of degraded
-rendering and may result in side effects like misaligned text buffers.
+                       formats like SVG to maintain text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like misaligned text buffers.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );

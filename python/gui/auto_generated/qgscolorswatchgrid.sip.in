@@ -190,8 +190,8 @@ Sets whether the parent menu should be dismissed and closed when a color is sele
 from the action's color widget.
 
 :param dismiss: set to true (default) to immediately close the menu when a color is selected
-from the widget. If set to false, the colorChanged signal will be emitted but the menu will
-stay open.
+                from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+                stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
 
