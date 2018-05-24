@@ -32,7 +32,7 @@ that the fallback proxy should not be used for, then no proxy will be used.
 #include "qgsnetworkaccessmanager.h"
 %End
   public:
-    static QgsNetworkAccessManager *instance();
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::DirectConnection );
 
     QgsNetworkAccessManager( QObject *parent = 0 );
 
@@ -76,7 +76,7 @@ Gets name for QNetworkRequest.CacheLoadControl
 Gets QNetworkRequest.CacheLoadControl from name
 %End
 
-    void setupDefaultProxyAndCache();
+    void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 %Docstring
 Setup the NAM according to the user's settings
 %End

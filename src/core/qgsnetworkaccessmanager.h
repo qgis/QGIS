@@ -51,7 +51,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   public:
     //! returns a pointer to the single instance
     // and creates that instance on the first call.
-    static QgsNetworkAccessManager *instance();
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::DirectConnection );
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     //! Setup the NAM according to the user's settings
-    void setupDefaultProxyAndCache();
+    void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
     //! Returns whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }

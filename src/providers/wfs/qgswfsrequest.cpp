@@ -133,6 +133,9 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   QMutex mutex;
   std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitCondition ]()
   {
+    if ( QThread::currentThread() != QgsApplication::instance()->thread() )
+      QgsNetworkAccessManager::instance( Qt::DirectConnection );
+
     bool success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
 
