@@ -1027,9 +1027,16 @@ QString QgsWFSProvider::convertToXML( const QVariant& value )
   if ( value.type() == QVariant::DateTime )
   {
     QDateTime dt = value.toDateTime().toUTC();
-    valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                      dt.date().year(), dt.date().month(), dt.date().day(),
-                      dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+    if ( !dt.isNull() )
+    {
+      valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+                        dt.date().year(), dt.date().month(), dt.date().day(),
+                        dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+    }
+    else
+    {
+      valueStr = QString();
+    }
   }
   return valueStr;
 }
@@ -1073,9 +1080,15 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       propertyElem.appendChild( nameElem );
 
       QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
-      QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
-      valueElem.appendChild( valueText );
-      propertyElem.appendChild( valueElem );
+
+      if ( attMapIt.value().isValid() && !attMapIt.value().isNull() )
+      {
+        // WFS does not support :nil='true'
+        // if value is NULL, do not add value element
+        QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
+        valueElem.appendChild( valueText );
+        propertyElem.appendChild( valueElem );
+      }
 
       updateElem.appendChild( propertyElem );
     }
