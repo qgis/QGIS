@@ -166,7 +166,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     /**
      * Sets filter value for vector magnitudes.
-     * \see QgsMeshRendererVectorSettings::vectorFilterMin()
+     * \see filterMin()
      */
     void setFilterMin( double filterMin );
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     /**
      * Sets filter value for vector magnitudes.
-     * \see QgsMeshRendererVectorSettings::vectorFilterMax()
+     * \see filterMax()
      */
     void setFilterMax( double filterMax );
 

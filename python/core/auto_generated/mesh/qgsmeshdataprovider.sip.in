@@ -259,8 +259,6 @@ Responsible for reading native mesh data
 
    The API is considered EXPERIMENTAL and can be changed without a notice
 
-.. seealso:: :py:class:`QgsMeshSource`
-
 .. versionadded:: 3.2
 %End
 
