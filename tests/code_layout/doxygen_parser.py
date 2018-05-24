@@ -53,6 +53,7 @@ class DoxygenParser():
         self.documented_members = 0
         self.undocumented_members = {}
         self.noncompliant_members = {}
+        self.broken_links = {}
         self.bindable_members = []
         self.groups = {}
         self.classes_missing_group = []
@@ -141,7 +142,7 @@ class DoxygenParser():
                 if event == 'end' and elem.tag == 'compounddef':
                     if self.elemIsPublicClass(elem):
                         # store documentation status
-                        members, documented, undocumented, noncompliant, bindable, has_brief_description, found_version_added = self.parseClassElem(elem)
+                        members, documented, undocumented, noncompliant, bindable, has_brief_description, found_version_added, broken_links = self.parseClassElem(elem)
                         documentable_members += members
                         documented_members += documented
                         class_name = elem.find('compoundname').text
@@ -171,6 +172,9 @@ class DoxygenParser():
 
                         if len(noncompliant) > 0:
                             self.noncompliant_members[class_name] = noncompliant
+
+                        if broken_links:
+                            self.broken_links[class_name] = broken_links
 
                         # store bindable members
                         if self.classElemIsBindable(elem):
@@ -230,6 +234,7 @@ class DoxygenParser():
         undocumented_members = set()
         noncompliant_members = []
         bindable_members = []
+        broken_links = {}
         # loop through all members
         for m in e.getiterator('memberdef'):
             signature = self.memberSignature(m)
@@ -248,6 +253,11 @@ class DoxygenParser():
                         noncompliant_members.append({m.find('name').text: error})
                 else:
                     undocumented_members.add(signature)
+
+                broken_see_also_links = self.checkForBrokenSeeAlsoLinks(m)
+                if broken_see_also_links:
+                    broken_links[m.find('name').text] = broken_see_also_links
+
         # test for brief description
         d = e.find('briefdescription')
         has_brief_description = False
@@ -267,7 +277,7 @@ class DoxygenParser():
             if found_version_added:
                 break
 
-        return documentable_members, documented_members, undocumented_members, noncompliant_members, bindable_members, has_brief_description, found_version_added
+        return documentable_members, documented_members, undocumented_members, noncompliant_members, bindable_members, has_brief_description, found_version_added, broken_links
 
     def memberSignature(self, elem):
         """ Returns the signature for a member
@@ -565,3 +575,20 @@ class DoxygenParser():
                     #elif para.text.strip().lower().startswith('set '):
                     #    return 'Use "Sets the..." instead of "set ..."'
         return False
+
+    def checkForBrokenSeeAlsoLinks(self, elem):
+        """
+        Checks for any broken 'see also' links
+        """
+        broken = []
+        detailed_sec = elem.find('detaileddescription')
+        for p in detailed_sec.getiterator('para'):
+            for s in p.getiterator('simplesect'):
+                if s.get('kind') != 'see':
+                    continue
+
+                para = s.getchildren()[0]
+                if para.find('ref') is None and para.text:
+                    broken.append(para.text)
+
+        return broken

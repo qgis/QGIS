@@ -67,6 +67,12 @@ class TestQgsDocCoverage(unittest.TestCase):
                     for mem, error in p.items():
                         print((colored('  ' + mem + ': ' + error, 'yellow', attrs=['bold'])))
 
+        if parser.broken_links:
+            for cls, props in list(parser.broken_links.items()):
+                print(('\n\nClass {}, broken see also links found\n'.format(colored(cls, 'yellow'))))
+                for member, links in props.items():
+                    for l in links:
+                        print((colored('  ' + member + ': ' + l, 'yellow', attrs=['bold'])))
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
         if parser.classes_missing_group:
