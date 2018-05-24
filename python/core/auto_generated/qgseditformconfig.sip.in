@@ -178,7 +178,6 @@ If set to false, the widget at the given index will be read-only.
 If this returns true, the widget at the given index will receive its label on the previous line
 while if it returns false, the widget will receive its label on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
-*
 %End
 
     void setLabelOnTop( int idx, bool onTop );
@@ -187,7 +186,6 @@ If this is set to true, the widget at the given index will receive its label on
 the previous line while if it is set to false, the widget will receive its label
 on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
-*
 %End
 
 

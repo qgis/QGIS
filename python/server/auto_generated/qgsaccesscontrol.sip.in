@@ -18,7 +18,6 @@ class QgsAccessControl : QgsFeatureFilterProvider
 %Docstring
  A helper class that centralize the restrictions given by all the
 access control filter plugins.
-*
 %End
 
 %TypeHeaderCode

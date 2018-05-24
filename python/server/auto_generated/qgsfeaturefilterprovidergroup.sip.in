@@ -16,7 +16,6 @@ class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
  A filter filter provider grouping several filter providers.
 
 .. versionadded:: 3.0
-                  *
 %End
 
 %TypeHeaderCode
