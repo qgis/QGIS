@@ -422,7 +422,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
   QgsDebugMsg( "path = " + path );
   if ( path.isEmpty() )
   {
-    return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS" ), QStringLiteral( "wms:" ) );
+    return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS/WMTS" ), QStringLiteral( "wms:" ) );
   }
 
   // path schema: wms:/connection name (used by OWS)
@@ -432,7 +432,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
     if ( QgsWMSConnection::connectionList().contains( connectionName ) )
     {
       QgsWMSConnection connection( connectionName );
-      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, connection.uri().encodedUri() );
+      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS/WMTS" ), path, connection.uri().encodedUri() );
     }
   }
 

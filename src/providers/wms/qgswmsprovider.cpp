@@ -4240,7 +4240,7 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
   public:
 
     QString providerKey() const override { return QStringLiteral( "wms" ); }
-    QString text() const override { return QObject::tr( "WMS" ); }
+    QString text() const override { return QObject::tr( "WMS/WMTS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
