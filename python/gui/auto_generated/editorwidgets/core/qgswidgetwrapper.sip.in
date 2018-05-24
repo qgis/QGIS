@@ -99,24 +99,16 @@ Use this inside your overridden classes to access the configuration.
     QVariantMap config() const;
 %Docstring
 Returns the whole config
-
-:return: The configuration
 %End
 
     const QgsAttributeEditorContext &context() const;
 %Docstring
 Returns information about the context in which this widget is shown
-
-:return: context information
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
-Access the :py:class:`QgsVectorLayer`, you are working on
-
-:return: The layer
-
-.. seealso:: :py:func:`field`
+Returns the vector layer associated with the widget.
 %End
 
     static QgsWidgetWrapper *fromWidget( QWidget *widget );

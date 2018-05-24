@@ -582,9 +582,7 @@ Modifies the current selection on this layer
 :param selectIds:    Select these ids
 :param deselectIds:  Deselect these ids
 
-.. seealso:: :py:func:`select`
-
-.. seealso:: :py:func:`select`
+.. seealso:: :py:func:`selectByIds`
 
 .. seealso:: :py:func:`deselect`
 
@@ -1909,7 +1907,7 @@ Returns the descriptive name for the constraint expression for a specified field
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`constraints`
+.. seealso:: :py:func:`fieldConstraints`
 
 .. seealso:: :py:func:`constraintExpression`
 
@@ -1927,7 +1925,7 @@ can also be set. Setting an empty expression will clear any existing expression 
 
 .. seealso:: :py:func:`constraintDescription`
 
-.. seealso:: :py:func:`constraints`
+.. seealso:: :py:func:`fieldConstraints`
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );

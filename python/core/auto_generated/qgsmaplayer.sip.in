@@ -1044,7 +1044,7 @@ auto refresh is only active when hasAutoRefreshEnabled() is true.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`autoRefreshEnabled`
+.. seealso:: :py:func:`hasAutoRefreshEnabled`
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
 %End
@@ -1180,7 +1180,7 @@ Sets whether scale based visibility is enabled for the layer.
 
 .. seealso:: :py:func:`setMaximumScale`
 
-.. seealso:: :py:func:`scaleBasedVisibility`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 %End
 
     void triggerRepaint( bool deferredUpdate = false );

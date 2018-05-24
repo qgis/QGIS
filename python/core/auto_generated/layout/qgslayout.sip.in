@@ -441,8 +441,6 @@ layout is exported. If no map was explicitly set via setReferenceMap(), the larg
 map in the layout will be returned (or None if there are no maps in the layout).
 
 .. seealso:: :py:func:`setReferenceMap`
-
-.. seealso:: :py:func:`generateWorldFile`
 %End
 
     void setReferenceMap( QgsLayoutItemMap *map );
@@ -451,8 +449,6 @@ Sets the ``map`` item which will be used to generate corresponding world files w
 layout is exported.
 
 .. seealso:: :py:func:`referenceMap`
-
-.. seealso:: :py:func:`setGenerateWorldFile`
 %End
 
     QgsLayoutPageCollection *pageCollection();

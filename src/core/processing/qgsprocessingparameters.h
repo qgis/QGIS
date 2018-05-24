@@ -1052,7 +1052,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Returns the fixed number of rows in the table. This parameter only has an
      * effect if hasFixedNumberRows() is true.
      * \see setNumberRows()
-     * \see setFixedNumberRows()
+     * \see setHasFixedNumberRows()
      */
     int numberRows() const;
 
@@ -1060,7 +1060,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Sets the fixed number of \a rows in the table. This parameter only has an
      * effect if hasFixedNumberRows() is true.
      * \see numberRows()
-     * \see setFixedNumberRows()
+     * \see setHasFixedNumberRows()
      */
     void setNumberRows( int rows );
 

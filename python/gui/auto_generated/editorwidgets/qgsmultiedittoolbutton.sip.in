@@ -58,8 +58,6 @@ Sets whether the associated field contains mixed values.
 
 :param mixed: whether field values are mixed
 
-.. seealso:: :py:func:`isMixed`
-
 .. seealso:: :py:func:`setIsChanged`
 
 .. seealso:: :py:func:`resetChanges`
@@ -70,8 +68,6 @@ Sets whether the associated field contains mixed values.
 Sets whether the associated field has changed.
 
 :param changed: whether field has changed
-
-.. seealso:: :py:func:`isChanged`
 
 .. seealso:: :py:func:`setIsMixed`
 

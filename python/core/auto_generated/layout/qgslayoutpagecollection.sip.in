@@ -258,7 +258,7 @@ first page.
    it does not consider x coordinates and vertical coordinates before the first page or
    after the last page will still return the nearest page.
 
-.. seealso:: :py:func:`predicatePageNumberForPoint`
+.. seealso:: :py:func:`predictPageNumberForPoint`
 
 .. seealso:: :py:func:`pageAtPoint`
 

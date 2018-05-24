@@ -290,8 +290,6 @@ but can be manually overwritten by a call to setSourceDatumTransformId().
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
 .. seealso:: :py:func:`destinationDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setSourceDatumTransformId( int datumId );
@@ -307,8 +305,6 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`sourceDatumTransformId`
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     int destinationDatumTransformId() const;
@@ -324,8 +320,6 @@ but can be manually overwritten by a call to setDestinationDatumTransformId().
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
 .. seealso:: :py:func:`sourceDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setDestinationDatumTransformId( int datumId );
@@ -341,8 +335,6 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`destinationDatumTransformId`
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     static void invalidateCache();

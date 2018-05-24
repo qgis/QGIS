@@ -51,6 +51,8 @@ Will emit the selectionChanged( const :py:class:`QgsFeatureIds`&, const :py:clas
 clearAndSelect flag set.
 
 :param ids:   The ids which will be the new selection
+
+.. seealso:: :py:func:`selectedFeatureIds`
 %End
 
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
@@ -59,7 +61,7 @@ Return reference to identifiers of selected features
 
 :return: A list of QgsFeatureId's
 
-.. seealso:: :py:func:`selectedFeatures`
+.. seealso:: :py:func:`setSelectedFeatures`
 %End
 
   signals:

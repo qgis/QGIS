@@ -78,8 +78,6 @@ this value. The path can either be a local path or a remote (http) path.
 
 :return: path for the source image
 
-.. seealso:: :py:func:`usePictureExpression`
-
 .. seealso:: :py:func:`setPicturePath`
 %End
 
@@ -90,7 +88,7 @@ in degrees clockwise.
 
 .. seealso:: :py:func:`setPictureRotation`
 
-.. seealso:: :py:func:`rotationMap`
+.. seealso:: :py:func:`linkedMap`
 %End
 
     void setLinkedMap( QgsLayoutItemMap *map );
@@ -218,7 +216,7 @@ Sets the stroke ``color`` used for parametrized SVG files.
    This setting only has an effect on parametrized SVG files, and is ignored for
    non-parametrized SVG files.
 
-.. seealso:: :py:func:`svgStrokelColor`
+.. seealso:: :py:func:`svgStrokeColor`
 
 .. seealso:: :py:func:`setSvgFillColor`
 %End

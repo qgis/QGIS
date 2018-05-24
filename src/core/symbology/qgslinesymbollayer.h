@@ -243,9 +243,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     /**
      * Sets the interval between individual markers.
-     * \param interval interval size. Units are specified through setIntervalUnits()
+     * \param interval interval size. Units are specified through setIntervalUnit()
      * \see interval()
-     * \see setIntervalUnits()
+     * \see setIntervalUnit()
      */
     void setInterval( double interval ) { mInterval = interval; }
 

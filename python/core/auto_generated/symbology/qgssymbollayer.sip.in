@@ -298,9 +298,7 @@ will be overwritten.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`getDataDefinedProperty`
-
-.. seealso:: :py:func:`removeDataDefinedProperty`
+.. seealso:: :py:func:`dataDefinedProperties`
 %End
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -386,7 +384,7 @@ Returns a reference to the symbol layer's property collection, used for data def
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setProperties`
+.. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
 
@@ -531,7 +529,7 @@ Returns the symbol size. Units are specified by sizeUnit().
 
 .. seealso:: :py:func:`sizeUnit`
 
-.. seealso:: :py:func:`sizeUnitMapScale`
+.. seealso:: :py:func:`sizeMapUnitScale`
 %End
 
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );

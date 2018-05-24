@@ -64,6 +64,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
+     * \see selectedFeatureIds()
      */
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
@@ -71,7 +72,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * Return reference to identifiers of selected features
      *
      * \returns A list of QgsFeatureId's
-     * \see selectedFeatures()
+     * \see setSelectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 

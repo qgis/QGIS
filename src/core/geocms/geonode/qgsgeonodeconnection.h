@@ -61,13 +61,13 @@ class CORE_EXPORT QgsGeoNodeConnection
 
     /**
      * Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri \a uri.
-     * \see addWmsWcsConnectionSettings()
+     * \see addWfsConnectionSettings()
      */
     QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
 
     /**
      * Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri \a uri.
-     * \see addWmsWcsConnectionSettings()
+     * \see addWmsConnectionSettings()
      */
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 

@@ -85,15 +85,11 @@ Moves a grid with matching ``gridId`` down the stack, causing it to be rendered 
     QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
 %Docstring
 Returns a reference to a grid with matching ``gridId`` within the stack.
-
-.. seealso:: :py:func:`constGrid`
 %End
 
     QgsLayoutItemMapGrid *grid( int index ) const;
 %Docstring
 Returns a reference to a grid at the specified ``index`` within the stack.
-
-.. seealso:: :py:func:`constGrid`
 %End
 
     QgsLayoutItemMapGrid &operator[]( int index );

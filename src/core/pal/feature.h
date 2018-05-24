@@ -291,8 +291,6 @@ namespace pal
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,
        * otherwise the layer's default priority.
-       * \see Feature::setPriority
-       * \see Feature::priority
        */
       double calculatePriority() const;
 

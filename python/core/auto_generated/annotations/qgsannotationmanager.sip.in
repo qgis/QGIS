@@ -57,9 +57,9 @@ of removing an annotation which is not contained in the manager).
 
 .. seealso:: :py:func:`addAnnotation`
 
-.. seealso:: :py:func:`compositionRemoved`
+.. seealso:: :py:func:`annotationRemoved`
 
-.. seealso:: :py:func:`compositionAboutToBeRemoved`
+.. seealso:: :py:func:`annotationAboutToBeRemoved`
 
 .. seealso:: :py:func:`clear`
 %End

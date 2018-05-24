@@ -158,7 +158,7 @@ its own set of subtasks.
 Sets a list of layers on which the task depends. The task will automatically
 be canceled if any of these layers are about to be removed.
 
-.. seealso:: :py:func:`dependentLayerIds`
+.. seealso:: :py:func:`dependentLayers`
 %End
 
     QList< QgsMapLayer * > dependentLayers() const;

@@ -487,7 +487,6 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Refreshes the contents shown in the table by querying for new data.
      * This also causes the column widths and size of the table to change to accommodate the
      * new data.
-     * \see adjustFrameToSize()
      */
     virtual void refreshAttributes();
 

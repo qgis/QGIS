@@ -201,7 +201,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via geometry() ).
-     * \see geometry
+     * \see get
      * \since QGIS 2.10
      * \see isEmpty()
      */

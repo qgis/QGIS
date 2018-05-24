@@ -487,7 +487,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * layout is exported. If no map was explicitly set via setReferenceMap(), the largest
      * map in the layout will be returned (or nullptr if there are no maps in the layout).
      * \see setReferenceMap()
-     * \see generateWorldFile()
      */
     QgsLayoutItemMap *referenceMap() const;
 
@@ -495,7 +494,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Sets the \a map item which will be used to generate corresponding world files when the
      * layout is exported.
      * \see referenceMap()
-     * \see setGenerateWorldFile()
      */
     void setReferenceMap( QgsLayoutItemMap *map );
 

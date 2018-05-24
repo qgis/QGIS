@@ -86,19 +86,16 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
 
     /**
      * Returns a reference to an overview with matching overviewId within the stack.
-     * \see constOverview()
      */
     QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
-     * \see constOverview()
      */
     QgsLayoutItemMapOverview *overview( const int index ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
-     * \see constOverview()
      * \see overview()
      */
     QgsLayoutItemMapOverview &operator[]( int index );

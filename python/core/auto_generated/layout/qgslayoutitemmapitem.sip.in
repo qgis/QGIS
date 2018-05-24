@@ -246,15 +246,11 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 %Docstring
 Returns a reference to an item which matching ``itemId`` within the stack.
-
-.. seealso:: :py:func:`constItem`
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;
 %Docstring
 Returns a reference to the item at the specified ``index`` within the stack.
-
-.. seealso:: :py:func:`constItem`
 %End
 
 

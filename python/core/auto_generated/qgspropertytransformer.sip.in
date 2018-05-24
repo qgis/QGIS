@@ -386,9 +386,9 @@ Calculates the size corresponding to a specific ``input`` value.
 %Docstring
 Returns the minimum calculated size.
 
-.. seealso:: :py:func:`setMinSize`
+.. seealso:: :py:func:`setMinOutputValue`
 
-.. seealso:: :py:func:`maxSize`
+.. seealso:: :py:func:`maxOutputValue`
 %End
 
     void setMinOutputValue( double size );
@@ -397,16 +397,16 @@ Sets the minimum calculated size.
 
 :param size: minimum size
 
-.. seealso:: :py:func:`minSize`
+.. seealso:: :py:func:`minOutputValue`
 
-.. seealso:: :py:func:`setMaxSize`
+.. seealso:: :py:func:`setMaxOutputValue`
 %End
 
     double maxOutputValue() const;
 %Docstring
 Returns the maximum calculated size.
 
-.. seealso:: :py:func:`minSize`
+.. seealso:: :py:func:`minOutputValue`
 %End
 
     void setMaxOutputValue( double size );
@@ -415,16 +415,16 @@ Sets the maximum calculated size.
 
 :param size: maximum size
 
-.. seealso:: :py:func:`maxSize`
+.. seealso:: :py:func:`maxOutputValue`
 
-.. seealso:: :py:func:`setMinSize`
+.. seealso:: :py:func:`setMinOutputValue`
 %End
 
     double nullOutputValue() const;
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-.. seealso:: :py:func:`setNullSize`
+.. seealso:: :py:func:`setNullOutputValue`
 %End
 
     void setNullOutputValue( double size );
@@ -433,7 +433,7 @@ Sets the size value for when an expression evaluates to NULL.
 
 :param size: null size
 
-.. seealso:: :py:func:`nullSize`
+.. seealso:: :py:func:`nullOutputValue`
 %End
 
     double exponent() const;
@@ -441,8 +441,6 @@ Sets the size value for when an expression evaluates to NULL.
 Returns the exponent for an exponential expression.
 
 .. seealso:: :py:func:`setExponent`
-
-.. seealso:: :py:func:`type`
 %End
 
     void setExponent( double exponent );
@@ -713,7 +711,7 @@ Sets the color corresponding to a null value.
 
 :param color: null color
 
-.. seealso:: :py:func:`nullSize`
+.. seealso:: :py:func:`nullColor`
 %End
 
     QString rampName() const;

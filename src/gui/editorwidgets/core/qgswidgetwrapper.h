@@ -132,24 +132,16 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns the whole config
-     *
-     * \returns The configuration
      */
     QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
-     *
-     * \returns context information
      */
     const QgsAttributeEditorContext &context() const;
 
     /**
-     * Access the QgsVectorLayer, you are working on
-     *
-     * \returns The layer
-     *
-     * \see field()
+     * Returns the vector layer associated with the widget.
      */
     QgsVectorLayer *layer() const;
 

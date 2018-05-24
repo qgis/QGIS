@@ -205,7 +205,7 @@ class CORE_EXPORT QgsLabelFeature
     /**
      * Returns whether the quadrant for the label is fixed.
      * Applies to "around point" placement strategy.
-     * \see setFixedQuadrant
+     * \see setHasFixedQuadrant
      * \see quadOffset
      */
     bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsLabelFeature
     /**
      * Sets whether the quadrant for the label must be respected. This can be used
      * to fix the quadrant for specific features when using an "around point" placement.
-     * \see fixedQuadrant
+     * \see hasFixedQuadrant
      * \see quadOffset
      */
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }

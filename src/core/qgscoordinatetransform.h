@@ -346,7 +346,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
-     * \see datumTransformInfo()
      */
     int sourceDatumTransformId() const;
 
@@ -360,7 +359,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
-     * \see datumTransformInfo()
      */
     void setSourceDatumTransformId( int datumId );
 
@@ -374,7 +372,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
-     * \see datumTransformInfo()
      */
     int destinationDatumTransformId() const;
 
@@ -388,7 +385,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
-     * \see datumTransformInfo()
      */
     void setDestinationDatumTransformId( int datumId );
 

@@ -319,8 +319,6 @@ Emitted when one or more layers were added to the store.
 
 :param layers: List of layers which have been added.
 
-.. seealso:: :py:func:`legendLayersAdded`
-
 .. seealso:: :py:func:`layerWasAdded`
 %End
 

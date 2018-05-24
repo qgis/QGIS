@@ -144,7 +144,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 Returns true if the geometry is null (ie, contains no underlying geometry
 accessible via geometry() ).
 
-.. seealso:: :py:func:`geometry`
+.. seealso:: :py:func:`get`
 
 .. versionadded:: 2.10
 

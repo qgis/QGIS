@@ -58,14 +58,14 @@ Sets the ``uri`` for the GeoNode connection.
 %Docstring
 Adds uri parameters relating to the settings for a WMS layer on the connection to a :py:class:`QgsDataSourceUri` ``uri``.
 
-.. seealso:: :py:func:`addWmsWcsConnectionSettings`
+.. seealso:: :py:func:`addWfsConnectionSettings`
 %End
 
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
 Adds uri parameters relating to the settings for a WFS layer on the connection to a :py:class:`QgsDataSourceUri` ``uri``.
 
-.. seealso:: :py:func:`addWmsWcsConnectionSettings`
+.. seealso:: :py:func:`addWmsConnectionSettings`
 %End
 
 };

@@ -127,13 +127,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets whether a random colors option is shown in the button's drop-down menu.
      * \param showRandom set to true to show a random colors option
-     * \see showRandom()
+     * \see showRandomColorRamp()
      */
     void setShowRandomColorRamp( bool showRandom ) { mShowRandomColorRamp = showRandom; }
 
     /**
      * Returns whether random colors option is shown in the button's drop-down menu.
-     * \see setShowRandom()
+     * \see setShowRandomColorRamp()
      */
     bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 

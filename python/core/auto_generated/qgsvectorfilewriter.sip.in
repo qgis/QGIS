@@ -427,7 +427,7 @@ Returns a list or pairs, with format filter string as first element and OGR form
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+.. seealso:: :py:func:`supportedFormatExtensions`
 %End
 
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );

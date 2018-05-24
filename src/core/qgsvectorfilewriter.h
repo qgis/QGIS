@@ -525,7 +525,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
      *
-     * \see supportedOutputVectorLayerExtensions()
+     * \see supportedFormatExtensions()
      */
     static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 

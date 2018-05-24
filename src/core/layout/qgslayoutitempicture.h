@@ -93,7 +93,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
      * \returns path for the source image
-     * \see usePictureExpression()
      * \see setPicturePath()
      */
     QString picturePath() const;
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Returns the rotation used for drawing the picture within the item's frame,
      * in degrees clockwise.
      * \see setPictureRotation()
-     * \see rotationMap()
+     * \see linkedMap()
      */
     double pictureRotation() const { return mPictureRotation; }
 
@@ -203,7 +202,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param color stroke color.
      * \note This setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * \see svgStrokelColor()
+     * \see svgStrokeColor()
      * \see setSvgFillColor()
      */
     void setSvgStrokeColor( const QColor &color );

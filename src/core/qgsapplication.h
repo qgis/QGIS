@@ -709,7 +709,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * This does not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static QVariantMap customVariables();
@@ -718,7 +718,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * Do not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );

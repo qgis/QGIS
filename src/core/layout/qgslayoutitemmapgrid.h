@@ -87,19 +87,16 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 
     /**
      * Returns a reference to a grid with matching \a gridId within the stack.
-     * \see constGrid()
      */
     QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
-     * \see constGrid()
      */
     QgsLayoutItemMapGrid *grid( int index ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
-     * \see constGrid()
      * \see grid()
      */
     QgsLayoutItemMapGrid &operator[]( int index );

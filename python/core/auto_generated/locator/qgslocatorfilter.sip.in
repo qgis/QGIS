@@ -222,7 +222,7 @@ Sets whether the filter is ``enabled``.
 %Docstring
 Should return true if the filter has a configuration widget.
 
-.. seealso:: :py:func:`createConfigWidget`
+.. seealso:: :py:func:`openConfigWidget`
 %End
 
     virtual void openConfigWidget( QWidget *parent = 0 );

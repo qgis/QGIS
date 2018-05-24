@@ -317,8 +317,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets a data defined property for the layer. Any existing property with the same key
      * will be overwritten.
      * \since QGIS 3.0
-     * \see getDataDefinedProperty
-     * \see removeDataDefinedProperty
+     * \see dataDefinedProperties()
      */
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
 
@@ -376,14 +375,14 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * \see setProperties()
+     * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \since QGIS 3.0
-     * \see setProperties()
+     * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
@@ -525,7 +524,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * Returns the symbol size. Units are specified by sizeUnit().
      * \see setSize()
      * \see sizeUnit()
-     * \see sizeUnitMapScale()
+     * \see sizeMapUnitScale()
      */
     double size() const { return mSize; }
 

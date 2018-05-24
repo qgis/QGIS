@@ -52,7 +52,7 @@ class QgsFileWidget : QWidget
 when multiple files are selected, they are quoted and separated
 by a single space (for example: '"/path/foo" "path/bar"')
 
-.. seealso:: :py:func:`filePaths`
+.. seealso:: :py:func:`splitFilePaths`
 %End
 
     static QStringList splitFilePaths( const QString &path );
