@@ -245,7 +245,6 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
- * \see QgsMeshSource
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDataSourceInterface, public QgsMeshDatasetSourceInterface
