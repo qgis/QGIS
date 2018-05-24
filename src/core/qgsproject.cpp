@@ -366,6 +366,7 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
+  connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
 }
 
 
@@ -441,6 +442,14 @@ void QgsProject::setPresetHomePath( const QString &path )
   setDirty( true );
 }
 
+void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
+{
+  for ( auto layer : mRootGroup->layerOrder() )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:layers:{layer_id}" ), layer->name() );
+  }
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -485,6 +494,17 @@ QDateTime QgsProject::lastModified() const
   {
     return QFileInfo( mFile.fileName() ).lastModified();
   }
+}
+
+QString QgsProject::absolutePath() const
+{
+  if ( projectStorage() )
+    return QString();
+
+  if ( mFile.fileName().isEmpty() )
+    return QString();  // this is to protect ourselves from getting current directory from QFileInfo::absoluteFilePath()
+
+  return QFileInfo( mFile.fileName() ).absolutePath();
 }
 
 QString QgsProject::absoluteFilePath() const
@@ -2698,3 +2718,38 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
   }
   writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
 }
+
+void QgsProject::generateTsFile()
+{
+  QgsTranslationContext translationContext;
+  translationContext.setProject( this );
+  translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
+
+  emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
+
+  translationContext.writeTsFile();
+}
+
+bool QgsProject::translate( const QString &translationCode )
+{
+  /*
+  QgsTranslationContext translationContext;
+  translationContext.setProject( this );
+  translationContext.setFileName( filePath() );
+
+  QgsApplication::instance()->collectTranslatableObjects( &translationContext );
+
+  QTranslator projectTranslator( nullptr );
+
+  if ( projectTranslator.load( fileInfo().baseName() + translationCode, fileInfo().path() ) )
+  {
+    //translationContext.translations.projectTranslator.translate( )
+  }
+  else
+  {
+   return false;
+  }
+  */
+  return true;
+}
+

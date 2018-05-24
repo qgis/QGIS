@@ -1468,6 +1468,11 @@ int QgsApplication::maxConcurrentConnectionsPerPool() const
   return CONN_POOL_MAX_CONCURRENT_CONNS;
 }
 
+void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )
+{
+  emit requestForTranslatableObjects( translationContext );
+}
+
 QString QgsApplication::nullRepresentation()
 {
   ApplicationMembers *appMembers = members();

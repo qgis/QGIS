@@ -742,6 +742,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     int maxConcurrentConnectionsPerPool() const;
 
+   /**
+     * dave : to write
+     *
+     * \since QGIS 3.2
+     */
+    void collectTranslatableObjects( QgsTranslationContext *translationContext );
+
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
     //dummy method to workaround sip generation issue

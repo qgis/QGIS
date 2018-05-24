@@ -31,6 +31,7 @@
 #include <QPair>
 #include <QFileInfo>
 #include <QStringList>
+#include <QTranslator>
 
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
@@ -44,6 +45,7 @@
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
+#include "qgstranslationcontext.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -182,6 +184,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QString absoluteFilePath() const;
+
+    /**
+     * Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absolutePath() const;
 
     /**
      * Returns the base name of the project file without the path and without extension - derived from fileName().
@@ -955,6 +964,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
+    /**
+     * dave : to write
+     * \since QGIS 3.2
+     */
+    void generateTsFile( );
+
+    /**
+     * Translates the project with QTranslator and qm-file
+     * \returns true if project file has been translated
+     */
+    bool translate( const QString &translationCode );
+
   signals:
 
     /**
@@ -1268,6 +1289,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
     */
     void setPresetHomePath( const QString &path );
+
+    /**
+     * Registers the translatable objects into the tranlationContext
+     * so there can be created a TS file with etc. dave: write
+     * \since QGIS 3.2
+     *
+     * \param translationContext where the objects will be registered
+    */
+    void registerTranslatableObjects( QgsTranslationContext *translationContext );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );

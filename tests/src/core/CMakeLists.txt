@@ -198,6 +198,7 @@ SET(TESTS
  testqgssqliteutils.cpp
  testqgsmimedatautils.cpp
  testqgsofflineediting.cpp
+ testqgstranslateproject.cpp
    )
 
 IF(WITH_QTWEBKIT)
