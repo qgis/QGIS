@@ -193,8 +193,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
         const double *yData = nullptr;
         if ( flatType == QgsWkbTypes::LineString )
         {
-          xData = static_cast< const QgsLineString * >( &srcCurve )->xData();
-          yData = static_cast< const QgsLineString * >( &srcCurve )->yData();
+          xData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->xData();
+          yData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->yData();
         }
 
         for ( int i = 0; i < numPoints; ++i )
@@ -264,8 +264,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
         const double *yData = nullptr;
         if ( flatType == QgsWkbTypes::LineString )
         {
-          xData = static_cast< const QgsLineString * >( &srcCurve )->xData();
-          yData = static_cast< const QgsLineString * >( &srcCurve )->yData();
+          xData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->xData();
+          yData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->yData();
         }
 
         for ( int i = 0; i < numPoints; ++i )
