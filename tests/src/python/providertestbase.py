@@ -28,6 +28,7 @@ from qgis.core import (
     QgsVectorLayerFeatureSource,
     QgsFeatureSink,
     QgsTestUtils,
+    QgsFeatureSource,
     NULL
 )
 
@@ -417,16 +418,18 @@ class ProviderTestCase(FeatureSourceTestCase):
 
     def testEmpty(self):
         self.assertFalse(self.source.empty())
-        self.assertFalse(self.source.emptyUnknown())
+        self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
 
         if self.source.supportsSubsetString():
             # Add a subset string and test feature count
             subset = self.getSubsetString()
             self.source.setSubsetString(subset)
             self.assertFalse(self.source.empty())
+            self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
             subsetNoMatching = getSubsetStringNoMatching(self)
             self.source.setSubsetString(subsetNoMatching)
             self.assertTrue(self.source.empty())
+            self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
             self.source.setSubsetString(None)
             self.assertFalse(self.source.empty())
 
