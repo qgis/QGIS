@@ -257,6 +257,8 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     }
   }
   mCrs = crs;
+
+  emit crsChanged( crs );
 }
 
 void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
