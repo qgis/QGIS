@@ -98,7 +98,7 @@ Get list of children of the node. Children are owned by the parent
 
     virtual QString name() const = 0;
 %Docstring
-Return name of the node
+Returns name of the node
 
 .. versionadded:: 3.0
 %End
@@ -131,7 +131,7 @@ Write layer tree to XML
 
     virtual QString dump() const = 0;
 %Docstring
-Return string with layer tree structure. For debug purposes only
+Returns string with layer tree structure. For debug purposes only
 %End
 
     virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
@@ -188,14 +188,14 @@ Check or uncheck a node and all its parents
 
     bool isItemVisibilityCheckedRecursive() const;
 %Docstring
-Return whether this node is checked and all its children.
+Returns whether this node is checked and all its children.
 
 .. versionadded:: 3.0
 %End
 
     bool isItemVisibilityUncheckedRecursive() const;
 %Docstring
-Return whether this node is unchecked and all its children.
+Returns whether this node is unchecked and all its children.
 
 .. versionadded:: 3.0
 %End
@@ -210,16 +210,16 @@ children.
 
     bool isExpanded() const;
 %Docstring
-Return whether the node should be shown as expanded or collapsed in GUI
+Returns whether the node should be shown as expanded or collapsed in GUI
 %End
     void setExpanded( bool expanded );
 %Docstring
-Set whether the node should be shown as expanded or collapsed in GUI
+Sets whether the node should be shown as expanded or collapsed in GUI
 %End
 
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
-Set a custom property for the node. Properties are stored in a map and saved in project file.
+Sets a custom property for the node. Properties are stored in a map and saved in project file.
 %End
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
@@ -231,7 +231,7 @@ Remove a custom property from layer. Properties are stored in a map and saved in
 %End
     QStringList customProperties() const;
 %Docstring
-Return list of keys stored in custom properties
+Returns list of keys stored in custom properties
 %End
     bool takeChild( QgsLayerTreeNode *node );
 %Docstring

@@ -57,7 +57,7 @@ The font for this style.
 
     void setMargin( double margin );
 %Docstring
-set all margins
+Sets all margins
 %End
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;

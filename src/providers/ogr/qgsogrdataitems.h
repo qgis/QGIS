@@ -64,7 +64,7 @@ class QgsOgrLayerItem : public QgsLayerItem
     QString layerName() const override;
     //! Retrieve sub layers from a DB ogr layer \a path with the specified \a driver
     static QList<QgsOgrDbLayerInfo *> subLayers( const QString &path, const QString &driver );
-    //! Return a LayerType from a geometry type string
+    //! Returns a LayerType from a geometry type string
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
 #ifdef HAVE_GUI

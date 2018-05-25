@@ -419,7 +419,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int mFormNr;
     QString mPyFormVarName;
 
-    //! Set to true while saving to prevent recursive saves
+    //! Sets to true while saving to prevent recursive saves
     bool mIsSaving;
 
     //! Flag to prevent refreshFeature() to change mFeature

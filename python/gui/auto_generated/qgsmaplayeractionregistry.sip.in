@@ -92,7 +92,7 @@ Define the targets of the action
 %End
     const Targets &targets() const;
 %Docstring
-Return availibity of action
+Returns availibity of action
 %End
 
     bool isEnabledOnlyWhenEditable() const;

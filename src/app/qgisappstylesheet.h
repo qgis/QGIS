@@ -34,7 +34,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
   public:
     QgisAppStyleSheet( QObject *parent = nullptr );
 
-    //! Return changeable options built from settings and/or defaults
+    //! Returns changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultOptions();
 
     /**
@@ -59,7 +59,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     void appStyleSheetChanged( const QString &appStyleSheet );
 
   private:
-    //! Set active configuration values
+    //! Sets active configuration values
     void setActiveValues();
 
     // qt styles

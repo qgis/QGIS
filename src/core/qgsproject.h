@@ -362,14 +362,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 
     /**
-     * Return keys with values -- do not return keys that contain other keys
+     * Returns keys with values -- do not return keys that contain other keys
      *
      * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Return keys with keys -- do not return keys that contain only values
+     * Returns keys with keys -- do not return keys that contain only values
      *
      * \note equivalent to QgsSettings subkeyList()
      */
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void dumpProperties() const;
 
     /**
-     * Return path resolver object with considering whether the project uses absolute
+     * Returns path resolver object with considering whether the project uses absolute
      * or relative paths and using current project's path.
      * \since QGIS 3.0
      */
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Turn filename read from the project file to an absolute path
     QString readPath( const QString &filename ) const;
 
-    //! Return error message from previous read/write
+    //! Returns error message from previous read/write
     QString error() const;
 
     /**
@@ -509,13 +509,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsLayoutManager *layoutManager();
 
     /**
-     * Return pointer to the root (invisible) node of the project's layer tree
+     * Returns pointer to the root (invisible) node of the project's layer tree
      * \since QGIS 2.4
      */
     QgsLayerTree *layerTreeRoot() const;
 
     /**
-     * Return pointer to the helper class that synchronizes map layer registry with layer tree
+     * Returns pointer to the helper class that synchronizes map layer registry with layer tree
      * \since QGIS 2.4
      */
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
@@ -1402,7 +1402,7 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 };
 
 /**
- * Return the version string found in the given DOM document
+ * Returns the version string found in the given DOM document
    \returns the version string or an empty string if none found
    \note not available in Python bindings.
  */

@@ -123,7 +123,7 @@ class CORE_EXPORT QgsFeatureRenderer
   public:
     // renderer takes ownership of its symbols!
 
-    //! return a new renderer - used by default in vector layers
+    //! Returns a new renderer - used by default in vector layers
     static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     QString type() const { return mType; }
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const = 0;
 
     /**
-     * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
+     * Returns symbol for feature. The difference compared to symbolForFeature() is that it returns original
      * symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
      * of a symbol for use in rendering.
      * \since QGIS 2.12
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
-     * Return legend keys matching a specified feature.
+     * Returns legend keys matching a specified feature.
      * \since QGIS 2.14
      */
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString(); }
 
     /**
-     * Return a list of attributes required by this renderer. Attributes not listed in here may
+     * Returns a list of attributes required by this renderer. Attributes not listed in here may
      * not have been requested from the provider at rendering time.
      *
      * \returns A set of attributes
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual QString legendClassificationAttribute() const { return QString(); }
 
-    //! set type and size of editing vertex markers for subsequent rendering
+    //! Sets type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
 
     /**

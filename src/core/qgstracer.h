@@ -50,7 +50,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     //! Get layers used for tracing
     QList<QgsVectorLayer *> layers() const { return mLayers; }
-    //! Set layers used for tracing
+    //! Sets layers used for tracing
     void setLayers( const QList<QgsVectorLayer *> &layers );
 
     /**
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     //! Get extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
-    //! Set extent to which graph's features will be limited (empty extent means no limit)
+    //! Sets extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle &extent );
 
     /**

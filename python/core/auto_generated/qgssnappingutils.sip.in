@@ -68,7 +68,7 @@ Assign current map settings to the utils - used for conversion between screen co
 
     void setCurrentLayer( QgsVectorLayer *layer );
 %Docstring
-Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
 %End
     QgsVectorLayer *currentLayer() const;
 %Docstring
@@ -86,7 +86,7 @@ The current layer used if mode is SnapCurrentLayer
 
     void setIndexingStrategy( IndexingStrategy strategy );
 %Docstring
-Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
 %End
     IndexingStrategy indexingStrategy() const;
 %Docstring

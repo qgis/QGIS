@@ -77,7 +77,7 @@ class CORE_EXPORT QgsContrastEnhancement
     static double minimumValuePossible( Qgis::DataType );
 
     /**
-     * Return a string to serialize ContrastEnhancementAlgorithm.
+     * Returns a string to serialize ContrastEnhancementAlgorithm.
      */
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
@@ -91,10 +91,10 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static Inline methods
      *
      */
-    //! \brief Return the maximum value for the contrast enhancement range.
+    //! Returns the maximum value for the contrast enhancement range.
     double maximumValue() const { return mMaximumValue; }
 
-    //! \brief Return the minimum value for the contrast enhancement range.
+    //! Returns the minimum value for the contrast enhancement range.
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsContrastEnhancement
     int enhanceContrast( double value );
 
     /**
-     * Return true if a pixel \a value is in displayable range, false if pixel
+     * Returns true if a pixel \a value is in displayable range, false if pixel
      * is outside of range (i.e. clipped).
      */
     bool isValueInDisplayableRange( double value );

@@ -121,12 +121,12 @@ Set map units per pixel
 
     double mapUnitsPerPixel() const;
 %Docstring
-Return current map units per pixel
+Returns current map units per pixel
 %End
 
     int mapWidth() const;
 %Docstring
-Return current map width in pixels
+Returns current map width in pixels
 The information is only known if setRotation was used
 
 .. versionadded:: 2.8
@@ -134,7 +134,7 @@ The information is only known if setRotation was used
 
     int mapHeight() const;
 %Docstring
-Return current map height in pixels
+Returns current map height in pixels
 
 .. versionadded:: 2.8
 %End
@@ -152,7 +152,7 @@ Set map rotation in degrees (clockwise)
 
     double mapRotation() const;
 %Docstring
-Return current map rotation in degrees
+Returns current map rotation in degrees
 
 .. versionadded:: 2.8
 %End

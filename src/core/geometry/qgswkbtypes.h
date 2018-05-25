@@ -744,7 +744,7 @@ class CORE_EXPORT QgsWkbTypes
     static QString displayString( Type type );
 
     /**
-     * Return a display string for a geometry type.
+     * Returns a display string for a geometry type.
      *
      * This will return one of the following strings:
      *

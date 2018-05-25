@@ -343,7 +343,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
     /**
-     * Return the full url to request legend graphic
+     * Returns the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
      * \since QGIS 2.8

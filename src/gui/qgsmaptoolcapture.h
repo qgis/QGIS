@@ -83,7 +83,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
     /**
-     * Return a list of matches for each point on the captureCurve.
+     * Returns a list of matches for each point on the captureCurve.
      *
      * \since QGIS 3.0
      */

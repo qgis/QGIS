@@ -638,7 +638,7 @@ Any filter on the request will be discarded.
 
     const QgsFeatureIds &selectedFeatureIds() const;
 %Docstring
-Return reference to identifiers of selected features
+Returns reference to identifiers of selected features
 
 :return: A list of :py:class:`QgsFeatureId`
 
@@ -695,7 +695,7 @@ Sets diagram rendering object (takes ownership)
 
     QgsFeatureRenderer *renderer();
 %Docstring
-Return renderer.
+Returns renderer.
 %End
 
 
@@ -718,7 +718,7 @@ Returns the WKBType or WKBUnknown in case of error
 
     QString providerType() const;
 %Docstring
-Return the provider type for this layer
+Returns the provider type for this layer
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
@@ -1421,7 +1421,7 @@ Synchronises with changes in the datasource
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
 %Docstring
-Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
 
 .. versionadded:: 2.4
 %End
@@ -2040,7 +2040,7 @@ Calculates an aggregated value from the layer's features.
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
 %Docstring
-Set the blending mode used for rendering each feature
+Sets the blending mode used for rendering each feature
 %End
     QPainter::CompositionMode featureBlendMode() const;
 %Docstring
@@ -2101,7 +2101,7 @@ Returns whether the VectorLayer can apply the specified simplification hint
 
     QgsConditionalLayerStyles *conditionalStyles() const;
 %Docstring
- Return the conditional styles that are set for this layer. Style information is
+Returns the conditional styles that are set for this layer. Style information is
 used to render conditional formatting in the attribute table.
 
 :return: Return a QgsConditionalLayerStyles object holding the conditional attribute
@@ -2537,7 +2537,7 @@ Emitted when the feature count for symbols on this layer has been recalculated.
     virtual void setExtent( const QgsRectangle &rect );
 
 %Docstring
-Set the extent
+Sets the extent
 %End
 
   private:                       // Private methods

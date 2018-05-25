@@ -130,7 +130,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
 
     /**
-     * return a pointer to the identify menu which will be used in layer selection mode
+     * Returns a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized
      */
     QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}

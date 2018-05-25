@@ -208,7 +208,7 @@ find out if the point is in any polygons
 
     int cachedGeometryCount() const;
 %Docstring
-Return how many geometries are cached in the index
+Returns how many geometries are cached in the index
 
 .. versionadded:: 2.14
 %End

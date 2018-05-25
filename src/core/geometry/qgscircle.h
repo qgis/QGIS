@@ -219,7 +219,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}
-    //! Set the radius of the circle
+    //! Sets the radius of the circle
     void setRadius( double radius )
     {
       mSemiMajorAxis = std::fabs( radius );

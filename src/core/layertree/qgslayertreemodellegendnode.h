@@ -56,19 +56,19 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       ParentRuleKeyRole               //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
-    //! Return pointer to the parent layer node
+    //! Returns pointer to the parent layer node
     QgsLayerTreeLayer *layerNode() const { return mLayerNode; }
 
-    //! Return pointer to model owning this legend node
+    //! Returns pointer to model owning this legend node
     QgsLayerTreeModel *model() const;
 
-    //! Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
+    //! Returns item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
     virtual Qt::ItemFlags flags() const;
 
-    //! Return data associated with the item. Must be implemented in derived class.
+    //! Returns data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    //! Set some data associated with the item. Default implementation does nothing and returns false.
+    //! Sets some data associated with the item. Default implementation does nothing and returns false.
     virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }

@@ -91,7 +91,7 @@ Enable or disable the custom options widget
 
     void setSslCertificate( const QSslCertificate &cert, const QString &hostport = QString() );
 %Docstring
-Set SSl certificate and any associated host:port
+Sets SSl certificate and any associated host:port
 %End
 
     void loadSslCustomConfig( const QgsAuthConfigSslServer &config = QgsAuthConfigSslServer() );
@@ -111,7 +111,7 @@ Clear the current SSL server configuration and disabled it
 
     void setSslProtocol( QSsl::SslProtocol protocol );
 %Docstring
-Set the SSL protocol to use in connections
+Sets the SSL protocol to use in connections
 %End
 
     void resetSslProtocol();
@@ -126,12 +126,12 @@ Add to SSL errors to ignore for the connection
 
     void setSslIgnoreErrorEnums( const QList<QSslError::SslError> &errorenums );
 %Docstring
-Set the SSL errors (as enums) to ignore for the connection
+Sets the SSL errors (as enums) to ignore for the connection
 %End
 
     void setSslIgnoreErrors( const QList<QSslError> &errors );
 %Docstring
-Set the SSL errors to ignore for the connection
+Sets the SSL errors to ignore for the connection
 %End
 
     void resetSslIgnoreErrors();
@@ -141,7 +141,7 @@ Clear the SSL errors to ignore for the connection
 
     void setSslPeerVerify( QSslSocket::PeerVerifyMode mode, int modedepth );
 %Docstring
-Set the client's peer verify mode for connections
+Sets the client's peer verify mode for connections
 %End
 
     void resetSslPeerVerify();
@@ -151,12 +151,12 @@ Reset the client's peer verify mode for connections to default
 
     void setSslHost( const QString &host );
 %Docstring
-Set the host of the server
+Sets the host of the server
 %End
 
     void setConfigCheckable( bool checkable );
 %Docstring
-Set whether the config group box is checkable
+Sets whether the config group box is checkable
 %End
 
     void validateHostPortText( const QString &txt );

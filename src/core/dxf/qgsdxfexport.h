@@ -63,11 +63,11 @@ class CORE_EXPORT QgsDxfExport
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
         {}
 
-        //! Return the layer
+        //! Returns the layer
         QgsVectorLayer *layer() const {return mLayer;}
 
         /**
-         * Return the attribute index used to split into multiple layers.
+         * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
@@ -390,13 +390,13 @@ class CORE_EXPORT QgsDxfExport
      */
     static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
-    //! Return cleaned layer name for use in DXF
+    //! Returns cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
 
-    //! return DXF encoding for Qt encoding
+    //! Returns DXF encoding for Qt encoding
     static QString dxfEncoding( const QString &name );
 
-    //! return list of available DXF encodings
+    //! Returns list of available DXF encodings
     static QStringList encodings();
 
     /**

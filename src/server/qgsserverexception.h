@@ -85,19 +85,18 @@ class SERVER_EXPORT QgsOgcServiceException
     QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(),
                             int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
 
-    //! \returns message
+    //! Returns the exception message
     QString message() const { return mMessage; }
 
-    //! \returns code
+    //! Returns the exception code
     QString code()    const { return mCode; }
 
-    //! \returns locator
+    //! Returns the locator
     QString locator() const { return mLocator; }
 
-    //!return exception version
+    //! Returns the exception version
     QString version() const { return mVersion; }
 
-    //! Overridden from QgsServerException
     QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override;
 
   private:

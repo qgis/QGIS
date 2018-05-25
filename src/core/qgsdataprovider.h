@@ -266,7 +266,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      */
     virtual uint subLayerCount() const
     {
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return a provider name
+     * Returns a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -323,9 +323,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return description
+     * Returns description
      *
-     * Return a terse string describing what the provider is.
+     * Returns a terse string describing what the provider is.
      *
      * \note
      *
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return vector file filter string
+     * Returns vector file filter string
      *
      * Returns a string suitable for a QFileDialog of vector file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return raster file filter string
+     * Returns raster file filter string
      *
      * Returns a string suitable for a QFileDialog of raster file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     //! Add error message
     void appendError( const QgsErrorMessage &message ) { mError.append( message ); }
 
-    //! Set error message
+    //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
   private:

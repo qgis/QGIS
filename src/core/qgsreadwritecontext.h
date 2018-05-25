@@ -46,13 +46,13 @@ class CORE_EXPORT QgsReadWriteContext
           , mCategories( categories )
         {}
 
-        //! Return the message string
+        //! Returns the message string
         QString message() const {return mMessage;}
 
-        //! Return the message level
+        //! Returns the message level
         Qgis::MessageLevel level() const {return mLevel;}
 
-        //! Return the stack of categories of the message
+        //! Returns the stack of categories of the message
         QStringList categories() const {return mCategories;}
 
       private:
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsReadWriteContext
     MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) SIP_PYNAME( _enterCategory );
 
     /**
-     * Return the stored messages and remove them
+     * Returns the stored messages and remove them
      * \since QGIS 3.2
      */
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();

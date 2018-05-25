@@ -50,7 +50,7 @@ and to utilize configurations through various authentication method plugins
 
     QSqlDatabase authDatabaseConnection() const;
 %Docstring
-Set up the application instance of the authentication database connection
+Sets up the application instance of the authentication database connection
 %End
 
     const QString authDatabaseConfigTable() const;
@@ -244,14 +244,14 @@ Verify if provided authentication id is unique
 
     bool hasConfigId( const QString &txt ) const;
 %Docstring
-Return whether a string includes an authcfg ID token
+Returns whether a string includes an authcfg ID token
 
 :param txt: String to check
 %End
 
     QString configIdRegex() const;
 %Docstring
-Return regular expression for authcfg=.{7} key/value token for authentication ids
+Returns the regular expression for authcfg=.{7} key/value token for authentication ids
 %End
 
     QStringList configIds() const;
@@ -646,7 +646,7 @@ Remove a certificate authority
 
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 %Docstring
-Set the default certificate trust policy perferred by user
+Sets the default certificate trust policy perferred by user
 %End
 
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();

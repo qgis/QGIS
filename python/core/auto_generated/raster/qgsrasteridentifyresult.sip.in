@@ -62,7 +62,7 @@ QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
 
     void setParams( const QMap<QString, QVariant> &params );
 %Docstring
-Set map of optional parameters
+Sets map of optional parameters
 %End
 
     QMap<QString, QVariant> params() const;
@@ -72,12 +72,12 @@ Get map of optional parameters
 
     QgsError error() const;
 %Docstring
- Get error
+Returns the last error
 %End
 
     void setError( const QgsError &error );
 %Docstring
- Set error
+Sets the last error
 %End
 
 };

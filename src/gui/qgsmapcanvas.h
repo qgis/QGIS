@@ -206,7 +206,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
-    //! Set the extent of the map canvas
+    //! Sets the extent of the map canvas
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
     /**
@@ -293,7 +293,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
                           int flashes = 3, int duration = 500 );
 
-    //! \brief Sets the map tool currently being used on the canvas
+    //! Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
 
     /**
@@ -328,14 +328,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
-    //! return the map layer at position index in the layer stack
+    //! Returns the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
 
-    //! return number of layers on the map
+    //! Returns number of layers on the map
     int layerCount() const;
 
     /**
-     * Return the list of layers shown within the map canvas.
+     * Returns the list of layers shown within the map canvas.
      * \see setLayers()
      */
     QList<QgsMapLayer *> layers() const;
@@ -432,7 +432,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! returns current layer (set by legend widget)
     QgsMapLayer *currentLayer();
 
-    //! set wheel zoom factor (should be greater than 1)
+    //! Sets wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
     /**
@@ -518,7 +518,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /**
-     * Return snapping utility class that is associated with map canvas.
+     * Returns snapping utility class that is associated with map canvas.
      *  If no snapping utils instance has been associated previously, an internal will be created for convenience
      *  (so map tools do not need to test for existence of the instance).
      *

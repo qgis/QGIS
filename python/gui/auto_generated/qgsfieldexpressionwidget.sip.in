@@ -49,7 +49,7 @@ Appends a scope to the current expression context.
 
     const QString expressionDialogTitle();
 %Docstring
-return the title used for the expression dialog
+Returns the title used for the expression dialog
 %End
 
     void setFilters( QgsFieldProxyModel::Filters filters );
@@ -66,7 +66,7 @@ currently used filter on list of fields
 
     void setGeomCalculator( const QgsDistanceArea &da );
 %Docstring
-set the geometry calculator used in the expression dialog
+Sets the geometry calculator used in the expression dialog
 %End
 
     QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
@@ -79,7 +79,7 @@ set the geometry calculator used in the expression dialog
 
     bool isValidExpression( QString *expressionError = 0 ) const;
 %Docstring
-Return true if the current expression is valid
+Returns true if the current expression is valid
 %End
 
     bool isExpression() const;
@@ -89,7 +89,7 @@ If the content is not just a simple field this method will return true.
 
     QString currentText() const;
 %Docstring
-Return the current text that is set in the expression area
+Returns the current text that is set in the expression area
 %End
 
     QString asExpression() const;

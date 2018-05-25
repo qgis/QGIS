@@ -111,7 +111,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setAdditionalItems( const QStringList &items );
 
     /**
-     * Return the list of additional (non map layer) items included at the end of the combo box.
+     * Returns the list of additional (non map layer) items included at the end of the combo box.
      * \see setAdditionalItems()
      * \since QGIS 3.0
      */
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QgsMapLayer *currentLayer() const;
 
     /**
-     * Return the layer currently shown at the specified index within the combo box.
+     * Returns the layer currently shown at the specified index within the combo box.
      * \param layerIndex position of layer to return
      * \since QGIS 2.10
      * \see currentLayer

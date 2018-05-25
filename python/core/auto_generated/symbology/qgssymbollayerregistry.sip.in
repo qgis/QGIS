@@ -106,7 +106,7 @@ QgsSymbolLayerRegistry is not usually directly created, but rather accessed thro
 
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 %Docstring
-return metadata for specified symbol layer. Returns NULL if not found
+Returns metadata for specified symbol layer. Returns NULL if not found
 %End
 
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );
@@ -135,7 +135,7 @@ and converting absolute paths to relative paths when saving.
 
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 %Docstring
-return a list of available symbol layers for a specified symbol type
+Returns a list of available symbol layers for a specified symbol type
 %End
 
     static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) /Factory/;

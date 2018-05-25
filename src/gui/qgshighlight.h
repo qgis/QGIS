@@ -103,7 +103,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setMinWidth( double width ) { mMinWidth = width; }
 
     /**
-     * Return the layer for which this highlight has been created.
+     * Returns the layer for which this highlight has been created.
      */
     QgsMapLayer *layer() const { return mLayer; }
 

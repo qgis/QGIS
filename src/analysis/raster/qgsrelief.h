@@ -118,7 +118,7 @@ class ANALYSIS_EXPORT QgsRelief
       \returns the output dataset or nullptr in case of error*/
     gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
-    //! Set elevation color
+    //! Sets elevation color
     bool setElevationColor( double elevation, int *red, int *green, int *blue );
 
     //! Sets relief colors

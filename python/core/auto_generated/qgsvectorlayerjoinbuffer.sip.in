@@ -97,7 +97,7 @@ Find out what is the first index of the join within fields. Returns -1 if join i
 
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 %Docstring
-Return a vector of indices for use in join based on field names from the layer
+Returns a vector of indices for use in join based on field names from the layer
 
 .. versionadded:: 2.6
 %End

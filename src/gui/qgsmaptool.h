@@ -135,7 +135,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      * the previously used toolbutton to pop out. */
     void setAction( QAction *action );
 
-    //! Return associated action with map tool or NULL if no action is associated
+    //! Returns associated action with map tool or NULL if no action is associated
     QAction *action();
 
     /**
@@ -143,10 +143,10 @@ class GUI_EXPORT QgsMapTool : public QObject
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton *button );
 
-    //! Return associated button with map tool or NULL if no button is associated
+    //! Returns associated button with map tool or NULL if no button is associated
     QAbstractButton *button();
 
-    //! Set a user defined cursor
+    //! Sets a user defined cursor
     virtual void setCursor( const QCursor &cursor );
 
     //! called when set as currently active map tool

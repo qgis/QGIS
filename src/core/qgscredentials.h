@@ -70,7 +70,7 @@ class CORE_EXPORT QgsCredentials
     void unlock();
 
     /**
-     * Return pointer to mutex
+     * Returns pointer to mutex
      * \since QGIS 2.4
      */
     QMutex *mutex() { return &mMutex; }

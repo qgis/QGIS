@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     virtual QgsFeedback *feedback() const { return nullptr; }
 
-    //! Return list of errors (problems) that happened during the rendering
+    //! Returns list of errors (problems) that happened during the rendering
     QStringList errors() const { return mErrors; }
 
     //! Get access to the ID of the layer rendered by this class

@@ -599,7 +599,7 @@ instances to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
 %Docstring
-Return a newly created menu instance (or null pointer on error)
+Returns a newly created menu instance (or null pointer on error)
 %End
 };
 

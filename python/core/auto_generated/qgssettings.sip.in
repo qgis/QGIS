@@ -160,11 +160,11 @@ Returns a list of all key top-level groups (same as childGroups) but only for gr
 %End
     static QString globalSettingsPath();
 %Docstring
-Return the path to the Global Settings QSettings storage file
+Returns the path to the Global Settings QSettings storage file
 %End
     static bool setGlobalSettingsPath( const QString &path );
 %Docstring
-Set the Global Settings QSettings storage file
+Sets the Global Settings QSettings storage file
 %End
     int beginReadArray( const QString &prefix );
 %Docstring
@@ -245,7 +245,7 @@ Removes the setting key and any sub-settings of key in a section.
 %End
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
 %Docstring
-Return the sanitized and prefixed key
+Returns the sanitized and prefixed key
 %End
     void clear();
 %Docstring

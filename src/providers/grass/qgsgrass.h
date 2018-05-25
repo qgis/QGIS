@@ -84,7 +84,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setName( const QString &name ) { mName = name; }
 
     /**
-     * Return full name (map@mapset)
+     * Returns full name (map@mapset)
      * \returns full name or empty string if map name is empty */
     QString fullName() const;
 
@@ -328,7 +328,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     //! Initialize GRASS region
     static void initRegion( struct Cell_head *window );
-    //! Set region extent
+    //! Sets region extent
     static void setRegion( struct Cell_head *window, const QgsRectangle &rect );
 
     /**

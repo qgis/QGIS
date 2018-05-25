@@ -104,7 +104,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
 
     /**
-     * Return color schemes of a specific type
+     * Returns color schemes of a specific type
      * \param schemeList destination list for matching schemes
      * \note not available in Python bindings
      */

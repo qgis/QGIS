@@ -90,7 +90,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     {
       //! name
       QString name;
-      //! return type, or empty if unknown
+      //! Returns type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
       int minArgs = -1;
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! add a list of API for autocompletion
     void addApis( const QStringList &list );
 
-    //! set if multiple tables/joins are supported. Default is false
+    //! Sets if multiple tables/joins are supported. Default is false
     void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
 
     /**

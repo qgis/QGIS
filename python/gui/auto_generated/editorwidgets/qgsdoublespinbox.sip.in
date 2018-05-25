@@ -91,7 +91,7 @@ evaluated and then discarded.
     virtual void clear();
 
 %Docstring
-Set the current value to the value defined by the clear value.
+Sets the current value to the value defined by the clear value.
 %End
 
     void setClearValue( double customValue, const QString &clearValueText = QString() );

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLegendStyle
     double margin( Side side ) { return mMarginMap.value( side ); }
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
 
-    //! set all margins
+    //! Sets all margins
     void setMargin( double margin );
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;

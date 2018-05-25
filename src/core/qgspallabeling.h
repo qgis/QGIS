@@ -929,9 +929,9 @@ class CORE_EXPORT QgsLabelingResults
     //! QgsLabelingResults cannot be copied.
     QgsLabelingResults &operator=( const QgsLabelingResults &rh ) = delete;
 
-    //! return infos about labels at a given (map) position
+    //! Returns infos about labels at a given (map) position
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-    //! return infos about labels within a given (map) rectangle
+    //! Returns infos about labels within a given (map) rectangle
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
   private:

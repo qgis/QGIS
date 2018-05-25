@@ -339,10 +339,10 @@ class QgsOgcUtilsExprToFilter
     //! Convert an expression to a OGC filter
     QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node );
 
-    //! Return whether the gml: namespace is used
+    //! Returns whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    //! Return the error message.
+    //! Returns the error message.
     QString errorMessage() const { return mErrorMessage; }
 
   private:
@@ -386,10 +386,10 @@ class QgsOgcUtilsSQLStatementToFilter
     //! Convert a SQL statement to a OGC filter
     QDomElement toOgcFilter( const QgsSQLStatement::Node *node );
 
-    //! Return whether the gml: namespace is used
+    //! Returns whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    //! Return the error message.
+    //! Returns the error message.
     QString errorMessage() const { return mErrorMessage; }
 
   private:

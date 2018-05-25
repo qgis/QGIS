@@ -68,7 +68,7 @@ Returns the list of specific items excluded from the combo box.
 
     QgsLayoutItem *item( int index ) const;
 %Docstring
-Return the item currently shown at the specified ``index`` within the combo box.
+Returns the item currently shown at the specified ``index`` within the combo box.
 
 .. seealso:: :py:func:`currentItem`
 %End

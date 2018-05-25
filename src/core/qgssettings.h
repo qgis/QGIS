@@ -162,9 +162,9 @@ class CORE_EXPORT QgsSettings : public QObject
     QStringList childGroups() const;
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
-    //! Return the path to the Global Settings QSettings storage file
+    //! Returns the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
-    //! Set the Global Settings QSettings storage file
+    //! Sets the Global Settings QSettings storage file
     static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsSettings : public QObject
 #ifndef SIP_RUN
 
     /**
-     * Return the setting value for a setting based on an enum.
+     * Returns the setting value for a setting based on an enum.
      * This forces the output to be a valid and existing entry of the enum.
      * Hence if the setting value is incorrect, the given default value is returned.
      * This tries first with setting as a string (as the enum) and then as an integer value.
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSettings : public QObject
     }
 
     /**
-     * Return the setting value for a setting based on a flag.
+     * Returns the setting value for a setting based on a flag.
      * This forces the output to be a valid and existing entry of the flag.
      * Hence if the setting value is incorrect, the given default value is returned.
      * This tries first with setting as a string (using a byte array) and then as an integer value.
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsSettings : public QObject
     void sync();
     //! Removes the setting key and any sub-settings of key in a section.
     void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
-    //! Return the sanitized and prefixed key
+    //! Returns the sanitized and prefixed key
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();

@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer *layer() const { return mLayer; }
 
-        //! Set the map layer for this record
+        //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
 
         //! Whether current style is valid and should be applied
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
         /**
-         * Return set with only records for valid layers
+         * Returns set with only records for valid layers
          * \note not available in Python bindings
          */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;

@@ -169,7 +169,7 @@ class CORE_EXPORT QgsAction
     bool capture() const { return mCaptureOutput; }
 
 
-    //! Return whether only enabled in editable mode
+    //! Returns whether only enabled in editable mode
     bool isEnabledOnlyWhenEditable() const { return mIsEnabledOnlyWhenEditable; }
 
 

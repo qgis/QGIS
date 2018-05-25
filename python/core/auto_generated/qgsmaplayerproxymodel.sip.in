@@ -70,7 +70,7 @@ Get the list of maplayers which are excluded from the list
 
     void setExceptedLayerIds( const QStringList &ids );
 %Docstring
-Set the list of maplayer ids which are excluded from the list
+Sets the list of maplayer ids which are excluded from the list
 %End
     QStringList exceptedLayerIds() const;
 %Docstring

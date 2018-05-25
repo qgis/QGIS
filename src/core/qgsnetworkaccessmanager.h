@@ -70,7 +70,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
     QStringList excludeList() const;
 
-    //! set fallback proxy and URL that shouldn't use it.
+    //! Sets fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
     //! Get name for QNetworkRequest::CacheLoadControl
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
-    //! return whether the system proxy should be used
+    //! Returns whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:

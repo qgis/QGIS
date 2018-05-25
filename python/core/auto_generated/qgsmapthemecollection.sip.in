@@ -52,7 +52,7 @@ Returns map layer or null if the layer does not exist anymore
 
         void setLayer( QgsMapLayer *layer );
 %Docstring
-Set the map layer for this record
+Sets the map layer for this record
 %End
 
         bool usingCurrentStyle;

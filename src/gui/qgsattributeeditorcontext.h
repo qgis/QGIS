@@ -191,7 +191,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
     /**
-     * Return current feature from the currently edited form or table row
+     * Returns current feature from the currently edited form or table row
      * \see setFormFeature()
      * \since QGIS 3.2
      */

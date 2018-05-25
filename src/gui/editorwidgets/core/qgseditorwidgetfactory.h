@@ -70,7 +70,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const SIP_FACTORY;
 
     /**
-     * Return The human readable identifier name of this widget type
+     * Returns The human readable identifier name of this widget type
      *
      * \returns a name
      */

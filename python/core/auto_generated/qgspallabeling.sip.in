@@ -504,11 +504,11 @@ Class that stores computed placement from labeling engine.
 
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 %Docstring
-return infos about labels at a given (map) position
+Returns infos about labels at a given (map) position
 %End
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 %Docstring
-return infos about labels within a given (map) rectangle
+Returns infos about labels within a given (map) rectangle
 %End
 
   private:

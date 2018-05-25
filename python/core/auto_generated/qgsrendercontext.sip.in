@@ -62,7 +62,7 @@ Enable or disable a particular flag (other flags are not affected)
 
     Flags flags() const;
 %Docstring
-Return combination of flags used for rendering.
+Returns combination of flags used for rendering.
 
 .. versionadded:: 2.14
 %End

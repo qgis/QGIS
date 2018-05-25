@@ -295,7 +295,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
     /**
-     * Return the filter type which is currently set on this request
+     * Returns the filter type which is currently set on this request
      *
      * \returns Filter type
      */
@@ -324,12 +324,12 @@ class CORE_EXPORT QgsFeatureRequest
      */
     const QgsRectangle &filterRect() const { return mFilterRect; }
 
-    //! Set feature ID that should be fetched.
+    //! Sets feature ID that should be fetched.
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
     //! Get the feature ID that should be fetched.
     QgsFeatureId filterFid() const { return mFilterFid; }
 
-    //! Set feature IDs that should be fetched.
+    //! Sets feature IDs that should be fetched.
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
-     * Return a list of order by clauses specified for this feature request.
+     * Returns a list of order by clauses specified for this feature request.
      *
      * \since QGIS 2.14
      */
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsFeatureRequest
      */
     long limit() const { return mLimit; }
 
-    //! Set flags that affect how features will be fetched
+    //! Sets flags that affect how features will be fetched
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
     const Flags &flags() const { return mFlags; }
 
@@ -499,15 +499,15 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
-     * Return the subset of attributes which at least need to be fetched
+     * Returns the subset of attributes which at least need to be fetched
      * \returns A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
     /**

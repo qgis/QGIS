@@ -28,7 +28,7 @@
 class QgsWFSUtils
 {
   public:
-    //! Return the name of temporary directory.
+    //! Returns the name of temporary directory.
     static QString acquireCacheDirectory();
 
     //! To be called when a temporary file is removed from the directory
@@ -42,7 +42,7 @@ class QgsWFSUtils
     //! Returns namespace prefix (or an empty string if there is no prefix)
     static QString nameSpacePrefix( const QString &tname );
 
-    //! Return a unique identifier made from feature content
+    //! Returns a unique identifier made from feature content
     static QString getMD5( const QgsFeature &f );
 
   protected:
@@ -55,7 +55,7 @@ class QgsWFSUtils
     static bool sKeepAliveWorks;
     static int sCounter;
 
-    //! Return the name of temporary directory.
+    //! Returns the name of temporary directory.
     static QString getCacheDirectory( bool createIfNotExisting );
 
     static QString getBaseCacheDirectory( bool createIfNotExisting );

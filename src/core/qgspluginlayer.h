@@ -43,10 +43,10 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      */
     QgsPluginLayer *clone() const override = 0;
 
-    //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
+    //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
 
-    //! Set extent of the layer
+    //! Sets extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
     /**

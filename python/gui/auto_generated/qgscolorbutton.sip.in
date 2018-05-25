@@ -51,7 +51,7 @@ the button will use the global color scheme registry instead
 
     QColor color() const;
 %Docstring
-Return the currently selected color.
+Returns the currently selected color.
 
 :return: currently selected color
 

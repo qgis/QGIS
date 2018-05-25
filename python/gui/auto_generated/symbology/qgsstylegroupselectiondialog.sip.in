@@ -20,7 +20,7 @@ class QgsStyleGroupSelectionDialog : QDialog
     QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent = 0 );
     void setBold( QStandardItem *item );
 %Docstring
-Set bold font for item
+Sets bold font for item
 %End
 
   signals:

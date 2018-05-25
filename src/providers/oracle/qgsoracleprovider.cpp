@@ -462,7 +462,7 @@ void QgsOracleProvider::setExtent( QgsRectangle &newExtent )
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsOracleProvider::wkbType() const
 {
@@ -492,7 +492,7 @@ QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest &requ
 }
 
 /**
- * Return the number of fields
+ * Returns the number of fields
  */
 uint QgsOracleProvider::fieldCount() const
 {
@@ -2142,7 +2142,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsOracleProvider::featureCount() const
 {

@@ -88,7 +88,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
 
     /**
-     * Return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      *
      * \note Should this be subLayerCount() instead?
      */

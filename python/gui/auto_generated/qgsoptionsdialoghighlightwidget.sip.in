@@ -48,7 +48,7 @@ search for a text pattern and highlight the widget if the text is found
 
     QWidget *widget();
 %Docstring
-Return the widget
+Returns the widget
 %End
 
 

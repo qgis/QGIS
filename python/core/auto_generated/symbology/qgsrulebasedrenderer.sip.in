@@ -106,7 +106,7 @@ Dump for debug purpose
 
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
-Return the attributes used to evaluate the expression of this rule
+Returns the attributes used to evaluate the expression of this rule
 
 :return: A set of attribute names
 %End
@@ -223,7 +223,7 @@ Override the assigned rule key (should be used just internally by rule-based ren
 
         void setSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
-set a new symbol (or NULL). Deletes old symbol.
+Sets a new symbol (or NULL). Deletes old symbol.
 %End
         void setLabel( const QString &label );
 
@@ -353,7 +353,7 @@ Create a rule from an XML definition
 
         const QgsRuleBasedRenderer::RuleList &children();
 %Docstring
-Return all children rules of this rule
+Returns all children rules of this rule
 
 :return: A list of rules
 %End
@@ -450,7 +450,7 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
-return symbol for current feature. Should not be used individually: there could be more symbols for a feature
+Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
 %End
 
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );

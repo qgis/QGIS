@@ -42,13 +42,13 @@ Returns true if any of the layers in this group reports a modification.
 
     QString connString() const;
 %Docstring
-Return the connection string used by this transaction group.
+Returns the connection string used by this transaction group.
 Layers need be compatible when added.
 %End
 
     QString providerKey() const;
 %Docstring
-Return the provider key used by this transaction group.
+Returns the provider key used by this transaction group.
 Layers need be compatible when added.
 %End
 

@@ -41,18 +41,18 @@ Undo a previous 'setHeader' call
     virtual QString header( const QString &key ) const;
 
 %Docstring
-Return the header value
+Returns the header value
 %End
 
     virtual QMap<QString, QString> headers() const;
 %Docstring
-Return all the headers
+Returns all the headers
 %End
 
     virtual bool headersSent() const;
 
 %Docstring
-Return true if the headers have alredy been sent
+Returns true if the headers have alredy been sent
 %End
 
     virtual void setStatusCode( int code );
@@ -65,7 +65,7 @@ Set the http status code
 
     virtual int statusCode() const;
 %Docstring
-Return the http status code
+Returns the http status code
 %End
 
     virtual void sendError( int code,  const QString &message );
@@ -84,7 +84,7 @@ or set headers will be an error.
     virtual QIODevice *io();
 
 %Docstring
-Return the underlying QIODevice
+Returns the underlying QIODevice
 %End
 
     virtual void finish();
@@ -130,7 +130,7 @@ Clear internal buffer
 
     QByteArray body() const;
 %Docstring
-Return body
+Returns body
 %End
 
 

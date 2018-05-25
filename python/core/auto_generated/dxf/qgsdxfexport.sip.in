@@ -27,12 +27,12 @@ class QgsDxfExport
 
         QgsVectorLayer *layer() const;
 %Docstring
-Return the layer
+Returns the layer
 %End
 
         int layerOutputAttributeIndex() const;
 %Docstring
-Return the attribute index used to split into multiple layers.
+Returns the attribute index used to split into multiple layers.
 The attribute value is used for layer names.
 %End
 
@@ -405,17 +405,17 @@ The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:100
 
     static QString dxfLayerName( const QString &name );
 %Docstring
-Return cleaned layer name for use in DXF
+Returns cleaned layer name for use in DXF
 %End
 
     static QString dxfEncoding( const QString &name );
 %Docstring
-return DXF encoding for Qt encoding
+Returns DXF encoding for Qt encoding
 %End
 
     static QStringList encodings();
 %Docstring
-return list of available DXF encodings
+Returns list of available DXF encodings
 %End
 
 

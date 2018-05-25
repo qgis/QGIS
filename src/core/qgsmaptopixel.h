@@ -137,18 +137,18 @@ class CORE_EXPORT QgsMapToPixel
      */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
-    //! Return current map units per pixel
+    //! Returns current map units per pixel
     double mapUnitsPerPixel() const;
 
     /**
-     * Return current map width in pixels
+     * Returns current map width in pixels
      * The information is only known if setRotation was used
      * \since QGIS 2.8
      */
     int mapWidth() const;
 
     /**
-     * Return current map height in pixels
+     * Returns current map height in pixels
      * \since QGIS 2.8
      */
     int mapHeight() const;
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsMapToPixel
     void setMapRotation( double degrees, double cx, double cy );
 
     /**
-     * Return current map rotation in degrees
+     * Returns current map rotation in degrees
      * \since QGIS 2.8
      */
     double mapRotation() const;

@@ -92,7 +92,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     //! Enable or disable feature identification
     void enableFeatureIdentification( bool status );
 
-    //! set the globe coordinates of a user right-click on the globe
+    //! Sets the globe coordinates of a user right-click on the globe
     void setSelectedCoordinates( const osg::Vec3d &coords );
     //! get a coordinates vector
     osg::Vec3d getSelectedCoordinates();

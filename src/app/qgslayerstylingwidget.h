@@ -56,7 +56,7 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last );
 
     /**
-     * Return unique ID for this kind of undo command.
+     * Returns unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
     int id() const override { return 0xbeef; }

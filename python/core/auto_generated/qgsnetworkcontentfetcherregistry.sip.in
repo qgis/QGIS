@@ -45,17 +45,17 @@ Constructs a FetchedContent with pointer to the downloaded file and status of th
 
     const QString filePath() const;
 %Docstring
-Return the path to the local file, an empty string if the file is not accessible yet.
+Returns the path to the local file, an empty string if the file is not accessible yet.
 %End
 
     ContentStatus status() const;
 %Docstring
-Return the status of the download
+Returns the status of the download
 %End
 
     QNetworkReply::NetworkError error() const;
 %Docstring
-Return the potential error of the download
+Returns the potential error of the download
 %End
 
   public slots:

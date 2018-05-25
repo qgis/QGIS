@@ -118,17 +118,17 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     //! Get the SQL query
     QString query() const { return mQuery; }
-    //! Set the SQL query
+    //! Sets the SQL query
     void setQuery( const QString &query ) { mQuery = query; }
 
     //! Get the file path. May be empty
     QString filePath() const { return mFilePath; }
-    //! Set the file path
+    //! Sets the file path
     void setFilePath( const QString &filePath ) { mFilePath = filePath; }
 
     //! Get the name of the field with unique identifiers
     QString uid() const { return mUid; }
-    //! Set the name of the field with unique identifiers
+    //! Sets the name of the field with unique identifiers
     void setUid( const QString &uid ) { mUid = uid; }
 
     /**
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const { return mGeometryField; }
-    //! Set the name of the geometry field
+    //! Sets the name of the geometry field
     void setGeometryField( const QString &geometryField ) { mGeometryField = geometryField; }
 
     /**
@@ -160,17 +160,17 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * QgsWkbTypes::Unknown for unknown types
      */
     QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
-    //! Set the type of the geometry
+    //! Sets the type of the geometry
     void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }
 
     //! Get the SRID of the geometry
     long geometrySrid() const { return mGeometrySrid; }
-    //! Set the SRID of the geometry
+    //! Sets the SRID of the geometry
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
     //! Get field definitions
     QgsFields fields() const { return mFields; }
-    //! Set field definitions
+    //! Sets field definitions
     void setFields( const QgsFields &fields ) { mFields = fields; }
 
     //! Convenience method to test if a given source layer is part of the definition

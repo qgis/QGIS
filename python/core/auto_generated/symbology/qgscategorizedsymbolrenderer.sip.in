@@ -119,12 +119,12 @@ symbol for the renderer.
 
     int categoryIndexForValue( const QVariant &val );
 %Docstring
-return index of category with specified value (-1 if not found)
+Returns index of category with specified value (-1 if not found)
 %End
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
-return index of category with specified label (-1 if not found or not unique)
+Returns index of category with specified label (-1 if not found or not unique)
 
 .. versionadded:: 2.5
 %End

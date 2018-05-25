@@ -63,7 +63,7 @@ The Dom node should represent the state associated with a specific layer.
 
     QString dataSource( const QDomNode &layerNode );
 %Docstring
-Return the data source for the given layer
+Returns the data source for the given layer
 
 The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
@@ -74,7 +74,7 @@ Essentially dumps datasource tag.
 
     ProviderType providerType( const QDomNode &layerNode );
 %Docstring
-Return the physical storage type associated with the given layer
+Returns the physical storage type associated with the given layer
 
 The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 

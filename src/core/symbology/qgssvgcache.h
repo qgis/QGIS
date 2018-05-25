@@ -105,7 +105,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     //! Don't consider image, picture, last used timestamp for comparison
     bool operator==( const QgsSvgCacheEntry &other ) const;
-    //! Return memory usage in bytes
+    //! Returns memory usage in bytes
     int dataSize() const;
 
   private:

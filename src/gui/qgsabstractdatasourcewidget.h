@@ -122,16 +122,16 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Constructor
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    //! Return the widget mode
+    //! Returns the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
 
-    //! Return the map canvas (can be null)
+    //! Returns the map canvas (can be null)
     const QgsMapCanvas *mapCanvas() const;
 
     //! Connect the ok and apply/add buttons to the slots
     void setupButtons( QDialogButtonBox *buttonBox );
 
-    //! Return the add Button
+    //! Returns the add Button
     QPushButton *addButton( ) const { return mAddButton; }
 
   private:

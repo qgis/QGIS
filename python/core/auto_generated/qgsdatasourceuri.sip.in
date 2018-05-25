@@ -43,23 +43,23 @@ constructor which parses input URI
 
     QString connectionInfo( bool expandAuthConfig = true ) const;
 %Docstring
-return connection part of URI
+Returns connection part of URI
 %End
 
     QString uri( bool expandAuthConfig = true ) const;
 %Docstring
-return complete uri
+Returns complete uri
 %End
 
     QByteArray encodedUri() const;
 %Docstring
-return complete encoded uri (generic mode)
+Returns complete encoded uri (generic mode)
 %End
 
 
     void setEncodedUri( const QString &uri );
 %Docstring
-set complete encoded uri (generic mode)
+Sets complete encoded uri (generic mode)
 %End
 
     QString quotedTablename() const;
@@ -115,7 +115,7 @@ Test if param exists (generic mode)
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 %Docstring
-Set all connection related members at once
+Sets all connection related members at once
 %End
 
     void setConnection( const QString &aService,
@@ -125,12 +125,12 @@ Set all connection related members at once
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 %Docstring
-Set all connection related members at once (for the service case)
+Sets all connection related members at once (for the service case)
 %End
 
     void setDatabase( const QString &database );
 %Docstring
-Set database
+Sets database
 %End
 
     void setDataSource( const QString &aSchema,
@@ -139,22 +139,22 @@ Set database
                         const QString &aSql = QString(),
                         const QString &aKeyColumn = QString() );
 %Docstring
-Set all data source related members at once
+Sets all data source related members at once
 %End
 
     void setAuthConfigId( const QString &authcfg );
 %Docstring
-Set authentication configuration ID
+Sets authentication configuration ID
 %End
 
     void setUsername( const QString &username );
 %Docstring
-set username
+Sets username
 %End
 
     void setPassword( const QString &password );
 %Docstring
-set password
+Sets password
 %End
 
     static QString removePassword( const QString &aUri );
@@ -189,12 +189,12 @@ Returns the SQL query
 
     QString geometryColumn() const;
 %Docstring
-Return the name of the geometry column
+Returns the name of the geometry column
 %End
 
     void setUseEstimatedMetadata( bool flag );
 %Docstring
-set use Estimated Metadata
+Sets use Estimated Metadata
 %End
 
     bool useEstimatedMetadata() const;
@@ -204,7 +204,7 @@ Returns true if estimated metadata are used
 
     void disableSelectAtId( bool flag );
 %Docstring
-Set to true to disable selection by id
+Sets to true to disable selection by id
 %End
     bool selectAtIdDisabled() const;
 %Docstring

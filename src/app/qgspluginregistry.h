@@ -43,7 +43,7 @@ class APP_EXPORT QgsPluginRegistry
     //! Returns the instance pointer, creating the object on the first call
     static QgsPluginRegistry *instance();
 
-    //! set pointer to qgis interface passed to plugins (used by QgisApp)
+    //! Sets pointer to qgis interface passed to plugins (used by QgisApp)
     void setQgisInterface( QgisInterface *iface );
 
     //! Check whether this module is loaded
@@ -55,7 +55,7 @@ class APP_EXPORT QgsPluginRegistry
     //! Retrieve a pointer to a loaded plugin
     QgisPlugin *plugin( const QString &key );
 
-    //! Return whether the plugin is pythonic
+    //! Returns whether the plugin is pythonic
     bool isPythonPlugin( const QString &key ) const;
 
     //! Add a plugin to the map of loaded plugins

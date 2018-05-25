@@ -22,34 +22,34 @@ Constructor
 
     QString groupTitle();
 %Docstring
-return group WMS title
+Returns group WMS title
 %End
 
     QString groupShortName();
 %Docstring
-return group WMS short name
+Returns group WMS short name
 %End
 
     QString groupAbstract();
 %Docstring
-return group WMS abstract
+Returns group WMS abstract
 %End
 
 
   public slots:
     void setGroupTitle( const QString &title );
 %Docstring
-set group WMS title
+Sets group WMS title
 %End
 
     void setGroupShortName( const QString &shortName );
 %Docstring
-set group WMS short name
+Sets group WMS short name
 %End
 
     void setGroupAbstract( const QString &abstract );
 %Docstring
-set group WMS abstract
+Sets group WMS abstract
 %End
 
 

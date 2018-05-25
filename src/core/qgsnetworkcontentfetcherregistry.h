@@ -65,17 +65,17 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 
 #ifndef SIP_RUN
-    //! Return a pointer to the local file, a null pointer if the file is not accessible yet.
+    //! Returns a pointer to the local file, a null pointer if the file is not accessible yet.
     QFile *file() const {return mFile;}
 #endif
 
-    //! Return the path to the local file, an empty string if the file is not accessible yet.
+    //! Returns the path to the local file, an empty string if the file is not accessible yet.
     const QString filePath() const {return mFilePath;}
 
-    //! Return the status of the download
+    //! Returns the status of the download
     ContentStatus status() const {return mStatus;}
 
-    //! Return the potential error of the download
+    //! Returns the potential error of the download
     QNetworkReply::NetworkError error() const {return mError;}
 
   public slots:

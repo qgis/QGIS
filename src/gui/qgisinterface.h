@@ -141,7 +141,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 
     /**
-     * Return vector layers in edit mode
+     * Returns vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
@@ -149,7 +149,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
 
-    //! Return a pointer to the map canvas
+    //! Returns a pointer to the map canvas
     virtual QgsMapCanvas *mapCanvas() = 0;
 
     /**
@@ -159,10 +159,10 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 
-    //! Return a pointer to the main window (instance of QgisApp in case of QGIS)
+    //! Returns a pointer to the main window (instance of QgisApp in case of QGIS)
     virtual QWidget *mainWindow() = 0;
 
-    //! Return the message bar of the main app
+    //! Returns the message bar of the main app
     virtual QgsMessageBar *messageBar() = 0;
 
     /**
@@ -172,7 +172,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
 
 
-    //! Return changeable options built from settings and/or defaults
+    //! Returns changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
     //! Get reference font for initial qApp (may not be same as QgisApp)

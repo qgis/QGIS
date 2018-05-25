@@ -425,7 +425,7 @@ Remove a custom property from the layout.
 
     QStringList customProperties() const;
 %Docstring
-Return list of keys stored in custom properties for the layout.
+Returns list of keys stored in custom properties for the layout.
 
 .. seealso:: :py:func:`setCustomProperty`
 

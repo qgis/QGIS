@@ -82,7 +82,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QSize sizeHint() const override;
 
     /**
-     * Return the currently selected color.
+     * Returns the currently selected color.
      * \returns currently selected color
      * \see setColor
      */

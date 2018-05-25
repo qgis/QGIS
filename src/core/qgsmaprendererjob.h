@@ -213,7 +213,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
     /**
-     * Return map settings with which this job was started.
+     * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
      */

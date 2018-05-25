@@ -218,17 +218,17 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual QSet<QString> referencedColumns() const = 0;
 
     /**
-     * Return a set of all variables which are used in this expression.
+     * Returns a set of all variables which are used in this expression.
      */
     virtual QSet<QString> referencedVariables() const = 0;
 
     /**
-     * Return a set of all functions which are used in this expression.
+     * Returns a set of all functions which are used in this expression.
      */
     virtual QSet<QString> referencedFunctions() const = 0;
 
     /**
-     * Return a list of all nodes which are used in this expression.
+     * Returns a list of all nodes which are used in this expression.
      *
      * \note not available in Python bindings
      * \since QGIS 3.2

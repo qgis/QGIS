@@ -50,7 +50,7 @@ class CORE_EXPORT QgsLegendRenderer
     //! Run the layout algorithm and determine the size required for legend
     QSizeF minimumSize();
 
-    //! Set the preferred resulting legend size.
+    //! Sets the preferred resulting legend size.
     void setLegendSize( QSizeF s ) { mLegendSize = s; }
 
     //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size

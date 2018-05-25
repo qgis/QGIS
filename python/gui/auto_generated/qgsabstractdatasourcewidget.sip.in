@@ -121,12 +121,12 @@ Constructor
 
     QgsProviderRegistry::WidgetMode widgetMode() const;
 %Docstring
-Return the widget mode
+Returns the widget mode
 %End
 
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
-Return the map canvas (can be null)
+Returns the map canvas (can be null)
 %End
 
     void setupButtons( QDialogButtonBox *buttonBox );
@@ -136,7 +136,7 @@ Connect the ok and apply/add buttons to the slots
 
     QPushButton *addButton( ) const;
 %Docstring
-Return the add Button
+Returns the add Button
 %End
 
 };

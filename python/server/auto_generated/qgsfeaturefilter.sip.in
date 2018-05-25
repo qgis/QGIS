@@ -39,7 +39,7 @@ Filter the features of the layer
 
     QgsFeatureFilterProvider *clone() const /Factory/;
 %Docstring
-Return a clone of the object
+Returns a clone of the object
 
 :return: A clone
 %End

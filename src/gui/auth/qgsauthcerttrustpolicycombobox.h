@@ -50,10 +50,10 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 
   public slots:
-    //! Set current trust policy
+    //! Sets current trust policy
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
-    //! Set default trust policy
+    //! Sets default trust policy
     void setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy );
 
   private slots:

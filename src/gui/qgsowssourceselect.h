@@ -75,7 +75,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! show whatever error is exposed.
     void showError( const QString &title, const QString &format, const QString &error );
 
-    //! Set status message to theMessage
+    //! Sets status message to theMessage
     void showStatusMessage( const QString &message );
 
   protected:
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Clear previously set formats
     void clearFormats();
 
-    //! Set supported CRSs
+    //! Sets supported CRSs
     void populateCrs();
 
     //! Clear CRSs
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Connection info (uri)
     QString connectionInfo();
 
-    //! Set the server connection combo box to that stored in the config file.
+    //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
 
     //! Add a few example servers to the list.

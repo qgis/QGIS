@@ -159,7 +159,7 @@ Read block of data using given extent and size.
 
     virtual bool sourceHasNoDataValue( int bandNo ) const;
 %Docstring
-Return true if source band has no data value
+Returns true if source band has no data value
 %End
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
@@ -169,7 +169,7 @@ Return true if source band has no data value
 
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
 %Docstring
- Set source nodata value usage
+Sets the source nodata value usage
 %End
 
     virtual double sourceNoDataValue( int bandNo ) const;

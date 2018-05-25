@@ -38,7 +38,7 @@ namespace QgsWcs
 {
 
   /**
-   * Return the highest version supported by this implementation
+   * Returns the highest version supported by this implementation
    */
   QString implementationVersion();
 

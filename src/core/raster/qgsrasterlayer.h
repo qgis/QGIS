@@ -179,7 +179,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
         : loadDefaultStyle( loadDefaultStyle )
       {}
 
-      //! Set to true if the default layer style should be loaded
+      //! Sets to true if the default layer style should be loaded
       bool loadDefaultStyle = true;
     };
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 
-    //! Return time stamp for given file name
+    //! Returns time stamp for given file name
     static QDateTime lastModified( const QString   &name );
 
     /**
@@ -265,11 +265,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief  Accessor for raster layer type (which is a read only property)
     LayerType rasterType() { return mRasterType; }
 
-    //! Set raster renderer. Takes ownership of the renderer object
+    //! Sets raster renderer. Takes ownership of the renderer object
     void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
-    //! Set raster resample filter. Takes ownership of the resample filter object
+    //! Sets raster resample filter. Takes ownership of the resample filter object
     QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
@@ -367,14 +367,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
-     * \brief Return default contrast enhancemnt settings for that type of raster.
+     * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
       QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
 
-    //! \brief Set default contrast enhancement
+    //! Sets the default contrast enhancement
     void setDefaultContrastEnhancement();
 
     QStringList subLayers() const override;

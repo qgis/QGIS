@@ -138,7 +138,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     //! \brief Functionality common to both constructors
     bool initBrowser();
 
-    //! \brief Set all of the gui objects based on the current configuration
+    //! Sets all of the gui objects based on the current configuration
     void initOptionsTab();
 
     //! \brief Method called to load data into the browser
@@ -147,7 +147,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     //! \brief Reset all gui items on the options tab to a 'system default'
     void restoreDefaultOptions();
 
-    //! \brief Sets the base path to the path of the data source
+    //! Sets the base path to the path of the data source
     void setBasePathToDataSource();
 
   private slots:

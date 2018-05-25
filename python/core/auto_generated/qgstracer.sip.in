@@ -38,7 +38,7 @@ Get layers used for tracing
 %End
     void setLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-Set layers used for tracing
+Sets layers used for tracing
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -61,7 +61,7 @@ Get extent to which graph's features will be limited (empty extent means no limi
 %End
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Set extent to which graph's features will be limited (empty extent means no limit)
+Sets extent to which graph's features will be limited (empty extent means no limit)
 %End
 
     double offset() const;

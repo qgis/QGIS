@@ -177,7 +177,7 @@ returned in ``retError``.
 
     static QDateTime lastModified( const QString   &name );
 %Docstring
-Return time stamp for given file name
+Returns time stamp for given file name
 %End
 
  void setDataProvider( const QString &provider ) /Deprecated/;
@@ -204,13 +204,13 @@ Set the data provider.
 
     void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
 %Docstring
-Set raster renderer. Takes ownership of the renderer object
+Sets raster renderer. Takes ownership of the renderer object
 %End
     QgsRasterRenderer *renderer() const;
 
     QgsRasterResampleFilter *resampleFilter() const;
 %Docstring
-Set raster resample filter. Takes ownership of the resample filter object
+Sets raster resample filter. Takes ownership of the resample filter object
 %End
 
     QgsBrightnessContrastFilter *brightnessFilter() const;
@@ -322,7 +322,7 @@ In a world file, this is normally the first row (without the sign).
 
     void setDefaultContrastEnhancement();
 %Docstring
- Set default contrast enhancement
+Sets the default contrast enhancement
 %End
 
     virtual QStringList subLayers() const;

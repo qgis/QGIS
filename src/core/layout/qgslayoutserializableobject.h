@@ -37,7 +37,7 @@ class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterf
   public:
 
     /**
-     * Return the object type as a string.
+     * Returns the object type as a string.
      *
      * This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
      */

@@ -475,7 +475,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void removeCustomProperty( const QString &key );
 
     /**
-     * Return list of keys stored in custom properties for the layout.
+     * Returns list of keys stored in custom properties for the layout.
      * \see setCustomProperty()
      * \see customProperty()
      * \see removeCustomProperty()

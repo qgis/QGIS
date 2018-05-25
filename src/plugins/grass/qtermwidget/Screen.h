@@ -379,13 +379,13 @@ public:
     QVector<LineProperty> getLineProperties( int startLine , int endLine ) const;
 
 
-    /** Return the number of lines. */
+    /** Returns the number of lines. */
     int getLines() const
     { return lines; }
-    /** Return the number of columns. */
+    /** Returns the number of columns. */
     int getColumns() const
     { return columns; }
-    /** Return the number of lines in the history buffer. */
+    /** Returns the number of lines in the history buffer. */
     int getHistLines() const;
     /**
      * Sets the type of storage used to keep lines in the history.

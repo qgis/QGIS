@@ -85,7 +85,7 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    //! Return the layer type from \a geometryType
+    //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
     //! Delete a geopackage layer

@@ -500,7 +500,7 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
 
     /**
-     * Return the gradient of a line defined by points \a pt1 and \a pt2.
+     * Returns the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
@@ -509,7 +509,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
-     * Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
+     * Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \param a Output parameter, a coefficient of the equation.

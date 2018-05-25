@@ -65,7 +65,7 @@ Returns a map of value to classes (colors) used by the renderer.
 
     QString label( int idx ) const;
 %Docstring
-Return optional category label
+Returns optional category label
 
 .. versionadded:: 2.1
 %End

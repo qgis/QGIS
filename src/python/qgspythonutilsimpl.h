@@ -81,25 +81,25 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /* plugins related functions */
 
-    //! return current path for Python plugins
+    //! Returns the current path for Python plugins
     QString pluginsPath();
 
-    //! return current path for Python in home directory
+    //! Returns the current path for Python in home directory
     QString homePythonPath();
 
-    //! return current path for home directory Python plugins
+    //! Returns the current path for home directory Python plugins
     QString homePluginsPath();
 
-    //! return a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable
+    //! Returns a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable
     QStringList extraPluginsPaths();
 
-    //! return list of all available Python plugins
+    //! Returns a list of all available Python plugins
     QStringList pluginList() override;
 
-    //! return whether the plugin is loaded (active)
+    //! Returns whether the plugin is loaded (active)
     bool isPluginLoaded( const QString &packageName ) override;
 
-    //! return a list of active plugins
+    //! Returns a list of active plugins
     QStringList listActivePlugins() override;
 
     //! load Python plugin (import)

@@ -52,13 +52,13 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
-    //! Return associated symbol. May be null.
+    //! Returns associated symbol. May be null.
     QgsSymbol *symbol() const { return mSymbol; }
-    //! Return text label
+    //! Returns text label
     QString label() const { return mLabel; }
-    //! Return unique identifier of the rule for identification of the item within renderer
+    //! Returns unique identifier of the rule for identification of the item within renderer
     QString ruleKey() const { return mKey; }
-    //! Return whether the item is user-checkable - whether renderer supports enabling/disabling it
+    //! Returns whether the item is user-checkable - whether renderer supports enabling/disabling it
     bool isCheckable() const { return mCheckable; }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     QString parentRuleKey() const { return mParentKey; }
 
-    //! Set symbol of the item. Takes ownership of symbol.
+    //! Sets symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
     /**

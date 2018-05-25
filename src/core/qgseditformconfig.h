@@ -132,7 +132,7 @@ class CORE_EXPORT QgsEditFormConfig
     //! Get the active layout style for the attribute editor for this layer
     EditorLayout layout() const;
 
-    //! Set the active layout style for the attribute editor for this layer
+    //! Sets the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
     /**
@@ -257,18 +257,18 @@ class CORE_EXPORT QgsEditFormConfig
     void setInitFilePath( const QString &filePath );
 
     /**
-     * Return Python code source for edit form initialization
+     * Returns Python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */
     PythonInitCodeSource initCodeSource() const;
 
-    //! Set if Python code shall be used for edit form initialization and its origin
+    //! Sets if Python code shall be used for edit form initialization and its origin
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
     //! Type of feature form pop-up suppression after feature creation (overrides app setting)
     FeatureFormSuppress suppress() const;
-    //! Set type of feature form pop-up suppression after feature creation (overrides app setting)
+    //! Sets type of feature form pop-up suppression after feature creation (overrides app setting)
     void setSuppress( FeatureFormSuppress s );
 
     // Serialization

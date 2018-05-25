@@ -115,7 +115,7 @@ the previously used toolbutton to pop out. *
 
     QAction *action();
 %Docstring
-Return associated action with map tool or NULL if no action is associated
+Returns associated action with map tool or NULL if no action is associated
 %End
 
     void setButton( QAbstractButton *button );
@@ -126,12 +126,12 @@ as setAction() function except it works with a button instead of an QAction. *
 
     QAbstractButton *button();
 %Docstring
-Return associated button with map tool or NULL if no button is associated
+Returns associated button with map tool or NULL if no button is associated
 %End
 
     virtual void setCursor( const QCursor &cursor );
 %Docstring
-Set a user defined cursor
+Sets a user defined cursor
 %End
 
     virtual void activate();

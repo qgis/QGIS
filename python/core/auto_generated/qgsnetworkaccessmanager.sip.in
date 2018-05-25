@@ -63,7 +63,7 @@ retrieve exclude list (urls shouldn't use the fallback proxy)
 
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 %Docstring
-set fallback proxy and URL that shouldn't use it.
+Sets fallback proxy and URL that shouldn't use it.
 %End
 
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
@@ -83,7 +83,7 @@ Setup the NAM according to the user's settings
 
     bool useSystemProxy() const;
 %Docstring
-return whether the system proxy should be used
+Returns whether the system proxy should be used
 %End
 
   signals:

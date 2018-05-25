@@ -569,10 +569,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 
-    //! Return a list of all available svg files
+    //! Returns a list of all available svg files
     static QStringList listSvgFiles();
 
-    //! Return a list of svg files at the specified directory
+    //! Returns a list of svg files at the specified directory
     static QStringList listSvgFilesAt( const QString &directory );
 
     /**
@@ -599,7 +599,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 
     /**
-     * Return a new valid expression instance for given field or expression string.
+     * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns null pointer.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
@@ -608,7 +608,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) SIP_FACTORY;
 
     /**
-     * Return a field name if the whole expression is just a name of the field .
+     * Returns a field name if the whole expression is just a name of the field .
      *  Returns full expression string if the expression is more complex than just one field.
      *  Using just expression->expression() method may return quoted field name, but that is not
      *  wanted for saving (due to backward compatibility) or display in GUI.

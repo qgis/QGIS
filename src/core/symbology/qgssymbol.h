@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSymbol
 
     virtual ~QgsSymbol();
 
-    //! return new default symbol for specified geometry type
+    //! Returns new default symbol for specified geometry type
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     SymbolType type() const { return mType; }
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsSymbol
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
     /**
-     * Return a list of attributes required to render this feature.
+     * Returns a list of attributes required to render this feature.
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */

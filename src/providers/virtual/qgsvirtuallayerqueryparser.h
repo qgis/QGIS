@@ -25,7 +25,7 @@ namespace QgsVirtualLayerQueryParser
 {
 
   /**
-   * Return the list of tables referenced in the SQL query
+   * Returns the list of tables referenced in the SQL query
    */
   QStringList referencedTables( const QString &q );
 

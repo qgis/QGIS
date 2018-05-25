@@ -139,7 +139,7 @@ QgsRectangle QgsGPXProvider::extent() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
@@ -154,7 +154,7 @@ QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 long QgsGPXProvider::featureCount() const
 {

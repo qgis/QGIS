@@ -94,7 +94,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     static bool expressionRequiresFormScope( const QString &expression );
 
     /**
-     * Return a list of attributes required by the form context \a expression
+     * Returns a list of attributes required by the form context \a expression
      *
      * \param expression Form filter expression
      * \return list of attributes required by the expression
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     static QSet<QString> expressionFormAttributes( const QString &expression );
 
     /**
-     * Return a list of variables required by the form context \a expression
+     * Returns a list of variables required by the form context \a expression
      *
      * \param expression Form filter expression
      * \return list of variables required by the expression

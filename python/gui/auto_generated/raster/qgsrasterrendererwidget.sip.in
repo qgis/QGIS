@@ -62,7 +62,7 @@ Load programmatically with current values
 
     virtual QgsRasterMinMaxWidget *minMaxWidget();
 %Docstring
-Return min/max widget when it exists.
+Returns min/max widget when it exists.
 %End
 
   signals:

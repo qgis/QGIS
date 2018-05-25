@@ -74,11 +74,11 @@ Enable/disable properties widget
 %End
     void setFilterSyntax( QAction * );
 %Docstring
-Set filter syntax
+Sets filter syntax
 %End
     void setCaseSensitive( bool caseSensitive );
 %Docstring
-Set filter case sensitivity
+Sets filter case sensitivity
 %End
     void setFilter();
 %Docstring

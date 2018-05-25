@@ -211,7 +211,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         virtual ~FieldValueConverter() = default;
 
         /**
-         * Return a possibly modified field definition. Default implementation will return provided field unmodified.
+         * Returns a possibly modified field definition. Default implementation will return provided field unmodified.
          * \param field original field definition
          * \returns possibly modified field definition
          */
@@ -423,10 +423,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * allows for conversion of geometryless tables to null geometries, etc */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
-        //! Set to true to force creation of multi* geometries
+        //! Sets to true to force creation of multi* geometries
         bool forceMulti = false;
 
-        //! Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
+        //! Sets to true to include z dimension in output. This option is only valid if overrideGeometryType is set
         bool includeZ = false;
 
         /**
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type ) SIP_SKIP;
 
     /**
-     * Return edition capabilities for an existing dataset name.
+     * Returns edition capabilities for an existing dataset name.
      * \since QGIS 3.0
      */
     static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );

@@ -66,63 +66,63 @@ itself the min/max values.
 
     QgsRasterMinMaxOrigin::Limits limits() const;
 %Docstring
- Return limits.
+Returns the raster limits.
 %End
 
     QgsRasterMinMaxOrigin::Extent extent() const;
 %Docstring
- Return extent.
+Returns the raster extent.
 %End
 
     QgsRasterMinMaxOrigin::StatAccuracy statAccuracy() const;
 %Docstring
- Return statistic accuracy.
+Returns the raster statistic accuracy.
 %End
 
     double cumulativeCutLower() const;
 %Docstring
- Return lower bound of cumulative cut method (between 0 and 1).
+Returns the lower bound of cumulative cut method (between 0 and 1).
 %End
 
     double cumulativeCutUpper() const;
 %Docstring
- Return upper bound of cumulative cut method (between 0 and 1).
+Returns the upper bound of cumulative cut method (between 0 and 1).
 %End
 
     double stdDevFactor() const;
 %Docstring
- Return factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+Returns the factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
 %End
 
 
     void setLimits( QgsRasterMinMaxOrigin::Limits limits );
 %Docstring
- Set limits.
+Sets the limits.
 %End
 
     void setExtent( QgsRasterMinMaxOrigin::Extent extent );
 %Docstring
- Set extent.
+Sets the extent.
 %End
 
     void setStatAccuracy( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
 %Docstring
- Set statistics accuracy.
+Sets the statistics accuracy.
 %End
 
     void setCumulativeCutLower( double val );
 %Docstring
- Set lower bound of cumulative cut method (between 0 and 1).
+Sets the lower bound of cumulative cut method (between 0 and 1).
 %End
 
     void setCumulativeCutUpper( double val );
 %Docstring
- Set upper bound of cumulative cut method (between 0 and 1).
+Sets the upper bound of cumulative cut method (between 0 and 1).
 %End
 
     void setStdDevFactor( double val );
 %Docstring
- Set factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+Sets the factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
 %End
 
 
@@ -139,7 +139,7 @@ itself the min/max values.
 
     static QString limitsString( Limits limits );
 %Docstring
- Return a string to serialize Limits
+Returns a string to serialize Limits
 %End
 
     static Limits limitsFromString( const QString &limits );
@@ -149,7 +149,7 @@ itself the min/max values.
 
     static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
 %Docstring
- Return a string to serialize Extent
+Returns a string to serialize Extent
 %End
 
     static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
@@ -159,7 +159,7 @@ itself the min/max values.
 
     static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
 %Docstring
- Return a string to serialize StatAccuracy
+Returns a string to serialize StatAccuracy
 %End
 
     static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );

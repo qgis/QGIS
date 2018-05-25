@@ -584,7 +584,7 @@ class CORE_EXPORT QgsExpressionContext
     QgsExpressionContextScope *popScope();
 
     /**
-     * Return all scopes from this context and remove them, leaving this context without
+     * Returns all scopes from this context and remove them, leaving this context without
      * any context.
      * Ownership is transferred to the caller.
      *

@@ -37,7 +37,7 @@ signal destroyed() to notify the deletion
 
     virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 %Docstring
-set message, it won't be displayed until
+Sets message, it won't be displayed until
 %End
 
     virtual void appendMessage( const QString &message ) = 0;
@@ -47,7 +47,7 @@ message to be appended to the current text
 
     virtual void setTitle( const QString &title ) = 0;
 %Docstring
-set title for the messages
+Sets title for the messages
 %End
 
     virtual void showMessage( bool blocking = true ) = 0;

@@ -182,7 +182,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     void removeCustomProperty( const QString &key );
 
     /**
-     * Return list of keys stored in custom properties for the object.
+     * Returns list of keys stored in custom properties for the object.
      * \see setCustomProperty()
      * \see customProperty()
      * \see removeCustomProperty()

@@ -171,7 +171,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Catch exceptions when sending event to receiver.
     bool notify( QObject *receiver, QEvent *event ) override;
 
-    //! Set the FileOpen event receiver
+    //! Sets the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject *receiver );
 
     /**

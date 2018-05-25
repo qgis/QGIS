@@ -49,7 +49,7 @@ class APP_EXPORT QgsMapThemes : public QObject
     void updatePreset( const QString &name );
 
     /**
-     * Return list of layer IDs that should be visible for particular preset.
+     * Returns list of layer IDs that should be visible for particular preset.
      * The order will match the layer order from the map canvas
      */
     QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;

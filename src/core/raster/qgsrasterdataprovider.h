@@ -228,13 +228,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Read block of data using given extent and size.
     QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    //! Return true if source band has no data value
+    //! Returns true if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
 
     //! \brief Get source nodata value usage
     virtual bool useSourceNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo - 1 ); }
 
-    //! \brief Set source nodata value usage
+    //! Sets the source nodata value usage
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     //! Value representing no data value.

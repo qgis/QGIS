@@ -105,7 +105,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsRasterInterface *clone() const override;
 
     /**
-     * Return a provider name
+     * Returns a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -123,9 +123,9 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
 
     /**
-     * Return description
+     * Returns description
      *
-     * Return a terse string describing what the provider is.
+     * Returns a terse string describing what the provider is.
      *
      * \note
      *
@@ -139,7 +139,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsCoordinateReferenceSystem crs() const override;
 
     /**
-     * Return the extent for this data layer
+     * Returns the extent for this data layer
      */
     QgsRectangle extent() const override;
 

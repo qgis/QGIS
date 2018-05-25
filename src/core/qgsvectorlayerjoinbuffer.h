@@ -92,7 +92,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 
     /**
-     * Return a vector of indices for use in join based on field names from the layer
+     * Returns a vector of indices for use in join based on field names from the layer
      * \since QGIS 2.6
      */
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );

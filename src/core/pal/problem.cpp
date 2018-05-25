@@ -1082,7 +1082,7 @@ double Problem::popmusic_tabu( SubPart *part )
   delete[] best_sol;
   delete[] tabu_list;
 
-  /* Return delta */
+  /* Returns delta */
   return initial_cost - best_cost;
 }
 

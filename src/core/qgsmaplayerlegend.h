@@ -62,7 +62,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
-     * Return list of legend nodes to be used for a particular layer tree layer node.
+     * Returns list of legend nodes to be used for a particular layer tree layer node.
      * Ownership is transferred to the caller.
      */
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 SIP_FACTORY;

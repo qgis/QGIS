@@ -98,7 +98,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void selectProjectOnLaunch();
 
     /**
-     * Return the desired state of newly added layers. If a layer
+     * Returns the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns
      * true.
      */

@@ -311,7 +311,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     QList<QgsPointXY> snappedSegment() const { return mSnappedSegment; }
 
-    //! return the action used to enable/disable the tools
+    //! Returns the action used to enable/disable the tools
     QAction *enableAction() { return mEnableAction; }
 
     /**
@@ -356,7 +356,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void pointChanged( const QgsPointXY &point );
 
   private slots:
-    //! set the additional constraint by clicking on the perpendicular/parallel buttons
+    //! Sets the additional constraint by clicking on the perpendicular/parallel buttons
     void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
@@ -374,10 +374,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void constraintFocusOut();
 
-    //! set the relative properties of constraints
+    //! Sets the relative properties of constraints
     void setConstraintRelative( bool activate );
 
-    //! Set the repeating lock property of constraints
+    //! Sets the repeating lock property of constraints
     void setConstraintRepeatingLock( bool activate );
 
     /**

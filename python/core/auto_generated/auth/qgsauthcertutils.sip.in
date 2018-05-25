@@ -80,7 +80,7 @@ Map SSL custom configs' certificate sha1 to custom config as simple cache
 
     static QByteArray fileData( const QString &path );
 %Docstring
-Return data from a local file via a read-only operation
+Returns data from a local file via a read-only operation
 
 :param path: Path to file to read
 
@@ -89,17 +89,17 @@ Return data from a local file via a read-only operation
 
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 %Docstring
-Return list of concatenated certs from a PEM or DER formatted file
+Returns a list of concatenated certs from a PEM or DER formatted file
 %End
 
     static QList<QSslCertificate> casFromFile( const QString &certspath );
 %Docstring
-Return list of concatenated CAs from a PEM or DER formatted file
+Returns a list of concatenated CAs from a PEM or DER formatted file
 %End
 
     static QSslCertificate certFromFile( const QString &certpath );
 %Docstring
-Return first cert from a PEM or DER formatted file
+Returns the first cert from a PEM or DER formatted file
 %End
 
     static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
@@ -118,7 +118,7 @@ from the ``bundle2`` are appended to ``bundle1`` if not already there
                                 const QString &keypass = QString(),
                                 QString *algtype = 0 );
 %Docstring
-Return non-encrypted key from a PEM or DER formatted file
+Returns non-encrypted key from a PEM or DER formatted file
 
 :param keypath: File path to private key
 :param keypass: Passphrase for private key
@@ -127,7 +127,7 @@ Return non-encrypted key from a PEM or DER formatted file
 
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 %Docstring
-Return list of concatenated certs from a PEM Base64 text block
+Returns a list of concatenated certs from a PEM Base64 text block
 %End
 
 
@@ -145,7 +145,7 @@ Return list of concatenated certs from a PEM Base64 text block
                                            const QString &keypass = QString(),
                                            bool reencrypt = true );
 %Docstring
-Return list of certificate, private key and algorithm (as PEM text) from file path components
+Returns list of certificate, private key and algorithm (as PEM text) from file path components
 
 :param certpath: File path to certificate
 :param keypath: File path to private key
@@ -170,7 +170,7 @@ Determine if the PEM-encoded text of a key is PKCS#8 format
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
 %Docstring
-Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
+Returns list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
 
 :param bundlepath: File path to the PKCS bundle
 :param bundlepass: Passphrase for bundle
@@ -182,7 +182,7 @@ Return list of certificate, private key and algorithm (as PEM text) for a PKCS#1
     static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
         const QString &bundlepass = QString() );
 %Docstring
-Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+Returns list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
 
 :param bundlepath: File path to the PKCS bundle
 :param bundlepass: Passphrase for bundle

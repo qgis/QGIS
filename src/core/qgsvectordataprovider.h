@@ -123,7 +123,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     /**
-     * Return feature source object that can be used for querying provider's data. The returned feature source
+     * Returns feature source object that can be used for querying provider's data. The returned feature source
      * is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
      * reflected in the feature source, therefore it can be safely used for processing in background without
      * having to care about possible changes within provider that may happen concurrently. Also, even in the case
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString sourceName() const override { return QString(); }
 
     /**
-     * Return a short comment for the data that this provider is
+     * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
     virtual QString dataComment() const;
@@ -396,22 +396,22 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     int fieldNameIndex( const QString &fieldName ) const;
 
     /**
-     * Return a map where the key is the name of the field and the value is its index
+     * Returns a map where the key is the name of the field and the value is its index
      */
     QMap<QString, int> fieldNameMap() const;
 
     /**
-     * Return list of indexes to fetch all attributes in nextFeature()
+     * Returns list of indexes to fetch all attributes in nextFeature()
      */
     virtual QgsAttributeList attributeIndexes() const;
 
     /**
-     * Return list of indexes of fields that make up the primary key
+     * Returns list of indexes of fields that make up the primary key
      */
     virtual QgsAttributeList pkAttributeIndexes() const;
 
     /**
-     * Return list of indexes to names for QgsPalLabeling fix
+     * Returns list of indexes to names for QgsPalLabeling fix
      */
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 

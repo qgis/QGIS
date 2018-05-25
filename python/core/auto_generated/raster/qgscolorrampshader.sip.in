@@ -91,7 +91,7 @@ convenience constructor
 
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 %Docstring
- Set the color ramp type
+Sets the color ramp type
 %End
 
     QgsColorRamp *sourceColorRamp() const /Factory/;
@@ -114,7 +114,7 @@ Set the source color ramp. Ownership is transferred to the renderer.
 
     void setColorRampType( const QString &type );
 %Docstring
- Set the color ramp type
+Sets the color ramp type
 %End
 
     void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );

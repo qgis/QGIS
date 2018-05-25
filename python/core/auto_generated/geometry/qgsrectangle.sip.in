@@ -209,7 +209,7 @@ Get rectangle enlarged by buffer.
 
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 %Docstring
-Return the intersection with the given rectangle.
+Returns the intersection with the given rectangle.
 %End
 
     bool intersects( const QgsRectangle &rect ) const;
@@ -219,12 +219,12 @@ Returns true when rectangle intersects with other rectangle.
 
     bool contains( const QgsRectangle &rect ) const;
 %Docstring
-Return true when rectangle contains other rectangle.
+Returns true when rectangle contains other rectangle.
 %End
 
     bool contains( const QgsPointXY &p ) const;
 %Docstring
-Return true when rectangle contains a point.
+Returns true when rectangle contains a point.
 %End
 
     void combineExtentWith( const QgsRectangle &rect );

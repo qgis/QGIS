@@ -127,7 +127,7 @@ it will be discarded.
 
     double noDataValue() const;
 %Docstring
-Return no data value. If the block does not have a no data value the
+Returns no data value. If the block does not have a no data value the
 returned value is undefined.
 
 :return: No data value
@@ -383,12 +383,12 @@ Apply band scale and offset to raster block values
 
     QgsError error() const;
 %Docstring
- Get error
+Returns the last error
 %End
 
     void setError( const QgsError &error );
 %Docstring
- Set error
+Sets the last error
 %End
 
     QString toString() const;

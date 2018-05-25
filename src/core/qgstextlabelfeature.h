@@ -47,10 +47,10 @@ class QgsTextLabelFeature : public QgsLabelFeature
 
     //! Get data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
-    //! Set data-defined values
+    //! Sets data-defined values
     void setDataDefinedValues( const QMap< QgsPalLayerSettings::Property, QVariant > &values ) { mDataDefinedValues = values; }
 
-    //! Set font to be used for rendering
+    //! Sets font to be used for rendering
     void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
     //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }

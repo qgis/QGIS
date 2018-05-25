@@ -58,10 +58,10 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     void validityChanged( bool valid );
 
   public slots:
-    //! Set the authentication configuration ID, storing it, and validating the passed value
+    //! Sets the authentication configuration ID, storing it, and validating the passed value
     void setAuthConfigId( const QString &authcfg );
 
-    //! Set whether to allow no ID to be set
+    //! Sets whether to allow no ID to be set
     void setAllowEmptyId( bool allowed );
 
     //! Clear all of the widget's editing state and contents

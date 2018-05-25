@@ -78,48 +78,48 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
     /**
-     * Return a clone of the object
+     * Returns a clone of the object
      * \returns A clone
      */
     QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
-     * Return an additional subset string (typically SQL) filter
+     * Returns an additional subset string (typically SQL) filter
      * \param layer the layer to control
      * \returns the subset string to use
      */
     QString extraSubsetString( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return the layer read right
+     * Returns the layer read right
      * \param layer the layer to control
      * \returns true if it can be read
      */
     bool layerReadPermission( const QgsMapLayer *layer ) const;
 
     /**
-     * Return the layer insert right
+     * Returns the layer insert right
      * \param layer the layer to control
      * \returns true if we can insert on it
      */
     bool layerInsertPermission( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return the layer update right
+     * Returns the layer update right
      * \param layer the layer to control
      * \returns true if we can do an update
      */
     bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return the layer delete right
+     * Returns the layer delete right
      * \param layer the layer to control
      * \returns true if we can do a delete
      */
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return the authorized layer attributes
+     * Returns the authorized layer attributes
      * \param layer the layer to control
      * \param attributes the list of attribute
      * \returns the list of visible attributes

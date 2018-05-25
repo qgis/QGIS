@@ -138,7 +138,7 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
+      //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
       //! Get distance from this label to a point. If point lies inside, returns negative number.
@@ -165,15 +165,13 @@ namespace pal
       void offsetPosition( double xOffset, double yOffset );
 
       /**
-       * \brief return id
-       * \returns id
+       * Returns the id
        */
       int getId() const;
 
 
       /**
-       * \brief return the feature corresponding to this labelposition
-       * \returns the feature
+       * Returns the feature corresponding to this labelposition
        */
       FeaturePart *getFeaturePart();
 

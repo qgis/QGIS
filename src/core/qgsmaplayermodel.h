@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAdditionalItems( const QStringList &items );
 
     /**
-     * Return the list of additional (non map layer) items included at the end of the model.
+     * Returns the list of additional (non map layer) items included at the end of the model.
      * \see setAdditionalItems()
      * \since QGIS 3.0
      */

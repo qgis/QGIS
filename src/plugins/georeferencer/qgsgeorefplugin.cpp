@@ -123,7 +123,7 @@ void QgsGeorefPlugin::unload()
   mPluginGui = nullptr;
 }
 
-//! Set icons to the current theme
+//! Sets icons to the current theme
 void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )

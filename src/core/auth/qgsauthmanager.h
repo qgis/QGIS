@@ -85,7 +85,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     ~QgsAuthManager() override;
 
-    //! Set up the application instance of the authentication database connection
+    //! Sets up the application instance of the authentication database connection
     QSqlDatabase authDatabaseConnection() const;
 
     //! Name of the authentication database table that stores configs
@@ -252,12 +252,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool configIdUnique( const QString &id ) const;
 
     /**
-     * Return whether a string includes an authcfg ID token
+     * Returns whether a string includes an authcfg ID token
      * \param txt String to check
      */
     bool hasConfigId( const QString &txt ) const;
 
-    //! Return regular expression for authcfg=.{7} key/value token for authentication ids
+    //! Returns the regular expression for authcfg=.{7} key/value token for authentication ids
     QString configIdRegex() const { return AUTH_CFG_REGEX;}
 
     //! Get list of authentication ids from database
@@ -577,7 +577,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 
-    //! Set the default certificate trust policy perferred by user
+    //! Sets the default certificate trust policy perferred by user
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
     //! Get the default certificate trust policy perferred by user
@@ -756,7 +756,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //////////////////////////////////////////////////////////////////////////////
     // Password Helper methods
 
-    //! Return name for logging
+    //! Returns the name for logging
     QString passwordHelperName() const;
 
     //! Print a debug message in QGIS

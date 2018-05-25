@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
-    //! Set the current value to the value defined by the clear value.
+    //! Sets the current value to the value defined by the clear value.
     void clear() override;
 
     /**

@@ -32,7 +32,7 @@ QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *server
 {
 }
 
-//! Return an additional layer expression filter
+//! Returns an additional layer expression filter
 QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
@@ -40,7 +40,7 @@ QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *lay
   return QString();
 }
 
-//! Return an additional layer subset string (typically SQL) filter
+//! Returns an additional layer subset string (typically SQL) filter
 QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
@@ -48,7 +48,7 @@ QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *l
   return QString();
 }
 
-//! Return the layer permissions
+//! Returns the layer permissions
 QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
@@ -58,7 +58,7 @@ QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermission
   return permissions;
 }
 
-//! Return the authorized layer attributes
+//! Returns the authorized layer attributes
 QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
   Q_UNUSED( layer );

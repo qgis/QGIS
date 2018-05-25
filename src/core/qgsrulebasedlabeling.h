@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! set new settings (or NULL). Deletes old settings if any.
+        //! Sets new settings (or NULL). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
@@ -185,14 +185,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // parent / child operations
 
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
          * \returns A list of rules
          */
         const QgsRuleBasedLabeling::RuleList &children() const { return mChildren; }
 
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
          * \returns A list of rules
          */
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
-    //! return subproviders
+    //! Returns subproviders
     QList<QgsAbstractLabelProvider *> subProviders() override;
 
   protected:

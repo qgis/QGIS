@@ -63,7 +63,7 @@ Constructor
 
     QString name() const;
 %Docstring
-Return the name of this element
+Returns the name of this element
 
 :return: The name for this element
 %End
@@ -247,7 +247,7 @@ Creates a new attribute editor element which represents a field
 
     int idx() const;
 %Docstring
-Return the index of the field
+Returns the index of the field
 
 :return:
 %End

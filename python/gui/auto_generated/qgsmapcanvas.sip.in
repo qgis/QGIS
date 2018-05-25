@@ -175,7 +175,7 @@ Returns the combined extent for all layers on the map canvas
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
 %Docstring
-Set the extent of the map canvas
+Sets the extent of the map canvas
 %End
 
     double rotation() const;
@@ -283,7 +283,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
 %Docstring
- Sets the map tool currently being used on the canvas
+Sets the map tool currently being used on the canvas
 %End
 
     void unsetMapTool( QgsMapTool *mapTool );
@@ -330,17 +330,17 @@ Emits signal scaleChanged to update scale in main window
 
     QgsMapLayer *layer( int index );
 %Docstring
-return the map layer at position index in the layer stack
+Returns the map layer at position index in the layer stack
 %End
 
     int layerCount() const;
 %Docstring
-return number of layers on the map
+Returns number of layers on the map
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
-Return the list of layers shown within the map canvas.
+Returns the list of layers shown within the map canvas.
 
 .. seealso:: :py:func:`setLayers`
 %End
@@ -459,7 +459,7 @@ returns current layer (set by legend widget)
 
     void setWheelFactor( double factor );
 %Docstring
-set wheel zoom factor (should be greater than 1)
+Sets wheel zoom factor (should be greater than 1)
 %End
 
     void zoomScale( double scale );
@@ -580,7 +580,7 @@ previewModeEnabled is true.
 
     QgsSnappingUtils *snappingUtils() const;
 %Docstring
-Return snapping utility class that is associated with map canvas.
+Returns snapping utility class that is associated with map canvas.
 If no snapping utils instance has been associated previously, an internal will be created for convenience
 (so map tools do not need to test for existence of the instance).
 

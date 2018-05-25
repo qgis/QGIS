@@ -45,7 +45,7 @@ Resolves the profiles folder for the given path. Path will have \\profiles appen
 
     QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) /Factory/;
 %Docstring
-Return the profile from the given root profile location.
+Returns the profile from the given root profile location.
 If no name is given it returns a profile called "default".
 By default will create the profile folder if not found.
 By default will init the user settings.
@@ -147,7 +147,7 @@ Set the default profile name from the current active profile.
 
     QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
-Return the profile found for a given name.
+Returns the profile found for a given name.
 
 :param name: The name of the profile to return.
 

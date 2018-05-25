@@ -124,7 +124,7 @@ If  ``precision`` is -1, then a default precision will be used.
 
     QString asWkt() const;
 %Docstring
-Return the well known text representation for the point (e.g. "POINT(x y)").
+Returns the well known text representation for the point (e.g. "POINT(x y)").
 The wkt is created without an SRID.
 %End
 
