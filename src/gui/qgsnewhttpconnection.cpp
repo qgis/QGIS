@@ -36,7 +36,14 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   QRegExp rx( "/connections-([^/]+)/" );
   if ( rx.indexIn( baseKey ) != -1 )
-    setWindowTitle( tr( "Create a New %1 Connection" ).arg( rx.cap( 1 ).toUpper() ) );
+  {
+    QString connectionType( rx.cap( 1 ).toUpper() );
+    if ( connectionType == QLatin1String( "WMS" ) )
+    {
+      connectionType = QStringLiteral( "WMS/WMTS" );
+    }
+    setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+  }
 
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.
