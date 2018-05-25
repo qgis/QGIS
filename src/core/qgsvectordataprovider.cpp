@@ -54,9 +54,9 @@ bool QgsVectorDataProvider::empty() const
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setLimit( 1 );
   if ( getFeatures( request ).nextFeature( f ) )
-    return true;
-  else
     return false;
+  else
+    return true;
 }
 
 QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
