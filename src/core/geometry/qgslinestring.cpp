@@ -1123,17 +1123,21 @@ void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
   mY.resize( nVertices );
   hasZ ? mZ.resize( nVertices ) : mZ.clear();
   hasM ? mM.resize( nVertices ) : mM.clear();
+  double *x = mX.data();
+  double *y = mY.data();
+  double *m = hasM ? mM.data() : nullptr;
+  double *z = hasZ ? mZ.data() : nullptr;
   for ( int i = 0; i < nVertices; ++i )
   {
-    wkb >> mX[i];
-    wkb >> mY[i];
+    wkb >> *x++;
+    wkb >> *y++;
     if ( hasZ )
     {
-      wkb >> mZ[i];
+      wkb >> *z++;
     }
     if ( hasM )
     {
-      wkb >> mM[i];
+      wkb >> *m++;
     }
   }
   clearCache(); //set bounding box invalid
