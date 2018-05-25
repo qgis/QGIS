@@ -932,13 +932,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Determines if this vector layer has features.
      *
-     * \warning A layer is considered empty if neither the data provider nor
-     * the edit buffer have features in them.
-     * This means the returned value may be inaccurate for layers with unsaved changes,
-     * i.e. in the case of all features from the data provider having been
-     * deleted within the edit buffer.
+     * \warning when a layer is editable and some features
+     * have been deleted, this will return
+     * QgsFeatureSource::FeatureAvailability::FeaturesMayBeAvailable
+     * to avoid a potentially expensive call to the dataprovider.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     FeatureAvailability hasFeatures() const override;
 

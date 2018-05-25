@@ -115,7 +115,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \note In contrast to the featureCount() method, this method is not
      *       affected by estimated metadata.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     bool empty() const override;
 
