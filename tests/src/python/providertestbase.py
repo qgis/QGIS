@@ -426,7 +426,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(subset)
             self.assertFalse(self.source.empty())
             self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
-            subsetNoMatching = getSubsetStringNoMatching(self)
+            subsetNoMatching = self.getSubsetStringNoMatching()
             self.source.setSubsetString(subsetNoMatching)
             self.assertTrue(self.source.empty())
             self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
