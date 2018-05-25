@@ -16,6 +16,12 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Constructor for QgsSingleSymbolRenderer.
+
+The same ``symbol`` will be used to render every feature. Ownership
+of ``symbol`` is transferred to the renderer.
+%End
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
@@ -29,7 +35,19 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
 
     QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol which will be rendered for every feature.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
     void setSymbol( QgsSymbol *s /Transfer/ );
+%Docstring
+Sets the symbol which will be rendered for every feature. Ownership
+of the symbol is transferred to the renderer.
+
+.. seealso:: :py:func:`symbol`
+%End
 
     virtual QString dump() const;
 
@@ -39,7 +57,15 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
+
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
+%Docstring
+Creates a new single symbol renderer from an SLD ``element``.
+
+The geometry type for features to be rendered must be specified via the ``geomType`` argument.
+
+The caller takes ownership of the returned renderer.
+%End
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
@@ -47,8 +73,11 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-create renderer from XML element
+Creates a new single symbol renderer from an XML ``element``, using the supplied read/write ``context``.
+
+The caller takes ownership of the returned renderer.
 %End
+
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
@@ -60,9 +89,9 @@ create renderer from XML element
 
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-creates a QgsSingleSymbolRenderer from an existing renderer.
+Creates a new single symbol renderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise None.
 
 .. versionadded:: 2.5
 %End
