@@ -172,10 +172,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Will always return FeatureAvailability::FeaturesAvailable or
-     * FeatureAvailability::FeaturesMaybeAvailable.
+     * FeatureAvailability::NoFeaturesAvailable.
      *
-     * Calls empty() internally. Providers should override empty instead
-     * if they provide an optimized version of this call.
+     * Calls empty() internally. Providers should override empty()
+     * instead if they provide an optimized version of this call.
      *
      * \since QGIS 3.2
      * \see empty()
