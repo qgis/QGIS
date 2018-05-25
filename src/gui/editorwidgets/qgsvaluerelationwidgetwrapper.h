@@ -98,6 +98,12 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   private:
 
+    /**
+     * Returns the value configured in `NofColumns` or 1 if not
+     * a positive integer.
+     */
+    int columnCount() const;
+
     //! Sets the values for the widgets, re-creates the cache when required
     void populate( );
 

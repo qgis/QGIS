@@ -52,12 +52,14 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     }
   }
 
+  const int nofColumns = columnCount();
+
   if ( mTableWidget )
   {
     QStringList selection;
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
-      for ( int i = 0; i < config( QStringLiteral( "NofColumns" ) ).toInt(); ++i )
+      for ( int i = 0; i < nofColumns; ++i )
       {
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
@@ -151,12 +153,14 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 
     QTableWidgetItem *lastChangedItem = nullptr;
 
+    const int nofColumns = columnCount();
+
     // This block is needed because item->setCheckState triggers dataChanged gets back to value()
     // and iterate over all items again! This can be extremely slow on large items sets.
     mTableWidget->blockSignals( true );
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
-      for ( int i = 0; i < config( QStringLiteral( "NofColumns" ) ).toInt() ; ++i )
+      for ( int i = 0; i < nofColumns; ++i )
       {
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
@@ -230,6 +234,10 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   }
 }
 
+int QgsValueRelationWidgetWrapper::columnCount() const
+{
+  return qMax( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+}
 
 void QgsValueRelationWidgetWrapper::populate( )
 {
@@ -258,24 +266,21 @@ void QgsValueRelationWidgetWrapper::populate( )
   }
   else if ( mTableWidget )
   {
+    const int nofColumns = columnCount();
+
     if ( mCache.size() > 0 )
     {
-      const int nofCols = config( QStringLiteral( "NofColumns" ) ).toInt();
-      const int denom = nofCols != 0 ? nofCols : 1;
-      mTableWidget->setRowCount( ( mCache.size() + nofCols - 1 ) / denom );
+      mTableWidget->setRowCount( ( mCache.size() + nofColumns - 1 ) / nofColumns );
     }
     else
       mTableWidget->setRowCount( 1 );
-    if ( config( QStringLiteral( "NofColumns" ) ).toInt() > 0 )
-      mTableWidget->setColumnCount( config( QStringLiteral( "NofColumns" ) ).toInt() );
-    else
-      mTableWidget->setColumnCount( 1 );
+    mTableWidget->setColumnCount( nofColumns );
 
     whileBlocking( mTableWidget )->clear();
     int row = 0, column = 0;
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
-      if ( column == config( QStringLiteral( "NofColumns" ) ).toInt() )
+      if ( column == nofColumns )
       {
         row++;
         column = 0;
@@ -304,11 +309,13 @@ void QgsValueRelationWidgetWrapper::populate( )
 
 void QgsValueRelationWidgetWrapper::showIndeterminateState()
 {
+  const int nofColumns = columnCount();
+
   if ( mTableWidget )
   {
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
-      for ( int i = 0; i < config( QStringLiteral( "NofColumns" ) ).toInt(); ++i )
+      for ( int i = 0; i < nofColumns; ++i )
       {
         whileBlocking( mTableWidget )->item( j, i )->setCheckState( Qt::PartiallyChecked );
       }
