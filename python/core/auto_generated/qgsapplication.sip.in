@@ -125,7 +125,7 @@ Catch exceptions when sending event to receiver.
 
     static void setFileOpenEventReceiver( QObject *receiver );
 %Docstring
-Set the FileOpen event receiver
+Sets the FileOpen event receiver
 %End
 
     static void setThemeName( const QString &themeName );

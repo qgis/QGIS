@@ -123,7 +123,7 @@ Whether to capture output for display when this action is run
 
     bool isEnabledOnlyWhenEditable() const;
 %Docstring
-Return whether only enabled in editable mode
+Returns whether only enabled in editable mode
 %End
 
 

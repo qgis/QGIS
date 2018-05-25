@@ -35,7 +35,7 @@ Save the histogram as an image to disk
 
     void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = 0 );
 %Docstring
-Set the renderer widget (or just its name if there is no widget)
+Sets the renderer widget (or just its name if there is no widget)
 %End
 
     void setActive( bool activeFlag );

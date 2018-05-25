@@ -118,11 +118,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     const QgsCategoryList &categories() const { return mCategories; }
 
-    //! return index of category with specified value (-1 if not found)
+    //! Returns index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant &val );
 
     /**
-     * return index of category with specified label (-1 if not found or not unique)
+     * Returns index of category with specified label (-1 if not found or not unique)
      * \since QGIS 2.5
      */
     int categoryIndexForLabel( const QString &val );

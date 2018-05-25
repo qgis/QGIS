@@ -197,7 +197,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool hasDragEnabled() const { return false; }
 
     /**
-     * Return mime URI for the data item.
+     * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
      * \since QGIS 3.0
@@ -499,7 +499,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
-    //! Return icon for mesh layer type
+    //! Returns icon for mesh layer type
     static QIcon iconMesh();
 
     //! \returns the layer name

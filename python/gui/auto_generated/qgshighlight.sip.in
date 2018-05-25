@@ -90,7 +90,7 @@ Set minimum line / stroke width in millimeters.
 
     QgsMapLayer *layer() const;
 %Docstring
-Return the layer for which this highlight has been created.
+Returns the layer for which this highlight has been created.
 %End
 
     virtual void updatePosition();

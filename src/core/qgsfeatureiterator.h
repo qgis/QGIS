@@ -144,7 +144,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
-    //! Set to true, as soon as the iterator is closed.
+    //! Sets to true, as soon as the iterator is closed.
     bool mClosed = false;
 
     /**

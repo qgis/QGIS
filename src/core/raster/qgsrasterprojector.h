@@ -69,14 +69,14 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    //! \brief set source and destination CRS
+    //! Sets the source and destination CRS
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
-    //! \brief Get source CRS
+    //! Returns the source CRS
     QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
 
-    //! \brief Get destination CRS
+    //! Returns the destination CRS
     QgsCoordinateReferenceSystem destinationCrs() const { return mDestCRS; }
 
     Precision precision() const { return mPrecision; }

@@ -90,28 +90,28 @@ class QgsWFSSharedData : public QObject
     //! Force an update of the feature count
     void setFeatureCount( int featureCount );
 
-    //! Return layer feature count. Might issue a GetFeature resultType=hits request
+    //! Returns layer feature count. Might issue a GetFeature resultType=hits request
     int getFeatureCount( bool issueRequestIfNeeded = true );
 
-    //! Return whether the feature count is exact, or approximate/transient
+    //! Returns whether the feature count is exact, or approximate/transient
     bool isFeatureCountExact() const { return mFeatureCountExact; }
 
-    //! Return whether the server support RESULTTYPE=hits
+    //! Returns whether the server support RESULTTYPE=hits
     bool supportsHits() const { return mCaps.supportsHits; }
 
     //! Compute WFS filter from the sql or filter in the URI
     bool computeFilter( QString &errorMsg );
 
-    //! Return extent computed from currently downloaded features
+    //! Returns extent computed from currently downloaded features
     QgsRectangle computedExtent();
 
-    //! Return srsName
+    //! Returns srsName
     QString srsName() const;
 
-    //! Return whether the feature download is finished
+    //! Returns whether the feature download is finished
     bool downloadFinished() const { return mDownloadFinished; }
 
-    //! Return maximum number of features to download, or 0 if unlimited
+    //! Returns maximum number of features to download, or 0 if unlimited
     int requestLimit() const { return mRequestLimit; }
 
   signals:
@@ -272,7 +272,7 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
   public:
     explicit QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri );
 
-    //! Return the feature count, or -1 in case of error
+    //! Returns the feature count, or -1 in case of error
     int getFeatureCount( const QString &WFSVersion, const QString &filter );
 
   protected:
@@ -288,7 +288,7 @@ class QgsWFSSingleFeatureRequest: public QgsWfsRequest
   public:
     explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared );
 
-    //! Return the feature  extent of the single feature requested
+    //! Returns the feature  extent of the single feature requested
     QgsRectangle getExtent();
 
   protected:

@@ -286,7 +286,7 @@ copy constructor
 
     FilterType filterType() const;
 %Docstring
-Return the filter type which is currently set on this request
+Returns the filter type which is currently set on this request
 
 :return: Filter type
 %End
@@ -316,7 +316,7 @@ will use the same CRS as the source layer/provider.
 
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
 %Docstring
-Set feature ID that should be fetched.
+Sets feature ID that should be fetched.
 %End
     QgsFeatureId filterFid() const;
 %Docstring
@@ -325,7 +325,7 @@ Get the feature ID that should be fetched.
 
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
 %Docstring
-Set feature IDs that should be fetched.
+Sets feature IDs that should be fetched.
 %End
     const QgsFeatureIds &filterFids() const;
 %Docstring
@@ -468,7 +468,7 @@ Adds a new OrderByClause, appending it as the least important one.
 
     OrderBy orderBy() const;
 %Docstring
-Return a list of order by clauses specified for this feature request.
+Returns a list of order by clauses specified for this feature request.
 
 .. versionadded:: 2.14
 %End
@@ -502,7 +502,7 @@ Returns the maximum number of features to request, or -1 if no limit set.
 
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
 %Docstring
-Set flags that affect how features will be fetched
+Sets flags that affect how features will be fetched
 %End
     const Flags &flags() const;
 
@@ -514,19 +514,19 @@ To disable fetching attributes, reset the FetchAttributes flag (which is set by 
 
     QgsAttributeList subsetOfAttributes() const;
 %Docstring
-Return the subset of attributes which at least need to be fetched
+Returns the subset of attributes which at least need to be fetched
 
 :return: A list of attributes to be fetched
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 %Docstring
-Set a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 %Docstring
-Set a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched
 %End
 
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );

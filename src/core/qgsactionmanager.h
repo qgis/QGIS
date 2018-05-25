@@ -113,14 +113,14 @@ class CORE_EXPORT QgsActionManager: public QObject
     void clearActions();
 
     /**
-     * Return a list of actions that are available in the given action scope.
+     * Returns a list of actions that are available in the given action scope.
      * If no action scope is provided, all actions will be returned.
      *
      * \since QGIS 3.0
      */
     QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 
-    //! Return the layer
+    //! Returns the layer
     QgsVectorLayer *layer() const { return mLayer; }
 
     //! Writes the actions out in XML format

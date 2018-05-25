@@ -78,7 +78,7 @@ Additional creation options are specified within the ``options`` value.
 
     virtual QgsAbstractFeatureSource *featureSource() const = 0 /Factory/;
 %Docstring
-Return feature source object that can be used for querying provider's data. The returned feature source
+Returns feature source object that can be used for querying provider's data. The returned feature source
 is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
 reflected in the feature source, therefore it can be safely used for processing in background without
 having to care about possible changes within provider that may happen concurrently. Also, even in the case
@@ -138,7 +138,7 @@ Returns the fields associated with this data provider.
 
     virtual QString dataComment() const;
 %Docstring
-Return a short comment for the data that this provider is
+Returns a short comment for the data that this provider is
 providing access to (e.g. the comment for postgres table).
 %End
 
@@ -402,22 +402,22 @@ Returns the index of a field name or -1 if the field does not exist
 
     QMap<QString, int> fieldNameMap() const;
 %Docstring
-Return a map where the key is the name of the field and the value is its index
+Returns a map where the key is the name of the field and the value is its index
 %End
 
     virtual QgsAttributeList attributeIndexes() const;
 %Docstring
-Return list of indexes to fetch all attributes in nextFeature()
+Returns list of indexes to fetch all attributes in nextFeature()
 %End
 
     virtual QgsAttributeList pkAttributeIndexes() const;
 %Docstring
-Return list of indexes of fields that make up the primary key
+Returns list of indexes of fields that make up the primary key
 %End
 
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 %Docstring
-Return list of indexes to names for QgsPalLabeling fix
+Returns list of indexes to names for QgsPalLabeling fix
 %End
 
     bool supportedType( const QgsField &field ) const;

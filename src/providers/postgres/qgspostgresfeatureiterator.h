@@ -107,7 +107,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! Number of retrieved features
     int mFetched;
 
-    //! Set to true, if geometry is in the requested columns
+    //! Sets to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
     bool mIsTransactionConnection = false;

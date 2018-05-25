@@ -37,7 +37,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
     //! Layer number (field)
     int number() { return mNumber; }
 
-    //! Set number of elements of given type.
+    //! Sets number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }
 
     //! Get number of elements of given type. Types may be combined by bitwise or)
@@ -104,7 +104,7 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
     //! Get number of nodes
     int nodeCount() const { return mNodeCount; }
 
-    //! Return error message
+    //! Returns error message
     QString error() const { return mError; }
 
   signals:

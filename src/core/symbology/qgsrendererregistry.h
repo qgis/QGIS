@@ -74,12 +74,12 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const { return All; }
 
     /**
-     * Return new instance of the renderer given the DOM element. Returns NULL on error.
+     * Returns new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
     /**
-     * Return new instance of settings widget for the renderer. Returns NULL on error.
+     * Returns new instance of settings widget for the renderer. Returns NULL on error.
      *
      * The \a oldRenderer argument may refer to previously used renderer (or it is null).
      * If not null, it may be used to initialize GUI of the widget from the previous settings.

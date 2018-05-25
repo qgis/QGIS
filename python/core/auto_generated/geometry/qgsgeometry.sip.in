@@ -1346,7 +1346,7 @@ if wkbType is WKBMultiPolygon, otherwise an empty list
 
     QVector<QgsGeometry> asGeometryCollection() const;
 %Docstring
-Return contents of the geometry as a list of geometries
+Returns contents of the geometry as a list of geometries
 
 .. versionadded:: 1.1
 %End

@@ -57,7 +57,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     QSize sizeHint() const override;
 
     /**
-     * Return a copy of the current color ramp.
+     * Returns a copy of the current color ramp.
      * \see setColorRamp()
      */
     QgsColorRamp *colorRamp() const SIP_FACTORY;

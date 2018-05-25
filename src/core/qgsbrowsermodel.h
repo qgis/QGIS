@@ -124,7 +124,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void refresh( const QModelIndex &index = QModelIndex() );
 
     /**
-     * Return index of item with given path. It only searches in currently fetched
+     * Returns index of item with given path. It only searches in currently fetched
      * items, i.e. it does not fetch children.
      * \param path item path
      * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find

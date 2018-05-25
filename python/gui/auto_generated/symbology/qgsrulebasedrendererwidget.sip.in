@@ -179,7 +179,7 @@ Widget to edit the details of a rule based renderer rule.
 
     QgsRuleBasedRenderer::Rule *rule();
 %Docstring
-Return the current set rule.
+Returns the current set rule.
 
 :return: The current rule.
 %End

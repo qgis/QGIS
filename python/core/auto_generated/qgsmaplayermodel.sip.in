@@ -130,7 +130,7 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 
     QStringList additionalItems() const;
 %Docstring
-Return the list of additional (non map layer) items included at the end of the model.
+Returns the list of additional (non map layer) items included at the end of the model.
 
 .. seealso:: :py:func:`setAdditionalItems`
 

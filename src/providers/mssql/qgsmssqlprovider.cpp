@@ -784,7 +784,7 @@ QgsRectangle QgsMssqlProvider::extent() const
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsMssqlProvider::wkbType() const
 {
@@ -792,7 +792,7 @@ QgsWkbTypes::Type QgsMssqlProvider::wkbType() const
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 long QgsMssqlProvider::featureCount() const
 {

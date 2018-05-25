@@ -44,11 +44,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
-    //! Set resampler for zoomed in scales. Takes ownership of the object
+    //! Sets resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
 
-    //! Set resampler for zoomed out scales. Takes ownership of the object
+    //! Sets resampler for zoomed out scales. Takes ownership of the object
     void setZoomedOutResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
 

@@ -195,12 +195,12 @@ to evaluate child nodes.
 
     virtual QSet<QString> referencedVariables() const = 0;
 %Docstring
-Return a set of all variables which are used in this expression.
+Returns a set of all variables which are used in this expression.
 %End
 
     virtual QSet<QString> referencedFunctions() const = 0;
 %Docstring
-Return a set of all functions which are used in this expression.
+Returns a set of all functions which are used in this expression.
 %End
 
     virtual bool needsGeometry() const = 0;

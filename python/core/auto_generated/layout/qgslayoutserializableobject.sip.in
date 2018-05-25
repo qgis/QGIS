@@ -25,7 +25,7 @@ An interface for layout objects which can be stored and read from DOM elements.
 
     virtual QString stringType() const = 0;
 %Docstring
-Return the object type as a string.
+Returns the object type as a string.
 
 This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
 %End

@@ -166,12 +166,12 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
-     * Return text representation of the tree. For debugging purposes only.
+     * Returns text representation of the tree. For debugging purposes only.
      */
     QString dump() const override;
 
     /**
-     * Return a clone of the group. The children are cloned too.
+     * Returns a clone of the group. The children are cloned too.
      */
     QgsLayerTreeGroup *clone() const override SIP_FACTORY;
 
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     /**
-     * Return whether the group is mutually exclusive (only one child can be checked at a time)
+     * Returns whether the group is mutually exclusive (only one child can be checked at a time)
      * \since QGIS 2.12
      */
     bool isMutuallyExclusive() const;

@@ -77,7 +77,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     //! Load programmatically with current values
     virtual void doComputations() { }
 
-    //! Return min/max widget when it exists.
+    //! Returns min/max widget when it exists.
     virtual QgsRasterMinMaxWidget *minMaxWidget() { return nullptr; }
 
   signals:

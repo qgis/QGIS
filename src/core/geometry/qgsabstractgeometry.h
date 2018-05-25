@@ -803,7 +803,7 @@ class CORE_EXPORT QgsVertexIterator
       return g && g->vertices_end() != i;
     }
 
-    //! Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
     QgsPoint next();
 
 #ifdef SIP_RUN

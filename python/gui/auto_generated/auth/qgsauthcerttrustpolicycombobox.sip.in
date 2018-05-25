@@ -44,12 +44,12 @@ Get trust policy for a given index of combobox
   public slots:
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 %Docstring
-Set current trust policy
+Sets current trust policy
 %End
 
     void setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy );
 %Docstring
-Set default trust policy
+Sets default trust policy
 %End
 
 };

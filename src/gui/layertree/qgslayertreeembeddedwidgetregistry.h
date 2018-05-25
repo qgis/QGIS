@@ -86,7 +86,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
     QgsLayerTreeEmbeddedWidgetRegistry &operator=( const QgsLayerTreeEmbeddedWidgetRegistry &other ) = delete;
 
-    //! Return list of all registered providers
+    //! Returns list of all registered providers
     QStringList providers() const;
 
     //! Get provider object from the provider's ID

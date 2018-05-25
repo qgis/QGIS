@@ -61,7 +61,7 @@ for the color dialog. Defaults to true.
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
                             const bool allowOpacity = false );
 %Docstring
-Return a color selection from a color dialog.
+Returns a color selection from a color dialog.
 
 :param initialColor: the initial color of the selection dialog.
 :param parent: parent widget

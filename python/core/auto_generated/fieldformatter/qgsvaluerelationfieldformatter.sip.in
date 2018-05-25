@@ -92,7 +92,7 @@ or geometry of the currently edited feature).
 
     static QSet<QString> expressionFormAttributes( const QString &expression );
 %Docstring
-Return a list of attributes required by the form context ``expression``
+Returns a list of attributes required by the form context ``expression``
 
 :param expression: Form filter expression
 
@@ -103,7 +103,7 @@ Return a list of attributes required by the form context ``expression``
 
     static QSet<QString> expressionFormVariables( const QString &expression );
 %Docstring
-Return a list of variables required by the form context ``expression``
+Returns a list of variables required by the form context ``expression``
 
 :param expression: Form filter expression
 

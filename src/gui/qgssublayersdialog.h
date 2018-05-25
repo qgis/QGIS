@@ -95,7 +95,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
     /**
-     * Return column with count or -1
+     * Returns column with count or -1
      * \since QGIS 3.0
      */
     int countColumn() const { return mShowCount ? 2 : -1; }

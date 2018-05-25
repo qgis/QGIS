@@ -250,7 +250,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   private:
 
-    //! Return file name if object meets drop criteria.
+    //! Returns file name if object meets drop criteria.
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QStringList mAcceptableExtensions;

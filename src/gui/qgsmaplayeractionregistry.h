@@ -96,7 +96,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     //! Define the targets of the action
     void setTargets( Targets targets ) {mTargets = targets;}
-    //! Return availibity of action
+    //! Returns availibity of action
     const Targets &targets() const {return mTargets;}
 
     /**

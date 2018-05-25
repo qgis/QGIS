@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
        */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
+    //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
     /**
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext context() const;
 
     /**
-     * \brief Return the symbol that is currently active in the widget. Can be null.
+     * Returns the symbol that is currently active in the widget. Can be null.
      * \returns The active symbol.
      */
     QgsSymbol *symbol() { return mSymbol; }
@@ -277,7 +277,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog() override;
 
-    //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
+    //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
     /**
@@ -296,7 +296,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolWidgetContext context() const;
 
     /**
-     * \brief Return the symbol that is currently active in the widget. Can be null.
+     * Returns the symbol that is currently active in the widget. Can be null.
      * \returns The active symbol.
      */
     QgsSymbol *symbol();

@@ -129,11 +129,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool leaveUpdateMode() override;
     bool isSaveAndLoadStyleToDatabaseSupported() const override;
     QString fileVectorFilters() const override;
-    //! Return a string containing the available database drivers
+    //! Returns a string containing the available database drivers
     QString databaseDrivers() const;
-    //! Return a string containing the available directory drivers
+    //! Returns a string containing the available directory drivers
     QString protocolDrivers() const;
-    //! Return a string containing the available protocol drivers
+    //! Returns a string containing the available protocol drivers
     QString directoryDrivers() const;
 
     bool isValid() const override;
@@ -147,7 +147,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString description() const override;
     bool doesStrictFeatureTypeCheck() const override;
 
-    //! Return OGR geometry type
+    //! Returns OGR geometry type
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
     //! Get single flatten geometry type
@@ -412,7 +412,7 @@ class QgsOgrProviderUtils
                                           int layerIndex,
                                           QString &errCause );
 
-    //! Return a QgsOgrLayer* with a SQL result layer
+    //! Returns a QgsOgrLayer* with a SQL result layer
     static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
 
     //! Release a QgsOgrLayer*
@@ -421,7 +421,7 @@ class QgsOgrProviderUtils
     //! Make sure that the existing pool of opened datasets on dsName is not accessible for new getLayer() attempts
     static void invalidateCachedDatasets( const QString &dsName );
 
-    //! Return the string to provide to QgsOgrConnPool::instance() methods
+    //! Returns the string to provide to QgsOgrConnPool::instance() methods
     static QString connectionPoolId( const QString &dataSourceURI );
 
     //! Invalidate the cached last modified date of a dataset
@@ -514,22 +514,22 @@ class QgsOgrLayer
 
   public:
 
-    //! Return GDALDriverH object for current dataset
+    //! Returns GDALDriverH object for current dataset
     GDALDriverH driver();
 
-    //! Return driver name for current dataset
+    //! Returns driver name for current dataset
     QString driverName();
 
-    //! Return current dataset name
+    //! Returns current dataset name
     const QString &datasetName() const { return ident.dsName; }
 
-    //! Return dataset open mode
+    //! Returns dataset open mode
     bool updateMode() const { return ident.updateMode; }
 
-    //! Return dataset open options
+    //! Returns dataset open options
     const QStringList &options() const { return ident.options; }
 
-    //! Return layer name
+    //! Returns layer name
     QByteArray name();
 
     //! Wrapper of OGR_L_GetLayerCount
@@ -598,10 +598,10 @@ class QgsOgrLayer
     //! Wrapper of OGR_L_GetLayerCount
     void SetSpatialFilter( OGRGeometryH );
 
-    //! Return native GDALDatasetH object with the mutex to lock when using it
+    //! Returns native GDALDatasetH object with the mutex to lock when using it
     GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex );
 
-    //! Return native OGRLayerH object with the mutex to lock when using it
+    //! Returns native OGRLayerH object with the mutex to lock when using it
     OGRLayerH getHandleAndMutex( QMutex *&mutex );
 
     //! Wrapper of GDALDatasetReleaseResultSet( GDALDatasetExecuteSQL( ... ) )

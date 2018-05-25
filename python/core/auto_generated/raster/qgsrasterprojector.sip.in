@@ -49,17 +49,17 @@ which are used to calculate affine transformation matrices.
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 %Docstring
- set source and destination CRS
+Sets the source and destination CRS
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
- Get source CRS
+Returns the source CRS
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
- Get destination CRS
+Returns the destination CRS
 %End
 
     Precision precision() const;

@@ -48,7 +48,7 @@ partial content.
 
     void setResponseHeader( const QString &name, const QString &value );
 %Docstring
-Set an HTTP response header
+Sets an HTTP response header
 %End
 
     void removeResponseHeader( const QString &name );
@@ -63,12 +63,12 @@ Retrieve response header value
 
     QMap<QString, QString> responseHeaders() const;
 %Docstring
-Return the response headers
+Returns the response headers
 %End
 
     void setRequestHeader( const QString &name, const QString &value );
 %Docstring
-Set an HTTP request header
+Sets an HTTP request header
 %End
 
     void removeRequestHeader( const QString &name );
@@ -83,7 +83,7 @@ Retrieve request header value
 
     QMap<QString, QString> requestHeaders() const;
 %Docstring
-Return the Request headers
+Returns the the Request headers
 %End
 
     void clear();
@@ -93,7 +93,7 @@ Clears the response body and headers
 
     void appendBody( const QByteArray &body );
 %Docstring
-Set the info format string such as "text/xml"
+Sets the info format string such as "text/xml"
 %End
 
     bool exceptionRaised() const;
@@ -108,44 +108,44 @@ Clear response buffer
 
     QByteArray body() const;
 %Docstring
-Return response body data
+Returns the response body data
 %End
 
     QByteArray data() const;
 %Docstring
-Return request POST data (can be null)
+Returns the request POST data (can be null)
 %End
 
     QString url() const;
 %Docstring
-Return request url
+Returns the request url
 %End
 
     void setStatusCode( int code );
 %Docstring
-Set response http status code
+Sets response http status code
 %End
 
     int statusCode() const;
 %Docstring
-Return response http status code
+Returns the response http status code
 %End
 
     QMap<QString, QString> parameterMap() const;
 %Docstring
-Return the parsed parameters as a key-value pair, to modify
+Returns the parsed parameters as a key-value pair, to modify
 a parameter setParameter( const QString &key, const QString &value)
 and removeParameter(const QString &key) must be used
 %End
 
     void setParameter( const QString &key, const QString &value );
 %Docstring
-Set a request parameter
+Sets a request parameter
 %End
 
     QString parameter( const QString &key ) const;
 %Docstring
-Return a request parameter
+Returns a request parameter
 %End
 
     void removeParameter( const QString &key );
@@ -156,12 +156,12 @@ Remove a request parameter
 
     QString format() const;
 %Docstring
-Return the requested format string
+Returns the requested format string
 %End
 
     bool headersSent() const;
 %Docstring
-Return true if the HTTP headers were already sent to the client
+Returns true if the HTTP headers were already sent to the client
 %End
 
 };

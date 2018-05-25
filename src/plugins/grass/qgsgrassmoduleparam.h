@@ -542,7 +542,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     void onModeChanged();
 
-    //! Set selection list to currently selected features
+    //! Sets selection list to currently selected features
     void onLayerSelectionChanged();
 
 

@@ -106,19 +106,19 @@ class CORE_EXPORT QgsAuthCertUtils
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
     /**
-     * Return data from a local file via a read-only operation
+     * Returns data from a local file via a read-only operation
      * \param path Path to file to read
      * \returns All data contained in file or empty contents if file does not exist
      */
     static QByteArray fileData( const QString &path );
 
-    //! Return list of concatenated certs from a PEM or DER formatted file
+    //! Returns a list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
-    //! Return list of concatenated CAs from a PEM or DER formatted file
+    //! Returns a list of concatenated CAs from a PEM or DER formatted file
     static QList<QSslCertificate> casFromFile( const QString &certspath );
 
-    //! Return first cert from a PEM or DER formatted file
+    //! Returns the first cert from a PEM or DER formatted file
     static QSslCertificate certFromFile( const QString &certpath );
 
     /**
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsAuthCertUtils
                                             const QList<QSslCertificate> &bundle2 );
 
     /**
-     * Return non-encrypted key from a PEM or DER formatted file
+     * Returns non-encrypted key from a PEM or DER formatted file
      * \param keypath File path to private key
      * \param keypass Passphrase for private key
      * \param algtype QString to set with resolved algorithm type
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsAuthCertUtils
                                 const QString &keypass = QString(),
                                 QString *algtype = nullptr );
 
-    //! Return list of concatenated certs from a PEM Base64 text block
+    //! Returns a list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
 
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
 
     /**
-     * Return list of certificate, private key and algorithm (as PEM text) from file path components
+     * Returns list of certificate, private key and algorithm (as PEM text) from file path components
      * \param certpath File path to certificate
      * \param keypath File path to private key
      * \param keypass Passphrase for private key
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAuthCertUtils
 #endif
 
     /**
-     * Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
+     * Returns list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsAuthCertUtils
                                           bool reencrypt = true );
 
     /**
-     * Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+     * Returns list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle
      * \returns list of certificate

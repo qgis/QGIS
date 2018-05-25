@@ -173,7 +173,7 @@ Constructor
 
         virtual QgsField fieldDefinition( const QgsField &field );
 %Docstring
-Return a possibly modified field definition. Default implementation will return provided field unmodified.
+Returns a possibly modified field definition. Default implementation will return provided field unmodified.
 
 :param field: original field definition
 
@@ -582,7 +582,7 @@ Returns a list of the default layer options for a specified driver.
 
     static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );
 %Docstring
-Return edition capabilities for an existing dataset name.
+Returns edition capabilities for an existing dataset name.
 
 .. versionadded:: 3.0
 %End

@@ -161,16 +161,16 @@ Tag signifying that this is an authentcation method (e.g. for use as title in me
 
     void setVersion( int version );
 %Docstring
-Set the version of the auth method (useful for future upgrading)
+Sets the version of the auth method (useful for future upgrading)
 %End
 
     void setExpansions( QgsAuthMethod::Expansions expansions );
 %Docstring
-Set the support expansions (points in providers where the authentication is injected) of the auth method
+Sets the support expansions (points in providers where the authentication is injected) of the auth method
 %End
     void setDataProviders( const QStringList &dataproviders );
 %Docstring
-Set list of data providers this auth method supports
+Sets list of data providers this auth method supports
 %End
 
 

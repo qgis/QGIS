@@ -93,7 +93,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
 
-    //! set the active layer (layer selected in the legend)
+    //! Sets the active layer (layer selected in the legend)
     bool setActiveLayer( QgsMapLayer *layer ) override;
 
     /**
@@ -201,7 +201,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 #endif
     void openURL( const QString &url, bool useQgisDocDirectory = true ) override;
 
-    //! Return a pointer to the map canvas used by qgisapp
+    //! Returns a pointer to the map canvas used by qgisapp
     QgsMapCanvas *mapCanvas() override;
 
     QList< QgsMapCanvas * > mapCanvases() override;
@@ -239,7 +239,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
-    //! Return changeable options built from settings and/or defaults
+    //! Returns changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
     /**
@@ -289,7 +289,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Remove specified dock widget from main window (doesn't delete it).
     void removeDockWidget( QDockWidget *dockwidget ) override;
 
-    //! return CAD dock widget
+    //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
 
     /**
@@ -529,7 +529,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void preloadForm( const QString &uifile ) override;
 
     /**
-     * Return vector layers in edit mode
+     * Returns the vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
      */

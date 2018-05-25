@@ -60,7 +60,7 @@ struct QgsWcsAuthorization
     , mAuthCfg( authcfg )
   {}
 
-  //! set authorization header
+  //! Sets authorization header
   bool setAuthorization( QNetworkRequest &request ) const
   {
     if ( !mAuthCfg.isEmpty() )
@@ -74,7 +74,7 @@ struct QgsWcsAuthorization
     return true;
   }
 
-  //! set authorization reply
+  //! Sets authorization reply
   bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )

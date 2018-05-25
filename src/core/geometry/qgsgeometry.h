@@ -1301,7 +1301,7 @@ class CORE_EXPORT QgsGeometry
     QgsMultiPolygonXY asMultiPolygon() const;
 
     /**
-     * Return contents of the geometry as a list of geometries
+     * Returns contents of the geometry as a list of geometries
      * \since QGIS 1.1
      */
     QVector<QgsGeometry> asGeometryCollection() const;

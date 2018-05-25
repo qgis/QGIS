@@ -38,9 +38,9 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setModel( QAbstractItemModel *model ) override;
-    //! Set the browser model
+    //! Sets the browser model
     void setBrowserModel( QgsBrowserModel *model );
-    //! Return the browser model
+    //! Returns the browser model
     QgsBrowserModel *browserModel() { return mBrowserModel; }
     void showEvent( QShowEvent *e ) override;
     void hideEvent( QHideEvent *e ) override;

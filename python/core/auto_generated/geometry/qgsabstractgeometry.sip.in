@@ -756,7 +756,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
 %End
 
     QgsVertexIterator *__iter__();

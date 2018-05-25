@@ -108,7 +108,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
     /**
-     * Return the SQL function for the expression function.
+     * Returns the SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \returns the SQL function name
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
     /**
-     * Return the Arguments for SQL function for the expression function.
+     * Returns the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \param fnArgs arguments from expression

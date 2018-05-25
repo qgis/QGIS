@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle buffered( double width ) const;
 
     /**
-     * Return the intersection with the given rectangle.
+     * Returns the intersection with the given rectangle.
      */
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 
@@ -209,12 +209,12 @@ class CORE_EXPORT QgsRectangle
     bool intersects( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains other rectangle.
+     * Returns true when rectangle contains other rectangle.
      */
     bool contains( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains a point.
+     * Returns true when rectangle contains a point.
      */
     bool contains( const QgsPointXY &p ) const;
 

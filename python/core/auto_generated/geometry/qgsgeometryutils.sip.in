@@ -473,7 +473,7 @@ the target ``value``.
 
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
-Return the gradient of a line defined by points ``pt1`` and ``pt2``.
+Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
 
 :param pt1: first point.
 :param pt2: second point.
@@ -486,7 +486,7 @@ Return the gradient of a line defined by points ``pt1`` and ``pt2``.
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a /Out/, double &b /Out/, double &c /Out/ );
 %Docstring
-Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
+Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
 
 :param pt1: first point.
 :param pt2: second point.

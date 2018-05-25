@@ -659,7 +659,7 @@ void QgsGpsPlugin::setupBabel()
   }
 }
 
-//! Set icons to the current theme
+//! Sets icons to the current theme
 void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
 {
   Q_UNUSED( themeName );

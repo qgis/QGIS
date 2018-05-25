@@ -64,7 +64,7 @@ Returns true if the combo box allows the empty field ("not set") choice.
 
     QString currentField() const;
 %Docstring
-return the currently selected field
+Returns the currently selected field
 %End
 
     QgsVectorLayer *layer() const;

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     virtual ~QgsAttributeEditorElement() = default;
 
     /**
-     * Return the name of this element
+     * Returns the name of this element
      *
      * \returns The name for this element
      */
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     {}
 
     /**
-     * Return the index of the field
+     * Returns the index of the field
      * \returns
      */
     int idx() const { return mIdx; }

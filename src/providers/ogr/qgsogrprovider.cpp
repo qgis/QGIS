@@ -1208,7 +1208,7 @@ size_t QgsOgrProvider::layerCount() const
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
@@ -1229,7 +1229,7 @@ QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsOgrProvider::featureCount() const
 {

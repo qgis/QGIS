@@ -158,13 +158,13 @@ Does not resolve textual references to layers. Call resolveReferences() afterwar
     virtual QString dump() const;
 
 %Docstring
-Return text representation of the tree. For debugging purposes only.
+Returns text representation of the tree. For debugging purposes only.
 %End
 
     virtual QgsLayerTreeGroup *clone() const /Factory/;
 
 %Docstring
-Return a clone of the group. The children are cloned too.
+Returns a clone of the group. The children are cloned too.
 %End
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
@@ -183,7 +183,7 @@ Check or uncheck a node and all its children (taking into account exclusion rule
 
     bool isMutuallyExclusive() const;
 %Docstring
-Return whether the group is mutually exclusive (only one child can be checked at a time)
+Returns whether the group is mutually exclusive (only one child can be checked at a time)
 
 .. versionadded:: 2.12
 %End

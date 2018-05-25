@@ -75,7 +75,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     virtual QString category();
 
     /**
-     * Return the plugin type
+     * Returns the plugin type
      */
     virtual int type();
 

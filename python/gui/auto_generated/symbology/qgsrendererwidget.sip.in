@@ -29,7 +29,7 @@ WORKFLOW:
 
     virtual QgsFeatureRenderer *renderer() = 0;
 %Docstring
-return pointer to the renderer (no transfer of ownership)
+Returns pointer to the renderer (no transfer of ownership)
 %End
 
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );

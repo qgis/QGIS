@@ -37,27 +37,27 @@ and customized look.
 
     QgsLayerTreeLayer *layerNode() const;
 %Docstring
-Return pointer to the parent layer node
+Returns pointer to the parent layer node
 %End
 
     QgsLayerTreeModel *model() const;
 %Docstring
-Return pointer to model owning this legend node
+Returns pointer to model owning this legend node
 %End
 
     virtual Qt::ItemFlags flags() const;
 %Docstring
-Return item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
+Returns item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
 %End
 
     virtual QVariant data( int role ) const = 0;
 %Docstring
-Return data associated with the item. Must be implemented in derived class.
+Returns data associated with the item. Must be implemented in derived class.
 %End
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
-Set some data associated with the item. Default implementation does nothing and returns false.
+Sets some data associated with the item. Default implementation does nothing and returns false.
 %End
 
     virtual bool isEmbeddedInParent() const;

@@ -37,13 +37,13 @@ Returns a new instance equivalent to this one.
 
     QString pluginLayerType();
 %Docstring
-Return plugin layer type (the same as used in QgsPluginLayerRegistry)
+Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
 %End
 
     virtual void setExtent( const QgsRectangle &extent );
 
 %Docstring
-Set extent of the layer
+Sets extent of the layer
 %End
 
     void setSource( const QString &source );

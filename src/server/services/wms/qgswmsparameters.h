@@ -918,7 +918,7 @@ namespace QgsWms
       QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
       /**
-       * Return the external WMS uri
+       * Returns the external WMS uri
        * \param id the id of the external wms
        * \return uri string or an empty string if the external wms id does not exist
        */

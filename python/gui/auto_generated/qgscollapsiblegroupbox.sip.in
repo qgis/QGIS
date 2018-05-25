@@ -77,7 +77,7 @@ Named group which synchronizes collapsing action when triangle is clicked while 
 
     void setScrollOnExpand( bool scroll );
 %Docstring
-Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+Sets this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
 %End
 
     bool scrollOnExpand();
@@ -149,7 +149,7 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 
     void setSaveCollapsedState( bool save );
 %Docstring
-set this to false to not save/restore collapsed state
+Sets this to false to not save/restore collapsed state
 %End
 
     void setSaveCheckedState( bool save );
@@ -166,7 +166,7 @@ Set this to true to save/restore checked state
 
     void setSettingGroup( const QString &group );
 %Docstring
-Set this to a defined string to share save/restore states across different parent dialogs
+Sets this to a defined string to share save/restore states across different parent dialogs
 %End
     QString settingGroup() const;
 %Docstring

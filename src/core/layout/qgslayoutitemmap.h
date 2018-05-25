@@ -407,7 +407,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     double mapUnitsToLayoutUnits() const;
 
     /**
-     * Return map settings that will be used for drawing of the map.
+     * Returns map settings that will be used for drawing of the map.
      *
      * If \a includeLayerSettings is true, than settings specifically relating to map layers and map layer styles
      * will be calculated. This can be expensive to calculate, so if they are not required in the map settings
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;
 
-    //! \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true
+    // Set to true if in state of drawing. Concurrent requests to draw method are returned if set to true
     bool mDrawing = false;
 
     QTimer *mBackgroundUpdateTimer = nullptr;

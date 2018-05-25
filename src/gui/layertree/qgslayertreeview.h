@@ -75,14 +75,14 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Get access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
 
-    //! Set provider for context menu. Takes ownership of the instance
+    //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
-    //! Return pointer to the context menu provider. May be null
+    //! Returns pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     //! Get currently selected layer. May be null
     QgsMapLayer *currentLayer() const;
-    //! Set currently selected layer. Null pointer will deselect any layer.
+    //! Sets currently selected layer. Null pointer will deselect any layer.
     void setCurrentLayer( QgsMapLayer *layer );
 
     //! Get current node. May be null
@@ -97,11 +97,11 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
-     * Return list of selected nodes
+     * Returns list of selected nodes
      * \param skipInternal If true, will ignore nodes which have an ancestor in the selection
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
-    //! Return list of selected nodes filtered to just layer nodes
+    //! Returns list of selected nodes filtered to just layer nodes
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
     //! Get list of selected layers
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
   public:
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
-    //! Return a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 

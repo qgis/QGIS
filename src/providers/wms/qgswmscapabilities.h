@@ -359,7 +359,7 @@ struct QgsWmtsTileMatrixSet
   //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
   const QgsWmtsTileMatrix *findNearestResolution( double vres ) const;
 
-  //! Return tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
+  //! Returns the tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
   const QgsWmtsTileMatrix *findOtherResolution( double tres, int offset ) const;
 };
 
@@ -520,7 +520,7 @@ struct QgsWmsAuthorization
     }
     return true;
   }
-  //! set authorization reply
+  //! Sets authorization reply
   bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )

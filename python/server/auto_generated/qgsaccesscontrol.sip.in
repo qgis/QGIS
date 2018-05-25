@@ -58,14 +58,14 @@ Filter the features of the layer
     virtual QgsFeatureFilterProvider *clone() const /Factory/;
 
 %Docstring
-Return a clone of the object
+Returns a clone of the object
 
 :return: A clone
 %End
 
     QString extraSubsetString( const QgsVectorLayer *layer ) const;
 %Docstring
-Return an additional subset string (typically SQL) filter
+Returns an additional subset string (typically SQL) filter
 
 :param layer: the layer to control
 
@@ -74,7 +74,7 @@ Return an additional subset string (typically SQL) filter
 
     bool layerReadPermission( const QgsMapLayer *layer ) const;
 %Docstring
-Return the layer read right
+Returns the layer read right
 
 :param layer: the layer to control
 
@@ -83,7 +83,7 @@ Return the layer read right
 
     bool layerInsertPermission( const QgsVectorLayer *layer ) const;
 %Docstring
-Return the layer insert right
+Returns the layer insert right
 
 :param layer: the layer to control
 
@@ -92,7 +92,7 @@ Return the layer insert right
 
     bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
 %Docstring
-Return the layer update right
+Returns the layer update right
 
 :param layer: the layer to control
 
@@ -101,7 +101,7 @@ Return the layer update right
 
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
 %Docstring
-Return the layer delete right
+Returns the layer delete right
 
 :param layer: the layer to control
 
@@ -110,7 +110,7 @@ Return the layer delete right
 
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 %Docstring
-Return the authorized layer attributes
+Returns the authorized layer attributes
 
 :param layer: the layer to control
 :param attributes: the list of attribute

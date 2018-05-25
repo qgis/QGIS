@@ -73,7 +73,7 @@ class QgsStackTrace
     std::vector<HANDLE> threads;
 
     /**
-     * Return a demangled stack backtrace of the caller function.
+     * Returns a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */
@@ -83,7 +83,7 @@ class QgsStackTrace
 #ifdef Q_OS_LINUX
 
     /**
-    * Return a demangled stack backtrace of the caller function.
+    * Returns a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */

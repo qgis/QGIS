@@ -39,7 +39,7 @@ Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 
     QgsColorRamp *colorRamp() const /Factory/;
 %Docstring
-Return a copy of the current color ramp.
+Returns a copy of the current color ramp.
 
 .. seealso:: :py:func:`setColorRamp`
 %End

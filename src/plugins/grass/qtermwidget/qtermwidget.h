@@ -130,12 +130,12 @@ public:
      */
     static QStringList availableKeyBindings();
 
-    //! Return current key bindings
+    //! Returns current key bindings
     QString keyBindings();
 
     void setMotionAfterPasting(int);
 
-    /** Return the number of lines in the history buffer. */
+    /** Returns the number of lines in the history buffer. */
     int historyLinesCount();
 
     int screenColumnsCount();

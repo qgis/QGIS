@@ -182,7 +182,7 @@ QGIS forms
 
     QgsFeature formFeature() const;
 %Docstring
-Return current feature from the currently edited form or table row
+Returns current feature from the currently edited form or table row
 
 .. seealso:: :py:func:`setFormFeature`
 

@@ -43,7 +43,7 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
 
     /**
-     * Return a clone of the object
+     * Returns a clone of the object
      * \returns A clone
      */
     QgsFeatureFilterProvider *clone() const SIP_FACTORY;

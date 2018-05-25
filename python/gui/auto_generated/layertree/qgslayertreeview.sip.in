@@ -63,11 +63,11 @@ Get access to the default actions that may be used with the tree view
 
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider /Transfer/ );
 %Docstring
-Set provider for context menu. Takes ownership of the instance
+Sets provider for context menu. Takes ownership of the instance
 %End
     QgsLayerTreeViewMenuProvider *menuProvider() const;
 %Docstring
-Return pointer to the context menu provider. May be null
+Returns pointer to the context menu provider. May be null
 %End
 
     QgsMapLayer *currentLayer() const;
@@ -76,7 +76,7 @@ Get currently selected layer. May be null
 %End
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
-Set currently selected layer. Null pointer will deselect any layer.
+Sets currently selected layer. Null pointer will deselect any layer.
 %End
 
     QgsLayerTreeNode *currentNode() const;
@@ -97,13 +97,13 @@ Get current legend node. May be null if current node is not a legend node.
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
-Return list of selected nodes
+Returns list of selected nodes
 
 :param skipInternal: If true, will ignore nodes which have an ancestor in the selection
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
-Return list of selected nodes filtered to just layer nodes
+Returns list of selected nodes filtered to just layer nodes
 %End
 
     QList<QgsMapLayer *> selectedLayers() const;
@@ -227,7 +227,7 @@ instance to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu() = 0 /Factory/;
 %Docstring
-Return a newly created menu instance (or null pointer on error)
+Returns a newly created menu instance (or null pointer on error)
 %End
 };
 

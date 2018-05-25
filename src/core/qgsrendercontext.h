@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRenderContext
     void setFlag( Flag flag, bool on = true );
 
     /**
-     * Return combination of flags used for rendering.
+     * Returns combination of flags used for rendering.
      * \since QGIS 2.14
      */
     Flags flags() const;

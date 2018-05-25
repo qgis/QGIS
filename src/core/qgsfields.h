@@ -125,7 +125,7 @@ class CORE_EXPORT QgsFields
     //! Check whether the container is empty
     bool isEmpty() const;
 
-    //! Return number of items
+    //! Returns number of items
     int count() const;
 
 #ifdef SIP_RUN
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Return number of items
+    //! Returns number of items
     int size() const;
 
     /**
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsFields
     QStringList names() const;
 
     /**
-     * Return if a field index is valid
+     * Returns if a field index is valid
      * \param i  Index of the field which needs to be checked
      * \returns   True if the field exists
      */

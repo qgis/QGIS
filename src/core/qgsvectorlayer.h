@@ -396,7 +396,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
         , readExtentFromXml( readExtentFromXml )
       {}
 
-      //! Set to true if the default layer style should be loaded
+      //! Sets to true if the default layer style should be loaded
       bool loadDefaultStyle = true;
 
       /**
@@ -680,7 +680,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 
     /**
-     * Return reference to identifiers of selected features
+     * Returns reference to identifiers of selected features
      *
      * \returns A list of QgsFeatureId
      * \see selectedFeatures()
@@ -724,11 +724,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDiagramLayerSettings( const QgsDiagramLayerSettings &s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
-    //! Return renderer.
+    //! Returns renderer.
     QgsFeatureRenderer *renderer() { return mRenderer; }
 
     /**
-     * Return const renderer.
+     * Returns const renderer.
      * \note not available in Python bindings
      */
     const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
@@ -745,7 +745,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the WKBType or WKBUnknown in case of error
     QgsWkbTypes::Type wkbType() const override;
 
-    //! Return the provider type for this layer
+    //! Returns the provider type for this layer
     QString providerType() const;
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
@@ -1321,7 +1321,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void reload() override;
 
     /**
-     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -1839,7 +1839,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr ) const;
 
-    //! Set the blending mode used for rendering each feature
+    //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
     //! Returns the current blending mode for features
     QPainter::CompositionMode featureBlendMode() const;
@@ -1884,7 +1884,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
     /**
-     * \brief Return the conditional styles that are set for this layer. Style information is
+     * Returns the conditional styles that are set for this layer. Style information is
      * used to render conditional formatting in the attribute table.
      * \returns Return a QgsConditionalLayerStyles object holding the conditional attribute
      * style information. Style information is generic and can be used for anything.
@@ -2283,7 +2283,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onDirtyTransaction( const QString &sql, const QString &name );
 
   protected:
-    //! Set the extent
+    //! Sets the extent
     void setExtent( const QgsRectangle &rect ) override;
 
   private:                       // Private methods

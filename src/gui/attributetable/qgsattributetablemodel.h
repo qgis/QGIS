@@ -184,7 +184,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
 
     /**
-     * Return the feature attributes at given model index
+     * Returns the feature attributes at given model index
      * \returns feature attributes at given model index
      */
     QgsFeature feature( const QModelIndex &idx ) const;

@@ -117,7 +117,7 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 
     QStringList additionalItems() const;
 %Docstring
-Return the list of additional (non map layer) items included at the end of the combo box.
+Returns the list of additional (non map layer) items included at the end of the combo box.
 
 .. seealso:: :py:func:`setAdditionalItems`
 
@@ -133,7 +133,7 @@ Returns the current layer selected in the combo box.
 
     QgsMapLayer *layer( int layerIndex ) const;
 %Docstring
-Return the layer currently shown at the specified index within the combo box.
+Returns the layer currently shown at the specified index within the combo box.
 
 :param layerIndex: position of layer to return
 

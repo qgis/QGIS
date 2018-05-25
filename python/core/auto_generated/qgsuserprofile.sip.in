@@ -56,7 +56,7 @@ Init the settings from the user folder.
 
     const QString alias() const;
 %Docstring
-Return the alias for the user profile.
+Returns the alias for the user profile.
 
 :return: If no alias is set name() is returned.
 %End

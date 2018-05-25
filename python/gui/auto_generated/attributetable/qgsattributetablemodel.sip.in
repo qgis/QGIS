@@ -177,7 +177,7 @@ Execute a :py:class:`QgsMapLayerAction`
 
     QgsFeature feature( const QModelIndex &idx ) const;
 %Docstring
-Return the feature attributes at given model index
+Returns the feature attributes at given model index
 
 :return: feature attributes at given model index
 %End

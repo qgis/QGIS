@@ -3496,7 +3496,7 @@ size_t QgsSpatiaLiteProvider::layerCount() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 {
@@ -3504,7 +3504,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 long QgsSpatiaLiteProvider::featureCount() const
 {

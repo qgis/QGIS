@@ -105,7 +105,7 @@ namespace QgsGeometryCheckerUtils
   void filter1DTypes( QgsAbstractGeometry *geom );
 
   /**
-   * \brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
+   * Returns the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
    * \param polyLine The polyline
    * \returns The number of distinct points of the polyline
    */

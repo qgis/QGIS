@@ -48,7 +48,7 @@ Writes configuration to a DOM element, to be used later with readXml()
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
 %Docstring
-Return list of legend nodes to be used for a particular layer tree layer node.
+Returns list of legend nodes to be used for a particular layer tree layer node.
 Ownership is transferred to the caller.
 %End
 

@@ -56,7 +56,7 @@ class QgsSymbol
 
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
-return new default symbol for specified geometry type
+Returns new default symbol for specified geometry type
 %End
 
     SymbolType type() const;
@@ -296,7 +296,7 @@ side effects for certain symbol types.
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
-Return a list of attributes required to render this feature.
+Returns a list of attributes required to render this feature.
 This should include any attributes required by the symbology including
 the ones required by expressions.
 %End

@@ -102,7 +102,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override;
 
     /**
-     * Return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -110,7 +110,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
-     * Return a string representation of the endian-ness for the layer
+     * Returns a string representation of the endian-ness for the layer
      */
     static QString endianString();
 
@@ -297,7 +297,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
     /**
-     * Return the type of primary key for a PK field
+     * Returns the type of primary key for a PK field
      *
      * \param fld the field to determine PK type of
      * \returns the PrimaryKeyType

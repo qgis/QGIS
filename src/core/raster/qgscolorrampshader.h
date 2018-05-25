@@ -110,10 +110,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
-    //! \brief Set custom colormap
+    //! Sets a custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /**
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     void setSourceColorRamp( QgsColorRamp *colorramp SIP_TRANSFER );
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( const QString &type );
 
     /**

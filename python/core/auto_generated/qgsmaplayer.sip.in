@@ -390,7 +390,7 @@ Synchronises with changes in the datasource
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 /Factory/;
 %Docstring
-Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
 
 .. versionadded:: 2.4
 %End
@@ -402,7 +402,7 @@ Returns the extent of the layer.
 
     bool isValid() const;
 %Docstring
-Return the status of the layer. An invalid layer is one which has a bad datasource
+Returns the status of the layer. An invalid layer is one which has a bad datasource
 or other problem. Child classes set this flag when initialized.
 
 :return: true if the layer is valid and can be accessed
@@ -890,12 +890,12 @@ Write just the style information for the layer into the document
 
     QUndoStack *undoStack();
 %Docstring
-Return pointer to layer's undo stack
+Returns pointer to layer's undo stack
 %End
 
     QUndoStack *undoStackStyles();
 %Docstring
-Return pointer to layer's style undo stack
+Returns pointer to layer's style undo stack
 
 .. versionadded:: 2.16
 %End
@@ -1358,12 +1358,12 @@ Copies attributes like name, short name, ... into another layer.
 
     virtual void setExtent( const QgsRectangle &rect );
 %Docstring
-Set the extent
+Sets the extent
 %End
 
     void setValid( bool valid );
 %Docstring
-Set whether layer is valid or not - should be used in constructor.
+Sets whether layer is valid or not - should be used in constructor.
 %End
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
@@ -1450,7 +1450,7 @@ Add error message
 %End
     void setError( const QgsError &error );
 %Docstring
-Set error message
+Sets error message
 %End
 
 

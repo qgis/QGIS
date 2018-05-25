@@ -395,7 +395,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void reload() {}
 
     /**
-     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 SIP_FACTORY;
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
-     * Return the status of the layer. An invalid layer is one which has a bad datasource
+     * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
      * \returns true if the layer is valid and can be accessed
      */
@@ -807,11 +807,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
-    //! Return pointer to layer's undo stack
+    //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
 
     /**
-     * Return pointer to layer's style undo stack
+     * Returns pointer to layer's style undo stack
      *  \since QGIS 2.16
      */
     QUndoStack *undoStackStyles();
@@ -1179,10 +1179,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void clone( QgsMapLayer *layer ) const;
 
-    //! Set the extent
+    //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    //! Set whether layer is valid or not - should be used in constructor.
+    //! Sets whether layer is valid or not - should be used in constructor.
     void setValid( bool valid );
 
     /**
@@ -1259,7 +1259,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Add error message
     void appendError( const QgsErrorMessage &error ) { mError.append( error );}
-    //! Set error message
+    //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
     //! Extent of the layer

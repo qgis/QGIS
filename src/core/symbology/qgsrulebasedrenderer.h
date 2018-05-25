@@ -157,7 +157,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QString dump( int indent = 0 ) const;
 
         /**
-         * Return the attributes used to evaluate the expression of this rule
+         * Returns the attributes used to evaluate the expression of this rule
          * \returns A set of attribute names
          */
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
-        //! set a new symbol (or NULL). Deletes old symbol.
+        //! Sets a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbol *sym SIP_TRANSFER );
         void setLabel( const QString &label ) { mLabel = label; }
 
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap ) SIP_FACTORY;
 
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
          * \returns A list of rules
          */
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     ~QgsRuleBasedRenderer() override;
 
-    //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
+    //! Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;

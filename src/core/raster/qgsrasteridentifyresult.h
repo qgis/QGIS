@@ -65,16 +65,16 @@ class CORE_EXPORT QgsRasterIdentifyResult
      */
     QMap<int, QVariant> results() const { return mResults; }
 
-    //! Set map of optional parameters
+    //! Sets map of optional parameters
     void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
     //! Get map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }
 
-    //! \brief Get error
+    //! Returns the last error
     QgsError error() const { return mError; }
 
-    //! \brief Set error
+    //! Sets the last error
     void setError( const QgsError &error ) { mError = error;}
 
   private:

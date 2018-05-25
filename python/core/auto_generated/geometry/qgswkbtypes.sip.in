@@ -203,7 +203,7 @@ Returns a display string type for a WKB type, e.g., the geometry name used in WK
 
     static QString geometryDisplayString( GeometryType type );
 %Docstring
-Return a display string for a geometry type.
+Returns a display string for a geometry type.
 
 This will return one of the following strings:
 

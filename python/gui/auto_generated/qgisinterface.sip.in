@@ -106,7 +106,7 @@ for toolbars contained within docks is returned.
 
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 %Docstring
-Return vector layers in edit mode
+Returns vector layers in edit mode
 
 :param modified: whether to return only layers that have been modified
 
@@ -120,7 +120,7 @@ Get pointer to the active layer (layer selected in the legend)
 
     virtual QgsMapCanvas *mapCanvas() = 0;
 %Docstring
-Return a pointer to the map canvas
+Returns a pointer to the map canvas
 %End
 
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
@@ -132,12 +132,12 @@ Returns a pointer to the layer tree canvas bridge
 
     virtual QWidget *mainWindow() = 0;
 %Docstring
-Return a pointer to the main window (instance of QgisApp in case of QGIS)
+Returns a pointer to the main window (instance of QgisApp in case of QGIS)
 %End
 
     virtual QgsMessageBar *messageBar() = 0;
 %Docstring
-Return the message bar of the main app
+Returns the message bar of the main app
 %End
 
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
@@ -150,7 +150,7 @@ Returns all currently open layout designers.
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 %Docstring
-Return changeable options built from settings and/or defaults
+Returns changeable options built from settings and/or defaults
 %End
 
     virtual QFont defaultStyleSheetFont() = 0;

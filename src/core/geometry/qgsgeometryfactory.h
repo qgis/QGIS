@@ -76,7 +76,7 @@ class CORE_EXPORT QgsGeometryFactory
     static std::unique_ptr<QgsPolygon> fromPolygonXY( const QgsPolygonXY &polygon );
     //! Construct geometry from a multipolygon
     static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
-    //! Return empty geometry from wkb type
+    //! Returns empty geometry from wkb type
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
 
     /**

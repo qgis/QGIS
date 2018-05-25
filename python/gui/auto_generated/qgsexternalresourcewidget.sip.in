@@ -71,7 +71,7 @@ returns if the file widget is visible in the widget
 %End
     void setFileWidgetVisible( bool visible );
 %Docstring
-set the visiblity of the file widget in the layout
+Sets the visiblity of the file widget in the layout
 %End
 
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;

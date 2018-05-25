@@ -161,7 +161,7 @@ class CORE_EXPORT QgsRasterBlock
     void resetNoDataValue();
 
     /**
-     * Return no data value. If the block does not have a no data value the
+     * Returns no data value. If the block does not have a no data value the
      *  returned value is undefined.
      * \returns No data value
      * \see hasNoDataValue(), setNoDataValue(), resetNoDataValue()
@@ -382,10 +382,10 @@ class CORE_EXPORT QgsRasterBlock
     */
     void applyScaleOffset( double scale, double offset );
 
-    //! \brief Get error
+    //! Returns the last error
     QgsError error() const { return mError; }
 
-    //! \brief Set error
+    //! Sets the last error
     void setError( const QgsError &error ) { mError = error;}
 
     QString toString() const;

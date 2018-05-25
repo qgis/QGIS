@@ -122,7 +122,7 @@ Unique rule identifier (for identification of rule within labeling, used as prov
 
         void setSettings( QgsPalLayerSettings *settings /Transfer/ );
 %Docstring
-set new settings (or NULL). Deletes old settings if any.
+Sets new settings (or NULL). Deletes old settings if any.
 %End
 
         void setMinimumScale( double scale );
@@ -183,7 +183,7 @@ Override the assigned rule key (should be used just internally by rule-based lab
 
         const QgsRuleBasedLabeling::RuleList &children() const;
 %Docstring
-Return all children rules of this rule
+Returns all children rules of this rule
 
 :return: A list of rules
 %End

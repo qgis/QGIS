@@ -73,7 +73,7 @@ class QgsFeatureRenderer
 
     static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
-return a new renderer - used by default in vector layers
+Returns a new renderer - used by default in vector layers
 %End
 
     QString type() const;
@@ -94,7 +94,7 @@ Must be called between startRender() and stopRender() calls.
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
+Returns symbol for feature. The difference compared to symbolForFeature() is that it returns original
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
 of a symbol for use in rendering.
 
@@ -103,7 +103,7 @@ of a symbol for use in rendering.
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Return legend keys matching a specified feature.
+Returns legend keys matching a specified feature.
 
 .. versionadded:: 2.14
 %End
@@ -154,7 +154,7 @@ will be combined with a filter returned from this method.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 %Docstring
-Return a list of attributes required by this renderer. Attributes not listed in here may
+Returns a list of attributes required by this renderer. Attributes not listed in here may
 not have been requested from the provider at rendering time.
 
 :return: A set of attributes
@@ -317,7 +317,7 @@ If supported by the renderer, return classification attribute for the use in leg
 
     void setVertexMarkerAppearance( int type, int size );
 %Docstring
-set type and size of editing vertex markers for subsequent rendering
+Sets type and size of editing vertex markers for subsequent rendering
 %End
 
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;

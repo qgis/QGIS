@@ -120,7 +120,7 @@ Performs identification based on a geometry (in map coordinates)
 
     QgsIdentifyMenu *identifyMenu();
 %Docstring
-return a pointer to the identify menu which will be used in layer selection mode
+Returns a pointer to the identify menu which will be used in layer selection mode
 this menu can also be customized
 %End
 

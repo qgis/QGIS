@@ -70,7 +70,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void setAllowOpacity( const bool allowOpacity );
 
     /**
-     * Return a color selection from a color dialog.
+     * Returns a color selection from a color dialog.
      * \param initialColor the initial color of the selection dialog.
      * \param parent parent widget
      * \param title the title of the dialog.

@@ -44,13 +44,13 @@ Unique type string of the labeling configuration implementation
 
     virtual QgsAbstractVectorLayerLabeling *clone() const = 0 /Factory/;
 %Docstring
-Return a new copy of the object
+Returns a new copy of the object
 %End
 
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 %Docstring
-Return labeling configuration as XML element
+Returns labeling configuration as XML element
 %End
 
     virtual QStringList subProviders() const;

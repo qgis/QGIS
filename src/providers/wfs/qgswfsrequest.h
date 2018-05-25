@@ -45,16 +45,16 @@ class QgsWfsRequest : public QObject
                      WFSVersionNotSupported
                    };
 
-    //! \brief Return error code (after download/post)
+    //! Returns the error code (after download/post)
     ErrorCode errorCode() const { return mErrorCode; }
 
-    //! \brief Return error message (after download/post)
+    //! Returns the error message (after download/post)
     QString errorMessage() const { return mErrorMessage; }
 
-    //! \brief Return server response (after download/post)
+    //! Returns the server response (after download/post)
     QByteArray response() const { return mResponse; }
 
-    //! Return the url for a WFS request
+    //! Returns the url for a WFS request
     QUrl requestUrl( const QString &request ) const;
 
   public slots:
@@ -104,12 +104,12 @@ class QgsWfsRequest : public QObject
   protected:
 
     /**
-     * Return (translated) error message, composed with a
+     * Returns (translated) error message, composed with a
      * (possibly translated, but sometimes coming from server) reason
      */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
-    //! Return experiation delay in second
+    //! Returns experiation delay in second
     virtual int defaultExpirationInSec() { return 0; }
 
   private:

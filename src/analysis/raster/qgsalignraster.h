@@ -62,22 +62,22 @@ class ANALYSIS_EXPORT QgsAlignRaster
         //! Check whether the given path is a valid raster
         bool isValid() const { return nullptr != mDataset; }
 
-        //! Return CRS in WKT format
+        //! Returns the CRS in WKT format
         QString crs() const { return mCrsWkt; }
-        //! Return size of the raster grid in pixels
+        //! Returns the size of the raster grid in pixels
         QSize rasterSize() const { return QSize( mXSize, mYSize ); }
-        //! Return number of raster bands in the file
+        //! Returns the number of raster bands in the file
         int bandCount() const { return mBandCnt; }
-        //! Return cell size in map units
+        //! Returns the cell size in map units
         QSizeF cellSize() const;
-        //! Return grid offset
+        //! Returns the grid offset
         QPointF gridOffset() const;
-        //! Return extent of the raster
+        //! Returns the extent of the raster
         QgsRectangle extent() const;
-        //! Return origin of the raster
+        //! Returns the origin of the raster
         QPointF origin() const;
 
-        //! write contents of the object to standard error stream - for debugging
+        //! Write contents of the object to standard error stream - for debugging
         void dump() const;
 
         //! Get raster value at the given coordinates (from the first band)
@@ -172,7 +172,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Get associated progress handler. May be nullptr (default)
     ProgressHandler *progressHandler() const { return mProgressHandler; }
 
-    //! Set list of rasters that will be aligned
+    //! Sets list of rasters that will be aligned
     void setRasters( const List &list ) { mRasters = list; }
     //! Get list of rasters that will be aligned
     List rasters() const { return mRasters; }
@@ -180,14 +180,14 @@ class ANALYSIS_EXPORT QgsAlignRaster
     void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
     QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
-    //! Set output cell size
+    //! Sets output cell size
     void setCellSize( double x, double y ) { setCellSize( QSizeF( x, y ) ); }
-    //! Set output cell size
+    //! Sets output cell size
     void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
     //! Get output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
-    //! Set the output CRS in WKT format
+    //! Sets the output CRS in WKT format
     void setDestinationCrs( const QString &crsWkt ) { mCrsWkt = crsWkt; }
     //! Get the output CRS in WKT format
     QString destinationCrs() const { return mCrsWkt; }
@@ -236,13 +236,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool checkInputParameters();
 
     /**
-     * Return expected size of the resulting aligned raster
+     * Returns the expected size of the resulting aligned raster
      * \note first need to run checkInputParameters() which returns with success
      */
     QSize alignedRasterSize() const;
 
     /**
-     * Return expected extent of the resulting aligned raster
+     * Returns the expected extent of the resulting aligned raster
      * \note first need to run checkInputParameters() which returns with success
      */
     QgsRectangle alignedRasterExtent() const;
@@ -254,7 +254,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool run();
 
     /**
-     * Return error from a previous run() call.
+     * Returns the error from a previous run() call.
      * Error message is empty if run() succeeded (returned true)
      */
     QString errorMessage() const { return mErrorMessage; }
@@ -262,7 +262,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! write contents of the object to standard error stream - for debugging
     void dump() const;
 
-    //! Return index of the layer which has smallest cell size (returns -1 on error)
+    //! Returns the index of the layer which has smallest cell size (returns -1 on error)
     int suggestedReferenceLayer() const;
 
   protected:

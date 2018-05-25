@@ -140,7 +140,7 @@ public:
     int sessionId() const;
 
     /**
-     * Return the session title set by the user (ie. the program running
+     * Returns the session title set by the user (ie. the program running
      * in the terminal), or an empty string if the user has not set a custom title
      */
     QString userTitle() const;

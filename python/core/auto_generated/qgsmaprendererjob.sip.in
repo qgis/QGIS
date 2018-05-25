@@ -145,7 +145,7 @@ Returns the total time it took to finish the job (in milliseconds).
 
     const QgsMapSettings &mapSettings() const;
 %Docstring
-Return map settings with which this job was started.
+Returns map settings with which this job was started.
 
 :return: A QgsMapSettings instance with render settings
 

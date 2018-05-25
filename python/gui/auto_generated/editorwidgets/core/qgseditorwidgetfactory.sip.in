@@ -53,7 +53,7 @@ instead of calling this method directly.
 
     QString name();
 %Docstring
-Return The human readable identifier name of this widget type
+Returns The human readable identifier name of this widget type
 
 :return: a name
 %End

@@ -81,7 +81,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
 }
 
 
-//! Return index of vertex adjacent to the given endpoint. Assuming linear geometries.
+//! Returns the index of vertex adjacent to the given endpoint. Assuming linear geometries.
 int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
 {
   const QgsAbstractGeometry *g = geom.constGet();

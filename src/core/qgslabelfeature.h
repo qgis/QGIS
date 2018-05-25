@@ -186,20 +186,20 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Whether the label should use a fixed position instead of being automatically placed
     bool hasFixedPosition() const { return mHasFixedPosition; }
-    //! Set whether the label should use a fixed position instead of being automatically placed
+    //! Sets whether the label should use a fixed position instead of being automatically placed
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
     QgsPointXY fixedPosition() const { return mFixedPosition; }
-    //! Set coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
+    //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
     void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
-    //! Set whether the label should use a fixed angle instead of using angle from automatic placement
+    //! Sets whether the label should use a fixed angle instead of using angle from automatic placement
     void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
     //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
     double fixedAngle() const { return mFixedAngle; }
-    //! Set angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
+    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
     /**
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Whether label should be always shown (sets very high label priority)
     bool alwaysShow() const { return mAlwaysShow; }
-    //! Set whether label should be always shown (sets very high label priority)
+    //! Sets whether label should be always shown (sets very high label priority)
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
     /**
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsLabelFeature
      * to identify which features may be merged.
      */
     QString labelText() const { return mLabelText; }
-    //! Set text of the label
+    //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
     //! Get additional infor required for curved label placement. Returns null if not set
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
     void setLayer( pal::Layer *layer ) { mLayer = layer; }
 
-    //! Return provider of this instance
+    //! Returns provider of this instance
     QgsAbstractLabelProvider *provider() const;
 
   protected:

@@ -72,14 +72,14 @@ class CORE_EXPORT QgsSQLStatement
     const QgsSQLStatement::Node *rootNode() const;
 
     /**
-     * Return the original, unmodified statement string.
+     * Returns the original, unmodified statement string.
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
     QString statement() const;
 
     /**
-     * Return  statement string, constructed from the internal
+     * Returns the statement string, constructed from the internal
      * abstract syntax tree. This does not contain any nice whitespace
      * formatting or comments. In general it is preferable to use
      * statement() instead.
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsSQLStatement
         //! Takes ownership of the provided node
         void append( QgsSQLStatement::Node *node SIP_TRANSFER ) { mList.append( node ); }
 
-        //! Return list
+        //! Returns list
         QList<QgsSQLStatement::Node *> list() { return mList; }
 
         /**
@@ -459,10 +459,10 @@ class CORE_EXPORT QgsSQLStatement
         NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  SIP_TRANSFER ) : mName( name ), mArgs( args ) {}
         ~NodeFunction() override { delete mArgs; }
 
-        //! Return function name
+        //! Returns function name
         QString name() const { return mName; }
 
-        //! Return arguments
+        //! Returns arguments
         QgsSQLStatement::NodeList *args() const { return mArgs; }
 
         QgsSQLStatement::NodeType nodeType() const override { return ntFunction; }
@@ -510,7 +510,7 @@ class CORE_EXPORT QgsSQLStatement
         //! Constructor with table and column name
         NodeColumnRef( const QString &tableName, const QString &name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}
 
-        //! Set whether this is prefixed by DISTINCT
+        //! Sets whether this is prefixed by DISTINCT
         void setDistinct( bool distinct = true ) { mDistinct = distinct; }
 
         //! The name of the table. May be empty.
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsSQLStatement
         NodeSelectedColumn( QgsSQLStatement::Node *node SIP_TRANSFER ) : mColumnNode( node ) {}
         ~NodeSelectedColumn() override { delete mColumnNode; }
 
-        //! Set alias name
+        //! Sets alias name
         void setAlias( const QString &alias ) { mAlias = alias; }
 
         //! Column that is referred to
@@ -707,26 +707,26 @@ class CORE_EXPORT QgsSQLStatement
         NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList SIP_TRANSFER, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns SIP_TRANSFER, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ) {}
         ~NodeSelect() override;
 
-        //! Set joins
+        //! Sets joins
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins SIP_TRANSFER ) { qDeleteAll( mJoins ); mJoins = joins; }
         //! Append a join
         void appendJoin( QgsSQLStatement::NodeJoin *join SIP_TRANSFER ) { mJoins.append( join ); }
-        //! Set where clause
+        //! Sets where clause
         void setWhere( QgsSQLStatement::Node *where SIP_TRANSFER ) { delete mWhere; mWhere = where; }
-        //! Set order by columns
+        //! Sets order by columns
         void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted *> &orderBy SIP_TRANSFER ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
 
-        //! Return the list of tables
+        //! Returns the list of tables
         QList<QgsSQLStatement::NodeTableDef *> tables() const { return mTableList; }
-        //! Return the list of columns
+        //! Returns the list of columns
         QList<QgsSQLStatement::NodeSelectedColumn *> columns() const { return mColumns; }
-        //! Return if the SELECT is DISTINCT
+        //! Returns if the SELECT is DISTINCT
         bool distinct() const { return mDistinct; }
-        //! Return the list of joins
+        //! Returns the list of joins
         QList<QgsSQLStatement::NodeJoin *> joins() const { return mJoins; }
-        //! Return the where clause
+        //! Returns the where clause
         QgsSQLStatement::Node *where() const { return mWhere; }
-        //! Return the list of order by columns
+        //! Returns the list of order by columns
         QList<QgsSQLStatement::NodeColumnSorted *> orderBy() const { return mOrderBy; }
 
         QgsSQLStatement::NodeType nodeType() const override { return ntSelect; }

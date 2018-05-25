@@ -112,7 +112,7 @@ Refresh item children
 
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 %Docstring
-Return index of item with given path. It only searches in currently fetched
+Returns index of item with given path. It only searches in currently fetched
 items, i.e. it does not fetch children.
 
 :param path: item path

@@ -305,7 +305,7 @@ Snapped to a segment
 
     QAction *enableAction();
 %Docstring
-return the action used to enable/disable the tools
+Returns the action used to enable/disable the tools
 %End
 
     void enable();

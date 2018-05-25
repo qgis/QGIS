@@ -166,7 +166,7 @@ Remove a custom property from the object.
 
     QStringList customProperties() const;
 %Docstring
-Return list of keys stored in custom properties for the object.
+Returns list of keys stored in custom properties for the object.
 
 .. seealso:: :py:func:`setCustomProperty`
 

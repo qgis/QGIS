@@ -98,7 +98,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   private:
 
-    //! Set the values for the widgets, re-creates the cache when required
+    //! Sets the values for the widgets, re-creates the cache when required
     void populate( );
 
     QComboBox *mComboBox = nullptr;

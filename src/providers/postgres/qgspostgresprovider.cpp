@@ -651,7 +651,7 @@ void QgsPostgresProvider::setExtent( QgsRectangle &newExtent )
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
 {
@@ -3118,7 +3118,7 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsPostgresProvider::featureCount() const
 {

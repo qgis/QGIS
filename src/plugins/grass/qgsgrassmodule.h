@@ -89,7 +89,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //! Get name of library path environment variable
     static QString libraryPathVariable();
 
-    //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
+    //! Sets LD_LIBRARY_PATH or equivalent to GRASS Direct library
     static void setDirectLibraryPath( QProcessEnvironment &environment );
 
     QStringList errors() { return mErrors; }

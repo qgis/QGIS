@@ -250,7 +250,7 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedColumns() const;
 
     /**
-     * Return a list of all variables which are used in this expression.
+     * Returns a list of all variables which are used in this expression.
      * If the list contains a NULL QString, there is a variable name used
      * which is determined at runtime.
      *
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedVariables() const;
 
     /**
-     * Return a list of the names of all functions which are used in this expression.
+     * Returns a list of the names of all functions which are used in this expression.
      *
      * \since QGIS 3.2
      */
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsExpression
 #ifndef SIP_RUN
 
     /**
-     * Return a list of all nodes which are used in this expression
+     * Returns a list of all nodes which are used in this expression
      *
      * \note not available in Python bindings
      * \since QGIS 3.2
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsExpression
     QList<const QgsExpressionNode *> nodes( ) const;
 
     /**
-     * Return a list of all nodes of the given class which are used in this expression
+     * Returns a list of all nodes of the given class which are used in this expression
      *
      * \note not available in Python bindings
      * \since QGIS 3.2
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsExpression
 #endif
 
     /**
-     * Return a list of field name indexes obtained from the provided fields.
+     * Returns a list of field name indexes obtained from the provided fields.
      *
      * \since QGIS 3.0
      */
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsExpression
     bool hasEvalError() const;
     //! Returns evaluation error
     QString evalErrorString() const;
-    //! Set evaluation error (used internally by evaluation functions)
+    //! Sets evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString &str );
 
     /**
@@ -354,14 +354,14 @@ class CORE_EXPORT QgsExpression
     void setExpression( const QString &expression );
 
     /**
-     * Return the original, unmodified expression string.
+     * Returns the original, unmodified expression string.
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
     QString expression() const;
 
     /**
-     * Return an expression string, constructed from the internal
+     * Returns an expression string, constructed from the internal
      * abstract syntax tree. This does not contain any nice whitespace
      * formatting or comments. In general it is preferable to use
      * expression() instead.
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsExpression
     QString dump() const;
 
     /**
-     * Return calculator used for distance and area calculations
+     * Returns calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
      * \see setGeomCalculator()
      * \see distanceUnits()
@@ -511,7 +511,7 @@ class CORE_EXPORT QgsExpression
     //! tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString &name );
 
-    //! return index of the function in Functions array
+    //! Returns index of the function in Functions array
     static int functionIndex( const QString &name );
 
     /**

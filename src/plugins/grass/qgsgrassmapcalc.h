@@ -92,7 +92,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     //! Show/hide options for tool
     void showOptions( int tool );
 
-    //! Set option for selected object
+    //! Sets option for selected object
     void setOption( void );
 
   public slots:
@@ -117,7 +117,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     //! Reset tool actions togles
     void setToolActionsOff( void );
 
-    //! Set current tool and toggle menu
+    //! Sets current tool and toggle menu
     void setTool( int );
 
     //! Map selection changed

@@ -70,10 +70,10 @@ class QgsSpatiaLiteConnection : public QObject
 
     Error fetchTables( bool loadGeometrylessTables );
 
-    //! Return list of tables. fetchTables() function has to be called before
+    //! Returns list of tables. fetchTables() function has to be called before
     QList<TableEntry> tables() { return mTables; }
 
-    //! Return additional error message (if an error occurred before)
+    //! Returns additional error message (if an error occurred before)
     QString errorMessage() { return mErrorMsg; }
 
     //! Updates the Internal Statistics

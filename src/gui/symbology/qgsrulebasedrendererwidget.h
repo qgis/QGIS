@@ -206,7 +206,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
                                 const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     /**
-     * Return the current set rule.
+     * Returns the current set rule.
      * \returns The current rule.
      */
     QgsRuleBasedRenderer::Rule *rule() { return mRule; }

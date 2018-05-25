@@ -40,7 +40,7 @@ Symbol selector widget that can be used to select and build a symbol
 
     QMenu *advancedMenu();
 %Docstring
-return menu for "advanced" button - create it if doesn't exist and show the advanced button
+Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
@@ -65,7 +65,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
- Return the symbol that is currently active in the widget. Can be null.
+Returns the symbol that is currently active in the widget. Can be null.
 
 :return: The active symbol.
 %End
@@ -206,7 +206,7 @@ Constructor for QgsSymbolSelectorDialog.
 
     QMenu *advancedMenu();
 %Docstring
-return menu for "advanced" button - create it if doesn't exist and show the advanced button
+Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
@@ -231,7 +231,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
- Return the symbol that is currently active in the widget. Can be null.
+Returns the symbol that is currently active in the widget. Can be null.
 
 :return: The active symbol.
 %End

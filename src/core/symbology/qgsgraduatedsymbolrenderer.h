@@ -232,7 +232,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
     /**
-     * Return the label format used to generate default classification labels
+     * Returns the label format used to generate default classification labels
      * \since QGIS 2.6
      */
     const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; }
@@ -331,13 +331,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setSymbolSizes( double minSize, double maxSize );
 
     /**
-     * return the min symbol size when graduated by size
+     * Returns the min symbol size when graduated by size
      * \since QGIS 2.10
      */
     double minSymbolSize() const;
 
     /**
-     * return the max symbol size when graduated by size
+     * Returns the max symbol size when graduated by size
      * \since QGIS 2.10
      */
     double maxSymbolSize() const;
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     };
 
     /**
-     * return the method used for graduation (either size or color)
+     * Returns the method used for graduation (either size or color)
      * \since QGIS 2.10
      */
     GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }

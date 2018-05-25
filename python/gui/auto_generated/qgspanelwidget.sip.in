@@ -69,7 +69,7 @@ widgets and not open dialogs
 
     bool dockMode();
 %Docstring
-Return the dock mode state.
+Returns the dock mode state.
 
 :return: True if in dock mode.  If in dock mode the widget
 will emit the showPanel signal to handle panel opening

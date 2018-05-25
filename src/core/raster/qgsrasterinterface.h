@@ -246,10 +246,10 @@ class CORE_EXPORT QgsRasterInterface
     //! Current input
     virtual QgsRasterInterface *input() const { return mInput; }
 
-    //! Is on/off
+    //! Returns whether the interface is on or off
     virtual bool on() const { return mOn; }
 
-    //! Set on/off
+    //! Sets whether the interface is on or off
     virtual void setOn( bool on ) { mOn = on; }
 
     /**

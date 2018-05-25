@@ -231,12 +231,12 @@ Current input
 
     virtual bool on() const;
 %Docstring
-Is on/off
+Returns whether the interface is on or off
 %End
 
     virtual void setOn( bool on );
 %Docstring
-Set on/off
+Sets whether the interface is on or off
 %End
 
 

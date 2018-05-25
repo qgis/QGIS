@@ -50,7 +50,7 @@ Get current arrow width
 %End
     void setArrowWidth( double width );
 %Docstring
-Set the arrow width
+Sets the arrow width
 %End
     QgsUnitTypes::RenderUnit arrowWidthUnit() const;
 %Docstring
@@ -58,7 +58,7 @@ Get the unit for the arrow width
 %End
     void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Set the unit for the arrow width
+Sets the unit for the arrow width
 %End
     QgsMapUnitScale arrowWidthUnitScale() const;
 %Docstring
@@ -66,7 +66,7 @@ Get the scale for the arrow width
 %End
     void setArrowWidthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Set the scale for the arrow width
+Sets the scale for the arrow width
 %End
 
     double arrowStartWidth() const;
@@ -75,7 +75,7 @@ Get current arrow start width. Only meaningful for single headed arrows
 %End
     void setArrowStartWidth( double width );
 %Docstring
-Set the arrow start width
+Sets the arrow start width
 %End
     QgsUnitTypes::RenderUnit arrowStartWidthUnit() const;
 %Docstring
@@ -83,7 +83,7 @@ Get the unit for the arrow start width
 %End
     void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Set the unit for the arrow start width
+Sets the unit for the arrow start width
 %End
     QgsMapUnitScale arrowStartWidthUnitScale() const;
 %Docstring
@@ -91,7 +91,7 @@ Get the scale for the arrow start width
 %End
     void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Set the scale for the arrow start width
+Sets the scale for the arrow start width
 %End
 
     double headLength() const;
@@ -100,7 +100,7 @@ Get the current arrow head length
 %End
     void setHeadLength( double length );
 %Docstring
-Set the arrow head length
+Sets the arrow head length
 %End
     QgsUnitTypes::RenderUnit headLengthUnit() const;
 %Docstring
@@ -108,7 +108,7 @@ Get the unit for the head length
 %End
     void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Set the unit for the head length
+Sets the unit for the head length
 %End
     QgsMapUnitScale headLengthUnitScale() const;
 %Docstring
@@ -116,7 +116,7 @@ Get the scale for the head length
 %End
     void setHeadLengthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Set the scale for the head length
+Sets the scale for the head length
 %End
 
     double headThickness() const;
@@ -125,7 +125,7 @@ Get the current arrow head height
 %End
     void setHeadThickness( double thickness );
 %Docstring
-Set the arrow head height
+Sets the arrow head height
 %End
     QgsUnitTypes::RenderUnit headThicknessUnit() const;
 %Docstring
@@ -133,7 +133,7 @@ Get the unit for the head height
 %End
     void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Set the unit for the head height
+Sets the unit for the head height
 %End
     QgsMapUnitScale headThicknessUnitScale() const;
 %Docstring
@@ -141,25 +141,25 @@ Get the scale for the head height
 %End
     void setHeadThicknessUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Set the scale for the head height
+Sets the scale for the head height
 %End
 
     bool isCurved() const;
 %Docstring
-Return whether it is a curved arrow or a straight one
+Returns whether it is a curved arrow or a straight one
 %End
     void setIsCurved( bool isCurved );
 %Docstring
-Set whether it is a curved arrow or a straight one
+Sets whether it is a curved arrow or a straight one
 %End
 
     bool isRepeated() const;
 %Docstring
-Return whether the arrow is repeated along the line or not
+Returns whether the arrow is repeated along the line or not
 %End
     void setIsRepeated( bool isRepeated );
 %Docstring
-Set whether the arrow is repeated along the line
+Sets whether the arrow is repeated along the line
 %End
 
     enum HeadType
@@ -175,7 +175,7 @@ Get the current head type
 %End
     void setHeadType( HeadType type );
 %Docstring
-Set the head type
+Sets the head type
 %End
 
     enum ArrowType
@@ -191,7 +191,7 @@ Get the current arrow type
 %End
     void setArrowType( ArrowType type );
 %Docstring
-Set the arrow type
+Sets the arrow type
 %End
 
     virtual QgsStringMap properties() const;

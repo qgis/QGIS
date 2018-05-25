@@ -223,7 +223,7 @@ Returns the radius of the circle
 %End
     void setRadius( double radius );
 %Docstring
-Set the radius of the circle
+Sets the radius of the circle
 %End
 
     QVector<QgsPoint> northQuadrant() const /Factory/;

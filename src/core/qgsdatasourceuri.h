@@ -61,13 +61,13 @@ class CORE_EXPORT QgsDataSourceUri
      */
     QgsDataSourceUri( const QByteArray &uri ) SIP_SKIP;
 
-    //! return connection part of URI
+    //! Returns connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
 
-    //! return complete uri
+    //! Returns complete uri
     QString uri( bool expandAuthConfig = true ) const;
 
-    //! return complete encoded uri (generic mode)
+    //! Returns complete encoded uri (generic mode)
     QByteArray encodedUri() const;
 
     /**
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setEncodedUri( const QByteArray &uri ) SIP_SKIP;
 
-    //! set complete encoded uri (generic mode)
+    //! Sets complete encoded uri (generic mode)
     void setEncodedUri( const QString &uri );
 
     //! quoted table name
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Test if param exists (generic mode)
     bool hasParam( const QString &key ) const;
 
-    //! Set all connection related members at once
+    //! Sets all connection related members at once
     void setConnection( const QString &aHost,
                         const QString &aPort,
                         const QString &aDatabase,
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsDataSourceUri
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 
-    //! Set all connection related members at once (for the service case)
+    //! Sets all connection related members at once (for the service case)
     void setConnection( const QString &aService,
                         const QString &aDatabase,
                         const QString &aUsername,
@@ -122,23 +122,23 @@ class CORE_EXPORT QgsDataSourceUri
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 
-    //! Set database
+    //! Sets database
     void setDatabase( const QString &database );
 
-    //! Set all data source related members at once
+    //! Sets all data source related members at once
     void setDataSource( const QString &aSchema,
                         const QString &aTable,
                         const QString &aGeometryColumn,
                         const QString &aSql = QString(),
                         const QString &aKeyColumn = QString() );
 
-    //! Set authentication configuration ID
+    //! Sets authentication configuration ID
     void setAuthConfigId( const QString &authcfg );
 
-    //! set username
+    //! Sets username
     void setUsername( const QString &username );
 
-    //! set password
+    //! Sets password
     void setPassword( const QString &password );
 
     //! Removes password element from uris
@@ -159,16 +159,16 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the SQL query
     QString sql() const;
 
-    //! Return the name of the geometry column
+    //! Returns the name of the geometry column
     QString geometryColumn() const;
 
-    //! set use Estimated Metadata
+    //! Sets use Estimated Metadata
     void setUseEstimatedMetadata( bool flag );
 
     //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
 
-    //! Set to true to disable selection by id
+    //! Sets to true to disable selection by id
     void disableSelectAtId( bool flag );
     //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Clears the schema
     void clearSchema();
 
-    //! set the table schema
+    //! Sets the table schema
     // \since QGIS 2.11
     void setSchema( const QString &schema );
 

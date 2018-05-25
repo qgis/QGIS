@@ -80,7 +80,7 @@ If we should add layers in a group
 
     int countColumn() const;
 %Docstring
-Return column with count or -1
+Returns column with count or -1
 
 .. versionadded:: 3.0
 %End

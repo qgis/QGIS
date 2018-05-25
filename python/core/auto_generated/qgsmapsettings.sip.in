@@ -37,7 +37,7 @@ asynchronous API for map rendering.
 
     QgsRectangle extent() const;
 %Docstring
-Return geographical coordinates of the rectangle that should be rendered.
+Returns geographical coordinates of the rectangle that should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
 of output size. Use visibleExtent() to get the resulting extent.
@@ -53,11 +53,11 @@ of output size. Use visibleExtent() to get the resulting extent.
 
     QSize outputSize() const;
 %Docstring
-Return the size of the resulting map image
+Returns the size of the resulting map image
 %End
     void setOutputSize( QSize size );
 %Docstring
-Set the size of the resulting map image
+Sets the size of the resulting map image
 %End
 
     double rotation() const;
@@ -80,12 +80,12 @@ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
     double outputDpi() const;
 %Docstring
-Return DPI used for conversion between real world units (e.g. mm) and pixels
+Returns DPI used for conversion between real world units (e.g. mm) and pixels
 Default value is 96
 %End
     void setOutputDpi( double dpi );
 %Docstring
-Set DPI used for conversion between real world units (e.g. mm) and pixels
+Sets DPI used for conversion between real world units (e.g. mm) and pixels
 %End
 
     void setMagnificationFactor( double factor );
@@ -101,7 +101,7 @@ Set the magnification factor.
 
     double magnificationFactor() const;
 %Docstring
-Return the magnification factor.
+Returns the magnification factor.
 
 .. versionadded:: 2.16
 
@@ -205,7 +205,7 @@ ellipsoid if a valid ellipsoid has been set.
 
     void setBackgroundColor( const QColor &color );
 %Docstring
-Set the background color of the map
+Sets the background color of the map
 %End
     QColor backgroundColor() const;
 %Docstring
@@ -214,7 +214,7 @@ Get the background color of the map
 
     void setSelectionColor( const QColor &color );
 %Docstring
-Set color that is used for drawing of selected vector features
+Sets color that is used for drawing of selected vector features
 %End
     QColor selectionColor() const;
 %Docstring
@@ -241,7 +241,7 @@ Get color that is used for drawing of selected vector features
 
     void setFlags( QgsMapSettings::Flags flags );
 %Docstring
-Set combination of flags that will be used for rendering
+Sets combination of flags that will be used for rendering
 %End
     void setFlag( Flag flag, bool on = true );
 %Docstring
@@ -249,7 +249,7 @@ Enable or disable a particular flag (other flags are not affected)
 %End
     Flags flags() const;
 %Docstring
-Return combination of flags used for rendering
+Returns combination of flags used for rendering
 %End
     bool testFlag( Flag flag ) const;
 %Docstring
@@ -271,18 +271,18 @@ Check whether the map settings are valid and can be used for rendering
 %End
     QgsRectangle visibleExtent() const;
 %Docstring
-Return the actual extent derived from requested extent that takes takes output image size into account
+Returns the actual extent derived from requested extent that takes takes output image size into account
 %End
 
     QPolygonF visiblePolygon() const;
 %Docstring
-Return the visible area as a polygon (may be rotated)
+Returns the visible area as a polygon (may be rotated)
 
 .. versionadded:: 2.8
 %End
     double mapUnitsPerPixel() const;
 %Docstring
-Return the distance in geographical coordinates that equals to one pixel in the map
+Returns the distance in geographical coordinates that equals to one pixel in the map
 %End
 
     double scale() const;
@@ -417,9 +417,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
 %Docstring
- Return coordinate transform from layer's CRS to destination CRS
-
-:param layer:
+Returns the coordinate transform from layer's CRS to destination CRS
 
 :return: transform - may be invalid if the transform is not needed
 %End

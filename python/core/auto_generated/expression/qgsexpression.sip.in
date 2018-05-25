@@ -171,7 +171,7 @@ Get list of columns referenced by the expression.
 
     QSet<QString> referencedVariables() const;
 %Docstring
-Return a list of all variables which are used in this expression.
+Returns a list of all variables which are used in this expression.
 If the list contains a NULL QString, there is a variable name used
 which is determined at runtime.
 
@@ -180,7 +180,7 @@ which is determined at runtime.
 
     QSet<QString> referencedFunctions() const;
 %Docstring
-Return a list of the names of all functions which are used in this expression.
+Returns a list of the names of all functions which are used in this expression.
 
 .. versionadded:: 3.2
 %End
@@ -188,7 +188,7 @@ Return a list of the names of all functions which are used in this expression.
 
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 %Docstring
-Return a list of field name indexes obtained from the provided fields.
+Returns a list of field name indexes obtained from the provided fields.
 
 .. versionadded:: 3.0
 %End
@@ -233,7 +233,7 @@ Returns evaluation error
 %End
     void setEvalErrorString( const QString &str );
 %Docstring
-Set evaluation error (used internally by evaluation functions)
+Sets evaluation error (used internally by evaluation functions)
 %End
 
     bool isField() const;
@@ -265,14 +265,14 @@ Set the expression string, will reset the whole internal structure.
 
     QString expression() const;
 %Docstring
-Return the original, unmodified expression string.
+Returns the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
 API calls, dump() will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Return an expression string, constructed from the internal
+Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 expression() instead.
@@ -280,7 +280,7 @@ expression() instead.
 
     QgsDistanceArea *geomCalculator();
 %Docstring
-Return calculator used for distance and area calculations
+Returns calculator used for distance and area calculations
 (used by $length, $area and $perimeter functions only)
 
 .. seealso:: :py:func:`setGeomCalculator`
@@ -459,7 +459,7 @@ tells whether the identifier is a name of existing function
 
     static int functionIndex( const QString &name );
 %Docstring
-return index of the function in Functions array
+Returns index of the function in Functions array
 %End
 
     static int functionCount();

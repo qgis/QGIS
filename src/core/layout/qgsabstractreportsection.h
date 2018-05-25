@@ -229,7 +229,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     void setFooter( QgsLayout *footer SIP_TRANSFER );
 
     /**
-     * Return the number of child sections for this report section. The child
+     * Returns the number of child sections for this report section. The child
      * sections form the body of the report section.
      * \see children()
      */
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     int row() const;
 
     /**
-     * Return all child sections for this report section. The child
+     * Returns all child sections for this report section. The child
      * sections form the body of the report section.
      * \see childCount()
      * \see child()

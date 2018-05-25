@@ -50,7 +50,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     //! (Re)configure the spacer filter
     void setAcceptedSpacers( const QString &spacers = QString() );
 
-    //! Return number of item with status filter matching (no other filters are considered)
+    //! Returns the number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();
 
   public slots:

@@ -284,7 +284,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     void entryList( QStringList &entries ) const;
 
     /**
-     * Return any sub-keys contained by this property which themselves contain other keys.
+     * Returns any sub-keys contained by this property which themselves contain other keys.
      * \see entryList()
      */
     void subkeyList( QStringList &entries ) const;

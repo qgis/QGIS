@@ -238,7 +238,7 @@ Recalculate classes for a layer
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
 %Docstring
-Return the label format used to generate default classification labels
+Returns the label format used to generate default classification labels
 
 .. versionadded:: 2.6
 %End
@@ -364,14 +364,14 @@ set varying symbol size for classes
 
     double minSymbolSize() const;
 %Docstring
-return the min symbol size when graduated by size
+Returns the min symbol size when graduated by size
 
 .. versionadded:: 2.10
 %End
 
     double maxSymbolSize() const;
 %Docstring
-return the max symbol size when graduated by size
+Returns the max symbol size when graduated by size
 
 .. versionadded:: 2.10
 %End
@@ -384,7 +384,7 @@ return the max symbol size when graduated by size
 
     GraduatedMethod graduatedMethod() const;
 %Docstring
-return the method used for graduation (either size or color)
+Returns the method used for graduation (either size or color)
 
 .. versionadded:: 2.10
 %End

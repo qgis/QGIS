@@ -191,7 +191,7 @@ layers in some way at the server, before it serves them to the provider.
 
     virtual uint subLayerCount() const;
 %Docstring
-return the number of layers for the current data source
+Returns the number of layers for the current data source
 %End
 
 
@@ -214,7 +214,7 @@ Set the visibility of the given sublayer name
 
     virtual QString name() const = 0;
 %Docstring
-Return a provider name
+Returns a provider name
 
 Essentially just returns the provider key.  Should be used to build file
 dialogs so that providers can be shown with their supported types. Thus
@@ -231,9 +231,9 @@ anything strange with regards to their name or description?
 
     virtual QString description() const = 0;
 %Docstring
-Return description
+Returns description
 
-Return a terse string describing what the provider is.
+Returns a terse string describing what the provider is.
 
 \note
 
@@ -245,7 +245,7 @@ anything strange with regards to their name or description?
 
     virtual QString fileVectorFilters() const;
 %Docstring
-Return vector file filter string
+Returns vector file filter string
 
 Returns a string suitable for a QFileDialog of vector file formats
 supported by the data provider.  Naturally this will be an empty string
@@ -260,7 +260,7 @@ databases and servers.
 
     virtual QString fileRasterFilters() const;
 %Docstring
-Return raster file filter string
+Returns raster file filter string
 
 Returns a string suitable for a QFileDialog of raster file formats
 supported by the data provider.  Naturally this will be an empty string
@@ -436,7 +436,7 @@ Add error message
 
     void setError( const QgsError &error );
 %Docstring
-Set error message
+Sets error message
 %End
 
 };

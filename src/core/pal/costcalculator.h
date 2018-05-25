@@ -40,7 +40,7 @@ namespace pal
 
       static void setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      //! Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
+      //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
       static void setCandidateCostFromPolygon( LabelPosition *lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates

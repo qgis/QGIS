@@ -106,7 +106,7 @@ Get the active layout style for the attribute editor for this layer
 
     void setLayout( EditorLayout editorLayout );
 %Docstring
-Set the active layout style for the attribute editor for this layer
+Sets the active layout style for the attribute editor for this layer
 %End
 
     QString uiForm() const;
@@ -234,14 +234,14 @@ setInitFunction().
 
     PythonInitCodeSource initCodeSource() const;
 %Docstring
-Return Python code source for edit form initialization
+Returns Python code source for edit form initialization
 (if it shall be loaded from a file, read from the
 provided dialog editor or inherited from the environment)
 %End
 
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 %Docstring
-Set if Python code shall be used for edit form initialization and its origin
+Sets if Python code shall be used for edit form initialization and its origin
 %End
 
     FeatureFormSuppress suppress() const;
@@ -250,7 +250,7 @@ Type of feature form pop-up suppression after feature creation (overrides app se
 %End
     void setSuppress( FeatureFormSuppress s );
 %Docstring
-Set type of feature form pop-up suppression after feature creation (overrides app setting)
+Sets type of feature form pop-up suppression after feature creation (overrides app setting)
 %End
 
 

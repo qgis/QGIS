@@ -62,13 +62,13 @@ class CORE_EXPORT QgsAbstractLabelProvider
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! Return list of label features (they are owned by the provider and thus deleted on its destruction)
+    //! Returns list of label features (they are owned by the provider and thus deleted on its destruction)
     virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
 
-    //! Return list of child providers - useful if the provider needs to put labels into more layers with different configuration
+    //! Returns list of child providers - useful if the provider needs to put labels into more layers with different configuration
     virtual QList<QgsAbstractLabelProvider *> subProviders() { return QList<QgsAbstractLabelProvider *>(); }
 
     //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! compute the labeling with given map settings and providers
     void run( QgsRenderContext &context );
 
-    //! Return pointer to recently computed results and pass the ownership of results to the caller
+    //! Returns pointer to recently computed results and pass the ownership of results to the caller
     QgsLabelingResults *takeResults();
 
     //! For internal use by the providers

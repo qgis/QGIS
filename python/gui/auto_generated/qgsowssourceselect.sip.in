@@ -56,7 +56,7 @@ show whatever error is exposed.
 
     void showStatusMessage( const QString &message );
 %Docstring
-Set status message to theMessage
+Sets status message to theMessage
 %End
 
   protected:
@@ -101,7 +101,7 @@ Clear previously set formats
 
     void populateCrs();
 %Docstring
-Set supported CRSs
+Sets supported CRSs
 %End
 
     void clearCrs();
@@ -131,7 +131,7 @@ Connection info (uri)
 
     void setConnectionListPosition();
 %Docstring
-Set the server connection combo box to that stored in the config file.
+Sets the server connection combo box to that stored in the config file.
 %End
 
     void addDefaultServers();

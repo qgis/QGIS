@@ -63,17 +63,17 @@ class SERVER_EXPORT QgsServerResponse
     virtual void removeHeader( const QString &key ) = 0;
 
     /**
-     * Return the header value
+     * Returns the header value
      */
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the header value
+     * Returns the header value
      */
     virtual QMap<QString, QString> headers() const = 0;
 
     /**
-     * Return true if the headers have alredy been sent
+     * Returns true if the headers have alredy been sent
      */
     virtual bool headersSent() const = 0;
 
@@ -85,7 +85,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual void setStatusCode( int code ) = 0;
 
     /**
-     * Return the http status code
+     * Returns the http status code
      */
     virtual int statusCode() const = 0;
 
@@ -143,7 +143,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual void write( const QgsServerException &ex );
 
     /**
-     * Return the underlying QIODevice
+     * Returns the underlying QIODevice
      */
     virtual QIODevice *io() = 0;
 

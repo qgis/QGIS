@@ -88,7 +88,7 @@ class QgsBrowserPropertiesWidget : public QWidget
     static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
     //! Stub
     virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
-    //! Set content widget, usually item paramWidget. Takes ownership.
+    //! Sets content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
     /**
@@ -113,7 +113,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
       * \param parent parent widget
       */
     explicit QgsBrowserLayerProperties( QWidget *parent = nullptr );
-    //! Set item
+    //! Sets item
     void setItem( QgsDataItem *item ) override;
 
     /**
@@ -217,15 +217,15 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       * \param parent parent widget
       */
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
-    //! Set the browser model
+    //! Sets the browser model
     void setBrowserModel( QgsBrowserModel *model );
     //! Get the browser model
     QgsBrowserModel *browserModel() { return mModel; }
-    //! Set the filter syntax
+    //! Sets the filter syntax
     void setFilterSyntax( const QString &syntax );
-    //! Set the filter
+    //! Sets the filter
     void setFilter( const QString &filter );
-    //! Set case sensitivity
+    //! Sets case sensitivity
     void setCaseSensitive( bool caseSensitive );
     //! Update filter
     void updateFilter();

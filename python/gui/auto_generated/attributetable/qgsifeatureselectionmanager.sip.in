@@ -57,7 +57,7 @@ clearAndSelect flag set.
 
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 %Docstring
-Return reference to identifiers of selected features
+Returns reference to identifiers of selected features
 
 :return: A list of QgsFeatureId's
 
