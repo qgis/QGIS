@@ -59,7 +59,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
     // ensure that all attributes required for order by are fetched
     const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-  for ( const QString &attr : orderByAttributes )
+    Q_FOREACH ( const QString& attr, orderByAttributes )
     {
       int attrIndex = mSource->mFields.fieldNameIndex( attr );
       if ( !mAttributeList.contains( attrIndex ) )
