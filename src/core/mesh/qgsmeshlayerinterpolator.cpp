@@ -127,6 +127,7 @@ QgsMeshLayerInterpolator::~QgsMeshLayerInterpolator() = default;
 QgsRasterInterface *QgsMeshLayerInterpolator::clone() const
 {
   assert( false ); // we should not need this (hopefully)
+  return nullptr;
 }
 
 Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const
