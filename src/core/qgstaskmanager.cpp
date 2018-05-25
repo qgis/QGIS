@@ -390,6 +390,9 @@ long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, 
 
 long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bool isSubTask, int priority )
 {
+  if ( !task )
+    return 0;
+
   long taskId = mNextTaskId++;
 
   mTaskMutex->lock();
