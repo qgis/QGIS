@@ -331,7 +331,7 @@ the task. The priority argument can be used to control the run queue's
 order of execution, with larger numbers
 taking precedence over lower priority numbers.
 
-:return: unique task ID
+:return: unique task ID, or 0 if task could not be added
 %End
 
     long addTask( const TaskDefinition &task /Transfer/, int priority = 0 );
@@ -342,7 +342,7 @@ manager will be responsible for starting the task. The priority argument can
 be used to control the run queue's order of execution, with larger numbers
 taking precedence over lower priority numbers.
 
-:return: unique task ID
+:return: unique task ID, or 0 if task could not be added
 %End
 
     QgsTask *task( long id ) const;
