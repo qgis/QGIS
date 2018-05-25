@@ -438,11 +438,7 @@ namespace QgsWfs
 
       //create Name
       QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
-      QString typeName = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        typeName = layer->shortName();
-      typeName = typeName.replace( QLatin1String( " " ), QLatin1String( "_" ) );
-      QDomText nameText = doc.createTextNode( typeName );
+      QDomText nameText = doc.createTextNode( layerTypeName( layer ) );
       nameElem.appendChild( nameText );
       layerElem.appendChild( nameElem );
 

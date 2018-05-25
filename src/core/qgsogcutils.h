@@ -37,6 +37,7 @@ class QgsRectangle;
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup core
@@ -140,7 +141,7 @@ class CORE_EXPORT QgsOgcUtils
     static QColor colorFromOgcFill( const QDomElement &fillElement );
 
     //! Parse XML with OGC filter into QGIS expression
-    static QgsExpression *expressionFromOgcFilter( const QDomElement &element ) SIP_FACTORY;
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 
     /**
      * Creates OGC filter XML element. Supports minimum standard filter
@@ -298,9 +299,9 @@ class CORE_EXPORT QgsOgcUtils
     static QDomElement createGMLPositions( const QgsPolylineXY &points, QDomDocument &doc );
 
     //! handle a generic sub-expression
-    static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handle a generic binary operator
-    static QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
     static QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle \verbatim <Not> \endverbatim tag
@@ -308,7 +309,7 @@ class CORE_EXPORT QgsOgcUtils
     //! handles \verbatim <Function> \endverbatim tag
     static QgsExpressionNodeFunction *nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Literal> \endverbatim tag
-    static QgsExpressionNode *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handles \verbatim <PropertyName> \endverbatim tag
     static QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsBetween> \endverbatim tag

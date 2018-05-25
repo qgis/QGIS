@@ -101,11 +101,11 @@ namespace QgsWfs
     if ( doc.setContent( mRequestParameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
     {
       QDomElement docElem = doc.documentElement();
-      aRequest = parseGetFeatureRequestBody( docElem );
+      aRequest = parseGetFeatureRequestBody( docElem, project );
     }
     else
     {
-      aRequest = parseGetFeatureParameters();
+      aRequest = parseGetFeatureParameters( project );
     }
 
     // store typeName
@@ -141,10 +141,7 @@ namespace QgsWfs
         continue;
       }
 
-      QString name = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        name = layer->shortName();
-      name = name.replace( ' ', '_' );
+      QString name = layerTypeName( layer );
 
       if ( typeNameList.contains( name ) )
       {
@@ -433,7 +430,7 @@ namespace QgsWfs
 
   }
 
-  getFeatureRequest parseGetFeatureParameters()
+  getFeatureRequest parseGetFeatureParameters( const QgsProject *project )
   {
     getFeatureRequest request;
     request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
@@ -767,7 +764,7 @@ namespace QgsWfs
         }
 
         QDomElement filterElem = filter.firstChildElement();
-        query.featureRequest = parseFilterElement( query.typeName, filterElem );
+        query.featureRequest = parseFilterElement( query.typeName, filterElem, project );
 
         if ( filterIt != filterList.constEnd() )
         {
@@ -821,7 +818,7 @@ namespace QgsWfs
     return request;
   }
 
-  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem )
+  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem, const QgsProject *project )
   {
     getFeatureRequest request;
     request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
@@ -833,7 +830,7 @@ namespace QgsWfs
     for ( int i = 0; i < queryNodes.size(); i++ )
     {
       queryElem = queryNodes.at( i ).toElement();
-      getFeatureQuery query = parseQueryElement( queryElem );
+      getFeatureQuery query = parseQueryElement( queryElem, project );
       request.queries.append( query );
     }
     return request;
@@ -887,7 +884,7 @@ namespace QgsWfs
     }
   }
 
-  getFeatureQuery parseQueryElement( QDomElement &queryElem )
+  getFeatureQuery parseQueryElement( QDomElement &queryElem, const QgsProject *project )
   {
     QString typeName = queryElem.attribute( QStringLiteral( "typeName" ), QLatin1String( "" ) );
     if ( typeName.contains( ':' ) )
@@ -923,7 +920,7 @@ namespace QgsWfs
         }
         else if ( queryChildElem.tagName() == QLatin1String( "Filter" ) )
         {
-          featureRequest = parseFilterElement( typeName, queryChildElem );
+          featureRequest = parseFilterElement( typeName, queryChildElem, project );
         }
         else if ( queryChildElem.tagName() == QLatin1String( "SortBy" ) )
         {

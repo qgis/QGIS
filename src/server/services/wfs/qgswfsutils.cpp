@@ -58,7 +58,39 @@ namespace QgsWfs
     return  href;
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem )
+  QString layerTypeName( const QgsMapLayer *layer )
+  {
+    QString name = layer->name();
+    if ( !layer->shortName().isEmpty() )
+      name = layer->shortName();
+    name = name.replace( ' ', '_' );
+    return name;
+  }
+
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
+  {
+    QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    for ( const QString &layerId : layerIds )
+    {
+      QgsMapLayer *layer = project->mapLayer( layerId );
+      if ( !layer )
+      {
+        continue;
+      }
+      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      {
+        continue;
+      }
+
+      if ( layerTypeName( layer ) == typeName )
+      {
+        return qobject_cast<QgsVectorLayer *>( layer );
+      }
+    }
+    return nullptr;
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project )
   {
     QgsFeatureRequest request;
 
@@ -196,7 +228,12 @@ namespace QgsWfs
     }
     else
     {
-      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+      QgsVectorLayer *layer = nullptr;
+      if ( project != nullptr )
+      {
+        layer = layerByTypeName( project, typeName );
+      }
+      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem, layer ) );
       if ( filter )
       {
         if ( filter->hasParserError() )

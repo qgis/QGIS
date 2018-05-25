@@ -242,10 +242,7 @@ namespace QgsWfs
           continue;
         }
 
-        QString name = layer->name();
-        if ( !layer->shortName().isEmpty() )
-          name = layer->shortName();
-        name = name.replace( ' ', '_' );
+        QString name = layerTypeName( layer );
 
         if ( !typeNameList.contains( name ) )
         {
