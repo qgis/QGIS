@@ -2196,7 +2196,7 @@ QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const
   }
   else //a singlepart geometry
   {
-    geometryList.append( QgsGeometry( d->geometry->clone() ) );
+    geometryList.append( *this );
   }
 
   return geometryList;
