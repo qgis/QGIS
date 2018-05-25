@@ -189,10 +189,26 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
         // Use a factor for the maximum displacement distance for simplification, similar as GeoServer does
         float gridInverseSizeXY = map2pixelTol != 0 ? ( float )( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
 
+        const double *xData = nullptr;
+        const double *yData = nullptr;
+        if ( flatType == QgsWkbTypes::LineString )
+        {
+          xData = static_cast< const QgsLineString * >( &srcCurve )->xData();
+          yData = static_cast< const QgsLineString * >( &srcCurve )->yData();
+        }
+
         for ( int i = 0; i < numPoints; ++i )
         {
-          x = srcCurve.xAt( i );
-          y = srcCurve.yAt( i );
+          if ( xData && yData )
+          {
+            x = *xData++;
+            y = *yData++;
+          }
+          else
+          {
+            x = srcCurve.xAt( i );
+            y = srcCurve.yAt( i );
+          }
 
           if ( i == 0 ||
                !isGeneralizable ||
@@ -244,10 +260,26 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
       {
         map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
+        const double *xData = nullptr;
+        const double *yData = nullptr;
+        if ( flatType == QgsWkbTypes::LineString )
+        {
+          xData = static_cast< const QgsLineString * >( &srcCurve )->xData();
+          yData = static_cast< const QgsLineString * >( &srcCurve )->yData();
+        }
+
         for ( int i = 0; i < numPoints; ++i )
         {
-          x = srcCurve.xAt( i );
-          y = srcCurve.yAt( i );
+          if ( xData && yData )
+          {
+            x = *xData++;
+            y = *yData++;
+          }
+          else
+          {
+            x = srcCurve.xAt( i );
+            y = srcCurve.yAt( i );
+          }
 
           isLongSegment = false;
 

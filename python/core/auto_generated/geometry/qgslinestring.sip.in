@@ -87,6 +87,8 @@ Returns the specified point from inside the line string.
     virtual double yAt( int index ) const;
 
 
+
+
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.

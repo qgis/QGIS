@@ -97,6 +97,22 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double yAt( int index ) const override;
 
     /**
+     * Returns a const pointer to the x vertex data.
+     * \since QGIS 3.2
+     * \note Not available in Python bindings
+     * \see yData()
+     */
+    const double *xData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the y vertex data.
+     * \since QGIS 3.2
+     * \note Not available in Python bindings
+     * \see xData()
+     */
+    const double *yData() const SIP_SKIP;
+
+    /**
      * Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
