@@ -698,7 +698,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param url URL to open
      * \param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
-     * \deprecated
+     * \deprecated Use QDesktopServices instead
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED

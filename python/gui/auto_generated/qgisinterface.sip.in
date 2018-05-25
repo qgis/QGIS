@@ -859,7 +859,8 @@ QGIS documentation, set useQgisDocDirectory to false.
 :param url: URL to open
 :param useQgisDocDirectory: If true, the URL will be formed by concatenating
 url to the QGIS documentation directory path (prefix/share/doc)
-\deprecated
+
+.. deprecated:: Use QDesktopServices instead
 %End
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
