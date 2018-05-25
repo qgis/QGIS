@@ -646,12 +646,12 @@ Remove a certificate authority
 
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 %Docstring
-Sets the default certificate trust policy perferred by user
+Sets the default certificate trust policy preferred by user
 %End
 
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 %Docstring
-Get the default certificate trust policy perferred by user
+Get the default certificate trust policy preferred by user
 %End
 
     const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache();

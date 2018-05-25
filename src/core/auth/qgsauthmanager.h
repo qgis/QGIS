@@ -577,10 +577,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 
-    //! Sets the default certificate trust policy perferred by user
+    //! Sets the default certificate trust policy preferred by user
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
-    //! Get the default certificate trust policy perferred by user
+    //! Get the default certificate trust policy preferred by user
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 
     /**
