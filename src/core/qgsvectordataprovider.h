@@ -180,7 +180,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.2
      * \see empty()
      */
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const override;
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
 
     /**
      * Returns the fields associated with this data provider.

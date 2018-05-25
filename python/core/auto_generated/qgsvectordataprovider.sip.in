@@ -131,7 +131,7 @@ Returns true if the layer contains at least one feature.
 .. versionadded:: 3.2
 %End
 
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
 %Docstring
 Will always return FeatureAvailability.FeaturesAvailable or
 FeatureAvailability.FeaturesMaybeAvailable.
