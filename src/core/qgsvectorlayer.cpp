@@ -2767,7 +2767,18 @@ long QgsVectorLayer::featureCount() const
 
 QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
-  if ( mDataProvider->empty() && ( !mEditBuffer || mEditBuffer->addedFeatures().empty() ) )
+  const QgsFeatureIds deletedFeatures = mEditBuffer->deletedFeatureIds();
+  const QgsFeatureMap addedFeatures = mEditBuffer->addedFeatures();
+
+  if ( mEditBuffer && !deletedFeatures.empty() )
+  {
+    if ( addedFeatures.size() > deletedFeatures.size() )
+      return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+    else
+      return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
+  }
+
+  if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider->empty() )
     return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
   else
     return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
