@@ -2645,6 +2645,13 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray.yAt( 1 ), 12.0 );
   QCOMPARE( fromArray.xAt( 2 ), 3.0 );
   QCOMPARE( fromArray.yAt( 2 ), 13.0 );
+  QCOMPARE( *fromArray.xData(), 1.0 );
+  QCOMPARE( *( fromArray.xData() + 1 ), 2.0 );
+  QCOMPARE( *( fromArray.xData() + 2 ), 3.0 );
+  QCOMPARE( *fromArray.yData(), 11.0 );
+  QCOMPARE( *( fromArray.yData() + 1 ), 12.0 );
+  QCOMPARE( *( fromArray.yData() + 2 ), 13.0 );
+
   // unbalanced
   xx = QVector< double >() << 1 << 2;
   yy = QVector< double >() << 11 << 12 << 13;
@@ -2964,6 +2971,12 @@ void TestQgsGeometry::lineString()
   QgsPointSequence pts;
   l8.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  QCOMPARE( *l8.xData(), 1.0 );
+  QCOMPARE( *( l8.xData() + 1 ), 2.0 );
+  QCOMPARE( *( l8.xData() + 2 ), 3.0 );
+  QCOMPARE( *l8.yData(), 2.0 );
+  QCOMPARE( *( l8.yData() + 1 ), 3.0 );
+  QCOMPARE( *( l8.yData() + 2 ), 4.0 );
 
   //setPoints with empty list, should clear linestring
   l8.setPoints( QgsPointSequence() );
