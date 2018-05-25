@@ -112,7 +112,7 @@ class ZoomControlHandler : public NavigationControlHandler
   public:
     ZoomControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy )
       : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       _manip->zoom( _dx, _dy );
     }
@@ -126,7 +126,7 @@ class HomeControlHandler : public NavigationControlHandler
 {
   public:
     HomeControlHandler( osgEarth::Util::EarthManipulator *manip ) : _manip( manip ) { }
-    virtual void onClick( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa ) override
+    void onClick( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa ) override
     {
       _manip->home( ea, aa );
     }
@@ -138,7 +138,7 @@ class SyncExtentControlHandler : public NavigationControlHandler
 {
   public:
     SyncExtentControlHandler( GlobePlugin *globe ) : mGlobe( globe ) { }
-    virtual void onClick( const osgGA::GUIEventAdapter & /*ea*/, osgGA::GUIActionAdapter & /*aa*/ ) override
+    void onClick( const osgGA::GUIEventAdapter & /*ea*/, osgGA::GUIActionAdapter & /*aa*/ ) override
     {
       mGlobe->syncExtent();
     }
@@ -150,7 +150,7 @@ class PanControlHandler : public NavigationControlHandler
 {
   public:
     PanControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       _manip->pan( _dx, _dy );
     }
@@ -164,7 +164,7 @@ class RotateControlHandler : public NavigationControlHandler
 {
   public:
     RotateControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       if ( 0 == _dx && 0 == _dy )
         _manip->setRotation( osg::Quat() );

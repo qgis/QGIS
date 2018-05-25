@@ -43,7 +43,7 @@ class QgsOracleRootItem : public QgsDataCollectionItem
 
     QVariant sortKey() const override { return 5; }
 
-    virtual QWidget *paramWidget() override;
+    QWidget *paramWidget() override;
 
     QList<QAction *> actions( QWidget *parent ) override;
 
@@ -62,11 +62,11 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     ~QgsOracleConnectionItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
     QList<QAction *> actions( QWidget *parent ) override;
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     void refresh() override;
 

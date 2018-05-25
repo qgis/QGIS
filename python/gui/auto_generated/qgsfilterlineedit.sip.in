@@ -215,6 +215,7 @@ Will select all text when this widget receives the focus.
 
 
     virtual bool event( QEvent *event );
+
 %Docstring
 Reimplemented to enable/disable the clear action
 depending on read-only status

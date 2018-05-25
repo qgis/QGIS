@@ -162,8 +162,8 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     void setTextOnSymbolContent( const QHash<QString, QString> &content ) { mTextOnSymbolContent = content; }
 
     QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
