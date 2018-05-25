@@ -197,7 +197,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
                                      .toSet()
                                      .intersect( exp.referencedFunctions( ) ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
-  const QgsExpressionContext context;
+  QgsExpressionContext context;
   for ( const auto &f : expFunctions )
   {
     QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
