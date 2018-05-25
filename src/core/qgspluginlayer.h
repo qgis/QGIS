@@ -76,11 +76,11 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
   public:
     QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &options );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QString name() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
     QString description() const override;
-    virtual QgsRectangle extent() const override;
-    virtual bool isValid() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
 
   private:
     QString mName;

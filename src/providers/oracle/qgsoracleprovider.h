@@ -85,9 +85,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Destructor
     virtual ~QgsOracleProvider();
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsCoordinateReferenceSystem crs() const override;
     QgsWkbTypes::Type wkbType() const override;
 
     /**
@@ -114,8 +114,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle &newExtent );
 
-    virtual QgsRectangle extent() const override;
-    virtual void updateExtents() override;
+    QgsRectangle extent() const override;
+    void updateExtents() override;
 
     /**
      * Determine the fields making up the primary key
@@ -132,7 +132,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
@@ -151,15 +151,15 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QString name() const override;
     QString description() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     /**
      * Switch to oracle workspace

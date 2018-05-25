@@ -83,7 +83,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     ~GlobePlugin();
 
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! unload the plugin
     void unload() override;
 

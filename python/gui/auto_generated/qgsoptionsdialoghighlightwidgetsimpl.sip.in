@@ -31,8 +31,11 @@ constructs a highlight widget for a label
 %End
   protected:
     virtual bool searchText( const QString &text );
+
     virtual bool highlightText( const QString &text );
+
     virtual void reset();
+
 };
 
 class QgsOptionsDialogHighlightCheckBox : QgsOptionsDialogHighlightWidget
@@ -54,8 +57,11 @@ constructs a highlight widget for a checkbox
 %End
   protected:
     virtual bool searchText( const QString &text );
+
     virtual bool highlightText( const QString &text );
+
     virtual void reset();
+
 };
 
 class QgsOptionsDialogHighlightButton : QgsOptionsDialogHighlightWidget
@@ -77,8 +83,11 @@ constructs a highlight widget for a button.
 %End
   protected:
     virtual bool searchText( const QString &text );
+
     virtual bool highlightText( const QString &text );
+
     virtual void reset();
+
 };
 
 class QgsOptionsDialogHighlightGroupBox : QgsOptionsDialogHighlightWidget
@@ -100,8 +109,11 @@ constructs a highlight widget for a group box.
 %End
   protected:
     virtual bool searchText( const QString &text );
+
     virtual bool highlightText( const QString &text );
+
     virtual void reset();
+
 };
 
 class QgsOptionsDialogHighlightTree : QgsOptionsDialogHighlightWidget
@@ -125,8 +137,11 @@ constructs a highlight widget for a tree view or widget.
 %End
   protected:
     virtual bool searchText( const QString &text );
+
     virtual bool highlightText( const QString &text );
+
     virtual void reset();
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

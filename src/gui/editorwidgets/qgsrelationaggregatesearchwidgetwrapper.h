@@ -49,7 +49,7 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     QWidget *createWidget( QWidget *parent ) override;
     bool applyDirectly() override;
     void setExpression( const QString &value ) override;
-    virtual bool eventFilter( QObject *watched, QEvent *event ) override;
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
     QgsRelationWidgetWrapper *mWrapper = nullptr;
