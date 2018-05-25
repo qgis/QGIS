@@ -527,17 +527,24 @@ class DoxygenParser():
             pass
 
         doxy_deprecated = False
+        has_description = True
         try:
             for p in member_elem.find('detaileddescription').getiterator('para'):
                 for s in p.getiterator('xrefsect'):
                     if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
                         doxy_deprecated = True
+                        if s.find('xrefdescription') is None or s.find('xrefdescription').find('para') is None:
+                            has_description = False
                         break
         except:
             assert 0, member_elem.find('definition').text
 
         if not decl_deprecated and not doxy_deprecated:
             return False
+
+        if doxy_deprecated and not has_description:
+            assert has_description, 'Error: Missing description for deprecated method {}'.format(
+                member_elem.find('definition').text)
 
         # only functions for now, but in future this should also apply for enums and variables
         if member_elem.get('kind') in ('function', 'variable'):

@@ -110,7 +110,8 @@ Returns QFileInfo object for the project's associated file.
 .. seealso:: :py:func:`fileName`
 
 .. versionadded:: 2.9
-\deprecated
+
+.. deprecated:: Use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;

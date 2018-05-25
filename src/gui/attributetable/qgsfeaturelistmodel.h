@@ -143,28 +143,28 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     /**
      * Does nothing except for calling beginRemoveRows()
      *
-     * \deprecated
+     * \deprecated Use beginRemoveRows() instead
      */
     Q_DECL_DEPRECATED void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling endRemoveRows()
      *
-     * \deprecated
+     * \deprecated Use endRemoveRows() instead
      */
     Q_DECL_DEPRECATED void onEndRemoveRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling beginInsertRows()
      *
-     * \deprecated
+     * \deprecated use beginInsertRows() instead
      */
     Q_DECL_DEPRECATED void onBeginInsertRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling endInsertRows()
      *
-     * \deprecated
+     * \deprecated use endInsertRows() instead
      */
     Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
