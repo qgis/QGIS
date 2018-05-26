@@ -487,7 +487,7 @@ Must be implemented by providers that support delete styles from db returning tr
 Creates a new vector layer feature renderer, using provider backend specific information.
 
 The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
-allow customisation of the returned renderer. Support and format of ``configuration`` varies by provider.
+allow customization of the returned renderer. Support and format of ``configuration`` varies by provider.
 
 When called with an empty ``configuration`` map the provider's default renderer will be returned.
 

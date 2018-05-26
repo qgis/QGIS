@@ -166,7 +166,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Sets the current item \a layer to draw while exporting. QgsLayoutItem subclasses
      * which support multi-layer SVG exports must check the currentExportLayer()
-     * and customise their rendering based on the layer.
+     * and customize their rendering based on the layer.
      *
      * If \a layer is -1, all item layers will be rendered.
      *
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
      * which support multi-layer SVG exports must check this
-     * and customise their rendering based on the layer.
+     * and customize their rendering based on the layer.
      *
      * If \a layer is -1, all item layers should be rendered.
      *

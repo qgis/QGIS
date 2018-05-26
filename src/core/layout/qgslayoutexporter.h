@@ -483,7 +483,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Generates the file name for a page during export.
      *
-     * Subclasses can override this method to customise page file naming.
+     * Subclasses can override this method to customize page file naming.
      */
     virtual QString generateFileName( const PageExportDetails &details ) const;
 

@@ -237,7 +237,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Sets the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \param context context string for the color button's color swatch grids
      * \see context
@@ -246,7 +246,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Returns the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \returns context string for the color button's color swatch grids
      * \see setContext

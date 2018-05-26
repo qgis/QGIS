@@ -419,9 +419,9 @@
            </layout>
           </item>
           <item row="8" column="1">
-           <widget class="QPushButton" name="mAdvancedCustomisationButton">
+           <widget class="QPushButton" name="mAdvancedCustomizationButton">
             <property name="text">
-             <string>Advanced customisation...</string>
+             <string>Advanced customization...</string>
             </property>
            </widget>
           </item>
@@ -874,7 +874,7 @@
   <tabstop>mEmptyModeComboBox</tabstop>
   <tabstop>mEmptyMessageLineEdit</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
-  <tabstop>mAdvancedCustomisationButton</tabstop>
+  <tabstop>mAdvancedCustomizationButton</tabstop>
   <tabstop>mWrapStringLineEdit</tabstop>
   <tabstop>mWrapBehaviorComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>

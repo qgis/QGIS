@@ -322,7 +322,7 @@ method.
     QVariantMap &metadata();
 %Docstring
 Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-in order to customise their appearance and behavior.
+in order to customize their appearance and behavior.
 
 .. seealso:: :py:func:`setMetadata`
 %End
@@ -330,7 +330,7 @@ in order to customise their appearance and behavior.
     void setMetadata( const QVariantMap &metadata );
 %Docstring
 Sets the parameter's freeform ``metadata``. This is mostly used by parameter widget wrappers
-in order to customise their appearance and behavior.
+in order to customize their appearance and behavior.
 
 .. seealso:: :py:func:`metadata`
 %End

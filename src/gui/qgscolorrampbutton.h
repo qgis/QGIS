@@ -168,7 +168,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Sets the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
      * based on the context.
      * \param context context string for the color dialog button's color ramp preview icons
      * \see context
@@ -177,7 +177,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Returns the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
      * based on the context.
      * \returns context context string for the color dialog button's color ramp preview icons
      * \see setContext

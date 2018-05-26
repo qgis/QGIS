@@ -1001,7 +1001,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
   QgsLayoutItemLegend *legend3 = legends3.at( 0 );
   QVERIFY( legend3 );
 
-  //make sure customisation remains intact
+  //make sure customization remains intact
   QgsLegendModel *model3 = legend3->model();
   QgsLayerTreeNode *node3 = model3->rootGroup()->children().at( 0 );
   QgsLayerTreeLayer *layerNode3 = dynamic_cast< QgsLayerTreeLayer * >( node3 );

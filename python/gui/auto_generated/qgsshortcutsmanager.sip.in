@@ -290,7 +290,7 @@ Returns a shortcut by its name, or None if nothing found
 
     QString settingsPath() const;
 %Docstring
-Returns the root settings path used to store shortcut customisation.
+Returns the root settings path used to store shortcut customization.
 %End
 
 };

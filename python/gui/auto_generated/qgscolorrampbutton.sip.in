@@ -179,7 +179,7 @@ Returns true if the current color is null.
     void setContext( const QString &context );
 %Docstring
 Sets the context string for the color ramp button. The context string is passed to all color ramp
-preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
 based on the context.
 
 :param context: context string for the color dialog button's color ramp preview icons
@@ -190,7 +190,7 @@ based on the context.
     QString context() const;
 %Docstring
 Returns the context string for the color ramp button. The context string is passed to all color ramp
-preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
 based on the context.
 
 :return: context context string for the color dialog button's color ramp preview icons

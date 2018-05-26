@@ -167,7 +167,7 @@ whether they will be rendered in layout exports.
 %Docstring
 Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check the currentExportLayer()
-and customise their rendering based on the layer.
+and customize their rendering based on the layer.
 
 If ``layer`` is -1, all item layers will be rendered.
 
@@ -178,7 +178,7 @@ If ``layer`` is -1, all item layers will be rendered.
 %Docstring
 Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check this
-and customise their rendering based on the layer.
+and customize their rendering based on the layer.
 
 If ``layer`` is -1, all item layers should be rendered.
 
