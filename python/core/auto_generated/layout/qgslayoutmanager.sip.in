@@ -16,7 +16,7 @@ class QgsLayoutManager : QObject
 
 .. versionadded:: 3.0
 
- Manages storage of a set of layouts.
+Manages storage of a set of layouts.
 
 QgsLayoutManager handles the storage, serializing and deserializing
 of print layouts and reports. Usually this class is not constructed directly, but

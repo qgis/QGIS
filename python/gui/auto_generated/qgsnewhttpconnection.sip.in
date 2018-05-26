@@ -13,7 +13,7 @@
 class QgsNewHttpConnection : QDialog
 {
 %Docstring
- Dialog to allow the user to configure and save connection
+Dialog to allow the user to configure and save connection
 information for an HTTP Server for WMS, etc.
 %End
 

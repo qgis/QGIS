@@ -12,7 +12,7 @@
 class QgsPropertyDefinition
 {
 %Docstring
- Definition for a property.
+Definition for a property.
 
 QgsPropertyDefinition defines the type of values allowed for a property, and
 handles descriptive names and help text for using the property. Definitions
@@ -170,7 +170,7 @@ override assistants.
 class QgsProperty
 {
 %Docstring
- A store for object properties.
+A store for object properties.
 
 QgsProperty objects are used for storing properties for objects, which can then be transformed to
 a QVariant value by evaluating them against a supplied :py:class:`QgsExpressionContext`. Multiple QgsProperty objects

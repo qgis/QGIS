@@ -14,7 +14,7 @@
 class QgsStringStatisticalSummary
 {
 %Docstring
- Calculator for summary statistics and aggregates for a list of strings.
+Calculator for summary statistics and aggregates for a list of strings.
 
 Statistics are calculated by calling calculate() and passing a list of strings. The
 individual statistics can then be retrieved using the associated methods. Note that not all statistics

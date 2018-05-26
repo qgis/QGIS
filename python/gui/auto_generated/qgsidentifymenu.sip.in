@@ -13,7 +13,7 @@
 class QgsIdentifyMenu : QMenu
 {
 %Docstring
- The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
+The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
 It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (\see QgsMapLayerAction).
 It can also embed custom map layer actions, defined for this menu exclusively.
 If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify.identifyMenu() and can be customized in the map tool sub-class.
@@ -51,7 +51,7 @@ Constructor for ActionData
 
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 %Docstring
- QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.IdentifyReults
+QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.IdentifyReults
 %End
 
     ~QgsIdentifyMenu();
@@ -84,7 +84,7 @@ Returns an expression context scope used to resolve underlying actions.
 
     void setShowFeatureActions( bool showFeatureActions );
 %Docstring
- define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
+define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
 
 .. note::
 
@@ -102,7 +102,7 @@ Returns an expression context scope used to resolve underlying actions.
 
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
- setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
+setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
 
 .. note::
 
@@ -142,7 +142,7 @@ remove all custom actions from the menu to be built
 
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 %Docstring
- exec
+exec
 
 :param idResults: the list of identify results to choose within
 :param pos: the position where the menu will be executed

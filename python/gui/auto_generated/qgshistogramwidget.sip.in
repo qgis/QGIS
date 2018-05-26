@@ -16,7 +16,7 @@ typedef QPointF QwtDoublePoint;
 class QgsHistogramWidget : QWidget
 {
 %Docstring
- Graphical histogram for displaying distributions of field values.
+Graphical histogram for displaying distributions of field values.
 
 .. versionadded:: 2.9
 %End

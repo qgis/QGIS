@@ -13,7 +13,7 @@
 class QgsMapToolIdentify : QgsMapTool
 {
 %Docstring
- Map tool for identifying features in layers
+Map tool for identifying features in layers
 
 after selecting a point, performs the identification:
 - for raster layers shows value of underlying pixel

@@ -14,7 +14,7 @@
 class QgsPaintEffectWidget : QWidget
 {
 %Docstring
- Base class for effect properties widgets.
+Base class for effect properties widgets.
 
 .. versionadded:: 2.9
 %End

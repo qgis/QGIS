@@ -80,7 +80,7 @@ Constructor
 
     virtual QIcon icon() const;
 %Docstring
- The icon that will be shown in the UI for the panel.
+The icon that will be shown in the UI for the panel.
 
 :return: A QIcon for the panel icon.
 
@@ -110,7 +110,7 @@ Set the ``title`` for the interface.
 
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
- Factory function to create the widget on demand as needed by the options dialog.
+Factory function to create the widget on demand as needed by the options dialog.
 
 :param parent: The parent of the widget.
 

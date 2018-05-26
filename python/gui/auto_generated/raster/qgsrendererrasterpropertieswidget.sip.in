@@ -57,7 +57,7 @@ Apply the changes from the dialog to the layer.
 
     void syncToLayer( QgsRasterLayer *layer );
 %Docstring
- Sync the widget to the given layer.
+Sync the widget to the given layer.
 
 :param layer: The layer to use for the widget
 %End

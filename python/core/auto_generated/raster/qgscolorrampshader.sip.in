@@ -139,7 +139,7 @@ Classify color ramp shader
     virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
 
 %Docstring
- Generates and new RGB value based on one input value
+Generates and new RGB value based on one input value
 %End
 
      virtual bool shade( double redValue, double greenValue,
@@ -147,7 +147,7 @@ Classify color ramp shader
                 int *returnRedValue /Out/, int *returnGreenValue /Out/,
                 int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
 %Docstring
- Generates and new RGB value based on original RGB value
+Generates and new RGB value based on original RGB value
 %End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;

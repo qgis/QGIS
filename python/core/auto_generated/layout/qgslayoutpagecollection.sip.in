@@ -12,7 +12,7 @@
 class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
 %Docstring
- A manager for a collection of pages in a layout.
+A manager for a collection of pages in a layout.
 
 .. versionadded:: 3.0
 %End

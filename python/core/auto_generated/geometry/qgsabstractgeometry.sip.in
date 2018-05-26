@@ -17,7 +17,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 class QgsAbstractGeometry
 {
 %Docstring
- Abstract base class for all geometries
+Abstract base class for all geometries
 
 .. versionadded:: 2.10
 %End
@@ -726,7 +726,7 @@ Returns true if the vertex id is valid
 class QgsVertexIterator
 {
 %Docstring
- Java-style iterator for traversal of vertices of a geometry
+Java-style iterator for traversal of vertices of a geometry
 
 .. versionadded:: 3.0
 %End

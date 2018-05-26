@@ -13,7 +13,7 @@
 class QgsGraduatedHistogramWidget : QgsHistogramWidget
 {
 %Docstring
- Graphical histogram for displaying distribution of field values and
+Graphical histogram for displaying distribution of field values and
 editing range breaks for a QgsGraduatedSymbolRenderer renderer.
 
 .. versionadded:: 2.9

@@ -13,7 +13,7 @@
 class QgsStatisticalSummary
 {
 %Docstring
- Calculator for summary statistics for a list of doubles.
+Calculator for summary statistics for a list of doubles.
 
 Statistics are calculated by calling calculate() and passing a list of doubles. The
 individual statistics can then be retrieved using the associated methods. Note that not all statistics

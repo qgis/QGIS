@@ -58,7 +58,7 @@ itself the min/max values.
 
     QgsRasterMinMaxOrigin();
 %Docstring
- Default constructor.
+Default constructor.
 %End
 
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
@@ -128,12 +128,12 @@ Sets the factor f so that the min/max range is [ mean - f * stddev , mean + f * 
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 %Docstring
- Serialize object.
+Serialize object.
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
- Deserialize object.
+Deserialize object.
 %End
 
 
@@ -144,7 +144,7 @@ Returns a string to serialize Limits
 
     static Limits limitsFromString( const QString &limits );
 %Docstring
- Deserialize Limits
+Deserialize Limits
 %End
 
     static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
@@ -154,7 +154,7 @@ Returns a string to serialize Extent
 
     static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
 %Docstring
- Deserialize Extent
+Deserialize Extent
 %End
 
     static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
@@ -164,7 +164,7 @@ Returns a string to serialize StatAccuracy
 
     static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
 %Docstring
- Deserialize StatAccuracy
+Deserialize StatAccuracy
 %End
 
 };

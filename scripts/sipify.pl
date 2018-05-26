@@ -207,7 +207,7 @@ sub processDoxygenLine {
     }
 
     if ( $line =~ m/^\s*[\\@]brief/){
-        $line =~ s/[\\@]brief//;
+        $line =~ s/[\\@]brief\s*//;
         $INDENT = '';
         if ( $line =~ m/^\s*$/ ){
             return "";

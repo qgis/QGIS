@@ -10,7 +10,7 @@
 class QgsPanelWidget : QWidget
 {
 %Docstring
- Base class for any widget that can be shown as a inline panel
+Base class for any widget that can be shown as a inline panel
 %End
 
 %TypeHeaderCode
@@ -20,7 +20,7 @@ class QgsPanelWidget : QWidget
 
     QgsPanelWidget( QWidget *parent = 0 );
 %Docstring
- Base class for any widget that can be shown as a inline panel
+Base class for any widget that can be shown as a inline panel
 
 :param parent: Parent widget.
 %End
@@ -171,7 +171,7 @@ Widgets are normally removed form the interface using the panel manager or the c
     virtual void keyPressEvent( QKeyEvent *event );
 
 %Docstring
- Overridden key press event to handle the esc event on the widget.
+Overridden key press event to handle the esc event on the widget.
 
 :param event: The key event
 %End
@@ -182,7 +182,7 @@ Widgets are normally removed form the interface using the panel manager or the c
 class QgsPanelWidgetWrapper: QgsPanelWidget
 {
 %Docstring
- Wrapper widget for existing widgets which can't have
+Wrapper widget for existing widgets which can't have
 the inheritance tree changed, e.g dialogs.
 
 .. note::
@@ -198,7 +198,7 @@ the inheritance tree changed, e.g dialogs.
 
     QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 %Docstring
- Wrapper widget for existing widgets which can't have
+Wrapper widget for existing widgets which can't have
 the inheritance tree changed, e.g dialogs.
 
 :param widget: The widget to wrap.

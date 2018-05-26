@@ -227,7 +227,7 @@ Emit this signal, whenever the value changed.
     void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, QgsEditorWidgetWrapper::ConstraintResult status );
 %Docstring
 Emit this signal when the constraint status changed.
- constraintStatusChanged
+constraintStatusChanged
 
 :param constraint: represented as a string
 :param desc: is the constraint description

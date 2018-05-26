@@ -66,7 +66,7 @@ Create a new widget wrapper
 
     QWidget *widget();
 %Docstring
- Access the widget managed by this wrapper
+Access the widget managed by this wrapper
 
 :return: The widget
 %End

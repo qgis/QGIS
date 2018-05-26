@@ -13,7 +13,7 @@
 class QgsGeometryEngine
 {
 %Docstring
- Contains geometry relation and modification algorithms.
+Contains geometry relation and modification algorithms.
 
 .. versionadded:: 2.10
 %End

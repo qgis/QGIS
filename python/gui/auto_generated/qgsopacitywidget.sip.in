@@ -12,7 +12,7 @@
 class QgsOpacityWidget : QWidget
 {
 %Docstring
- A widget for setting an opacity value.
+A widget for setting an opacity value.
 
 .. versionadded:: 3.0
 %End

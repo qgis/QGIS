@@ -14,7 +14,7 @@
 class QgsAbstractMetadataBaseValidator
 {
 %Docstring
- Abstract base class for metadata validators.
+Abstract base class for metadata validators.
 
 .. versionadded:: 3.0
 %End
@@ -56,7 +56,7 @@ to fix the metadata.
 class QgsNativeMetadataBaseValidator : QgsAbstractMetadataBaseValidator
 {
 %Docstring
- A validator for the native base QGIS metadata schema definition.
+A validator for the native base QGIS metadata schema definition.
 
 .. versionadded:: 3.2
 %End
@@ -81,7 +81,7 @@ Constructor for QgsNativeMetadataBaseValidator.
 class QgsNativeMetadataValidator : QgsNativeMetadataBaseValidator
 {
 %Docstring
- A validator for the native QGIS layer metadata schema definition.
+A validator for the native QGIS layer metadata schema definition.
 
 .. versionadded:: 3.0
 %End
@@ -105,7 +105,7 @@ Constructor for QgsNativeMetadataValidator.
 class QgsNativeProjectMetadataValidator : QgsNativeMetadataBaseValidator
 {
 %Docstring
- A validator for the native QGIS project metadata schema definition.
+A validator for the native QGIS project metadata schema definition.
 
 .. versionadded:: 3.2
 %End

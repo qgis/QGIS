@@ -26,12 +26,12 @@ including min and max value.
 
     QgsRasterRange();
 %Docstring
- Constructor.
+Constructor.
 %End
 
     QgsRasterRange( double min, double max );
 %Docstring
- Constructor
+Constructor
 
 :param min: minimum value
 :param max: max value

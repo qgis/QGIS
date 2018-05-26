@@ -12,7 +12,7 @@
 class QgsVectorLayerUtils
 {
 %Docstring
- Contains utility methods for working with QgsVectorLayers.
+Contains utility methods for working with QgsVectorLayers.
 
 .. versionadded:: 3.0
 %End
@@ -25,7 +25,7 @@ class QgsVectorLayerUtils
     class QgsDuplicateFeatureContext
 {
 %Docstring
- Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
+Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
 
 .. versionadded:: 3.0
 %End

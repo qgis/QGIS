@@ -14,7 +14,7 @@
 class QgsMapThemeCollection : QObject
 {
 %Docstring
- Container class that allows storage of map themes consisting of visible
+Container class that allows storage of map themes consisting of visible
 map layers and layer styles.
 
 .. versionadded:: 2.12

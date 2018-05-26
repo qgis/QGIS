@@ -10,7 +10,7 @@
 class QgsQueryBuilder : QDialog
 {
 %Docstring
- Query Builder for layers.
+Query Builder for layers.
 
 The query builder allows interactive creation of a SQL for limiting the
 features displayed in a vector layer.  The fields in the table are

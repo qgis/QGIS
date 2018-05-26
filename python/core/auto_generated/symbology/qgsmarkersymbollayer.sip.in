@@ -13,7 +13,7 @@
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring
- Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
 
 .. versionadded:: 2.16
@@ -189,7 +189,7 @@ Derived classes must implement draw() to handle drawing the generated shape onto
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
 %End
 
 %TypeHeaderCode
@@ -454,7 +454,7 @@ Prepares cache image
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
+Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
 
 .. versionadded:: 2.16

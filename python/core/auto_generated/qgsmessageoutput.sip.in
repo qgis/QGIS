@@ -75,7 +75,7 @@ function that returns new class derived from QgsMessageOutput
 class QgsMessageOutputConsole : QObject, QgsMessageOutput
 {
 %Docstring
- Default implementation of message output interface
+Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might
 be the right choice for apps without GUI.

@@ -37,14 +37,14 @@ Create a new configuration widget
 
     virtual QVariantMap config() = 0;
 %Docstring
- Create a configuration from the current GUI state
+Create a configuration from the current GUI state
 
 :return: A widget configuration
 %End
 
     virtual void setConfig( const QVariantMap &config ) = 0;
 %Docstring
- Update the configuration widget to represent the given configuration.
+Update the configuration widget to represent the given configuration.
 
 :param config: The configuration which should be represented by this widget
 %End

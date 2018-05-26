@@ -12,7 +12,7 @@
 class QgsShadowEffect : QgsPaintEffect
 {
 %Docstring
- Base class for paint effects which offset, blurred shadows
+Base class for paint effects which offset, blurred shadows
 
 .. versionadded:: 2.9
 %End
@@ -230,7 +230,7 @@ the picture.
 class QgsDropShadowEffect : QgsShadowEffect
 {
 %Docstring
- A paint effect which draws an offset and optionally blurred drop shadow
+A paint effect which draws an offset and optionally blurred drop shadow
 
 .. versionadded:: 2.9
 %End
@@ -266,7 +266,7 @@ Creates a new QgsDropShadowEffect effect from a properties string map.
 class QgsInnerShadowEffect : QgsShadowEffect
 {
 %Docstring
- A paint effect which draws an offset and optionally blurred drop shadow
+A paint effect which draws an offset and optionally blurred drop shadow
 within a picture.
 
 .. versionadded:: 2.9
