@@ -184,42 +184,157 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
-    /**
+    /*
      * Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
 
-    // Menus
+    /**
+     * Returns a reference to the main window "Project" menu.
+     */
     virtual QMenu *projectMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Edit" menu.
+     */
     virtual QMenu *editMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "View" menu.
+     */
     virtual QMenu *viewMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Layer" menu.
+     */
     virtual QMenu *layerMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Create New Layer" menu.
+     */
     virtual QMenu *newLayerMenu() = 0;
-    //! \since QGIS 2.5
+
+    /**
+     * Returns a reference to the main window "Add Layer" menu.
+     * \since QGIS 2.5
+     */
     virtual QMenu *addLayerMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Settings" menu.
+     */
     virtual QMenu *settingsMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Plugin" menu.
+     */
     virtual QMenu *pluginMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Raster" menu.
+     */
     virtual QMenu *rasterMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Database" menu.
+     */
     virtual QMenu *databaseMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Vector" menu.
+     */
     virtual QMenu *vectorMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Web" menu.
+     */
     virtual QMenu *webMenu() = 0;
+
+    /**
+     * Returns a reference to the right most standard menu, which is
+     * usually the last menu item before the "Help" menu.
+     *
+     * This can be used to insert additional top-level menus into
+     * their correct position BEFORE the help menu.
+     */
     virtual QMenu *firstRightStandardMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Window" menu.
+     */
     virtual QMenu *windowMenu() = 0;
+
+    /**
+     * Returns a reference to the main window "Help" menu.
+     */
     virtual QMenu *helpMenu() = 0;
 
     // ToolBars
+
+    /**
+     * Returns a reference to the main window "File" toolbar.
+     */
     virtual QToolBar *fileToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Layer" toolbar.
+     */
     virtual QToolBar *layerToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Map Navigation" toolbar.
+     */
     virtual QToolBar *mapNavToolToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Digitize" toolbar.
+     */
     virtual QToolBar *digitizeToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Advanced Digitizing" toolbar.
+     */
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Shape Digitizing" toolbar.
+     * \since QGIS 3.0
+     */
     virtual QToolBar *shapeDigitizeToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Attributes" toolbar.
+     */
     virtual QToolBar *attributesToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Plugin" toolbar.
+     */
     virtual QToolBar *pluginToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Help" toolbar.
+     */
     virtual QToolBar *helpToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Raster" toolbar.
+     */
     virtual QToolBar *rasterToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Vector" toolbar.
+     */
     virtual QToolBar *vectorToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Database" toolbar.
+     */
     virtual QToolBar *databaseToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Web" toolbar.
+     */
     virtual QToolBar *webToolBar() = 0;
 
     // Project menu actions
