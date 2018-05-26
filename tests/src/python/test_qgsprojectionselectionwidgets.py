@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import (QgsProjectionSelectionWidget,
                       QgsProjectionSelectionTreeWidget,
                       QgsProjectionSelectionDialog)
