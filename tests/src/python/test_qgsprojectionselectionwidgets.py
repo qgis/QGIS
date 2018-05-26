@@ -122,6 +122,8 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
         self.assertEqual(len(spy), 1)
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 0)
 
     def testTreeWidgetGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
