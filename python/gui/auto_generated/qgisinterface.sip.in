@@ -167,38 +167,153 @@ Advanced digitizing dock widget
 
 
     virtual QMenu *projectMenu() = 0;
+%Docstring
+Returns a reference to the main window "Project" menu.
+%End
+
     virtual QMenu *editMenu() = 0;
+%Docstring
+Returns a reference to the main window "Edit" menu.
+%End
+
     virtual QMenu *viewMenu() = 0;
+%Docstring
+Returns a reference to the main window "View" menu.
+%End
+
     virtual QMenu *layerMenu() = 0;
+%Docstring
+Returns a reference to the main window "Layer" menu.
+%End
+
     virtual QMenu *newLayerMenu() = 0;
+%Docstring
+Returns a reference to the main window "Create New Layer" menu.
+%End
+
     virtual QMenu *addLayerMenu() = 0;
 %Docstring
+Returns a reference to the main window "Add Layer" menu.
 
 .. versionadded:: 2.5
 %End
+
     virtual QMenu *settingsMenu() = 0;
+%Docstring
+Returns a reference to the main window "Settings" menu.
+%End
+
     virtual QMenu *pluginMenu() = 0;
+%Docstring
+Returns a reference to the main window "Plugin" menu.
+%End
+
     virtual QMenu *rasterMenu() = 0;
+%Docstring
+Returns a reference to the main window "Raster" menu.
+%End
+
     virtual QMenu *databaseMenu() = 0;
+%Docstring
+Returns a reference to the main window "Database" menu.
+%End
+
     virtual QMenu *vectorMenu() = 0;
+%Docstring
+Returns a reference to the main window "Vector" menu.
+%End
+
     virtual QMenu *webMenu() = 0;
+%Docstring
+Returns a reference to the main window "Web" menu.
+%End
+
     virtual QMenu *firstRightStandardMenu() = 0;
+%Docstring
+Returns a reference to the right most standard menu, which is
+usually the last menu item before the "Help" menu.
+
+This can be used to insert additional top-level menus into
+their correct position BEFORE the help menu.
+%End
+
     virtual QMenu *windowMenu() = 0;
+%Docstring
+Returns a reference to the main window "Window" menu.
+%End
+
     virtual QMenu *helpMenu() = 0;
+%Docstring
+Returns a reference to the main window "Help" menu.
+%End
+
 
     virtual QToolBar *fileToolBar() = 0;
+%Docstring
+Returns a reference to the main window "File" toolbar.
+%End
+
     virtual QToolBar *layerToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Layer" toolbar.
+%End
+
     virtual QToolBar *mapNavToolToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Map Navigation" toolbar.
+%End
+
     virtual QToolBar *digitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Digitize" toolbar.
+%End
+
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Advanced Digitizing" toolbar.
+%End
+
     virtual QToolBar *shapeDigitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Shape Digitizing" toolbar.
+
+.. versionadded:: 3.0
+%End
+
     virtual QToolBar *attributesToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Attributes" toolbar.
+%End
+
     virtual QToolBar *pluginToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Plugin" toolbar.
+%End
+
     virtual QToolBar *helpToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Help" toolbar.
+%End
+
     virtual QToolBar *rasterToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Raster" toolbar.
+%End
+
     virtual QToolBar *vectorToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Vector" toolbar.
+%End
+
     virtual QToolBar *databaseToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Database" toolbar.
+%End
+
     virtual QToolBar *webToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Web" toolbar.
+%End
 
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
