@@ -37,11 +37,15 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction() = default;
 
-    //! \brief A customizable method that takes in a double and returns a int between 0 and 255
-    virtual int enhance( double );
+    /**
+     * A customizable method that takes in a double \a value and returns a int between 0 and 255.
+     */
+    virtual int enhance( double value );
 
-    //! \brief A customicable method to indicate if the pixels is displayable
-    virtual bool isValueInDisplayableRange( double );
+    /**
+     * A customizable method to indicate if a pixel's value is within the displayable range.
+     */
+    virtual bool isValueInDisplayableRange( double value );
 
     /**
      * Sets the maximum \a value.
