@@ -573,10 +573,13 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         //map extent
         searchRect = layer->extent();
-        searchRect.set( searchRect.xMinimum() - 1. / pow( 10., layerPrec )
-                        , searchRect.yMinimum() - 1. / pow( 10., layerPrec )
-                        , searchRect.xMaximum() + 1. / pow( 10., layerPrec )
-                        , searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
+        if ( !searchRect.isEmpty() )
+        {
+          searchRect.set( searchRect.xMinimum() - 1. / pow( 10., layerPrec )
+                          , searchRect.yMinimum() - 1. / pow( 10., layerPrec )
+                          , searchRect.xMaximum() + 1. / pow( 10., layerPrec )
+                          , searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
+        }
         layerCrs = layer->crs();
 
         QgsFeatureRequest fReq;
@@ -1263,7 +1266,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
-    if ( crs.isValid() )
+    if ( crs.isValid() && !rect->isEmpty() )
     {
       QgsGeometry* exportGeom = QgsGeometry::fromRect( *rect );
       QgsCoordinateTransform transform;
@@ -1279,6 +1282,9 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
         Q_UNUSED( cse );
       }
     }
+    // EPSG:4326 max extent is -180, -90, 180, 90
+    rect = new QgsRectangle( rect->intersect( new QgsRectangle( -180.0, -90.0, 180.0, 90.0 ) ) );
+
     fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
