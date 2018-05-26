@@ -544,7 +544,7 @@ Remove a custom property from layer. Properties are stored in a map and saved in
 
     virtual QgsError error() const;
 %Docstring
-Get current status error. This error describes some principal problem
+Gets current status error. This error describes some principal problem
 for which layer cannot work and thus is not valid. It is not last error
 after accessing data by draw() etc.
 %End
@@ -938,7 +938,7 @@ Can be null.
 
     QgsMapLayerStyleManager *styleManager() const;
 %Docstring
-Get access to the layer's style manager. Style manager allows switching between multiple styles.
+Gets access to the layer's style manager. Style manager allows switching between multiple styles.
 
 .. versionadded:: 2.8
 %End

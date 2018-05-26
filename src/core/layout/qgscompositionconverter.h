@@ -238,7 +238,7 @@ class CORE_EXPORT QgsCompositionConverter
     //! Restore general composer item properties
     static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
-    //! Get item position
+    //! Gets item position
     static QRectF itemPosition( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
     //! Calculates the item minimum position from an xml string

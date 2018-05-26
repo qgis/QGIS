@@ -200,7 +200,7 @@ data defined symbol properties
 
     virtual QgsSymbol *clone() const = 0 /Factory/;
 %Docstring
-Get a deep copy of this symbol.
+Gets a deep copy of this symbol.
 Needs to be reimplemented by subclasses.
 Ownership is transferred to the caller.
 %End

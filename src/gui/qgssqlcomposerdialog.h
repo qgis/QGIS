@@ -114,7 +114,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! initialize the SQL statement
     void setSql( const QString &sql );
 
-    //! get the SQL statement
+    //! Gets the SQL statement
     QString sql() const;
 
     //! add a list of table names

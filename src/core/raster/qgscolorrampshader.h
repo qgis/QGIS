@@ -101,13 +101,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
     };
 
-    //! \brief Get the custom colormap
+    //! Returns the custom colormap.
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const { return mColorRampItemList.toList(); }
 
-    //! \brief Get the color ramp type
+    //! Returns the color ramp type.
     Type colorRampType() const { return mColorRampType; }
 
-    //! \brief Get the color ramp type as a string
+    //! Returns the color ramp type as a string.
     QString colorRampTypeAsQString();
 
     //! Sets a custom colormap
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /**
-     * Get the source color ramp
+     * Gets the source color ramp
      * \since QGIS 3.0
      * \see setSourceColorRamp()
      */
@@ -159,7 +159,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
                 int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
 
-    //! \brief Get symbology items if provided by renderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     //! Sets classification mode

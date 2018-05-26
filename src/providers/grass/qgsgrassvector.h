@@ -40,13 +40,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
     //! Sets number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }
 
-    //! Get number of elements of given type. Types may be combined by bitwise or)
+    //! Gets number of elements of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;
 
-    //! Get all types in the layer (combined by bitwise or)
+    //! Gets all types in the layer (combined by bitwise or)
     int type() const;
 
-    //! Get all types in the layer as list
+    //! Gets all types in the layer as list
     QList<int> types() const;
 
     QgsFields fields();
@@ -85,15 +85,15 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
     //! Open header and read layers/types
     bool openHead();
 
-    //! Get list of layers. The layers exist until the vector is deleted or reloaded
+    //! Gets list of layers. The layers exist until the vector is deleted or reloaded
     QList<QgsGrassVectorLayer *> layers() const { return mLayers; }
 
     /**
-     * Get numbers of primitives
+     * Gets numbers of primitives
      * \returns type/count pairs */
     QMap<int, int> typeCounts() const {return mTypeCounts; }
 
-    //! Get total number of primitives of given type. Types may be combined by bitwise or)
+    //! Gets total number of primitives of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;
 
     /**
@@ -101,7 +101,7 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
      * \returns max layer number or 0 if no layer exists */
     int maxLayerNumber() const;
 
-    //! Get number of nodes
+    //! Gets number of nodes
     int nodeCount() const { return mNodeCount; }
 
     //! Returns error message

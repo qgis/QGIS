@@ -165,7 +165,7 @@ when its expression changes
 
     QString createFieldIdentifier() const;
 %Docstring
-Get a field name or expression to use as field comparison.
+Gets a field name or expression to use as field comparison.
 If in SearchMode returns a quoted field identifier.
 If in AggregateSearchMode returns an appropriate aggregate expression.
 

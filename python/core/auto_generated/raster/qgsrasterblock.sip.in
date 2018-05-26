@@ -137,7 +137,7 @@ returned value is undefined.
 
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 %Docstring
-Get byte array representing a value.
+Gets byte array representing a value.
 
 :param dataType: data type
 :param value: value
@@ -306,7 +306,7 @@ method. This method has no effect for raster blocks with an explicit no data val
 
     QByteArray data() const;
 %Docstring
-Get access to raw data.
+Gets access to raw data.
 The returned QByteArray instance is not a copy of the data: it only refers to the array
 owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
 still exists. Writing to the returned QByteArray will not affect the original data:
@@ -356,18 +356,14 @@ It is ensured that conversion back to double gives the same number.
 
     QImage image() const;
 %Docstring
- Get image if type is color.
-
-:return: image *
+Returns an image containing the block data, if the block's data type is color.
 %End
 
     bool setImage( const QImage *image );
 %Docstring
- set image.
+Sets the block data via an ``image``.
 
-:param image: image
-
-:return: true on success *
+:return: true on success
 %End
 
 

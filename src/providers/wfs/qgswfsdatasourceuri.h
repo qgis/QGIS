@@ -93,7 +93,7 @@ class QgsWFSDataSourceURI
     //! Returns request URL (with SERVICE=WFS parameter)
     QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
 
-    //! Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
+    //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
 
     //! Returns user defined limit of features to download. 0=no limitation
@@ -102,13 +102,13 @@ class QgsWFSDataSourceURI
     //! Sets user defined limit of features to download
     void setMaxNumFeatures( int maxNumFeatures );
 
-    //! Get typename (with prefix)
+    //! Gets typename (with prefix)
     QString typeName() const;
 
     //! Sets typename (with prefix)
     void setTypeName( const QString &typeName );
 
-    //! Get SRS name (in the normalized form EPSG:xxxx)
+    //! Gets SRS name (in the normalized form EPSG:xxxx)
     QString SRSName() const;
 
     //! Sets SRS name (in the normalized form EPSG:xxxx)
@@ -117,19 +117,19 @@ class QgsWFSDataSourceURI
     //! Sets version
     void setVersion( const QString &versionString );
 
-    //! Get OGC filter xml or a QGIS expression
+    //! Gets OGC filter xml or a QGIS expression
     QString filter() const;
 
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
-    //! Get SQL query
+    //! Gets SQL query
     QString sql() const;
 
     //! Sets SQL query
     void setSql( const QString &sql );
 
-    //! Get GetFeature output format
+    //! Gets GetFeature output format
     QString outputFormat() const;
 
     //! Sets GetFeature output format

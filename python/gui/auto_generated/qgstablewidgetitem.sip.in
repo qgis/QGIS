@@ -38,7 +38,7 @@ By default this will be set to Qt.DisplayRole
 
     int sortRole() const;
 %Docstring
-Get the role by which the items should be sorted.
+Gets the role by which the items should be sorted.
 By default this will be Qt.DisplayRole
 %End
 

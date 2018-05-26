@@ -76,7 +76,7 @@ class CORE_EXPORT QgsFontUtils
     static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
 
     /**
-     * Get standard test font family
+     * Gets standard test font family
      * \since QGIS 2.1
      */
     static QString standardTestFontFamily();
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsFontUtils
     static bool loadStandardTestFonts( const QStringList &loadstyles );
 
     /**
-     * Get standard test font with specific style
+     * Gets standard test font with specific style
      * \param style Style to load, e.g. Roman, Oblique, Bold, Bold Oblique
      * \param pointsize Font point size to set
      * \returns QFont

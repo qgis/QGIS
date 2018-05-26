@@ -212,7 +212,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QString geomParam() const;
 
-    //! get SpatiaLite version string
+    //! Gets SpatiaLite version string
     QString spatialiteVersion();
 
     /**

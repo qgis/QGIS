@@ -37,7 +37,7 @@ Sets the authentication config id for the resource
 
     const QString configId() const;
 %Docstring
-Get the authentication config id for the resource
+Gets the authentication config id for the resource
 %End
 
     void setDataProviderKey( const QString &key );

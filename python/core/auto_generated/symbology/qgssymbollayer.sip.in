@@ -180,7 +180,7 @@ Set stroke color. Supported by marker and fill layers.
 
     virtual QColor strokeColor() const;
 %Docstring
-Get stroke color. Supported by marker and fill layers.
+Gets stroke color. Supported by marker and fill layers.
 
 .. versionadded:: 2.1
 %End
@@ -194,7 +194,7 @@ Set fill color. Supported by marker and fill layers.
 
     virtual QColor fillColor() const;
 %Docstring
-Get fill color. Supported by marker and fill layers.
+Gets fill color. Supported by marker and fill layers.
 
 .. versionadded:: 2.1
 %End
@@ -308,42 +308,42 @@ write as DXF
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
-get line width
+Gets line width
 %End
 
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
-get offset
+Gets offset
 %End
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 %Docstring
-get color
+Gets color
 %End
 
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 %Docstring
-get angle
+Gets angle
 %End
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 %Docstring
-get dash pattern
+Gets dash pattern
 %End
 
     virtual Qt::PenStyle dxfPenStyle() const;
 %Docstring
-get pen style
+Gets pen style
 %End
 
     virtual QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
 %Docstring
-get brush/fill color
+Gets brush/fill color
 %End
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 %Docstring
-get brush/fill style
+Gets brush/fill style
 %End
 
     QgsPaintEffect *paintEffect() const;

@@ -164,7 +164,7 @@ Returns true if source band has no data value
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
 %Docstring
- Get source nodata value usage
+Returns the source nodata value usage
 %End
 
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
@@ -181,7 +181,7 @@ Value representing no data value.
 
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const;
 %Docstring
-Get list of user no data value ranges
+Returns a list of user no data value ranges.
 %End
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
@@ -200,7 +200,7 @@ their own layers, such as WMS *
 
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) /Factory/;
 %Docstring
- Get an image downloader for the raster legend
+Returns a new image downloader for the raster legend.
 
 :param mapSettings: map settings for legend providers supporting
 contextual legends.
@@ -240,7 +240,7 @@ list.
 
     virtual QString htmlMetadata() = 0;
 %Docstring
-Get metadata in a format suitable for feeding directly
+Returns metadata in a format suitable for feeding directly
 into a subset of the GUI raster properties "Metadata" tab.
 %End
 

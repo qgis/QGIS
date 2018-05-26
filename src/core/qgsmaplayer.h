@@ -529,7 +529,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void removeCustomProperty( const QString &key );
 
     /**
-     * Get current status error. This error describes some principal problem
+     * Gets current status error. This error describes some principal problem
      *  for which layer cannot work and thus is not valid. It is not last error
      *  after accessing data by draw() etc.
      */
@@ -850,7 +850,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerLegend *legend() const;
 
     /**
-     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * Gets access to the layer's style manager. Style manager allows switching between multiple styles.
      * \since QGIS 2.8
      */
     QgsMapLayerStyleManager *styleManager() const;

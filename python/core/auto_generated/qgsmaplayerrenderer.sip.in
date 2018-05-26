@@ -61,7 +61,7 @@ Returns list of errors (problems) that happened during the rendering
 
     QString layerId() const;
 %Docstring
-Get access to the ID of the layer rendered by this class
+Gets access to the ID of the layer rendered by this class
 %End
 
   protected:

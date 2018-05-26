@@ -242,7 +242,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Adds all the integers contained in mCurrentWKBFragmentSizes
     int totalWKBFragmentSize() const;
 
-    //! Get safely (if empty) top from mode stack
+    //! Gets safely (if empty) top from mode stack
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
     //! Safely (if empty) pop from mode stack
@@ -382,10 +382,10 @@ class CORE_EXPORT QgsGml : public QObject
      */
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
 
-    //! Get parsed features for given type name
+    //! Gets parsed features for given type name
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
 
-    //! Get feature ids map
+    //! Gets feature ids map
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /**

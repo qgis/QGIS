@@ -207,7 +207,7 @@ class CORE_EXPORT QgsRenderContext
     double rendererScale() const {return mRendererScale;}
 
     /**
-     * Get access to new labeling engine (may be nullptr)
+     * Gets access to new labeling engine (may be nullptr)
      * \note not available in Python bindings
      */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsRenderContext
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /**
-     * Get the filter feature provider used for additional filtering of rendered features.
+     * Gets the filter feature provider used for additional filtering of rendered features.
      * \returns the filter feature provider
      * \since QGIS 2.14
      * \see setFeatureFilterProvider()

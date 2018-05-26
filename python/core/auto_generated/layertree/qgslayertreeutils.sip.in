@@ -71,7 +71,7 @@ Updates an embedded ``group`` from a ``project``.
 
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
 %Docstring
-get invisible layers
+Gets invisible layers
 %End
 
     static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );

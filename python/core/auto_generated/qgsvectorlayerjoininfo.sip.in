@@ -209,7 +209,7 @@ Set subset of fields to be used from joined layer. Takes ownership of the passed
 
     QStringList *joinFieldNamesSubset() const;
 %Docstring
-Get subset of fields to be used from joined layer. All fields will be used if null is returned.
+Gets subset of fields to be used from joined layer. All fields will be used if null is returned.
 
 .. versionadded:: 2.6
 %End

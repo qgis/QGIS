@@ -409,7 +409,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
     /**
-     * Get the symbol which is used to represent \a value.
+     * Gets the symbol which is used to represent \a value.
      */
     QgsSymbol *symbolForValue( double value ) const;
 

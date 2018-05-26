@@ -126,7 +126,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsCoordinateReferenceSystem crs() const override;
 
     /**
-     * Get the coverage format used in the transfer from the WCS server
+     * Gets the coverage format used in the transfer from the WCS server
      */
     QString format() const;
 
@@ -160,7 +160,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     virtual QString baseUrl() const;
 
-    //! get WCS version string
+    //! Gets WCS version string
     QString wcsVersion();
 
     // Reimplemented QgsRasterDataProvider virtual methods

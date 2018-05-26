@@ -67,7 +67,7 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
 
     /**
      * Calculated width of scalebar in pixels representing distance + units. Differs minimum possible from preferredWidth to
-     * get "nice" distance number.
+     * Gets "nice" distance number.
      */
     Q_PROPERTY( int width READ width NOTIFY scaleBarChanged )
 

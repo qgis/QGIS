@@ -441,7 +441,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
-    //! get application icon
+    //! Gets application icon
     static QString appIconPath();
 
     //! Constants for endian-ness
@@ -472,10 +472,12 @@ class CORE_EXPORT QgsApplication : public QApplication
 #endif
 
     /**
-     * \brief get a standard css style sheet for reports.
+     * Returns a standard css style sheet for reports.
+     *
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     *
      * \returns QString containing the CSS 2.1 compliant stylesheet.
      * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
@@ -539,7 +541,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void applyGdalSkippedDrivers();
 
     /**
-     * Get maximum concurrent thread count
+     * Gets maximum concurrent thread count
      * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
@@ -673,7 +675,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRuntimeProfiler *profiler();
 
     /**
-     * Get the registry of available field formatters.
+     * Gets the registry of available field formatters.
      */
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 

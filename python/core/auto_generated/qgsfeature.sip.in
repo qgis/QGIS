@@ -166,7 +166,7 @@ Copy constructor
 
     QgsFeatureId id() const;
 %Docstring
-Get the feature ID for this feature.
+Gets the feature ID for this feature.
 
 :return: feature ID
 

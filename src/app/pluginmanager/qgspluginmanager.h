@@ -65,7 +65,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Save plugin enabled/disabled state to QgsSettings
     void savePluginState( QString id, bool state );
 
-    //! Get metadata of C++ plugins
+    //! Gets metadata of C++ plugins
     void getCppPluginsMetadata();
 
     //! Create new spacer item for sorting by status in the plugin list view

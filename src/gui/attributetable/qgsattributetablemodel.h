@@ -141,12 +141,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QModelIndexList idToIndexList( QgsFeatureId id ) const;
 
     /**
-     * get field index from column
+     * Gets field index from column
      */
     int fieldIdx( int col ) const;
 
     /**
-     * get column from field index
+     * Gets column from field index
      */
     int fieldCol( int idx ) const;
 
@@ -223,7 +223,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void setRequest( const QgsFeatureRequest &request );
 
     /**
-     * Get the the feature request
+     * Gets the the feature request
      */
     // TODO QGIS 3: return copy instead of reference
     const QgsFeatureRequest &request() const;

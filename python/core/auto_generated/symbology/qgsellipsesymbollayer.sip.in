@@ -59,7 +59,7 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
-Get stroke join style.
+Gets stroke join style.
 
 .. versionadded:: 2.16
 %End

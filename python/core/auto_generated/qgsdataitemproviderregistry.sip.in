@@ -34,7 +34,7 @@ QgsDataItemProviderRegistry is not usually directly created, but rather accessed
 
     QList<QgsDataItemProvider *> providers() const;
 %Docstring
-Get list of available providers
+Gets list of available providers
 %End
 
     void addProvider( QgsDataItemProvider *provider /Transfer/ );

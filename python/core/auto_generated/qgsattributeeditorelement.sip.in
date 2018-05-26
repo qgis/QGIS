@@ -77,14 +77,14 @@ The type of this element
 
     QgsAttributeEditorElement *parent() const;
 %Docstring
-Get the parent of this element.
+Gets the parent of this element.
 
 .. versionadded:: 3.0
 %End
 
     QDomElement toDomElement( QDomDocument &doc ) const;
 %Docstring
-Get the XML Dom element to save this element.
+Gets the XML Dom element to save this element.
 
 :param doc: The QDomDocument which is used to create new XML elements
 
@@ -163,7 +163,7 @@ Returns if this container is going to be rendered as a group box
 
     QList<QgsAttributeEditorElement *> children() const;
 %Docstring
-Get a list of the children elements of this container
+Gets a list of the children elements of this container
 
 :return: A list of elements
 %End
@@ -189,7 +189,7 @@ Change the name of this container
 
     int columnCount() const;
 %Docstring
-Get the number of columns in this group
+Gets the number of columns in this group
 %End
 
     void setColumnCount( int columnCount );
@@ -299,7 +299,7 @@ Creates a new element which embeds a relation.
 
     const QgsRelation &relation() const;
 %Docstring
-Get the id of the relation which shall be embedded
+Gets the id of the relation which shall be embedded
 
 :return: the id
 %End

@@ -44,7 +44,7 @@ Define the view mode for the dual view
 
     QgsDualView::ViewMode viewMode();
 %Docstring
-Get the view mode for the dual view
+Gets the view mode for the dual view
 %End
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );

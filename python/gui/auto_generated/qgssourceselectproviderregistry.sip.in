@@ -41,7 +41,7 @@ Constructor for QgsSourceSelectProviderRegistry.
 
     QList< QgsSourceSelectProvider *> providers();
 %Docstring
-Get list of available providers
+Gets list of available providers
 %End
 
     void addProvider( QgsSourceSelectProvider *provider /Transfer/ );

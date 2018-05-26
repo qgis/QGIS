@@ -55,7 +55,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
 
     /**
-     * Get list of available providers.
+     * Gets list of available providers.
      */
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 

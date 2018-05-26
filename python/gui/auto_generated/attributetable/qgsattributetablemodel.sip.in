@@ -132,12 +132,12 @@ Maps feature id to table row
 
     int fieldIdx( int col ) const;
 %Docstring
-get field index from column
+Gets field index from column
 %End
 
     int fieldCol( int idx ) const;
 %Docstring
-get column from field index
+Gets column from field index
 %End
 
     QgsFeatureId rowToId( int row ) const;

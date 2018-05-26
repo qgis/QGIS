@@ -47,7 +47,7 @@ Set the QgsFeatureListModel which is used to retrieve information
 
     QgsFeatureListModel *featureListModel();
 %Docstring
-Get the featureListModel used by this view
+Gets the featureListModel used by this view
 
 :return: The model in use
 %End
@@ -80,7 +80,7 @@ Returns a detailed message about errors while parsing a :py:class:`QgsExpression
 
     QgsFeatureIds currentEditSelection();
 %Docstring
-Get the currentEditSelection
+Gets the currentEditSelection
 
 :return: A list of edited feature ids
 %End

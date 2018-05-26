@@ -95,14 +95,14 @@ Sets the x and y value of the point
 
     double x() const;
 %Docstring
-Get the x value of the point
+Gets the x value of the point
 
 :return: x coordinate
 %End
 
     double y() const;
 %Docstring
-Get the y value of the point
+Gets the y value of the point
 
 :return: y coordinate
 %End

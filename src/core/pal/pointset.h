@@ -137,7 +137,7 @@ namespace pal
       int getNumPoints() const { return nbPoints; }
 
       /**
-       * Get a point a set distance along a line geometry.
+       * Gets a point a set distance along a line geometry.
        * \param d array of distances between points
        * \param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
        * \param dl distance to traverse along line

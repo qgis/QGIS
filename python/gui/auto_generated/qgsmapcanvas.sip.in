@@ -67,7 +67,7 @@ empty string before setLayers() calls can be made.
 
     const QgsMapSettings &mapSettings() const /KeepReference/;
 %Docstring
-Get access to properties used for map rendering
+Gets access to properties used for map rendering
 
 .. versionadded:: 2.4
 %End
@@ -88,7 +88,7 @@ Resets the ``flags`` for the canvas' map settings.
 
     const QgsLabelingResults *labelingResults() const;
 %Docstring
-Get access to the labeling results (may be null)
+Gets access to the labeling results (may be null)
 
 .. versionadded:: 2.4
 %End
@@ -180,7 +180,7 @@ Sets the extent of the map canvas
 
     double rotation() const;
 %Docstring
-Get the current map canvas rotation in clockwise degrees
+Gets the current map canvas rotation in clockwise degrees
 
 .. versionadded:: 2.8
 %End
@@ -201,7 +201,7 @@ Set the center of the map canvas, in geographical coordinates
 
     QgsPointXY center() const;
 %Docstring
-Get map center, in geographical coordinates
+Gets map center, in geographical coordinates
 
 .. versionadded:: 2.8
 %End
@@ -444,7 +444,7 @@ Returns the map's theme shown in the canvas, if set.
 
     const QgsMapToPixel *getCoordinateTransform();
 %Docstring
-Get the current coordinate transform
+Gets the current coordinate transform
 %End
 
     bool isDrawing();

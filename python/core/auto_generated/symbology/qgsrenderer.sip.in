@@ -403,7 +403,7 @@ would result in a large, complex vector output.
 
     QgsFeatureRequest::OrderBy orderBy() const;
 %Docstring
-Get the order in which features shall be processed by this renderer.
+Gets the order in which features shall be processed by this renderer.
 
 .. versionadded:: 2.14
 

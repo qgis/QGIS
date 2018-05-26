@@ -145,7 +145,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! user coordinate display precision
     int mUserCrsDisplayPrecision;
 
-    //! Get the path to the icon from the best available theme
+    //! Gets the path to the icon from the best available theme
     QString getIconPath( const QString &name );
 
     ////////////////////////////////////////////////////////////////////

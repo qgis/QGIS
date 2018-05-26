@@ -141,7 +141,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     ~QgsSvgCache() override;
 
     /**
-     * Get SVG as QImage.
+     * Gets SVG as QImage.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 
     /**
-     * Get SVG  as QPicture&.
+     * Gets SVG  as QPicture&.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -217,10 +217,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
                          bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
 
-    //! Get image data
+    //! Gets image data
     QByteArray getImageData( const QString &path ) const;
 
-    //! Get SVG content
+    //! Gets SVG content
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 

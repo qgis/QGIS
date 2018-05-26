@@ -73,7 +73,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
 
-    //! Get the view mode for the dual view
+    //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );

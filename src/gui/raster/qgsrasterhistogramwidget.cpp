@@ -463,7 +463,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mHistoMin = 0;
   mHistoMax = 0;
   bool myFirstIteration = true;
-  /* get selected band list, if mHistoShowBands != ShowAll */
+  /* Gets selected band list, if mHistoShowBands != ShowAll */
   mySelectedBands = histoSelectedBands();
   double myBinXStep = 1;
   double myBinX = 0;

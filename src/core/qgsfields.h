@@ -152,11 +152,11 @@ class CORE_EXPORT QgsFields
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField operator[]( int i ) const;
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField &operator[]( int i ) SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField at( int i ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field with matching name
+    //! Gets field with matching name
     QgsField field( const QString &name ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin (value from an enumeration)
+    //! Gets field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin index (its meaning is specific to each type of origin)
+    //! Gets field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsFields
 #endif
 
     /**
-     * Get the field index from the field name.
+     * Gets the field index from the field name.
      * This method is case sensitive and only matches the data source
      * name of the field.
      * Alias for indexOf
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsFields
     int indexFromName( const QString &fieldName ) const;
 
     /**
-     * Get the field index from the field name.
+     * Gets the field index from the field name.
      * This method is case sensitive and only matches the data source
      * name of the field.
      *

@@ -196,7 +196,7 @@ Updates the rectangle to include the specified point.
 
     QgsRectangle buffered( double width ) const;
 %Docstring
-Get rectangle enlarged by buffer.
+Gets rectangle enlarged by buffer.
 
 .. note::
 

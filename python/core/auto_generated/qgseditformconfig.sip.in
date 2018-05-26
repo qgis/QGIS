@@ -94,14 +94,14 @@ Clears all the tabs for the attribute editor form with EditorLayout.TabLayout.
 
     QgsAttributeEditorContainer *invisibleRootContainer();
 %Docstring
-Get the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
+Gets the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
 
 .. versionadded:: 3
 %End
 
     EditorLayout layout() const;
 %Docstring
-Get the active layout style for the attribute editor for this layer
+Gets the active layout style for the attribute editor for this layer
 %End
 
     void setLayout( EditorLayout editorLayout );
@@ -111,7 +111,7 @@ Sets the active layout style for the attribute editor for this layer
 
     QString uiForm() const;
 %Docstring
- Get path or URL to the .ui form. Only meaningful with EditorLayout.UiFileLayout
+Returns the path or URL to the .ui form. Only meaningful with EditorLayout.UiFileLayout
 %End
 
     void setUiForm( const QString &ui );
@@ -146,7 +146,7 @@ QgsVectorLayer.setEditorWidgetSetup should be used.
 
     QVariantMap widgetConfig( const QString &widgetName ) const;
 %Docstring
-Get the configuration for the editor widget with the given name.
+Gets the configuration for the editor widget with the given name.
 
 :param widgetName: The name of the widget.
 
@@ -194,7 +194,7 @@ Labeling on top leaves more horizontal space for the widget itself.
 
     QString initFunction() const;
 %Docstring
-Get Python function for edit form initialization.
+Gets Python function for edit form initialization.
 Will be looked up in a Python file relative to the project folder if it
 includes a module name or if it's a pure function name it will searched
 in the Python code set with setInitCode().
@@ -210,7 +210,7 @@ in the Python code set with setInitCode().
 
     QString initCode() const;
 %Docstring
-Get Python code for edit form initialization.
+Gets Python code for edit form initialization.
 %End
 
     void setInitCode( const QString &code );
@@ -222,7 +222,7 @@ setInitFunction().
 
     QString initFilePath() const;
 %Docstring
-Get Python external file path for edit form initialization.
+Gets Python external file path for edit form initialization.
 %End
 
     void setInitFilePath( const QString &filePath );

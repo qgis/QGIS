@@ -191,7 +191,7 @@ class CORE_EXPORT QgsRectangle
     void include( const QgsPointXY &p );
 
     /**
-     * Get rectangle enlarged by buffer.
+     * Gets rectangle enlarged by buffer.
      * \note In earlier QGIS releases this method was named buffer().
      * \since QGIS 3.0
      * \see grow()

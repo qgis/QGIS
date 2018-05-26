@@ -51,7 +51,7 @@ takes ownership of settings
 
         QgsPalLayerSettings *settings() const;
 %Docstring
-Get the labeling settings. May return a null pointer.
+Gets the labeling settings. May return a null pointer.
 %End
 
         bool dependsOnScale() const;

@@ -291,7 +291,7 @@ prepare the rule for rendering and its children (build active children array)
 
         QSet<int> collectZLevels();
 %Docstring
-get all used z-levels from this rule and children
+Gets all used z-levels from this rule and children
 %End
 
 

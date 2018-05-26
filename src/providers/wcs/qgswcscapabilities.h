@@ -112,10 +112,10 @@ class QgsWcsCapabilities : public QObject
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
-    //! Get coverage summary for identifier
+    //! Gets coverage summary for identifier
     QgsWcsCoverageSummary coverage( QString const &identifier );
 
-    //! Get list of all coverage summaries
+    //! Gets list of all coverage summaries
     QList<QgsWcsCoverageSummary> coverages();
 
     /**
@@ -143,7 +143,7 @@ class QgsWcsCapabilities : public QObject
     bool sendRequest( QString const &url );
 
     /**
-     * Get additional coverage info from server. Version 1.0 GetCapabilities
+     * Gets additional coverage info from server. Version 1.0 GetCapabilities
      *  response does not contain all info (CRS, formats).
      */
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
@@ -185,13 +185,13 @@ class QgsWcsCapabilities : public QObject
      */
     QString lastErrorFormat();
 
-    //! Get tag name without namespace
+    //! Gets tag name without namespace
     static QString stripNS( const QString &name );
 
-    //! Get text of first child of specified name, NS is ignored
+    //! Gets text of first child of specified name, NS is ignored
     static QString firstChildText( const QDomElement &element, const QString &name );
 
-    //! Get first child of specified name, NS is ignored
+    //! Gets first child of specified name, NS is ignored
     static QDomElement firstChild( const QDomElement &element, const QString &name );
 
     /**
@@ -204,10 +204,10 @@ class QgsWcsCapabilities : public QObject
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
-    //! Get text of element specified by path
+    //! Gets text of element specified by path
     static QString domElementText( const QDomElement &element, const QString &path );
 
-    //! Get sub elements texts by path
+    //! Gets sub elements texts by path
     static QStringList domElementsTexts( const QDomElement &element, const QString &path );
 
   signals:
@@ -226,7 +226,7 @@ class QgsWcsCapabilities : public QObject
   private:
     void parseUri();
 
-    //! Get coverage summary for identifier
+    //! Gets coverage summary for identifier
     QgsWcsCoverageSummary *coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent = nullptr );
 
     // ! Get list of all sub coverages

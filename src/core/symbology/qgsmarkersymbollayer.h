@@ -697,7 +697,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /**
-     * Get stroke width.
+     * Gets stroke width.
      * \since QGIS 2.16 */
     double strokeWidth() const { return mStrokeWidth; }
 
@@ -707,7 +707,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidth( double width ) { mStrokeWidth = width; }
 
     /**
-     * Get stroke width unit.
+     * Gets stroke width unit.
      * \since QGIS 2.16 */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
@@ -717,7 +717,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
-     * Get stroke width map unit scale.
+     * Gets stroke width map unit scale.
      * \since QGIS 2.16 */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
@@ -727,7 +727,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
     /**
-     * Get stroke join style.
+     * Gets stroke join style.
      * \since QGIS 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 

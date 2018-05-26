@@ -273,9 +273,9 @@ namespace pal
       //! Returns the distance between repeating labels for this feature
       double repeatDistance() const { return mLF->repeatDistance(); }
 
-      //! Get number of holes (inner rings) - they are considered as obstacles
+      //! Gets number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
-      //! Get hole (inner ring) - considered as obstacle
+      //! Gets hole (inner ring) - considered as obstacle
       FeaturePart *getSelfObstacle( int i ) { return mHoles.at( i ); }
 
       //! Check whether this part is connected with some other part

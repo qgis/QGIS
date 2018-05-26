@@ -85,7 +85,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     ~QgsOgrProvider() override;
 
     /**
-     * Get the data source specification. This may be a path or database
+     * Gets the data source specification. This may be a path or database
      * connection string
      * \param expandAuthConfig Whether to expand any assigned authentication configuration
      * \returns data source specification
@@ -150,7 +150,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Returns OGR geometry type
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
-    //! Get single flatten geometry type
+    //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
     QString layerName() const { return mLayerName; }

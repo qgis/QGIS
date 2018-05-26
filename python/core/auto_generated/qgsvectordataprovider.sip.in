@@ -392,7 +392,7 @@ Set encoding used for accessing data from layer
 
     QString encoding() const;
 %Docstring
-Get encoding which is used for accessing data
+Gets encoding which is used for accessing data
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;
@@ -467,7 +467,7 @@ Clear recorded errors
 
     QStringList errors() const;
 %Docstring
-Get recorded errors
+Gets recorded errors
 %End
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
@@ -517,7 +517,7 @@ This can be required if the underlying file is replaced.
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
-Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
 %End
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
@@ -534,14 +534,14 @@ Discover the available relations with the given layers.
 
     virtual QVariantMap metadata() const;
 %Docstring
-Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
+Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
 
 :return: The provider metadata
 %End
 
     virtual QString translateMetadataKey( const QString &mdKey ) const;
 %Docstring
-Get the translated metadata key.
+Gets the translated metadata key.
 
 :param mdKey: The metadata key
 
@@ -550,7 +550,7 @@ Get the translated metadata key.
 
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const;
 %Docstring
-Get the translated metadata value.
+Gets the translated metadata value.
 
 :param mdKey: The metadata key
 :param value: The metadata value
@@ -617,7 +617,7 @@ Usually done in the constructor.
 
     QTextCodec *textEncoding() const;
 %Docstring
-Get this providers encoding
+Gets this providers encoding
 
 .. versionadded:: 3.0
 %End

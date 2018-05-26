@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDxfExport
     void setSymbologyExport( QgsDxfExport::SymbologyExport e ) { mSymbologyExport = e; }
 
     /**
-     * Get symbology export mode
+     * Gets symbology export mode
      * \returns mode
      * \see setSymbologyExport
      */
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsDxfExport
     void setExtent( const QgsRectangle &r ) { mExtent = r; }
 
     /**
-     * Get extent of area to export
+     * Gets extent of area to export
      * \returns area to export
      * \see setExtent
      */
@@ -225,13 +225,13 @@ class CORE_EXPORT QgsDxfExport
     bool force2d() { return mForce2d; }
 
     /**
-     * Get DXF palette index of nearest entry for given color
+     * Gets DXF palette index of nearest entry for given color
      * \param color
      */
     static int closestColorMatch( QRgb color );
 
     /**
-     * Get layer name for feature
+     * Gets layer name for feature
      * \param id layer id of layer
      * \param f feature of layer
      * \returns layer name for feature
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsDxfExport
     QString layerName( const QString &id, const QgsFeature &f ) const;
 
     /**
-     * Get name for layer respecting the use layer title as layer name mode
+     * Gets name for layer respecting the use layer title as layer name mode
      * \param vl the vector layer
      * \returns name of layer
      * \see setLayerTitleAsName

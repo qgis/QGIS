@@ -138,12 +138,12 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
         /**
-         * Get a list of all the nodes.
+         * Gets a list of all the nodes.
          */
         QList<QgsExpressionNode *> list() { return mList; }
 
         /**
-         * Get the node at position i in the list.
+         * Gets the node at position i in the list.
          *
          * \since QGIS 3.0
          */
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual ~QgsExpressionNode() = default;
 
     /**
-     * Get the type of this node.
+     * Gets the type of this node.
      *
      * \returns The type of this node
      */

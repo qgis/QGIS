@@ -96,10 +96,10 @@ class CORE_EXPORT QgsDataSourceUri
      */
     int removeParam( const QString &key );
 
-    //! Get generic param (generic mode)
+    //! Gets generic param (generic mode)
     QString param( const QString &key ) const;
 
-    //! Get multiple generic param (generic mode)
+    //! Gets multiple generic param (generic mode)
     QStringList params( const QString &key ) const;
 
     //! Test if param exists (generic mode)

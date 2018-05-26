@@ -74,17 +74,17 @@ convenience constructor
 
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;
 %Docstring
- Get the custom colormap
+Returns the custom colormap.
 %End
 
     Type colorRampType() const;
 %Docstring
- Get the color ramp type
+Returns the color ramp type.
 %End
 
     QString colorRampTypeAsQString();
 %Docstring
- Get the color ramp type as a string
+Returns the color ramp type as a string.
 %End
 
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
@@ -96,7 +96,7 @@ Sets the color ramp type
 
     QgsColorRamp *sourceColorRamp() const /Factory/;
 %Docstring
-Get the source color ramp
+Gets the source color ramp
 
 .. versionadded:: 3.0
 
@@ -152,9 +152,6 @@ Classify color ramp shader
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
-%Docstring
- Get symbology items if provided by renderer
-%End
 
     void setClassificationMode( ClassificationMode classificationMode );
 %Docstring

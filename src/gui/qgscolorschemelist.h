@@ -111,14 +111,14 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /**
-     * Get the current color scheme context for the model
+     * Gets the current color scheme context for the model
      * \returns context string which is passed to scheme for color generation
      * \see baseColor
      */
     QString context() const { return mContext; }
 
     /**
-     * Get the base color for the color scheme used by the model
+     * Gets the base color for the color scheme used by the model
      * \returns base color which is passed to scheme for color generation
      * \see context
      */

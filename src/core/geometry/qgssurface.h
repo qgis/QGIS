@@ -34,7 +34,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
   public:
 
     /**
-     * Get a polygon representation of this surface.
+     * Gets a polygon representation of this surface.
      * Ownership is transferred to the caller.
      */
     virtual QgsPolygon *surfaceToPolygon() const = 0 SIP_FACTORY;

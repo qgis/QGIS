@@ -110,13 +110,13 @@ Returns the magnification factor.
 
     QStringList layerIds() const;
 %Docstring
-Get list of layer IDs for map rendering
+Gets list of layer IDs for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
-Get list of layers for map rendering
+Gets list of layers for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
@@ -132,7 +132,7 @@ The layers are stored in the reverse order of how they are rendered (layer with 
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 
 .. versionadded:: 2.8
 %End
@@ -146,7 +146,7 @@ Set map of map layer style overrides (key: layer ID, value: style name) where a 
 
     QString customRenderFlags() const;
 %Docstring
-Get custom rendering flags. Layers might honour these to alter their rendering.
+Gets custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: custom flags strings, separated by ';'
 
@@ -177,7 +177,7 @@ returns CRS of destination coordinate reference system
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
-Get units of map's geographical coordinates - used for scale calculation
+Gets units of map's geographical coordinates - used for scale calculation
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -209,7 +209,7 @@ Sets the background color of the map
 %End
     QColor backgroundColor() const;
 %Docstring
-Get the background color of the map
+Gets the background color of the map
 %End
 
     void setSelectionColor( const QColor &color );
@@ -218,7 +218,7 @@ Sets color that is used for drawing of selected vector features
 %End
     QColor selectionColor() const;
 %Docstring
-Get color that is used for drawing of selected vector features
+Gets color that is used for drawing of selected vector features
 %End
 
     enum Flag

@@ -61,12 +61,12 @@ Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const;
 %Docstring
-Get parsed features for given type name
+Gets parsed features for given type name
 %End
 
     QMap<QgsFeatureId, QString > idsMap() const;
 %Docstring
-Get feature ids map
+Gets feature ids map
 %End
 
     QgsCoordinateReferenceSystem crs() const;

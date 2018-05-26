@@ -78,13 +78,13 @@ class SERVER_EXPORT QgsServerInterface
     virtual void clearRequestHandler() = 0 SIP_SKIP;
 
     /**
-     * Get pointer to the capabiblities cache
+     * Gets pointer to the capabiblities cache
      * \returns QgsCapabilitiesCache
      */
     virtual QgsCapabilitiesCache *capabilitiesCache() = 0 SIP_KEEPREFERENCE;
 
     /**
-     * Get pointer to the request handler
+     * Gets pointer to the request handler
      * \returns QgsRequestHandler
      */
     virtual QgsRequestHandler *requestHandler() = 0 SIP_KEEPREFERENCE;

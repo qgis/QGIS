@@ -232,14 +232,14 @@ class CORE_EXPORT QgsExpression
     const QgsExpressionNode *rootNode() const;
 
     /**
-     * Get the expression ready for evaluation - find out column indexes.
+     * Gets the expression ready for evaluation - find out column indexes.
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
     bool prepare( const QgsExpressionContext *context );
 
     /**
-     * Get list of columns referenced by the expression.
+     * Gets list of columns referenced by the expression.
      *
      * \note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.

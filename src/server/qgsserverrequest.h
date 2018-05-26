@@ -102,7 +102,7 @@ class SERVER_EXPORT QgsServerRequest
     void setParameter( const QString &key, const QString &value );
 
     /**
-     * Get a parameter value
+     * Gets a parameter value
      */
     QString parameter( const QString &key ) const;
 

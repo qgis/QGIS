@@ -123,7 +123,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
       }
     }
 
-    //! Get data-defined values
+    //! Gets data-defined values
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
     //! Sets data-defined values
     void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &values ) { mDataDefinedValues = values; }

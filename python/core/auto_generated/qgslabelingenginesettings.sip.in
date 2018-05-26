@@ -54,7 +54,7 @@ Sets flags of the labeling engine
 %End
     Flags flags() const;
 %Docstring
-Get flags of the labeling engine
+Gets flags of the labeling engine
 %End
     bool testFlag( Flag f ) const;
 %Docstring
@@ -67,7 +67,7 @@ Sets whether a particual flag is enabled
 
     void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const;
 %Docstring
-Get number of candidate positions that will be generated for each label feature (default to 8)
+Gets number of candidate positions that will be generated for each label feature (default to 8)
 %End
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
 %Docstring

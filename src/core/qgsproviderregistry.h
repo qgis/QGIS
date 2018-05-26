@@ -118,7 +118,7 @@ class CORE_EXPORT QgsProviderRegistry
                                     QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     /**
-     * Get pointer to provider function
+     * Gets pointer to provider function
      * \param providerKey identificator of the provider
      * \param functionName name of function
      * \returns pointer to function or NULL on error. If the provider uses direct provider

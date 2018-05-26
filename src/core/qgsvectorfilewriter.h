@@ -663,7 +663,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList defaultLayerOptions( const QString &driverName );
 
     /**
-     * Get the ogr geometry type from an internal QGIS wkb type enum.
+     * Gets the ogr geometry type from an internal QGIS wkb type enum.
      *
      * Will drop M values and convert Z to 2.5D where required.
      * \note not available in Python bindings

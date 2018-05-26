@@ -80,7 +80,7 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
     void setList( const QVariantList &list );
 
     /**
-     * Get the edit value.
+     * Gets the edit value.
      * \returns the QVariantList
      */
     QVariantList list() const { return mModel.list(); }

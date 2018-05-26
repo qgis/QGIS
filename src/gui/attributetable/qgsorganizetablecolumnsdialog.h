@@ -49,7 +49,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     ~QgsOrganizeTableColumnsDialog() override;
 
     /**
-     * Get the updated configuration
+     * Gets the updated configuration
      */
     QgsAttributeTableConfig config() const;
 

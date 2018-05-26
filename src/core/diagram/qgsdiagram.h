@@ -60,7 +60,7 @@ class CORE_EXPORT QgsDiagram
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) = 0;
 
     /**
-     * Get a descriptive name for this diagram type.
+     * Gets a descriptive name for this diagram type.
      */
     virtual QString diagramName() const = 0;
     //! Returns the size in map units the diagram will use to render.

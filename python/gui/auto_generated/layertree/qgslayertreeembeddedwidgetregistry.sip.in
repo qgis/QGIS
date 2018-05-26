@@ -88,7 +88,7 @@ Returns list of all registered providers
 
     QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 %Docstring
-Get provider object from the provider's ID
+Gets provider object from the provider's ID
 %End
 
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider /Transfer/ );

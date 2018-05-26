@@ -214,7 +214,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /**
-     * Get stroke color. Supported by marker and fill layers.
+     * Gets stroke color. Supported by marker and fill layers.
      * \since QGIS 2.1 */
     virtual QColor strokeColor() const { return QColor(); }
 
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /**
-     * Get fill color. Supported by marker and fill layers.
+     * Gets fill color. Supported by marker and fill layers.
      * \since QGIS 2.1 */
     virtual QColor fillColor() const { return QColor(); }
 
@@ -324,28 +324,28 @@ class CORE_EXPORT QgsSymbolLayer
     //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    //! get line width
+    //! Gets line width
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
-    //! get offset
+    //! Gets offset
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
-    //! get color
+    //! Gets color
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
-    //! get angle
+    //! Gets angle
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
-    //! get dash pattern
+    //! Gets dash pattern
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 
-    //! get pen style
+    //! Gets pen style
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    //! get brush/fill color
+    //! Gets brush/fill color
     virtual QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
 
-    //! get brush/fill style
+    //! Gets brush/fill style
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /**

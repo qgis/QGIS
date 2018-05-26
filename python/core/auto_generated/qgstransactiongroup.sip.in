@@ -30,7 +30,7 @@ Will return true if it is compatible and has been added.
 
     QSet<QgsVectorLayer *> layers() const;
 %Docstring
-Get the set of layers currently managed by this transaction group.
+Gets the set of layers currently managed by this transaction group.
 
 :return: Layer set
 %End

@@ -183,7 +183,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
     /**
-     * Get a field name or expression to use as field comparison.
+     * Gets a field name or expression to use as field comparison.
      * If in SearchMode returns a quoted field identifier.
      * If in AggregateSearchMode returns an appropriate aggregate expression.
      *

@@ -386,7 +386,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual void setEncoding( const QString &e );
 
     /**
-     * Get encoding which is used for accessing data
+     * Gets encoding which is used for accessing data
      */
     QString encoding() const;
 
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void clearErrors();
 
     /**
-     * Get recorded errors
+     * Gets recorded errors
      */
     QStringList errors() const;
 
@@ -518,7 +518,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual void forceReload();
 
     /**
-     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     * Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
@@ -532,20 +532,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
 
     /**
-     * Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
+     * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
      * \returns The provider metadata
      */
     virtual QVariantMap metadata() const { return QVariantMap(); }
 
     /**
-     * Get the translated metadata key.
+     * Gets the translated metadata key.
      * \param mdKey The metadata key
      * \returns The translated metadata value
      */
     virtual QString translateMetadataKey( const QString &mdKey ) const { return mdKey; }
 
     /**
-     * Get the translated metadata value.
+     * Gets the translated metadata value.
      * \param mdKey The metadata key
      * \param value The metadata value
      * \returns The translated metadata value
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 
     /**
-     * Get this providers encoding
+     * Gets this providers encoding
      *
      * \since QGIS 3.0
      */

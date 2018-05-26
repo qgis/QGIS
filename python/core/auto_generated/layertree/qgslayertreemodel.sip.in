@@ -204,7 +204,7 @@ Not necessary to call when layer's renderer is changed as the model listens to t
 
     QModelIndex currentIndex() const;
 %Docstring
-Get index of the item marked as current. Item marked as current is underlined.
+Gets index of the item marked as current. Item marked as current is underlined.
 %End
     void setCurrentIndex( const QModelIndex &currentIndex );
 %Docstring
@@ -217,7 +217,7 @@ Sets font for a particular type of layer tree node. nodeType should come from Qg
 %End
     QFont layerTreeNodeFont( int nodeType ) const;
 %Docstring
-Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
+Gets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
 %End
 
     void setAutoCollapseLegendNodes( int nodeCount );
@@ -289,7 +289,7 @@ so that legend nodes that use map units can be scaled currectly
 
     void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale  /Out/ ) const;
 %Docstring
-Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
+Gets hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
 If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
 
 .. versionadded:: 2.6
@@ -297,7 +297,7 @@ If there are no valid map view data (from previous call to setLegendMapViewData(
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 
 .. versionadded:: 2.10
 %End

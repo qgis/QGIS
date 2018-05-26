@@ -197,22 +197,22 @@ class QgsPostgresConn : public QObject
     void ref() { ++mRef; }
     void unref();
 
-    //! get postgis version string
+    //! Gets postgis version string
     QString postgisVersion();
 
-    //! get status of GEOS capability
+    //! Gets status of GEOS capability
     bool hasGEOS();
 
-    //! get status of topology capability
+    //! Gets status of topology capability
     bool hasTopology();
 
-    //! get status of Pointcloud capability
+    //! Gets status of Pointcloud capability
     bool hasPointcloud();
 
-    //! get status of GIST capability
+    //! Gets status of GIST capability
     bool hasGIST();
 
-    //! get status of PROJ4 capability
+    //! Gets status of PROJ4 capability
     bool hasPROJ();
 
     //! encode wkb in hex
@@ -273,7 +273,7 @@ class QgsPostgresConn : public QObject
     static QString quotedValue( const QVariant &value );
 
     /**
-     * Get the list of supported layers
+     * Gets the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
@@ -289,7 +289,7 @@ class QgsPostgresConn : public QObject
                           const QString &schema = QString() );
 
     /**
-     * Get the list of database schemas
+     * Gets the list of database schemas
      * \param schemas list to store schemas in
      * \returns true if schemas where fetched successfully
      * \since QGIS 2.7

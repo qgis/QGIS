@@ -111,6 +111,9 @@ Returns the minimum value for the raster shader.
 %End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+%Docstring
+Returns legend symbology items if provided by renderer.
+%End
 
   protected:
 

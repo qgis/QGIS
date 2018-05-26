@@ -128,7 +128,7 @@ Reset all headers and content for this response
 
     virtual QByteArray data() const = 0;
 %Docstring
-Get the data written so far
+Gets the data written so far
 
 This is implementation dependent: some implementations may not
 give access to the underlying and return an empty array.

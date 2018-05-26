@@ -73,10 +73,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Sets fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
-    //! Get name for QNetworkRequest::CacheLoadControl
+    //! Gets name for QNetworkRequest::CacheLoadControl
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
-    //! Get QNetworkRequest::CacheLoadControl from name
+    //! Gets QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     //! Setup the NAM according to the user's settings

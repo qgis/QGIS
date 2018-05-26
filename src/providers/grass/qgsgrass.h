@@ -166,14 +166,14 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     QgsGrass() = default;
 
-    //! Get singleton instance of this class. Used as signals proxy between provider and plugin.
+    //! Gets singleton instance of this class. Used as signals proxy between provider and plugin.
     static QgsGrass *instance();
 
     //! Global GRASS library lock
     static void lock();
     static void unlock();
 
-    //! Get info about the mode
+    //! Gets info about the mode
 
     /**
      * QgsGrass may be running in active or passive mode.
@@ -182,23 +182,23 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      *  Passive mode means, that GISRC is not available. */
     static bool activeMode();
 
-    //! Get default GISDBASE, returns GISDBASE name or empty string if not in active mode
+    //! Gets default GISDBASE, returns GISDBASE name or empty string if not in active mode
     static QString getDefaultGisdbase();
 
-    //! Get default LOCATION_NAME, returns LOCATION_NAME name or empty string if not in active mode
+    //! Gets default LOCATION_NAME, returns LOCATION_NAME name or empty string if not in active mode
     static QString getDefaultLocation();
 
     static QgsGrassObject getDefaultLocationObject();
 
-    //! Get default path to location (gisdbase/location) or empty string if not in active mode
+    //! Gets default path to location (gisdbase/location) or empty string if not in active mode
     static QString getDefaultLocationPath();
 
-    //! Get default MAPSET, returns MAPSET name or empty string if not in active mode
+    //! Gets default MAPSET, returns MAPSET name or empty string if not in active mode
     static QString getDefaultMapset();
 
     static QgsGrassObject getDefaultMapsetObject();
 
-    //! Get default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
+    //! Gets default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
     static QString getDefaultMapsetPath();
 
     /**
@@ -249,10 +249,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Check if any error occurred in lately called functions. Returns value from ERROR.
     static int error( void );
 
-    //! Get last error message
+    //! Gets last error message
     static QString errorMessage( void );
 
-    //! Get initialization error
+    //! Gets initialization error
     static QString initError() { return sInitError; }
 
     //! Test is current user is owner of mapset
@@ -306,11 +306,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                                const QString &mapsetName );
     static QStringList groups( const QString &mapsetPath );
 
-    //! Get topo file version 6, 7 or 0 if topo file does not exist
+    //! Gets topo file version 6, 7 or 0 if topo file does not exist
     static bool topoVersion( const QString &gisdbase, const QString &location,
                              const QString &mapset, const QString &mapName, int &major, int &minor );
 
-    //! Get list of vector layers, throws QgsGrass::Exception
+    //! Gets list of vector layers, throws QgsGrass::Exception
     static QStringList vectorLayers( const QString &gisdbase, const QString &location,
                                      const QString &mapset, const QString &mapName );
 
@@ -336,7 +336,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * Returns error if adjustment failed. */
     static QString setRegion( struct Cell_head *window, const QgsRectangle &rect, int rows, int cols );
 
-    //! Get extent from region
+    //! Gets extent from region
     static QgsRectangle extent( struct Cell_head *window );
 
     // ! Get map region
@@ -428,7 +428,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                                  bool qgisModule = true );
 
     /**
-     * \brief Get info string from qgis.g.info module
+     * Returns the info string from qgis.g.info module.
      * \param info info type
      * \param gisdbase GISBASE path
      * \param location location name
@@ -519,17 +519,17 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \throws QgsGrass::Exception */
     static void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag );
 
-    //! Get map of vector types / names
+    //! Gets map of vector types / names
     static QMap<int, QString> vectorTypeMap();
 
     /**
-     * Get GRASS vector type from name
+     * Gets GRASS vector type from name
      * \param point,centroid,line,boundary,area,face,kernel
      * \returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
     static int vectorType( const QString &name );
 
     /**
-     * Get name for vector primitive type
+     * Gets name for vector primitive type
      * \param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
     static QString vectorTypeName( int type );
 

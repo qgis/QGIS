@@ -29,7 +29,7 @@ class QgsVirtualLayerDefinition;
 class CORE_EXPORT QgsVirtualLayerDefinitionUtils
 {
   public:
-    //! Get a virtual layer definition from a vector layer where vector joins are replaced by SQL LEFT JOINs
+    //! Gets a virtual layer definition from a vector layer where vector joins are replaced by SQL LEFT JOINs
     static QgsVirtualLayerDefinition fromJoinedLayer( QgsVectorLayer *joinedLayer );
 };
 

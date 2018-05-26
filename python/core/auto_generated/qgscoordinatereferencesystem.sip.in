@@ -666,7 +666,7 @@ Set user hint for validation
 
     QString validationHint();
 %Docstring
-Get user hint for validation
+Gets user hint for validation
 %End
 
     static int syncDatabase();

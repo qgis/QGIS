@@ -414,7 +414,7 @@ A combination of when and then. Simple as that.
 
         QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
 %Docstring
-Get a deep copy of this WhenThen combination.
+Gets a deep copy of this WhenThen combination.
 %End
 
         QgsExpressionNode *whenExp() const;

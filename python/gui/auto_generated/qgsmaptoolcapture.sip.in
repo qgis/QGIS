@@ -60,7 +60,7 @@ Clear capture curve.
 
     const QgsCompoundCurve *captureCurve() const;
 %Docstring
-Get the capture curve
+Gets the capture curve
 
 :return: Capture curve
 %End

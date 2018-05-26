@@ -59,26 +59,26 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Access to the SSL configuration's group box widget
     QGroupBox *sslConfigGroupBox();
 
-    //! Get the SSL configuration
+    //! Gets the SSL configuration
     const QgsAuthConfigSslServer sslCustomConfig();
 
-    //! Get the SSL server certificate
+    //! Gets the SSL server certificate
     const QSslCertificate sslCertificate();
 
-    //! Get the host:port to associate with the server certificate
+    //! Gets the host:port to associate with the server certificate
     const QString sslHost();
 
-    //! Get the SSL protocl used for connections
+    //! Gets the SSL protocl used for connections
     QSsl::SslProtocol sslProtocol();
 
-    //! Get list of the SSL errors (as enums) to be ignored for connections
+    //! Gets list of the SSL errors (as enums) to be ignored for connections
     const QList<QSslError::SslError> sslIgnoreErrorEnums();
 
-    //! Get the client's peer verify mode for connections
+    //! Gets the client's peer verify mode for connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
     /**
-     * Get the client's peer verify depth for connections
+     * Gets the client's peer verify depth for connections
      * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();

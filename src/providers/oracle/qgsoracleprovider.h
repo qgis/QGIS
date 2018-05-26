@@ -99,7 +99,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
-     * Get the number of fields in the layer
+     * Gets the number of fields in the layer
      */
     uint fieldCount() const;
 
@@ -146,7 +146,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool createSpatialIndex() override;
 
-    //! Get the table name associated with this provider instance
+    //! Gets the table name associated with this provider instance
     QString getTableName();
 
     QString subsetString() const override;

@@ -80,7 +80,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
     void setMap( const QVariantMap &map );
 
     /**
-     * Get the edit value.
+     * Gets the edit value.
      * \returns the QVariantMap
      */
     QVariantMap map() const { return mModel.map(); }

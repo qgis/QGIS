@@ -53,14 +53,14 @@ class CORE_EXPORT QgsAuthMethodConfig
     bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**
-     * Get 'authcfg' 7-character alphanumeric ID of the config
+     * Gets 'authcfg' 7-character alphanumeric ID of the config
      * \note This is set by QgsAuthManager when the config is initially stored
      */
     const QString id() const { return mId; }
     //! Sets auth config ID
     void setId( const QString &id ) { mId = id; }
 
-    //! Get name of configuration
+    //! Gets name of configuration
     const QString name() const { return mName; }
     //! Sets name of configuration
     void setName( const QString &name ) { mName = name; }
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsAuthMethodConfig
     QString method() const { return mMethod; }
     void setMethod( const QString &method ) { mMethod = method; }
 
-    //! Get version of the configuration
+    //! Gets version of the configuration
     int version() const { return mVersion; }
     //! Sets version of the configuration
     void setVersion( int version ) { mVersion = version; }
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     void loadConfigString( const QString &configstr );
 
-    //! Get extended configuration, mapped to key/value pairs of QStrings
+    //! Gets extended configuration, mapped to key/value pairs of QStrings
     QgsStringMap configMap() const { return mConfigMap; }
 
     /**

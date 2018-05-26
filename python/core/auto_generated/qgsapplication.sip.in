@@ -489,7 +489,7 @@ deletes provider registry and map layer registry
 
     static QString appIconPath();
 %Docstring
-get application icon
+Gets application icon
 %End
 
     enum endian_t
@@ -506,7 +506,8 @@ Returns whether this machine uses big or little endian
 
     static QString reportStyleSheet();
 %Docstring
- get a standard css style sheet for reports.
+Returns a standard css style sheet for reports.
+
 Typically you will use this method by doing:
 QString myStyle = QgsApplication.reportStyleSheet();
 textBrowserReport->document()->setDefaultStyleSheet(myStyle);
@@ -589,7 +590,7 @@ Apply the skipped drivers list to gdal
 
     static int maxThreads();
 %Docstring
-Get maximum concurrent thread count
+Gets maximum concurrent thread count
 
 .. versionadded:: 2.4
 %End
@@ -738,7 +739,7 @@ Returns the application runtime profiler.
 
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 %Docstring
-Get the registry of available field formatters.
+Gets the registry of available field formatters.
 %End
 
     static Qgs3DRendererRegistry *renderer3DRegistry();

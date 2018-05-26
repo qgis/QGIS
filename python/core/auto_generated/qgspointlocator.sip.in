@@ -47,21 +47,21 @@ If ``extent`` is not null, the locator will index only a subset of the layer whi
 
     QgsVectorLayer *layer() const;
 %Docstring
-Get associated layer
+Gets associated layer
 
 .. versionadded:: 2.14
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
 
 .. versionadded:: 2.14
 %End
 
     const QgsRectangle *extent() const;
 %Docstring
-Get extent of the area point locator covers - if null then it caches the whole layer
+Gets extent of the area point locator covers - if null then it caches the whole layer
 
 .. versionadded:: 2.14
 %End

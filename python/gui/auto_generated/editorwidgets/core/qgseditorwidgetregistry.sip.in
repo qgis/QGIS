@@ -118,7 +118,7 @@ Creates a configuration widget
 
     QString name( const QString &widgetId );
 %Docstring
-Get the human readable name for a widget type
+Gets the human readable name for a widget type
 
 :param widgetId: The widget type to get the name for
 
@@ -127,14 +127,14 @@ Get the human readable name for a widget type
 
     QMap<QString, QgsEditorWidgetFactory *> factories();
 %Docstring
-Get access to all registered factories
+Gets access to all registered factories
 
 :return: All ids and factories
 %End
 
     QgsEditorWidgetFactory *factory( const QString &widgetId );
 %Docstring
-Get a factory for the given widget type id.
+Gets a factory for the given widget type id.
 
 :return: A factory or Null if not existent
 %End

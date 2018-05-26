@@ -968,7 +968,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     BorderSide borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const;
 
-    //! Get parameters for drawing grid in CRS different to map CRS
+    //! Gets parameters for drawing grid in CRS different to map CRS
     int crsGridParams( QgsRectangle &crsRect, QgsCoordinateTransform &inverseTransform ) const;
 
     static QList<QPolygonF> trimLinesToMap( const QPolygonF &line, const QgsRectangle &rect );

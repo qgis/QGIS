@@ -114,7 +114,7 @@ Reads the actions in in XML format
 
     QgsAction action( QUuid id );
 %Docstring
-Get an action by its id.
+Gets an action by its id.
 
 .. versionadded:: 3.0
 %End

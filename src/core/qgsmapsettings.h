@@ -119,13 +119,13 @@ class CORE_EXPORT QgsMapSettings
     double magnificationFactor() const;
 
     /**
-     * Get list of layer IDs for map rendering
+     * Gets list of layer IDs for map rendering
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
      */
     QStringList layerIds() const;
 
     /**
-     * Get list of layers for map rendering
+     * Gets list of layers for map rendering
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
      */
     QList<QgsMapLayer *> layers() const;
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsMapSettings
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
      * \since QGIS 2.8
      */
     QMap<QString, QString> layerStyleOverrides() const;
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsMapSettings
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /**
-     * Get custom rendering flags. Layers might honour these to alter their rendering.
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
      *  \returns custom flags strings, separated by ';'
      * \since QGIS 2.16
      * \see setCustomRenderFlags()
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMapSettings
     //! returns CRS of destination coordinate reference system
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! Get units of map's geographical coordinates - used for scale calculation
+    //! Gets units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
@@ -194,12 +194,12 @@ class CORE_EXPORT QgsMapSettings
 
     //! Sets the background color of the map
     void setBackgroundColor( const QColor &color ) { mBackgroundColor = color; }
-    //! Get the background color of the map
+    //! Gets the background color of the map
     QColor backgroundColor() const { return mBackgroundColor; }
 
     //! Sets color that is used for drawing of selected vector features
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
-    //! Get color that is used for drawing of selected vector features
+    //! Gets color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
     //! Enumeration of flags that adjust the way the map is rendered

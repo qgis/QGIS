@@ -81,7 +81,7 @@ Set a parameter
 
     QString parameter( const QString &key ) const;
 %Docstring
-Get a parameter value
+Gets a parameter value
 %End
 
     void removeParameter( const QString &key );

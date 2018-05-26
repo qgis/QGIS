@@ -68,7 +68,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     bool readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const;
 
-    //! Get an attribute associated with a feature
+    //! Gets an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;

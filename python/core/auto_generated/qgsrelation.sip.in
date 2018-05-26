@@ -279,14 +279,14 @@ Compares the two QgsRelation, ignoring the name and the ID.
 
     QString resolveReferencedField( const QString &referencingField ) const;
 %Docstring
-Get the referenced field counterpart given a referencing field.
+Gets the referenced field counterpart given a referencing field.
 
 .. versionadded:: 3.0
 %End
 
     QString resolveReferencingField( const QString &referencedField ) const;
 %Docstring
-Get the referencing field counterpart given a referenced field.
+Gets the referencing field counterpart given a referenced field.
 
 .. versionadded:: 3.0
 %End

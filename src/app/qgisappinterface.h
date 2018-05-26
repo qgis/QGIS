@@ -90,7 +90,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     void reloadConnections( ) override;
 
-    //! Get pointer to the active layer (layer selected in the legend)
+    //! Gets pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
 
     //! Sets the active layer (layer selected in the legend)
@@ -250,7 +250,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Save changed default option keys/values to user settings
     void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) override;
 
-    //! Get reference font for initial qApp (may not be same as QgisApp)
+    //! Gets reference font for initial qApp (may not be same as QgisApp)
     QFont defaultStyleSheetFont() override;
 
     //! Add action to the plugins menu
@@ -439,9 +439,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddRasterLayer() override;
     QAction *actionAddPgLayer() override;
     QAction *actionAddWmsLayer() override;
-    //! Get access to the native Add ArcGIS FeatureServer action.
+    //! Gets access to the native Add ArcGIS FeatureServer action.
     QAction *actionAddAfsLayer() override;
-    //! Get access to the native Add ArcGIS MapServer action.
+    //! Gets access to the native Add ArcGIS MapServer action.
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;
     QAction *actionPasteLayerStyle() override;
@@ -535,7 +535,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
 
-    //! Get timeout for timed messages: default of 5 seconds
+    //! Gets timeout for timed messages: default of 5 seconds
     int messageTimeout() override;
 
     QgsStatusBar *statusBarIface() override;

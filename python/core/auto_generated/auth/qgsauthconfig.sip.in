@@ -36,7 +36,7 @@ Construct a configuration for an authentication method
 
     const QString id() const;
 %Docstring
-Get 'authcfg' 7-character alphanumeric ID of the config
+Gets 'authcfg' 7-character alphanumeric ID of the config
 
 .. note::
 
@@ -49,7 +49,7 @@ Sets auth config ID
 
     const QString name() const;
 %Docstring
-Get name of configuration
+Gets name of configuration
 %End
     void setName( const QString &name );
 %Docstring
@@ -70,7 +70,7 @@ Textual key of the associated authentication method
 
     int version() const;
 %Docstring
-Get version of the configuration
+Gets version of the configuration
 %End
     void setVersion( int version );
 %Docstring
@@ -102,7 +102,7 @@ Load existing extended configuration
 
     QgsStringMap configMap() const;
 %Docstring
-Get extended configuration, mapped to key/value pairs of QStrings
+Gets extended configuration, mapped to key/value pairs of QStrings
 %End
 
     void setConfigMap( const QgsStringMap &map );

@@ -217,7 +217,7 @@ Returns the list of layers that are visible for the specified map theme.
 
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
 %Docstring
-Get layer style overrides (for :py:class:`QgsMapSettings`) of the visible layers for given map theme.
+Gets layer style overrides (for :py:class:`QgsMapSettings`) of the visible layers for given map theme.
 
 .. versionadded:: 3.0
 %End

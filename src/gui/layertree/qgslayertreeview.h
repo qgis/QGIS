@@ -69,10 +69,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
 
-    //! Get access to the model casted to QgsLayerTreeModel
+    //! Gets access to the model casted to QgsLayerTreeModel
     QgsLayerTreeModel *layerTreeModel() const;
 
-    //! Get access to the default actions that may be used with the tree view
+    //! Gets access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
 
     //! Sets provider for context menu. Takes ownership of the instance
@@ -80,18 +80,18 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Returns pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
-    //! Get currently selected layer. May be null
+    //! Gets currently selected layer. May be null
     QgsMapLayer *currentLayer() const;
     //! Sets currently selected layer. Null pointer will deselect any layer.
     void setCurrentLayer( QgsMapLayer *layer );
 
-    //! Get current node. May be null
+    //! Gets current node. May be null
     QgsLayerTreeNode *currentNode() const;
-    //! Get current group node. If a layer is current node, the function will return parent group. May be null.
+    //! Gets current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
-     * Get current legend node. May be null if current node is not a legend node.
+     * Gets current legend node. May be null if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Returns list of selected nodes filtered to just layer nodes
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
-    //! Get list of selected layers
+    //! Gets list of selected layers
     QList<QgsMapLayer *> selectedLayers() const;
 
     /**

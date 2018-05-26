@@ -44,7 +44,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool addLayer( QgsVectorLayer *layer );
 
     /**
-     * Get the set of layers currently managed by this transaction group.
+     * Gets the set of layers currently managed by this transaction group.
      *
      * \returns Layer set
      */

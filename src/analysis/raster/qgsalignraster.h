@@ -80,7 +80,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
         //! Write contents of the object to standard error stream - for debugging
         void dump() const;
 
-        //! Get raster value at the given coordinates (from the first band)
+        //! Gets raster value at the given coordinates (from the first band)
         double identify( double mx, double my );
 
       protected:
@@ -169,12 +169,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
     void setProgressHandler( ProgressHandler *progressHandler ) { mProgressHandler = progressHandler; }
-    //! Get associated progress handler. May be nullptr (default)
+    //! Gets associated progress handler. May be nullptr (default)
     ProgressHandler *progressHandler() const { return mProgressHandler; }
 
     //! Sets list of rasters that will be aligned
     void setRasters( const List &list ) { mRasters = list; }
-    //! Get list of rasters that will be aligned
+    //! Gets list of rasters that will be aligned
     List rasters() const { return mRasters; }
 
     void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
@@ -184,12 +184,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
     void setCellSize( double x, double y ) { setCellSize( QSizeF( x, y ) ); }
     //! Sets output cell size
     void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
-    //! Get output cell size
+    //! Gets output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
     //! Sets the output CRS in WKT format
     void setDestinationCrs( const QString &crsWkt ) { mCrsWkt = crsWkt; }
-    //! Get the output CRS in WKT format
+    //! Gets the output CRS in WKT format
     QString destinationCrs() const { return mCrsWkt; }
 
     /**
@@ -205,7 +205,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     void setClipExtent( const QgsRectangle &extent );
 
     /**
-     * Get clipping extent (region of interest).
+     * Gets clipping extent (region of interest).
      * No extra clipping is done if the rectangle is null
      */
     QgsRectangle clipExtent() const;

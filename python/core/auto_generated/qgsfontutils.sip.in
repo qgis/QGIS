@@ -78,7 +78,7 @@ Updates font with named style and retain all font properties
 
     static QString standardTestFontFamily();
 %Docstring
-Get standard test font family
+Gets standard test font family
 
 .. versionadded:: 2.1
 %End
@@ -100,7 +100,7 @@ Loads standard test fonts from filesystem or qrc resource
 
     static QFont getStandardTestFont( const QString &style = "Roman", int pointsize = 12 );
 %Docstring
-Get standard test font with specific style
+Gets standard test font with specific style
 
 :param style: Style to load, e.g. Roman, Oblique, Bold, Bold Oblique
 :param pointsize: Font point size to set

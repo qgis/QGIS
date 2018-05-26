@@ -92,7 +92,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    //! Get symbology items if provided by renderer
+    //! Gets symbology items if provided by renderer
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses

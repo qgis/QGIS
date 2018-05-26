@@ -39,7 +39,7 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 
     //! Store feature's attributes - used for rendering of diagrams
     void setAttributes( const QgsAttributes &attrs ) { mAttributes = attrs; }
-    //! Get feature's attributes - used for rendering of diagrams
+    //! Gets feature's attributes - used for rendering of diagrams
     const QgsAttributes &attributes() { return mAttributes; }
 
   protected:

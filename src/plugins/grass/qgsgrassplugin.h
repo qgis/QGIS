@@ -81,7 +81,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     ~QgsGrassPlugin() override;
 
-    //! Get an icon from the active theme if possible
+    //! Gets an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &name );
 
   public slots:

@@ -167,10 +167,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
-    //! Get the postgres connection
+    //! Gets the postgres connection
     PGconn *pgConnection();
 
-    //! Get the table name associated with this provider instance
+    //! Gets the table name associated with this provider instance
     QString getTableName();
 
     QString subsetString() const override;
@@ -255,7 +255,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString geomParam( int offset ) const;
 
     /**
-     * Get parametrized primary key clause
+     * Gets parametrized primary key clause
      * \param offset specifies offset to use for the pk value parameter
      * \param alias specifies an optional alias given to the subject table
      */

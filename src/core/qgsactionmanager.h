@@ -130,7 +130,7 @@ class CORE_EXPORT QgsActionManager: public QObject
     bool readXml( const QDomNode &layer_node );
 
     /**
-     * Get an action by its id.
+     * Gets an action by its id.
      *
      * \since QGIS 3.0
      */

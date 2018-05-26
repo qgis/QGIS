@@ -158,13 +158,13 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = nullptr );
 
     /**
-     * Get current number of lines.
+     * Gets current number of lines.
      *   \returns number of lines
      */
     int numLines( void );
 
     /**
-     * Get current number of nodes.
+     * Gets current number of nodes.
      *   \returns number of nodes
      */
     int numNodes( void );
@@ -204,28 +204,28 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     bool lineAreas( int line, int *left, int *right );
 
     /**
-     * Get isle area
+     * Gets isle area
      *   \param isle number
      *   \returns area number
      */
     int isleArea( int isle );
 
     /**
-     * Get centroid area
+     * Gets centroid area
      *   \param centroid line number
      *   \returns area number (negative for island)
      */
     int centroidArea( int centroid );
 
     /**
-     * Get number of lines at node
+     * Gets number of lines at node
      *   \param node node number
      *   \returns number of lines at node (including dead lines)
      */
     int nodeNLines( int node );
 
     /**
-     * Get line number of line at node for given line index
+     * Gets line number of line at node for given line index
      *   \param node node number
      *   \param idx line index
      *   \returns line number
@@ -280,12 +280,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int numUpdatedNodes( void );
 
     /**
-     * Get updated line
+     * Gets updated line
      */
     int updatedLine( int idx );
 
     /**
-     * Get updated node
+     * Gets updated node
      */
     int updatedNode( int idx );
 
@@ -323,13 +323,13 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QString key( int field );
 
     /**
-     * Get number of db links
+     * Gets number of db links
      *   \returns number of links
      */
     int numDbLinks( void );
 
     /**
-     * Get db link field
+     * Gets db link field
      *  \param link
      *   \returns field number or 0
      */
@@ -338,13 +338,13 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /* Following functions work only until first edit operation! (category index used) */
 
-    //! Get number of fields in category index
+    //! Gets number of fields in category index
     int cidxGetNumFields( void );
 
-    //! Get field number for index
+    //! Gets field number for index
     int cidxGetFieldNumber( int idx );
 
-    //! Get maximum category for field index
+    //! Gets maximum category for field index
     int cidxGetMaxCat( int idx );
 
     //! Returns GRASS layer number
@@ -438,7 +438,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static QgsFeatureId makeFeatureId( int grassId, int cat );
 
     /**
-     * Get attribute by category(key) and attribute number.
+     * Gets attribute by category(key) and attribute number.
      *  \param layerId
      *  \param category (key)
      *  \param column column number ( < nColumns )

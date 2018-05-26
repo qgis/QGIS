@@ -65,7 +65,7 @@ offer the possibility to except some layers to be listed
 %End
     QList<QgsMapLayer *> exceptedLayerList();
 %Docstring
-Get the list of maplayers which are excluded from the list
+Gets the list of maplayers which are excluded from the list
 %End
 
     void setExceptedLayerIds( const QStringList &ids );
@@ -74,7 +74,7 @@ Sets the list of maplayer ids which are excluded from the list
 %End
     QStringList exceptedLayerIds() const;
 %Docstring
-Get the list of maplayer ids which are excluded from the list
+Gets the list of maplayer ids which are excluded from the list
 %End
 
     void setExcludedProviders( const QStringList &providers );

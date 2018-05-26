@@ -110,7 +110,7 @@ The style manager will be parented to ``layer``.
 
     QgsMapLayer *layer() const;
 %Docstring
-Get pointer to the associated map layer
+Gets pointer to the associated map layer
 %End
 
     void reset();

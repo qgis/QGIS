@@ -94,20 +94,20 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
 
     //! Sets the globe coordinates of a user right-click on the globe
     void setSelectedCoordinates( const osg::Vec3d &coords );
-    //! get a coordinates vector
+    //! Gets a coordinates vector
     osg::Vec3d getSelectedCoordinates();
     //! emits signal with current mouse coordinates
     void showCurrentCoordinates( const osgEarth::GeoPoint &geoPoint );
-    //! get longitude of user right click
+    //! Gets longitude of user right click
     double getSelectedLon() const { return mSelectedLon; }
-    //! get latitude of user right click
+    //! Gets latitude of user right click
     double getSelectedLat() const { return mSelectedLat; }
-    //! get elevation of user right click
+    //! Gets elevation of user right click
     double getSelectedElevation() { return mSelectedElevation; }
 
-    //! Get the OSG viewer
+    //! Gets the OSG viewer
     osgViewer::Viewer *osgViewer() { return mOsgViewer; }
-    //! Get OSG map node
+    //! Gets OSG map node
     osgEarth::MapNode *mapNode() { return mMapNode; }
 
     QgisInterface *qgisIface() const { return mQGisIface; }

@@ -62,7 +62,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Identifier of the label (unique within the parent label provider)
     QgsFeatureId id() const { return mId; }
 
-    //! Get access to the associated geometry
+    //! Gets access to the associated geometry
     GEOSGeometry *geometry() const { return mGeometry.get(); }
 
     /**
@@ -344,12 +344,12 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Get additional infor required for curved label placement. Returns null if not set
+    //! Gets additional infor required for curved label placement. Returns null if not set
     pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
     //! takes ownership of the instance
     void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
 
-    //! Get PAL layer of the label feature. Should be only used internally in PAL
+    //! Gets PAL layer of the label feature. Should be only used internally in PAL
     pal::Layer *layer() const { return mLayer; }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
     void setLayer( pal::Layer *layer ) { mLayer = layer; }

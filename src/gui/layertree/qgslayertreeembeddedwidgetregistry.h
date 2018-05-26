@@ -89,7 +89,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! Returns list of all registered providers
     QStringList providers() const;
 
-    //! Get provider object from the provider's ID
+    //! Gets provider object from the provider's ID
     QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 
     /**

@@ -154,7 +154,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual bool usedCachedLabels() const = 0;
 
     /**
-     * Get pointer to internal labeling engine (in order to get access to the results).
+     * Gets pointer to internal labeling engine (in order to get access to the results).
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * \see usedCachedLabels()
      */
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
   public:
     QgsMapRendererQImageJob( const QgsMapSettings &settings );
 
-    //! Get a preview/resulting image
+    //! Gets a preview/resulting image
     virtual QImage renderedImage() = 0;
 
 };

@@ -105,7 +105,7 @@ Sets the color scheme to show in the widget
 
     QString context() const;
 %Docstring
-Get the current color scheme context for the model
+Gets the current color scheme context for the model
 
 :return: context string which is passed to scheme for color generation
 
@@ -114,7 +114,7 @@ Get the current color scheme context for the model
 
     QColor baseColor() const;
 %Docstring
-Get the base color for the color scheme used by the model
+Gets the base color for the color scheme used by the model
 
 :return: base color which is passed to scheme for color generation
 

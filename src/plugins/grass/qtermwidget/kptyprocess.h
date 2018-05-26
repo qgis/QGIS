@@ -127,14 +127,14 @@ public:
     void setUseUtmp(bool value);
 
     /**
-     * Get whether to register the process as a TTY login in utmp.
+     * Gets whether to register the process as a TTY login in utmp.
      *
      * \returns whether to register in utmp
      */
     bool isUseUtmp() const;
 
     /**
-     * Get the PTY device of this process.
+     * Gets the PTY device of this process.
      *
      * \returns the PTY device
      */
