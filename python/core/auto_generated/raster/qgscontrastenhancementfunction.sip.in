@@ -26,14 +26,14 @@ a specified bounding range.
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction();
 
-    virtual int enhance( double );
+    virtual int enhance( double value );
 %Docstring
- A customizable method that takes in a double and returns a int between 0 and 255
+A customizable method that takes in a double ``value`` and returns a int between 0 and 255.
 %End
 
-    virtual bool isValueInDisplayableRange( double );
+    virtual bool isValueInDisplayableRange( double value );
 %Docstring
- A customicable method to indicate if the pixels is displayable
+A customizable method to indicate if a pixel's value is within the displayable range.
 %End
 
     void setMaximumValue( double value );
