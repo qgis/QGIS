@@ -202,7 +202,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
  * \ingroup gui
  * \class QgsEffectStackCompactWidget
  * \brief A small widget consisting of a checkbox for enabling/disabling an effect stack
- * and a button for opening an effect stack customisation dialog.
+ * and a button for opening an effect stack customization dialog.
  *
  * \since QGIS 2.9
  * \see QgsEffectStack

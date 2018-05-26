@@ -355,7 +355,7 @@ The ``dpi`` argument can be set to the actual DPI of exported file, or left as -
 %Docstring
 Generates the file name for a page during export.
 
-Subclasses can override this method to customise page file naming.
+Subclasses can override this method to customize page file naming.
 %End
 
 };

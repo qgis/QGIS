@@ -230,7 +230,7 @@ bool QgsLayoutAttributeTableColumnModel::setData( const QModelIndex &index, cons
   switch ( index.column() )
   {
     case 0:
-      // also update column's heading, if it hasn't been customised
+      // also update column's heading, if it hasn't been customized
       if ( column->heading().isEmpty() || ( column->heading() == column->attribute() ) )
       {
         column->setHeading( value.toString() );

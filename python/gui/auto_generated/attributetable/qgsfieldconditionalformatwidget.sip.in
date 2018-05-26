@@ -11,7 +11,7 @@
 class QgsFieldConditionalFormatWidget : QWidget
 {
 %Docstring
-A widget for customising conditional formatting options.
+A widget for customizing conditional formatting options.
 
 .. versionadded:: 2.12
 %End

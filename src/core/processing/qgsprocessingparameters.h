@@ -384,7 +384,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see setMetadata()
      * \note not available in Python bindings.
      */
@@ -392,14 +392,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see setMetadata()
      */
     QVariantMap &metadata() { return mMetadata; }
 
     /**
      * Sets the parameter's freeform \a metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see metadata()
      */
     void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
@@ -504,7 +504,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     //! Parameter flags
     Flags mFlags;
 
-    //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
+    //! Freeform metadata for parameter. Mostly used by widget wrappers to customize their appearance and behavior.
     QVariantMap mMetadata;
 
     //! Pointer to algorithm which owns this parameter

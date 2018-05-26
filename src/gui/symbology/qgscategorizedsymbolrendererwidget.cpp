@@ -487,7 +487,7 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
 {
   // Note: This assumes that the signals for UI element changes have not
   // yet been connected, so that the updates to color ramp, symbol, etc
-  // don't override existing customisations.
+  // don't override existing customizations.
 
   updateCategorizedSymbolIcon();
 

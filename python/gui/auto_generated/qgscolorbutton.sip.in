@@ -264,7 +264,7 @@ Returns the string used for the "no color" option in the button's drop-down menu
     void setContext( const QString &context );
 %Docstring
 Sets the context string for the color button. The context string is passed to all color swatch
-grids shown in the button's drop-down menu, to allow them to customise their display colors
+grids shown in the button's drop-down menu, to allow them to customize their display colors
 based on the context.
 
 :param context: context string for the color button's color swatch grids
@@ -275,7 +275,7 @@ based on the context.
     QString context() const;
 %Docstring
 Returns the context string for the color button. The context string is passed to all color swatch
-grids shown in the button's drop-down menu, to allow them to customise their display colors
+grids shown in the button's drop-down menu, to allow them to customize their display colors
 based on the context.
 
 :return: context string for the color button's color swatch grids

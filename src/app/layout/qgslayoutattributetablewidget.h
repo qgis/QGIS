@@ -84,7 +84,7 @@ class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui:
     void mEmptyFrameCheckBox_toggled( bool checked );
     void mHideEmptyBgCheckBox_toggled( bool checked );
     void mWrapBehaviorComboBox_currentIndexChanged( int index );
-    void mAdvancedCustomisationButton_clicked();
+    void mAdvancedCustomizationButton_clicked();
 
     //! Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)
     void setMaximumNumberOfFeatures( int n );

@@ -150,7 +150,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * This method should be called after readXml()
      * If \a looseMatching is true then a looser match will be used, where a layer
      * will match if the name, public source, and data provider match. This can be
-     * used to match legend customisation from different projects where layers
+     * used to match legend customization from different projects where layers
      * will have different layer IDs.
      * \since QGIS 3.0
      */

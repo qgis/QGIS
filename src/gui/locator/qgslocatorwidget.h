@@ -60,7 +60,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     /**
      * Sets a map \a canvas to associate with the widget. This allows the
-     * widget to customise the searches performed by its locator(), such
+     * widget to customize the searches performed by its locator(), such
      * as prioritizing results which are near the current canvas extent.
      */
     void setMapCanvas( QgsMapCanvas *canvas );

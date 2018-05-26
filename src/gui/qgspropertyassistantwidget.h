@@ -120,7 +120,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Constructor for QgsPropertyAssistantWidget. Aside from a \a parent widget, the constructor accepts a
-     * corresponding property \a definition from which it customises the displayed options (eg a color based
+     * corresponding property \a definition from which it customizes the displayed options (eg a color based
      * property definition will show an assistant to allow creation of color based properties).
      * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
      * can also be set to allow population of GUI widgets such as field selectors.

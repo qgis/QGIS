@@ -184,7 +184,7 @@
             <item>
              <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
               <property name="toolTip">
-               <string>Keeps the legend contents synchronized with the main application legend. Customisation is not possible and must be done in the main application.</string>
+               <string>Keeps the legend contents synchronized with the main application legend. Customization is not possible and must be done in the main application.</string>
               </property>
               <property name="text">
                <string>Auto update</string>

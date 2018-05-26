@@ -68,7 +68,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mEmptyFrameCheckBox_toggled );
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mHideEmptyBgCheckBox_toggled );
   connect( mWrapBehaviorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged );
-  connect( mAdvancedCustomisationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomisationButton_clicked );
+  connect( mAdvancedCustomizationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked );
   setPanelTitle( tr( "Table Properties" ) );
 
   mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
@@ -887,7 +887,7 @@ void QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged( i
   mTable->endCommand();
 }
 
-void QgsLayoutAttributeTableWidget::mAdvancedCustomisationButton_clicked()
+void QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked()
 {
   if ( !mTable )
   {

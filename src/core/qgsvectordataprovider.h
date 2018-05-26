@@ -488,7 +488,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Creates a new vector layer feature renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
-     * allow customisation of the returned renderer. Support and format of \a configuration varies by provider.
+     * allow customization of the returned renderer. Support and format of \a configuration varies by provider.
      *
      * When called with an empty \a configuration map the provider's default renderer will be returned.
      *

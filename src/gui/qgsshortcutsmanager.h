@@ -239,7 +239,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      */
     QShortcut *shortcutByName( const QString &name ) const;
 
-    //! Returns the root settings path used to store shortcut customisation.
+    //! Returns the root settings path used to store shortcut customization.
     QString settingsPath() const { return mSettingsPath; }
 
   private slots:

@@ -87,7 +87,7 @@ class QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 
     /**
      * Resets the attribute table's columns to match the source layer's fields. Remove all existing
-     * attribute table columns and column customisations.
+     * attribute table columns and column customizations.
      */
     void resetToLayer();
 
