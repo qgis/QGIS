@@ -30,7 +30,6 @@
 /**
  * \ingroup core
  * \class QgsAnnotation
- * \since QGIS 3.0
  *
  * \brief Abstract base class for annotation items which are drawn over a map.
  *
@@ -42,6 +41,8 @@
  *
  * Derived classes should implement their custom painting routines within
  * a renderAnnotation() override.
+ *
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAnnotation : public QObject
