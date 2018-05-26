@@ -198,7 +198,6 @@ class CORE_EXPORT QgsRelation
      * \param attributes An attribute vector containing the foreign key
      *
      * \returns A request the referenced feature
-     * \note not available in Python bindings
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
 

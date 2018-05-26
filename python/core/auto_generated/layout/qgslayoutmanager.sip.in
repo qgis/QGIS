@@ -24,10 +24,6 @@ rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
 
 QgsLayoutManager retains ownership of all the layouts contained
 in the manager.
-
-.. note::
-
-   Not available in Python bindings
 %End
 
 %TypeHeaderCode

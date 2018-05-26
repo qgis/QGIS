@@ -142,10 +142,6 @@ which is referenced by the provided feature.
 :param attributes: An attribute vector containing the foreign key
 
 :return: A request the referenced feature
-
-.. note::
-
-   not available in Python bindings
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature &feature ) const;

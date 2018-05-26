@@ -745,10 +745,6 @@ Get the registry of available field formatters.
 %Docstring
 Returns registry of available 3D renderers.
 
-.. note::
-
-   not available in Python bindings
-
 .. versionadded:: 3.0
 %End
 

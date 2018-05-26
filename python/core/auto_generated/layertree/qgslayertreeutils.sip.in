@@ -66,10 +66,7 @@ Remove subtree of embedded groups and replaces it with a custom property embedde
 
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 %Docstring
-
-.. note::
-
-   not available in Python bindings
+Updates an embedded ``group`` from a ``project``.
 %End
 
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );

@@ -650,7 +650,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * To create it, the geometry is default constructed and then the WKB is changed.
      * \see clone()
      * \since 3.0
-     * \note Not available in Python bindings
      */
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 

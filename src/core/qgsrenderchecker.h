@@ -169,7 +169,6 @@ class CORE_EXPORT QgsRenderChecker
      * Only will return something if you call enableDashBuffering( true ); before.
      *
      * \returns buffered dash messages
-     * \note not available in Python bindings
      */
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 

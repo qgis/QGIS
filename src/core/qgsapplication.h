@@ -679,7 +679,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns registry of available 3D renderers.
-     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry();

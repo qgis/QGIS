@@ -164,10 +164,6 @@ Get access to buffered dash messages.
 Only will return something if you call enableDashBuffering( true ); before.
 
 :return: buffered dash messages
-
-.. note::
-
-   not available in Python bindings
 %End
 
   protected:

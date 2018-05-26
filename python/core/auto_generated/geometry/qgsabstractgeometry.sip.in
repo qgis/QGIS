@@ -624,10 +624,6 @@ To create it, the geometry is default constructed and then the WKB is changed.
 .. seealso:: :py:func:`clone`
 
 .. versionadded:: 3.0
-
-.. note::
-
-   Not available in Python bindings
 %End
 
   protected:

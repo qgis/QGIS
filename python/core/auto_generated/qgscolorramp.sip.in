@@ -514,10 +514,6 @@ Constructor for QgsPresetSchemeColorRamp.
 Constructor for :py:class:`QgsPresetColorRamp`.
 
 :param colors: list of named colors in ramp
-
-.. note::
-
-   not available in Python bindings - use setColors instead
 %End
 
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;

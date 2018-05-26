@@ -37,7 +37,6 @@ class QgsPrintLayout;
  *
  * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
- * \note Not available in Python bindings
  */
 
 class CORE_EXPORT QgsLayoutManager : public QObject
