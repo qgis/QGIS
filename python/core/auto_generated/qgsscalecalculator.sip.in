@@ -33,16 +33,16 @@ Constructor
 
     void setDpi( double dpi );
 %Docstring
-Set the dpi to be used in scale calculations
+Sets the ``dpi`` (dots per inch) for the output resolution, to be used in scale calculations.
 
-:param dpi: Dots per inch of monitor resolution
+.. seealso:: :py:func:`dpi`
 %End
 
     double dpi();
 %Docstring
-Accessor for dpi used in scale calculations
+Returns the DPI (dots per inch) used in scale calculations.
 
-:return: int the dpi used for scale calculations.
+.. seealso:: :py:func:`setDpi`
 %End
 
     void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );

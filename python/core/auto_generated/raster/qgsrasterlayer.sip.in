@@ -199,7 +199,7 @@ Set the data provider.
 
     LayerType rasterType();
 %Docstring
-  Accessor for raster layer type (which is a read only property)
+Returns the raster layer type (which is a read only property).
 %End
 
     void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
@@ -218,27 +218,31 @@ Sets raster resample filter. Takes ownership of the resample filter object
 
     QgsRasterPipe *pipe();
 %Docstring
-Get raster pipe
+Returns the raster pipe.
 %End
 
     int width() const;
 %Docstring
- Accessor that returns the width of the (unclipped) raster
+Returns the width of the (unclipped) raster.
+
+.. seealso:: :py:func:`height`
 %End
 
     int height() const;
 %Docstring
- Accessor that returns the height of the (unclipped) raster
+Returns the height of the (unclipped) raster.
+
+.. seealso:: :py:func:`width`
 %End
 
     int bandCount() const;
 %Docstring
- Get the number of bands in this layer
+Returns the number of bands in this layer.
 %End
 
     QString bandName( int bandNoInt ) const;
 %Docstring
- Get the name of a band given its number
+Returns the name of a band given its number.
 %End
 
     virtual QgsRasterDataProvider *dataProvider();

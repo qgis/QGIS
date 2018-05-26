@@ -60,10 +60,17 @@ class CORE_EXPORT QgsRasterTransparency
     //
     // Initializer, Accessor and mutator for transparency tables.
     //
-    //! \brief Accessor for transparentSingleValuePixelList
+
+    /**
+     * Returns the transparent single value pixel list.
+     * \see setTransparentSingleValuePixelList()
+     */
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 
-    //! \brief Accessor for transparentThreeValuePixelList
+    /**
+     * Returns the transparent three value pixel list.
+     * \see setTransparentThreeValuePixelList()
+     */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
     /**
@@ -78,11 +85,13 @@ class CORE_EXPORT QgsRasterTransparency
 
     /**
      * Sets the transparent single value pixel list, replacing the whole existing list.
+     * \see transparentSingleValuePixelList()
      */
     void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 
     /**
      * Sets the transparent three value pixel list, replacing the whole existing list.
+     * \see transparentThreeValuePixelList()
      */
     void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 
