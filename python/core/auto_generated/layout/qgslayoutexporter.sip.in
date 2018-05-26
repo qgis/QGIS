@@ -54,7 +54,7 @@ are 0 based, such that the first page in a layout is page 0.
 .. seealso:: :py:func:`renderRegion`
 %End
 
-    QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = 0 ) const;
+    QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = -1 ) const;
 %Docstring
 Renders a full page to an image.
 
@@ -65,7 +65,7 @@ The optional ``imageSize`` parameter can specify the target image size, in pixel
 It is the caller's responsibility to ensure that the ratio of the target image size
 matches the ratio of the corresponding layout page size.
 
-The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
+The ``dpi`` parameter is an optional dpi override. Set to -1 to use the default layout print
 resolution. This parameter has no effect if ``imageSize`` is specified.
 
 Returns the rendered image, or a null QImage if the image does not fit into available memory.
@@ -85,7 +85,7 @@ to render sections of pages rather than full pages.
 .. seealso:: :py:func:`renderRegionToImage`
 %End
 
-    QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = 0 ) const;
+    QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = -1 ) const;
 %Docstring
 Renders a ``region`` of the layout to an image. This method can be used to render
 sections of pages rather than full pages.
@@ -94,7 +94,7 @@ The optional ``imageSize`` parameter can specify the target image size, in pixel
 It is the caller's responsibility to ensure that the ratio of the target image size
 matches the ratio of the specified region of the layout.
 
-The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
+The ``dpi`` parameter is an optional dpi override. Set to -1 to use the default layout print
 resolution. This parameter has no effect if ``imageSize`` is specified.
 
 Returns the rendered image, or a null QImage if the image does not fit into available memory.

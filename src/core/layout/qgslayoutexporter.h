@@ -89,7 +89,7 @@ class CORE_EXPORT QgsLayoutExporter
      * It is the caller's responsibility to ensure that the ratio of the target image size
      * matches the ratio of the corresponding layout page size.
      *
-     * The \a dpi parameter is an optional dpi override. Set to 0 to use the default layout print
+     * The \a dpi parameter is an optional dpi override. Set to -1 to use the default layout print
      * resolution. This parameter has no effect if \a imageSize is specified.
      *
      * Returns the rendered image, or a null QImage if the image does not fit into available memory.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLayoutExporter
      * \see renderPage()
      * \see renderRegionToImage()
      */
-    QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = 0 ) const;
+    QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = -1 ) const;
 
     /**
      * Renders a \a region from the layout to a \a painter. This method can be used
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayoutExporter
      * It is the caller's responsibility to ensure that the ratio of the target image size
      * matches the ratio of the specified region of the layout.
      *
-     * The \a dpi parameter is an optional dpi override. Set to 0 to use the default layout print
+     * The \a dpi parameter is an optional dpi override. Set to -1 to use the default layout print
      * resolution. This parameter has no effect if \a imageSize is specified.
      *
      * Returns the rendered image, or a null QImage if the image does not fit into available memory.
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsLayoutExporter
      * \see renderRegion()
      * \see renderPageToImage()
      */
-    QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = 0 ) const;
+    QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = -1 ) const;
 
 
     //! Result codes for exporting layouts
