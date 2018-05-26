@@ -115,6 +115,14 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
 
+    def testSignal(self):
+        w = QgsProjectionSelectionWidget()
+        w.show()
+        spy = QSignalSpy(w.crsChanged)
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+
     def testTreeWidgetGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
         w = QgsProjectionSelectionTreeWidget()
