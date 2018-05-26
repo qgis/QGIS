@@ -76,11 +76,15 @@ class CORE_EXPORT QgsRasterTransparency
      */
     void initializeTransparentPixelList( double redValue, double greenValue, double blueValue );
 
-    //! \brief Mutator for transparentSingleValuePixelList, replaces the whole list
-    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList SIP_TRANSFER );
+    /**
+     * Sets the transparent single value pixel list, replacing the whole existing list.
+     */
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 
-    //! \brief Mutator for transparentThreeValuePixelList, replaces the whole list
-    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList SIP_TRANSFER );
+    /**
+     * Sets the transparent three value pixel list, replacing the whole existing list.
+     */
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 
     /**
      * Returns the transparency value for a single \a value pixel.
