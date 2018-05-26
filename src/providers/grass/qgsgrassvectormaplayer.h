@@ -72,7 +72,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
 
     /**
-     * Get attribute for index corresponding to current fields(),
+     * Gets attribute for index corresponding to current fields(),
      * if there is no table, returns cat */
     QVariant attribute( int cat, int index );
 

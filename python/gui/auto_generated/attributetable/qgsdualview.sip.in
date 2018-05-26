@@ -83,7 +83,7 @@ Set the filter mode
 
     QgsAttributeTableFilterModel::FilterMode filterMode();
 %Docstring
-Get the filter mode
+Gets the filter mode
 
 :return: the filter mode
 %End
@@ -120,7 +120,7 @@ Set a list of currently visible features
 
     QgsFeatureIds filteredFeatures();
 %Docstring
-Get a list of currently visible feature ids.
+Gets a list of currently visible feature ids.
 %End
 
     QgsAttributeTableModel *masterModel() const;
@@ -164,7 +164,7 @@ Set the expression used for sorting the table and feature list.
 
     QString sortExpression() const;
 %Docstring
-Get the expression used for sorting the table and feature list.
+Gets the expression used for sorting the table and feature list.
 %End
 
   public slots:

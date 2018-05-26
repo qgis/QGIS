@@ -133,7 +133,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterPipe( const QgsRasterPipe &pipe );
 #endif
 
-    //! Get known parent type_info of interface parent
+    //! Gets known parent type_info of interface parent
     Role interfaceRole( QgsRasterInterface *iface ) const;
 
     // Interfaces in pipe, the first is always provider
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsRasterPipe
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
 
-    //! Get known interface by role
+    //! Gets known interface by role
     QgsRasterInterface *interface( Role role ) const;
 
     /**

@@ -136,7 +136,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Get the data source specification. This may be a path or database
+     * Gets the data source specification. This may be a path or database
      * connection string
      * \param expandAuthConfig Whether to expand any assigned authentication configuration
      * \returns data source specification
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Get the data source specification.
+     * Gets the data source specification.
      *
      * \since QGIS 3.0
      */
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
     /**
-     * Get current status error. This error describes some principal problem
+     * Gets current status error. This error describes some principal problem
      *  for which provider cannot work and thus is not valid. It is not last error
      *  after accessing data by block(), identify() etc.
      */
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void setProviderProperty( int property, const QVariant &value ); // SIP_SKIP
 
     /**
-     * Get the current value of a certain provider property.
+     * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
      * \since QGIS 2.16
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 
     /**
-     * Get the current value of a certain provider property.
+     * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
      * \since QGIS 2.16

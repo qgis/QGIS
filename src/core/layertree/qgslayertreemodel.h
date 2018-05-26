@@ -193,14 +193,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     void refreshLayerLegend( QgsLayerTreeLayer *nodeLayer );
 
-    //! Get index of the item marked as current. Item marked as current is underlined.
+    //! Gets index of the item marked as current. Item marked as current is underlined.
     QModelIndex currentIndex() const;
     //! Sets index of the current item. May be used by view. Item marked as current is underlined.
     void setCurrentIndex( const QModelIndex &currentIndex );
 
     //! Sets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
     void setLayerTreeNodeFont( int nodeType, const QFont &font );
-    //! Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
+    //! Gets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
     QFont layerTreeNodeFont( int nodeType ) const;
 
     //! Sets at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
@@ -258,14 +258,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 
     /**
-     * Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
+     * Gets hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
      * If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
      * \since QGIS 2.6
      */
     void legendMapViewData( double *mapUnitsPerPixel SIP_OUT, int *dpi SIP_OUT, double *scale  SIP_OUT ) const;
 
     /**
-     * Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
      * \since QGIS 2.10
      */
     QMap<QString, QString> layerStyleOverrides() const;

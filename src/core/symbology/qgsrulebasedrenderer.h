@@ -310,7 +310,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 
-        //! get all used z-levels from this rule and children
+        //! Gets all used z-levels from this rule and children
         QSet<int> collectZLevels();
 
         /**

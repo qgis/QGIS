@@ -149,7 +149,7 @@ Returns root node of the expression. Root node is null is parsing has failed
 
     bool prepare( const QgsExpressionContext *context );
 %Docstring
-Get the expression ready for evaluation - find out column indexes.
+Gets the expression ready for evaluation - find out column indexes.
 
 :param context: context for preparing expression
 
@@ -158,7 +158,7 @@ Get the expression ready for evaluation - find out column indexes.
 
     QSet<QString> referencedColumns() const;
 %Docstring
-Get list of columns referenced by the expression.
+Gets list of columns referenced by the expression.
 
 .. note::
 

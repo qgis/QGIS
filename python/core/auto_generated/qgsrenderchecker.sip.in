@@ -55,7 +55,7 @@ This will be appended to controlImagePath
 
     QString imageToHash( const QString &imageFile );
 %Docstring
-Get an md5 hash that uniquely identifies an image
+Gets an md5 hash that uniquely identifies an image
 %End
 
     void setRenderedImage( const QString &imageFileName );
@@ -127,7 +127,7 @@ for that by providing a tolerance.
 
     bool isKnownAnomaly( const QString &diffImageFile );
 %Docstring
-Get a list of all the anomalies. An anomaly is a rendered difference
+Gets a list of all the anomalies. An anomaly is a rendered difference
 file where there is some red pixel content (indicating a render check
 mismatch), but where the output was still acceptable. If the render
 diff matches one of these anomalies we will still consider it to be
@@ -160,7 +160,7 @@ dash messages will be sent immediately.
 
     QVector<QgsDartMeasurement> dartMeasurements() const;
 %Docstring
-Get access to buffered dash messages.
+Gets access to buffered dash messages.
 Only will return something if you call enableDashBuffering( true ); before.
 
 :return: buffered dash messages

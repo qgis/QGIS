@@ -60,7 +60,7 @@ Set the expression to generate this geometry.
 
     QString geometryExpression() const;
 %Docstring
-Get the expression to generate this geometry.
+Gets the expression to generate this geometry.
 %End
 
     virtual QgsSymbol *subSymbol();

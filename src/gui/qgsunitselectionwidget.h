@@ -181,7 +181,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      */
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 
-    //! Get the selected unit index
+    //! Gets the selected unit index
     int getUnit() const { return mUnitCombo->currentIndex(); }
 
     /**

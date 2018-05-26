@@ -247,7 +247,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( const QString &, QPixmap * );
 
-    //! Get the mapcanvas object from the app
+    //! Gets the mapcanvas object from the app
     QgsMapCanvas *mapCanvas();
 
     /**
@@ -298,7 +298,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setIconSizes( int size );
 
-    //! Get stylesheet builder object for app and layout designers
+    //! Gets stylesheet builder object for app and layout designers
     QgisAppStyleSheet *styleSheetBuilder();
 
     //! Populates a menu with actions for opening layout designers
@@ -575,7 +575,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toolbars
 
     /**
-     * Get a reference to a toolbar. Mainly intended
+     * Gets a reference to a toolbar. Mainly intended
      *   to be used by plugins that want to specifically add
      *   an icon into the file toolbar for consistency e.g.
      *   addWFS and GPS plugins.
@@ -627,7 +627,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns list of layers in legend order, or empty list */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
-    //! Get timeout for timed messages: default of 5 seconds
+    //! Gets timeout for timed messages: default of 5 seconds
     int messageTimeout();
 
     //! emit initializationCompleted signal
@@ -687,7 +687,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
-    //! Get map of bookmarks
+    //! Gets map of bookmarks
     QMap<QString, QModelIndex> getBookmarkIndexMap();
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
@@ -935,11 +935,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Settings pages section
      */
-    //! Get map of option pages
+    //! Gets map of option pages
     QMap< QString, QString > optionsPagesMap();
-    //! Get map of project property pages
+    //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
-    //! Get map of setting pages
+    //! Gets map of setting pages
     QMap< QString, QString > settingPagesMap();
 
     void showProjectProperties( const QString  &page = QString() );

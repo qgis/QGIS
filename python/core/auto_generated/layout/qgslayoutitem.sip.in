@@ -295,7 +295,7 @@ for a layout.
 
     virtual QString displayName() const;
 %Docstring
-Get item display name. This is the item's id if set, and if
+Gets item display name. This is the item's id if set, and if
 not, a user-friendly string identifying item type.
 
 .. seealso:: :py:func:`id`

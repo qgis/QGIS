@@ -49,13 +49,13 @@ Construct a dialog for importing identities
 
     QgsAuthImportIdentityDialog::IdentityType identityType();
 %Docstring
-Get identity type
+Gets identity type
 %End
 
 
     const QgsPkiBundle pkiBundleToImport();
 %Docstring
-Get certificate/key bundle to be imported as a PKI bundle object
+Gets certificate/key bundle to be imported as a PKI bundle object
 %End
 
 };

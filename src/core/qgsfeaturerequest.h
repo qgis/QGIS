@@ -238,7 +238,7 @@ class CORE_EXPORT QgsFeatureRequest
         CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
-         * Get a copy as a list of OrderByClauses
+         * Gets a copy as a list of OrderByClauses
          *
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
@@ -326,12 +326,12 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! Sets feature ID that should be fetched.
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
-    //! Get the feature ID that should be fetched.
+    //! Gets the feature ID that should be fetched.
     QgsFeatureId filterFid() const { return mFilterFid; }
 
     //! Sets feature IDs that should be fetched.
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
-    //! Get feature IDs that should be fetched.
+    //! Gets feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
     /**
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 
     /**
-     * Get simplification method for geometries that will be fetched
+     * Gets simplification method for geometries that will be fetched
      * \since QGIS 2.2
      */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
     virtual ~QgsAbstractFeatureSource();
 
     /**
-     * Get an iterator for features matching the specified request
+     * Gets an iterator for features matching the specified request
      * \param request The request
      * \returns A feature iterator
      */

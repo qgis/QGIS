@@ -166,7 +166,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual void clear() = 0;
 
     /**
-     * Get the data written so far
+     * Gets the data written so far
      *
      * This is implementation dependent: some implementations may not
      * give access to the underlying and return an empty array.

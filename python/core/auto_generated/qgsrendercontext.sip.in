@@ -325,7 +325,7 @@ Set a filter feature provider used for additional filtering of rendered features
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-Get the filter feature provider used for additional filtering of rendered features.
+Gets the filter feature provider used for additional filtering of rendered features.
 
 :return: the filter feature provider
 

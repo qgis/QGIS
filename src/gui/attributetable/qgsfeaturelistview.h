@@ -70,7 +70,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void setModel( QgsFeatureListModel *featureListModel );
 
     /**
-     * Get the featureListModel used by this view
+     * Gets the featureListModel used by this view
      *
      * \returns The model in use
      */
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QString parserErrorString();
 
     /**
-     * Get the currentEditSelection
+     * Gets the currentEditSelection
      *
      * \returns A list of edited feature ids
      */

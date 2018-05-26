@@ -227,17 +227,17 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
 
     /**
-     * Get the general name for CA source enum type
+     * Gets the general name for CA source enum type
      * \param source The enum source type for the CA
      * \param single Whether to return singular or plural description
      */
     static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single = false );
 
-    //! Get the general name via RFC 5280 resolution
+    //! Gets the general name via RFC 5280 resolution
     static QString resolvedCertName( const QSslCertificate &cert, bool issuer = false );
 
     /**
-     * Get combined distinguished name for certificate
+     * Gets combined distinguished name for certificate
      * \param qcert Qt SSL cert object
      * \param acert QCA SSL cert object to add more info to the output
      * \param issuer Whether to return cert's subject or issuer combined name
@@ -247,14 +247,14 @@ class CORE_EXPORT QgsAuthCertUtils
         const QCA::Certificate &acert = QCA::Certificate(),
         bool issuer = false ) SIP_SKIP;
 
-    //! Get the general name for certificate trust
+    //! Gets the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
 
-    //! Get string with colon delimiters every 2 characters
+    //! Gets string with colon delimiters every 2 characters
     static QString getColonDelimited( const QString &txt );
 
     /**
-     * Get the sha1 hash for certificate
+     * Gets the sha1 hash for certificate
      * \param cert Qt SSL certificate to generate hash from
      * \param formatted Whether to colon-delimit the hash
      */
@@ -305,26 +305,26 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Try to determine the certificates usage types
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate &cert );
 
-    //! Get whether a certificate is an Authority
+    //! Gets whether a certificate is an Authority
     static bool certificateIsAuthority( const QSslCertificate &cert );
 
-    //! Get whether a certificate can sign other certificates
+    //! Gets whether a certificate can sign other certificates
     static bool certificateIsIssuer( const QSslCertificate &cert );
 
-    //! Get whether a certificate is an Authority or can at least sign other certificates
+    //! Gets whether a certificate is an Authority or can at least sign other certificates
     static bool certificateIsAuthorityOrIssuer( const QSslCertificate &cert );
 
-    //! Get whether a certificate is probably used for a SSL server
+    //! Gets whether a certificate is probably used for a SSL server
     static bool certificateIsSslServer( const QSslCertificate &cert );
 
-    //! Get whether a certificate is probably used for a client identity
+    //! Gets whether a certificate is probably used for a client identity
     static bool certificateIsSslClient( const QSslCertificate &cert );
 
-    //! Get short strings describing an SSL error
+    //! Gets short strings describing an SSL error
     static QString sslErrorEnumString( QSslError::SslError errenum );
 
     /**
-     * Get short strings describing SSL errors.
+     * Gets short strings describing SSL errors.
      * \note not available in Python bindings
      */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;

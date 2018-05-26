@@ -44,7 +44,7 @@ Constructor for QgsSnappingUtils
 
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
-Get a point locator for the given layer. If such locator does not exist, it will be created
+Gets a point locator for the given layer. If such locator does not exist, it will be created
 %End
 
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
@@ -131,7 +131,7 @@ Query layers used for snapping
 
     QString dump();
 %Docstring
-Get extra information about the instance
+Gets extra information about the instance
 
 .. versionadded:: 2.14
 %End

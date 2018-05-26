@@ -53,7 +53,7 @@ Remove the field formatter with the specified id.
 
     QgsFieldFormatter *fieldFormatter( const QString &id ) const;
 %Docstring
-Get a field formatter by its id. If there is no such id registered,
+Gets a field formatter by its id. If there is no such id registered,
 a default QgsFallbackFieldFormatter with a null id will be returned instead.
 %End
 

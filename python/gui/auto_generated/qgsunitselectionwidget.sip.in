@@ -173,7 +173,7 @@ Sets the units which the user can choose from in the combobox. Clears any existi
 
     int getUnit() const;
 %Docstring
-Get the selected unit index
+Gets the selected unit index
 %End
 
     QgsUnitTypes::RenderUnit unit() const;

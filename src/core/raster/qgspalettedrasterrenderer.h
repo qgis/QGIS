@@ -111,7 +111,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
-     * Get the source color ramp
+     * Gets the source color ramp
      * \since QGIS 3.0
      * \see setSourceColorRamp()
      */

@@ -107,7 +107,7 @@ responsible for deleting the returned widget.
     QFunctionPointer function( const QString &providerKey,
                                const QString &functionName );
 %Docstring
-Get pointer to provider function
+Gets pointer to provider function
 
 :param providerKey: identificator of the provider
 :param functionName: name of function

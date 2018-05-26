@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
      */
     QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
 
-    //! Get pointer to the associated map layer
+    //! Gets pointer to the associated map layer
     QgsMapLayer *layer() const { return mLayer; }
 
     //! Reset the style manager to a basic state - with one default style which is set as current

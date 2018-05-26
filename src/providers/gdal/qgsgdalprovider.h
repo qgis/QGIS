@@ -79,7 +79,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     ~QgsGdalProvider() override;
 
     /**
-     * Get the data source specification. This may be a path or a protocol
+     * Gets the data source specification. This may be a path or a protocol
      * connection string
      * \param expandAuthConfig Whether to expand any assigned authentication configuration
      * \returns data source specification
@@ -285,7 +285,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Add handles to the cache if possible for the specified parent provider, in which case true is returned. If false returned, then the handles should be processed appropriately by the caller
     static bool cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider, GDALDatasetH gdalBaseDataset, GDALDatasetH gdalDataset );
 
-    //! Get cached handles for the specified provider, in which case true is returned and 2 handles are set.
+    //! Gets cached handles for the specified provider, in which case true is returned and 2 handles are set.
     static bool getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset );
 
     //! Close all cached dataset for the specified provider.

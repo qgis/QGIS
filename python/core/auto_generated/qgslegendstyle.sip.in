@@ -66,17 +66,17 @@ Sets all margins
 
     static QString styleName( Style s );
 %Docstring
-Get name for style, used in project file
+Gets name for style, used in project file
 %End
 
     static Style styleFromName( const QString &styleName );
 %Docstring
-Get style from name, used in project file
+Gets style from name, used in project file
 %End
 
     static QString styleLabel( Style s );
 %Docstring
-Get style label, translated, used in UI
+Gets style label, translated, used in UI
 %End
 
 };

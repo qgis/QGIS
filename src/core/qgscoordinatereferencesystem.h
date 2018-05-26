@@ -601,7 +601,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setValidationHint( const QString &html );
 
     /**
-     * Get user hint for validation
+     * Gets user hint for validation
      */
     QString validationHint();
 
@@ -721,7 +721,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     typedef QMap<QString, QString> RecordMap;
 
     /**
-     * Get a record from the srs.db or qgis.db backends, given an sql statement.
+     * Gets a record from the srs.db or qgis.db backends, given an sql statement.
      * \param sql The sql query to execute
      * \returns An associative array of field name <-> value pairs
      * \note only handles queries that return a single record.

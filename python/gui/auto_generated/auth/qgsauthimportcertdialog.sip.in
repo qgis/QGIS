@@ -46,17 +46,17 @@ Construct a dialog for importing certificates
 
     const QList<QSslCertificate> certificatesToImport();
 %Docstring
-Get list of certificate objects to import
+Gets list of certificate objects to import
 %End
 
     const QString certFileToImport();
 %Docstring
-Get the file path to a certificate to import
+Gets the file path to a certificate to import
 %End
 
     const QString certTextToImport();
 %Docstring
-Get certificate text to import
+Gets certificate text to import
 %End
 
     bool allowInvalidCerts();

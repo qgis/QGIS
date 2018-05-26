@@ -221,7 +221,7 @@ class CORE_EXPORT QgsFeature
     virtual ~QgsFeature();
 
     /**
-     * Get the feature ID for this feature.
+     * Gets the feature ID for this feature.
      * \returns feature ID
      * \see setId()
      */

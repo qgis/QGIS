@@ -76,7 +76,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void clearCurve( );
 
     /**
-     * Get the capture curve
+     * Gets the capture curve
      *
      * \returns Capture curve
      */

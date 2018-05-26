@@ -46,37 +46,37 @@ Access to the SSL configuration's group box widget
 
     const QgsAuthConfigSslServer sslCustomConfig();
 %Docstring
-Get the SSL configuration
+Gets the SSL configuration
 %End
 
     const QSslCertificate sslCertificate();
 %Docstring
-Get the SSL server certificate
+Gets the SSL server certificate
 %End
 
     const QString sslHost();
 %Docstring
-Get the host:port to associate with the server certificate
+Gets the host:port to associate with the server certificate
 %End
 
     QSsl::SslProtocol sslProtocol();
 %Docstring
-Get the SSL protocl used for connections
+Gets the SSL protocl used for connections
 %End
 
     const QList<QSslError::SslError> sslIgnoreErrorEnums();
 %Docstring
-Get list of the SSL errors (as enums) to be ignored for connections
+Gets list of the SSL errors (as enums) to be ignored for connections
 %End
 
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 %Docstring
-Get the client's peer verify mode for connections
+Gets the client's peer verify mode for connections
 %End
 
     int sslPeerVerifyDepth();
 %Docstring
-Get the client's peer verify depth for connections
+Gets the client's peer verify depth for connections
 
 .. note::
 

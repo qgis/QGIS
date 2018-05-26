@@ -410,7 +410,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
         WhenThen &operator=( const WhenThen &rh ) = delete;
 
         /**
-         * Get a deep copy of this WhenThen combination.
+         * Gets a deep copy of this WhenThen combination.
          */
         QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
 

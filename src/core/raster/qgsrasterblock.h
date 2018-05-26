@@ -169,7 +169,7 @@ class CORE_EXPORT QgsRasterBlock
     double noDataValue() const { return mNoDataValue; }
 
     /**
-     * Get byte array representing a value.
+     * Gets byte array representing a value.
      * \param dataType data type
      * \param value value
      * \returns byte array representing the value */
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsRasterBlock
     void setIsData( qgssize index );
 
     /**
-     * Get access to raw data.
+     * Gets access to raw data.
      * The returned QByteArray instance is not a copy of the data: it only refers to the array
      * owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
      * still exists. Writing to the returned QByteArray will not affect the original data:
@@ -311,26 +311,23 @@ class CORE_EXPORT QgsRasterBlock
     void setData( const QByteArray &data, int offset = 0 );
 
     /**
-     * \brief Get pointer to data
-     *  \param row row index
-     *  \param column column index
-     *  \returns pointer to data
-     *  \note not available in Python bindings
+     * Returns a pointer to block data.
+     * \param row row index
+     * \param column column index
+     * \note not available in Python bindings
      */
     char *bits( int row, int column ) SIP_SKIP;
 
     /**
-     * \brief Get pointer to data
-     *  \param index data matrix index (long type in Python)
-     *  \returns pointer to data
-     *  \note not available in Python bindings
+     * Returns a pointer to block data.
+     * \param index data matrix index (long type in Python)
+     * \note not available in Python bindings
      */
     char *bits( qgssize index ) SIP_SKIP;
 
     /**
-     * \brief Get pointer to data
-     *  \returns pointer to data
-     *  \note not available in Python bindings
+     * Returns a pointer to block data.
+     * \note not available in Python bindings
      */
     char *bits() SIP_SKIP;
 
@@ -358,14 +355,14 @@ class CORE_EXPORT QgsRasterBlock
     bool convert( Qgis::DataType destDataType );
 
     /**
-     * \brief Get image if type is color.
-    *   \returns image */
+     * Returns an image containing the block data, if the block's data type is color.
+     */
     QImage image() const;
 
     /**
-     * \brief set image.
-     *  \param image image
-     *  \returns true on success */
+     * Sets the block data via an \a image.
+     * \returns true on success
+    */
     bool setImage( const QImage *image );
 
     //! \note not available in Python bindings

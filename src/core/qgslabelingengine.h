@@ -182,10 +182,10 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! Associate map settings instance
     void setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
-    //! Get associated map settings
+    //! Gets associated map settings
     const QgsMapSettings &mapSettings() const { return mMapSettings; }
 
-    //! Get associated labeling engine settings
+    //! Gets associated labeling engine settings
     const QgsLabelingEngineSettings &engineSettings() const { return mMapSettings.labelingEngineSettings(); }
 
     /**

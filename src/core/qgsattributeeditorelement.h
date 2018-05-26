@@ -95,14 +95,14 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     AttributeEditorType type() const { return mType; }
 
     /**
-     * Get the parent of this element.
+     * Gets the parent of this element.
      *
      * \since QGIS 3.0
      */
     QgsAttributeEditorElement *parent() const { return mParent; }
 
     /**
-     * Get the XML Dom element to save this element.
+     * Gets the XML Dom element to save this element.
      *
      * \param doc The QDomDocument which is used to create new XML elements
      *
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
     /**
-     * Get a list of the children elements of this container
+     * Gets a list of the children elements of this container
      *
      * \returns A list of elements
      */
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     void setName( const QString &name );
 
     /**
-     * Get the number of columns in this group
+     * Gets the number of columns in this group
      */
     int columnCount() const;
 
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
 
     /**
-     * Get the id of the relation which shall be embedded
+     * Gets the id of the relation which shall be embedded
      *
      * \returns the id
      */

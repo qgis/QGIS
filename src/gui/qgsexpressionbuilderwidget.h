@@ -72,7 +72,7 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
     QString getExpressionText() const { return mExpressionText; }
 
     /**
-     * Get the help text that is associated with this expression item.
+     * Gets the help text that is associated with this expression item.
       *
       * \returns The help text.
       */
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
     void setHelpText( const QString &helpText ) { mHelpText = helpText; }
 
     /**
-     * Get the type of expression item, e.g., header, field, ExpressionNode.
+     * Gets the type of expression item, e.g., header, field, ExpressionNode.
       *
       * \returns The QgsExpressionItem::ItemType
       */

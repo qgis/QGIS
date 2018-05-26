@@ -326,7 +326,7 @@ class CORE_EXPORT QgsField
     void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 
     /**
-     * Get the editor widget setup for the field.
+     * Gets the editor widget setup for the field.
      *
      * Defaults may be set by the provider and can be overridden
      * by manual field configuration.

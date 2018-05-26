@@ -751,7 +751,7 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
     double strokeWidth() const;
 %Docstring
-Get stroke width.
+Gets stroke width.
 
 .. versionadded:: 2.16
 %End
@@ -765,7 +765,7 @@ Set stroke width.
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
-Get stroke width unit.
+Gets stroke width unit.
 
 .. versionadded:: 2.16
 %End
@@ -779,7 +779,7 @@ Set stroke width unit.
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
-Get stroke width map unit scale.
+Gets stroke width map unit scale.
 
 .. versionadded:: 2.16
 %End
@@ -793,7 +793,7 @@ Set stroke width map unit scale.
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
-Get stroke join style.
+Gets stroke join style.
 
 .. versionadded:: 2.16
 %End

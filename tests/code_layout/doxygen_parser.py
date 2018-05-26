@@ -575,6 +575,8 @@ class DoxygenParser():
                         continue
                     if para.text.strip().lower().startswith('getter'):
                         return 'Use "Returns the..." instead of "getter"'
+                    if para.text.strip().lower().startswith('get '):
+                        return 'Use "Gets..." (or better, "Returns ...") instead of "get ..."'
                     elif para.text.strip().lower().startswith('setter'):
                         return 'Use "Sets the..." instead of "setter"'
                     elif para.text.strip().lower().startswith('mutator'):

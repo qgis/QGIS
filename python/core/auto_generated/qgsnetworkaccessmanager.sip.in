@@ -68,12 +68,12 @@ Sets fallback proxy and URL that shouldn't use it.
 
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 %Docstring
-Get name for QNetworkRequest.CacheLoadControl
+Gets name for QNetworkRequest.CacheLoadControl
 %End
 
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 %Docstring
-Get QNetworkRequest.CacheLoadControl from name
+Gets QNetworkRequest.CacheLoadControl from name
 %End
 
     void setupDefaultProxyAndCache();

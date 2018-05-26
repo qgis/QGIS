@@ -38,14 +38,14 @@ a certain priority through the registerFilter( QgsServerFilter* , int) method.
 
     virtual QgsCapabilitiesCache *capabilitiesCache() = 0 /KeepReference/;
 %Docstring
-Get pointer to the capabiblities cache
+Gets pointer to the capabiblities cache
 
 :return: :py:class:`QgsCapabilitiesCache`
 %End
 
     virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
 %Docstring
-Get pointer to the request handler
+Gets pointer to the request handler
 
 :return: :py:class:`QgsRequestHandler`
 %End

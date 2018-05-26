@@ -89,7 +89,7 @@ should be retained.
 
     virtual QgsLabelingResults *takeLabelingResults() = 0 /Transfer/;
 %Docstring
-Get pointer to internal labeling engine (in order to get access to the results).
+Gets pointer to internal labeling engine (in order to get access to the results).
 This should not be used if cached labeling was redrawn - see usedCachedLabels().
 
 .. seealso:: :py:func:`usedCachedLabels`
@@ -203,7 +203,7 @@ The image can be queried even while the rendering is still in progress to get in
 
     virtual QImage renderedImage() = 0;
 %Docstring
-Get a preview/resulting image
+Gets a preview/resulting image
 %End
 
 };

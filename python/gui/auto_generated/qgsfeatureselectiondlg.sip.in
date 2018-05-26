@@ -36,7 +36,7 @@ Constructor for QgsFeatureSelectionDlg
 
     const QgsFeatureIds &selectedFeatures();
 %Docstring
-Get the selected features
+Gets the selected features
 
 :return: The selected feature ids
 %End

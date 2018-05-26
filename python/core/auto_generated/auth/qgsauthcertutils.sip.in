@@ -212,7 +212,7 @@ Write a temporary file for a PEM text of cert/key/CAs bundle component
 
     static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single = false );
 %Docstring
-Get the general name for CA source enum type
+Gets the general name for CA source enum type
 
 :param source: The enum source type for the CA
 :param single: Whether to return singular or plural description
@@ -220,23 +220,23 @@ Get the general name for CA source enum type
 
     static QString resolvedCertName( const QSslCertificate &cert, bool issuer = false );
 %Docstring
-Get the general name via RFC 5280 resolution
+Gets the general name via RFC 5280 resolution
 %End
 
 
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
 %Docstring
-Get the general name for certificate trust
+Gets the general name for certificate trust
 %End
 
     static QString getColonDelimited( const QString &txt );
 %Docstring
-Get string with colon delimiters every 2 characters
+Gets string with colon delimiters every 2 characters
 %End
 
     static QString shaHexForCert( const QSslCertificate &cert, bool formatted = false );
 %Docstring
-Get the sha1 hash for certificate
+Gets the sha1 hash for certificate
 
 :param cert: Qt SSL certificate to generate hash from
 :param formatted: Whether to colon-delimit the hash
@@ -256,32 +256,32 @@ Try to determine the certificates usage types
 
     static bool certificateIsAuthority( const QSslCertificate &cert );
 %Docstring
-Get whether a certificate is an Authority
+Gets whether a certificate is an Authority
 %End
 
     static bool certificateIsIssuer( const QSslCertificate &cert );
 %Docstring
-Get whether a certificate can sign other certificates
+Gets whether a certificate can sign other certificates
 %End
 
     static bool certificateIsAuthorityOrIssuer( const QSslCertificate &cert );
 %Docstring
-Get whether a certificate is an Authority or can at least sign other certificates
+Gets whether a certificate is an Authority or can at least sign other certificates
 %End
 
     static bool certificateIsSslServer( const QSslCertificate &cert );
 %Docstring
-Get whether a certificate is probably used for a SSL server
+Gets whether a certificate is probably used for a SSL server
 %End
 
     static bool certificateIsSslClient( const QSslCertificate &cert );
 %Docstring
-Get whether a certificate is probably used for a client identity
+Gets whether a certificate is probably used for a client identity
 %End
 
     static QString sslErrorEnumString( QSslError::SslError errenum );
 %Docstring
-Get short strings describing an SSL error
+Gets short strings describing an SSL error
 %End
 
 

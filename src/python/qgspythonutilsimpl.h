@@ -74,7 +74,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QString getTypeAsString( PyObject *obj );
 
     /**
-     * get information about error to the supplied arguments
+     * Gets information about error to the supplied arguments
      * \returns false if there was no Python error
      */
     bool getError( QString &errorClassName, QString &errorText ) override;

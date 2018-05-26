@@ -41,7 +41,7 @@ to that one instead.
 
     QSet<QgsActionScope> actionScopes() const;
 %Docstring
-Get all registered action scopes.
+Gets all registered action scopes.
 
 .. versionadded:: 3.0
 %End
@@ -62,7 +62,7 @@ Unregister an additional action scope.
 
     QgsActionScope actionScope( const QString &id );
 %Docstring
-Get an action scope by its id.
+Gets an action scope by its id.
 
 .. versionadded:: 3.0
 %End

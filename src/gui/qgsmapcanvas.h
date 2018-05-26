@@ -116,7 +116,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCurrentLayer( QgsMapLayer *layer );
 
     /**
-     * Get access to properties used for map rendering
+     * Gets access to properties used for map rendering
      * \since QGIS 2.4
      */
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Get access to the labeling results (may be null)
+     * Gets access to the labeling results (may be null)
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults() const;
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
     /**
-     * Get the current map canvas rotation in clockwise degrees
+     * Gets the current map canvas rotation in clockwise degrees
      * \since QGIS 2.8
      */
     double rotation() const;
@@ -228,7 +228,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCenter( const QgsPointXY &center );
 
     /**
-     * Get map center, in geographical coordinates
+     * Gets map center, in geographical coordinates
      * \since QGIS 2.8
      */
     QgsPointXY center() const;
@@ -423,7 +423,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QString theme() const { return mTheme; }
 
-    //! Get the current coordinate transform
+    //! Gets the current coordinate transform
     const QgsMapToPixel *getCoordinateTransform();
 
     //! Find out whether rendering is in progress

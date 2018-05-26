@@ -252,7 +252,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
 
     /**
-     * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
+     * Gets layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
      * \since QGIS 3.0
      */
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );

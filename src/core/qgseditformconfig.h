@@ -123,20 +123,20 @@ class CORE_EXPORT QgsEditFormConfig
     void clearTabs();
 
     /**
-     * Get the invisible root container for the drag and drop designer form (EditorLayout::TabLayout).
+     * Gets the invisible root container for the drag and drop designer form (EditorLayout::TabLayout).
      *
      * \since QGIS 3
      */
     QgsAttributeEditorContainer *invisibleRootContainer();
 
-    //! Get the active layout style for the attribute editor for this layer
+    //! Gets the active layout style for the attribute editor for this layer
     EditorLayout layout() const;
 
     //! Sets the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
     /**
-     * \brief Get path or URL to the .ui form. Only meaningful with EditorLayout::UiFileLayout
+     * Returns the path or URL to the .ui form. Only meaningful with EditorLayout::UiFileLayout
      */
     QString uiForm() const;
 
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsEditFormConfig
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 
     /**
-     * Get the configuration for the editor widget with the given name.
+     * Gets the configuration for the editor widget with the given name.
      *
      * \param widgetName The name of the widget.
      *
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsEditFormConfig
     // Python form init function stuff
 
     /**
-     * Get Python function for edit form initialization.
+     * Gets Python function for edit form initialization.
      * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
      * in the Python code set with setInitCode().
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsEditFormConfig
     void setInitFunction( const QString &function );
 
     /**
-     * Get Python code for edit form initialization.
+     * Gets Python code for edit form initialization.
      */
     QString initCode() const;
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsEditFormConfig
     void setInitCode( const QString &code );
 
     /**
-     * Get Python external file path for edit form initialization.
+     * Gets Python external file path for edit form initialization.
      */
     QString initFilePath() const;
 

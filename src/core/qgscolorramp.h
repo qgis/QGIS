@@ -315,7 +315,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     int count() const override { return mCount; }
 
     /**
-     * Get a list of random colors
+     * Gets a list of random colors
      * \since QGIS 2.4
      */
     static QList<QColor> randomColors( int count,

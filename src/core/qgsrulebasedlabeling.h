@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         /**
-         * Get the labeling settings. May return a null pointer.
+         * Gets the labeling settings. May return a null pointer.
          */
         QgsPalLayerSettings *settings() const { return mSettings; }
 

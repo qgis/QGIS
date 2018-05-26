@@ -68,7 +68,7 @@ QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 
 /**
- * Get geometry type and srid from a SpatiaLite geometry blob
+ * Gets geometry type and srid from a SpatiaLite geometry blob
  */
 QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 

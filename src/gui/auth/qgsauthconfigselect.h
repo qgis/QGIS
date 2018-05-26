@@ -47,7 +47,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     //! Sets the authentication config id for the resource
     void setConfigId( const QString &authcfg );
 
-    //! Get the authentication config id for the resource
+    //! Gets the authentication config id for the resource
     const QString configId() const { return mAuthCfg; }
 
     //! Sets key of layer provider, if applicable

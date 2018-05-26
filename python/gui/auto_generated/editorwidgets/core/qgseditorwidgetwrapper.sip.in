@@ -144,7 +144,7 @@ based constraints.
 
     bool isValidConstraint() const;
 %Docstring
-Get the current constraint status.
+Gets the current constraint status.
 
 :return: true if the constraint is valid or if there's no constraint,
 false otherwise

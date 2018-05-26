@@ -35,7 +35,7 @@ Set the initial value of the widget.
 
     QVariantMap map() const;
 %Docstring
-Get the edit value.
+Gets the edit value.
 
 :return: the QVariantMap
 %End

@@ -94,12 +94,12 @@ Remove generic param (generic mode)
 
     QString param( const QString &key ) const;
 %Docstring
-Get generic param (generic mode)
+Gets generic param (generic mode)
 %End
 
     QStringList params( const QString &key ) const;
 %Docstring
-Get multiple generic param (generic mode)
+Gets multiple generic param (generic mode)
 %End
 
     bool hasParam( const QString &key ) const;

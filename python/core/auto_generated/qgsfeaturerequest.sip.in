@@ -224,7 +224,7 @@ Create a new order by from a list of clauses
 
         QList<QgsFeatureRequest::OrderByClause> list() const;
 %Docstring
-Get a copy as a list of OrderByClauses
+Gets a copy as a list of OrderByClauses
 
 This is only required in Python where the inheritance
 is not properly propagated and this makes it usable.
@@ -320,7 +320,7 @@ Sets feature ID that should be fetched.
 %End
     QgsFeatureId filterFid() const;
 %Docstring
-Get the feature ID that should be fetched.
+Gets the feature ID that should be fetched.
 %End
 
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
@@ -329,7 +329,7 @@ Sets feature IDs that should be fetched.
 %End
     const QgsFeatureIds &filterFids() const;
 %Docstring
-Get feature IDs that should be fetched.
+Gets feature IDs that should be fetched.
 %End
 
     QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
@@ -538,7 +538,7 @@ Set a simplification method for geometries that will be fetched
 
     const QgsSimplifyMethod &simplifyMethod() const;
 %Docstring
-Get simplification method for geometries that will be fetched
+Gets simplification method for geometries that will be fetched
 
 .. versionadded:: 2.2
 %End
@@ -683,7 +683,7 @@ Base class that can be used for any class that is capable of returning features
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 %Docstring
-Get an iterator for features matching the specified request
+Gets an iterator for features matching the specified request
 
 :param request: The request
 

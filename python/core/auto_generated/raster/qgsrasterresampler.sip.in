@@ -35,13 +35,13 @@ Interface for resampling rasters (e.g. to have a smoother appearance)
 
     virtual QString type() const = 0;
 %Docstring
-Get a descriptive type identifier for this raster resampler.
+Gets a descriptive type identifier for this raster resampler.
 Needs to be implemented by subclasses.
 %End
 
     virtual QgsRasterResampler *clone() const = 0 /Factory/;
 %Docstring
-Get a deep copy of this object.
+Gets a deep copy of this object.
 Needs to be reimplemented by subclasses.
 Ownership is transferred to the caller.
 %End

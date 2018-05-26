@@ -155,7 +155,7 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
 }
 
 /**
- * Get a reference to the point with the smallest effective area from the root of the min heap
+ * Gets a reference to the point with the smallest effective area from the root of the min heap
  */
 static areanode *minheap_pop( MINHEAP *tree, areanode *arealist )
 {

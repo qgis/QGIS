@@ -49,7 +49,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
-     * Get the roof color
+     * Gets the roof color
      */
     QColor roofColor() const;
 
@@ -59,7 +59,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setRoofColor( const QColor &roofColor );
 
     /**
-     * Get the wall color
+     * Gets the wall color
      */
     QColor wallColor() const;
 
@@ -74,12 +74,12 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setWallShadingEnabled( bool enabled );
 
     /**
-     * Get wall shading enabled
+     * Gets wall shading enabled
      */
     bool wallShadingEnabled() const;
 
     /**
-     * Get the shadow's color
+     * Gets the shadow's color
      */
     QColor shadowColor() const;
 
@@ -89,7 +89,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setShadowColor( const QColor &shadowColor );
 
     /**
-     * Get the shadow's spread distance in map units
+     * Gets the shadow's spread distance in map units
      */
     double shadowSpread() const;
 

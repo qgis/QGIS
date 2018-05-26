@@ -113,20 +113,20 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! List of source layers
     typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
 
-    //! Get access to the source layers
+    //! Gets access to the source layers
     const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const { return mSourceLayers; }
 
-    //! Get the SQL query
+    //! Gets the SQL query
     QString query() const { return mQuery; }
     //! Sets the SQL query
     void setQuery( const QString &query ) { mQuery = query; }
 
-    //! Get the file path. May be empty
+    //! Gets the file path. May be empty
     QString filePath() const { return mFilePath; }
     //! Sets the file path
     void setFilePath( const QString &filePath ) { mFilePath = filePath; }
 
-    //! Get the name of the field with unique identifiers
+    //! Gets the name of the field with unique identifiers
     QString uid() const { return mUid; }
     //! Sets the name of the field with unique identifiers
     void setUid( const QString &uid ) { mUid = uid; }
@@ -149,13 +149,13 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      */
     bool isLazy() const { return mLazy; }
 
-    //! Get the name of the geometry field. Empty if no geometry field
+    //! Gets the name of the geometry field. Empty if no geometry field
     QString geometryField() const { return mGeometryField; }
     //! Sets the name of the geometry field
     void setGeometryField( const QString &geometryField ) { mGeometryField = geometryField; }
 
     /**
-     * Get the type of the geometry
+     * Gets the type of the geometry
      * QgsWkbTypes::NoGeometry to hide any geometry
      * QgsWkbTypes::Unknown for unknown types
      */
@@ -163,12 +163,12 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Sets the type of the geometry
     void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }
 
-    //! Get the SRID of the geometry
+    //! Gets the SRID of the geometry
     long geometrySrid() const { return mGeometrySrid; }
     //! Sets the SRID of the geometry
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
-    //! Get field definitions
+    //! Gets field definitions
     QgsFields fields() const { return mFields; }
     //! Sets field definitions
     void setFields( const QgsFields &fields ) { mFields = fields; }

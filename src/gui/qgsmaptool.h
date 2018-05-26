@@ -168,20 +168,20 @@ class GUI_EXPORT QgsMapTool : public QObject
     QString toolName() { return mToolName; }
 
     /**
-     * Get search radius in mm. Used by identify, tip etc.
+     * Gets search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  \since QGIS 2.3 */
     static double searchRadiusMM();
 
     /**
-     * Get search radius in map units for given context. Used by identify, tip etc.
+     * Gets search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( const QgsRenderContext &context );
 
     /**
-     * Get search radius in map units for given canvas. Used by identify, tip etc.
+     * Gets search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( QgsMapCanvas *canvas );

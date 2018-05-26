@@ -180,7 +180,7 @@ Instantiate and register existing C++ core authentication methods from plugins
 
     QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString &dataprovider = QString() );
 %Docstring
-Get mapping of authentication config ids and their base configs (not decrypted data)
+Gets mapping of authentication config ids and their base configs (not decrypted data)
 %End
 
     void updateConfigAuthMethods();
@@ -190,26 +190,26 @@ Sync the confg/authentication method cache with what is in database
 
     QgsAuthMethod *configAuthMethod( const QString &authcfg );
 %Docstring
-Get authentication method from the config/provider cache
+Gets authentication method from the config/provider cache
 
 :param authcfg: Authentication config id
 %End
 
     QString configAuthMethodKey( const QString &authcfg ) const;
 %Docstring
-Get key of authentication method associated with config ID
+Gets key of authentication method associated with config ID
 
 :param authcfg:
 %End
 
     QStringList authMethodsKeys( const QString &dataprovider = QString() );
 %Docstring
-Get keys of supported authentication methods
+Gets keys of supported authentication methods
 %End
 
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 %Docstring
-Get authentication method from the config/provider cache via its key
+Gets authentication method from the config/provider cache via its key
 
 :param authMethodKey: Authentication method key
 %End
@@ -217,7 +217,7 @@ Get authentication method from the config/provider cache via its key
 
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 %Docstring
-Get authentication method edit widget via its key
+Gets authentication method edit widget via its key
 
 :param authMethodKey: Authentication method key
 :param parent: Parent widget
@@ -225,14 +225,14 @@ Get authentication method edit widget via its key
 
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
 %Docstring
-Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
 
 :param authcfg:
 %End
 
     const QString uniqueConfigId() const;
 %Docstring
-Get a unique generated 7-character string to assign to as config id
+Gets a unique generated 7-character string to assign to as config id
 %End
 
     bool configIdUnique( const QString &id ) const;
@@ -256,7 +256,7 @@ Returns the regular expression for authcfg=.{7} key/value token for authenticati
 
     QStringList configIds() const;
 %Docstring
-Get list of authentication ids from database
+Gets list of authentication ids from database
 %End
 
     bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig /In,Out/ );
@@ -651,7 +651,7 @@ Sets the default certificate trust policy preferred by user
 
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 %Docstring
-Get the default certificate trust policy preferred by user
+Gets the default certificate trust policy preferred by user
 %End
 
     const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache();

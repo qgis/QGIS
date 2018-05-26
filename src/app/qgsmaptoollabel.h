@@ -143,7 +143,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     bool currentLabelPreserveRotation();
 
     /**
-     * Get data defined position of current label
+     * Gets data defined position of current label
       \param x out: data defined x-coordinate
       \param xSuccess out: false if attribute value is NULL
       \param y out: data defined y-coordinate

@@ -59,7 +59,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
 
     explicit QgsGrassModuleInputModel( QObject *parent = nullptr );
 
-    //! Get singleton instance of this class.
+    //! Gets singleton instance of this class.
     static QgsGrassModuleInputModel *instance();
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;

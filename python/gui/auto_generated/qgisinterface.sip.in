@@ -115,7 +115,7 @@ Returns vector layers in edit mode
 
     virtual QgsMapLayer *activeLayer() = 0;
 %Docstring
-Get pointer to the active layer (layer selected in the legend)
+Returns a pointer to the active layer (layer selected in the legend)
 %End
 
     virtual QgsMapCanvas *mapCanvas() = 0;
@@ -155,7 +155,7 @@ Returns changeable options built from settings and/or defaults
 
     virtual QFont defaultStyleSheetFont() = 0;
 %Docstring
-Get reference font for initial qApp (may not be same as QgisApp)
+Returns a reference font for initial qApp (may not be same as QgisApp)
 %End
 
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
@@ -316,11 +316,29 @@ Returns a reference to the main window "Web" toolbar.
 %End
 
     virtual QAction *actionNewProject() = 0;
+%Docstring
+Returns the native New Project action.
+%End
     virtual QAction *actionOpenProject() = 0;
+%Docstring
+Returns the Open Project action.
+%End
     virtual QAction *actionSaveProject() = 0;
+%Docstring
+Returns the native Save Project action.
+%End
     virtual QAction *actionSaveProjectAs() = 0;
+%Docstring
+Returns the native Save Project As action.
+%End
     virtual QAction *actionSaveMapAsImage() = 0;
+%Docstring
+Returns the native Save Map as Image action.
+%End
     virtual QAction *actionProjectProperties() = 0;
+%Docstring
+Returns the native Project Properties action.
+%End
 
     virtual QAction *actionCreatePrintLayout() = 0;
 %Docstring
@@ -332,113 +350,159 @@ Create new print layout action
 Show layout manager action
 %End
     virtual QAction *actionExit() = 0;
+%Docstring
+Returns the Exit QGIS action.
+%End
+
 
     virtual QAction *actionCutFeatures() = 0;
+%Docstring
+Returns the native Cut Features action.
+%End
     virtual QAction *actionCopyFeatures() = 0;
+%Docstring
+Returns the native Copy Features action.
+%End
     virtual QAction *actionPasteFeatures() = 0;
+%Docstring
+Returns the native Paste Features action.
+%End
     virtual QAction *actionAddFeature() = 0;
+%Docstring
+Returns the native Add Feature action.
+%End
     virtual QAction *actionDeleteSelected() = 0;
+%Docstring
+Returns the native Delete Selected Features action.
+%End
     virtual QAction *actionMoveFeature() = 0;
+%Docstring
+Returns the native Move Features action.
+%End
     virtual QAction *actionSplitFeatures() = 0;
+%Docstring
+Returns the native Split Features action.
+%End
     virtual QAction *actionSplitParts() = 0;
+%Docstring
+Returns the native Split Parts action.
+%End
     virtual QAction *actionAddRing() = 0;
+%Docstring
+Returns the native Add Ring action.
+%End
     virtual QAction *actionAddPart() = 0;
+%Docstring
+Returns the native Add Part action.
+%End
     virtual QAction *actionSimplifyFeature() = 0;
+%Docstring
+Returns the native Simplify/Smooth Features action.
+%End
     virtual QAction *actionDeleteRing() = 0;
+%Docstring
+Returns the native Delete Ring action.
+%End
     virtual QAction *actionDeletePart() = 0;
+%Docstring
+Returns the native Delete Part action.
+%End
     virtual QAction *actionVertexTool() = 0;
+%Docstring
+Returns the native Vertex Tool action.
+%End
 
     virtual QAction *actionPan() = 0;
 %Docstring
-Get access to the native pan action. Call trigger() on it to set the default pan map tool.
+Returns the native pan action. Call trigger() on it to set the default pan map tool.
 %End
     virtual QAction *actionPanToSelected() = 0;
 %Docstring
-Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+Returns the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
 %End
     virtual QAction *actionZoomIn() = 0;
 %Docstring
-Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+Returns the native zoom in action. Call trigger() on it to set the default zoom in map tool.
 %End
     virtual QAction *actionZoomOut() = 0;
 %Docstring
-Get access to the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+Returns the native zoom out action. Call trigger() on it to set the default zoom out map tool.
 %End
     virtual QAction *actionSelect() = 0;
 %Docstring
-Get access to the native select action. Call trigger() on it to set the default select map tool.
+Returns the native select action. Call trigger() on it to set the default select map tool.
 %End
     virtual QAction *actionSelectRectangle() = 0;
 %Docstring
-Get access to the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+Returns the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
 %End
     virtual QAction *actionSelectPolygon() = 0;
 %Docstring
-Get access to the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+Returns the native select polygon action. Call trigger() on it to set the default select polygon map tool.
 %End
     virtual QAction *actionSelectFreehand() = 0;
 %Docstring
-Get access to the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+Returns the native select freehand action. Call trigger() on it to set the default select freehand map tool.
 %End
     virtual QAction *actionSelectRadius() = 0;
 %Docstring
-Get access to the native select radius action. Call trigger() on it to set the default select radius map tool.
+Returns the native select radius action. Call trigger() on it to set the default select radius map tool.
 %End
     virtual QAction *actionIdentify() = 0;
 %Docstring
-Get access to the native identify action. Call trigger() on it to set the default identify map tool.
+Returns the native identify action. Call trigger() on it to set the default identify map tool.
 %End
     virtual QAction *actionFeatureAction() = 0;
 %Docstring
-Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+Returns the native run action feature action. Call trigger() on it to set the default run feature action map tool.
 %End
     virtual QAction *actionMeasure() = 0;
 %Docstring
-Get access to the native measure action. Call trigger() on it to set the default measure map tool.
+Returns the native measure action. Call trigger() on it to set the default measure map tool.
 %End
     virtual QAction *actionMeasureArea() = 0;
 %Docstring
-Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
+Returns the native measure area action. Call trigger() on it to set the default measure area map tool.
 %End
     virtual QAction *actionZoomFullExtent() = 0;
 %Docstring
-Get access to the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
 %End
     virtual QAction *actionZoomToLayer() = 0;
 %Docstring
-Get access to the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
 %End
     virtual QAction *actionZoomToSelected() = 0;
 %Docstring
-Get access to the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
 %End
     virtual QAction *actionZoomLast() = 0;
 %Docstring
-Get access to the native zoom last action. Call trigger() on it to zoom to last.
+Returns the native zoom last action. Call trigger() on it to zoom to last.
 %End
     virtual QAction *actionZoomNext() = 0;
 %Docstring
-Get access to the native zoom next action. Call trigger() on it to zoom to next.
+Returns the native zoom next action. Call trigger() on it to zoom to next.
 %End
     virtual QAction *actionZoomActualSize() = 0;
 %Docstring
-Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+Returns the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
 %End
     virtual QAction *actionMapTips() = 0;
 %Docstring
-Get access to the native map tips action. Call trigger() on it to toggle map tips.
+Returns the native map tips action. Call trigger() on it to toggle map tips.
 %End
     virtual QAction *actionNewBookmark() = 0;
 %Docstring
-Get access to the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+Returns the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
 %End
     virtual QAction *actionShowBookmarks() = 0;
 %Docstring
-Get access to the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+Returns the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
 %End
     virtual QAction *actionDraw() = 0;
 %Docstring
-Get access to the native draw action.
+Returns the native draw action.
 %End
 
     virtual QAction *actionNewVectorLayer() = 0;
@@ -448,11 +512,11 @@ Get access to the native draw action.
     virtual QAction *actionAddWmsLayer() = 0;
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
-Get access to the native Add ArcGIS FeatureServer action.
+Returns the native Add ArcGIS FeatureServer action.
 %End
     virtual QAction *actionAddAmsLayer() = 0;
 %Docstring
-Get access to the native Add ArcGIS MapServer action.
+Returns the native Add ArcGIS MapServer action.
 %End
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
@@ -517,7 +581,7 @@ or stopEditing while giving the user the appropriate dialogs.
 
     virtual int messageTimeout() = 0;
 %Docstring
-Get timeout for timed messages: default of 5 seconds
+Returns the timeout for timed messages: default of 5 seconds
 %End
 
     virtual QgsStatusBar *statusBarIface() = 0;

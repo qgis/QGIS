@@ -332,7 +332,7 @@ map.
                                        int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
                                        int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 %Docstring
-Get a list of random colors
+Gets a list of random colors
 
 .. versionadded:: 2.4
 %End

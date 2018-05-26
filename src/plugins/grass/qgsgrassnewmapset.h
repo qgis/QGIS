@@ -185,7 +185,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Sets error line
     void setError( QLabel *line, const QString &err = QString() );
   private:
-    //! Get current gisdbase
+    //! Gets current gisdbase
     QString gisdbase();
 
     //! Test if current gisdbase directory exists

@@ -160,7 +160,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
                                     QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
-    //! Get access to embedded info widget
+    //! Gets access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
     /**

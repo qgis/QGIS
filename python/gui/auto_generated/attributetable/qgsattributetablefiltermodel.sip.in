@@ -82,7 +82,7 @@ The filter mode will automatically be adjusted to show only these features (Show
 
     QgsFeatureIds filteredFeatures();
 %Docstring
-Get a list of currently filtered feature ids
+Gets a list of currently filtered feature ids
 
 :return: A list of feature ids
 %End
@@ -184,7 +184,7 @@ Returns the map canvas
 
     int actionColumnIndex() const;
 %Docstring
-Get the index of the first column that contains an action widget.
+Gets the index of the first column that contains an action widget.
 Returns -1 if none is defined.
 %End
 

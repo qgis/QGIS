@@ -40,7 +40,7 @@ An expression item that can be used in the QgsExpressionBuilderWidget tree.
 
     QString getHelpText() const;
 %Docstring
-Get the help text that is associated with this expression item.
+Gets the help text that is associated with this expression item.
 
 :return: The help text.
 %End
@@ -56,7 +56,7 @@ Set the help text for the current item
 
     QgsExpressionItem::ItemType getItemType() const;
 %Docstring
-Get the type of expression item, e.g., header, field, ExpressionNode.
+Gets the type of expression item, e.g., header, field, ExpressionNode.
 
 :return: The QgsExpressionItem.ItemType
 %End

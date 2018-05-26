@@ -36,7 +36,7 @@ Set the initial value of the widget.
 
     QVariantList list() const;
 %Docstring
-Get the edit value.
+Gets the edit value.
 
 :return: the QVariantList
 %End

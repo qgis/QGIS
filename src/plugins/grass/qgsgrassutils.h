@@ -45,13 +45,13 @@ class QgsGrassUtils
     // Check if element exists in current mapset
     static bool itemExists( QString element, QString item );
 
-    //! Get path to custom HTML browser starter executable
+    //! Gets path to custom HTML browser starter executable
     static QString htmlBrowserPath();
 };
 
 /**
  * \class QgsGrassElementDialog
- *  \brief Get name for new element
+ * \brief Dialog for entering a name for a new GRASS element.
  */
 class QgsGrassElementDialog: public QObject
 {
@@ -62,7 +62,7 @@ class QgsGrassElementDialog: public QObject
     explicit QgsGrassElementDialog( QWidget *parent );
 
   public:
-    //! Get a name for new GRASS element (map)
+    //! Gets a name for new GRASS element (map)
     // \param source local source
     QString getItem( QString element,
                      QString title, QString label,

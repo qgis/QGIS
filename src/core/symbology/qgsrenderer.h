@@ -410,7 +410,7 @@ class CORE_EXPORT QgsFeatureRenderer
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
     /**
-     * Get the order in which features shall be processed by this renderer.
+     * Gets the order in which features shall be processed by this renderer.
      * \since QGIS 2.14
      * \note this property has no effect if orderByEnabled() is false
      * \see orderByEnabled()

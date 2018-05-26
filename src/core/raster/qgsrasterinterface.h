@@ -202,21 +202,21 @@ class CORE_EXPORT QgsRasterInterface
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
-     * Get the extent of the interface.
+     * Gets the extent of the interface.
      * \returns QgsRectangle containing the extent of the layer
      */
     virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
-    //! Get number of bands
+    //! Gets number of bands
     virtual int bandCount() const = 0;
 
-    //! Get block size
+    //! Gets block size
     virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
     virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
-    //! Get raster size
+    //! Gets raster size
     virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
     virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual void setOn( bool on ) { mOn = on; }
 
     /**
-     * Get source / raw input, the first in pipe, usually provider.
+     * Gets source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      * \note not available in Python bindings.
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /**
-     * Get source / raw input, the first in pipe, usually provider.
+     * Gets source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
@@ -276,13 +276,12 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /**
-     * \brief Get band statistics.
+     * Returns the band statistics.
      * \param bandNo The band (number).
      * \param stats Requested statistics
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param feedback optional feedback object
-     * \returns Band statistics.
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
@@ -300,7 +299,7 @@ class CORE_EXPORT QgsRasterInterface
 
 
     /**
-     * \brief Get histogram. Histograms are cached in providers.
+     * Returns a band histogram. Histograms are cached in providers.
      * \param bandNo The band (number).
      * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
      * \param minimum Minimum value, if NaN (None for Python), raster minimum value will be used.

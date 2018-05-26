@@ -176,7 +176,7 @@ source data type may be shorter than dataType *
 
     virtual QgsRectangle extent() const;
 %Docstring
-Get the extent of the interface.
+Gets the extent of the interface.
 
 :return: QgsRectangle containing the extent of the layer
 %End
@@ -185,18 +185,18 @@ Get the extent of the interface.
 
     virtual int bandCount() const = 0;
 %Docstring
-Get number of bands
+Gets number of bands
 %End
 
     virtual int xBlockSize() const;
 %Docstring
-Get block size
+Gets block size
 %End
     virtual int yBlockSize() const;
 
     virtual int xSize() const;
 %Docstring
-Get raster size
+Gets raster size
 %End
     virtual int ySize() const;
 
@@ -242,7 +242,7 @@ Sets whether the interface is on or off
 
     virtual QgsRasterInterface *sourceInput();
 %Docstring
-Get source / raw input, the first in pipe, usually provider.
+Gets source / raw input, the first in pipe, usually provider.
 It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
@@ -252,15 +252,13 @@ resampling etc.
         const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
- Get band statistics.
+Returns the band statistics.
 
 :param bandNo: The band (number).
 :param stats: Requested statistics
 :param extent: Extent used to calc statistics, if empty, whole raster extent is used.
 :param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
 :param feedback: optional feedback object
-
-:return: Band statistics.
 %End
 
     virtual bool hasStatistics( int bandNo,
@@ -291,7 +289,7 @@ resampling etc.
                          bool includeOutOfRange = false,
                          QgsRasterBlockFeedback *feedback = nullptr )];
 %Docstring
- Get histogram. Histograms are cached in providers.
+Returns a band histogram. Histograms are cached in providers.
 
 :param bandNo: The band (number).
 :param binCount: Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.

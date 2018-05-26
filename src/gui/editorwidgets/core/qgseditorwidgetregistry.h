@@ -143,7 +143,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS ) SIP_FACTORY;
 
     /**
-     * Get the human readable name for a widget type
+     * Gets the human readable name for a widget type
      *
      * \param widgetId The widget type to get the name for
      *
@@ -152,14 +152,14 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QString name( const QString &widgetId );
 
     /**
-     * Get access to all registered factories
+     * Gets access to all registered factories
      *
      * \returns All ids and factories
      */
     QMap<QString, QgsEditorWidgetFactory *> factories();
 
     /**
-     * Get a factory for the given widget type id.
+     * Gets a factory for the given widget type id.
      *
      * \returns A factory or Null if not existent
      */

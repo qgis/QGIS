@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRenderChecker
 
     void setControlPathSuffix( const QString &name );
 
-    //! Get an md5 hash that uniquely identifies an image
+    //! Gets an md5 hash that uniquely identifies an image
     QString imageToHash( const QString &imageFile );
 
     void setRenderedImage( const QString &imageFileName ) { mRenderedImageFile = imageFileName; }
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsRenderChecker
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 
     /**
-     * Get a list of all the anomalies. An anomaly is a rendered difference
+     * Gets a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRenderChecker
     void enableDashBuffering( bool enable ) { mBufferDashMessages = enable; }
 
     /**
-     * Get access to buffered dash messages.
+     * Gets access to buffered dash messages.
      * Only will return something if you call enableDashBuffering( true ); before.
      *
      * \returns buffered dash messages

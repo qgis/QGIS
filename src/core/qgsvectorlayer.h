@@ -476,7 +476,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDisplayExpression( const QString &displayExpression );
 
     /**
-     *  Get the preview expression, used to create a human readable preview string.
+     *  Returns the preview expression, used to create a human readable preview string.
      *  Uses QgsExpression
      *
      *  \returns The expression which will be used to preview features for this layer
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void updateExpressionField( int index, const QString &exp );
 
     /**
-     * Get all layer actions defined on this layer.
+     * Returns all layer actions defined on this layer.
      *
      * The pointer which is returned directly points to the actions object
      * which is used by the layer, so any changes are immediately applied.
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsActionManager *actions() { return mActions; }
 
     /**
-     * Get all layer actions defined on this layer.
+     * Returns all layer actions defined on this layer.
      *
      * The pointer which is returned is const.
      */
@@ -657,7 +657,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void invertSelectionInRectangle( QgsRectangle &rect );
 
     /**
-     * Get a copy of the user-selected features
+     * Returns a copy of the user-selected features.
      *
      * \returns A list of QgsFeature
      *
@@ -667,7 +667,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFeatureList selectedFeatures() const;
 
     /**
-     * Get an iterator of the selected features
+     * Returns an iterator of the selected features.
      *
      * \param request You may specify a request, e.g. to limit the set of requested attributes.
      *                Any filter on the request will be discarded.
@@ -972,7 +972,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual bool setSubsetString( const QString &subset );
 
     /**
-     * Get the string (typically sql) used to define a subset of the layer
+     * Returns the string (typically sql) used to define a subset of the layer.
      * \returns The subset string or null QString if not implemented by the provider
      */
     virtual QString subsetString() const;
@@ -1607,7 +1607,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool rollBack( bool deleteBuffer = true );
 
     /**
-     * Get relations, where the foreign key is on this layer
+     * Returns the layer's relations, where the foreign key is on this layer.
      *
      * \param idx Only get relations, where idx forms part of the foreign key
      * \returns A list of relations
@@ -1893,7 +1893,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsConditionalLayerStyles *conditionalStyles() const;
 
     /**
-     * Get the attribute table configuration object.
+     * Returns the attribute table configuration object.
      * This defines the appearance of the attribute table.
      */
     QgsAttributeTableConfig attributeTableConfig() const;
@@ -1927,7 +1927,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
     /**
-     * Get the configuration of the form used to represent this vector layer.
+     * Returns the configuration of the form used to represent this vector layer.
      * This is a writable configuration that can directly be changed in place.
      *
      * \returns The configuration of this layers' form

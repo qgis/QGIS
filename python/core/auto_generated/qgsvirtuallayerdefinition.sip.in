@@ -120,12 +120,12 @@ Add a layer with a source, a provider and an encoding
 
     const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const;
 %Docstring
-Get access to the source layers
+Gets access to the source layers
 %End
 
     QString query() const;
 %Docstring
-Get the SQL query
+Gets the SQL query
 %End
     void setQuery( const QString &query );
 %Docstring
@@ -134,7 +134,7 @@ Sets the SQL query
 
     QString filePath() const;
 %Docstring
-Get the file path. May be empty
+Gets the file path. May be empty
 %End
     void setFilePath( const QString &filePath );
 %Docstring
@@ -143,7 +143,7 @@ Sets the file path
 
     QString uid() const;
 %Docstring
-Get the name of the field with unique identifiers
+Gets the name of the field with unique identifiers
 %End
     void setUid( const QString &uid );
 %Docstring
@@ -177,7 +177,7 @@ Returns the lazy mode.
 
     QString geometryField() const;
 %Docstring
-Get the name of the geometry field. Empty if no geometry field
+Gets the name of the geometry field. Empty if no geometry field
 %End
     void setGeometryField( const QString &geometryField );
 %Docstring
@@ -186,7 +186,7 @@ Sets the name of the geometry field
 
     QgsWkbTypes::Type geometryWkbType() const;
 %Docstring
-Get the type of the geometry
+Gets the type of the geometry
 QgsWkbTypes.NoGeometry to hide any geometry
 QgsWkbTypes.Unknown for unknown types
 %End
@@ -197,7 +197,7 @@ Sets the type of the geometry
 
     long geometrySrid() const;
 %Docstring
-Get the SRID of the geometry
+Gets the SRID of the geometry
 %End
     void setGeometrySrid( long srid );
 %Docstring
@@ -206,7 +206,7 @@ Sets the SRID of the geometry
 
     QgsFields fields() const;
 %Docstring
-Get field definitions
+Gets field definitions
 %End
     void setFields( const QgsFields &fields );
 %Docstring

@@ -163,7 +163,7 @@ Emit map tool changed with the old tool
 
     static double searchRadiusMM();
 %Docstring
-Get search radius in mm. Used by identify, tip etc.
+Gets search radius in mm. Used by identify, tip etc.
 The values is currently set in identify tool options (move somewhere else?)
 and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 
@@ -172,7 +172,7 @@ and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
-Get search radius in map units for given context. Used by identify, tip etc.
+Gets search radius in map units for given context. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3
@@ -180,7 +180,7 @@ The values is calculated from searchRadiusMM().
 
     static double searchRadiusMU( QgsMapCanvas *canvas );
 %Docstring
-Get search radius in map units for given canvas. Used by identify, tip etc.
+Gets search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3

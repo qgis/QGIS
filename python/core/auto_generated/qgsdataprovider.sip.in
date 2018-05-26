@@ -95,7 +95,7 @@ connection string
 
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const;
 %Docstring
-Get the data source specification. This may be a path or database
+Gets the data source specification. This may be a path or database
 connection string
 
 :param expandAuthConfig: Whether to expand any assigned authentication configuration
@@ -118,7 +118,7 @@ Set the data source specification.
 
     QgsDataSourceUri uri() const;
 %Docstring
-Get the data source specification.
+Gets the data source specification.
 
 .. versionadded:: 3.0
 %End
@@ -290,7 +290,7 @@ Current time stamp of data source
 
     virtual QgsError error() const;
 %Docstring
-Get current status error. This error describes some principal problem
+Gets current status error. This error describes some principal problem
 for which provider cannot work and thus is not valid. It is not last error
 after accessing data by block(), identify() etc.
 %End
@@ -355,7 +355,7 @@ It depends on the provider which properties are supported.
 
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
-Get the current value of a certain provider property.
+Gets the current value of a certain provider property.
 It depends on the provider which properties are supported.
 
 .. versionadded:: 2.16

@@ -147,7 +147,7 @@ Set symbology export mode
 
     QgsDxfExport::SymbologyExport symbologyExport() const;
 %Docstring
-Get symbology export mode
+Gets symbology export mode
 
 :return: mode
 
@@ -163,7 +163,7 @@ Set extent of area to export
 
     QgsRectangle extent() const;
 %Docstring
-Get extent of area to export
+Gets extent of area to export
 
 :return: area to export
 
@@ -209,14 +209,14 @@ Retrieve whether the output should be forced to 2d
 
     static int closestColorMatch( QRgb color );
 %Docstring
-Get DXF palette index of nearest entry for given color
+Gets DXF palette index of nearest entry for given color
 
 :param color:
 %End
 
     QString layerName( const QString &id, const QgsFeature &f ) const;
 %Docstring
-Get layer name for feature
+Gets layer name for feature
 
 :param id: layer id of layer
 :param f: feature of layer
@@ -226,7 +226,7 @@ Get layer name for feature
 
     QString layerName( QgsVectorLayer *vl ) const;
 %Docstring
-Get name for layer respecting the use layer title as layer name mode
+Gets name for layer respecting the use layer title as layer name mode
 
 :param vl: the vector layer
 

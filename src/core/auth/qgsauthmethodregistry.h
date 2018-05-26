@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
     QWidget *editWidget( const QString &authMethodKey, QWidget *parent = nullptr );
 
     /**
-     * Get pointer to auth method function
+     * Gets pointer to auth method function
         \param authMethodKey identificator of the auth method
         \param functionName name of function
         \returns pointer to function or nullptr on error

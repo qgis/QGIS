@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     QgsAttributeTableConfig() = default;
 
     /**
-     * Get the list with all columns and their configuration.
+     * Gets the list with all columns and their configuration.
      * The list order defines the order of appearance.
      */
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     void setActionWidgetVisible( bool visible );
 
     /**
-     * Get the style of the action widget
+     * Gets the style of the action widget
      */
     ActionWidgetStyle actionWidgetStyle() const;
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     void readXml( const QDomNode &node );
 
     /**
-     * Get the expression used for sorting.
+     * Gets the expression used for sorting.
      */
     QString sortExpression() const;
 
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     void setColumnHidden( int column, bool hidden );
 
     /**
-     * Get the sort order
+     * Gets the sort order
      * \since QGIS 2.16
      */
     Qt::SortOrder sortOrder() const;

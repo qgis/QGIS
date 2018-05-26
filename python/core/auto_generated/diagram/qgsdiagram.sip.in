@@ -48,7 +48,7 @@ Draws the diagram at the given position (in pixel coordinates)
 
     virtual QString diagramName() const = 0;
 %Docstring
-Get a descriptive name for this diagram type.
+Gets a descriptive name for this diagram type.
 %End
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) = 0;
 %Docstring

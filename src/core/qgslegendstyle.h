@@ -84,13 +84,13 @@ class CORE_EXPORT QgsLegendStyle
 
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 
-    //! Get name for style, used in project file
+    //! Gets name for style, used in project file
     static QString styleName( Style s );
 
-    //! Get style from name, used in project file
+    //! Gets style from name, used in project file
     static Style styleFromName( const QString &styleName );
 
-    //! Get style label, translated, used in UI
+    //! Gets style label, translated, used in UI
     static QString styleLabel( Style s );
 
   private:

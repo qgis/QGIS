@@ -60,14 +60,14 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     //! Sets flags of the labeling engine
     void setFlags( Flags flags ) { mFlags = flags; }
-    //! Get flags of the labeling engine
+    //! Gets flags of the labeling engine
     Flags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled
     bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
     //! Sets whether a particual flag is enabled
     void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
-    //! Get number of candidate positions that will be generated for each label feature (default to 8)
+    //! Gets number of candidate positions that will be generated for each label feature (default to 8)
     void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
     //! Sets number of candidate positions that will be generated for each label feature
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }

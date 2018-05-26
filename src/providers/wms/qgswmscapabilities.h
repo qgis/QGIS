@@ -41,7 +41,7 @@ struct QgsWmsOnlineResourceAttribute
   QString xlinkHref;
 };
 
-//! Get Property structure
+//! Gets Property structure
 // TODO: Fill to WMS specifications
 struct QgsWmsGetProperty
 {
@@ -645,7 +645,7 @@ class QgsWmsCapabilities
      */
     QVector<QgsWmsLayerProperty> supportedLayers() const { return mLayersSupported; }
 
-    //! get raster image encodings supported by the WMS, expressed as MIME types
+    //! Gets raster image encodings supported by the WMS, expressed as MIME types
     QStringList supportedImageEncodings() const { return mCapabilities.capability.request.getMap.format; }
 
     /**

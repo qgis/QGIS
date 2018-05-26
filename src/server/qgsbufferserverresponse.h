@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void clear() override;
 
     /**
-     * Get the data written so far
+     * Gets the data written so far
      *
      * This is implementation dependent: some implementations may not
      * give access to the underlying and return an empty array.

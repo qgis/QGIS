@@ -166,7 +166,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual QString getTileUrl() const;
     virtual QString getLegendGraphicUrl() const;
 
-    //! get WMS version string
+    //! Gets WMS version string
     QString wmsVersion();
 
     /**
@@ -339,7 +339,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
       QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< Cached tile to be drawn
     } TileImage;
-    //! Get tiles from a different resolution to cover the missing areas
+    //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
     /**
@@ -552,7 +552,7 @@ class QgsWmsStatistics
       int cacheMisses = 0;
     };
 
-    //! get reference to layer's statistics - insert to map if does not exist yet
+    //! Gets reference to layer's statistics - insert to map if does not exist yet
     static Stat &statForUri( const QString &uri ) { return sData[uri]; }
 
   protected:

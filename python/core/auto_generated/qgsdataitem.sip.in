@@ -226,7 +226,7 @@ Sets the capabilities for the data item.
 
     QgsDataItem *parent() const;
 %Docstring
-Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
+Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
 QObject hierarchy. *
 %End
 

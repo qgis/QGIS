@@ -119,7 +119,7 @@ by the ``neighbours`` argument.
 
     int  refs() const;
 %Docstring
-get reference count - just for debugging!
+Gets reference count - just for debugging!
 %End
 
 };

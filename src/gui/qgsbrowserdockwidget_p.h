@@ -219,7 +219,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
     //! Sets the browser model
     void setBrowserModel( QgsBrowserModel *model );
-    //! Get the browser model
+    //! Gets the browser model
     QgsBrowserModel *browserModel() { return mModel; }
     //! Sets the filter syntax
     void setFilterSyntax( const QString &syntax );

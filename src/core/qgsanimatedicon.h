@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     void setIconPath( const QString &iconPath );
 
     /**
-     * Get the icons representation in the current frame.
+     * Gets the icons representation in the current frame.
      * This will need to be called repeatedly, whenever a frameChanged()
      * signal is emitted.
      */

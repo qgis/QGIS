@@ -575,7 +575,7 @@ Set a list of layers which should not be taken into account on map identificatio
 
     QStringList nonIdentifiableLayers() const;
 %Docstring
-Get the list of layers which currently should not be taken into account on map identification
+Gets the list of layers which currently should not be taken into account on map identification
 %End
 
     bool autoTransaction() const;

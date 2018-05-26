@@ -299,7 +299,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
 
   private slots:
-    //! get list of authorities
+    //! Gets list of authorities
     void updateBoundsPreview();
     QStringList authorities();
 

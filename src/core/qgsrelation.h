@@ -79,9 +79,9 @@ class CORE_EXPORT QgsRelation
         FieldPair( const QString &referencingField, const QString &referencedField )
           : QPair< QString, QString >( referencingField, referencedField ) {}
 
-        //! Get the name of the referencing (child) field
+        //! Gets the name of the referencing (child) field
         QString referencingField() const { return first; }
-        //! Get the name of the referenced (parent) field
+        //! Gets the name of the referenced (parent) field
         QString referencedField() const { return second; }
 
         bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
@@ -335,14 +335,14 @@ class CORE_EXPORT QgsRelation
     bool hasEqualDefinition( const QgsRelation &other ) const;
 
     /**
-     * Get the referenced field counterpart given a referencing field.
+     * Gets the referenced field counterpart given a referencing field.
      *
      * \since QGIS 3.0
      */
     Q_INVOKABLE QString resolveReferencedField( const QString &referencingField ) const;
 
     /**
-     * Get the referencing field counterpart given a referenced field.
+     * Gets the referencing field counterpart given a referenced field.
      *
      * \since QGIS 3.0
      */

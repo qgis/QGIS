@@ -80,22 +80,22 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     bool close() override;
 
     /**
-     * Get GRASS line id from a QGIS \a fid.
+     * Gets GRASS line id from a QGIS \a fid.
      */
     static int lidFromFid( QgsFeatureId fid );
 
     /**
-     * Get GRASS cat from QGIS \a fid.
+     * Gets GRASS cat from QGIS \a fid.
      */
     static int catFromFid( QgsFeatureId fid );
 
     /**
-     * Get layer number from QGIS \a fid.
+     * Gets layer number from QGIS \a fid.
      */
     static int layerFromFid( QgsFeatureId fid );
 
     /**
-     * Get attribute value to be used in different layer when it is edited.
+     * Gets attribute value to be used in different layer when it is edited.
      */
     static QVariant nonEditableValue( int layerNumber );
 

@@ -104,7 +104,7 @@ Set the source color ``ramp``. Ownership is transferred to the renderer.
 
     QgsColorRamp *sourceColorRamp() const;
 %Docstring
-Get the source color ramp
+Gets the source color ramp
 
 .. versionadded:: 3.0
 

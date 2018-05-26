@@ -37,7 +37,7 @@ Constructor for QgsProcessingRegistry.
 
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
-Get list of available providers.
+Gets list of available providers.
 %End
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
