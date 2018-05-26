@@ -60,14 +60,14 @@ Resets the transparency list to a single ``value``.
 Resets the transparency list to single red, green, and blue values.
 %End
 
-    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList /Transfer/ );
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 %Docstring
- Mutator for transparentSingleValuePixelList, replaces the whole list
+Sets the transparent single value pixel list, replacing the whole existing list.
 %End
 
-    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList /Transfer/ );
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 %Docstring
- Mutator for transparentThreeValuePixelList, replaces the whole list
+Sets the transparent three value pixel list, replacing the whole existing list.
 %End
 
     int alphaValue( double value, int globalTransparency = 255 ) const;

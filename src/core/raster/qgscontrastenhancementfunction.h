@@ -43,11 +43,17 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     //! \brief A customicable method to indicate if the pixels is displayable
     virtual bool isValueInDisplayableRange( double );
 
-    //! \brief Mustator for the maximum value
-    void setMaximumValue( double );
+    /**
+     * Sets the maximum \a value.
+     * \see setMinimumValue()
+     */
+    void setMaximumValue( double value );
 
-    //! \brief Mutator for the minimum value
-    void setMinimumValue( double );
+    /**
+     * Sets the minimum \a value.
+     * \see setMaximumValue()
+     */
+    void setMinimumValue( double value );
 
   protected:
     //! \brief User defineable maximum value for the band, used for enhanceContrasting

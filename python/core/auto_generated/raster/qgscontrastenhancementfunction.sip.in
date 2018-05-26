@@ -36,14 +36,18 @@ a specified bounding range.
  A customicable method to indicate if the pixels is displayable
 %End
 
-    void setMaximumValue( double );
+    void setMaximumValue( double value );
 %Docstring
- Mustator for the maximum value
+Sets the maximum ``value``.
+
+.. seealso:: :py:func:`setMinimumValue`
 %End
 
-    void setMinimumValue( double );
+    void setMinimumValue( double value );
 %Docstring
- Mutator for the minimum value
+Sets the minimum ``value``.
+
+.. seealso:: :py:func:`setMaximumValue`
 %End
 
   protected:
