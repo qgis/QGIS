@@ -45,15 +45,33 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 
     /**
      * Sets the maximum \a value.
+     * \see maximumValue()
      * \see setMinimumValue()
      */
     void setMaximumValue( double value );
 
     /**
      * Sets the minimum \a value.
+     * \see minimumValue()
      * \see setMaximumValue()
      */
     void setMinimumValue( double value );
+
+    /**
+     * Returns the maximum value.
+     * \see setMaximumValue()
+     * \see minimumValue()
+     * \since QGIS 3.2
+     */
+    double maximumValue() const { return mMaximumValue; }
+
+    /**
+     * Returns the minimum value.
+     * \see setMinimumValue()
+     * \see maximumValue()
+     * \since QGIS 3.2
+     */
+    double minimumValue() const { return mMinimumValue; }
 
   protected:
     //! \brief User defineable maximum value for the band, used for enhanceContrasting

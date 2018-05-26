@@ -40,6 +40,8 @@ a specified bounding range.
 %Docstring
 Sets the maximum ``value``.
 
+.. seealso:: :py:func:`maximumValue`
+
 .. seealso:: :py:func:`setMinimumValue`
 %End
 
@@ -47,7 +49,31 @@ Sets the maximum ``value``.
 %Docstring
 Sets the minimum ``value``.
 
+.. seealso:: :py:func:`minimumValue`
+
 .. seealso:: :py:func:`setMaximumValue`
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
+
+.. versionadded:: 3.2
+%End
+
+    double minimumValue() const;
+%Docstring
+Returns the minimum value.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
+
+.. versionadded:: 3.2
 %End
 
   protected:
