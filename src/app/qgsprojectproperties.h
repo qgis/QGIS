@@ -58,7 +58,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const &title );
 
-    //! Accessor for projection
+    //! Returns the projection as a WKT string
     QString projectionWkt();
 
   public slots:

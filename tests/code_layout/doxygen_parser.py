@@ -579,6 +579,8 @@ class DoxygenParser():
                         return 'Use "Sets the..." instead of "setter"'
                     elif para.text.strip().lower().startswith('mutator'):
                         return 'Use "Sets the..." instead of "mutator for..."'
+                    elif para.text.strip().lower().startswith('accessor'):
+                        return 'Use "Returns the..." instead of "accessor for..."'
                     elif para.text.strip().lower().startswith('return '):
                         return 'Use "Returns the..." instead of "return ..."'
                     #elif para.text.strip().lower().startswith('set '):

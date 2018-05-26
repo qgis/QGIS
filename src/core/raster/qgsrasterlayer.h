@@ -262,7 +262,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
 
-    //! \brief  Accessor for raster layer type (which is a read only property)
+    /**
+     * Returns the raster layer type (which is a read only property).
+     */
     LayerType rasterType() { return mRasterType; }
 
     //! Sets raster renderer. Takes ownership of the renderer object
@@ -275,19 +277,31 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
-    //! Get raster pipe
+    /**
+     * Returns the raster pipe.
+     */
     QgsRasterPipe *pipe() { return &mPipe; }
 
-    //! \brief Accessor that returns the width of the (unclipped) raster
+    /**
+     * Returns the width of the (unclipped) raster.
+     * \see height()
+     */
     int width() const;
 
-    //! \brief Accessor that returns the height of the (unclipped) raster
+    /**
+     * Returns the height of the (unclipped) raster.
+     * \see width()
+     */
     int height() const;
 
-    //! \brief Get the number of bands in this layer
+    /**
+     * Returns the number of bands in this layer.
+     */
     int bandCount() const;
 
-    //! \brief Get the name of a band given its number
+    /**
+     * Returns the name of a band given its number.
+     */
     QString bandName( int bandNoInt ) const;
 
     // Returns nullptr if not using the data provider model (i.e. directly using GDAL)

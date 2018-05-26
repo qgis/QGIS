@@ -312,7 +312,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /**
-     * \brief Accessor for the raster layers pyramid list.
+     * Returns the raster layers pyramid list.
      * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers

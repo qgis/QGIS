@@ -44,14 +44,14 @@ class CORE_EXPORT QgsScaleCalculator
                         QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
 
     /**
-     * Set the dpi to be used in scale calculations
-     * \param dpi Dots per inch of monitor resolution
+     * Sets the \a dpi (dots per inch) for the output resolution, to be used in scale calculations.
+     * \see dpi()
      */
     void setDpi( double dpi );
 
     /**
-     * Accessor for dpi used in scale calculations
-     * \returns int the dpi used for scale calculations.
+     * Returns the DPI (dots per inch) used in scale calculations.
+     * \see setDpi()
      */
     double dpi();
 

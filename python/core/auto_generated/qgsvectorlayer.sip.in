@@ -437,7 +437,7 @@ Removes a vector layer join
 
     QgsVectorLayerJoinBuffer *joinBuffer();
 %Docstring
-Accessor to the join buffer object
+Returns the join buffer object.
 
 .. versionadded:: 2.14.7
 %End

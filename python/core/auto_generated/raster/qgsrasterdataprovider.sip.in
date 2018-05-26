@@ -224,7 +224,7 @@ to caller.
 
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 %Docstring
- Accessor for the raster layers pyramid list.
+Returns the raster layers pyramid list.
 
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
 A pyramid list defines the
