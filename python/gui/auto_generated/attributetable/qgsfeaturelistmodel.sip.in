@@ -52,7 +52,7 @@ Constructor for QgsFeatureListModel
 
     void setInjectNull( bool injectNull );
 %Docstring
- If true is specified, a NULL value will be injected
+If true is specified, a NULL value will be injected
 
 :param injectNull: state of null value injection
 
@@ -61,7 +61,7 @@ Constructor for QgsFeatureListModel
 
     bool injectNull();
 %Docstring
- Returns the current state of null value injection
+Returns the current state of null value injection
 
 :return: If a NULL value is added
 
@@ -82,7 +82,7 @@ Constructor for QgsFeatureListModel
 
     QString parserErrorString();
 %Docstring
- Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
+Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End

@@ -49,7 +49,7 @@ add a message to the instance (and create it if necessary)
 class QgsMessageLogConsole : QObject
 {
 %Docstring
- Default implementation of message logging interface
+Default implementation of message logging interface
 
 This class outputs log messages to the standard output. Therefore it might
 be the right choice for apps without GUI.

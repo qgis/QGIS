@@ -740,7 +740,7 @@ Custom stroke
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring
- A class for filling symbols with a repeated raster image.
+A class for filling symbols with a repeated raster image.
 
 .. versionadded:: 2.7
 %End

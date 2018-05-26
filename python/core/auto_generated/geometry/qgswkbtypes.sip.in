@@ -15,7 +15,7 @@
 class QgsWkbTypes
 {
 %Docstring
- Handles storage of information regarding WKB types and their properties.
+Handles storage of information regarding WKB types and their properties.
 
 .. versionadded:: 2.10
 %End

@@ -13,7 +13,7 @@
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %Docstring
- network access manager for QGIS
+network access manager for QGIS
 
 .. versionadded:: 1.5
 

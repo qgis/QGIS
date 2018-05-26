@@ -11,7 +11,7 @@
 class QgsLayoutSnapper: QgsLayoutSerializableObject
 {
 %Docstring
- Manages snapping grids and preset snap lines in a layout, and handles
+Manages snapping grids and preset snap lines in a layout, and handles
 snapping points to the nearest grid coordinate/snap line when possible.
 
 .. versionadded:: 3.0

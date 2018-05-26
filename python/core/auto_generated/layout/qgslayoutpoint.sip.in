@@ -12,7 +12,7 @@
 class QgsLayoutPoint
 {
 %Docstring
- This class provides a method of storing points, consisting of an x and y coordinate,
+This class provides a method of storing points, consisting of an x and y coordinate,
 for use in QGIS layouts. Measurement units are stored alongside the position.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`

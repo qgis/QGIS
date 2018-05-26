@@ -50,7 +50,7 @@ from existing configs, or creating/removing them from auth database
 
     void setWarningText( const QString &warningText );
 %Docstring
- setWarningText set the text of the warning label
+setWarningText set the text of the warning label
 
 :param warningText: the text of the warning label
 
@@ -59,69 +59,69 @@ from existing configs, or creating/removing them from auth database
 
     void setBasicText( const QString &basicText );
 %Docstring
- setBasicText set the text of the warning label
+setBasicText set the text of the warning label
 
 :param basicText: the text of the basic tab label
 %End
 
     const QString username( ) const;
 %Docstring
- username
+username
 
 :return: basic authentication username
 %End
 
     void setUsername( const QString &username );
 %Docstring
- setUsername set the username
+setUsername set the username
 
 :param username: the user name
 %End
 
     const QString password( ) const;
 %Docstring
- password
+password
 
 :return: basic authentication password
 %End
 
     void setPassword( const QString &password );
 %Docstring
- setPassword set the password
+setPassword set the password
 
 :param password: the password
 %End
 
     const QString configId( ) const;
 %Docstring
- configId
+configId
 
 :return: authentication configuration id
 %End
 
     void setConfigId( const QString &configId );
 %Docstring
- setConfigId set the authentication configuration id
+setConfigId set the authentication configuration id
 param configId the authentication configuration id
 %End
 
     void setDataprovider( const QString &dataprovider );
 %Docstring
- setDataprovider set the data provider key for filtering compatible authentication configurations
+setDataprovider set the data provider key for filtering compatible authentication configurations
 
 :param dataprovider: data provider key
 %End
 
     const QString dataprovider( ) const;
 %Docstring
- dataprovider
+dataprovider
 
 :return: the data provider key used to filter compatible authentication configurations
 %End
 
     static const QString formattedWarning( WarningType warning );
 %Docstring
- warning text message based upon where credentials are stored
+warning text message based upon where credentials are stored
 
 :param warning: enum of warning type
 
@@ -130,14 +130,14 @@ param configId the authentication configuration id
 
     bool btnConvertToEncryptedIsEnabled( ) const;
 %Docstring
- convertButtonEnabled, mainly useful for unit tests
+convertButtonEnabled, mainly useful for unit tests
 
 :return: true if the convert button is enabled
 %End
 
     void showStoreCheckboxes( bool enabled );
 %Docstring
- showStoreCheckboxes show the "Store" checkboxes for basic auth.
+showStoreCheckboxes show the "Store" checkboxes for basic auth.
 Some connection configurations allow the user to enter credentials
 for testing the connection without storing them in the project.
 "Store" checkboxes are disabled by default.
@@ -147,7 +147,7 @@ for testing the connection without storing them in the project.
 
     void setStoreUsernameChecked( bool checked );
 %Docstring
- setStoreUsernameChecked check the "Store" checkbox for the username
+setStoreUsernameChecked check the "Store" checkbox for the username
 
 :param checked:
 
@@ -156,7 +156,7 @@ for testing the connection without storing them in the project.
 
     void setStorePasswordChecked( bool checked );
 %Docstring
- setStorePasswordCheched check the "Store" checkbox for the password
+setStorePasswordCheched check the "Store" checkbox for the password
 
 :param checked:
 
@@ -165,21 +165,21 @@ for testing the connection without storing them in the project.
 
     bool storePasswordIsChecked( ) const;
 %Docstring
- storePassword
+storePassword
 
 :return: true if "Store" checkbox for the password is checked
 %End
 
     bool storeUsernameIsChecked( ) const;
 %Docstring
- storeUsername
+storeUsername
 
 :return: true if "Store" checkbox for the username is checked
 %End
 
     bool configurationTabIsSelected( );
 %Docstring
- configurationTabIsSelected
+configurationTabIsSelected
 
 :return: true if the configuration tab is the currently selected tab
 %End
@@ -188,7 +188,7 @@ for testing the connection without storing them in the project.
 
     bool convertToEncrypted( );
 %Docstring
- convertToEncrypted is called when the convert to encrypted button is
+convertToEncrypted is called when the convert to encrypted button is
 clicked and it creates a Basic authentication configuration from
 username and password specified in the Basic tab
 

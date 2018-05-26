@@ -13,7 +13,7 @@
 class QgsCoordinateFormatter
 {
 %Docstring
- Contains methods for converting coordinates for display in various formats.
+Contains methods for converting coordinates for display in various formats.
 
 QgsCoordinateFormatter contains static methods for converting numeric coordinates into different
 formats, for instance as degrees, minutes, seconds values. Note that QgsCoordinateFormatter has

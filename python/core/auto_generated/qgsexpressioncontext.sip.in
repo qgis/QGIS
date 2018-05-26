@@ -12,7 +12,7 @@
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring
- Expression function for use within a QgsExpressionContextScope. This differs from a
+Expression function for use within a QgsExpressionContextScope. This differs from a
 standard QgsExpression.Function in that it requires an implemented
 clone() method.
 
@@ -78,7 +78,7 @@ Returns a clone of the function.
 class QgsExpressionContextScope
 {
 %Docstring
- Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
+Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
@@ -348,7 +348,7 @@ fields set by the scope will be overwritten.
 class QgsExpressionContext
 {
 %Docstring
- Expression contexts are used to encapsulate the parameters around which a QgsExpression should
+Expression contexts are used to encapsulate the parameters around which a QgsExpression should
 be evaluated. QgsExpressions can then utilize the information stored within a context to contextualise
 their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
 where scopes added later to the stack will override conflicting variables and functions from scopes
@@ -746,7 +746,7 @@ Clears all cached values from the context.
 class QgsExpressionContextUtils
 {
 %Docstring
- Contains utilities for working with QgsExpressionContext objects, including methods
+Contains utilities for working with QgsExpressionContext objects, including methods
 for creating scopes for specific uses (e.g., project scopes, layer scopes).
 
 .. versionadded:: 2.12

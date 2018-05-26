@@ -14,7 +14,7 @@
 class QgsNetworkContentFetcherTask : QgsTask
 {
 %Docstring
- Handles HTTP network content fetching in a background task.
+Handles HTTP network content fetching in a background task.
 
 Provides a simple method for fetching remote HTTP content in a QgsTask.
 Url redirects are automatically handled.

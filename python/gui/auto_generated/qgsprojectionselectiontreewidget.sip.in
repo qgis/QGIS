@@ -126,7 +126,7 @@ The initial "preview" rectangle for the bounds overview map.
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 %Docstring
- filters this widget by the given CRSs
+filters this widget by the given CRSs
 
 Sets this widget to filter the available projections to those listed
 by the given Coordinate Reference Systems.

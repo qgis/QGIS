@@ -111,7 +111,7 @@ Convenience metadata class that uses static functions to create renderer and its
 class QgsRendererRegistry
 {
 %Docstring
- Registry of renderers.
+Registry of renderers.
 
 QgsRendererRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.rendererRegistry()`

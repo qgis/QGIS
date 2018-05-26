@@ -12,7 +12,7 @@
 class QgsLayoutItemMap : QgsLayoutItem
 {
 %Docstring
- Layout graphical items for displaying a map.
+Layout graphical items for displaying a map.
 
 .. versionadded:: 3.0
 %End

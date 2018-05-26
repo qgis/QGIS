@@ -11,7 +11,7 @@
 class QgsLayoutGuide : QObject
 {
 %Docstring
- Contains the configuration for a single snap guide used by a layout.
+Contains the configuration for a single snap guide used by a layout.
 
 .. versionadded:: 3.0
 %End
@@ -127,7 +127,7 @@ Emitted when the guide's position is changed.
 class QgsLayoutGuideCollection : QAbstractTableModel, QgsLayoutSerializableObject
 {
 %Docstring
- Stores and manages the snap guides used by a layout.
+Stores and manages the snap guides used by a layout.
 
 .. versionadded:: 3.0
 %End
@@ -265,7 +265,7 @@ Sets the collection's state from a DOM element. collectionElement is the DOM nod
 class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 {
 %Docstring
- Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
+Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
 
 .. versionadded:: 3.0
 %End

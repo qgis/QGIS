@@ -14,7 +14,7 @@
 class QgsProcessingAlgorithmDialogBase : QDialog
 {
 %Docstring
- Base class for processing algorithm dialogs.
+Base class for processing algorithm dialogs.
 
 .. note::
 

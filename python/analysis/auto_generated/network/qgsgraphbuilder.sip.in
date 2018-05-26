@@ -14,7 +14,7 @@
 class QgsGraphBuilder : QgsGraphBuilderInterface
 {
 %Docstring
- This class used for making the QgsGraph object
+This class used for making the QgsGraph object
 %End
 
 %TypeHeaderCode

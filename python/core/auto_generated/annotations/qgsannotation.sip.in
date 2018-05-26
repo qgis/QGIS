@@ -16,7 +16,7 @@ class QgsAnnotation : QObject
 
 .. versionadded:: 3.0
 
- Abstract base class for annotation items which are drawn over a map.
+Abstract base class for annotation items which are drawn over a map.
 
 QgsAnnotation is an abstract base class for map annotation items. These annotations can be
 drawn within a map, and have either a fixed map position (retrieved using mapPosition())

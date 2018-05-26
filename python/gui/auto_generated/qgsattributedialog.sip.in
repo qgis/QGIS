@@ -34,7 +34,7 @@ Create an attribute dialog for a given layer and feature
 
     void setHighlight( QgsHighlight *h );
 %Docstring
- setHighlight
+setHighlight
 
 :param h: The highlight. Ownership is taken.
 %End

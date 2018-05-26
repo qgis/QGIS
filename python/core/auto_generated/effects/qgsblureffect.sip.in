@@ -12,7 +12,7 @@
 class QgsBlurEffect : QgsPaintEffect
 {
 %Docstring
- A paint effect which blurs a source picture, using a number of different blur
+A paint effect which blurs a source picture, using a number of different blur
 methods.
 
 .. versionadded:: 2.9

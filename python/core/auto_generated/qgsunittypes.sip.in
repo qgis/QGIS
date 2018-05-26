@@ -14,7 +14,7 @@
 class QgsUnitTypes
 {
 %Docstring
- Helper functions for various unit types.
+Helper functions for various unit types.
 
 .. versionadded:: 2.14
 %End

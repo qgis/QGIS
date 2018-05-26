@@ -94,7 +94,7 @@ Sets if the currently shown form has received any edit events so far.
 
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 %Docstring
- setFeatureSelectionManager
+setFeatureSelectionManager
 
 :param featureSelectionManager: We will take ownership
 %End

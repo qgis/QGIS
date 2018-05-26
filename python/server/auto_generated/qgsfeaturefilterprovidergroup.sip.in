@@ -13,7 +13,7 @@
 class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
 {
 %Docstring
- A filter filter provider grouping several filter providers.
+A filter filter provider grouping several filter providers.
 
 .. versionadded:: 3.0
 %End

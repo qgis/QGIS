@@ -223,7 +223,7 @@ class QgsAuxiliaryStorage
 %Docstring
 
 
- Class providing some utility methods to manage auxiliary storage.
+Class providing some utility methods to manage auxiliary storage.
 
 .. versionadded:: 3.0
 %End

@@ -28,14 +28,14 @@ class QgsStyleExportImportDialog : QDialog
 
     void selectSymbols( const QStringList &symbolNames );
 %Docstring
- selectSymbols select symbols by name
+selectSymbols select symbols by name
 
 :param symbolNames: list of symbol names
 %End
 
     void deselectSymbols( const QStringList &symbolNames );
 %Docstring
- deselectSymbols deselect symbols by name
+deselectSymbols deselect symbols by name
 
 :param symbolNames: list of symbol names
 %End
@@ -45,17 +45,17 @@ class QgsStyleExportImportDialog : QDialog
 
     void selectByGroup();
 %Docstring
- selectByGroup open select by group dialog
+selectByGroup open select by group dialog
 %End
 
     void selectAll();
 %Docstring
- selectAll selects all symbols
+selectAll selects all symbols
 %End
 
     void clearSelection();
 %Docstring
- clearSelection deselects all symbols
+clearSelection deselects all symbols
 %End
 
     void selectTag( const QString &tagName );
@@ -74,14 +74,14 @@ Deselect the symbols belonging to the given tag
 
     void selectSmartgroup( const QString &groupName );
 %Docstring
- selectSmartgroup selects all symbols from a smart group
+selectSmartgroup selects all symbols from a smart group
 
 :param groupName:
 %End
 
     void deselectSmartgroup( const QString &groupName );
 %Docstring
- deselectSmartgroup deselects all symbols from a smart group
+deselectSmartgroup deselects all symbols from a smart group
 
 :param groupName:
 %End

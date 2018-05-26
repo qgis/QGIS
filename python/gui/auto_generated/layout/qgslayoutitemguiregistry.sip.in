@@ -12,7 +12,7 @@
 class QgsLayoutItemAbstractGuiMetadata
 {
 %Docstring
- Stores GUI metadata about one layout item class.
+Stores GUI metadata about one layout item class.
 
 This is a companion to QgsLayoutItemAbstractMetadata, storing only
 the components related to the GUI behavior of a layout item.
@@ -123,7 +123,7 @@ called for items added from templates.
 class QgsLayoutItemGuiGroup
 {
 %Docstring
- Stores GUI metadata about a group of layout item classes.
+Stores GUI metadata about a group of layout item classes.
 
 QgsLayoutItemGuiGroup stores settings about groups of related layout item classes
 which should be presented to users grouped together.
@@ -156,7 +156,7 @@ Constructor for QgsLayoutItemGuiGroup.
 class QgsLayoutItemGuiRegistry : QObject
 {
 %Docstring
- Registry of available layout item GUI behavior.
+Registry of available layout item GUI behavior.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsGui.layoutItemGuiRegistry()`

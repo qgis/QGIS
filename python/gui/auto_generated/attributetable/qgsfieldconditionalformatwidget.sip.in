@@ -61,14 +61,14 @@ Resets the formatting options to their default state.
 
     void setPresets( const QList<QgsConditionalStyle> &styles );
 %Docstring
- Set the presets that can be used for quick pick
+Set the presets that can be used for quick pick
 
 :param styles: A list of styles used as presets
 %End
 
     QList<QgsConditionalStyle> defaultPresets() const;
 %Docstring
- The default presets for the widget.  Normally set when the widget is
+The default presets for the widget.  Normally set when the widget is
 created however called setPresets will override the default styles.
 
 :return: List of default presets.

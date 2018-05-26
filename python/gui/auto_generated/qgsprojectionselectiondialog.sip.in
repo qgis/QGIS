@@ -88,7 +88,7 @@ Sets the initial ``crs`` to show within the dialog.
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 %Docstring
- filters this dialog by the given CRSs
+filters this dialog by the given CRSs
 
 Sets this dialog to filter the available projections to those listed
 by the given Coordinate Reference Systems.

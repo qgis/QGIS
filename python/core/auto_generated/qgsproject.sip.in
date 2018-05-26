@@ -1031,7 +1031,7 @@ Emitted when a layer is loaded
 
     void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 %Docstring
- Emitted when loading layers has produced some messages
+Emitted when loading layers has produced some messages
 
 :param layerName: the layer name
 :param messages: a list of pairs of Qgis.MessageLevel and messages

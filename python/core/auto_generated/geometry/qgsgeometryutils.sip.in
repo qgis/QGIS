@@ -14,7 +14,7 @@
 class QgsGeometryUtils
 {
 %Docstring
- Contains various geometry utility functions.
+Contains various geometry utility functions.
 
 .. versionadded:: 2.10
 %End
@@ -104,7 +104,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
 %Docstring
- Compute the intersection between two segments
+Compute the intersection between two segments
 
 :param p1: First segment start point
 :param p2: First segment end point
@@ -144,7 +144,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection /In,Out/ );
 %Docstring
- Compute the intersection of a line and a circle.
+Compute the intersection of a line and a circle.
 If the intersection has two solutions (points),
 the closest point to the initial ``intersection`` point is returned.
 
@@ -206,7 +206,7 @@ Returns the number of tangents (either 0 or 2).
 
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
- Project the point on a segment
+Project the point on a segment
 
 :param p: The point
 :param s1: The segment start point
@@ -499,7 +499,7 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
- Create a perpendicular line segment from p to segment [s1, s2]
+Create a perpendicular line segment from p to segment [s1, s2]
 
 :param p: The point
 :param s1: The segment start point

@@ -45,7 +45,7 @@ It can also be used to display a picture or a web page.
 
     explicit QgsExternalResourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsExternalResourceWidget creates a widget with a file widget and a document viewer
+QgsExternalResourceWidget creates a widget with a file widget and a document viewer
 Both part of the widget are optional.
 
 .. seealso:: :py:class:`QgsFileWidget`
@@ -53,7 +53,7 @@ Both part of the widget are optional.
 
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
 %Docstring
- documentPath returns the path of the current document in the widget
+documentPath returns the path of the current document in the widget
 
 :param type: determines the type of the returned null variant if the document is not defined yet
 %End
@@ -89,7 +89,7 @@ returns the height of the document viewer
 
     void setDocumentViewerHeight( int height );
 %Docstring
- setDocumentViewerWidth set the height of the document viewer.
+setDocumentViewerWidth set the height of the document viewer.
 
 :param height: the height. Use 0 for automatic best display.
 %End
@@ -100,7 +100,7 @@ returns the width of the document viewer
 
     void setDocumentViewerWidth( int width );
 %Docstring
- setDocumentViewerWidth set the width of the document viewer.
+setDocumentViewerWidth set the width of the document viewer.
 
 :param width: the width. Use 0 for automatic best display.
 %End

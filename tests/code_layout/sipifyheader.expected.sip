@@ -161,7 +161,7 @@ is not very interesting!
 
     void LongDocStringMethodWithBrief();
 %Docstring
- some brief
+some brief
 My long doc ``string``
 is not very interesting!
 Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.

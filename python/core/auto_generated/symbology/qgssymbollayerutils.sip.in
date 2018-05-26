@@ -360,7 +360,7 @@ Create ogr feature style string for brush
 
     static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
 %Docstring
- Creates a SE 1.1 anchor point element as a child of the specified element
+Creates a SE 1.1 anchor point element as a child of the specified element
 
 :param doc: The document
 :param element: The parent element

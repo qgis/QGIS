@@ -438,7 +438,7 @@ Copies paint effect of this layer to another symbol layer
 class QgsMarkerSymbolLayer : QgsSymbolLayer
 {
 %Docstring
- Abstract base class for marker symbol layers.
+Abstract base class for marker symbol layers.
 %End
 
 %TypeHeaderCode

@@ -288,7 +288,7 @@ Sets the map tool currently being used on the canvas
 
     void unsetMapTool( QgsMapTool *mapTool );
 %Docstring
- Unset the current map tool or last non zoom tool
+Unset the current map tool or last non zoom tool
 
 This is called from destructor of map tools to make sure
 that this map tool won't be used any more.

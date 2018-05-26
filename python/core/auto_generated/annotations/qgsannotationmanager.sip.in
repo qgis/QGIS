@@ -16,7 +16,7 @@ class QgsAnnotationManager : QObject
 
 .. versionadded:: 3.0
 
- Manages storage of a set of QgsAnnotation annotation objects.
+Manages storage of a set of QgsAnnotation annotation objects.
 
 QgsAnnotationManager handles the storage, serializing and deserializing
 of QgsAnnotations. Usually this class is not constructed directly, but

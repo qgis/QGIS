@@ -13,7 +13,7 @@
 class QgsCurve: QgsAbstractGeometry
 {
 %Docstring
- Abstract base class for curved geometry type
+Abstract base class for curved geometry type
 
 .. versionadded:: 2.10
 %End

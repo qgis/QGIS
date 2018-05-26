@@ -27,7 +27,7 @@ Constructor for QgsRasterIdentifyResult.
 
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring
- Constructor. Creates valid result.
+Constructor. Creates valid result.
 
 :param format: the result format
 :param results: the results
@@ -35,7 +35,7 @@ Constructor for QgsRasterIdentifyResult.
 
     QgsRasterIdentifyResult( const QgsError &error );
 %Docstring
- Constructor. Creates invalid result with error.
+Constructor. Creates invalid result with error.
 
 :param error: the error
 %End
@@ -44,7 +44,7 @@ Constructor for QgsRasterIdentifyResult.
 
     bool isValid() const;
 %Docstring
- Returns true if valid
+Returns true if valid
 %End
 
     QgsRaster::IdentifyFormat format() const;

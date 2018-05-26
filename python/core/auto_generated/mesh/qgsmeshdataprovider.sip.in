@@ -131,22 +131,22 @@ Usually including name, description or time variable
 
     bool isVector() const;
 %Docstring
- Returns whether dataset has vector data
+Returns whether dataset has vector data
 %End
 
     bool isScalar() const;
 %Docstring
- Returns whether dataset has scalar data
+Returns whether dataset has scalar data
 %End
 
     bool isOnVertices() const;
 %Docstring
- Returns whether dataset data is defined on vertices
+Returns whether dataset data is defined on vertices
 %End
 
     bool isValid() const;
 %Docstring
- Returns whether dataset is valid
+Returns whether dataset is valid
 %End
 
 };
@@ -179,14 +179,14 @@ read on demand
 
     virtual int vertexCount() const = 0;
 %Docstring
- Returns number of vertices in the native mesh
+Returns number of vertices in the native mesh
 
 :return: Number of vertices in the mesh
 %End
 
     virtual int faceCount() const = 0;
 %Docstring
- Returns number of faces in the native mesh
+Returns number of faces in the native mesh
 
 :return: Number of faces in the mesh
 %End
@@ -226,22 +226,22 @@ or read on demand
 
     virtual bool addDataset( const QString &uri ) = 0;
 %Docstring
- Associate dataset with the mesh
+Associate dataset with the mesh
 %End
 
     virtual int datasetCount() const = 0;
 %Docstring
- Returns number of datasets loaded
+Returns number of datasets loaded
 %End
 
     virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
 %Docstring
- Returns dataset metadata
+Returns dataset metadata
 %End
 
     virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
 %Docstring
- Returns vector/scalar value associated with the index from the dataset
+Returns vector/scalar value associated with the index from the dataset
 
 See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
 %End

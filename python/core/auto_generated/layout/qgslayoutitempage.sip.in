@@ -13,7 +13,7 @@
 class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring
- Item representing the paper in a layout.
+Item representing the paper in a layout.
 
 .. versionadded:: 3.0
 %End

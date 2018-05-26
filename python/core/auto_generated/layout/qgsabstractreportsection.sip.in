@@ -13,7 +13,7 @@
 class QgsReportSectionContext
 {
 %Docstring
- Current context for a report section.
+Current context for a report section.
 
 .. warning::
 
@@ -38,7 +38,7 @@ class QgsReportSectionContext
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
 {
 %Docstring
- An abstract base class for QgsReport subsections.
+An abstract base class for QgsReport subsections.
 
 .. warning::
 

@@ -14,7 +14,7 @@
 class QgsAuthMethodConfig
 {
 %Docstring
- Configuration storage class for authentication method configurations
+Configuration storage class for authentication method configurations
 %End
 
 %TypeHeaderCode
@@ -195,7 +195,7 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class QgsPkiBundle
 {
 %Docstring
- Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
+Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
 
 .. note::
 
@@ -288,7 +288,7 @@ Sets chain of Certificate Authorities for client certificate
 class QgsPkiConfigBundle
 {
 %Docstring
- Storage set for constructed SSL certificate, key, associated with an authentication config
+Storage set for constructed SSL certificate, key, associated with an authentication config
 %End
 
 %TypeHeaderCode
@@ -346,14 +346,14 @@ Sets private key object
 
     QList<QSslCertificate> caChain() const;
 %Docstring
- caChain return the CA chain
+caChain return the CA chain
 
 :return: list of CA certificates
 %End
 
     void setCaChain( const QList<QSslCertificate> &caChain );
 %Docstring
- setCaChain set the CA chain
+setCaChain set the CA chain
 
 :param caChain:
 %End
@@ -414,7 +414,7 @@ Sets private key object
 class QgsAuthConfigSslServer
 {
 %Docstring
- Configuration container for SSL server connection exceptions or overrides
+Configuration container for SSL server connection exceptions or overrides
 %End
 
 %TypeHeaderCode

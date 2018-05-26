@@ -15,7 +15,7 @@
 class QgsAccessControlFilter
 {
 %Docstring
- Class defining access control interface for QGIS Server plugins.
+Class defining access control interface for QGIS Server plugins.
 
 Security can define any (or none) of the following method:
 * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)

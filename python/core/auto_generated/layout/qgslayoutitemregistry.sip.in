@@ -12,7 +12,7 @@
 class QgsLayoutItemAbstractMetadata
 {
 %Docstring
- Stores metadata about one layout item class.
+Stores metadata about one layout item class.
 
 A companion class, QgsLayoutItemAbstractGuiMetadata, handles the
 GUI behavior of QgsLayoutItems.
@@ -69,7 +69,7 @@ instances the paths are always absolute.
 class QgsLayoutMultiFrameAbstractMetadata
 {
 %Docstring
- Stores metadata about one layout multiframe class.
+Stores metadata about one layout multiframe class.
 
 A companion class, :py:class:`QgsLayoutMultiFrameAbstractGuiMetadata`, handles the
 GUI behavior of :py:class:`QgsLayoutMultiFrames`.
@@ -132,7 +132,7 @@ instances the paths are always absolute.
 class QgsLayoutItemRegistry : QObject
 {
 %Docstring
- Registry of available layout item types.
+Registry of available layout item types.
 
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.layoutItemRegistry()`

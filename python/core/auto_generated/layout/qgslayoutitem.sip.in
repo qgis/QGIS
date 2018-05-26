@@ -66,7 +66,7 @@ scaled by 50% in order to have a constant visible size.
 class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
- Base class for graphical items within a :py:class:`QgsLayout`.
+Base class for graphical items within a :py:class:`QgsLayout`.
 
 .. versionadded:: 3.0
 %End
