@@ -524,9 +524,9 @@ which is used by the layer, so any changes are immediately applied.
 
     int selectedFeatureCount() const;
 %Docstring
-The number of features that are selected in this layer
+Returns the number of features that are selected in this layer.
 
-:return: See description
+.. seealso:: :py:func:`selectedFeatureIds`
 %End
 
     void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
@@ -614,7 +614,14 @@ Invert selection of features found within the search rectangle (in layer's coord
 %Docstring
 Returns a copy of the user-selected features.
 
+.. warning::
+
+   Calling this method triggers a request for all attributes and geometry for the selected features.
+   Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+   require access to the feature attributes or geometry.
+
 :return: A list of :py:class:`QgsFeature`
+
 
 .. seealso:: :py:func:`selectedFeatureIds`
 
@@ -631,6 +638,13 @@ Returns an iterator of the selected features.
 :return: Iterator over the selected features
 
 
+.. warning::
+
+   Calling this method returns an iterator for all attributes and geometry for the selected features.
+   Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+   require access to the feature attributes or geometry.
+
+
 .. seealso:: :py:func:`selectedFeatureIds`
 
 .. seealso:: :py:func:`selectedFeatures`
@@ -638,11 +652,11 @@ Returns an iterator of the selected features.
 
     const QgsFeatureIds &selectedFeatureIds() const;
 %Docstring
-Returns reference to identifiers of selected features
-
-:return: A list of :py:class:`QgsFeatureId`
+Returns a list of the selected features IDs in this layer.
 
 .. seealso:: :py:func:`selectedFeatures`
+
+.. seealso:: :py:func:`selectedFeatureCount`
 %End
 
     QgsRectangle boundingBoxOfSelected() const;

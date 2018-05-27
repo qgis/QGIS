@@ -7903,7 +7903,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   }
 
   //get initial selection (may be altered by attribute merge dialog later)
-  QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
+  QgsFeatureList featureList = vl->selectedFeatures();
 
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
@@ -8043,7 +8043,7 @@ void QgisApp::mergeSelectedFeatures()
 
   //get initial selection (may be altered by attribute merge dialog later)
   QgsFeatureIds featureIds = vl->selectedFeatureIds();
-  QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
+  QgsFeatureList featureList = vl->selectedFeatures();
   bool canceled;
   QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
   if ( unionGeom.isNull() )
@@ -13600,11 +13600,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
   }
   else
   {
-    const auto selectedFeatures = layer->selectedFeatures();
-    for ( const QgsFeature &f : selectedFeatures )
-    {
-      featureList.append( f );
-    }
+    featureList.append( layer->selectedFeatures() );
   }
 
   int featureCount = 0;
