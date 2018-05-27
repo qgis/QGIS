@@ -46,7 +46,7 @@ Constructor. Constructs a new QgsField object.
 :param type: Field variant type, currently supported: String / Int / Double
 :param typeName: Field type (e.g., char, varchar, text, int, serial, double).
                  Field types are usually unique to the source and are stored exactly
-as returned from the data store.
+                 as returned from the data store.
 :param len: Field length
 :param prec: Field precision. Usually decimal places but may also be
              used in conjunction with other fields types (e.g., variable character fields)

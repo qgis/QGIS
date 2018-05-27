@@ -173,7 +173,7 @@ Returns the inherent dimension of the geometry type as an integer. Returned valu
 always be less than or equal to the coordinate dimension.
 
 :return: 0 for point geometries, 1 for line geometries, 2 for polygon geometries
-Invalid geometry types will return a dimension of 0.
+         Invalid geometry types will return a dimension of 0.
 
 .. seealso:: :py:func:`coordDimensions`
 %End

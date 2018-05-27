@@ -99,7 +99,7 @@ Typical return values are:
 :param fieldIdx:
 
 :return: 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
-taken by default). The default implementation returns 5..
+         taken by default). The default implementation returns 5..
 
 .. seealso:: :py:func:`supportsField`
 %End

@@ -92,7 +92,7 @@ interprets the supplied path (url) of the data source to connect to and access t
 data.
 
 :param path:  The path or url of the parameter.  Typically this encodes
-parameters used by the data provider as url query items.
+             parameters used by the data provider as url query items.
 :param baseName: The name used to represent the layer in the legend
 :param providerLib:  The name of the data provider, e.g., "mesh_memory", "mdal"
 :param options: general mesh layer options

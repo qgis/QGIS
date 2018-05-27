@@ -580,7 +580,7 @@ height.
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeHeader: set to true if frame would include a header row
 :param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
-if the frame would include all table content rows and have space left for extra rows then setting this parameter
+                         if the frame would include all table content rows and have space left for extra rows then setting this parameter
                          to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excluding header row)
@@ -593,7 +593,7 @@ Calculates how many content rows are visible within a given frame.
 :param frameIndex: index number for frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
-if the frame would include all table content rows and have space left for extra rows then setting this parameter
+                         if the frame would include all table content rows and have space left for extra rows then setting this parameter
                          to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excludes header rows)

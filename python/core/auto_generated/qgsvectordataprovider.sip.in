@@ -298,7 +298,7 @@ capability implement an optimised version of this method.
 :param attr_map: a map containing changed attributes
 :param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
                      that will have their geometries changed.
-The second map parameter being the new geometries themselves
+                     The second map parameter being the new geometries themselves
 
 :return: true in case of success and false in case of failure
 %End
@@ -355,7 +355,7 @@ Changes geometries of existing features
 
 :param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
                      that will have their geometries changed.
-The second map parameter being the new geometries themselves
+                     The second map parameter being the new geometries themselves
 
 :return:               True in case of success and false in case of failure
 %End

@@ -99,7 +99,7 @@ The layersAdded() and layerWasAdded() signals will always be emitted.
 
 :return: a list of the map layers that were added
          successfully. If a layer is invalid, or already exists in the store,
-it will not be part of the returned list.
+         it will not be part of the returned list.
 
 
 .. seealso:: :py:func:`addMapLayer`
