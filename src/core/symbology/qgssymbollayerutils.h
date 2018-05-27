@@ -382,7 +382,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param doc The document owning the element
      * \param element The element parent
      * \param function The expression to be encoded
-     * \returns
      */
     static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );

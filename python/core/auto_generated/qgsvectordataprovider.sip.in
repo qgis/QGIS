@@ -357,7 +357,7 @@ Changes geometries of existing features
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
-:return:               True in case of success and false in case of failure
+:return: True in case of success and false in case of failure
 %End
 
     virtual bool createSpatialIndex();

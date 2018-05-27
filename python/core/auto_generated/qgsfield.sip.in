@@ -259,7 +259,7 @@ Converts the provided variant to a compatible format
 
 :param v: The value to convert
 
-:return:   True if the conversion was successful
+:return: True if the conversion was successful
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;

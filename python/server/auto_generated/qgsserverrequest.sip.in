@@ -59,7 +59,7 @@ Constructor
     QUrl url() const;
 %Docstring
 
-:return:  the request url
+:return: the request url
 %End
 
     QgsServerRequest::Method method() const;

@@ -106,9 +106,7 @@ Check if the root location has been set for the manager.
 
     QStringList allProfiles() const;
 %Docstring
-A list of all found profile names.
-
-:return:
+Returns a list of all found profile names.
 %End
 
     bool profileExists( const QString &name ) const;

@@ -116,15 +116,11 @@ Test using renderer to generate the image to be compared.
     QString report() const;
 %Docstring
 Returns a report for this test
-
-:return: A report
 %End
 
     QString controlImagePath() const;
 %Docstring
- controlImagePath
-
-:return:
+Returns the path to the control images.
 %End
 
     static void drawBackground( QImage *image );

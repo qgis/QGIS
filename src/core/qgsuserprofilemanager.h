@@ -110,8 +110,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     bool rootLocationIsSet() const;
 
     /**
-     * A list of all found profile names.
-     * \return
+     * Returns a list of all found profile names.
      */
     QStringList allProfiles() const;
 

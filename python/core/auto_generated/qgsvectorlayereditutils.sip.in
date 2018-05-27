@@ -92,8 +92,7 @@ Adds a ring to polygon/multipolygon features
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return:
-         - QgsGeometry.Success
+:return: - QgsGeometry.Success
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -104,8 +103,7 @@ Adds a new part polygon to a multipart feature
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return:
-         - QgsGeometry.Success
+:return: - QgsGeometry.Success
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -120,8 +118,7 @@ Adds a new part polygon to a multipart feature
 %Docstring
 Adds a new part polygon to a multipart feature
 
-:return:
-         - QgsGeometry.Success
+:return: - QgsGeometry.Success
          - QgsGeometry.AddPartSelectedGeometryNotFound
          - QgsGeometry.AddPartNotMultiGeometry
          - QgsGeometry.InvalidBaseGeometry
@@ -150,8 +147,7 @@ Splits parts cut by the given line
 :param splitLine: line that splits the layer feature parts
 :param topologicalEditing: true if topological editing is enabled
 
-:return:
-         - QgsGeometry.InvalidBaseGeometry
+:return: - QgsGeometry.InvalidBaseGeometry
          - QgsGeometry.Success
          - QgsGeometry.InvalidInput
          - QgsGeometry.NothingHappened if a selection is present but no feature has been split
@@ -167,8 +163,7 @@ Splits features cut by the given line
 :param splitLine: line that splits the layer features
 :param topologicalEditing: true if topological editing is enabled
 
-:return:
-         0 in case of success,
+:return: 0 in case of success,
          4 if there is a selection but no feature split
 %End
 
