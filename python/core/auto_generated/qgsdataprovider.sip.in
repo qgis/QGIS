@@ -67,7 +67,7 @@ to generic QgsVectorDataProvider's) depends on it.
 
     struct ProviderOptions
     {
-
+      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );

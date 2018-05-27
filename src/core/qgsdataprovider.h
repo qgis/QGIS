@@ -103,7 +103,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-
+      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     /**

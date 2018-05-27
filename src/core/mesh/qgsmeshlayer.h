@@ -97,7 +97,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-
+      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     /**
