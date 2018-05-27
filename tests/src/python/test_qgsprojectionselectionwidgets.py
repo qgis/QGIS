@@ -125,7 +125,7 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         # setting the same crs doesn't emit the signal
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        self.assertEqual(len(spy), 0)
+        self.assertEqual(len(spy), 1)
 
     def testTreeWidgetGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
