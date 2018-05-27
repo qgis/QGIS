@@ -217,11 +217,11 @@ sub processDoxygenLine {
         return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
-        $INDENT = '                  ';
+        $INDENT = '';
         return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\deprecated (.*)/i ) {
-        $INDENT = '                ';
+        $INDENT = '';
         return "\n.. deprecated:: $1\n";
     }
 
