@@ -268,34 +268,14 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QLabel" name="lblFilter">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Search</string>
-               </property>
-               <property name="buddy">
-                <cstring>leFilter</cstring>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsFilterLineEdit" name="leFilter">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QgsFilterLineEdit" name="leFilter">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QSplitter" name="mPluginsDetailsSplitter">
@@ -803,8 +783,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>646</width>
-                   <height>638</height>
+                   <width>460</width>
+                   <height>613</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
