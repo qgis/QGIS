@@ -133,7 +133,7 @@ attribute form if it is set to the drag and drop designer.
 %Docstring
 Creates a new attribute editor container
 
-:param name:   The name to show as title
+:param name: The name to show as title
 :param parent: The parent. May be another container.
 %End
 
@@ -240,8 +240,8 @@ This element will load a field's widget onto the form.
 %Docstring
 Creates a new attribute editor element which represents a field
 
-:param name:   The name of the element
-:param idx:    The index of the field which should be embedded
+:param name: The name of the element
+:param idx: The index of the field which should be embedded
 :param parent: The parent of this widget (used as container)
 %End
 
@@ -284,16 +284,16 @@ This element will load a relation editor onto the form.
 %Docstring
 Creates a new element which embeds a relation.
 
-:param relationId:   The id of the relation to embed
-:param parent:       The parent (used as container)
+:param relationId: The id of the relation to embed
+:param parent: The parent (used as container)
 %End
 
     QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which embeds a relation.
 
-:param relation:     The relation to embed
-:param parent:       The parent (used as container)
+:param relation: The relation to embed
+:param parent: The parent (used as container)
 %End
 
 

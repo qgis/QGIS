@@ -39,7 +39,7 @@ and the attributes for the currently selected feature are shown in a form.
 %Docstring
  Constructor
 
-:param parent:  The parent widget
+:param parent: The parent widget
 %End
 
     void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
@@ -47,11 +47,11 @@ and the attributes for the currently selected feature are shown in a form.
 %Docstring
 Has to be called to initialize the dual view.
 
-:param layer:      The layer which should be used to fetch features
-:param mapCanvas:  The mapCanvas (used for the FilterMode
+:param layer: The layer which should be used to fetch features
+:param mapCanvas: The mapCanvas (used for the FilterMode
                   QgsAttributeTableFilterModel.ShowVisible)
-:param request:    Use a modified request to limit the shown features
-:param context:    The context in which this view is shown
+:param request: Use a modified request to limit the shown features
+:param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to
                      false, limited features can later be loaded using setFilterMode()
 %End
@@ -115,7 +115,7 @@ filter restrictions
 %Docstring
 Set a list of currently visible features
 
-:param filteredFeatures:  A list of feature ids
+:param filteredFeatures: A list of feature ids
 %End
 
     QgsFeatureIds filteredFeatures();
@@ -173,7 +173,7 @@ Gets the expression used for sorting the table and feature list.
 %Docstring
  Set the current edit selection in the AttributeEditor mode.
 
-:param fids:   A list of edited features (Currently only one at a time is supported)
+:param fids: A list of edited features (Currently only one at a time is supported)
 %End
 
     bool saveEditChanges();

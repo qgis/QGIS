@@ -113,8 +113,8 @@ Returns legend keys matching a specified feature.
 Must be called when a new render cycle is started. A call to startRender() must always
 be followed by a corresponding call to stopRender() after all features have been rendered.
 
-:param context:  Additional information passed to the renderer about the job which will be rendered
-:param fields:   The fields available for rendering
+:param context: Additional information passed to the renderer about the job which will be rendered
+:param fields: The fields available for rendering
 
 .. seealso:: :py:func:`stopRender`
 

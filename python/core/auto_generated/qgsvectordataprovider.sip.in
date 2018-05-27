@@ -296,7 +296,7 @@ ChangeGeometries capabilities. Providers which report the ChangeFeatures
 capability implement an optimised version of this method.
 
 :param attr_map: a map containing changed attributes
-:param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
+:param geometry_map: A QgsGeometryMap whose index contains the feature IDs
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
@@ -353,7 +353,7 @@ passed which can help refine the skip constraint check.
 %Docstring
 Changes geometries of existing features
 
-:param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
+:param geometry_map: A QgsGeometryMap whose index contains the feature IDs
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 

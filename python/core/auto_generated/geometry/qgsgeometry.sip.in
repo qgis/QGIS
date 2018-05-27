@@ -905,11 +905,11 @@ of segments used to approximate curves
 %Docstring
 Returns a buffer region around the geometry, with additional style options.
 
-:param distance:    buffer distance
-:param segments:    for round joins, number of segments to approximate quarter-circle
+:param distance: buffer distance
+:param segments: for round joins, number of segments to approximate quarter-circle
 :param endCapStyle: end cap style
-:param joinStyle:   join style for corners in geometry
-:param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
+:param joinStyle: join style for corners in geometry
+:param miterLimit: limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
 .. versionadded:: 2.4
 
@@ -922,10 +922,10 @@ Returns a buffer region around the geometry, with additional style options.
 %Docstring
 Returns an offset line at a given distance and side from an input line.
 
-:param distance:    buffer distance
-:param segments:    for round joins, number of segments to approximate quarter-circle
-:param joinStyle:   join style for corners in geometry
-:param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
+:param distance: buffer distance
+:param segments: for round joins, number of segments to approximate quarter-circle
+:param joinStyle: join style for corners in geometry
+:param miterLimit: limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
 .. versionadded:: 2.4
 %End

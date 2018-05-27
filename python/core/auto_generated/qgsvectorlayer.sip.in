@@ -338,10 +338,10 @@ The QgsVectorLayer is constructed by instantiating a data provider.  The provide
 interprets the supplied path (url) of the data source to connect to and access the
 data.
 
-:param path:  The path or url of the parameter.  Typically this encodes
+:param path: The path or url of the parameter.  Typically this encodes
              parameters used by the data provider as url query items.
 :param baseName: The name used to represent the layer in the legend
-:param providerLib:  The name of the data provider, e.g., "memory", "postgres"
+:param providerLib: The name of the data provider, e.g., "memory", "postgres"
 :param options: layer load options
 %End
 
@@ -579,8 +579,8 @@ selectionChanged() signal with the clearAndSelect flag set.
 %Docstring
 Modifies the current selection on this layer
 
-:param selectIds:    Select these ids
-:param deselectIds:  Deselect these ids
+:param selectIds: Select these ids
+:param deselectIds: Deselect these ids
 
 .. seealso:: :py:func:`selectByIds`
 
@@ -605,7 +605,7 @@ Select all the features
 %Docstring
 Invert selection of features found within the search rectangle (in layer's coordinates)
 
-:param rect:  The rectangle in which the selection of features will be inverted
+:param rect: The rectangle in which the selection of features will be inverted
 
 .. seealso:: :py:func:`invertSelection`
 %End
@@ -1669,7 +1669,7 @@ Deletes an attribute field (but does not commit it).
 %Docstring
 Deletes a list of attribute fields (but does not commit it)
 
-\param  attrs the indices of the attributes to delete
+:param attrs: the indices of the attributes to delete
 
 :return: true if at least one attribute has been deleted
 %End
@@ -2196,7 +2196,7 @@ Test if an edit command is active
 %Docstring
 Select feature by its ID
 
-:param featureId:  The id of the feature to select
+:param featureId: The id of the feature to select
 
 .. seealso:: :py:func:`select`
 %End
@@ -2214,7 +2214,7 @@ Select features by their ID
 %Docstring
 Deselect feature by its ID
 
-:param featureId:  The id of the feature to deselect
+:param featureId: The id of the feature to deselect
 
 .. seealso:: :py:func:`deselect`
 %End
@@ -2266,9 +2266,9 @@ by the backend data provider).
 %Docstring
 This signal is emitted when selection was changed
 
-:param selected:        Newly selected feature ids
-:param deselected:      Ids of all features which have previously been selected but are not any more
-:param clearAndSelect:  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+:param selected: Newly selected feature ids
+:param deselected: Ids of all features which have previously been selected but are not any more
+:param clearAndSelect: In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
 %End
 
     void layerModified();
@@ -2487,8 +2487,8 @@ Signal emitted whenever the symbology (QML-file) for this layer is being written
 If there is custom style information you want to save to the file, you can connect
 to this signal and update the element accordingly.
 
-:param element:  The XML element where you can add additional style information to.
-:param doc:      The XML document that you can use to create new XML nodes.
+:param element: The XML element where you can add additional style information to.
+:param doc: The XML document that you can use to create new XML nodes.
 :param errorMessage: Write error messages into this string.
 %End
 

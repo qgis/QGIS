@@ -41,8 +41,8 @@ Is mostly referred to as "master model" within this doc and the source.
 %Docstring
 Constructor
 
-:param layerCache:  A layer cache to use as backend
-:param parent:      The parent QObject (owner)
+:param layerCache: A layer cache to use as backend
+:param parent: The parent QObject (owner)
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;

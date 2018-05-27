@@ -392,7 +392,7 @@ Returns a band histogram. Histograms are cached in providers.
 :param lowerCount: The lower count as fraction of 1, e.g. 0.02 = 2%
 :param upperCount: The upper count as fraction of 1, e.g. 0.98 = 98%
 :param lowerValue: Location into which the lower value will be set.
-:param upperValue:  Location into which the upper value will be set.
+:param upperValue: Location into which the upper value will be set.
 :param extent: Extent used to calc histogram, if empty, whole raster extent is used.
 :param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
 %End

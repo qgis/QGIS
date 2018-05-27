@@ -45,8 +45,8 @@ Implement this method to update the the indices, in case you need information co
 to properly index. (E.g. spatial index)
 Does nothing by default
 
-:param featureRequest:  The feature request that was answered
-:param fids:            The feature ids that have been returned
+:param featureRequest: The feature request that was answered
+:param fids: The feature ids that have been returned
 %End
 
     virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) = 0;
@@ -56,10 +56,10 @@ If this cache index is able to completely answer the feature request, it will re
 and set the iterator to a valid iterator over the cached features. If it is not able
 it will return false.
 
-:param featureIterator:  A reference to a :py:class:`QgsFeatureIterator`. A valid featureIterator will
+:param featureIterator: A reference to a :py:class:`QgsFeatureIterator`. A valid featureIterator will
                         be assigned in case this index is able to answer the request and the return
                         value is true.
-:param featureRequest:   The feature request, for which this index is queried.
+:param featureRequest: The feature request, for which this index is queried.
 
 :return:   True, if this index holds the information to answer the request.
 %End

@@ -135,8 +135,8 @@ Example:
        editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
        layer.setEditFormConfig(editFormConfig)
 
-:param widgetName:  The name of the widget to configure
-:param config:      The config to set for this widget
+:param widgetName: The name of the widget to configure
+:param config: The config to set for this widget
 
 :return: false if a field exists with the provided widgetName. In this case
          QgsVectorLayer.setEditorWidgetSetup should be used.

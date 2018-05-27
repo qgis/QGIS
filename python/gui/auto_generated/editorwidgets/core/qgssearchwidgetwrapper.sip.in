@@ -121,9 +121,9 @@ Returns a translated string representing a filter flag.
 %Docstring
 Create a new widget wrapper
 
-:param vl:        The layer on which the field is
-:param fieldIdx:  The field which will be controlled
-:param parent:    A parent widget for this widget wrapper and the created widget.
+:param vl: The layer on which the field is
+:param fieldIdx: The field which will be controlled
+:param parent: A parent widget for this widget wrapper and the created widget.
 %End
 
     virtual FilterFlags supportedFlags() const;

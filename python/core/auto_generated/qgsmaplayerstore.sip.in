@@ -287,7 +287,7 @@ Emitted when a layer is about to be removed from the store.
 %Docstring
 Emitted after one or more layers were removed from the store.
 
-:param layerIds:  A list of IDs of the layers which were removed.
+:param layerIds: A list of IDs of the layers which were removed.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 %End

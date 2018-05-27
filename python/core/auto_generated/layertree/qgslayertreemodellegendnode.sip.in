@@ -112,7 +112,7 @@ Draws label on the right side of the item
 
 :param settings: Legend layout configuration
 :param ctx: Context for rendering - may be null if only doing layout without actual rendering
-:param symbolSize:  Real size of the associated symbol - used for correct positioning when rendering
+:param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
 
 :return: Size of the label (may span multiple lines)
 %End

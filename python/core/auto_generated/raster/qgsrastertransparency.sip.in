@@ -99,7 +99,7 @@ Searches through the transparency list, if a match is found, the global transpar
 by the stored transparency value.
 
 :param redValue: the red portion of the needle to search for in the transparency hay stack
-:param greenValue:  the green portion of the needle to search for in the transparency hay stack
+:param greenValue: the green portion of the needle to search for in the transparency hay stack
 :param blueValue: the green portion of the needle to search for in the transparency hay stack
 :param globalTransparency: the overal transparency level for the layer
 %End

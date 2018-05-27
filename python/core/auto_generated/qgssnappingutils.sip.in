@@ -109,10 +109,10 @@ snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex an
 snapper.setLayers([snapping_layer1, snapping_layer2])
 ```
 
-:param l:   The vector layer for which this configuration is
-:param t:   Which parts of the geometry should be snappable
+:param l: The vector layer for which this configuration is
+:param t: Which parts of the geometry should be snappable
 :param tol: The tolerance radius in which the snapping will trigger
-:param u:   The unit in which the tolerance is specified
+:param u: The unit in which the tolerance is specified
 %End
 
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
