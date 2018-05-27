@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import (QgsProjectionSelectionWidget,
                       QgsProjectionSelectionTreeWidget,
                       QgsProjectionSelectionDialog)
@@ -114,6 +115,17 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         # both current and not set options should be shown
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+
+    def testSignal(self):
+        w = QgsProjectionSelectionWidget()
+        w.show()
+        spy = QSignalSpy(w.crsChanged)
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
+        self.assertEqual(len(spy), 1)
+        # setting the same crs doesn't emit the signal
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
 
     def testTreeWidgetGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
