@@ -235,7 +235,7 @@ clone this rule, return new instance
 %Docstring
 Create a rule from an XML definition
 
-:param ruleElem:  The XML rule element
+:param ruleElem: The XML rule element
 :param context: reading context
 
 :return: A new rule

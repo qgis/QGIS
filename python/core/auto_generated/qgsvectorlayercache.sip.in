@@ -50,7 +50,7 @@ In case full caching is enabled, this number can change, as new features get add
 %Docstring
 Enable or disable the caching of geometries
 
-:param cacheGeometry:    Enable or disable the caching of geometries
+:param cacheGeometry: Enable or disable the caching of geometries
 
 .. seealso:: :py:func:`cacheGeometry`
 %End
@@ -68,7 +68,7 @@ Returns true if the cache will fetch and cache feature geometries.
 %Docstring
 Set the subset of attributes to be cached
 
-:param attributes:   The attributes to be cached
+:param attributes: The attributes to be cached
 %End
 
     void setCacheAddedAttributes( bool cacheAddedAttributes );
@@ -76,7 +76,7 @@ Set the subset of attributes to be cached
 If this is enabled, the subset of cached attributes will automatically be extended
 to also include newly added attributes.
 
-:param cacheAddedAttributes:   Automatically cache new attributes
+:param cacheAddedAttributes: Automatically cache new attributes
 %End
 
     void setFullCache( bool fullCache );
@@ -87,7 +87,7 @@ be increased to offer space for all features.
 When enabled, all features will be read into cache. As this feature will most likely
 be used for slow data sources, be aware, that the call to this method might take a long time.
 
-:param fullCache:   True: enable full caching, False: disable full caching
+:param fullCache: True: enable full caching, False: disable full caching
 
 .. note::
 
@@ -114,7 +114,7 @@ Adds a QgsAbstractCacheIndex to this cache. Cache indices know about features pr
 in this cache and decide, if enough information is present in the cache to respond to a :py:class:`QgsFeatureRequest`.
 The layer cache will take ownership of the index.
 
-:param cacheIndex:  The cache index to add.
+:param cacheIndex: The cache index to add.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &featureRequest = QgsFeatureRequest() );
@@ -125,7 +125,7 @@ the request, the returned QgsFeatureIterator will iterate over cached features.
 If it's not possible to fully satisfy the request from the cache, part or all of the features
 will be requested from the data provider.
 
-:param featureRequest:  The request specifying filter and required data.
+:param featureRequest: The request specifying filter and required data.
 
 :return: An iterator over the requested data.
 %End
@@ -154,7 +154,8 @@ Query the layer for the features which intersect the specified rectangle.
     bool isFidCached( const QgsFeatureId fid ) const;
 %Docstring
 Check if a certain feature id is cached.
-\param  fid The feature id to look for
+
+:param fid: The feature id to look for
 
 :return: True if this id is in the cache
 
@@ -175,7 +176,7 @@ Returns the set of feature IDs for features which are cached.
 Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param feature:   The result of the operation will be written to this feature
+:param feature: The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
 :return: true in case of success
@@ -233,8 +234,8 @@ if the feature count is unknown.
 Gets called, whenever the full list of feature ids for a certain request is known.
 Broadcasts this information to indices, so they can update their tables.
 
-:param featureRequest:  The feature request that was answered
-:param fids:            The feature ids that have been returned
+:param featureRequest: The feature request that was answered
+:param fids: The feature ids that have been returned
 %End
 
     void featureRemoved( QgsFeatureId fid );
@@ -242,7 +243,7 @@ Broadcasts this information to indices, so they can update their tables.
 Gets called, whenever a feature has been removed.
 Broadcasts this information to indices, so they can invalidate their cache if required.
 
-:param fid:             The feature id of the removed feature.
+:param fid: The feature id of the removed feature.
 %End
 
     bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
@@ -251,7 +252,7 @@ Checks if the information required to complete the request is cached.
 i.e. If all attributes required and the geometry is held in the cache.
 Please note, that this does not check, if the requested features are cached.
 
-:param featureRequest:  The QgsFeatureRequest to be answered
+:param featureRequest: The QgsFeatureRequest to be answered
 
 :return:                True if the information is being cached, false if not
 %End

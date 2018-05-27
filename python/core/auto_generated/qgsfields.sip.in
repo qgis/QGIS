@@ -119,7 +119,7 @@ Returns a list with field names
 %Docstring
 Returns if a field index is valid
 
-:param i:  Index of the field which needs to be checked
+:param i: Index of the field which needs to be checked
 
 :return:   True if the field exists
 %End

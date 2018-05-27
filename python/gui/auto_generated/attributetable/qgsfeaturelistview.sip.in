@@ -28,7 +28,7 @@ Uses a QgsFeatureListModel as source model.
 %Docstring
 Creates a feature list view
 
-:param parent:   owner
+:param parent: owner
 %End
 
     QgsVectorLayerCache *layerCache();
@@ -42,7 +42,7 @@ Returns the layer cache
 %Docstring
 Set the QgsFeatureListModel which is used to retrieve information
 
-:param featureListModel:  The model to use
+:param featureListModel: The model to use
 %End
 
     QgsFeatureListModel *featureListModel();
@@ -57,7 +57,7 @@ Gets the featureListModel used by this view
 The display expression is an expression used to render the fields into a single string
 which is displaied.
 
-:param displayExpression:  The expression used to render the feature
+:param displayExpression: The expression used to render the feature
 
 .. seealso:: :py:class:`QgsExpression`
 %End
@@ -142,7 +142,7 @@ Is emitted, when the context menu is created to add the specific actions to it
 %Docstring
 Set the feature(s) to be edited
 
-:param fids:  A list of features to be edited
+:param fids: A list of features to be edited
 %End
 
     void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );

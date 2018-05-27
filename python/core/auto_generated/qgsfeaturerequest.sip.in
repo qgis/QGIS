@@ -116,7 +116,7 @@ from the provider.
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
                   If the order is ascending, by default nulls are last
                   If the order is descending, by default nulls are first
 %End
@@ -126,7 +126,7 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 %End
 
@@ -135,7 +135,7 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
                   If the order is ascending, by default nulls are last
                   If the order is descending, by default nulls are first
 %End
@@ -145,7 +145,7 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 %End
 
@@ -448,7 +448,7 @@ The spatial filter (filterRect) will be kept in place.
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
                   If the order is ascending, by default nulls are last
                   If the order is descending, by default nulls are first
 
@@ -460,7 +460,7 @@ Adds a new OrderByClause, appending it as the least important one.
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 
 .. versionadded:: 2.14
@@ -627,7 +627,7 @@ called using the feature which encountered the transform error as a parameter.
 %Docstring
 Check if a feature is accepted by this requests filter
 
-:param feature:  The feature which will be tested
+:param feature: The feature which will be tested
 
 :return: true, if the filter accepts the feature
 

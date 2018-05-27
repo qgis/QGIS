@@ -229,8 +229,8 @@ Tests whether classes assigned to the renderer have gaps between the ranges.
 %Docstring
 Recalculate classes for a layer
 
-:param vlayer:  The layer being rendered (from which data values are calculated)
-:param mode:    The calculation mode
+:param vlayer: The layer being rendered (from which data values are calculated)
+:param mode: The calculation mode
 :param nclasses: The number of classes to calculate (approximate for some modes)
 
 .. versionadded:: 2.6

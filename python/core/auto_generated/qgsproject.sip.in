@@ -730,8 +730,8 @@ Add a list of layers to the map of loaded layers.
 The layersAdded() and layerWasAdded() signals will always be emitted.
 The legendLayersAdded() signal is emitted only if addToLegend is true.
 
-:param mapLayers:  A list of layer which should be added to the registry
-:param addToLegend:   If true (by default), the layers will be added to the
+:param mapLayers: A list of layer which should be added to the registry
+:param addToLegend: If true (by default), the layers will be added to the
                     legend and to the main canvas. If you have a private
                     layer you can set this parameter to false to hide it.
 :param takeOwnership: Ownership will be transferred to the layer registry.
@@ -992,7 +992,7 @@ Emitted, after the basic initialization of a layer from the project
 file is done. You can use this signal to read additional information
 from the project file.
 
-:param mapLayer:  The map layer which is being initialized
+:param mapLayer: The map layer which is being initialized
 :param layerNode: The layer node from the project file
 %End
 
@@ -1001,7 +1001,7 @@ from the project file.
 Emitted, when a layer is being saved. You can use this method to save
 additional information to the layer.
 
-:param mapLayer:  The map layer which is being initialized
+:param mapLayer: The map layer which is being initialized
 :param layerElem: The layer element from the project file
 :param doc: The document
 %End
@@ -1217,7 +1217,7 @@ Emitted when a layer is about to be removed from the registry.
 %Docstring
 Emitted after one or more layers were removed from the registry.
 
-:param layerIds:  A list of IDs of the layers which were removed.
+:param layerIds: A list of IDs of the layers which were removed.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 %End

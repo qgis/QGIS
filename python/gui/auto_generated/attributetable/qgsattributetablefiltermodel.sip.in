@@ -45,7 +45,7 @@ Make sure, the master model is already loaded, so the selection will get synchro
 
 :param parent: parent object (owner)
 :param sourceModel: The QgsAttributeTableModel to use as source (mostly referred to as master model)
-:param canvas:  The mapCanvas. Used to identify the currently visible features.
+:param canvas: The mapCanvas. Used to identify the currently visible features.
 %End
 
     void setSourceModel( QgsAttributeTableModel *sourceModel );
@@ -77,7 +77,7 @@ Returns if selected features are currently shown on top
 Specify a list of features, which the filter will accept.
 The filter mode will automatically be adjusted to show only these features (ShowFilteredList).
 
-:param ids:  The list of feature ids which will be accepted by the filter
+:param ids: The list of feature ids which will be accepted by the filter
 %End
 
     QgsFeatureIds filteredFeatures();
@@ -154,7 +154,7 @@ Sort by the given column using the given order.
 Prefetches all the data from the layer to speed up sorting.
 
 :param column: The column which should be sorted
-:param order:  The order ( Qt.AscendingOrder or Qt.DescendingOrder )
+:param order: The order ( Qt.AscendingOrder or Qt.DescendingOrder )
 %End
 
     void sort( const QString &expression, Qt::SortOrder order = Qt::AscendingOrder );
@@ -163,7 +163,7 @@ Sort by the given expression using the given order.
 Prefetches all the data from the layer to speed up sorting.
 
 :param expression: The expression which should be used for sorting
-:param order:      The order ( Qt.AscendingOrder or Qt.DescendingOrder )
+:param order: The order ( Qt.AscendingOrder or Qt.DescendingOrder )
 %End
 
     QString sortExpression() const;

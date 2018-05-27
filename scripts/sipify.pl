@@ -190,7 +190,9 @@ sub processDoxygenLine {
 
     # params
     if ( $line =~ m/\\param / ){
-        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
+        $line =~ s/\s*\\param\s+(\w+)\b\s*/:param $1: /g;
+        # remove any trailing spaces, will be present now for empty 'param' tags
+        $line =~ s/\s*$//g;
         $INDENT = ' 'x( index($line,':',2) + 2);
         if ( $line =~ m/^:param/ ){
           if ( $COMMENT_PARAM_LIST == 0 )

@@ -49,7 +49,7 @@ Creates a relation from an XML structure. Used for reading .qgs projects.
 Writes a relation to an XML structure. Used for saving .qgs projects
 
 :param node: The parent node in which the relation will be created
-:param doc:  The document in which the relation will be saved
+:param doc: The document in which the relation will be saved
 %End
 
     void setId( const QString &id );
@@ -85,8 +85,8 @@ Add a field pairs which is part of this relation
 The first element of each pair are the field names of the foreign key.
 The second element of each pair are the field names of the matching primary key.
 
-:param referencingField:  The field name on the referencing (child) layer (FK)
-:param referencedField:   The field name on the referenced (parent) layer  (PK)
+:param referencingField: The field name on the referencing (child) layer (FK)
+:param referencedField: The field name on the referenced (parent) layer  (PK)
 %End
 
 

@@ -103,8 +103,8 @@ Sets the edit command message (Undo) that will be used when the dialog is accept
 %Docstring
 Intercepts keypress on custom form (escape should not close it)
 
-:param object:   The object for which the event has been sent
-:param event:    The event which is being filtered
+:param object: The object for which the event has been sent
+:param event: The event which is being filtered
 
 :return:         true if the event has been handled (key was ESC)
 %End
@@ -145,7 +145,7 @@ Notifies about changes of attributes, this signal is not emitted when the value 
 back to the original one.
 
 :param attribute: The name of the attribute that changed.
-:param value:     The new value of the attribute.
+:param value: The new value of the attribute.
 
 .. deprecated:: since 3.0
 %End
@@ -155,7 +155,7 @@ back to the original one.
 Notifies about changes of attributes
 
 :param attribute: The name of the attribute that changed.
-:param value:     The new value of the attribute.
+:param value: The new value of the attribute.
 :param attributeChanged: If true, it corresponds to an actual change of the feature attribute
 
 .. versionadded:: 3.0.1

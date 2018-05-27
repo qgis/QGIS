@@ -56,8 +56,8 @@ If only one relation is set, it will act as a simple 1:N relation widget
 If both relations are set, it will act as an N:M relation widget
 inserting and deleting entries on the intermediate table as required.
 
-:param relation:    Relation referencing the edited table
-:param nmrelation:  Optional reference from the referencing table to a 3rd N:M table
+:param relation: Relation referencing the edited table
+:param nmrelation: Optional reference from the referencing table to a 3rd N:M table
 %End
 
     void setFeature( const QgsFeature &feature );

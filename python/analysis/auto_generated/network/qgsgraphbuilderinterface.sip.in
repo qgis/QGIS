@@ -80,9 +80,9 @@ Add vertex to the graph
 Add edge to the graph
 
 :param pt1id: first vertex identificator
-:param pt1:   first vertex coordinates
+:param pt1: first vertex coordinates
 :param pt2id: second vertex identificator
-:param pt2:   second vertex coordinates
+:param pt2: second vertex coordinates
 :param strategies: optimization strategies
 
 .. note::

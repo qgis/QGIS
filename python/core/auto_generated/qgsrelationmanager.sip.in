@@ -96,8 +96,8 @@ Remove any relation managed by this class.
 %Docstring
 Gets all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
 
-:param layer:     The layer which should be searched for.
-:param fieldIdx:  The field which should be part of the foreign key. If not set will return all relations.
+:param layer: The layer which should be searched for.
+:param fieldIdx: The field which should be part of the foreign key. If not set will return all relations.
 
 :return: A list of relations matching the given layer and fieldIdx.
 %End
@@ -106,7 +106,7 @@ Gets all relations where the specified layer (and field) is the referencing part
 %Docstring
 Gets all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
 
-:param layer:   The layer which should be searched for.
+:param layer: The layer which should be searched for.
 
 :return: A list of relations where the specified layer is the referenced part.
 %End

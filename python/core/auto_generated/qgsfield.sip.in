@@ -257,7 +257,7 @@ Formats string for display
 %Docstring
 Converts the provided variant to a compatible format
 
-:param v:  The value to convert
+:param v: The value to convert
 
 :return:   True if the conversion was successful
 %End
@@ -317,7 +317,7 @@ Converts the provided variant to a compatible format
 %Docstring
 Set the editor widget setup for the field.
 
-:param v:  The value to set
+:param v: The value to set
 %End
 
     QgsEditorWidgetSetup editorWidgetSetup() const;
