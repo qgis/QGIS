@@ -61,7 +61,7 @@ Takes ownership
 %Docstring
 Returns the layer for which this form is shown
 
-:return:  Layer
+:return: Layer
 %End
 
     bool editable();
@@ -106,7 +106,7 @@ Intercepts keypress on custom form (escape should not close it)
 :param object: The object for which the event has been sent
 :param event: The event which is being filtered
 
-:return:         true if the event has been handled (key was ESC)
+:return: true if the event has been handled (key was ESC)
 %End
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );

@@ -254,7 +254,7 @@ Please note, that this does not check, if the requested features are cached.
 
 :param featureRequest: The QgsFeatureRequest to be answered
 
-:return:                True if the information is being cached, false if not
+:return: True if the information is being cached, false if not
 %End
 
 

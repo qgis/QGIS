@@ -137,7 +137,7 @@ Check if a given feature shall be rendered by this rule
 :param f: The feature to test
 :param context: The context in which the rendering happens
 
-:return:          True if the feature shall be rendered
+:return: True if the feature shall be rendered
 %End
 
         bool isScaleOK( double scale ) const;
@@ -303,7 +303,7 @@ Render a given feature, will recursively call subclasses and only render if the 
 :param context: The rendering context
 :param renderQueue: The rendering queue to which the feature should be added
 
-:return:             The result of the rendering. In explicit if the feature is added to the queue or
+:return: The result of the rendering. In explicit if the feature is added to the queue or
          the reason for not rendering the feature.
 %End
 

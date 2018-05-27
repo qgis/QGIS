@@ -173,7 +173,7 @@ Filter key events to e.g. toggle construction mode or adapt constraints
 
 :param e: A mouse event (may be modified)
 
-:return:  If the event is hidden (construction mode hides events from the maptool)
+:return: If the event is hidden (construction mode hides events from the maptool)
 %End
 
     bool applyConstraints( QgsMapMouseEvent *e );

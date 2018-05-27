@@ -184,7 +184,9 @@ sub processDoxygenLine {
     }
     # replace \returns with :return:
     if ( $line =~ m/\\return(s)?/ ){
-        $line =~ s/\s*\\return(s)?/\n:return:/;
+        $line =~ s/\s*\\return(s)?\s*/\n:return: /;
+        # remove any trailing spaces, will be present now for empty 'returns' tags
+        $line =~ s/\s*$//g;
         $INDENT = ' 'x( index($line,':',4) + 1);
     } 
 

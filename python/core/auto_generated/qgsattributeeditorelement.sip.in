@@ -247,9 +247,7 @@ Creates a new attribute editor element which represents a field
 
     int idx() const;
 %Docstring
-Returns the index of the field
-
-:return:
+Returns the index of the field.
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;

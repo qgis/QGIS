@@ -93,8 +93,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -105,8 +104,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      *
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -118,8 +116,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      *
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -142,8 +139,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Splits parts cut by the given line
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing true if topological editing is enabled
-     * \return
-     *  - QgsGeometry::InvalidBaseGeometry
+     * \returns  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::Success
      *  - QgsGeometry::InvalidInput
      *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
@@ -157,8 +153,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
      * \param topologicalEditing true if topological editing is enabled
-     * \return
-     *  0 in case of success,
+     * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
      */
     QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );

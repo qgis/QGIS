@@ -380,8 +380,6 @@ Creates a OGC Expression element based on the provided function expression
 :param doc: The document owning the element
 :param element: The element parent
 :param function: The expression to be encoded
-
-:return:
 %End
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
     static bool functionFromSldElement( QDomElement &element, QString &function );

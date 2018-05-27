@@ -36,7 +36,7 @@ This method should/will be called, whenever a new feature will be added to the l
 :param defaultGeometry: A default geometry to add to the feature
 :param feature: Updated feature after adding will be written back to this
 
-:return:                True in case of success, False if the operation failed/was aborted
+:return: True in case of success, False if the operation failed/was aborted
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -49,7 +49,7 @@ If successful layer->startEditing() will be called and true returned.
 
 :param layer: The layer on which to start an edit session
 
-:return:       True, if the editing session was started
+:return: True, if the editing session was started
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -62,7 +62,7 @@ Appropriate dialogs should be shown like
 :param layer: The layer to commit
 :param allowCancel: True if a cancel button should be offered
 
-:return:            True if successful
+:return: True if successful
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -73,7 +73,7 @@ Should be called, when the features should be committed but the editing session 
 
 :param layer: The layer to commit
 
-:return:            True if successful
+:return: True if successful
 
 TODO QGIS 3: remove const qualifier
 %End

@@ -115,7 +115,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param tolerance: The tolerance to use
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
-:return:  Whether the segments intersect
+:return: Whether the segments intersect
          * Example:
 .. code-block:: python
 

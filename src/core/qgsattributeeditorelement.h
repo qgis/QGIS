@@ -295,8 +295,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     {}
 
     /**
-     * Returns the index of the field
-     * \returns
+     * Returns the index of the field.
      */
     int idx() const { return mIdx; }
 
