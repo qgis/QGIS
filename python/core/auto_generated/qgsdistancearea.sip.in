@@ -142,7 +142,7 @@ Measures the area of a geometry.
 :param geometry: geometry to measure
 
 :return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
-returned area can be retrieved by calling areaUnits().
+         returned area can be retrieved by calling areaUnits().
 
 .. versionadded:: 2.12
 
@@ -160,7 +160,7 @@ Measures the length of a geometry.
 :param geometry: geometry to measure
 
 :return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
-returned distance can be retrieved by calling lengthUnits().
+         returned distance can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
 
@@ -178,7 +178,7 @@ Measures the perimeter of a polygon geometry.
 :param geometry: geometry to measure
 
 :return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
-returned perimeter can be retrieved by calling lengthUnits().
+         returned perimeter can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
 

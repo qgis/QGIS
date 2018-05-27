@@ -174,7 +174,7 @@ sub processDoxygenLine {
 
     # if inside multi-line parameter, ensure additional lines are indented
     if ($line ne '') {
-        if ( $line !~ m/\s*[\\:]?(param|note|since|return|deprecated|warning)/ ) {
+        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning)/ ) {
             $line = "$INDENT$line";
         }
     }

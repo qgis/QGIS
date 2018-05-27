@@ -113,7 +113,7 @@ Gets pointer to provider function
 :param functionName: name of function
 
 :return: pointer to function or NULL on error. If the provider uses direct provider
-function pointers instead of a library None will be returned.
+         function pointers instead of a library None will be returned.
 %End
 
     QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory/;

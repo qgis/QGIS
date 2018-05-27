@@ -526,7 +526,7 @@ should raise GeoAlgorithmExecutionException for the same purpose.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
          values such as statistical calculations. Unless the algorithm subclass overrides
-the postProcessAlgorithm() step this returned map will be used as the output for the
+         the postProcessAlgorithm() step this returned map will be used as the output for the
          algorithm.
 
 .. seealso:: :py:func:`prepareAlgorithm`
@@ -556,8 +556,8 @@ postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (r
 or if an exception was raised by the processAlgorithm() step.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations. Implementations which return a non-empty
-map will override any results returned by processAlgorithm().
+         values such as statistical calculations. Implementations which return a non-empty
+         map will override any results returned by processAlgorithm().
 
 .. seealso:: :py:func:`prepareAlgorithm`
 

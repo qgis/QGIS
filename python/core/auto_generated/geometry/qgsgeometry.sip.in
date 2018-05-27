@@ -1241,7 +1241,7 @@ Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
 
 :return: a LineString or MultiLineString geometry, with any connected lines
-joined. An empty geometry will be returned if the input geometry was not a
+         joined. An empty geometry will be returned if the input geometry was not a
          MultiLineString geometry.
 
 .. versionadded:: 3.0

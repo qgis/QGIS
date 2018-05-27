@@ -758,7 +758,7 @@ and stopRender() calls, or data defined rotation and offset will not be correctl
 :param point: location of rendered point in painter units
 :param context: render context
 :param feature: feature being rendered at point (optional). If not specified, the bounds calculation will not
-include data defined parameters such as offset and rotation
+                include data defined parameters such as offset and rotation
 
 :return: approximate symbol bounds, in painter units
 
@@ -804,7 +804,7 @@ Set data defined width for whole symbol (including all symbol layers).
 Returns data defined width for whole symbol (including all symbol layers).
 
 :return: data defined width, or invalid property if size is not set
-at the line level. Caller takes responsibility for deleting the returned object.
+         at the line level. Caller takes responsibility for deleting the returned object.
 
 .. versionadded:: 3.0
 
