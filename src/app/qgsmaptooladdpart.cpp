@@ -64,9 +64,16 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   bool isGeometryEmpty = false;
-  QgsFeatureList selectedFeatures = vlayer->selectedFeatures();
-  if ( !selectedFeatures.isEmpty() && selectedFeatures.at( 0 ).geometry().isNull() )
-    isGeometryEmpty = true;
+  if ( vlayer->selectedFeatureCount() > 0 )
+  {
+    // be efficient here - only grab the first selected feature if there's a selection, don't
+    // fetch all the other features which we don't require.
+    QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
+    QgsFeature firstSelectedFeature;
+    if ( selectedFeatures.nextFeature( firstSelectedFeature ) )
+      if ( !firstSelectedFeature.geometry().isNull() )
+        isGeometryEmpty = true;
+  }
 
   if ( !checkSelection() )
   {

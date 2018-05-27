@@ -588,9 +588,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QgsActionManager *actions() const SIP_SKIP { return mActions; }
 
     /**
-     * The number of features that are selected in this layer
+     * Returns the number of features that are selected in this layer.
      *
-     * \returns See description
+     * \see selectedFeatureIds()
      */
     int selectedFeatureCount() const;
 
@@ -659,6 +659,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns a copy of the user-selected features.
      *
+     * \warning Calling this method triggers a request for all attributes and geometry for the selected features.
+     * Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+     * require access to the feature attributes or geometry.
+     *
      * \returns A list of QgsFeature
      *
      * \see    selectedFeatureIds()
@@ -674,16 +678,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns Iterator over the selected features
      *
+     * \warning Calling this method returns an iterator for all attributes and geometry for the selected features.
+     * Consider using the much more efficient selectedFeatureIds() or selectedFeatureCount() if you do not
+     * require access to the feature attributes or geometry.
+     *
      * \see    selectedFeatureIds()
      * \see    selectedFeatures()
      */
     QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 
     /**
-     * Returns reference to identifiers of selected features
+     * Returns a list of the selected features IDs in this layer.
      *
-     * \returns A list of QgsFeatureId
      * \see selectedFeatures()
+     * \see selectedFeatureCount()
      */
     const QgsFeatureIds &selectedFeatureIds() const;
 
