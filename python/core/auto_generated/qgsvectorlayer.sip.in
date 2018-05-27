@@ -951,7 +951,7 @@ if the geometry type of the new data source matches the current geometry type of
 :param provider: provider string
 :param options: provider options
 :param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
-data source
+                             data source
 
 .. versionadded:: 3.2
 %End
