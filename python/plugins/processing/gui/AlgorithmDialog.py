@@ -138,7 +138,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if reply == QMessageBox.No:
                     return
             ok, msg = self.algorithm().checkParameterValues(parameters, context)
-            if msg:
+            if not ok:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return

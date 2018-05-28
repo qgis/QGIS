@@ -1230,10 +1230,11 @@ QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QStrin
 
 bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
-  if ( !input.isValid() )
+  if ( !input.isValid() && !mDefault.isValid() )
     return mFlags & FlagOptional;
 
-  if ( input.type() == QVariant::String && input.toString().isEmpty() )
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
     return mFlags & FlagOptional;
 
   return true;
@@ -2045,10 +2046,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterNumber::clone() const
   return new QgsProcessingParameterNumber( *this );
 }
 
-bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &value, QgsProcessingContext * ) const
 {
+  QVariant input = value;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.canConvert<QgsProperty>() )
   {
@@ -2317,10 +2324,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterEnum::clone() const
   return new QgsProcessingParameterEnum( *this );
 }
 
-bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, QgsProcessingContext * ) const
 {
+  QVariant input = value;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.canConvert<QgsProperty>() )
   {
