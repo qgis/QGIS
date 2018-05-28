@@ -10,12 +10,13 @@
 
 
 
-* \since QGIS 3.0
-%Docstring
-A filter filter provider grouping several filter providers.
-%End
 class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
 {
+%Docstring
+A filter filter provider grouping several filter providers.
+
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturefilterprovidergroup.h"

@@ -53,11 +53,11 @@ Documentation goes here
 
 Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
 
-.. versionadded:: 3.0
-
 .. note::
 
    some other note
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

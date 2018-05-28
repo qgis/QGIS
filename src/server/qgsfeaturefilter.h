@@ -29,8 +29,8 @@ class QgsExpression;
  * \ingroup server
  * \class QgsFeatureFilter
  * \brief A feature filter provider allowing to set filter expressions on a per-layer basis.
- **/
-* \since QGIS 3.0
+ * \since QGIS 3.0
+ */
 class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 {
   public:
