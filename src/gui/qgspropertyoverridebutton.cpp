@@ -368,7 +368,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   bool fieldActive = false;
   if ( !mDataTypesString.isEmpty() )
   {
-    QAction *fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
+    QAction *fieldTitleAct = mDefineMenu->addAction( tr( "Attribute Field" ) );
     fieldTitleAct->setFont( titlefont );
     fieldTitleAct->setEnabled( false );
 
