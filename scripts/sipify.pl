@@ -189,7 +189,7 @@ sub processDoxygenLine {
         # remove any trailing spaces, will be present now for empty 'returns' tags
         $line =~ s/\s*$//g;
         $INDENT = ' 'x( index($line,':',4) + 1);
-    } 
+    }
 
     # params
     if ( $line =~ m/\\param / ){
@@ -227,9 +227,9 @@ sub processDoxygenLine {
         $FOUND_SINCE = 1;
         return "\n.. versionadded:: $1\n";
     }
-    if ( $line =~ m/\\deprecated (.*)/i ) {
+    if ( $line =~ m/\\deprecated(.*)/i ) {
         $INDENT = '';
-        return "\n.. deprecated:: $1\n";
+        return "\n.. deprecated::$1\n";
     }
 
     # create links in see also
