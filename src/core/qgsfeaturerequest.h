@@ -354,8 +354,8 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets a callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
-     * \since QGIS 3.0
      * \see invalidGeometryCallback()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -380,9 +380,9 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
@@ -411,17 +411,17 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Returns the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
      * \see setExpressionContext
      * \see filterExpression
+     * \since QGIS 2.12
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
     /**
      * Sets the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
      * \see expressionContext
      * \see setFilterExpression
+     * \since QGIS 2.12
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -570,9 +570,9 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets a callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set. This function will be
      * called using the feature which encountered the transform error as a parameter.
-     * \since QGIS 3.0
      * \see transformErrorCallback()
      * \see setDestinationCrs()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -597,10 +597,10 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      * \see destinationCrs()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 

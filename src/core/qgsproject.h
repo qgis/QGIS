@@ -112,11 +112,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Sets the project's title.
      * \param title new title
-     * \since QGIS 2.4
      *
      * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
      *
      * \see title()
+     * \since QGIS 2.4
      */
     void setTitle( const QString &title );
 
@@ -191,17 +191,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
-     * \since QGIS 3.0
      * \see setCrs()
      * \see ellipsoid()
+     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the project's native coordinate reference system.
-     * \since QGIS 3.0
      * \see crs()
      * \see setEllipsoid()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -227,9 +227,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see setTransformContext()
      * \see transformContextChanged()
+     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -238,9 +238,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see transformContext()
      * \see transformContextChanged()
+     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -434,32 +434,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Convenience function to query default distance measurement units for project.
-     * \since QGIS 2.14
      * \see setDistanceUnits()
      * \see areaUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the default distance measurement units for the project.
-     * \since QGIS 3.0
      * \see distanceUnits()
      * \see setAreaUnits()
+     * \since QGIS 3.0
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /**
      * Convenience function to query default area measurement units for project.
-     * \since QGIS 2.14
      * \see distanceUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /**
      * Sets the default area measurement units for the project.
-     * \since QGIS 3.0
      * \see areaUnits()
      * \see setDistanceUnits()
+     * \since QGIS 3.0
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
@@ -496,8 +496,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's layout manager, which manages compositions within
      * the project.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
@@ -522,8 +522,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to the project's map theme collection.
-     * \since QGIS 2.12
      * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+     * \since QGIS 2.12
      */
     QgsMapThemeCollection *mapThemeCollection();
 
@@ -579,8 +579,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * QPair( providerKey, connString ) -> transactionGroup
      *
-     * \since QGIS 2.16
      * \note Not available in Python bindings
+     * \since QGIS 2.16
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
@@ -707,8 +707,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
      * \note not available in Python bindings
-     * \since QGIS 2.16
      * \see mapLayers()
+     * \since QGIS 2.16
      */
     template <typename T>
     QVector<T> layers() const
@@ -739,8 +739,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note As a side-effect QgsProject is made dirty.
      * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
-     * \since QGIS 1.8
      * \see addMapLayer()
+     * \since QGIS 1.8
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers SIP_TRANSFER,
                                        bool addToLegend = true,
@@ -787,9 +787,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param layerIds list of IDs of the layers to remove
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
-     * \since QGIS 1.8
      * \see removeMapLayer()
      * \see removeAllMapLayers()
+     * \since QGIS 1.8
      */
     void removeMapLayers( const QStringList &layerIds );
 
@@ -914,17 +914,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a reference to the project's metadata store.
-     * \since QGIS 3.2
      * \see setMetadata()
      * \see metadataChanged()
+     * \since QGIS 3.2
      */
     const QgsProjectMetadata &metadata() const;
 
     /**
      * Sets the project's \a metadata store.
-     * \since QGIS 3.2
      * \see metadata()
      * \see metadataChanged()
+     * \since QGIS 3.2
      */
     void setMetadata( const QgsProjectMetadata &metadata );
 
@@ -1030,9 +1030,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the project \a ellipsoid is changed.
      *
-     * \since QGIS 3.0
      * \see setEllipsoid()
      * \see ellipsoid()
+     * \since QGIS 3.0
      */
     void ellipsoidChanged( const QString &ellipsoid );
 
@@ -1040,8 +1040,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the project transformContext() is changed.
      *
-     * \since QGIS 3.0
      * \see transformContext()
+     * \since QGIS 3.0
      */
     void transformContextChanged();
 
@@ -1205,8 +1205,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when the project dirty status changes.
      *
      * \param dirty True if the project is in a dirty state and has pending unsaved changes.
-     * \since QGIS 3.2
      *
+     * \since QGIS 3.2
      */
     void isDirtyChanged( bool dirty );
 
@@ -1225,18 +1225,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.
      *
-     * \since QGIS 2.4
      * \note promoted to public slot in 2.16
+     * \since QGIS 2.4
      */
     void setDirty( bool b = true );
 
     /**
      * Sets the project's home \a path. If an empty path is specified than the
      * home path will be automatically determined from the project's file path.
-     * \since QGIS 3.2
      * \see presetHomePath()
      * \see homePath()
      * \see homePathChanged()
+     * \since QGIS 3.2
     */
     void setPresetHomePath( const QString &path );
 

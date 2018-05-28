@@ -96,8 +96,8 @@ class CORE_EXPORT QgsVector
 
     /**
      * Returns the length of the vector.
-     * \since QGIS 3.2
      * \see length()
+     * \since QGIS 3.2
      */
     double lengthSquared() const
     {

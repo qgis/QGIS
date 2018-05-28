@@ -610,9 +610,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param expression expression to evaluate to select features
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * \since QGIS 2.16
      * \see selectByRect()
      * \see selectByIds()
+     * \since QGIS 2.16
      */
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
 
@@ -622,9 +622,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ids feature IDs to select
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * \since QGIS 2.16
      * \see selectByRect()
      * \see selectByExpression()
+     * \since QGIS 2.16
      */
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
@@ -701,9 +701,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns whether the layer contains labels which are enabled and should be drawn.
      * \returns true if layer contains enabled labels
-     * \since QGIS 2.9
      *
      * \see setLabelsEnabled()
+     * \since QGIS 2.9
      */
     bool labelsEnabled() const;
 
@@ -852,8 +852,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * between the current layer and the auxiliary layer. Ownership is
      * transferred.
      *
-     * \since QGIS 3.0
      *
+     * \since QGIS 3.0
      */
     void setAuxiliaryLayer( QgsAuxiliaryLayer *layer SIP_TRANSFER = nullptr );
 
@@ -1108,11 +1108,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Deletes a vertex from a feature.
      * \param featureId ID of feature to remove vertex from
      * \param vertex index of vertex to delete
-     * \since QGIS 2.14
      * \note Calls to deleteVertex() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
+     * \since QGIS 2.14
      */
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
@@ -1289,16 +1289,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Access to const labeling configuration. May be null if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns true.
-     * \since QGIS 3.0
      * \see labelsEnabled()
+     * \since QGIS 3.0
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /**
      * Access to labeling configuration. May be null if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns true.
-     * \since QGIS 3.0
      * \see labelsEnabled()
+     * \since QGIS 3.0
      */
     QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
@@ -1487,11 +1487,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Renames an attribute field  (but does not commit it).
      * \param index attribute index
      * \param newName new name of field
-     * \since QGIS 2.16
      * \note Calls to renameAttribute() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
+     * \since QGIS 2.16
      */
     bool renameAttribute( int index, const QString &newName );
 
@@ -1675,8 +1675,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context optional expression context to evaluate expressions again. If not
      * specified, a default context will be created
      * \returns calculated default value
-     * \since QGIS 3.0
      * \see setDefaultValueDefinition()
+     * \since QGIS 3.0
      */
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = nullptr ) const;
@@ -1688,9 +1688,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * when calculating default values for field. Pass
      * an empty expression to clear the default.
      *
-     * \since QGIS 3.0
      * \see defaultValue()
      * \see defaultValueDefinition()
+     * \since QGIS 3.0
      */
     void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 
@@ -1700,9 +1700,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns definition of the default value with the expression evaluated
      * when calculating default values for field, or definition with an
      * empty string if no default is set
-     * \since QGIS 3.0
      * \see defaultValue()
      * \see setDefaultValueDefinition()
+     * \since QGIS 3.0
      */
     QgsDefaultValue defaultValueDefinition( int index ) const;
 
@@ -1710,8 +1710,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns any constraints which are present for a specified
      * field index. These constraints may be inherited from the layer's data provider
      * or may be set manually on the vector layer from within QGIS.
-     * \since QGIS 3.0
      * \see setFieldConstraint()
+     * \since QGIS 3.0
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
@@ -1726,46 +1726,46 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Sets a constraint for a specified field index. Any constraints inherited from the layer's
      * data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
      * constraints to be added on top of the existing provider constraints.
-     * \since QGIS 3.0
      * \see fieldConstraints()
      * \see removeFieldConstraint()
+     * \since QGIS 3.0
      */
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
 
     /**
      * Removes a constraint for a specified field index. Any constraints inherited from the layer's
      * data provider will be kept intact and cannot be removed.
-     * \since QGIS 3.0
      * \see fieldConstraints()
      * \see setFieldConstraint()
+     * \since QGIS 3.0
      */
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
 
     /**
      * Returns the constraint expression for for a specified field index, if set.
-     * \since QGIS 3.0
      * \see fieldConstraints()
      * \see constraintDescription()
      * \see setConstraintExpression()
+     * \since QGIS 3.0
      */
     QString constraintExpression( int index ) const;
 
     /**
      * Returns the descriptive name for the constraint expression for a specified field index.
-     * \since QGIS 3.0
      * \see fieldConstraints()
      * \see constraintExpression()
      * \see setConstraintExpression()
+     * \since QGIS 3.0
      */
     QString constraintDescription( int index ) const;
 
     /**
      * Set the constraint expression for the specified field index. An optional descriptive name for the constraint
      * can also be set. Setting an empty expression will clear any existing expression constraint.
-     * \since QGIS 3.0
      * \see constraintExpression()
      * \see constraintDescription()
      * \see fieldConstraints()
+     * \since QGIS 3.0
      */
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 
@@ -2190,9 +2190,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the layer's opacity is changed, where \a opacity is a value between 0 (transparent)
      * and 1 (opaque).
-     * \since QGIS 3.0
      * \see setOpacity()
      * \see opacity()
+     * \since QGIS 3.0
      */
     void opacityChanged( double opacity );
 

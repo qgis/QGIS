@@ -259,8 +259,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromOgcWmsCrs()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
@@ -276,8 +276,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a proj4 style formatted string.
      * \param proj4 proj4 format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromProj4()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 
@@ -285,8 +285,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a WKT spatial ref sys definition string.
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromWkt()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
@@ -294,9 +294,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a specified QGIS SRS ID.
      * \param srsId internal QGIS SRS ID
      * \returns matching CRS, or an invalid CRS if ID could not be found
-     * \since QGIS 3.0
      * \see createFromSrsId()
      * \see validSrsIds()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 

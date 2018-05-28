@@ -40,8 +40,8 @@ class QgsSymbol;
  * \ingroup core
  * Interpolate mesh scalar dataset to raster block
  *
- * \since QGIS 3.2
  * \note not available in Python bindings
+ * \since QGIS 3.2
  */
 class QgsMeshLayerInterpolator : public QgsRasterInterface
 {

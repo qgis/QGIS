@@ -40,10 +40,10 @@ class QgsPaintEffect;
  * \brief A widget for modifying the properties of a QgsEffectStack, including adding
  * and reordering effects within the stack.
  *
- * \since QGIS 2.9
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesDialog
  * \see QgsEffectStackCompactWidget
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private Ui::QgsEffectStackPropertiesWidgetBase
@@ -159,10 +159,10 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
  * \brief A dialog for modifying the properties of a QgsEffectStack, including adding
  * and reordering effects within the stack.
  *
- * \since QGIS 2.9
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesWidget
  * \see QgsEffectStackCompactWidget
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
@@ -204,10 +204,10 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
  * \brief A small widget consisting of a checkbox for enabling/disabling an effect stack
  * and a button for opening an effect stack customization dialog.
  *
- * \since QGIS 2.9
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesWidget
  * \see QgsEffectStackPropertiesDialog
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget

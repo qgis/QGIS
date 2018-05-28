@@ -118,15 +118,15 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Gets the source color ramp
-     * \since QGIS 3.0
      * \see setSourceColorRamp()
+     * \since QGIS 3.0
      */
     QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
 
     /**
      * Set the source color ramp. Ownership is transferred to the renderer.
-     * \since QGIS 3.0
      * \see sourceColorRamp()
+     * \since QGIS 3.0
      */
     void setSourceColorRamp( QgsColorRamp *colorramp SIP_TRANSFER );
 

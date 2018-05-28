@@ -359,29 +359,29 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the user's operating system login account name.
-     * \since QGIS 2.14
      * \see userFullName()
+     * \since QGIS 2.14
      */
     static QString userLoginName();
 
     /**
      * Returns the user's operating system login account full display name.
-     * \since QGIS 2.14
      * \see userLoginName()
+     * \since QGIS 2.14
      */
     static QString userFullName();
 
     /**
      * Returns a string name of the operating system QGIS is running on.
-     * \since QGIS 2.14
      * \see platform()
+     * \since QGIS 2.14
      */
     static QString osName();
 
     /**
      * Returns the QGIS platform name, e.g., "desktop" or "server".
-     * \since QGIS 2.14
      * \see osName()
+     * \since QGIS 2.14
      */
     static QString platform();
 
@@ -578,8 +578,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
@@ -656,8 +656,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 

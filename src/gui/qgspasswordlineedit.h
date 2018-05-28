@@ -29,7 +29,7 @@
  * QLineEdit subclass with built in support for showing/hiding
  * entered password.
  * \since QGIS 3.0
- **/
+ */
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {
     Q_OBJECT

@@ -428,40 +428,40 @@ class CORE_EXPORT QgsFields
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constBegin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constEnd() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator begin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator end() const noexcept;
 
     /**
      * Returns an STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator begin();
 
@@ -469,8 +469,8 @@ class CORE_EXPORT QgsFields
     /**
      * Returns an STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator end();
 

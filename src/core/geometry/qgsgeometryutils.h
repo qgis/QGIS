@@ -292,8 +292,8 @@ class CORE_EXPORT QgsGeometryUtils
      * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
-     * \since QGIS 3.2
      * \see segmentMidPoint()
+     * \since QGIS 3.2
      */
     static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
 
@@ -462,8 +462,8 @@ class CORE_EXPORT QgsGeometryUtils
      * use a \a fraction < 0 or > 1, in which case the returned point
      * is extrapolated from the supplied line.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
 
@@ -480,8 +480,8 @@ class CORE_EXPORT QgsGeometryUtils
      * Any Z or M values present in the input points will also be interpolated
      * and present in the returned point.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
      */
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
 
@@ -494,8 +494,8 @@ class CORE_EXPORT QgsGeometryUtils
      * point will be linearly interpolated to match position corresponding to
      * the target \a value.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLine()
+     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
 

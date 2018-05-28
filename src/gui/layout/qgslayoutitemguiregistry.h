@@ -162,8 +162,8 @@ typedef std::function<void ( QgsLayoutItem * )> QgsLayoutItemAddedToLayoutFunc S
 /**
  * \ingroup gui
  * Convenience metadata class that uses static functions to handle layout item GUI behavior.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {

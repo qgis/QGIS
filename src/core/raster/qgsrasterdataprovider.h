@@ -288,8 +288,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         legend at all. Ownership of the returned object is transferred
      *         to caller.
      *
-     * \since QGIS 2.8
      *
+     * \since QGIS 2.8
      */
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) SIP_FACTORY
     {

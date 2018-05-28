@@ -265,10 +265,10 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
      * \returns The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
-     * \since QGIS 2.3
      * \see setOffsetAlongLine
      * \see offsetAlongLineUnit
      * \see placement
+     * \since QGIS 2.3
      */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
@@ -279,10 +279,10 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * This setting has no effect for Vertex or CentralPoint placements.
      * \param offsetAlongLine Distance to offset markers along the line. The offset
      * unit is set via setOffsetAlongLineUnit.
-     * \since QGIS 2.3
      * \see offsetAlongLine
      * \see setOffsetAlongLineUnit
      * \see setPlacement
+     * \since QGIS 2.3
      */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 

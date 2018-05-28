@@ -113,15 +113,15 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
-     * \since QGIS 2.16
      * \see nonExclusiveFilterFlags()
+     * \since QGIS 2.16
      */
     static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
 
     /**
      * Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
-     * \since QGIS 2.16
      * \see exclusiveFilterFlags()
+     * \since QGIS 2.16
      */
     static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
 
@@ -143,15 +143,15 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Returns filter flags supported by the search widget.
-     * \since QGIS 2.16
      * \see defaultFlags()
+     * \since QGIS 2.16
      */
     virtual FilterFlags supportedFlags() const;
 
     /**
      * Returns the filter flags which should be set by default for the search widget.
-     * \since QGIS 2.16
      * \see supportedFlags()
+     * \since QGIS 2.16
      */
     virtual FilterFlags defaultFlags() const;
 

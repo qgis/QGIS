@@ -103,8 +103,8 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 /**
  * \ingroup core
  * Convenience metadata class that uses static functions to create layout items and their configuration widgets.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 {
@@ -224,8 +224,8 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 /**
  * \ingroup core
  * Convenience metadata class that uses static functions to create layout multiframes and their configuration widgets.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstractMetadata
 {

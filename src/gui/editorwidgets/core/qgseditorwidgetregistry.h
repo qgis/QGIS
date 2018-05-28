@@ -61,8 +61,8 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param mapCanvas  Specify a map canvas with which the widgets (relation reference) work
      * \param messageBar Specify a message bar on which messages by widgets will be shown while working with the map canvas
      *
-     * \since QGIS 2.8
      * \note Not required for plugins, the QGIS application does that already
+     * \since QGIS 2.8
      */
     void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
 

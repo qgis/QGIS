@@ -31,8 +31,8 @@
  * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
  * and converting the content to standard formats. Url redirects are automatically
  * handled.
- * \since QGIS 2.5
  * \see QgsNetworkContentFetcherTask
+ * \since QGIS 2.5
 */
 class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 {

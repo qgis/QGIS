@@ -271,8 +271,8 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Returns a list of the groups the function belongs to.
-     * \since QGIS 3.0
      * \see group()
+     * \since QGIS 3.0
     */
     QStringList groups() const { return mGroups; }
 

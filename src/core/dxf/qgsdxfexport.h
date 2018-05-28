@@ -106,15 +106,15 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Sets the export flags.
-     * \since QGIS 3.0
      * \see flags()
+     * \since QGIS 3.0
      */
     void setFlags( QgsDxfExport::Flags flags );
 
     /**
      * Returns the export flags.
-     * \since QGIS 3.0
      * \see setFlags()
+     * \since QGIS 3.0
      */
     QgsDxfExport::Flags flags() const;
 
@@ -136,16 +136,16 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see symbologyScale()
+     * \since QGIS 3.0
      */
     void setSymbologyScale( double scale ) { mSymbologyScale = scale; }
 
     /**
      * Returns the reference scale for output.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see setSymbologyScale()
+     * \since QGIS 3.0
      */
     double symbologyScale() const { return mSymbologyScale; }
 

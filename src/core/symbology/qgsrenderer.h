@@ -379,23 +379,23 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Returns the current paint effect for the renderer.
      * \returns paint effect
-     * \since QGIS 2.9
      * \see setPaintEffect
+     * \since QGIS 2.9
      */
     QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint effect for the renderer.
      * \param effect paint effect. Ownership is transferred to the renderer.
-     * \since QGIS 2.9
      * \see paintEffect
+     * \since QGIS 2.9
      */
     void setPaintEffect( QgsPaintEffect *effect );
 
     /**
      * Returns whether the renderer must render as a raster.
-     * \since QGIS 2.12
      * \see setForceRasterRender
+     * \since QGIS 2.12
      */
     bool forceRasterRender() const { return mForceRaster; }
 
@@ -411,34 +411,34 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Gets the order in which features shall be processed by this renderer.
-     * \since QGIS 2.14
      * \note this property has no effect if orderByEnabled() is false
      * \see orderByEnabled()
+     * \since QGIS 2.14
      */
     QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Define the order in which features shall be processed by this renderer.
      * \note this property has no effect if orderByEnabled() is false
-     * \since QGIS 2.14
      * \see setOrderByEnabled()
+     * \since QGIS 2.14
      */
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
      * Returns whether custom ordering will be applied before features are processed by this renderer.
-     * \since QGIS 2.14
      * \see orderBy()
      * \see setOrderByEnabled()
+     * \since QGIS 2.14
      */
     bool orderByEnabled() const;
 
     /**
      * Sets whether custom ordering should be applied before features are processed by this renderer.
      * \param enabled set to true to enable custom feature ordering
-     * \since QGIS 2.14
      * \see setOrderBy()
      * \see orderByEnabled()
+     * \since QGIS 2.14
      */
     void setOrderByEnabled( bool enabled );
 

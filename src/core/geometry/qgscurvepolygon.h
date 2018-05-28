@@ -104,8 +104,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * \since QGIS 3.0
      * \see removeInteriorRing()
+     * \since QGIS 3.0
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 

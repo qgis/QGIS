@@ -348,8 +348,8 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
  * \class QgsProcessingFeatureSink
  * \ingroup core
  * QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
- * \since QGIS 3.0
  * \note Not available in Python bindings.
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
 {

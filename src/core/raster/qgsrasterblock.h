@@ -147,16 +147,16 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Sets cell value that will be considered as "no data".
-     * \since QGIS 3.0
      * \see noDataValue(), hasNoDataValue(), resetNoDataValue()
+     * \since QGIS 3.0
      */
     void setNoDataValue( double noDataValue );
 
     /**
      * Reset no data value: if there was a no data value previously set,
      * it will be discarded.
-     * \since QGIS 3.0
      * \see noDataValue(), hasNoDataValue(), setNoDataValue()
+     * \since QGIS 3.0
      */
     void resetNoDataValue();
 
@@ -343,8 +343,8 @@ class CORE_EXPORT QgsRasterBlock
      *         It is ensured that conversion back to float gives the same number.
      *  \param value the value to be printed
      *  \returns string representing the value
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     static QString printValue( float value ) SIP_SKIP;
 

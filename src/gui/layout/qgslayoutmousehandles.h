@@ -41,8 +41,8 @@ class QInputEvent;
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *
  * \note not available in Python bindings
- * \since QGIS 3.0
  *
+ * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
 {
