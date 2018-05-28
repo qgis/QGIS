@@ -433,6 +433,26 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(None)
             self.assertFalse(self.source.empty())
 
+        # If the provider supports tests on editable layers
+        if getattr(self, 'getEditableLayer', None):
+            l = self.getEditableLayer()
+            self.assertTrue(l.isValid())
+
+            self.assertEqual(l.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
+
+            # Test that deleting some features in the edit buffer does not
+            # return empty, we accept FeaturesAvailable as well as
+            # MaybeAvailable
+            l.startEditing()
+            l.deleteFeature(next(l.getFeatures()).id())
+            self.assertNotEqual(l.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+            l.rollBack()
+
+            # Call truncate(), we need an empty set now
+            l.dataProvider().truncate()
+            self.assertTrue(l.dataProvider().empty())
+            self.assertEqual(l.dataProvider().hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
 
