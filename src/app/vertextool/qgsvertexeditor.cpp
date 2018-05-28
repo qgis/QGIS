@@ -278,8 +278,6 @@ QgsVertexEditor::QgsVertexEditor(
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
   : mCanvas( canvas )
-  , mUpdatingTableSelection( false )
-  , mUpdatingVertexSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
   mTableView = new QTableView( this );
@@ -309,7 +307,7 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
   mLayer = layer;
   mSelectedFeature = selectedFeature;
 
-  // TOOD We really should just update the model itself.
+  // TODO We really should just update the model itself.
   mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
   mTableView->setModel( mVertexModel );
 
