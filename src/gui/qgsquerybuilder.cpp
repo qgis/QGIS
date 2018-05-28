@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsquerybuilder.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -243,23 +244,27 @@ void QgsQueryBuilder::test()
 
 void QgsQueryBuilder::accept()
 {
-  if ( !mLayer->setSubsetString( txtSQL->text() ) )
+  if ( txtSQL->text() != mOrigSubsetString )
   {
-    //error in query - show the problem
-    if ( mLayer->dataProvider()->hasErrors() )
+    if ( !mLayer->setSubsetString( txtSQL->text() ) )
     {
-      QMessageBox::warning( this,
-                            tr( "Query Result" ),
-                            tr( "An error occurred when executing the query." )
-                            + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QStringLiteral( "\n" ) ) ) );
-      mLayer->dataProvider()->clearErrors();
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
-    }
+      //error in query - show the problem
+      if ( mLayer->dataProvider()->hasErrors() )
+      {
+        QMessageBox::warning( this,
+                              tr( "Query Result" ),
+                              tr( "An error occurred when executing the query." )
+                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QStringLiteral( "\n" ) ) ) );
+        mLayer->dataProvider()->clearErrors();
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
+      }
 
-    return;
+      return;
+    }
+    QgsProject::instance()->setDirty( true );
   }
 
   QDialog::accept();
