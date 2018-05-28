@@ -435,7 +435,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        QAction *actionVertexEditor = menu.addAction( tr( "Vertex editor" ) );
+        QAction *actionVertexEditor = menu.addAction( tr( "Vertex Editor" ) );
         connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );  //#spellok
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
