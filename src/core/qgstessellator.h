@@ -16,7 +16,7 @@
 #ifndef QGSTESSELLATOR_H
 #define QGSTESSELLATOR_H
 
-#include "qgis_3d.h"
+#include "qgis_core.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;
@@ -33,9 +33,9 @@ class QgsMultiPolygon;
  *
  * Optionally provides extrusion by adding triangles that serve as walls when extrusion height is non-zero.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.2 (since QGIS 3.0 in QGIS_3D library)
  */
-class _3D_EXPORT QgsTessellator
+class CORE_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)

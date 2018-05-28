@@ -9,7 +9,6 @@ SET(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgsphongmaterialsettings.cpp
   qgstessellatedpolygongeometry.cpp
-  qgstessellator.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
 
@@ -41,12 +40,6 @@ SET(QGIS_3D_SRCS
   terrain/qgsterraintileloader_p.cpp
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
-
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 )
 
 SET(QGIS_3D_MOC_HDRS
@@ -82,7 +75,6 @@ SET(QGIS_3D_HDRS
   qgscameracontroller.h
   qgsphongmaterialsettings.h
   qgstessellatedpolygongeometry.h
-  qgstessellator.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
 
@@ -127,7 +119,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/3d
-  ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )
