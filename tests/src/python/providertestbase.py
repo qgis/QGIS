@@ -421,6 +421,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
 
         if self.source.supportsSubsetString():
+            backup = self.source.subsetString()
             # Add a subset string and test feature count
             subset = self.getSubsetString()
             self.source.setSubsetString(subset)
@@ -432,6 +433,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
             self.source.setSubsetString(None)
             self.assertFalse(self.source.empty())
+            self.source.setSubsetString(backup)
 
         # If the provider supports tests on editable layers
         if getattr(self, 'getEditableLayer', None):
