@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgsvectorlayer.h"
 
 #include "qgsquickfeaturemodel.h"
@@ -64,17 +66,14 @@ QSGNode *QgsQuickFeatureHighlight::updatePaintNode( QSGNode *n, QQuickItem::Upda
     QgsCoordinateTransform transf( layer->crs(), mMapSettings->destinationCrs(), mMapSettings->transformContext() );
 
     QgsFeature feature = mModel->feature().feature();
-    QgsGeometry geom( feature.geometry() );
-    geom.transform( transf );
-
-    // TODO: this is very crude conversion! QgsQuickHighlightsNode should accept any type of geometry
-    QVector<QgsPoint> points;
-    for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
-      points.append( *it );
-
-    QgsQuickHighlightSGNode *rb = new QgsQuickHighlightSGNode( points, geom.type(), mColor, mWidth );
-    rb->setFlag( QSGNode::OwnedByParent );
-    n->appendChildNode( rb );
+    if ( feature.hasGeometry() )
+    {
+      QgsGeometry geom( feature.geometry() );
+      geom.transform( transf );
+      std::unique_ptr<QgsQuickHighlightSGNode> rb( new QgsQuickHighlightSGNode( geom, mColor, mWidth ) );
+      rb->setFlag( QSGNode::OwnedByParent );
+      n->appendChildNode( rb.release() );
+    }
   }
   mDirty = false;
 

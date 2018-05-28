@@ -20,7 +20,7 @@
 #include <QtQuick/QSGFlatColorMaterial>
 
 #include "qgspoint.h"
-#include "qgswkbtypes.h"
+#include "qgsgeometry.h"
 
 #include "qgis_quick.h"
 
@@ -29,8 +29,6 @@
  *
  * This is used to transform (render) QgsGeometry to node for QtQuick scene graph.
  *
- * Note: support for multi-part geometries and polygons is not implemented
- *
  * \note QML Type: not exported
  *
  * \since QGIS 3.2
@@ -38,20 +36,27 @@
 class QUICK_EXPORT QgsQuickHighlightSGNode : public QSGNode
 {
   public:
-    //! Constructor of new QT Quick scene node based on geometry
-    QgsQuickHighlightSGNode( const QVector<QgsPoint> &points, QgsWkbTypes::GeometryType type, const QColor &color, qreal width );
+
+    /**
+     * Constructor of new QT Quick scene node based on geometry
+     * \param geom Geometry to render in the map coordinates
+     * \param color color used to render geom
+     * \param width width of pen, see QSGGeometry::setLineWidth()
+     */
+    QgsQuickHighlightSGNode( const QgsGeometry &geom, const QColor &color, float width );
     //! Destructor
     ~QgsQuickHighlightSGNode() = default;
 
-  protected:
-    //! Constructs line geometry from points
-    QSGGeometryNode *createLineGeometry( const QVector<QgsPoint> &points, qreal width );
-    //! Constructs point geometry from qgs point
-    QSGGeometryNode *createPointGeometry( const QgsPoint &point, qreal width );
-    //! Constructs polygon geometry from points (not implemented)
-    QSGGeometryNode *createPolygonGeometry( const QVector<QgsPoint> &points );
+  private:
+    void handleGeometryCollection( const QgsGeometry &geom );
+    void handleSingleGeometry( const QgsGeometry &geom );
+
+    QSGGeometryNode *createLineGeometry( const QVector<QgsPoint> &points );
+    QSGGeometryNode *createPointGeometry( const QgsPoint &point );
+    QSGGeometryNode *createPolygonGeometry( const QgsPolygon &polygon );
 
     QSGFlatColorMaterial mMaterial;
+    float mWidth;
 };
 
 #endif // QGSQUICKHIGHLIGHTSGNODE

@@ -14,33 +14,70 @@
  ***************************************************************************/
 
 #include "qgsquickhighlightsgnode.h"
+#include "qgstessellator.h"
+#include "qgsmultipolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometry.h"
+#include "qgstriangle.h"
 
-
-QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QVector<QgsPoint> &points,
-    QgsWkbTypes::GeometryType type,
-    const QColor &color, qreal width ) : QSGNode()
+QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QgsGeometry &geom,
+    const QColor &color, float width )
+  : QSGNode()
+  , mWidth( width )
 {
   mMaterial.setColor( color );
+  handleGeometryCollection( geom );
+}
 
-  // TODO: support multi-part geometries
-  switch ( type )
+void QgsQuickHighlightSGNode::handleGeometryCollection( const QgsGeometry &geom )
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
+  if ( collection && !collection->isEmpty() )
+  {
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      QgsGeometry geomN( collection->geometryN( i )->clone() );
+      handleSingleGeometry( geomN );
+    }
+  }
+  else
+  {
+    handleSingleGeometry( geom );
+  }
+}
+
+void QgsQuickHighlightSGNode::handleSingleGeometry( const QgsGeometry &geom )
+{
+  Q_ASSERT( !geom.isMultipart() );
+
+  switch ( geom.type() )
   {
     case QgsWkbTypes::PointGeometry:
     {
+      QVector<QgsPoint> points;
+      for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+        points.append( *it );
+
       if ( !points.isEmpty() )
-        appendChildNode( createPointGeometry( points.at( 0 ), width ) );
+        appendChildNode( createPointGeometry( points.at( 0 ) ) );
       break;
     }
 
     case QgsWkbTypes::LineGeometry:
     {
-      appendChildNode( createLineGeometry( points, width ) );
+      QVector<QgsPoint> points;
+      for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+        points.append( *it );
+
+      appendChildNode( createLineGeometry( points ) );
       break;
     }
 
     case QgsWkbTypes::PolygonGeometry:
     {
-      // TODO: support polygon geometries
+      const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( geom.constGet() );
+      if ( poly )
+        appendChildNode( createPolygonGeometry( *poly ) );
       break;
     }
 
@@ -50,7 +87,7 @@ QgsQuickHighlightSGNode::QgsQuickHighlightSGNode( const QVector<QgsPoint> &point
   }
 }
 
-QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QVector<QgsPoint> &points, qreal width )
+QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QVector<QgsPoint> &points )
 {
   std::unique_ptr<QSGGeometryNode> node = qgis::make_unique< QSGGeometryNode>();
   std::unique_ptr<QSGGeometry> sgGeom = qgis::make_unique< QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), points.count() );
@@ -59,10 +96,13 @@ QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QVector<QgsP
   int i = 0;
   for ( const QgsPoint &pt : points )
   {
-    vertices[i++].set( pt.x(), pt.y() );
+    vertices[i++].set(
+      static_cast< float >( pt.x() ),
+      static_cast< float >( pt.y() )
+    );
   }
 
-  sgGeom->setLineWidth( width );
+  sgGeom->setLineWidth( mWidth );
   sgGeom->setDrawingMode( GL_LINE_STRIP );
   node->setGeometry( sgGeom.release() );
   node->setMaterial( &mMaterial );
@@ -71,15 +111,18 @@ QSGGeometryNode *QgsQuickHighlightSGNode::createLineGeometry( const QVector<QgsP
   return node.release();
 }
 
-QSGGeometryNode *QgsQuickHighlightSGNode::createPointGeometry( const QgsPoint &point, qreal width )
+QSGGeometryNode *QgsQuickHighlightSGNode::createPointGeometry( const QgsPoint &point )
 {
   std::unique_ptr<QSGGeometryNode> node = qgis::make_unique< QSGGeometryNode>();
   std::unique_ptr<QSGGeometry> sgGeom = qgis::make_unique<QSGGeometry>( QSGGeometry::defaultAttributes_Point2D(), 1 );
 
   QSGGeometry::Point2D *vertices = sgGeom->vertexDataAsPoint2D();
-  vertices[0].set( point.x(), point.y() );
+  vertices[0].set(
+    static_cast< float >( point.x() ),
+    static_cast< float >( point.y() )
+  );
   sgGeom->setDrawingMode( GL_POINTS );
-  sgGeom->setLineWidth( width );
+  sgGeom->setLineWidth( mWidth );
 
   node->setGeometry( sgGeom.release() );
   node->setMaterial( &mMaterial );
@@ -88,8 +131,38 @@ QSGGeometryNode *QgsQuickHighlightSGNode::createPointGeometry( const QgsPoint &p
   return node.release();
 }
 
-QSGGeometryNode *QgsQuickHighlightSGNode::createPolygonGeometry( const QVector<QgsPoint> &points )
+QSGGeometryNode *QgsQuickHighlightSGNode::createPolygonGeometry( const QgsPolygon &polygon )
 {
-  Q_UNUSED( points );
-  return 0;
+  QgsRectangle bounds = polygon.boundingBox();
+  QgsTessellator tes( bounds.xMinimum(), bounds.yMinimum(), false, false, false );
+  std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( polygon.segmentize() ) );
+  tes.addPolygon( *p.get(), 0.0 );
+
+  std::unique_ptr<QgsMultiPolygon> triangles = tes.asMultiPolygon();
+  int ntris = triangles->numGeometries();
+
+  QSGGeometryNode *node = new QSGGeometryNode;
+  QSGGeometry *sgGeom = new QSGGeometry( QSGGeometry::defaultAttributes_Point2D(), ntris * 3 );
+
+  QSGGeometry::Point2D *vertices = sgGeom->vertexDataAsPoint2D();
+
+  for ( int j = 0; j < ntris; j++ )
+  {
+    const QgsTriangle *triangle =  qgsgeometry_cast<const QgsTriangle *>( triangles->geometryN( j ) );
+    if ( triangle )
+    {
+      for ( int v = 0; v < 3; ++v )
+      {
+        const QgsPoint vertex = triangle->vertexAt( v );
+        vertices[3 * j + v].x = static_cast< float >( vertex.x()  + bounds.xMinimum() ) ;
+        vertices[3 * j + v].y = static_cast< float >( vertex.y()  + bounds.yMinimum() );
+      }
+    }
+  }
+  sgGeom->setDrawingMode( GL_TRIANGLES );
+  node->setGeometry( sgGeom );
+  node->setMaterial( &mMaterial );
+  node->setFlag( QSGNode::OwnsGeometry );
+  node->setFlag( QSGNode::OwnedByParent );
+  return node;
 }
