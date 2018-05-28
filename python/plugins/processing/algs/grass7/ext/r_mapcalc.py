@@ -32,9 +32,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'expression', context)
             and alg.parameterAsString(parameters, 'file', context)):
-        return alg.tr("You need to set either inline expression or a rules file!")
+        return False, alg.tr("You need to set either inline expression or a rules file!")
 
-    return None
+    return True, None
 
 
 def processInputs(alg, parameters, context, feedback):

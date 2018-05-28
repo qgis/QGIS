@@ -986,6 +986,5 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if self.module:
             if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
                 func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
-                #return func(self, parameters, context), None
-                return None, func(self, parameters, context)
+                return func(self, parameters, context)
         return super(Grass7Algorithm, self).checkParameterValues(parameters, context)

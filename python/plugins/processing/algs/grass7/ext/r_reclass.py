@@ -33,9 +33,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'rules', context)
             and alg.parameterAsString(parameters, 'txtrules', context)):
-        return alg.tr("You need to set either a rules file or write directly the rules!")
+        return False, alg.tr("You need to set either a rules file or write directly the rules!")
 
-    return None
+    return True, None
 
 
 def processCommand(alg, parameters, context, feedback):
