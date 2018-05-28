@@ -414,17 +414,21 @@ class SagaAlgorithm(SagaAlgorithmBase):
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
-        layers = []
+        raster_layer_params = []
         for param in self.parameterDefinitions():
+            if param not in parameters or parameters[param.name()] is None:
+                continue
+
             if isinstance(param, QgsProcessingParameterRasterLayer):
-                layers.append(parameters[param.name()])
+                raster_layer_params.append(param.name())
             elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
                     param.layerType() == QgsProcessing.TypeRaster):
-                if parameters[param.name()]:
-                    layers.extend(parameters[param.name()])
+                raster_layer_params.extend(param.name())
 
-        for layer in layers:
-            if layer is None or layer == '':
+        for layer_param in raster_layer_params:
+            layer = self.parameterAsRasterLayer(parameters, layer_param, context)
+
+            if layer is None:
                 continue
             if layer.bandCount() > 1:
                 return False, self.tr('Input layer {0} has more than one band.\n'
