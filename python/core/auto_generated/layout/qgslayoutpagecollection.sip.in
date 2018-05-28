@@ -100,6 +100,11 @@ Returns a list of layout items on the specified ``page`` index.
 %Docstring
 Returns whether the specified ``page`` number should be included in exports of the layouts.
 
+.. warning::
+
+   This will always return true unless the layout is being currently exported -- it cannot
+   be used in advance to determine whether a given page will be exported!
+
 .. seealso:: :py:func:`pageIsEmpty`
 %End
 
