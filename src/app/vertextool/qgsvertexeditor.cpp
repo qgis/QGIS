@@ -280,6 +280,7 @@ QgsVertexEditor::QgsVertexEditor(
   : mCanvas( canvas )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
+  setObjectName( QStringLiteral( "VertexEditor" ) );
   mTableView = new QTableView( this );
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
