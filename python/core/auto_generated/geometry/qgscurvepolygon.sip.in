@@ -120,9 +120,9 @@ Removes the interior rings from the polygon. If the minimumAllowedArea
 parameter is specified then only rings smaller than this minimum
 area will be removed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`removeInteriorRing`
+
+.. versionadded:: 3.0
 %End
 
     virtual void draw( QPainter &p ) const;

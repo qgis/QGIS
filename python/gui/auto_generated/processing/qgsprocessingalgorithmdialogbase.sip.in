@@ -106,9 +106,9 @@ Returns the parameter values for the algorithm to run in the dialog.
 Saves the log contents to a text file (specified by the file ``path``), in
 the given ``format``.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`saveLog`
+
+.. versionadded:: 3.2
 %End
 
   public slots:
@@ -170,9 +170,9 @@ Clears the current log contents.
 %Docstring
 Opens a dialog allowing users to save the current log contents.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`saveLogToFile`
+
+.. versionadded:: 3.2
 %End
 
     void copyLogToClipboard();

@@ -81,9 +81,9 @@ Gets the list of maplayer ids which are excluded from the list
 %Docstring
 Sets a list of data providers which should be excluded from the model.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`excludedProviders`
+
+.. versionadded:: 3.0
 %End
 
     QStringList excludedProviders() const;

@@ -375,9 +375,9 @@ Sets the blur radius, which controls the amount of blurring applied to the fill.
 
 :param blurRadius: Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`blurRadius`
+
+.. versionadded:: 2.3
 %End
 
     int blurRadius() const;
@@ -386,9 +386,9 @@ Returns the blur radius, which controls the amount of blurring applied to the fi
 
 :return: Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setBlurRadius`
+
+.. versionadded:: 2.3
 %End
 
     void setUseWholeShape( bool useWholeShape );
@@ -398,11 +398,11 @@ Sets whether the shapeburst fill should be drawn using the entire shape.
 :param useWholeShape: Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
                       be shaded
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`useWholeShape`
 
 .. seealso:: :py:func:`setMaxDistance`
+
+.. versionadded:: 2.3
 %End
 
     bool useWholeShape() const;
@@ -411,11 +411,11 @@ Returns whether the shapeburst fill is set to cover the entire shape.
 
 :return: True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setUseWholeShape`
 
 .. seealso:: :py:func:`maxDistance`
+
+.. versionadded:: 2.3
 %End
 
     void setMaxDistance( double maxDistance );
@@ -424,13 +424,13 @@ Sets the maximum distance to shape inside of the shape from the polygon's bounda
 
 :param maxDistance: distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`maxDistance`
 
 .. seealso:: :py:func:`setUseWholeShape`
 
 .. seealso:: :py:func:`setDistanceUnit`
+
+.. versionadded:: 2.3
 %End
 
     double maxDistance() const;
@@ -439,13 +439,13 @@ Returns the maximum distance from the shape's boundary which is shaded. This par
 
 :return: the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`useWholeShape`
 
 .. seealso:: :py:func:`setMaxDistance`
 
 .. seealso:: :py:func:`distanceUnit`
+
+.. versionadded:: 2.3
 %End
 
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
@@ -454,11 +454,11 @@ Sets the unit for the maximum distance to shade inside of the shape from the pol
 
 :param unit: distance unit for the maximum distance
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setMaxDistance`
 
 .. seealso:: :py:func:`distanceUnit`
+
+.. versionadded:: 2.3
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
@@ -467,11 +467,11 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
 
 :return: distance unit for the maximum distance
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`maxDistance`
 
 .. seealso:: :py:func:`setDistanceUnit`
+
+.. versionadded:: 2.3
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
@@ -484,8 +484,6 @@ or by simply specificing a start and end color. setColorType is used to specify 
 
 :param colorType: color type to use for shapeburst fill
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`colorType`
 
 .. seealso:: :py:func:`setColor`
@@ -493,6 +491,8 @@ or by simply specificing a start and end color. setColorType is used to specify 
 .. seealso:: :py:func:`setColor2`
 
 .. seealso:: :py:func:`setColorRamp`
+
+.. versionadded:: 2.3
 %End
 
     ShapeburstColorType colorType() const;
@@ -502,8 +502,6 @@ or by simply specificing a start and end color.
 
 :return: current color mode used for the shapeburst fill
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setColorType`
 
 .. seealso:: :py:func:`color`
@@ -511,6 +509,8 @@ or by simply specificing a start and end color.
 .. seealso:: :py:func:`color2`
 
 .. seealso:: :py:func:`colorRamp`
+
+.. versionadded:: 2.3
 %End
 
     void setColorRamp( QgsColorRamp *ramp );
@@ -519,11 +519,11 @@ Sets the color ramp used to draw the shapeburst fill. Color ramps are only used 
 
 :param ramp: color ramp to use for shapeburst fill
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setColorType`
 
 .. seealso:: :py:func:`colorRamp`
+
+.. versionadded:: 2.3
 %End
 
     QgsColorRamp *colorRamp();
@@ -532,11 +532,11 @@ Returns the color ramp used for the shapeburst fill. The color ramp is only used
 
 :return: a QgsColorRamp color ramp
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setColorRamp`
 
 .. seealso:: :py:func:`colorType`
+
+.. versionadded:: 2.3
 %End
 
     void setColor2( const QColor &color2 );
@@ -545,11 +545,11 @@ Sets the color for the endpoint of the shapeburst fill. This color is only used 
 
 :param color2: QColor to use for endpoint of gradient
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setColorType`
 
 .. seealso:: :py:func:`color2`
+
+.. versionadded:: 2.3
 %End
 
     QColor color2() const;
@@ -558,11 +558,11 @@ Returns the color used for the endpoint of the shapeburst fill. This color is on
 
 :return: a QColor indicating the color of the endpoint of the gradient
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setColor2`
 
 .. seealso:: :py:func:`colorType`
+
+.. versionadded:: 2.3
 %End
 
     void setIgnoreRings( bool ignoreRings );
@@ -572,9 +572,9 @@ the buffered shading.
 
 :param ignoreRings: Set to true if buffers should ignore interior rings for polygons.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`ignoreRings`
+
+.. versionadded:: 2.3
 %End
 
     bool ignoreRings() const;
@@ -583,9 +583,9 @@ Returns whether the shapeburst fill is set to ignore polygon interior rings.
 
 :return: True if the shapeburst fill will ignore interior rings when calculating buffered shading.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setIgnoreRings`
+
+.. versionadded:: 2.3
 %End
 
     void setOffset( QPointF offset );
@@ -594,11 +594,11 @@ Sets the offset for the shapeburst fill.
 
 :param offset: QPointF indicating the horizontal/vertical offset amount
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`offset`
 
 .. seealso:: :py:func:`setOffsetUnit`
+
+.. versionadded:: 2.3
 %End
 
     QPointF offset() const;
@@ -607,11 +607,11 @@ Returns the offset for the shapeburst fill.
 
 :return: a QPointF indicating the horizontal/vertical offset amount
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setOffset`
 
 .. seealso:: :py:func:`offsetUnit`
+
+.. versionadded:: 2.3
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
@@ -620,11 +620,11 @@ Sets the units used for the offset for the shapeburst fill.
 
 :param unit: units for fill offset
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setOffset`
 
 .. seealso:: :py:func:`offsetUnit`
+
+.. versionadded:: 2.3
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
@@ -633,11 +633,11 @@ Returns the units used for the offset of the shapeburst fill.
 
 :return: units used for the fill offset
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`offset`
 
 .. seealso:: :py:func:`setOffsetUnit`
+
+.. versionadded:: 2.3
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );

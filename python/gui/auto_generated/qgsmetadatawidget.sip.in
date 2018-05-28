@@ -43,18 +43,18 @@ the layer's metadata..
 %Docstring
 Sets the widget's current ``mode``.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.2
 %End
 
     Mode mode() const;
 %Docstring
 Returns the widget's current mode.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.2
 %End
 
     void setMetadata( const QgsAbstractMetadataBase *metadata );

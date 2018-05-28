@@ -356,9 +356,9 @@ Returns an distance formatted as a friendly string.
 
 :return: formatted distance string
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`formatArea`
+
+.. versionadded:: 3.0
 %End
 
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
@@ -373,9 +373,9 @@ Returns an area formatted as a friendly string.
 
 :return: formatted area string
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`formatDistance`
+
+.. versionadded:: 3.0
 %End
 
 

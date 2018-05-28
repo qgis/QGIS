@@ -82,9 +82,9 @@ Returns a list of relations with matching names.
 
 :return: a list of matching relations
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`relation`
+
+.. versionadded:: 2.16
 %End
 
     void clear();

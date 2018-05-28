@@ -197,9 +197,9 @@ Draws a symbol layer preview to a QPicture
 
 :return: QPicture containing symbol layer preview
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`symbolLayerPreviewIcon`
+
+.. versionadded:: 2.9
 %End
 
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );

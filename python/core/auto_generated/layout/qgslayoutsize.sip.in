@@ -18,8 +18,6 @@ for use in QGIS layouts. Measurement units are stored alongside the size.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 
-.. versionadded:: 3.0
-
 .. note::
 
    This class does not inherit from QSizeF since QSizeF includes methods which should not apply to sizes
@@ -27,6 +25,8 @@ for use in QGIS layouts. Measurement units are stored alongside the size.
    addition of two QgsLayoutSize with different unit types would automatically convert units. Instead,
    all unit conversion must be handled by a QgsLayoutMeasurementConverter so that conversion between
    paper and screen units can be correctly performed.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

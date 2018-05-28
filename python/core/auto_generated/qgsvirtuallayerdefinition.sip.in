@@ -157,11 +157,11 @@ delayed until an explicit reloading of the layer.
 
 :param lazy: True to delay the loading, false otherwise
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`QgsDataProvider.reloadData`
 
 .. seealso:: :py:func:`isLazy`
+
+.. versionadded:: 3.2
 %End
 
     bool isLazy() const;
@@ -170,9 +170,9 @@ Returns the lazy mode.
 
 :return: True if the loading is delayed, false otherwise.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setLazy`
+
+.. versionadded:: 3.2
 %End
 
     QString geometryField() const;

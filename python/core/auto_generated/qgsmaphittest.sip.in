@@ -49,9 +49,9 @@ Tests whether a symbol is visible for a specified layer.
 :param symbol: symbol to find
 :param layer: vector layer
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`legendKeyVisible`
+
+.. versionadded:: 2.12
 %End
 
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
@@ -61,9 +61,9 @@ Tests whether a given legend key is visible for a specified layer.
 :param ruleKey: legend rule key
 :param layer: vector layer
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`symbolVisible`
+
+.. versionadded:: 2.14
 %End
 
 };

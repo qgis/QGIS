@@ -260,13 +260,13 @@ This setting has no effect for Vertex or CentralPoint placements.
 
 :return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setOffsetAlongLine`
 
 .. seealso:: :py:func:`offsetAlongLineUnit`
 
 .. seealso:: :py:func:`placement`
+
+.. versionadded:: 2.3
 %End
 
     void setOffsetAlongLine( double offsetAlongLine );
@@ -279,13 +279,13 @@ This setting has no effect for Vertex or CentralPoint placements.
 :param offsetAlongLine: Distance to offset markers along the line. The offset
                         unit is set via setOffsetAlongLineUnit.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`offsetAlongLine`
 
 .. seealso:: :py:func:`setOffsetAlongLineUnit`
 
 .. seealso:: :py:func:`setPlacement`
+
+.. versionadded:: 2.3
 %End
 
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;

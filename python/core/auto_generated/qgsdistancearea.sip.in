@@ -45,18 +45,18 @@ Constructor
 Returns whether calculations will use the ellipsoid. Calculations will only use the
 ellipsoid if a valid ellipsoid() has been set.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 2.14
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 %Docstring
 Sets source spatial reference system ``crs``.
 
-.. versionadded:: 2.2
-
 .. seealso:: :py:func:`sourceCrs`
+
+.. versionadded:: 2.2
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -144,13 +144,13 @@ Measures the area of a geometry.
 :return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
          returned area can be retrieved by calling areaUnits().
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`measureLength`
 
 .. seealso:: :py:func:`measurePerimeter`
 
 .. seealso:: :py:func:`areaUnits`
+
+.. versionadded:: 2.12
 %End
 
     double measureLength( const QgsGeometry &geometry ) const;
@@ -162,13 +162,13 @@ Measures the length of a geometry.
 :return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
          returned distance can be retrieved by calling lengthUnits().
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`lengthUnits`
 
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
+
+.. versionadded:: 2.12
 %End
 
     double measurePerimeter( const QgsGeometry &geometry ) const;
@@ -180,13 +180,13 @@ Measures the perimeter of a polygon geometry.
 :return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
          returned perimeter can be retrieved by calling lengthUnits().
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`lengthUnits`
 
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
+
+.. versionadded:: 2.12
 %End
 
     double measureLine( const QVector<QgsPointXY> &points ) const;
@@ -249,9 +249,9 @@ Returns the units of distance for length calculations made by this object.
 %Docstring
 Returns the units of area for areal calculations made by this object.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`lengthUnits`
+
+.. versionadded:: 2.14
 %End
 
     double measurePolygon( const QVector<QgsPointXY> &points ) const;
@@ -276,9 +276,9 @@ Returns an distance formatted as a friendly string.
 
 :return: formatted distance string
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`formatArea`
+
+.. versionadded:: 2.16
 %End
 
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
@@ -293,9 +293,9 @@ Returns an area formatted as a friendly string.
 
 :return: formatted area string
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`formatDistance`
+
+.. versionadded:: 2.14
 %End
 
     double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;

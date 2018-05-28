@@ -167,9 +167,9 @@ Tests whether a paint effect matches the default effects stack.
 
 :return: true if effect is default stack
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`defaultStack`
+
+.. versionadded:: 2.12
 %End
 
   private:

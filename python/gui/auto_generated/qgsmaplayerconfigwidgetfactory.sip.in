@@ -12,9 +12,9 @@
 class QgsMapLayerConfigWidgetFactory
 {
 %Docstring
+Factory class for creating custom map layer property pages
 
 .. versionadded:: 2.16
-Factory class for creating custom map layer property pages
 %End
 
 %TypeHeaderCode

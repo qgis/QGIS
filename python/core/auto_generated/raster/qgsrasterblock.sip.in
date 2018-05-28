@@ -110,9 +110,9 @@ Not the difference between this method and hasNoDataValue().
 %Docstring
 Sets cell value that will be considered as "no data".
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.0
 %End
 
     void resetNoDataValue();
@@ -120,9 +120,9 @@ Sets cell value that will be considered as "no data".
 Reset no data value: if there was a no data value previously set,
 it will be discarded.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.0
 %End
 
     double noDataValue() const;

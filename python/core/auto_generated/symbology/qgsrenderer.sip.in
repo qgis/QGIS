@@ -363,9 +363,9 @@ Returns the current paint effect for the renderer.
 
 :return: paint effect
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 2.9
 %End
 
     void setPaintEffect( QgsPaintEffect *effect );
@@ -374,18 +374,18 @@ Sets the current paint effect for the renderer.
 
 :param effect: paint effect. Ownership is transferred to the renderer.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`paintEffect`
+
+.. versionadded:: 2.9
 %End
 
     bool forceRasterRender() const;
 %Docstring
 Returns whether the renderer must render as a raster.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setForceRasterRender`
+
+.. versionadded:: 2.12
 %End
 
     void setForceRasterRender( bool forceRaster );
@@ -405,13 +405,13 @@ Sets whether the renderer should be rendered to a raster destination.
 %Docstring
 Gets the order in which features shall be processed by this renderer.
 
-.. versionadded:: 2.14
-
 .. note::
 
    this property has no effect if orderByEnabled() is false
 
 .. seealso:: :py:func:`orderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
@@ -422,20 +422,20 @@ Define the order in which features shall be processed by this renderer.
 
    this property has no effect if orderByEnabled() is false
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setOrderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     bool orderByEnabled() const;
 %Docstring
 Returns whether custom ordering will be applied before features are processed by this renderer.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`orderBy`
 
 .. seealso:: :py:func:`setOrderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     void setOrderByEnabled( bool enabled );
@@ -444,11 +444,11 @@ Sets whether custom ordering should be applied before features are processed by 
 
 :param enabled: set to true to enable custom feature ordering
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setOrderBy`
 
 .. seealso:: :py:func:`orderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );

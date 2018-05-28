@@ -84,18 +84,18 @@ Returns a list of all map canvases open in the app.
 %Docstring
 Create a new map canvas with the specified unique ``name``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`closeMapCanvas`
+
+.. versionadded:: 3.0
 %End
 
     virtual void closeMapCanvas( const QString &name ) = 0;
 %Docstring
 Closes the additional map canvas with matching ``name``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createNewMapCanvas`
+
+.. versionadded:: 3.0
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -939,30 +939,28 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 %Docstring
 Register a new tab in the vector layer properties dialog.
 
-.. versionadded:: 2.16
-
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
+
+.. versionadded:: 2.16
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the vector layer properties dialog.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
+
+.. versionadded:: 2.16
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Register a new tab in the options dialog.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -970,22 +968,22 @@ Register a new tab in the options dialog.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the options dialog.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
+
+.. versionadded:: 3.0
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop handler.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -993,22 +991,22 @@ Register a new custom drop handler.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop handler.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerCustomDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop ``handler`` for layout windows.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -1016,15 +1014,17 @@ Register a new custom drop ``handler`` for layout windows.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop ``handler`` for layout windows.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -1134,9 +1134,9 @@ can change their tool button icons.
 %Docstring
 This signal is emitted when a new layout ``designer`` has been opened.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
+
+.. versionadded:: 3.0
 %End
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
@@ -1144,22 +1144,22 @@ This signal is emitted when a new layout ``designer`` has been opened.
 This signal is emitted before a layout ``designer`` is going to be closed
 and deleted.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
+
+.. versionadded:: 3.0
 %End
 
     void layoutDesignerClosed();
 %Docstring
 This signal is emitted after a layout designer window is closed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
+
+.. versionadded:: 3.0
 %End
 
     void initializationCompleted();

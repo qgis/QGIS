@@ -216,33 +216,33 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 
 :param showNull: set to true to show a null option
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`showNull`
 
 .. seealso:: :py:func:`isNull`
+
+.. versionadded:: 2.16
 %End
 
     bool showNull() const;
 %Docstring
 Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setShowNull`
 
 .. seealso:: :py:func:`isNull`
+
+.. versionadded:: 2.16
 %End
 
     bool isNull() const;
 %Docstring
 Returns true if the current color is null.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setShowNull`
 
 .. seealso:: :py:func:`showNull`
+
+.. versionadded:: 2.16
 %End
 
     QString noColorString() const;

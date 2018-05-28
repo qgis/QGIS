@@ -542,11 +542,11 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 
 :return: true on success
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`dropZValue`
 
 .. seealso:: :py:func:`addMValue`
+
+.. versionadded:: 2.12
 %End
 
     virtual bool addMValue( double mValue = 0 ) = 0;
@@ -557,11 +557,11 @@ Adds a measure to the geometry, initialized to a preset value.
 
 :return: true on success
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`dropMValue`
 
 .. seealso:: :py:func:`addZValue`
+
+.. versionadded:: 2.12
 %End
 
     virtual bool dropZValue() = 0;

@@ -316,9 +316,9 @@ Returns the set of any fields referenced by the layer's diagrams.
 %Docstring
 Returns a reference to the diagram's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -328,9 +328,9 @@ Sets the diagram's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 };
@@ -547,9 +547,9 @@ Returns list of legend nodes for the diagram
 %Docstring
 Returns true if renderer will show legend items for diagram attributes.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setAttributeLegend`
+
+.. versionadded:: 2.16
 %End
 
     void setAttributeLegend( bool enabled );
@@ -558,9 +558,9 @@ Sets whether the renderer will show legend items for diagram attributes.
 
 :param enabled: set to true to show diagram attribute legend
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`attributeLegend`
+
+.. versionadded:: 2.16
 %End
 
   protected:

@@ -112,9 +112,9 @@ indexFromLayer returns the model index for a given layer
 %Docstring
 Returns the map layer corresponding to the specified ``index``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`indexFromLayer`
+
+.. versionadded:: 3.0
 %End
 
     void setAdditionalItems( const QStringList &items );

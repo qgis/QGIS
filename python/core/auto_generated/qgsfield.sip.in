@@ -192,9 +192,9 @@ Returns the expression used when calculating the default value for the field.
 :return: expression evaluated when calculating default values for field, or an
          empty string if no default is set
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDefaultValueDefinition`
+
+.. versionadded:: 3.0
 %End
 
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
@@ -204,27 +204,27 @@ Sets an expression to use when calculating the default value for the field.
 :param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
                                a default constructed :py:class:`QgsDefaultValue`() to reset.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`defaultValueDefinition`
+
+.. versionadded:: 3.0
 %End
 
     const QgsFieldConstraints &constraints() const;
 %Docstring
 Returns constraints which are present for the field.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setConstraints`
+
+.. versionadded:: 3.0
 %End
 
     void setConstraints( const QgsFieldConstraints &constraints );
 %Docstring
 Sets constraints which are present for the field.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`constraints`
+
+.. versionadded:: 3.0
 %End
 
     QString alias() const;
