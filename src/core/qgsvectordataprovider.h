@@ -166,7 +166,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns true if the layer contains at least one feature.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     virtual bool empty() const;
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Calls empty() internally. Providers should override empty()
      * instead if they provide an optimized version of this call.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      * \see empty()
      */
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
