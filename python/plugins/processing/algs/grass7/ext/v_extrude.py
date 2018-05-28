@@ -31,6 +31,6 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     height = alg.parameterAsDouble(parameters, 'height', context)
     height_column = alg.parameterAsString(parameters, 'height_column', context)
     if (height and height_column) or (not height and not height_column):
-        return alg.tr("You need to set either a fixed height value or the height column!")
+        return False, alg.tr("You need to set either a fixed height value or the height column!")
 
-    return None
+    return True, None

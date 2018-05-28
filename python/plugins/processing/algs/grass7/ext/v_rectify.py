@@ -34,9 +34,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'inline_points', context)
             and alg.parameterAsString(parameters, 'points', context)):
-        return alg.tr("You need to set either an input control point file or inline control points!")
+        return False, alg.tr("You need to set either an input control point file or inline control points!")
 
-    return None
+    return True, None
 
 
 def processCommand(alg, parameters, context, feedback):

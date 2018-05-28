@@ -43,9 +43,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
             )
 
     if (values[0] or values[2]) and (values[1] or values[3]):
-        return None
+        return True, None
 
-    return alg.tr("You need to set at least setX_where or setX_cats parameters for each set!")
+    return False, alg.tr("You need to set at least setX_where or setX_cats parameters for each set!")
 
 
 def processCommand(alg, parameters, context, feedback):

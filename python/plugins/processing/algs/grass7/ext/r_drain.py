@@ -31,15 +31,15 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     # start_coordinates and start_points are mutually exclusives
     if (alg.parameterAsString(parameters, 'start_coordinates', context)
             and alg.parameterAsVectorLayer(parameters, 'start_points', context)):
-        return alg.tr("You need to set either start coordinates OR a start points vector layer!")
+        return False, alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
     # You need to set at least one parameter
     if (not alg.parameterAsString(parameters, 'start_coordinates', context)
             and not alg.parameterAsVectorLayer(parameters, 'start_points', context)):
-        return alg.tr("You need to set either start coordinates OR a start points vector layer!")
+        return False, alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
     paramscore = [f for f in ['-c', '-a', '-n']
                   if alg.parameterAsBool(parameters, f, context)]
     if len(paramscore) > 1:
-        return alg.tr("-c, -a, -n parameters are mutually exclusive!")
-    return None
+        return False, alg.tr("-c, -a, -n parameters are mutually exclusive!")
+    return True, None
