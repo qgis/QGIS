@@ -27,7 +27,17 @@ __copyright__ = '(C) 2018, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (Qgis, QgsProcessingException, QgsProcessingParameterString, QgsApplication, QgsVectorLayer, QgsProject, QgsProcessingParameterFeatureSink, QgsProcessing, QgsFeatureRequest, QgsFeature, QgsFeatureSink, QgsProcessingUtils, QgsProcessingException, QgsProcessingOutputVectorLayer, QgsProcessingContext, QgsProcessingFeedback)
+from qgis.core import (Qgis,
+                       QgsProcessingException,
+                       QgsProcessingParameterString,
+                       QgsApplication,
+                       QgsVectorLayer,
+                       QgsProject,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingContext,
+                       QgsProcessingFeedback)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import postgis
 
@@ -55,10 +65,14 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
         self.addParameter(db_param)
-        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query (must return unique id and geom field)'), multiLine=True))
-        
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT,self.tr("Output layer"),QgsProcessing.TypeVectorAnyGeometry))
-    
+        self.addParameter(QgsProcessingParameterString(
+            self.SQL,
+            self.tr('SQL query (must return unique id and geom field)'),
+            multiLine=True))
+        self.addOutput(QgsProcessingOutputVectorLayer(
+            self.OUTPUT,
+            self.tr("Output layer"),
+            QgsProcessing.TypeVectorAnyGeometry))
 
     def name(self):
         return 'postgisexecuteandloadsql'
@@ -69,23 +83,22 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
         uri = postgis.uri_from_name(connection)
-        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
-        QgsApplication.messageLog().logMessage(str(sql), level=Qgis.Info)
-        uri.setDataSource("","("+sql+")", "geom", "","id")
-        
+        sql = self.parameterAsString(parameters, self.SQL, context)
+        sql = sql.replace('\n', ' ')
+        uri.setDataSource("", "("+sql+")", "geom", "", "id")
+
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
-        
-        if vlayer is None:
-            raise QgsProcessingException(self.tr("Got None instead of vector layer object."))
-            return {}
-        else:
-            QgsApplication.messageLog().logMessage("Valid layer: "+str(vlayer.isValid()), level=Qgis.Info)
 
-            if not vlayer.isValid():
-                raise QgsProcessingException(self.tr("This layer is invalid! Please check the PostGIS log for error messages."))
-                return {}            
+        if not vlayer.isValid():
+            raise QgsProcessingException(self.tr("""This layer is invalid!
+                Please check the PostGIS log for error messages."""))
 
-            context.temporaryLayerStore().addMapLayer(vlayer)
-            context.addLayerToLoadOnCompletion( vlayer.id(), QgsProcessingContext.LayerDetails( 'SQL layer', context.project(), self.OUTPUT ) )
-            
-            return { self.OUTPUT: vlayer.id() } 
+        context.temporaryLayerStore().addMapLayer(vlayer)
+        context.addLayerToLoadOnCompletion(
+            vlayer.id(),
+            QgsProcessingContext.LayerDetails('SQL layer',
+                                              context.project(),
+                                              self.OUTPUT))
+
+        return {self.OUTPUT: vlayer.id()}
+
