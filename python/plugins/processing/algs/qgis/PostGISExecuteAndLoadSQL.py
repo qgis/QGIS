@@ -27,7 +27,7 @@ __copyright__ = '(C) 2018, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (Qgis, QgsProcessingException, QgsProcessingParameterString, QgsApplication, QgsVectorLayer, QgsProject, QgsProcessingParameterFeatureSink, QgsProcessing, QgsFeatureRequest, QgsFeature, QgsFeatureSink)
+from qgis.core import (Qgis, QgsProcessingException, QgsProcessingParameterString, QgsApplication, QgsVectorLayer, QgsProject, QgsProcessingParameterFeatureSink, QgsProcessing, QgsFeatureRequest, QgsFeature, QgsFeatureSink, QgsProcessingUtils, QgsProcessingException, QgsProcessingOutputVectorLayer, QgsProcessingContext, QgsProcessingFeedback)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import postgis
 
@@ -56,10 +56,9 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
                 'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query (must return unique id and geom field)'), multiLine=True))
-        self.addParameter(QgsProcessingParameterFeatureSink(
-            self.OUTPUT,
-            self.tr("Output layer"),
-            QgsProcessing.TypeVectorAnyGeometry))
+        
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT,self.tr("Output layer"),QgsProcessing.TypeVectorAnyGeometry))
+    
 
     def name(self):
         return 'postgisexecuteandloadsql'
@@ -69,22 +68,24 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
-        #db = postgis.GeoDB.from_name(connection)
         uri = postgis.uri_from_name(connection)
         sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         QgsApplication.messageLog().logMessage(str(sql), level=Qgis.Info)
         uri.setDataSource("","("+sql+")", "geom", "","id")
+        
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
-        QgsApplication.messageLog().logMessage("Valid layer: "+str(vlayer.isValid()), level=Qgis.Info)
-        #QgsProject.instance().addMapLayer(vlayer)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               vlayer.fields(), vlayer.wkbType(), vlayer.sourceCrs())
- 
-        features = vlayer.getFeatures(QgsFeatureRequest())
-        for feat in features:
-            out_feat = QgsFeature()
-            out_feat.setGeometry(feat.geometry())
-            out_feat.setAttributes(feat.attributes())
-            sink.addFeature(out_feat, QgsFeatureSink.FastInsert)
- 
-        return {self.OUTPUT: dest_id}
+        
+        if vlayer is None:
+            raise QgsProcessingException(self.tr("Got None instead of vector layer object."))
+            return {}
+        else:
+            QgsApplication.messageLog().logMessage("Valid layer: "+str(vlayer.isValid()), level=Qgis.Info)
+
+            if not vlayer.isValid():
+                raise QgsProcessingException(self.tr("This layer is invalid! Please check the PostGIS log for error messages."))
+                return {}            
+
+            context.temporaryLayerStore().addMapLayer(vlayer)
+            context.addLayerToLoadOnCompletion( vlayer.id(), QgsProcessingContext.LayerDetails( 'SQL layer', context.project(), self.OUTPUT ) )
+            
+            return { self.OUTPUT: vlayer.id() } 
