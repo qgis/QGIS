@@ -85,8 +85,8 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   setLineEdit( lineEdit );
 
   mContextMenu = new QMenu( this );
-  mSelectAllAction = mContextMenu->addAction( tr( "Select all" ) );
-  mDeselectAllAction = mContextMenu->addAction( tr( "Deselect all" ) );
+  mSelectAllAction = mContextMenu->addAction( tr( "Select All" ) );
+  mDeselectAllAction = mContextMenu->addAction( tr( "Deselect All" ) );
   connect( mSelectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::selectAllOptions );
   connect( mDeselectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::deselectAllOptions );
 

@@ -967,8 +967,8 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
   if ( item->getItemType() == QgsExpressionItem::Field && mLayer )
   {
     QMenu *menu = new QMenu( this );
-    menu->addAction( tr( "Load top 10 unique values" ), this, SLOT( loadSampleValues() ) );
-    menu->addAction( tr( "Load all unique values" ), this, SLOT( loadAllValues() ) );
+    menu->addAction( tr( "Load First 10 Unique Values" ), this, SLOT( loadSampleValues() ) );
+    menu->addAction( tr( "Load All Unique Values" ), this, SLOT( loadAllValues() ) );
     menu->popup( expressionTree->mapToGlobal( pt ) );
   }
 }
