@@ -82,8 +82,8 @@ class BasicStatisticsForField(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def tags(self):
-        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
-                       'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
+        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
 
     def group(self):
         return self.tr('Vector analysis')
