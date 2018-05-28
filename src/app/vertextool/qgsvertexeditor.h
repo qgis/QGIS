@@ -97,8 +97,8 @@ class QgsVertexEditor : public QgsDockWidget
 
   private:
 
-    bool mUpdatingTableSelection;
-    bool mUpdatingVertexSelection;
+    bool mUpdatingTableSelection = false;
+    bool mUpdatingVertexSelection = false;
 };
 
 
