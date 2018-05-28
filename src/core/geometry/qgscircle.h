@@ -164,9 +164,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * \returns true if tangent was found.
      *
-     * \since QGIS 3.2
      *
      * \see outerTangents()
+     * \since QGIS 3.2
      */
     bool tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const;
 
@@ -187,9 +187,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * Note that this method is 2D only and does not consider the z-value of the circle.
      *
-     * \since QGIS 3.2
      *
      * \see tangentToPoint()
+     * \since QGIS 3.2
      */
     int outerTangents( const QgsCircle &other,
                        QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,

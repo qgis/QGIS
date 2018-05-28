@@ -92,8 +92,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * Returns a list of relations with matching names.
      * \param name relation name to search for. Searching is case insensitive.
      * \returns a list of matching relations
-     * \since QGIS 2.16
      * \see relation()
+     * \since QGIS 2.16
      */
     QList<QgsRelation> relationsByName( const QString &name ) const;
 

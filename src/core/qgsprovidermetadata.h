@@ -58,8 +58,8 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Metadata for provider with direct provider creation function pointer, where
      * no library is involved.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
@@ -87,8 +87,8 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a pointer to the direct provider creation function, if supported
      * by the provider.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     SIP_SKIP CreateDataProviderFunction createFunction() const;
 

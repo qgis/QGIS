@@ -198,8 +198,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target size of preview picture
      * \param scale map unit scale for preview
      * \returns QPicture containing symbol layer preview
-     * \since QGIS 2.9
      * \see symbolLayerPreviewIcon()
+     * \since QGIS 2.9
      */
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 

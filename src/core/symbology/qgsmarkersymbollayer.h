@@ -275,39 +275,39 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /**
      * Returns the marker's stroke style (e.g., solid, dashed, etc)
-     * \since QGIS 2.4
      * \see setStrokeStyle()
      * \see strokeColor()
      * \see penJoinStyle()
+     * \since QGIS 2.4
     */
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
 
     /**
      * Sets the marker's stroke style (e.g., solid, dashed, etc)
      * \param strokeStyle style
-     * \since QGIS 2.4
      * \see strokeStyle()
      * \see setStrokeColor()
      * \see setPenJoinStyle()
+     * \since QGIS 2.4
     */
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /**
      * Returns the marker's stroke join style (e.g., miter, bevel, etc).
-     * \since QGIS 2.16
      * \see setPenJoinStyle()
      * \see strokeColor()
      * \see strokeStyle()
+     * \since QGIS 2.16
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /**
      * Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * \param style join style
-     * \since QGIS 2.16
      * \see penJoinStyle()
      * \see setStrokeColor()
      * \see setStrokeStyle()
+     * \since QGIS 2.16
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 

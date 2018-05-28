@@ -32,8 +32,8 @@ class QWidget;
 /**
  * \ingroup gui
  * A text editor based on QScintilla2.
- * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 {

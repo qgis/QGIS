@@ -33,8 +33,8 @@
  * (such as rectangles) which have an optional coordinate reference system
  * associated with them.
  *
- * \since QGIS 3.0
  * \see QgsReferencedRectangle
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsReferencedGeometryBase
 {

@@ -90,8 +90,8 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
  * \class QgsPaintEffectMetadata
  * \brief Convenience metadata class that uses static functions to create an effect and its widget.
  *
- * \since QGIS 2.9
  * \note not available in Python bindings
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
 {
@@ -233,8 +233,8 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * Tests whether a paint effect matches the default effects stack.
      * \param effect paint effect to test
      * \returns true if effect is default stack
-     * \since QGIS 2.12
      * \see defaultStack()
+     * \since QGIS 2.12
      */
     static bool isDefaultStack( QgsPaintEffect *effect );
 

@@ -205,8 +205,8 @@ class CORE_EXPORT QgsField
      * Returns the expression used when calculating the default value for the field.
      * \returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
-     * \since QGIS 3.0
      * \see setDefaultValueDefinition()
+     * \since QGIS 3.0
      */
     QgsDefaultValue defaultValueDefinition() const;
 
@@ -214,22 +214,22 @@ class CORE_EXPORT QgsField
      * Sets an expression to use when calculating the default value for the field.
      * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
      * a default constructed QgsDefaultValue() to reset.
-     * \since QGIS 3.0
      * \see defaultValueDefinition()
+     * \since QGIS 3.0
      */
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 
     /**
      * Returns constraints which are present for the field.
-     * \since QGIS 3.0
      * \see setConstraints()
+     * \since QGIS 3.0
      */
     const QgsFieldConstraints &constraints() const;
 
     /**
      * Sets constraints which are present for the field.
-     * \since QGIS 3.0
      * \see constraints()
+     * \since QGIS 3.0
      */
     void setConstraints( const QgsFieldConstraints &constraints );
 

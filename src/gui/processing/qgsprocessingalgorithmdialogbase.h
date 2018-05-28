@@ -157,8 +157,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     /**
      * Saves the log contents to a text file (specified by the file \a path), in
      * the given \a format.
-     * \since QGIS 3.2
      * \see saveLog()
+     * \since QGIS 3.2
      */
     void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
 
@@ -217,8 +217,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Opens a dialog allowing users to save the current log contents.
-     * \since QGIS 3.2
      * \see saveLogToFile()
+     * \since QGIS 3.2
      */
     void saveLog();
 

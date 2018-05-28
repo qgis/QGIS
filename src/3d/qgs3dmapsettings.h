@@ -110,8 +110,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      * Returns the path resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see setPathResolver()
+     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -119,8 +119,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      * Sets the path \a resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see pathResolver()
+     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 

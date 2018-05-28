@@ -138,8 +138,8 @@ class CORE_EXPORT QgsRenderContext
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see setTransformContext()
+     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -148,8 +148,8 @@ class CORE_EXPORT QgsRenderContext
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see transformContext()
+     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -157,8 +157,8 @@ class CORE_EXPORT QgsRenderContext
      * Returns the path resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see setPathResolver()
+     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -166,8 +166,8 @@ class CORE_EXPORT QgsRenderContext
      * Sets the path \a resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see pathResolver()
+     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
@@ -313,8 +313,8 @@ class CORE_EXPORT QgsRenderContext
      * Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
      * \see setExpressionContext()
-     * \since QGIS 2.12
      * \note not available in Python bindings
+     * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
@@ -326,16 +326,16 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Set a filter feature provider used for additional filtering of rendered features.
      * \param ffp the filter feature provider
-     * \since QGIS 2.14
      * \see featureFilterProvider()
+     * \since QGIS 2.14
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /**
      * Gets the filter feature provider used for additional filtering of rendered features.
      * \returns the filter feature provider
-     * \since QGIS 2.14
      * \see setFeatureFilterProvider()
+     * \since QGIS 2.14
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 
@@ -358,23 +358,23 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
      * specified by the optional scale parameter.
-     * \since QGIS 3.0
      * \see convertToMapUnits()
+     * \since QGIS 3.0
      */
     double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
-     * \since QGIS 3.0
      * \see convertToPainterUnits()
+     * \since QGIS 3.0
      */
     double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from map units to the specified units.
-     * \since QGIS 3.0
      * \see convertToMapUnits()
+     * \since QGIS 3.0
      */
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 

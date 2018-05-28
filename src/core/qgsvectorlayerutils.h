@@ -89,8 +89,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param selectedOnly set to true to get values from selected features only
      * \param feedback optional feedback object to allow cancelation
      * \returns list of fetched values
-     * \since QGIS 3.0
      * \see getDoubleValues
+     * \since QGIS 3.0
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
 
@@ -104,8 +104,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param nullCount optional pointer to integer to store number of null values encountered in
      * \param feedback optional feedback object to allow cancelation
      * \returns list of fetched values
-     * \since QGIS 3.0
      * \see getValues
+     * \since QGIS 3.0
      */
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 

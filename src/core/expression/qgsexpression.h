@@ -391,36 +391,36 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see setDistanceUnits()
      * \see areaUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see distanceUnits()
      * \see setAreaUnits()
+     * \since QGIS 2.14
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /**
      * Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see setAreaUnits()
      * \see distanceUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see areaUnits()
      * \see setDistanceUnits()
+     * \since QGIS 2.14
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
@@ -453,9 +453,9 @@ class CORE_EXPORT QgsExpression
      * \param text text to evaluate as expression
      * \param fallbackValue value to return if text can not be evaluated as a double
      * \returns evaluated double value, or fallback value
-     * \since QGIS 2.7
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
+     * \since QGIS 2.7
      */
     static double evaluateToDouble( const QString &text, const double fallbackValue );
 
@@ -538,9 +538,9 @@ class CORE_EXPORT QgsExpression
      * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * \param value value to convert to a string representation
-     * \since QGIS 2.14
      * \see quotedString()
      * \see quotedColumnRef()
+     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value );
 
@@ -549,9 +549,9 @@ class CORE_EXPORT QgsExpression
      * quotations where required.
      * \param value value to convert to a string representation
      * \param type value type
-     * \since QGIS 2.14
      * \see quotedString()
      * \see quotedColumnRef()
+     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type );
 

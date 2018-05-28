@@ -71,8 +71,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /**
      * Returns whether the specified CRS option is visible in the widget.
-     * \since QGIS 3.0
      * \see setOptionVisible()
+     * \since QGIS 3.0
      */
     bool optionVisible( CrsOption option ) const;
 

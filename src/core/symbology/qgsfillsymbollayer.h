@@ -375,16 +375,16 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets the blur radius, which controls the amount of blurring applied to the fill.
      * \param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
-     * \since QGIS 2.3
      * \see blurRadius
+     * \since QGIS 2.3
      */
     void setBlurRadius( int blurRadius ) { mBlurRadius = blurRadius; }
 
     /**
      * Returns the blur radius, which controls the amount of blurring applied to the fill.
      * \returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
-     * \since QGIS 2.3
      * \see setBlurRadius
+     * \since QGIS 2.3
      */
     int blurRadius() const { return mBlurRadius; }
 
@@ -392,56 +392,56 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether the shapeburst fill should be drawn using the entire shape.
      * \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
-     * \since QGIS 2.3
      * \see useWholeShape
      * \see setMaxDistance
+     * \since QGIS 2.3
      */
     void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
 
     /**
      * Returns whether the shapeburst fill is set to cover the entire shape.
      * \returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
-     * \since QGIS 2.3
      * \see setUseWholeShape
      * \see maxDistance
+     * \since QGIS 2.3
      */
     bool useWholeShape() const { return mUseWholeShape; }
 
     /**
      * Sets the maximum distance to shape inside of the shape from the polygon's boundary.
      * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
-     * \since QGIS 2.3
      * \see maxDistance
      * \see setUseWholeShape
      * \see setDistanceUnit
+     * \since QGIS 2.3
      */
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
     /**
      * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
      * \returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
-     * \since QGIS 2.3
      * \see useWholeShape
      * \see setMaxDistance
      * \see distanceUnit
+     * \since QGIS 2.3
      */
     double maxDistance() const { return mMaxDistance; }
 
     /**
      * Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * \param unit distance unit for the maximum distance
-     * \since QGIS 2.3
      * \see setMaxDistance
      * \see distanceUnit
+     * \since QGIS 2.3
      */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
 
     /**
      * Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * \returns distance unit for the maximum distance
-     * \since QGIS 2.3
      * \see maxDistance
      * \see setDistanceUnit
+     * \since QGIS 2.3
      */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
@@ -452,11 +452,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * \param colorType color type to use for shapeburst fill
-     * \since QGIS 2.3
      * \see colorType
      * \see setColor
      * \see setColor2
      * \see setColorRamp
+     * \since QGIS 2.3
      */
     void setColorType( ShapeburstColorType colorType ) { mColorType = colorType; }
 
@@ -464,47 +464,47 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color.
      * \returns current color mode used for the shapeburst fill
-     * \since QGIS 2.3
      * \see setColorType
      * \see color
      * \see color2
      * \see colorRamp
+     * \since QGIS 2.3
      */
     ShapeburstColorType colorType() const { return mColorType; }
 
     /**
      * Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
      * \param ramp color ramp to use for shapeburst fill
-     * \since QGIS 2.3
      * \see setColorType
      * \see colorRamp
+     * \since QGIS 2.3
      */
     void setColorRamp( QgsColorRamp *ramp );
 
     /**
      * Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
      * \returns a QgsColorRamp color ramp
-     * \since QGIS 2.3
      * \see setColorRamp
      * \see colorType
+     * \since QGIS 2.3
      */
     QgsColorRamp *colorRamp() { return mGradientRamp; }
 
     /**
      * Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * \param color2 QColor to use for endpoint of gradient
-     * \since QGIS 2.3
      * \see setColorType
      * \see color2
+     * \since QGIS 2.3
      */
     void setColor2( const QColor &color2 ) { mColor2 = color2; }
 
     /**
      * Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
      * \returns a QColor indicating the color of the endpoint of the gradient
-     * \since QGIS 2.3
      * \see setColor2
      * \see colorType
+     * \since QGIS 2.3
      */
     QColor color2() const { return mColor2; }
 
@@ -512,52 +512,52 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
      * \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
-     * \since QGIS 2.3
      * \see ignoreRings
+     * \since QGIS 2.3
      */
     void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
 
     /**
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * \returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
-     * \since QGIS 2.3
      * \see setIgnoreRings
+     * \since QGIS 2.3
      */
     bool ignoreRings() const { return mIgnoreRings; }
 
     /**
      * Sets the offset for the shapeburst fill.
      * \param offset QPointF indicating the horizontal/vertical offset amount
-     * \since QGIS 2.3
      * \see offset
      * \see setOffsetUnit
+     * \since QGIS 2.3
      */
     void setOffset( QPointF offset ) { mOffset = offset; }
 
     /**
      * Returns the offset for the shapeburst fill.
      * \returns a QPointF indicating the horizontal/vertical offset amount
-     * \since QGIS 2.3
      * \see setOffset
      * \see offsetUnit
+     * \since QGIS 2.3
      */
     QPointF offset() const { return mOffset; }
 
     /**
      * Sets the units used for the offset for the shapeburst fill.
      * \param unit units for fill offset
-     * \since QGIS 2.3
      * \see setOffset
      * \see offsetUnit
+     * \since QGIS 2.3
      */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units used for the offset of the shapeburst fill.
      * \returns units used for the fill offset
-     * \since QGIS 2.3
      * \see offset
      * \see setOffsetUnit
+     * \since QGIS 2.3
      */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 

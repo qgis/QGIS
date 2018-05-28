@@ -68,12 +68,12 @@ class CORE_EXPORT QgsCoordinateTransform
      * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
-     * \deprecated Use of this constructor is strongly discouraged, as it will not
      * correctly handle the user's datum transform setup. Instead the constructor
      * variant which accepts a QgsCoordinateTransformContext or QgsProject
      * argument should be used instead. It is highly likely that this constructor
      * will be removed in future QGIS versions.
      * \note Not available in Python bindings.
+     * \deprecated Use of this constructor is strongly discouraged, as it will not
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_SKIP;
 

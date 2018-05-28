@@ -26,8 +26,8 @@
 
 /**
  * Represents a component of a model algorithm.
- * \since QGIS 3.0
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelComponent
 {

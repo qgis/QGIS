@@ -51,8 +51,8 @@ class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
  * \ingroup core
  * Implementation of threaded rendering for mesh layers.
  *
- * \since QGIS 3.2
  * \note not available in Python bindings
+ * \since QGIS 3.2
  */
 class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 {

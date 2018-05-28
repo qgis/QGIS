@@ -301,8 +301,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the master layer order (this will always match the project's QgsProject::layerOrder() ).
      * All map themes will maintain the same layer order as the master layer order.
-     * \since QGIS 3.0
      * \see masterVisibleLayers()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterLayerOrder() const;
 
@@ -310,8 +310,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the master list of visible layers. The order of returned layers will always match those
      * of masterLayerOrder(), but the returned layers are filtered to only include those visible
      * in the project's layer tree.
-     * \since QGIS 3.0
      * \see masterLayerOrder()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterVisibleLayers() const;
 

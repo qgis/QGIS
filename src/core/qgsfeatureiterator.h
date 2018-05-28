@@ -57,8 +57,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     virtual void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
@@ -312,8 +312,8 @@ class CORE_EXPORT QgsFeatureIterator
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 

@@ -185,9 +185,9 @@ class CORE_EXPORT QgsRelation
      * which have a foreign key pointing to the provided feature.
      * \param feature A feature from the referenced (parent) layer
      * \returns expression filter string for all the referencing features
-     * \since QGIS 2.16
      * \see getRelatedFeatures()
      * \see getRelatedFeaturesRequest()
+     * \since QGIS 2.16
      */
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 

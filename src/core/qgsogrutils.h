@@ -155,8 +155,8 @@ namespace gdal
  * \brief Utilities for working with OGR features and layers
  *
  * Contains helper utilities for assisting work with both OGR features and layers.
- * \since QGIS 2.16
  * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsOgrUtils
 {

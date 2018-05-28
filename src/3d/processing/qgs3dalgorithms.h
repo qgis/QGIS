@@ -25,8 +25,8 @@
 /**
  * \ingroup analysis
  * \class Qgs3DAlgorithms
- * \since QGIS 3.0
  * \brief QGIS 3D processing algorithm provider.
+ * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DAlgorithms: public QgsProcessingProvider
 {

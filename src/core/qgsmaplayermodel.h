@@ -116,8 +116,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * Returns the map layer corresponding to the specified \a index.
-     * \since QGIS 3.0
      * \see indexFromLayer()
+     * \since QGIS 3.0
      */
     QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 

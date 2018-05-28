@@ -47,8 +47,8 @@ class QgsGeometry;
  * more data to the instances that will be later used for drawing of labels.
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * \since QGIS 2.12
  * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsLabelFeature
 {
@@ -71,15 +71,15 @@ class CORE_EXPORT QgsLabelFeature
      * buffer around a point geometry to prevent labels being placed too close to the
      * point itself. It not set, the feature's geometry is used for obstacle detection.
      * Ownership of obstacle geometry is transferred.
-     * \since QGIS 2.14
      * \see obstacleGeometry()
+     * \since QGIS 2.14
      */
     void setObstacleGeometry( geos::unique_ptr obstacleGeom );
 
     /**
      * Returns the label's obstacle geometry, if different to the feature geometry.
-     * \since QGIS 2.14
      * \see setObstacleGeometry()
+     * \since QGIS 2.14
      */
     GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry.get(); }
 
@@ -89,8 +89,8 @@ class CORE_EXPORT QgsLabelFeature
      * are not contained within the zone.
      * \param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behavior).
-     * \since QGIS 3.0
      * \see permissibleZone()
+     * \since QGIS 3.0
      */
     void setPermissibleZone( const QgsGeometry &geometry );
 
@@ -98,9 +98,9 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the label's permissible zone geometry. If a valid geometry is returned, the feature's label
      * MUST be fully contained within this zone, and the feature will not be labeled if no candidates can be
      * generated which are not contained within the zone.
-     * \since QGIS 3.0
      * \see setPermissibleZone()
      * \see permissibleZonePrepared()
+     * \since QGIS 3.0
      */
     QgsGeometry permissibleZone() const { return mPermissibleZone; }
 

@@ -160,17 +160,17 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Gets the current constraint status.
      * \returns true if the constraint is valid or if there's no constraint,
      * false otherwise
-     * \since QGIS 2.16
      * \see constraintFailureReason()
      * \see isBlockingCommit()
+     * \since QGIS 2.16
      */
     bool isValidConstraint() const;
 
     /**
      * Returns true if the widget is preventing the feature from being committed. This may be true as a result
      * of attribute values failing enforced field constraints.
-     * \since QGIS 3.0
      * \see isValidConstraint()
+     * \since QGIS 3.0
      */
     bool isBlockingCommit() const;
 

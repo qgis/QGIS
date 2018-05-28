@@ -98,17 +98,17 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Returns a const pointer to the x vertex data.
-     * \since QGIS 3.2
      * \note Not available in Python bindings
      * \see yData()
+     * \since QGIS 3.2
      */
     const double *xData() const SIP_SKIP;
 
     /**
      * Returns a const pointer to the y vertex data.
-     * \since QGIS 3.2
      * \note Not available in Python bindings
      * \see xData()
+     * \since QGIS 3.2
      */
     const double *yData() const SIP_SKIP;
 

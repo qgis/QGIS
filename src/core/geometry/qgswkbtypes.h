@@ -644,8 +644,8 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the coordinate dimension of the geometry type as an integer. Returned value will
      * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
      * Invalid geometry types will return a dimension of 0.
-     * \since QGIS 2.14
      * \see wkbDimensions()
+     * \since QGIS 2.14
      */
     static int coordDimensions( Type type )
     {
@@ -856,10 +856,10 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Adds the z dimension to a WKB type and returns the new type
      * \param type original type
-     * \since QGIS 2.12
      * \see addM()
      * \see dropZ()
      * \see hasZ()
+     * \since QGIS 2.12
      */
     static Type addZ( Type type )
     {
@@ -881,10 +881,10 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Adds the m dimension to a WKB type and returns the new type
      * \param type original type
-     * \since QGIS 2.12
      * \see addZ()
      * \see dropM()
      * \see hasM()
+     * \since QGIS 2.12
      */
     static Type addM( Type type )
     {
@@ -913,9 +913,9 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Drops the z dimension (if present) for a WKB type and returns the new type.
      * \param type original type
-     * \since QGIS 2.14
      * \see dropM()
      * \see addZ()
+     * \since QGIS 2.14
      */
     static Type dropZ( Type type )
     {
@@ -931,9 +931,9 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Drops the m dimension (if present) for a WKB type and returns the new type.
      * \param type original type
-     * \since QGIS 2.14
      * \see dropZ()
      * \see addM()
+     * \since QGIS 2.14
      */
     static Type dropM( Type type )
     {

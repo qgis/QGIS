@@ -153,8 +153,8 @@ class QgsInternalGeometryEngine
 /**
  * A 2D ray which extends from an origin point to an infinite distance in a given direction.
  * \ingroup core
- * \since QGIS 3.2
  * \note not available in Python bindings
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsRay2D
 {
