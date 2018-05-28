@@ -330,8 +330,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * Register a new custom drop \a handler.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterCustomDropHandler() */
-    * \since QGIS 3.0
+     * \see unregisterCustomDropHandler()
+     * \since QGIS 3.0
+     */
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /**
