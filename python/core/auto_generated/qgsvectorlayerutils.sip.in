@@ -83,9 +83,9 @@ Fetches all values from a specified field name or expression.
 
 :return: list of fetched values
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`getDoubleValues`
+
+.. versionadded:: 3.0
 %End
 
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 );
@@ -102,9 +102,9 @@ invalid expression results are skipped.
 
 :return: list of fetched values
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`getValues`
+
+.. versionadded:: 3.0
 %End
 
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );

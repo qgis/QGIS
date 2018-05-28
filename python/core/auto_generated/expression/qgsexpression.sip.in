@@ -311,11 +311,11 @@ Returns the desired distance units for calculations involving geomCalculator(), 
 
    distances are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setDistanceUnits`
 
 .. seealso:: :py:func:`areaUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
@@ -326,11 +326,11 @@ Sets the desired distance units for calculations involving geomCalculator(), e.g
 
    distances are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`distanceUnits`
 
 .. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 2.14
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -341,11 +341,11 @@ Returns the desired areal units for calculations involving geomCalculator(), e.g
 
    areas are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setAreaUnits`
 
 .. seealso:: :py:func:`distanceUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
@@ -356,11 +356,11 @@ Sets the desired areal units for calculations involving geomCalculator(), e.g., 
 
    areas are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`areaUnits`
 
 .. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 2.14
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -398,12 +398,12 @@ value.
 
 :return: evaluated double value, or fallback value
 
-.. versionadded:: 2.7
-
 .. note::
 
    this method is inefficient for bulk evaluation of expressions, it is intended
    for one-off evaluations only.
+
+.. versionadded:: 2.7
 %End
 
     enum SpatialOperator
@@ -494,11 +494,11 @@ quotations where required.
 
 :param value: value to convert to a string representation
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
+
+.. versionadded:: 2.14
 %End
 
     static QString quotedValue( const QVariant &value, QVariant::Type type );
@@ -509,11 +509,11 @@ quotations where required.
 :param value: value to convert to a string representation
 :param type: value type
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
+
+.. versionadded:: 2.14
 %End
 
 

@@ -192,9 +192,9 @@ Returns the distance between this point and a specified x, y coordinate. In cert
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`distanceSquared`
+
+.. versionadded:: 3.0
 %End
 
     double distance( const QgsPoint &other ) const;
@@ -234,9 +234,9 @@ Returns the 3D distance between this point and a specified x, y, z coordinate. I
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`distanceSquared`
+
+.. versionadded:: 3.0
 %End
 
     double distance3D( const QgsPoint &other ) const;

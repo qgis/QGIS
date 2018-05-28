@@ -210,6 +210,7 @@ Returns a new image downloader for the raster legend.
          to caller.
 
 
+
 .. versionadded:: 2.8
 %End
 

@@ -256,18 +256,18 @@ Adds a color to the list of recent colors.
 
 :param color: color to add
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`lastUsedColor`
+
+.. versionadded:: 2.14
 %End
 
     static QColor lastUsedColor();
 %Docstring
 Returns the most recently used color.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`addRecentColor`
+
+.. versionadded:: 3.0
 %End
 };
 

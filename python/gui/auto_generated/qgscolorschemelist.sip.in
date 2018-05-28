@@ -203,9 +203,9 @@ Returns whether the color scheme list has been modified
 %Docstring
 Returns the scheme currently selected in the list.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setScheme`
+
+.. versionadded:: 3.0
 %End
 
   public slots:
@@ -253,18 +253,18 @@ Copies colors from the list to the clipboard
 %Docstring
 Displays a file picker dialog allowing users to import colors into the list from a file.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`showExportColorsDialog`
+
+.. versionadded:: 3.0
 %End
 
     void showExportColorsDialog();
 %Docstring
 Displays a file picker dialog allowing users to export colors from the list into a file.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`showImportColorsDialog`
+
+.. versionadded:: 3.0
 %End
 
   signals:

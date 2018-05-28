@@ -159,10 +159,9 @@ Note that this method is 2D only and does not consider the z-value of the circle
 
 :return: true if tangent was found.
 
-.. versionadded:: 3.2
-
-
 .. seealso:: :py:func:`outerTangents`
+
+.. versionadded:: 3.2
 %End
 
     int outerTangents( const QgsCircle &other,
@@ -185,9 +184,9 @@ Returns the number of tangents (either 0 or 2).
 
 Note that this method is 2D only and does not consider the z-value of the circle.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`tangentToPoint`
+
+.. versionadded:: 3.2
 %End
 
     virtual double area() const;

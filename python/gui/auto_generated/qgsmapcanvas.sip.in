@@ -58,9 +58,9 @@ to setTheme(), then any calls to setLayers() are ignored. It is necessary
 to first clear the theme association by calling setTheme() with an
 empty string before setLayers() calls can be made.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layers`
+
+.. versionadded:: 3.0
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -259,9 +259,9 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 
    If the features or geometries are already available, flashGeometries() is much more efficient.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`flashGeometries`
+
+.. versionadded:: 3.0
 %End
 
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
@@ -276,9 +276,9 @@ transformed from this CRS to the canvas CRS.
 The ``startColor`` and ``endColor`` can be specified, along with the number of
 ``flashes`` and ``duration`` of each flash (in milliseconds).
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`flashFeatureIds`
+
+.. versionadded:: 3.0
 %End
 
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
@@ -392,9 +392,9 @@ are dictated by the canvas' destinationCrs() map units.
 %Docstring
 Returns the stored overrides of styles for layers.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setLayerStyleOverrides`
+
+.. versionadded:: 2.12
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
@@ -406,9 +406,9 @@ to setTheme(), then any calls to setLayerStyleOverrides() are ignored. It is nec
 to first clear the theme association by calling setTheme() with an
 empty string before setLayerStyleOverrides() calls can be made.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`layerStyleOverrides`
+
+.. versionadded:: 2.12
 %End
 
     void setTheme( const QString &theme );
@@ -428,18 +428,18 @@ allow map updates with setLayers(), setLayerStyleOverrides(), or via
 If an empty string is passed then the current theme association will be
 cleared.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`theme`
+
+.. versionadded:: 3.0
 %End
 
     QString theme() const;
 %Docstring
 Returns the map's theme shown in the canvas, if set.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setTheme`
+
+.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel *getCoordinateTransform();
@@ -489,9 +489,9 @@ and does a pan if rect is empty (point extent)
 %Docstring
 Returns whether the scale is locked, so zooming can be performed using magnication.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setScaleLocked`
+
+.. versionadded:: 2.16
 %End
 
     void enableAntiAliasing( bool flag );
@@ -609,9 +609,9 @@ context scope for the canvas.
 
 :param scope: new expression context scope
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`expressionContextScope`
+
+.. versionadded:: 2.12
 %End
 
     QgsExpressionContextScope &expressionContextScope();
@@ -620,9 +620,9 @@ Returns a reference to the expression context scope for the map canvas. This sco
 into the expression context used for rendering the map, and can be used to apply specific variable
 overrides for expression evaluation for the map canvas render.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setExpressionContextScope`
+
+.. versionadded:: 2.12
 %End
 
 
@@ -651,18 +651,18 @@ Returns a list of all annotation items in the canvas.
 %Docstring
 Returns true if annotations are visible within the map canvas.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setAnnotationsVisible`
+
+.. versionadded:: 3.0
 %End
 
     void setAnnotationsVisible( bool visible );
 %Docstring
 Sets whether annotations are ``visible`` in the canvas.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`annotationsVisible`
+
+.. versionadded:: 3.0
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
@@ -775,9 +775,9 @@ in order to render marker point, labels, ... bigger.
 %Docstring
 Lock the scale, so zooming can be performed using magnication
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`scaleLocked`
+
+.. versionadded:: 2.16
 %End
 
     void zoomIn();

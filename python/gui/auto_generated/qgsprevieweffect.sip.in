@@ -37,9 +37,9 @@ Sets the mode for the preview effect, which controls how the effect modifies a w
 
 :param mode: PreviewMode to use to draw the widget
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`mode`
+
+.. versionadded:: 2.3
 %End
 
     PreviewMode mode() const;
@@ -48,9 +48,9 @@ Returns the mode used for the preview effect.
 
 :return: PreviewMode currently used by the effect
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setMode`
+
+.. versionadded:: 2.3
 %End
 
   protected:

@@ -17,13 +17,13 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
 A widget for modifying the properties of a QgsEffectStack, including adding
 and reordering effects within the stack.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:class:`QgsEffectStack`
 
 .. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
 
 .. seealso:: :py:class:`QgsEffectStackCompactWidget`
+
+.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -135,13 +135,13 @@ class QgsEffectStackPropertiesDialog: QgsDialog
 A dialog for modifying the properties of a :py:class:`QgsEffectStack`, including adding
 and reordering effects within the stack.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:class:`QgsEffectStack`
 
 .. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
 
 .. seealso:: :py:class:`QgsEffectStackCompactWidget`
+
+.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -185,13 +185,13 @@ class QgsEffectStackCompactWidget: QgsPanelWidget
 A small widget consisting of a checkbox for enabling/disabling an effect stack
 and a button for opening an effect stack customization dialog.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:class:`QgsEffectStack`
 
 .. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
 
 .. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
+
+.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

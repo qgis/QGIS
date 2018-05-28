@@ -166,9 +166,9 @@ Calculates the non-transparent region of an image.
                 it will be centered in the returned rectangle.
 :param center: return rectangle will be centered on the center of the original image if set to true
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`cropTransparent`
+
+.. versionadded:: 2.9
 %End
 
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );

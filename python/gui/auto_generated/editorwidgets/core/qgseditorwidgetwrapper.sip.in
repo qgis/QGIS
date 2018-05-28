@@ -149,11 +149,11 @@ Gets the current constraint status.
 :return: true if the constraint is valid or if there's no constraint,
          false otherwise
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`constraintFailureReason`
 
 .. seealso:: :py:func:`isBlockingCommit`
+
+.. versionadded:: 2.16
 %End
 
     bool isBlockingCommit() const;
@@ -161,9 +161,9 @@ Gets the current constraint status.
 Returns true if the widget is preventing the feature from being committed. This may be true as a result
 of attribute values failing enforced field constraints.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`isValidConstraint`
+
+.. versionadded:: 3.0
 %End
 
     QString constraintFailureReason() const;

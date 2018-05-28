@@ -116,9 +116,9 @@ Returns the context's coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -127,9 +127,9 @@ Sets the context's coordinate transform ``context``, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -137,9 +137,9 @@ from a source to destination coordinate reference system.
 Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setPathResolver`
+
+.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -147,9 +147,9 @@ during rendering operations, e.g. for resolving relative symbol paths.
 Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`pathResolver`
+
+.. versionadded:: 3.0
 %End
 
     const QgsRectangle &extent() const;
@@ -317,9 +317,9 @@ Set a filter feature provider used for additional filtering of rendered features
 
 :param ffp: the filter feature provider
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`featureFilterProvider`
+
+.. versionadded:: 2.14
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
@@ -328,9 +328,9 @@ Gets the filter feature provider used for additional filtering of rendered featu
 
 :return: the filter feature provider
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setFeatureFilterProvider`
+
+.. versionadded:: 2.14
 %End
 
     void setSegmentationTolerance( double tolerance );
@@ -361,9 +361,9 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 Converts a size from the specified units to painter units (pixels). The conversion respects the limits
 specified by the optional scale parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`convertToMapUnits`
+
+.. versionadded:: 3.0
 %End
 
     double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
@@ -371,18 +371,18 @@ specified by the optional scale parameter.
 Converts a size from the specified units to map units. The conversion respects the limits
 specified by the optional scale parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`convertToPainterUnits`
+
+.. versionadded:: 3.0
 %End
 
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 %Docstring
 Converts a size from map units to the specified units.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`convertToMapUnits`
+
+.. versionadded:: 3.0
 %End
 
     double convertMetersToMapUnits( double meters ) const;

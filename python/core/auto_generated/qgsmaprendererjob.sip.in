@@ -97,20 +97,20 @@ This should not be used if cached labeling was redrawn - see usedCachedLabels().
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
 %Docstring
-
-.. versionadded:: 3.0
 Set the feature filter provider used by the QgsRenderContext of
 each LayerRenderJob.
 Ownership is not transferred and the provider must not be deleted
 before the render job.
+
+.. versionadded:: 3.0
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-
-.. versionadded:: 3.0
 Returns the feature filter provider used by the QgsRenderContext of
 each LayerRenderJob.
+
+.. versionadded:: 3.0
 %End
 
     struct Error

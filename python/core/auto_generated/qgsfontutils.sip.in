@@ -120,9 +120,9 @@ Returns a DOM element containing the properties of the font.
 
 :return: DOM element containing font settings
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`setFromXmlElement`
+
+.. versionadded:: 2.10
 %End
 
     static bool setFromXmlElement( QFont &font, const QDomElement &element );
@@ -135,11 +135,11 @@ this will overwrite the current properties of the font.
 
 :return: true if properties were successfully read from element
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`toXmlElement`
 
 .. seealso:: :py:func:`setFromXmlChildNode`
+
+.. versionadded:: 2.10
 %End
 
     static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
@@ -153,11 +153,11 @@ this will overwrite the current properties of the font.
 
 :return: true if child node exists and properties were successfully read from node
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`setFromXmlElement`
 
 .. seealso:: :py:func:`toXmlElement`
+
+.. versionadded:: 2.10
 %End
 
     static QMimeData *toMimeData( const QFont &font ) /Factory/;
@@ -188,9 +188,9 @@ Returns the localized named style of a font, if such a translation is available.
 
 :return: The localized named style
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`untranslateNamedStyle`
+
+.. versionadded:: 2.12
 %End
 
     static QString untranslateNamedStyle( const QString &namedStyle );
@@ -201,9 +201,9 @@ Returns the english named style of a font, if possible.
 
 :return: The english named style
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`translateNamedStyle`
+
+.. versionadded:: 2.12
 %End
 
     static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
@@ -225,9 +225,9 @@ Returns a CSS string representing the specified font as closely as possible.
 %Docstring
 Adds a font ``family`` to the list of recently used font families.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`recentFontFamilies`
+
+.. versionadded:: 3.0
 %End
 
     static QStringList recentFontFamilies();

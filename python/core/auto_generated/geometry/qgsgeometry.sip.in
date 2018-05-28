@@ -99,11 +99,11 @@ This is much faster then calling the non-const get() method.
 
    In QGIS 2.x this method was named geometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`set`
 
 .. seealso:: :py:func:`get`
+
+.. versionadded:: 3.0
 %End
 
     QgsAbstractGeometry *get();
@@ -117,11 +117,11 @@ and a deep copy. Where possible, use constGet() instead.
 
    In QGIS 2.x this method was named geometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`constGet`
 
 .. seealso:: :py:func:`set`
+
+.. versionadded:: 3.0
 %End
 
     void set( QgsAbstractGeometry *geometry /Transfer/ );
@@ -132,11 +132,11 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 
    In QGIS 2.x this method was named setGeometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`get`
 
 .. seealso:: :py:func:`constGet`
+
+.. versionadded:: 3.0
 %End
 
     bool isNull() const;
@@ -146,9 +146,9 @@ accessible via geometry() ).
 
 .. seealso:: :py:func:`get`
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`isEmpty`
+
+.. versionadded:: 2.10
 %End
 
     static QgsGeometry fromWkt( const QString &wkt );
@@ -175,9 +175,9 @@ and will respect any Z or M dimensions present in the input points.
 
    In QGIS 2.x this method was available as fromPolyline().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`fromPolyline`
+
+.. versionadded:: 3.0
 %End
 
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
@@ -280,9 +280,9 @@ equality test performed by isGeosEqual().
 
    Comparing two null geometries will return false.
 
-.. versionadded:: 1.5
-
 .. seealso:: :py:func:`isGeosEqual`
+
+.. versionadded:: 1.5
 %End
 
     bool isGeosEqual( const QgsGeometry & ) const;
@@ -301,9 +301,9 @@ by equals() instead.
 
    Comparing two null geometries will return false.
 
-.. versionadded:: 1.5
-
 .. seealso:: :py:func:`equals`
+
+.. versionadded:: 1.5
 %End
 
     bool isGeosValid() const;
@@ -372,9 +372,9 @@ If the default approximate provided by this method is insufficient, use hausdorf
 
 In case of error -1 will be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hausdorffDistanceDensify`
+
+.. versionadded:: 3.0
 %End
 
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
@@ -393,9 +393,9 @@ distance returned approach the true Hausdorff distance for the geometries.
 
 In case of error -1 will be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hausdorffDistance`
+
+.. versionadded:: 3.0
 %End
 
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
@@ -419,9 +419,9 @@ Returns the bisector angle for this geometry at the specified vertex.
 
 :return: bisector angle, in radians clockwise from north
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`interpolateAngle`
+
+.. versionadded:: 3.0
 %End
 
     void adjacentVertices( int atVertex, int &beforeVertex /Out/, int &afterVertex /Out/ ) const;
@@ -518,18 +518,18 @@ ring and item (first number is index 0))
 %Docstring
 Returns the nearest point on this geometry to another geometry.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`shortestLine`
+
+.. versionadded:: 2.14
 %End
 
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
 %Docstring
 Returns the shortest line joining this geometry to another geometry.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`nearestPoint`
+
+.. versionadded:: 2.14
 %End
 
     double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
@@ -713,9 +713,9 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`boundingBox`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -911,11 +911,11 @@ Returns a buffer region around the geometry, with additional style options.
 :param joinStyle: join style for corners in geometry
 :param miterLimit: limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
-.. versionadded:: 2.4
-
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 2.4
 %End
 
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
@@ -946,11 +946,11 @@ applied to one side of the line.
 :return: buffered geometry, or an empty geometry if buffer could not be
          calculated
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
@@ -966,13 +966,13 @@ curves in the buffer.
 
 Non (multi)curve input geometries will return a null output geometry.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`variableWidthBufferByM`
+
+.. versionadded:: 3.2
 %End
 
     QgsGeometry variableWidthBufferByM( int segments ) const;
@@ -985,13 +985,13 @@ curves in the buffer.
 
 Non (multi)linestring input geometries will return a null output geometry.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 3.2
 %End
 
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
@@ -1016,9 +1016,9 @@ If the geometry has z or m values present then these will be linearly interpolat
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`densifyByDistance`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry densifyByDistance( double distance ) const;
@@ -1034,9 +1034,9 @@ If the geometry has z or m values present then these will be linearly interpolat
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`densifyByCount`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry centroid() const;
@@ -1161,9 +1161,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-.. versionadded:: 2.0
-
 .. seealso:: :py:func:`lineLocatePoint`
+
+.. versionadded:: 2.0
 %End
 
     double lineLocatePoint( const QgsGeometry &point ) const;
@@ -1195,9 +1195,9 @@ of the node is returned.
 
 :param distance: distance along geometry
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`angleAtVertex`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
@@ -1487,11 +1487,11 @@ by calling `error()` on the returned geometry.
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
 
-.. versionadded:: 1.5
-
 .. note::
 
    Available in Python bindings since QGIS 1.6
+
+.. versionadded:: 1.5
 %End
 
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
@@ -1519,9 +1519,9 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`requiresConversionToStraightSegments`
+
+.. versionadded:: 2.10
 %End
 
     bool requiresConversionToStraightSegments() const;
@@ -1529,9 +1529,9 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 Returns true if the geometry is a curved geometry type which requires conversion to
 display as straight line segments.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`convertToStraightSegment`
+
+.. versionadded:: 2.10
 %End
 
     void mapToPixel( const QgsMapToPixel &mtp );
@@ -1560,9 +1560,9 @@ If a matching vertex was found, it will be stored in ``id``.
 
 Returns true if vertex was found.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`vertexNrFromVertexId`
+
+.. versionadded:: 2.10
 %End
 
     int vertexNrFromVertexId( QgsVertexId id ) const;
@@ -1574,9 +1574,9 @@ to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`vertexIdFromVertexNr`
+
+.. versionadded:: 2.10
 %End
 
     QString lastError() const;

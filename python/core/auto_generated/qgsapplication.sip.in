@@ -370,36 +370,36 @@ Returns the short name regular expression for line edit validator
 %Docstring
 Returns the user's operating system login account name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userFullName`
+
+.. versionadded:: 2.14
 %End
 
     static QString userFullName();
 %Docstring
 Returns the user's operating system login account full display name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userLoginName`
+
+.. versionadded:: 2.14
 %End
 
     static QString osName();
 %Docstring
 Returns a string name of the operating system QGIS is running on.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`platform`
+
+.. versionadded:: 2.14
 %End
 
     static QString platform();
 %Docstring
 Returns the QGIS platform name, e.g., "desktop" or "server".
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`osName`
+
+.. versionadded:: 2.14
 %End
 
     static QString locale();

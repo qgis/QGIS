@@ -60,9 +60,9 @@ Sets whether a predefined CRS option should be shown in the widget.
 %Docstring
 Returns whether the specified CRS option is visible in the widget.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setOptionVisible`
+
+.. versionadded:: 3.0
 %End
 
     void setNotSetText( const QString &text );

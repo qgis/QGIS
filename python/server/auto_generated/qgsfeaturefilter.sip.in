@@ -11,13 +11,12 @@
 
 
 
-class QgsFeatureFilter : QgsFeatureFilterProvider
-{
+* \since QGIS 3.0
 %Docstring
 A feature filter provider allowing to set filter expressions on a per-layer basis.
-
-.. versionadded:: 3.0
 %End
+class QgsFeatureFilter : QgsFeatureFilterProvider
+{
 
 %TypeHeaderCode
 #include "qgsfeaturefilter.h"

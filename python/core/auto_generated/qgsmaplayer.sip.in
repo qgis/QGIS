@@ -111,9 +111,9 @@ Returns the layer's unique ID, which is used to access this layer from :py:class
 %Docstring
 Set the display ``name`` of the layer.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`name`
+
+.. versionadded:: 2.16
 %End
 
     QString name() const;
@@ -851,11 +851,11 @@ Read the style for the current layer from the Dom node supplied.
 
 :return: true in case of success.
 
-.. versionadded:: 2.16
-
 .. note::
 
    To be implemented in subclasses. Default implementation does nothing and returns false.
+
+.. versionadded:: 2.16
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
@@ -881,11 +881,11 @@ Write just the style information for the layer into the document
 
 :return: true in case of success.
 
-.. versionadded:: 2.16
-
 .. note::
 
    To be implemented in subclasses. Default implementation does nothing and returns false.
+
+.. versionadded:: 2.16
 %End
 
     QUndoStack *undoStack();
@@ -964,13 +964,13 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 :return: true if the layer is visible at the given scale.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`minimumScale`
 
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`hasScaleBasedVisibility`
+
+.. versionadded:: 2.16
 %End
 
     double minimumScale() const;
@@ -1030,11 +1030,11 @@ Returns whether scale based visibility is enabled for the layer.
 %Docstring
 Returns true if auto refresh is enabled for the layer.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`autoRefreshInterval`
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
+
+.. versionadded:: 3.0
 %End
 
     int autoRefreshInterval() const;
@@ -1042,11 +1042,11 @@ Returns true if auto refresh is enabled for the layer.
 Returns the auto refresh interval (in milliseconds). Note that
 auto refresh is only active when hasAutoRefreshEnabled() is true.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hasAutoRefreshEnabled`
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
+
+.. versionadded:: 3.0
 %End
 
     void setAutoRefreshInterval( int interval );
@@ -1058,44 +1058,44 @@ Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
 Note that auto refresh triggers deferred repaints of the layer. Any map
 canvas must be refreshed separately in order to view the refreshed layer.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`autoRefreshInterval`
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
+
+.. versionadded:: 3.0
 %End
 
     void setAutoRefreshEnabled( bool enabled );
 %Docstring
 Sets whether auto refresh is enabled for the layer.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hasAutoRefreshEnabled`
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
+
+.. versionadded:: 3.0
 %End
 
     virtual const QgsLayerMetadata &metadata() const;
 %Docstring
 Returns a reference to the layer's metadata store.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setMetadata`
 
 .. seealso:: :py:func:`metadataChanged`
+
+.. versionadded:: 3.0
 %End
 
     virtual void setMetadata( const QgsLayerMetadata &metadata );
 %Docstring
 Sets the layer's ``metadata`` store.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`metadata`
 
 .. seealso:: :py:func:`metadataChanged`
+
+.. versionadded:: 3.0
 %End
 
     virtual QString htmlMetadata() const;
@@ -1286,9 +1286,9 @@ Signal emitted whenever a change affects the layer's style. Ie this may be trigg
 by renderer changes, label style changes, or other style changes such as blend
 mode or layer opacity changes.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`rendererChanged`
+
+.. versionadded:: 2.16
 %End
 
     void legendChanged();

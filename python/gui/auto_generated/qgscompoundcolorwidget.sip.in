@@ -73,11 +73,11 @@ Triggers a user prompt for importing a new color scheme from an existing GPL fil
 
 The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`createNewUserPalette`
 
 .. seealso:: :py:func:`removeUserPalette`
+
+.. versionadded:: 3.2
 %End
 
     static QgsUserColorScheme *createNewUserPalette( QWidget *parent );
@@ -86,11 +86,11 @@ Triggers a user prompt for creating a new user color scheme.
 
 The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`importUserPaletteFromFile`
 
 .. seealso:: :py:func:`removeUserPalette`
+
+.. versionadded:: 3.2
 %End
 
     static bool removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent );
@@ -99,11 +99,11 @@ Triggers a user prompt for removing an existing user color ``scheme``.
 
 The ``parent`` argument must be set to a valid parent widget for the dialog prompts.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`importUserPaletteFromFile`
 
 .. seealso:: :py:func:`createNewUserPalette`
+
+.. versionadded:: 3.2
 %End
 
   signals:

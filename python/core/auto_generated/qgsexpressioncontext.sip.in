@@ -296,9 +296,9 @@ Adds a function to the scope.
 %Docstring
 Returns true if the scope has a feature associated with it.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`feature`
+
+.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -328,11 +328,11 @@ feature set by the scope will be overwritten.
 %Docstring
 Removes any feature associated with the scope.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setFeature`
 
 .. seealso:: :py:func:`hasFeature`
+
+.. versionadded:: 3.0
 %End
 
     void setFields( const QgsFields &fields );
@@ -625,9 +625,9 @@ existing features within the context.
 %Docstring
 Returns true if the context has a feature associated with it.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`feature`
+
+.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -986,11 +986,11 @@ For instance, current page name and number.
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutItem`.
 For instance, item size and position.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setLayoutItemVariable`
 
 .. seealso:: :py:func:`setLayoutItemVariables`
+
+.. versionadded:: 3.0
 %End
 
     static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );

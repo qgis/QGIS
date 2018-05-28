@@ -286,9 +286,9 @@ If ``useShortestArc`` is true, then the midpoint returned will be that correspon
 to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
 to ``p2`` will be used (i.e. winding the other way around the circle).
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`segmentMidPoint`
+
+.. versionadded:: 3.2
 %End
 
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -432,9 +432,9 @@ the end of the line (``x2``, ``y2``). However, it is possible to
 use a ``fraction`` < 0 or > 1, in which case the returned point
 is extrapolated from the supplied line.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
 %End
 
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
@@ -451,9 +451,9 @@ is extrapolated from the supplied line.
 Any Z or M values present in the input points will also be interpolated
 and present in the returned point.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
 %End
 
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
@@ -466,9 +466,9 @@ at the start of the line (``v1``) and end of the line (``v2``). The returned
 point will be linearly interpolated to match position corresponding to
 the target ``value``.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLine`
+
+.. versionadded:: 3.0.2
 %End
 
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
