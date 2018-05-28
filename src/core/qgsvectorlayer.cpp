@@ -2767,8 +2767,8 @@ long QgsVectorLayer::featureCount() const
 
 QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
-  const QgsFeatureIds deletedFeatures = mEditBuffer->deletedFeatureIds();
-  const QgsFeatureMap addedFeatures = mEditBuffer->addedFeatures();
+  const QgsFeatureIds deletedFeatures( mEditBuffer ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
+  const QgsFeatureMap addedFeatures( mEditBuffer ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
 
   if ( mEditBuffer && !deletedFeatures.empty() )
   {
