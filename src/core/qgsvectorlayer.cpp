@@ -896,7 +896,10 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
   updateFields();
 
   if ( res )
+  {
+    emit configChanged();
     emit repaintRequested();
+  }
 
   return res;
 }

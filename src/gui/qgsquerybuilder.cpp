@@ -264,7 +264,6 @@ void QgsQueryBuilder::accept()
 
       return;
     }
-    QgsProject::instance()->setDirty( true );
   }
 
   QDialog::accept();
