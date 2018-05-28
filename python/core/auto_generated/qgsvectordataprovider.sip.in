@@ -128,7 +128,7 @@ Number of features in the layer
 %Docstring
 Returns true if the layer contains at least one feature.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
@@ -139,7 +139,7 @@ FeatureAvailability.NoFeaturesAvailable.
 Calls empty() internally. Providers should override empty()
 instead if they provide an optimized version of this call.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 
 .. seealso:: :py:func:`empty`
 %End

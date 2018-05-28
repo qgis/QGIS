@@ -39,7 +39,7 @@ class CORE_EXPORT QgsFeatureSource
   public:
 
     /**
-     * Return value for hasFeatures() to determine if a source is empty.
+     * Possible return value for hasFeatures() to determine if a source is empty.
      * It is implemented as a three-value logic, so it can return if
      * there are features available for sure, if there are no features
      * available for sure or if there might be features available but
