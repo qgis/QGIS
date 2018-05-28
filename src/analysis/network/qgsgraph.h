@@ -37,8 +37,8 @@ class QgsGraphVertex;
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
- * \since QGIS 3.0
  * \brief This class implements a graph edge
+ * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsGraphEdge
 {

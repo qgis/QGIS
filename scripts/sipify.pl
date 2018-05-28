@@ -64,6 +64,7 @@ my $PRIVATE_SECTION_LINE = '';
 my $RETURN_TYPE = '';
 my $IS_OVERRIDE = 0;
 my $IF_FEATURE_CONDITION = '';
+my $FOUND_SINCE = 0;
 my %QFLAG_HASH;
 
 my $LINE_COUNT = @INPUT_LINES;
@@ -208,7 +209,10 @@ sub processDoxygenLine {
 
     if ( $line =~ m/^\s*[\\@]brief/){
         $line =~ s/[\\@]brief\s*//;
-        $INDENT = '';
+        if ( $FOUND_SINCE eq 1 ) {
+            exit_with_error("$headerfile\:\:$LINE_IDX Since annotation must come after brief")
+        }
+        $FOUND_SINCE = 0;
         if ( $line =~ m/^\s*$/ ){
             return "";
         }
@@ -220,6 +224,7 @@ sub processDoxygenLine {
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         $INDENT = '';
+        $FOUND_SINCE = 1;
         return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\deprecated (.*)/i ) {
@@ -424,6 +429,7 @@ sub detect_comment_block{
     $INDENT = '';
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+    $FOUND_SINCE = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';

@@ -14,8 +14,6 @@ class QgsAnnotationManager : QObject
 {
 %Docstring
 
-.. versionadded:: 3.0
-
 Manages storage of a set of QgsAnnotation annotation objects.
 
 QgsAnnotationManager handles the storage, serializing and deserializing
@@ -24,6 +22,8 @@ rather accessed through a QgsProject via :py:func:`QgsProject.annotationManager(
 
 QgsAnnotationManager retains ownership of all the annotations contained
 in the manager.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

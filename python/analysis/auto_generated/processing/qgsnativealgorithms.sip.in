@@ -12,9 +12,9 @@
 class QgsNativeAlgorithms: QgsProcessingProvider
 {
 %Docstring
+Native c++ processing algorithm provider.
 
 .. versionadded:: 3.0
-Native c++ processing algorithm provider.
 %End
 
 %TypeHeaderCode
