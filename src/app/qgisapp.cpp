@@ -9217,6 +9217,7 @@ void QgisApp::layerSubsetString()
   {
     mLayerTreeView->refreshLayerSymbology( vlayer->id() );
     activateDeactivateLayerRelatedActions( vlayer );
+    markDirty();
   }
 }
 
