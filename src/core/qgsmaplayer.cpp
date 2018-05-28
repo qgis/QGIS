@@ -93,6 +93,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // there for the compiler, so the pattern is actually \W
   mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
 
+  connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
+  connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
+
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
   connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
