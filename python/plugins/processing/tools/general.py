@@ -57,9 +57,9 @@ def algorithmHelp(id):
         print('Input parameters')
         print('----------------')
         for p in alg.parameterDefinitions():
-            print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
-            if p.description():
-                print('\t' + p.description())
+            print('\n{}: {}'.format(p.name(), p.description()))
+
+            print('\n\tParameter type:\t{}'.format(p.__class__.__name__))
 
             if isinstance(p, QgsProcessingParameterEnum):
                 opts = []
