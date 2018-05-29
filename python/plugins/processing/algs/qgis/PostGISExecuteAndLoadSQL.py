@@ -47,6 +47,8 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
     DATABASE = 'DATABASE'
     SQL = 'SQL'
     OUTPUT = 'OUTPUT'
+    ID_FIELD = 'ID_FIELD'
+    GEOMETRY_FIELD = 'GEOMETRY_FIELD'
 
     def group(self):
         return self.tr('Database')
@@ -69,6 +71,15 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
             self.SQL,
             self.tr('SQL query (must return unique id and geom field)'),
             multiLine=True))
+        self.addParameter(QgsProcessingParameterString(
+            self.ID_FIELD,
+            self.tr('ID field name'),
+            defaultValue='id'))
+        self.addParameter(QgsProcessingParameterString(
+            self.GEOMETRY_FIELD,
+            self.tr('Geometry field name'),
+            defaultValue='geom',
+            optional=True))
         self.addOutput(QgsProcessingOutputVectorLayer(
             self.OUTPUT,
             self.tr("Output layer"),
@@ -82,10 +93,12 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
+        id_field = self.parameterAsString(parameters, self.ID_FIELD, context)
+        geom_field = self.parameterAsString(parameters, self.GEOMETRY_FIELD, context)
         uri = postgis.uri_from_name(connection)
         sql = self.parameterAsString(parameters, self.SQL, context)
         sql = sql.replace('\n', ' ')
-        uri.setDataSource("", "(" + sql + ")", "geom", "", "id")
+        uri.setDataSource("", "(" + sql + ")", geom_field, "", id_field)
 
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
 
