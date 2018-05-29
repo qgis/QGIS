@@ -58,9 +58,28 @@ static void throwGEOSException( const char *fmt, ... )
   va_end( ap );
 
   qWarning( "GEOS exception: %s", buffer );
+  QString message = QString::fromUtf8( buffer );
 
-  throw GEOSException( QString::fromUtf8( buffer ) );
+#ifdef _MSC_VER
+  // stupid stupid MSVC, *SOMETIMES* raises it's own exception if we throw GEOSException, resulting in a crash!
+  // see https://issues.qgis.org/issues/14752
+  // if you want to test alternative fixes for this, run the testqgsexpression.cpp test suite - that will crash
+  // and burn on the "line_interpolate_point point" test if a GEOSException is thrown.
+  // TODO - find a real fix for the underlying issue
+  try
+  {
+    throw GEOSException( message );
+  }
+  catch ( ... )
+  {
+    // oops, msvc threw an exception when we tried to throw the exception!
+    // just throw nothing instead (except your mouse at your monitor)
+  }
+#else
+  throw GEOSException( message );
+#endif
 }
+
 
 static void printGEOSNotice( const char *fmt, ... )
 {
