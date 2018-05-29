@@ -352,6 +352,18 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     ~QgsShapeburstFillSymbolLayer() override;
 
+    /**
+     * QgsShapeburstFillSymbolLayer cannot be copied.
+     * \see clone()
+     */
+    QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other ) = delete;
+
+    /**
+     * QgsShapeburstFillSymbolLayer cannot be copied.
+     * \see clone()
+     */
+    QgsShapeburstFillSymbolLayer &operator=( const QgsShapeburstFillSymbolLayer &other ) = delete;
+
     // static stuff
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
@@ -488,7 +500,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see colorType
      * \since QGIS 2.3
      */
-    QgsColorRamp *colorRamp() { return mGradientRamp; }
+    QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
 
     /**
      * Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
@@ -570,21 +582,19 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-  protected:
+  private:
     QBrush mBrush;
     QBrush mSelBrush;
 
-    int mBlurRadius;
+    int mBlurRadius = 0;
 
-    bool mUseWholeShape;
-    double mMaxDistance;
+    bool mUseWholeShape = true;
+    double mMaxDistance = 5.0;
     QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
 
-    ShapeburstColorType mColorType;
+    ShapeburstColorType mColorType = SimpleTwoColor;
     QColor mColor2;
-    QgsColorRamp *mGradientRamp = nullptr;
-    QgsColorRamp *mTwoColorGradientRamp = nullptr;
 
     bool mIgnoreRings = false;
 
@@ -592,7 +602,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-  private:
+    std::unique_ptr< QgsColorRamp > mGradientRamp;
 
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QColor &color, QColor &color2, int &blurRadius, bool &useWholeShape,
@@ -607,6 +617,10 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
     void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+
+#ifdef SIP_RUN
+    QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
+#endif
 };
 
 /**
