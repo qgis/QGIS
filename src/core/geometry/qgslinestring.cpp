@@ -274,6 +274,21 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+QPolygonF QgsLineString::asQPolygonF() const
+{
+  const int nb = mX.size();
+  QPolygonF points( nb );
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  QPointF *dest = points.data();
+  for ( int i = 0; i < nb; ++i )
+  {
+    *dest++ = QPointF( *x++, *y++ );
+  }
+  return points;
+}
+
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
