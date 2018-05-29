@@ -286,9 +286,9 @@ signal        """
         if dirName:
             self.leText.setText(QDir.toNativeSeparators(dirName))
             settings.setValue('/Processing/LastOutputPath', dirName)
-
-        self.skipOutputChanged.emit(False)
-        self.destinationChanged.emit()
+            self.use_temporary = False
+            self.skipOutputChanged.emit(False)
+            self.destinationChanged.emit()
 
     def setValue(self, value):
         if not value:
