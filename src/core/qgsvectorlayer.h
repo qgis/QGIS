@@ -1546,7 +1546,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns true if at least one attribute has been deleted
      *
      */
-    bool deleteAttributes( QList<int> attrs );
+    bool deleteAttributes( const QList<int> &attrs );
 
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
@@ -2456,6 +2456,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     friend class QgsVectorLayerFeatureSource;
 };
+
+
 
 // clazy:excludeall=qstring-allocations
 

@@ -1679,7 +1679,7 @@ Deletes an attribute field (but does not commit it).
    changes can be discarded by calling rollBack().
 %End
 
-    bool deleteAttributes( QList<int> attrs );
+    bool deleteAttributes( const QList<int> &attrs );
 %Docstring
 Deletes a list of attribute fields (but does not commit it)
 
@@ -2557,6 +2557,8 @@ Sets the extent
   private:                       // Private methods
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
+
+
 
 
 /************************************************************************
