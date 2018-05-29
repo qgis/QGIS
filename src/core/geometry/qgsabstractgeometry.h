@@ -576,8 +576,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * Depending on the \a filter used, this may result in an invalid geometry. However, CurvePolygon rings which are no longer
      * valid rings will be automatically removed after filtering.
      *
-     * \since QGIS 3.2
      * \note Not available in Python bindings
+     * \since QGIS 3.2
      */
     virtual void filterVertices( const std::function< bool( const QgsPoint & ) > &filter );
 
