@@ -653,13 +653,8 @@ Returns the units used for the offset of the shapeburst fill.
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
-  protected:
-
-
-
-
-
-
+  private:
+    QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
 };
 
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
