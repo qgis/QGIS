@@ -339,13 +339,17 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
   QVector<double> x( nVertices );
   QVector<double> y( nVertices );
   QVector<double> z( nVertices );
+  double *destX = x.data();
+  double *destY = y.data();
+  double *destZ = z.data();
 
+  const QPointF *polyData = poly.constData();
   for ( int i = 0; i < nVertices; ++i )
   {
-    const QPointF &pt = poly.at( i );
-    x[i] = pt.x();
-    y[i] = pt.y();
-    z[i] = 0;
+    *destX++ = polyData->x();
+    *destY++ = polyData->y();
+    *destZ++ = 0;
+    polyData++;
   }
 
   try
@@ -359,11 +363,14 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     throw;
   }
 
+  QPointF *destPoint = poly.data();
+  const double *srcX = x.constData();
+  const double *srcY = y.constData();
   for ( int i = 0; i < nVertices; ++i )
   {
-    QPointF &pt = poly[i];
-    pt.rx() = x[i];
-    pt.ry() = y[i];
+    destPoint->rx() = *srcX++;
+    destPoint->ry() = *srcY++;
+    destPoint++;
   }
 }
 
@@ -416,20 +423,36 @@ void QgsCoordinateTransform::transformInPlace(
     QVector<double> xd( x.size() );
     QVector<double> yd( y.size() );
     QVector<double> zd( z.size() );
+
+    double *destX = xd.data();
+    double *destY = yd.data();
+    double *destZ = zd.data();
+
+    const float *srcX = x.constData();
+    const float *srcY = y.constData();
+    const float *srcZ = z.constData();
+
     for ( int i = 0; i < vectorSize; ++i )
     {
-      xd[i] = x[i];
-      yd[i] = y[i];
-      zd[i] = z[i];
+      *destX++ = static_cast< double >( *srcX++ );
+      *destY++ = static_cast< double >( *srcY++ );
+      *destZ++ = static_cast< double >( *srcZ++ );
     }
+
     transformCoords( x.size(), &xd[0], &yd[0], &zd[0], direction );
 
     //copy back
+    float *destFX = x.data();
+    float *destFY = y.data();
+    float *destFZ = z.data();
+    const double *srcXD = xd.constData();
+    const double *srcYD = yd.constData();
+    const double *srcZD = zd.constData();
     for ( int i = 0; i < vectorSize; ++i )
     {
-      x[i] = xd[i];
-      y[i] = yd[i];
-      z[i] = zd[i];
+      *destFX++ = static_cast< float >( *srcXD++ );
+      *destFY++ = static_cast< float >( *srcYD++ );
+      *destFZ++ = static_cast< float >( *srcZD++ );
     }
   }
   catch ( QgsCsException & )
