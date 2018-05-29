@@ -956,4 +956,57 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
 
 };
 
+/**
+ * A feature sink parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterFeatureSink( name );
+    }
+
+    ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+#if QT_VERSION >= 0x50700
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
+
+      return flags;
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A feature sink destination parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Feature Sink" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "sink" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
+             << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
+             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:...' to store result in PostGIS table" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+};
+
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H
