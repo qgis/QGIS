@@ -32,7 +32,7 @@ class QgsQuickMapSettings;
  *
  * \note QML Type: MapTransform
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
 {

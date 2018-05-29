@@ -26,9 +26,8 @@
 #include "qgsquickmapsettings.h"
 #include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
+#include "qgsfeature.h"
 
-
-class QgsFeature;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 
@@ -81,6 +80,8 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * QgsQuickFeature factory for tuple of QgsFeature and QgsVectorLayer usud in QgsQUick library.
       * \param feature QgsFeature linked to new QgsQuickFeature instance.
       * \param layer QgsVectorLayer which the feature belongs to, optional.
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
 

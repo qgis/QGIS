@@ -41,7 +41,7 @@ class QgsVectorLayer;
  *
  * \note QML Type: IdentifyKit
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
 {

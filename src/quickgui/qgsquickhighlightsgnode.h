@@ -31,7 +31,7 @@
  *
  * \note QML Type: not exported
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickHighlightSGNode : public QSGNode
 {

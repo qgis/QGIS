@@ -35,7 +35,7 @@ class QgsVectorLayer;
  *
  * \note QML Type: QgsQuickFeatureLayerPair
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickFeatureLayerPair
 {
@@ -82,7 +82,7 @@ class QUICK_EXPORT QgsQuickFeatureLayerPair
     //! \copydoc QgsQuickFeatureLayerPair::feature
     QgsFeature feature() const;
 
-    //! \copydoc QgsQuickFeatureLayerPair::isValid
+    //! \copydoc QgsQuickFeatureLayerPair::valid
     bool isValid() const;
 
     bool operator==( const QgsQuickFeatureLayerPair &other ) const;
