@@ -31,7 +31,7 @@ import codecs
 import re
 import traceback
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "from qgis.gui import *", "from qgis.analysis import *", "import processing", "import qgis.utils",
@@ -619,11 +619,15 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.writeCMD(cmd)
         import webbrowser
         self.updateHistory(cmd)
-        if cmd in ('_pyqgis', '_api'):
+        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall('^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+        if cmd in ('_pyqgis', '_api', '_cookbook'):
             if cmd == '_pyqgis':
-                webbrowser.open("http://qgis.org/pyqgis-cookbook/")
+                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
             elif cmd == '_api':
-                webbrowser.open("http://qgis.org/api/")
+                webbrowser.open("https://qgis.org/api/{}".format(version))
+            elif cmd == '_cookbook':
+                webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                    'testing' if version == 'master' else version))
             more = False
         else:
             self.buffer.append(cmd)
