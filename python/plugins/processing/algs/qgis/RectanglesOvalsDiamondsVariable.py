@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import math
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
