@@ -58,6 +58,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgscurvepolygon.h"
 #include <QMessageBox>
 
 
@@ -2904,6 +2905,8 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     {
       return std::isfinite( point.x() ) && std::isfinite( point.y() );
     } );
+    if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( geom.get() ) )
+      cp->removeInvalidRings();
   }
 
   // Rotate the geometry if needed, before clipping
