@@ -373,7 +373,15 @@ void QgsVertexEditor::zoomToVertex( int idx )
   QgsPointXY newCenter( x, y );
 
   QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QgsPointXY tCenter = t.transform( newCenter );
+  QgsPointXY tCenter;
+  try
+  {
+    tCenter = t.transform( newCenter );
+  }
+  catch ( QgsCsException & )
+  {
+    return;
+  }
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon
