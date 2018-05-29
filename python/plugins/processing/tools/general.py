@@ -64,7 +64,16 @@ def algorithmHelp(id):
             if isinstance(p, QgsProcessingParameterEnum):
                 opts = []
                 for i, o in enumerate(p.options()):
-                    opts.append('\t\t{} - {}'.format(i, o))
+                    opts.append('\t\t- {}: {}'.format(i, o))
+                print('\n\tAvailable values:\n{}'.format('\n'.join(opts)))
+
+            parameter_type = QgsApplication.processingRegistry().parameterType(p.type())
+            accepted_types = parameter_type.acceptedPythonTypes() if parameter_type is not None else []
+            if accepted_types:
+                opts = []
+                for t in accepted_types:
+                    opts.append('\t\t- {}'.format(t))
+                print('\n\tAccepted data types:')
                 print('\n'.join(opts))
 
         print('\n----------------')
