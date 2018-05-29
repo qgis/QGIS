@@ -16,6 +16,8 @@
 #ifndef QGSTESSELLATOR_H
 #define QGSTESSELLATOR_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 
 class QgsPolygon;
@@ -25,7 +27,7 @@ class QgsMultiPolygon;
 #include <memory>
 
 /**
- * \ingroup 3d
+ * \ingroup core
  * Class that takes care of tessellation of polygons into triangles.
  *
  * It is expected that client code will create the tessellator object, then repeatedly call

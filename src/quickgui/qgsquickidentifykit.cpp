@@ -22,6 +22,8 @@
 #include "qgsquickidentifykit.h"
 #include "qgsquickmapsettings.h"
 
+#include "qgis.h"
+
 QgsQuickIdentifyKit::QgsQuickIdentifyKit( QObject *parent )
   : QObject( parent )
 {
@@ -230,9 +232,23 @@ double QgsQuickIdentifyKit::searchRadiusMm() const
 
 void QgsQuickIdentifyKit::setSearchRadiusMm( double searchRadiusMm )
 {
-  if ( mSearchRadiusMm == searchRadiusMm )
+  if ( qgsDoubleNear( mSearchRadiusMm, searchRadiusMm ) )
     return;
 
   mSearchRadiusMm = searchRadiusMm;
   emit searchRadiusMmChanged();
+}
+
+int QgsQuickIdentifyKit::featuresLimit() const
+{
+  return mFeaturesLimit;
+}
+
+void QgsQuickIdentifyKit::setFeaturesLimit( int limit )
+{
+  if ( mFeaturesLimit == limit )
+    return;
+
+  mFeaturesLimit = limit;
+  emit featuresLimitChanged();
 }

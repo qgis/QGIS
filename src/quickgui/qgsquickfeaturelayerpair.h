@@ -76,13 +76,13 @@ class QUICK_EXPORT QgsQuickFeatureLayerPair
      */
     QgsQuickFeatureLayerPair( const QgsFeature &feature, QgsVectorLayer *layer );
 
-    //! \copydoc QgsQuickFeature::layer
+    //! \copydoc QgsQuickFeatureLayerPair::layer
     QgsVectorLayer *layer() const;
 
-    //! \copydoc QgsQuickFeature::feature
+    //! \copydoc QgsQuickFeatureLayerPair::feature
     QgsFeature feature() const;
 
-    //! \copydoc QgsQuickFeature::isValid
+    //! \copydoc QgsQuickFeatureLayerPair::isValid
     bool isValid() const;
 
     bool operator==( const QgsQuickFeatureLayerPair &other ) const;

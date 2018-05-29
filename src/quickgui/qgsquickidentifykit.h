@@ -64,7 +64,7 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
      *
      * Default is 100.
      */
-    Q_PROPERTY( long featuresLimit MEMBER mFeaturesLimit NOTIFY featuresLimitChanged )
+    Q_PROPERTY( int featuresLimit READ featuresLimit WRITE setFeaturesLimit NOTIFY featuresLimitChanged )
 
   public:
     //! Constructor of new identify kit.
@@ -81,6 +81,12 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
 
     //! \copydoc QgsQuickIdentifyKit::searchRadiusMm
     void setSearchRadiusMm( double searchRadiusMm );
+
+    //! \copydoc QgsQuickIdentifyKit::featuresLimit
+    int featuresLimit() const;
+
+    //! \copydoc QgsQuickIdentifyKit::featuresLimit
+    void setFeaturesLimit( int limit );
 
     /**
       * Gets the closest feature to the point within the search radius
