@@ -39,7 +39,7 @@ void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
     path = QDir( QgsProject::instance()->fileInfo().absolutePath() ).filePath( url );
 
   if ( mWebView )
-    mWebView->load( path );
+    mWebView->load( QUrl::fromEncoded( path.toUtf8() ) );
 }
 
 QVariant QgsWebViewWidgetWrapper::value() const
