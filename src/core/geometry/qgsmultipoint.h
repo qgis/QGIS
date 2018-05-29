@@ -47,6 +47,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     double segmentLength( QgsVertexId startVertex ) const override;
 
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsLineString.

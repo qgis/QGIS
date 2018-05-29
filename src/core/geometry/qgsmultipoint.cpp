@@ -182,6 +182,20 @@ double QgsMultiPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
+void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+{
+  mGeometries.erase( std::remove_if( mGeometries.begin(), mGeometries.end(), // clazy:exclude=detaching-member
+                                     [&filter]( const QgsAbstractGeometry * part )
+  {
+    if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
+    {
+      return !filter( *point );
+    }
+    else
+      return true;
+  } ), mGeometries.end() ); // clazy:exclude=detaching-member
+}
+
 bool QgsMultiPoint::wktOmitChildType() const
 {
   return true;
