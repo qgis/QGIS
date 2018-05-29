@@ -177,7 +177,7 @@ Returns the y-coordinate of the specified node in the line string.
 :return: y-coordinate of node, or 0.0 if index is out of bounds
 %End
 
-    QPolygonF asQPolygonF() const;
+    virtual QPolygonF asQPolygonF() const;
 %Docstring
 Returns a QPolygonF representing the points.
 %End

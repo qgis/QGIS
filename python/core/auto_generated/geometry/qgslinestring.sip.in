@@ -216,6 +216,7 @@ segment in the line.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual QPolygonF asQPolygonF() const;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
